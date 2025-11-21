@@ -33,6 +33,7 @@ function Index() {
   return (
     <Container device={device}>
       <MainSection device={device}>
+        <p>메이토 합류를 환영해주세요!!</p>
         <NewsletterHero />
         <TrendySection />
       </MainSection>
