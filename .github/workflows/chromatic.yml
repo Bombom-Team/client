@@ -1,12 +1,6 @@
 name: "Chromatic"
-defaults:
-  run:
-    working-directory: ./frontend
-
 on:
   push:
-    paths:
-      - "frontend/**"
     branches:
       - client
 

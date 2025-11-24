@@ -39,7 +39,6 @@ jobs:
       - name: Send notification
         env:
           SLACK_WEBHOOK_URL_FE: ${{ secrets.SLACK_WEBHOOK_URL_FE_NOTIFY }}
-          SLACK_WEBHOOK_URL_BE: ${{ secrets.SLACK_WEBHOOK_URL_BE_NOTIFY }}
         run: |
           TITLE="${{ github.event.pull_request.title }}"
           AUTHOR="${{ github.event.pull_request.user.login }}"
@@ -47,8 +46,6 @@ jobs:
 
           if [[ "$TITLE" == "[FE]"* ]]; then
             WEBHOOK_URL=$SLACK_WEBHOOK_URL_FE
-          elif [[ "$TITLE" == "[BE]"* ]]; then
-            WEBHOOK_URL=$SLACK_WEBHOOK_URL_BE
           else
             exit 0
           fi
