@@ -1,4 +1,4 @@
-name: 'Chromatic'
+name: "Chromatic"
 defaults:
   run:
     working-directory: ./frontend
@@ -6,13 +6,13 @@ defaults:
 on:
   push:
     paths:
-      - 'frontend/**'
+      - "frontend/**"
     branches:
       - client
 
 jobs:
   chromatic:
-    name: 'Run Chromatic'
+    name: "Run Chromatic"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
