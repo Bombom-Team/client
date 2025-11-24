@@ -11,7 +11,7 @@ phases:
       nodejs: 22
     commands:
       - echo "Installing dependencies..."
-      - cd ./frontend/web
+      - cd ./web
 
       - corepack enable
       - corepack prepare pnpm@10.12.1 --activate
@@ -33,6 +33,6 @@ phases:
       - pnpm run build
 
 artifacts:
-  base-directory: frontend/web/dist
+  base-directory: web/dist
   files:
     - '**/*'
