@@ -1,14 +1,7 @@
 name: CI
-defaults:
-  run:
-    working-directory: ./frontend
 on:
   push:
-    paths:
-      - "frontend/**"
   pull_request:
-    paths:
-      - "frontend/**"
     branches:
       - client
       - client-dev
@@ -21,8 +14,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
