@@ -11,6 +11,7 @@ import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback'
 import { useDevice } from '@/hooks/useDevice';
 import { useSearchParamState } from '@/hooks/useSearchParamState';
 import { useUserInfo } from '@/hooks/useUserInfo';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { openExternalLink } from '@/utils/externalLink';
 import type { NewsletterTab } from './NewsletterDetail.types';
 import HomeIcon from '#/assets/svg/home.svg';
@@ -48,6 +49,19 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
     } else {
       return '구독 하기';
     }
+  };
+
+  const handleSubscribeButtonClick = () => {
+    trackEvent({
+      category: 'Newsletter',
+      action: '구독하기 버튼 클릭',
+      label: newsletterDetail.name,
+    });
+    openSubscribeLink(
+      newsletterDetail.subscribeUrl,
+      newsletterDetail.name,
+      userInfo,
+    );
   };
 
   const newsletterSummary = `${newsletterDetail.name}, ${newsletterDetail.category} 카테고리, ${newsletterDetail.issueCycle} 발행. ${newsletterDetail.description}`;
@@ -96,17 +110,9 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
         )}
 
         <SubscribeButton
-          text={getSubscribeButtonText()}
-          onClick={() =>
-            openSubscribeLink(
-              newsletterDetail.subscribeUrl,
-              newsletterDetail.name,
-              userInfo,
-            )
-          }
-          disabled={
-            !isLoggedIn || (isLoggedIn && newsletterDetail.isSubscribed)
-          }
+          text={isLoggedIn ? '구독하기' : '로그인 후 구독할 수 있어요'}
+          onClick={handleSubscribeButtonClick}
+          disabled={!isLoggedIn}
           isMobile={isMobile}
         />
       </FixedWrapper>
