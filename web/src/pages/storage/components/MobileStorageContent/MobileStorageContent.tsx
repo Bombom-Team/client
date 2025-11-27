@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
-import { isValidElement, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelectedDeleteIds } from '../../hooks/useSelectedDeleteIds';
+import { isValidKeyword } from '../../utils/isValidKeyword';
 import ArticleList from '../ArticleList/ArticleList';
 import ArticleListControls from '../ArticleListControls/ArticleListControls';
 import EmptySearchCard from '../EmptySearchCard/EmptySearchCard';
@@ -105,7 +106,7 @@ export default function MobileStorageContent({
         <EmptySearchCard searchQuery={baseQueryParams.keyword ?? ''} />
       ) : IsContentsEmpty ? (
         <EmptyLetterCard title="보관된 뉴스레터가 없어요" />
-      ) : emptyKeyword || isValidElement(baseQueryParams.keyword) ? (
+      ) : emptyKeyword || isValidKeyword(baseQueryParams.keyword) ? (
         <>
           <ArticleList
             articles={articleList}
