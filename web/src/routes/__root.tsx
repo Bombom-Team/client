@@ -8,11 +8,14 @@ import {
   redirect,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { ENV } from '@/apis/env';
 import Toast from '@/components/Toast/Toast';
+import { SERVER_STATUS } from '@/constants/serverStatus';
 import usePageTracking from '@/libs/googleAnalytics/usePageTracking';
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
 import { useWebViewRouting } from '@/libs/webview/useWebViewRouting';
 import { queryClient } from '@/main';
+import type { PrometheusResponse } from '@/types/prometheus';
 import type { QueryClient } from '@tanstack/react-query';
 
 interface BomBomRouterContext {
@@ -50,26 +53,25 @@ export const Route = createRootRouteWithContext<BomBomRouterContext>()({
     const maintenancePath = '/maintenance';
 
     try {
-      // const response = await fetch(ENV.monitoringStatusUrl, {
-      //   cache: 'no-store',
-      // });
+      const response = await fetch(ENV.monitoringStatusUrl, {
+        cache: 'no-store',
+      });
 
-      // if (!response.ok) {
-      //   throw new Error(`Failed to fetch status: ${response.status}`);
-      // }
-
-      // const prometheusResult = (await response.json()) as PrometheusResponse;
-      // const status =
-      //   prometheusResult.data.result[0]?.value[1] ?? SERVER_STATUS.off;
-
-      // const isServerOn = status === SERVER_STATUS.on;
-
-      if (location.pathname !== maintenancePath) {
-        return redirect({ to: maintenancePath });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch status: ${response.status}`);
       }
-      // } else if (isServerOn && location.pathname === maintenancePath) {
-      //   return redirect({ to: '/' });
-      // }
+
+      const prometheusResult = (await response.json()) as PrometheusResponse;
+      const status =
+        prometheusResult.data.result[0]?.value[1] ?? SERVER_STATUS.off;
+
+      const isServerOn = status === SERVER_STATUS.on;
+
+      if (!isServerOn && location.pathname !== maintenancePath) {
+        return redirect({ to: maintenancePath });
+      } else if (isServerOn && location.pathname === maintenancePath) {
+        return redirect({ to: '/' });
+      }
     } catch (err) {
       console.error('Server status check failed:', err);
       if (location.pathname !== maintenancePath) {

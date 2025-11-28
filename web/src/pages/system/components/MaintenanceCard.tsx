@@ -17,14 +17,13 @@ const MaintenanceCard = () => {
 
       <Title isMobile={isMobile}>서비스 점검 중입니다</Title>
 
-      <MaintenanceTimeWrapper isMobile={isMobile}>
-        점검 시간: 27일(목) 오후 4시 ~ 28일(금) 오후 6시
-      </MaintenanceTimeWrapper>
-
       <DescriptionWrapper isMobile={isMobile}>
-        <Description>서버 이전 작업이 예정되어 있습니다.</Description>
-        <Description>더 나은 서비스를 위한 필수 작업으로,</Description>
-        <Description>상황에 따라 점검 시간이 길어질 수 있습니다.</Description>
+        <Description>
+          더 나은 서비스 제공을 위해 시스템을 점검하고 있습니다.
+        </Description>
+        <Description>
+          잠시만 기다려 주시면 곧 정상 서비스로 돌아오겠습니다.
+        </Description>
       </DescriptionWrapper>
 
       <ContactWrapper isMobile={isMobile}>
@@ -65,17 +64,6 @@ const Title = styled.h1<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.heading4 : theme.fonts.heading2};
-`;
-
-const MaintenanceTimeWrapper = styled.div<{ isMobile: boolean }>`
-  padding: 12px 24px;
-  border-radius: 8px;
-
-  background-color: ${({ theme }) => `${theme.colors.error}20`};
-  color: ${({ theme }) => theme.colors.error};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.heading5};
-  text-align: center;
 `;
 
 const DescriptionWrapper = styled.div<{ isMobile: boolean }>`
