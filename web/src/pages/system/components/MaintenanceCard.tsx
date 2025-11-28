@@ -18,7 +18,7 @@ const MaintenanceCard = () => {
       <Title isMobile={isMobile}>서비스 점검 중입니다</Title>
 
       <MaintenanceTimeWrapper isMobile={isMobile}>
-        점검 시간: 27일(목) 오후 4시 ~ 28일(금) 오전 6시
+        점검 시간: 27일(목) 오후 4시 ~ 28일(금) 오후 6시
       </MaintenanceTimeWrapper>
 
       <DescriptionWrapper isMobile={isMobile}>
