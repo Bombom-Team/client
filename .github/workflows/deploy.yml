@@ -10,6 +10,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    environment: ${{ github.ref_name == 'client' && 'prod' || 'dev' }}
+
     steps:
       # 1. Checkout
       - name: Checkout
@@ -46,20 +48,7 @@ jobs:
         working-directory: ./web
         run: pnpm run build
 
-      # 8. Determine environment(dev/prod)
-      - name: Set environment variables
-        id: env
-        run: |
-          if [ "${{ github.ref_name }}" = "client" ]; then
-            echo "bucket=${{ secrets.S3_BUCKET_PROD }}" >> $GITHUB_OUTPUT
-            echo "cf=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_PROD }}" >> $GITHUB_OUTPUT
-          else
-            echo "bucket=${{ secrets.S3_BUCKET_DEV }}" >> $GITHUB_OUTPUT
-            echo "cf=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_DEV }}" >> $GITHUB_OUTPUT
-          fi
-        shell: bash
-
-      # 9. AWS credentials
+      # 8. AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -67,16 +56,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 10. Upload to S3
+      # 9. Upload to S3
       - name: Upload to S3
         run: |
-          echo "Uploading to bucket: ${{ steps.env.outputs.bucket }}"
-          aws s3 sync ./web/dist s3://${{ steps.env.outputs.bucket }}/build-origin --delete
+          echo "Uploading to bucket: ${{ secrets.S3_BUCKET }}"
+          aws s3 sync web/dist s3://${{ secrets.S3_BUCKET }}/build-origin --delete
 
-      # 11. Invalidate CloudFront
+      # 10. Invalidate CloudFront
       - name: CloudFront Invalidation
         run: |
-          echo "Invalidating CF: ${{ steps.env.outputs.cf }}"
+          echo "Invalidating CF: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
           aws cloudfront create-invalidation \
-            --distribution-id ${{ steps.env.outputs.cf }} \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
