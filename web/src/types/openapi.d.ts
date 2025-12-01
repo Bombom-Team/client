@@ -1047,29 +1047,29 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     PageableObject: {
       /** Format: int64 */
       offset?: number;
       sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      pageSize?: number;
       paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
       unpaged?: boolean;
-      /** Format: int32 */
-      pageSize?: number;
     };
     SortObject: {
       empty?: boolean;
@@ -1128,17 +1128,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     BookmarkStatusResponse: {
@@ -1167,7 +1167,6 @@ export interface components {
       date?: string;
       /** Format: int64 */
       newsletterId?: number;
-      keyword?: string;
     };
     ArticleResponse: {
       /** Format: int64 */
@@ -1189,17 +1188,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     ArticleDetailResponse: {
@@ -1237,6 +1236,11 @@ export interface components {
       /** Format: int32 */
       totalCount: number;
       newsletters: components['schemas']['ArticleCountPerNewsletterResponse'][];
+    };
+    ArticleSearchOptionsRequest: {
+      /** Format: int64 */
+      newsletterId?: number;
+      keyword: string;
     };
     PreviousArticleRequest: {
       /** Format: int64 */
@@ -2516,7 +2520,7 @@ export interface operations {
     parameters: {
       query: {
         /** @description 검색 옵션 */
-        articlesOptionsRequest: components['schemas']['ArticlesOptionsRequest'];
+        articleSearchOptionsRequest: components['schemas']['ArticleSearchOptionsRequest'];
         /** @description 페이징 관련 요청 (예: ?page=0&size=10&sort=arrivedDateTime,desc) */
         pageable: components['schemas']['Pageable'];
       };

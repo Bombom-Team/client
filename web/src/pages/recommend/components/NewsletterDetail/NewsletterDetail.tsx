@@ -237,13 +237,14 @@ const StyledInfoIcon = styled(InfoIcon)<{ isMobile: boolean }>`
 `;
 
 const SubscribeMethodInfo = styled.div<{ isMobile: boolean }>`
-  display: flex;
-  gap: 12px;
   padding: 0.8rem 1rem;
-  align-items: center;
-  background-color: ${({ theme }) => theme.colors.primaryInfo};
   border-radius: 1rem;
 
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;

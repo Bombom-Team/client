@@ -34,14 +34,14 @@ export const extractBodyContent = (content: string) => {
   return bodyContent;
 };
 
-export function cutHtmlByTextRatio(html?: string, ratio = 1) {
+export function cutHtmlByTextRatio(html?: string, ratio = 100) {
   if (!html) return '';
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
 
   const fullText = doc.body.innerText;
-  const targetLength = Math.floor(fullText.length * ratio);
+  const targetLength = Math.floor(fullText.length * (ratio / 100));
 
   let current = 0;
   const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);

@@ -31,19 +31,23 @@ function RouteComponent() {
   const device = useDevice();
   const { userInfo } = useUserInfo();
   const { articleId } = Route.useParams();
-  const { subscribeUrl, exposureRatio } = useRouterState({
+  const { subscribeUrl } = useRouterState({
     select: (routerState) => ({
       subscribeUrl: routerState.location.state.subscribeUrl,
-      exposureRatio: routerState.location.state.exposureRatio,
     }),
   });
   const articleIdNumber = Number(articleId);
-  const shouldShowSubscribePrompt = !!exposureRatio && exposureRatio !== 1;
-
   const { data: article } = useQuery(
     queries.previousArticleDetail({ id: articleIdNumber }),
   );
-  const bodyContent = cutHtmlByTextRatio(article?.contents, exposureRatio ?? 1);
+
+  const shouldShowSubscribePrompt =
+    !!article?.exposureRatio && article.exposureRatio !== 100;
+
+  const bodyContent = cutHtmlByTextRatio(
+    article?.contents,
+    article?.exposureRatio,
+  );
 
   if (!article) return null;
 
