@@ -10,10 +10,6 @@ jobs:
     outputs:
       assigned-reviewers: ${{ steps.get-assigned-reviewers.outputs.reviewers }}
     steps:
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v39
-
       - name: Frontend Review Assignment
         uses: kentaro-m/auto-assign-action@v2.0.0
         with:
@@ -35,45 +31,34 @@ jobs:
 
             core.setOutput('reviewers', reviewers.join(','));
 
-      - name: Send notification
+      - name: Send notification to Discord
         env:
-          SLACK_WEBHOOK_URL_FE: ${{ secrets.SLACK_WEBHOOK_URL_FE_NOTIFY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           TITLE="${{ github.event.pull_request.title }}"
           AUTHOR="${{ github.event.pull_request.user.login }}"
           URL="${{ github.event.pull_request.html_url }}"
 
-          if [[ "$TITLE" == "[FE]"* ]]; then
-            WEBHOOK_URL=$SLACK_WEBHOOK_URL_FE
-          else
-            exit 0
-          fi
-
-          curl -X POST -H 'Content-type: application/json' \
-            --data "{
-              \"text\": \"📦 새로운 Pull Request가 생성되었습니다!\",
-              \"attachments\": [
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"username\": \"FE Bot\",
+              \"embeds\": [
                 {
                   \"title\": \"${TITLE}\",
-                  \"title_link\": \"${URL}\",
-                  \"color\": \"#FF9966\",
+                  \"url\": \"${URL}\",
+                  \"color\": 16753920,
                   \"fields\": [
                     {
-                      \"title\": \"작성자\",
+                      \"name\": \"작성자\",
                       \"value\": \"${AUTHOR}\",
-                      \"short\": true
-                    },
-                  ],
-                  \"footer\": \"작은 리뷰 하나가 큰 개선이 됩니다 🙌\",
-                  \"actions\": [
-                    {
-                      \"type\": \"button\",
-                      \"text\": \"지금 확인하기\",
-                      \"url\": \"${URL}\",
-                      \"style\": \"primary\"
+                      \"inline\": true
                     }
-                  ]
+                  ],
+                  \"footer\": {
+                    \"text\": \"작은 리뷰 하나가 큰 개선이 됩니다 🙌\"
+                  }
                 }
               ]
             }" \
-            "$WEBHOOK_URL"
+            "$DISCORD_WEBHOOK_URL"
