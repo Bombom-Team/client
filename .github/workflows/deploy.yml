@@ -1,0 +1,82 @@
+name: CI/CD - Bombom FE Deploy
+
+on:
+  push:
+    branches:
+      - client
+      - client-dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Setup Node + pnpm
+      - name: Enable Corepack & Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.12.1 --activate
+
+      # 3. Setup pnpm store
+      - name: Setup pnpm store
+        working-directory: ./web
+        run: pnpm config set store-dir $GITHUB_WORKSPACE/.pnpm-store
+
+      # 4. Install dependencies
+      - name: Install dependencies
+        working-directory: ./web
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      # 5. Lint
+      - name: Lint
+        working-directory: ./web
+        run: pnpm run lint
+
+      # 6. Type check
+      - name: Type Check
+        working-directory: ./web
+        run: pnpm run type-check
+
+      # 7. Build
+      - name: Build
+        working-directory: ./web
+        run: pnpm run build
+
+      # 8. Determine environment(dev/prod)
+      - name: Set environment variables
+        id: env
+        run: |
+          if [ "${{ github.ref_name }}" = "client" ]; then
+            echo "bucket=${{ secrets.S3_BUCKET_PROD }}" >> $GITHUB_OUTPUT
+            echo "cf=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_PROD }}" >> $GITHUB_OUTPUT
+          else
+            echo "bucket=${{ secrets.S3_BUCKET_DEV }}" >> $GITHUB_OUTPUT
+            echo "cf=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_DEV }}" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      # 9. AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # 10. Upload to S3
+      - name: Upload to S3
+        run: |
+          echo "Uploading to bucket: ${{ steps.env.outputs.bucket }}"
+          aws s3 sync ./web/dist s3://${{ steps.env.outputs.bucket }}/build-origin --delete
+
+      # 11. Invalidate CloudFront
+      - name: CloudFront Invalidation
+        run: |
+          echo "Invalidating CF: ${{ steps.env.outputs.cf }}"
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ steps.env.outputs.cf }} \
+            --paths "/*"
