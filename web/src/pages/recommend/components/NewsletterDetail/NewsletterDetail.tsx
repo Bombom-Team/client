@@ -42,6 +42,7 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
   const openMainSite = () => {
     openExternalLink(newsletterDetail.mainPageUrl);
   };
+
   const getSubscribeButtonText = () => {
     if (!isLoggedIn) return '로그인 후 구독할 수 있어요';
     if (newsletterDetail.isSubscribed) {
@@ -110,9 +111,11 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
         )}
 
         <SubscribeButton
-          text={isLoggedIn ? '구독하기' : '로그인 후 구독할 수 있어요'}
+          text={getSubscribeButtonText()}
           onClick={handleSubscribeButtonClick}
-          disabled={!isLoggedIn}
+          disabled={
+            !isLoggedIn || (isLoggedIn && newsletterDetail.isSubscribed)
+          }
           isMobile={isMobile}
         />
       </FixedWrapper>
@@ -243,13 +246,14 @@ const StyledInfoIcon = styled(InfoIcon)<{ isMobile: boolean }>`
 `;
 
 const SubscribeMethodInfo = styled.div<{ isMobile: boolean }>`
-  display: flex;
-  gap: 12px;
   padding: 0.8rem 1rem;
-  align-items: center;
-  background-color: ${({ theme }) => theme.colors.primaryInfo};
   border-radius: 1rem;
 
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
