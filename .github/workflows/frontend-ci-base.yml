@@ -1,4 +1,4 @@
-name: FE CI Base
+name: Frontend CI Base
 
 on:
   workflow_call:

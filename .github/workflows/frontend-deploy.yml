@@ -1,4 +1,4 @@
-name: CI/CD - Bombom FE Deploy
+name: CI/CD - Frontend Deploy
 
 on:
   push:
