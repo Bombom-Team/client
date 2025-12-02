@@ -3,6 +3,7 @@ import { ENV } from '../apis/env';
 import { TRENDY_NEWSLETTERS } from './datas/trendyNewsLetter';
 import { articleHandlers } from './handlers/articles';
 import { bookmarkHandlers } from './handlers/bookmark';
+import { membersHandlers } from './handlers/members';
 import { newsletterDetailHandlers } from './handlers/newsletterDetail';
 import type { Highlight } from '@/pages/detail/types/highlight';
 
@@ -140,4 +141,5 @@ export const handlers = [
   ...articleHandlers,
   ...newsletterDetailHandlers,
   ...bookmarkHandlers,
+  ...membersHandlers,
 ];
