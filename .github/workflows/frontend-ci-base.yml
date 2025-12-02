@@ -11,6 +11,7 @@ on:
 jobs:
   web-checks:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'client' && 'prod' || 'dev' }}
 
     steps:
       - name: Checkout
