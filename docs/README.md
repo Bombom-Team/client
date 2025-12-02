@@ -98,7 +98,7 @@
 
 ## Frontend 🎨
 
-| 재오 | 제나 | 피터 |
+| 재오 | 제나 | 메이토 |
 |:--------:|:------:|:------:|
-| <img src="https://avatars.githubusercontent.com/u/61729032?v=4" alt="재오" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/106021313?v=4" alt="제나" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/62178788?v=4" alt="피터" style="width:100px;height:100px;object-fit:cover;" /> |
-| [@jaeyoung-kwon](https://github.com/jaeyoung-kwon) | [@JeLee-river](https://github.com/JeLee-river) | [@guesung](https://github.com/guesung) |
+| <img src="https://avatars.githubusercontent.com/u/61729032?v=4" alt="재오" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/106021313?v=4" alt="제나" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/162319857?v=4" alt="메이토" style="width:100px;height:100px;object-fit:cover;" /> |
+| [@jaeyoung-kwon](https://github.com/jaeyoung-kwon) | [@JeLee-river](https://github.com/JeLee-river) | [@Db0111](https://github.com/Db0111) |
