@@ -2,10 +2,9 @@ addReviewers: true
 addAssignees: author
 reviewers:
   - jaeyoung-kwon
-  - guesung
   - JeLee-river
   - Db0111
-numberOfReviewers: 4
+numberOfReviewers: 3
 numberOfAssignees: 1
 skipKeywords:
   - wip
