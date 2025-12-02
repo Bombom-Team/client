@@ -6,20 +6,28 @@ on:
       - synchronize
       - reopened
 jobs:
-  build:
+  pre-build:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'client' && 'prod' || 'dev' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - name: Enable Corepack & Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.12.1 --activate
+
+      - name: Setup pnpm store
+        working-directory: ./web
+        run: pnpm config set store-dir $GITHUB_WORKSPACE/.pnpm-store
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        working-directory: ./web
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Lint
         run: pnpm run web:lint
 
-      - name: Type check
+      - name: Type Check
         run: pnpm run web:type-check
