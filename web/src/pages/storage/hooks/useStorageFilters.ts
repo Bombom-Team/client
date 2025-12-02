@@ -13,7 +13,7 @@ export const useStorageFilters = () => {
 
   const baseQueryParams: GetArticlesWithSearchParams = {
     sort: ['arrivedDateTime', sortParam ?? 'DESC'],
-    keyword: searchParam,
+    keyword: searchParam ?? '',
     size: ARTICLE_SIZE,
     newsletterId: newsletterIdParams,
     page,
