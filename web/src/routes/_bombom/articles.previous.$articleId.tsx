@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useRouterState } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
+import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useDevice } from '@/hooks/useDevice';
 import { useUserInfo } from '@/hooks/useUserInfo';
@@ -29,7 +30,7 @@ export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
 
 function RouteComponent() {
   const device = useDevice();
-  const { userInfo } = useUserInfo();
+  const { userInfo, isLoggedIn } = useUserInfo();
   const { articleId } = Route.useParams();
   const { subscribeUrl } = useRouterState({
     select: (routerState) => ({
@@ -57,6 +58,15 @@ function RouteComponent() {
 
   const handleScrollUp = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const getSubscribeButtonText = () => {
+    if (!isLoggedIn) return '로그인 후 구독할 수 있어요';
+    if (article.isSubscribed) {
+      return '구독 중';
+    } else {
+      return '구독 하러 가기';
+    }
   };
 
   return (
@@ -87,9 +97,11 @@ function RouteComponent() {
             <SubscribePromptText>
               지속적으로 받아보고 싶다면 구독해주세요!
             </SubscribePromptText>
-            <SubscribePromptButton type="button" onClick={handleSubscribeClick}>
-              구독하러 가기
-            </SubscribePromptButton>
+            <SubscribePromptButton
+              text={getSubscribeButtonText()}
+              onClick={handleSubscribeClick}
+              disabled={!isLoggedIn || (isLoggedIn && article.isSubscribed)}
+            />
           </SubscribePrompt>
         )}
 
@@ -97,7 +109,11 @@ function RouteComponent() {
 
         {device === 'pc' && (
           <ActionButtonWrapper>
-            <SubscribeButton type="button" onClick={handleSubscribeClick}>
+            <SubscribeButton
+              type="button"
+              onClick={handleSubscribeClick}
+              disabled={!isLoggedIn || (isLoggedIn && article.isSubscribed)}
+            >
               구독
             </SubscribeButton>
 
@@ -224,6 +240,11 @@ const ActionButton = styled.button`
   &:hover > svg {
     transform: scale(1.1);
   }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.disabledBackground};
+    cursor: not-allowed;
+  }
 `;
 
 const SubscribeButton = styled(ActionButton)`
@@ -255,25 +276,11 @@ const SubscribePromptText = styled.p`
   text-align: center;
 `;
 
-const SubscribePromptButton = styled.button`
+const SubscribePromptButton = styled(Button)`
   width: 100%;
   padding: 12px 24px;
-  border: none;
   border-radius: 8px;
 
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
   font-weight: 600;
   font-size: 16px;
-
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primaryDark};
-  }
-
-  &:active {
-    opacity: 0.8;
-  }
 `;
