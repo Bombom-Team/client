@@ -6,6 +6,7 @@ import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import NewsletterUnsubscribeConfirmation from '@/pages/MyPage/NewsletterUnsubscribeConfirmation';
 import { useUnsubscribeNewsletterMutation } from '@/pages/MyPage/useUnsubscribeNewsletterMutation';
+import { openExternalLink } from '@/utils/externalLink';
 import type { GetMyNewslettersResponse } from '@/apis/members';
 import type { Device } from '@/hooks/useDevice';
 
@@ -21,7 +22,8 @@ const SubscribedNewslettersSection = ({
   const [selectedNewsletterId, setSelectedNewsletterId] = useState<
     number | null
   >(null);
-  const { mutate: unsubscribeNewsletter } = useUnsubscribeNewsletterMutation();
+  const { mutateAsync: unsubscribeNewsletter } =
+    useUnsubscribeNewsletterMutation();
   const {
     modalRef: UnsubscribeConfirmModalRef,
     openModal: openUnsubscribeConfirmModal,
@@ -34,10 +36,17 @@ const SubscribedNewslettersSection = ({
     openUnsubscribeConfirmModal();
   };
 
-  const handleConfirmUnsubscribe = () => {
+  const handleConfirmUnsubscribe = async () => {
     if (!selectedNewsletterId) return;
 
-    unsubscribeNewsletter({ subscriptionId: selectedNewsletterId });
+    const data = await unsubscribeNewsletter({
+      subscriptionId: selectedNewsletterId,
+    });
+
+    if (data?.unsubscribeUrl) {
+      openExternalLink(data?.unsubscribeUrl);
+    }
+
     closeUnsubscribeConfirmModal();
     setSelectedNewsletterId(null);
   };
