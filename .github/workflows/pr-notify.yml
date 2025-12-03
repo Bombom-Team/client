@@ -1,0 +1,74 @@
+name: Setup Opened PR
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  add-reviews:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # reviewers.json 기반으로 reviewer = 3명, author 제외 후 멘션
+      - name: Load Reviewers from JSON
+        id: get-reviewers
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+
+            // reviewers.json (github login → discord ID)
+            const mapping = JSON.parse(fs.readFileSync('.github/reviewers.json', 'utf8'));
+
+            // JSON key 목록 = GitHub login 목록 (3명)
+            const team = Object.keys(mapping);
+
+            // PR 작성자
+            const author = context.payload.pull_request.user.login;
+
+            // author 제외
+            const filtered = team.filter(member => member !== author);
+
+            // 디스코드 멘션 문자열로 변환
+            const mentions = filtered
+              .map(login => `<@${mapping[login]}>`)
+              .join(' ');
+
+            console.log("Final Discord Mentions:", mentions);
+            core.setOutput("discord_mentions", mentions);
+
+      # Discord 알림 전송
+      - name: Send notification to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_PR }}
+          TITLE: ${{ github.event.pull_request.title }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          URL: ${{ github.event.pull_request.html_url }}
+          MENTIONS: ${{ steps.get-reviewers.outputs.discord_mentions }}
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"username\": \"FE Bot\",
+              \"content\": \"🚀 새 PR이 생성되었습니다! 리뷰 부탁드립니다 🙏\n${MENTIONS}\",
+              \"embeds\": [
+                {
+                  \"title\": \"${TITLE}\",
+                  \"url\": \"${URL}\",
+                  \"color\": 16753920,
+                  \"fields\": [
+                    {
+                      \"name\": \"작성자\",
+                      \"value\": \"${AUTHOR}\",
+                      \"inline\": true
+                    }
+                  ],
+                  \"footer\": {
+                    \"text\": \"작은 리뷰 하나가 큰 개선이 됩니다 🙌\"
+                  }
+                }
+              ]
+            }" \
+            "$DISCORD_WEBHOOK_URL"
