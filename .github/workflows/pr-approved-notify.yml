@@ -51,41 +51,16 @@ jobs:
       # Discord 알림 전송 (조건: approve 2명 이상)
       - name: Send notification to Discord
         if: ${{ github.event.review.state == 'approved' && steps.approval-count.outputs.count >= 2 }}
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_PR }}
-          STATE: ${{ github.event.review.state }}
-          TITLE: ${{ github.event.pull_request.title }}
-          URL: ${{ github.event.pull_request.html_url }}
-          AUTHOR: ${{ steps.load-users.outputs.authorMention }}
-          APPROVAL_COUNT: ${{ steps.approval-count.outputs.count }}
-          REVIEWERS: ${{ steps.approval-count.outputs.approvedReviewers }}
-        run: |
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"username\": \"FE Bot\",
-              \"content\": \"🎉 *PR이 승인되었습니다!* (현재 승인 수: ${APPROVAL_COUNT})\n${AUTHOR}\",
-              \"embeds\": [
-                {
-                  \"title\": \"${TITLE}\",
-                  \"url\": \"${URL}\",
-                  \"color\": 3066993,
-                  \"fields\": [
-                    {
-                      \"name\": \"리뷰어\",
-                      \"value\": \"${REVIEWERS}\",
-                      \"inline\": true
-                    },
-                    {
-                      \"name\": \"리뷰 상태\",
-                      \"value\": \"${STATE}\",
-                      \"inline\": true
-                    }
-                  ],
-                  \"footer\": {
-                    \"text\": \"리뷰 반영 후 다시 알려주세요 🙇‍♂️\"
-                  }
-                }
-              ]
-            }" \
-            "$DISCORD_WEBHOOK_URL"
+        uses: ./.github/actions/discord-notify
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_PR }}
+          content: "🎉 *PR이 최종 승인되었습니다!*"
+          mentions: ${{ steps.load-users.outputs.authorMention }}
+          title: ${{ github.event.pull_request.title }}
+          url: ${{ github.event.pull_request.html_url }}
+          color: 3066993
+          fields: |
+            [
+              { "name": "승인자 목록", "value": "${{ steps.approval-count.outputs.approvedReviewers }}" },
+              { "name": "승인 수", "value": "${{ steps.approval-count.outputs.count }}" }
+            ]

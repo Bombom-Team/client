@@ -25,7 +25,7 @@ jobs:
             core.setOutput("reviewer", reviewerMention);
 
       - name: Send Re-request Review Notification
-        uses: ./.github/actions/action.yml
+        uses: ./.github/actions/discord-notify
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_PR }}
           content: "🔄 *리뷰가 다시 요청되었습니다!*"

@@ -36,10 +36,10 @@ jobs:
         uses: ./.github/actions/discord-notify
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_PR }}
-          title: ${{ github.event.pull_request.title }}
-          url: ${{ github.event.pull_request.html_url }}
           content: "⚠️ *수정 요청이 들어왔습니다!*"
           mentions: ${{ steps.load-users.outputs.authorMention }}
+          title: ${{ github.event.pull_request.title }}
+          url: ${{ github.event.pull_request.html_url }}
           color: 15158332
           fields: |
             [

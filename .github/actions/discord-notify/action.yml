@@ -50,7 +50,6 @@ runs:
                 \"url\": \"${{ inputs.url }}\",
                 \"color\": ${{ inputs.color }},
                 \"fields\": $FINAL_FIELDS,
-                \"footer\": { \"text\": \"자동 알림 메시지입니다\" }
               }
             ]
           }" \
