@@ -6,6 +6,7 @@ import { queries } from '@/apis/queries';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useDevice } from '@/hooks/useDevice';
 import { useUserInfo } from '@/hooks/useUserInfo';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import {
   extractBodyContent,
   processContent,
@@ -46,6 +47,11 @@ function RouteComponent() {
   if (!article) return null;
 
   const handleSubscribeClick = () => {
+    trackEvent({
+      category: 'Newsletter',
+      action: '구독하기 버튼 클릭',
+      label: article.newsletter.name,
+    });
     openSubscribeLink(subscribeUrl, article.newsletter.name, userInfo);
   };
 
