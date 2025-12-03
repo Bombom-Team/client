@@ -28,6 +28,7 @@ jobs:
             const author = pr.user.login;
             const authorMention   = mapping[author] ? `<@${mapping[author]}>` : author;
 
+            console.log(`Mapped: ${JSON.stringify(mapping)}, Reviewer: ${reviewer}, Author: ${author}, Author Mention: ${authorMention}`);
             return {
               reviewer,
               authorMention
