@@ -24,42 +24,17 @@ jobs:
 
             core.setOutput("reviewer", reviewerMention);
 
-      - name: Send notification to Discord
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_PR }}
-          TITLE: ${{ github.event.pull_request.title }}
-          URL: ${{ github.event.pull_request.html_url }}
-          AUTHOR: ${{ github.event.pull_request.user.login }}
-          REVIEWER: ${{ steps.load-users.outputs.reviewer }}
-        run: |
-          MESSAGE="🔄 *리뷰가 다시 요청되었습니다!*"
-
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"username\": \"FE Bot\",
-              \"content\": \"$MESSAGE\n리뷰어: ${REVIEWER}\",
-              \"embeds\": [
-                {
-                  \"title\": \"${TITLE}\",
-                  \"url\": \"${URL}\",
-                  \"color\": 3447003,
-                  \"fields\": [
-                    {
-                      \"name\": \"작성자\",
-                      \"value\": \"${AUTHOR}\",
-                      \"inline\": true
-                    },
-                    {
-                      \"name\": \"요청된 리뷰어\",
-                      \"value\": \"${REVIEWER}\",
-                      \"inline\": true
-                    }
-                  ],
-                  \"footer\": {
-                    \"text\": \"리뷰 부탁드립니다 🙏\"
-                  }
-                }
-              ]
-            }" \
-            "$DISCORD_WEBHOOK_URL"
+      - name: Send Re-request Review Notification
+        uses: ./.github/actions/action.yml
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_PR }}
+          content: "🔄 *리뷰가 다시 요청되었습니다!*"
+          mentions: ${{ steps.load-users.outputs.reviewerMention }}
+          title: ${{ github.event.pull_request.title }}
+          url: ${{ github.event.pull_request.html_url }}
+          color: 3447003
+          fields: |
+            [
+              { "name": "작성자", "value": "${{ github.event.pull_request.user.login }}" },
+              { "name": "요청된 리뷰어", "value": "${{ steps.load-users.outputs.reviewer }}" }
+            ]
