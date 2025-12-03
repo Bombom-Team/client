@@ -19,8 +19,6 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-
-            // reviewers.json (github login → discord ID)
             const mapping = JSON.parse(fs.readFileSync('.github/notify_ids.json', 'utf8'));
 
             // JSON key 목록 = GitHub login 목록 (3명)

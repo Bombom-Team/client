@@ -18,38 +18,31 @@ jobs:
         with:
           script: |
             const fs = require("fs");
-            const mapping = JSON.parse(fs.readFileSync(".github/notify_ids.json", "utf8"));
+            const mapping = JSON.parse(fs.readFileSync('.github/notify_ids.json', 'utf8'));
 
             const review = context.payload.review;
             const pr = context.payload.pull_request;
 
             const reviewer = review.user.login;
-            const author = pr.user.login;
 
-            const reviewerMention = mapping[reviewer] ? `${mapping[reviewer]}` : reviewer;
+            const author = pr.user.login;
             const authorMention   = mapping[author] ? `<@${mapping[author]}>` : author;
 
             return {
-              reviewerMention,
+              reviewer,
               authorMention
             };
           result-encoding: json
 
-      # 승인/변경요청 상태 판별
-      - name: Determine review state
-        id: state
-        run: |
-          echo "state=${{ github.event.review.state }}" >> $GITHUB_OUTPUT
-
       # Discord 알림 전송
       - name: Send notification to Discord
-        if: ${{ steps.state.outputs.state == 'approved' || steps.state.outputs.state == 'changes_requested' }}
+        if: ${{ github.event.review.state == 'approved' || github.event.review.state == 'changes_requested' }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_PR }}
-          STATE: ${{ steps.state.outputs.state }}
+          STATE: ${{ github.event.review.state }}
           TITLE: ${{ github.event.pull_request.title }}
           URL: ${{ github.event.pull_request.html_url }}
-          REVIEWER: ${{ steps.load-users.outputs.reviewerMention }}
+          REVIEWER: ${{ steps.load-users.outputs.reviewer }}
           AUTHOR: ${{ steps.load-users.outputs.authorMention }}
         run: |
           if [ "$STATE" = "approved" ]; then
@@ -64,18 +57,13 @@ jobs:
             -H "Content-Type: application/json" \
             -d "{
               \"username\": \"FE Bot\",
-              \"content\": \"$MESSAGE\n리뷰어: $REVIEWER\",
+              \"content\": \"$MESSAGE\n$AUTHOR\",
               \"embeds\": [
                 {
                   \"title\": \"${TITLE}\",
                   \"url\": \"${URL}\",
                   \"color\": $COLOR,
                   \"fields\": [
-                    {
-                      \"name\": \"작성자\",
-                      \"value\": \"${AUTHOR}\",
-                      \"inline\": true
-                    },
                     {
                       \"name\": \"리뷰어\",
                       \"value\": \"${REVIEWER}\",
