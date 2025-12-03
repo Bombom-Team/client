@@ -19,15 +19,10 @@ jobs:
             const fs = require("fs");
             const mapping = JSON.parse(fs.readFileSync('.github/notify_ids.json', 'utf8'));
 
-            const pr = context.payload.pull_request;
             const reviewer = context.payload.requested_reviewer.login;
-            const author   = pr.user.login;
-
             const reviewerMention = mapping[reviewer] ? `<@${mapping[reviewer]}>` : reviewer;
-            const author   = mapping[author] ? `<@${mapping[author]}>` : author;
 
             core.setOutput("reviewer", reviewerMention);
-            core.setOutput("author", author);
 
       - name: Send notification to Discord
         env:
