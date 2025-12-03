@@ -33,42 +33,16 @@ jobs:
 
       # Discord 알림 전송
       - name: Send Request Changes Notification
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_PR }}
-          TITLE: ${{ github.event.pull_request.title }}
-          URL: ${{ github.event.pull_request.html_url }}
-          STATE: ${{ github.event.review.state }}
-          REVIEWER: ${{ steps.load-users.outputs.reviewer }}
-          AUTHOR: ${{ steps.load-users.outputs.authorMention }}
-        run: |
-          MESSAGE="⚠️ *리뷰에서 수정 요청이 들어왔습니다!*"
-
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"username\": \"FE Bot\",
-              \"content\": \"⚠️ *수정 요청이 들어왔습니다!*\n${AUTHOR}\",
-              \"embeds\": [
-                {
-                  \"title\": \"${TITLE}\",
-                  \"url\": \"${URL}\",
-                  \"color\": 15158332,
-                  \"fields\": [
-                    {
-                      \"name\": \"리뷰어\",
-                      \"value\": \"${REVIEWER}\",
-                      \"inline\": true
-                    },
-                    {
-                      \"name\": \"리뷰 상태\",
-                      \"value\": \"${STATE}\",
-                      \"inline\": true
-                    }
-                  ],
-                  \"footer\": {
-                    \"text\": \"수정 후 다시 리뷰 요청해주세요 🙏\"
-                  }
-                }
-              ]
-            }" \
-            "$DISCORD_WEBHOOK_URL"
+        uses: ./.github/actions/discord-notify.yml
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_PR }}
+          title: ${{ github.event.pull_request.title }}
+          url: ${{ github.event.pull_request.html_url }}
+          content: "⚠️ *수정 요청이 들어왔습니다!*"
+          mentions: ${{ steps.load-users.outputs.authorMention }}
+          color: 15158332
+          fields: |
+            [
+              { "name": "리뷰어", "value": "${{ steps.load-users.outputs.reviewer }}" },
+              { "name": "상태", "value": "${{ github.event.review.state }}" }
+            ]
