@@ -1,17 +1,18 @@
-name: PR Review Notifications
+name: PR Request Changes Notifications
 
 on:
   pull_request_review:
     types: [submitted]
 
 jobs:
-  notify-on-review:
+  notify-on-request-changes:
     runs-on: ubuntu-latest
+    if: ${{ github.event.review.state == 'changes_requested' }}
 
     steps:
       - uses: actions/checkout@v3
 
-      # reviewers.json 기반으로 리뷰어/작성자를 mention 변환
+      # notify_ids.json 기반으로 리뷰어/작성자 mention 변환
       - name: Load user mapping
         id: load-users
         uses: actions/github-script@v6
@@ -24,7 +25,6 @@ jobs:
             const pr = context.payload.pull_request;
 
             const reviewer = review.user.login;
-
             const author = pr.user.login;
             const authorMention   = mapping[author] ? `<@${mapping[author]}>` : author;
 
@@ -32,34 +32,27 @@ jobs:
             core.setOutput("authorMention", authorMention);
 
       # Discord 알림 전송
-      - name: Send notification to Discord
-        if: ${{ github.event.review.state == 'approved' || github.event.review.state == 'changes_requested' }}
+      - name: Send Request Changes Notification
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_PR }}
-          STATE: ${{ github.event.review.state }}
           TITLE: ${{ github.event.pull_request.title }}
           URL: ${{ github.event.pull_request.html_url }}
+          STATE: ${{ github.event.review.state }}
           REVIEWER: ${{ steps.load-users.outputs.reviewer }}
           AUTHOR: ${{ steps.load-users.outputs.authorMention }}
         run: |
-          if [ "$STATE" = "approved" ]; then
-            MESSAGE="🎉 *PR이 승인되었습니다!*"
-            COLOR=3066993
-          else
-            MESSAGE="⚠️ *수정 요청이 들어왔습니다!*"
-            COLOR=15158332
-          fi
+          MESSAGE="⚠️ *리뷰에서 수정 요청이 들어왔습니다!*"
 
           curl -X POST \
             -H "Content-Type: application/json" \
             -d "{
               \"username\": \"FE Bot\",
-              \"content\": \"$MESSAGE\n$AUTHOR\",
+              \"content\": \"⚠️ *수정 요청이 들어왔습니다!*\n${AUTHOR}\",
               \"embeds\": [
                 {
                   \"title\": \"${TITLE}\",
                   \"url\": \"${URL}\",
-                  \"color\": $COLOR,
+                  \"color\": 15158332,
                   \"fields\": [
                     {
                       \"name\": \"리뷰어\",
@@ -73,7 +66,7 @@ jobs:
                     }
                   ],
                   \"footer\": {
-                    \"text\": \"리뷰 반영 후 다시 알려주세요 🙇‍♂️\"
+                    \"text\": \"수정 후 다시 리뷰 요청해주세요 🙏\"
                   }
                 }
               ]

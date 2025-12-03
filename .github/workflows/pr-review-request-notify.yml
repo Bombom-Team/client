@@ -38,21 +38,21 @@ jobs:
             -H "Content-Type: application/json" \
             -d "{
               \"username\": \"FE Bot\",
-              \"content\": \"$MESSAGE\n리뷰어: $REVIEWER\",
+              \"content\": \"$MESSAGE\n리뷰어: ${REVIEWER}\",
               \"embeds\": [
                 {
-                  \"title\": \"$TITLE\",
-                  \"url\": \"$URL\",
+                  \"title\": \"${TITLE}\",
+                  \"url\": \"${URL}\",
                   \"color\": 3447003,
                   \"fields\": [
                     {
                       \"name\": \"작성자\",
-                      \"value\": \"$AUTHOR\",
+                      \"value\": \"${AUTHOR}\",
                       \"inline\": true
                     },
                     {
                       \"name\": \"요청된 리뷰어\",
-                      \"value\": \"$REVIEWER\",
+                      \"value\": \"${REVIEWER}\",
                       \"inline\": true
                     }
                   ],
