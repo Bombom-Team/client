@@ -26,11 +26,11 @@ jobs:
             const reviewer = review.user.login;
             const author = pr.user.login;
 
-            const reviewer = mapping[reviewer] ? `${mapping[reviewer]}` : reviewer;
+            const reviewerMention = mapping[reviewer] ? `${mapping[reviewer]}` : reviewer;
             const authorMention   = mapping[author] ? `<@${mapping[author]}>` : author;
 
             return {
-              reviewer,
+              reviewerMention,
               authorMention
             };
           result-encoding: json
@@ -49,7 +49,7 @@ jobs:
           STATE: ${{ steps.state.outputs.state }}
           TITLE: ${{ github.event.pull_request.title }}
           URL: ${{ github.event.pull_request.html_url }}
-          REVIEWER: ${{ steps.load-users.outputs.reviewer }}
+          REVIEWER: ${{ steps.load-users.outputs.reviewerMention }}
           AUTHOR: ${{ steps.load-users.outputs.authorMention }}
         run: |
           if [ "$STATE" = "approved" ]; then
