@@ -33,7 +33,7 @@ jobs:
 
       # Discord 알림 전송
       - name: Send Request Changes Notification
-        uses: ./.github/actions/discord-notify/action.yml
+        uses: ./.github/actions/discord-notify
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_PR }}
           title: ${{ github.event.pull_request.title }}
