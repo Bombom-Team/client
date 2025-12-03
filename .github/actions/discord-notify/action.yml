@@ -3,19 +3,26 @@ description: 'Send Discord webhook'
 
 inputs:
   webhook:
-    required: true
-  title:
-    required: true
-  url:
+    description: 'Discord Webhook URL'
     required: true
   content:
+    description: 'Notification content'
     required: true
   mentions:
+    description: 'Notification mentions'
+    required: true
+  title:
+    description: 'Embed title'
+    required: true
+  url:
+    description: 'Embed URL'
     required: true
   color:
+    description: 'Embed color'
     required: false
     default: '15158332'
   fields:
+    description: 'Embed fields'
     required: false
     default: '[]'
 
