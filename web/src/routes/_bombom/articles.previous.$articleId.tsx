@@ -7,6 +7,7 @@ import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useDevice } from '@/hooks/useDevice';
 import { useUserInfo } from '@/hooks/useUserInfo';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
 import PreviousHeader from '@/pages/previous-newsletter/components/PreviousHeader/PreviousHeader';
@@ -53,6 +54,11 @@ function RouteComponent() {
   if (!article) return null;
 
   const handleSubscribeClick = () => {
+    trackEvent({
+      category: 'Newsletter',
+      action: '구독하기 버튼 클릭',
+      label: article.newsletter.name,
+    });
     openSubscribeLink(subscribeUrl, article.newsletter.name, userInfo);
   };
 

@@ -1,5 +1,16 @@
 # 봄봄
+
 단순한 뉴스레터 리더를 넘어 읽는 습관을 만들고, 읽은 콘텐츠를 나만의 자산으로 바꾸는 **읽기의 라이프 로그**
+
+<div align="center">
+
+[![Website](https://img.shields.io/badge/Web-%23212121?style=for-the-badge&logo=google-chrome&logoColor=white)](https://www.bombom.news)
+[![App Store](https://img.shields.io/badge/App_Store-%230D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/kr/app/%EB%B4%84%EB%B4%84/id6752014462)
+[![Google Play](https://img.shields.io/badge/Google_Play-%233DDC84?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.antarctica.bombom&pcampaignid=web_share)
+
+</div>
+
+
 
 ## 브랜드 스토리
 
@@ -53,6 +64,41 @@
 | --- | --- | --- |
 | 뉴스레터가 쌓여만 간다 | 읽기 기록 + 알림 + 목표 설정 | **읽는 습관 형성** |
 | 어디까지 읽었는지 기억 안 남 | 읽기 진행률 자동 기록 | 편의성 |
-| 혼자 읽으면 재미가 없다 | 팔로우/리더보드 비교 | **소셜 기반 동기 유발** |
-| 뉴스레터 내용이 흘러간다 | 메모 저장 | **지식 자산화** |
-| 각종 메일이 섞여있다 | 통합 수신 + 필터링 | **콘텐츠 정리 효율성** |
+
+### 🎨 Frontend 
+
+**WEB**
+
+![Typescript](https://img.shields.io/badge/typescript-%233178C6.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/react-%23333333.svg?style=for-the-badge&logo=react&logoColor=#61DAFB)
+![Webpack](https://img.shields.io/badge/webpack-%238DD6F9.svg?style=for-the-badge&logo=webpack&logoColor=000)
+![Emotion CSS](https://img.shields.io/badge/Emotion-%23F786AD.svg?style=for-the-badge&logo=styledcomponents&logoColor=white)
+
+**App**
+
+![Expo](https://img.shields.io/badge/Expo-000000?style=for-the-badge&logo=Expo&logoColor=white)
+![React Native](https://img.shields.io/badge/React%20Native-61DAFB?style=for-the-badge&logo=React&logoColor=black)
+
+### 🌐 Backend
+
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![AWS](https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white)
+
+## 팀원
+## Backend 🔧
+
+| 모루 | 새로이 | 조로 | 피글렛 |
+|:-------:|:------:|:--------:|:--------:|
+| <img src="https://avatars.githubusercontent.com/u/58469870?v=4" alt="모루" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/76567238?v=4" alt="새로이" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/115832836?v=4" alt="조로" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/88280787?v=4" alt="피글렛" style="width:100px;height:100px;object-fit:cover;" /> |
+| [@choidongjun0830](https://github.com/Choidongjun0830) | [@Ryan-Dia](https://github.com/Ryan-Dia) | [@kysub99](https://github.com/kysub99) | [@rladmstn](https://github.com/rladmstn) |
+
+## Frontend 🎨
+
+| 재오 | 제나 | 메이토 |
+|:--------:|:------:|:------:|
+| <img src="https://avatars.githubusercontent.com/u/61729032?v=4" alt="재오" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/106021313?v=4" alt="제나" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/162319857?v=4" alt="메이토" style="width:100px;height:100px;object-fit:cover;" /> |
+| [@jaeyoung-kwon](https://github.com/jaeyoung-kwon) | [@JeLee-river](https://github.com/JeLee-river) | [@Db0111](https://github.com/Db0111) |
