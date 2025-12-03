@@ -29,7 +29,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_PR }}
           content: "🔄 *리뷰가 다시 요청되었습니다!*"
-          mentions: ${{ steps.load-users.outputs.reviewerMention }}
+          mentions: ${{ steps.load-users.outputs.reviewer }}
           title: ${{ github.event.pull_request.title }}
           url: ${{ github.event.pull_request.html_url }}
           color: 3447003
