@@ -47,6 +47,9 @@ jobs:
     needs: deploy
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Send Post-Deploy Notification
         uses: ./.github/actions/discord-notify
         with:
