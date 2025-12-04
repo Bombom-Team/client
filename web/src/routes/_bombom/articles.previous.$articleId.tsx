@@ -68,11 +68,9 @@ function RouteComponent() {
 
   const getSubscribeButtonText = () => {
     if (!isLoggedIn) return '로그인 후 구독할 수 있어요';
-    if (article.isSubscribed) {
-      return '구독 중';
-    } else {
-      return '구독 하러 가기';
-    }
+
+    if (article.isSubscribed) return '구독 중';
+    return '구독 하러 가기';
   };
 
   return (
