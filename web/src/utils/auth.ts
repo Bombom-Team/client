@@ -1,6 +1,5 @@
 import { ENV } from '@/apis/env';
-
-type OAuthProvider = 'google' | 'apple';
+import type { OAuthProvider } from '@bombom/shared/types';
 
 interface NavigateToOAuthLoginOptions {
   provider: OAuthProvider;
