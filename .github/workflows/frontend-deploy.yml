@@ -49,7 +49,6 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_DEPLOY }}
           content: ${{ github.ref_name == 'main' && '✅ **운영 서버 배포 완료**' || '🧪 **개발 서버 배포 완료**' }}
-          mentions: ""
           title: "🔗 배포 URL 바로가기"
           url: ${{ secrets.WEB_URL }}
           color: ${{ github.ref_name == 'main' && '3066993' || '3447003' }}
