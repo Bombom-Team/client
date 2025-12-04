@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # notify_ids.json 기반으로 리뷰어를 mention 변환
       - name: Load user mapping
         id: load-users
         uses: actions/github-script@v6
@@ -24,6 +25,7 @@ jobs:
 
             core.setOutput("reviewer", reviewerMention);
 
+      # Discord 알림 전송
       - name: Send Re-request Review Notification
         uses: ./.github/actions/discord-notify
         with:

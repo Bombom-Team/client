@@ -50,6 +50,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Discord 알림 전송
       - name: Send Post-Deploy Notification
         uses: ./.github/actions/discord-notify
         with:
