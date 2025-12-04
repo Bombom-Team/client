@@ -10,7 +10,7 @@ inputs:
     required: true
   mentions:
     description: 'Notification mentions'
-    required: true
+    required: false
   title:
     description: 'Embed title'
     required: true
