@@ -4,7 +4,6 @@ import type { RNToWebMessage, WebToRNMessage } from '@bombom/shared/webview';
 
 export const sendMessageToRN = (message: WebToRNMessage): void => {
   if (!isWebView()) {
-    console.warn('WebView 환경이 아닙니다. 메시지가 전송되지 않습니다.');
     return;
   }
 
