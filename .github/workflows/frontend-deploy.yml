@@ -42,18 +42,21 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
+  notify:
+    runs-on: ubuntu-latest
+    needs: deploy
 
-      # Deploy 완료 후 Discord 알림
-      - name: Send Deploy Notification
+    steps:
+      - name: Send Post-Deploy Notification
         uses: ./.github/actions/discord-notify
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_DEPLOY }}
-          content: ${{ github.ref_name == 'main' && '✅ **운영 서버 배포 완료**' || '🧪 **개발 서버 배포 완료**' }}
-          title: "🔗 배포 URL 바로가기"
+          content: ${{ github.ref_name == 'main' && '🚀 **운영 서버에 새로운 버전이 배포되었습니다!**' || '🧪 **개발 서버에 새로운 버전이 배포되었습니다!**' }}
+          title: "🔗 사이트 바로가기"
           url: ${{ secrets.WEB_URL }}
           color: ${{ github.ref_name == 'main' && '3066993' || '3447003' }}
           fields: |
             [
-              { "name": "배포자", "value": "${{ github.actor }}" }
-              { "name": "배포 시간", "value": "${{ github.event.head_commit.timestamp }}" },
+              { "name": "배포자", "value": "${{ github.actor }}" },
+              { "name": "배포 시간", "value": "${{ github.event.head_commit.timestamp }}" }
             ]
