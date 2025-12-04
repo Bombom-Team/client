@@ -2,6 +2,7 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useRouterState } from '@tanstack/react-router';
+import { useMemo } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
@@ -46,9 +47,9 @@ function RouteComponent() {
   const shouldShowSubscribePrompt =
     !!article?.exposureRatio && article.exposureRatio !== 100;
 
-  const bodyContent = cutHtmlByTextRatio(
-    article?.contents,
-    article?.exposureRatio,
+  const bodyContent = useMemo(
+    () => cutHtmlByTextRatio(article?.contents, article?.exposureRatio),
+    [article?.contents, article?.exposureRatio],
   );
 
   if (!article) return null;
