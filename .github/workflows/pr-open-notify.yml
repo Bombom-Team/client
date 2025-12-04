@@ -20,17 +20,11 @@ jobs:
           script: |
             const fs = require('fs');
             const mapping = JSON.parse(fs.readFileSync('.github/notify_ids.json', 'utf8'));
-
-            // JSON key 목록 = GitHub login 목록 (3명)
             const members = Object.keys(mapping);
 
-            // PR 작성자
             const author = context.payload.pull_request.user.login;
-
-            // author 제외
             const filtered = members.filter(member => member !== author);
 
-            // 디스코드 멘션 문자열로 변환
             const mentions = filtered
               .map(login => `<@${mapping[login]}>`)
               .join(' ');
