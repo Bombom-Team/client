@@ -21,7 +21,7 @@ import {
   getMyMonthlyReadingRank,
   getReadingStatus,
   getUserInfo,
-  getMyNewsletters,
+  getMySubscriptions,
   getUserProfile,
 } from './members';
 import { getNewsletterDetail, getNewsletters } from './newsLetters';
@@ -138,10 +138,10 @@ export const queries = {
       queryFn: () => getMyMonthlyReadingRank(),
     }),
 
-  myNewsletters: () =>
+  mySubscriptions: () =>
     queryOptions({
       queryKey: ['members', 'me', 'subscriptions'],
-      queryFn: getMyNewsletters,
+      queryFn: getMySubscriptions,
     }),
 
   // newsletters

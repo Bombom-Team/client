@@ -77,11 +77,11 @@ export const patchMemberInfo = async (params: PatchMembersInfoParams) => {
   });
 };
 
-export type GetMyNewslettersResponse =
+export type GetMySubscriptionsResponse =
   components['schemas']['SubscribedNewsletterResponse'][];
 
-export const getMyNewsletters = async () => {
-  return await fetcher.get<GetMyNewslettersResponse>({
+export const getMySubscriptions = async () => {
+  return await fetcher.get<GetMySubscriptionsResponse>({
     path: '/members/me/subscriptions',
   });
 };
