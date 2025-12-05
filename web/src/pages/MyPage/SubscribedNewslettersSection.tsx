@@ -1,12 +1,9 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useUnsubscribeNewsletterMutation } from './hooks/useUnsubscribeNewsletterMutation';
+import { useUnsubscribe } from './hooks/useUnsubscribe';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
 import NewsletterUnsubscribeConfirmation from '@/pages/MyPage/NewsletterUnsubscribeConfirmation';
-import { openExternalLink } from '@/utils/externalLink';
 import type { GetMySubscriptionsResponse } from '@/apis/members';
 import type { Device } from '@/hooks/useDevice';
 
@@ -19,37 +16,13 @@ const SubscribedNewslettersSection = ({
   newsletters,
   device,
 }: SubscribedNewslettersSectionProps) => {
-  const [selectedNewsletterId, setSelectedNewsletterId] = useState<
-    number | null
-  >(null);
-  const { mutateAsync: unsubscribeNewsletter } =
-    useUnsubscribeNewsletterMutation();
   const {
-    modalRef: UnsubscribeConfirmModalRef,
-    openModal: openUnsubscribeConfirmModal,
-    closeModal: closeUnsubscribeConfirmModal,
+    unsubscribeConfirmModalRef,
     isOpen,
-  } = useModal();
-
-  const handleOpenUnsubscribeModal = (newsletterId: number) => {
-    setSelectedNewsletterId(newsletterId);
-    openUnsubscribeConfirmModal();
-  };
-
-  const handleConfirmUnsubscribe = async () => {
-    if (!selectedNewsletterId) return;
-
-    const data = await unsubscribeNewsletter({
-      subscriptionId: selectedNewsletterId,
-    });
-
-    if (data?.unsubscribeUrl) {
-      openExternalLink(data?.unsubscribeUrl);
-    }
-
-    closeUnsubscribeConfirmModal();
-    setSelectedNewsletterId(null);
-  };
+    closeUnsubscribeConfirmModal,
+    handleOpenConfirmModal,
+    confirmUnsubscribe,
+  } = useUnsubscribe();
   return (
     <>
       <Container>
@@ -74,7 +47,7 @@ const SubscribedNewslettersSection = ({
                 <UnsubscribeButton
                   type="button"
                   onClick={() =>
-                    handleOpenUnsubscribeModal(newsletter.newsletterId)
+                    handleOpenConfirmModal(newsletter.newsletterId)
                   }
                 >
                   구독 해지
@@ -88,13 +61,13 @@ const SubscribedNewslettersSection = ({
       </Container>
       {createPortal(
         <Modal
-          modalRef={UnsubscribeConfirmModalRef}
+          modalRef={unsubscribeConfirmModalRef}
           closeModal={closeUnsubscribeConfirmModal}
           isOpen={isOpen}
           showCloseButton={false}
         >
           <NewsletterUnsubscribeConfirmation
-            onUnsubscribe={handleConfirmUnsubscribe}
+            onUnsubscribe={confirmUnsubscribe}
             onClose={closeUnsubscribeConfirmModal}
           />
         </Modal>,
