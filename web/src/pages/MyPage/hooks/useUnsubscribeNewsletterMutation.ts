@@ -12,7 +12,7 @@ export const useUnsubscribeNewsletterMutation = () => {
       postNewsletterUnsubscribe(params),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queries.myNewsletters().queryKey,
+        queryKey: queries.mySubscriptions().queryKey,
       });
       toast.success('뉴스레터 구독을 해지했습니다.');
     },

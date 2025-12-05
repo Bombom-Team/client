@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useUnsubscribeNewsletterMutation } from './hooks/useUnsubscribeNewsletterMutation';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import NewsletterUnsubscribeConfirmation from '@/pages/MyPage/NewsletterUnsubscribeConfirmation';
-import { useUnsubscribeNewsletterMutation } from '@/pages/MyPage/useUnsubscribeNewsletterMutation';
 import { openExternalLink } from '@/utils/externalLink';
 import type { GetMySubscriptionsResponse } from '@/apis/members';
 import type { Device } from '@/hooks/useDevice';
