@@ -2,17 +2,18 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useRouterState } from '@tanstack/react-router';
+import { useMemo } from 'react';
 import { queries } from '@/apis/queries';
+import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useDevice } from '@/hooks/useDevice';
 import { useUserInfo } from '@/hooks/useUserInfo';
-import {
-  extractBodyContent,
-  processContent,
-} from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
 import PreviousHeader from '@/pages/previous-newsletter/components/PreviousHeader/PreviousHeader';
 import { openSubscribeLink } from '@/pages/recommend/components/NewsletterDetail/NewsletterDetail.utils';
+import { cutHtmlByTextRatio } from '@/utils/element';
 
 export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
   head: () => ({
@@ -31,26 +32,46 @@ export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
 
 function RouteComponent() {
   const device = useDevice();
-  const { userInfo } = useUserInfo();
+  const { userInfo, isLoggedIn } = useUserInfo();
   const { articleId } = Route.useParams();
-  const subscribeUrl = useRouterState({
-    select: (routerState) => routerState.location.state.subscribeUrl,
+  const { subscribeUrl } = useRouterState({
+    select: (routerState) => ({
+      subscribeUrl: routerState.location.state.subscribeUrl,
+    }),
   });
   const articleIdNumber = Number(articleId);
-
   const { data: article } = useQuery(
     queries.previousArticleDetail({ id: articleIdNumber }),
   );
-  const bodyContent = extractBodyContent(article?.contents ?? '');
+
+  const shouldShowSubscribePrompt =
+    !!article?.exposureRatio && article.exposureRatio !== 100;
+
+  const bodyContent = useMemo(
+    () => cutHtmlByTextRatio(article?.contents, article?.exposureRatio),
+    [article?.contents, article?.exposureRatio],
+  );
 
   if (!article) return null;
 
   const handleSubscribeClick = () => {
+    trackEvent({
+      category: 'Newsletter',
+      action: '구독하기 버튼 클릭',
+      label: article.newsletter.name,
+    });
     openSubscribeLink(subscribeUrl, article.newsletter.name, userInfo);
   };
 
   const handleScrollUp = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const getSubscribeButtonText = () => {
+    if (!isLoggedIn) return '로그인 후 구독할 수 있어요';
+
+    if (article.isSubscribed) return '구독 중';
+    return '구독 하러 가기';
   };
 
   return (
@@ -70,15 +91,34 @@ function RouteComponent() {
         <Divider />
 
         <Content
+          showGradient={shouldShowSubscribePrompt}
           dangerouslySetInnerHTML={{
             __html: processContent(article.newsletter.name, bodyContent),
           }}
         />
+
+        {shouldShowSubscribePrompt && (
+          <SubscribePrompt>
+            <SubscribePromptText>
+              지속적으로 받아보고 싶다면 구독해주세요!
+            </SubscribePromptText>
+            <SubscribePromptButton
+              text={getSubscribeButtonText()}
+              onClick={handleSubscribeClick}
+              disabled={!isLoggedIn || (isLoggedIn && article.isSubscribed)}
+            />
+          </SubscribePrompt>
+        )}
+
         <Divider />
 
         {device === 'pc' && (
           <ActionButtonWrapper>
-            <SubscribeButton type="button" onClick={handleSubscribeClick}>
+            <SubscribeButton
+              type="button"
+              onClick={handleSubscribeClick}
+              disabled={!isLoggedIn || (isLoggedIn && article.isSubscribed)}
+            >
               구독
             </SubscribeButton>
 
@@ -117,8 +157,9 @@ const Divider = styled.div`
   background-color: ${({ theme }) => theme.colors.dividers};
 `;
 
-const Content = styled.div`
+const Content = styled.div<{ showGradient: boolean }>`
   overflow: visible;
+  position: relative;
 
   display: flex;
   flex-direction: column;
@@ -133,6 +174,26 @@ const Content = styled.div`
 
   word-break: break-all;
   word-wrap: break-word;
+
+  &::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 200px;
+
+    display: ${({ showGradient }) => (showGradient ? 'block' : 'none')};
+
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      ${({ theme }) => theme.colors.white}
+    );
+
+    content: '';
+
+    pointer-events: none;
+  }
 
   a {
     color: ${({ theme }) => theme.colors.info};
@@ -184,9 +245,44 @@ const ActionButton = styled.button`
   &:hover > svg {
     transform: scale(1.1);
   }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.disabledBackground};
+    cursor: not-allowed;
+  }
 `;
 
 const SubscribeButton = styled(ActionButton)`
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
+`;
+
+const SubscribePrompt = styled.div`
+  width: 100%;
+  padding: 24px 16px;
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
+  border-radius: 12px;
+
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const SubscribePromptText = styled.p`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body1};
+  text-align: center;
+`;
+
+const SubscribePromptButton = styled(Button)`
+  width: 100%;
+  padding: 12px 24px;
+  border-radius: 8px;
+
+  font: ${({ theme }) => theme.fonts.body1};
 `;

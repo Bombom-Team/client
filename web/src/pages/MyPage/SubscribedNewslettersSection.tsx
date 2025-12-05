@@ -7,11 +7,11 @@ import useModal from '@/components/Modal/useModal';
 import NewsletterUnsubscribeConfirmation from '@/pages/MyPage/NewsletterUnsubscribeConfirmation';
 import { useUnsubscribeNewsletterMutation } from '@/pages/MyPage/useUnsubscribeNewsletterMutation';
 import { openExternalLink } from '@/utils/externalLink';
-import type { GetMyNewslettersResponse } from '@/apis/members';
+import type { GetMySubscriptionsResponse } from '@/apis/members';
 import type { Device } from '@/hooks/useDevice';
 
 interface SubscribedNewslettersSectionProps {
-  newsletters: GetMyNewslettersResponse;
+  newsletters: GetMySubscriptionsResponse;
   device: Device;
 }
 

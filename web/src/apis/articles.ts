@@ -1,7 +1,9 @@
 import { fetcher } from '@bombom/shared/apis';
 import type { components, operations } from '@/types/openapi';
 
-export type GetArticlesParams = Omit<GetArticlesWithSearchParams, 'keyword'>;
+export type GetArticlesParams =
+  components['schemas']['ArticlesOptionsRequest'] &
+    components['schemas']['Pageable'];
 
 export type GetArticlesResponse = components['schemas']['PageArticleResponse'];
 
@@ -13,7 +15,7 @@ export const getArticles = async (params: GetArticlesParams) => {
 };
 
 export type GetArticlesWithSearchParams =
-  components['schemas']['ArticlesOptionsRequest'] &
+  components['schemas']['ArticleSearchOptionsRequest'] &
     components['schemas']['Pageable'];
 
 export const getArticlesWithSearch = async (

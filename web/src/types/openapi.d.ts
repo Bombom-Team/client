@@ -1047,14 +1047,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1065,10 +1065,10 @@ export interface components {
       offset?: number;
       sort?: components['schemas']['SortObject'];
       /** Format: int32 */
-      pageSize?: number;
-      /** Format: int32 */
       pageNumber?: number;
       paged?: boolean;
+      /** Format: int32 */
+      pageSize?: number;
       unpaged?: boolean;
     };
     SortObject: {
@@ -1128,6 +1128,8 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
@@ -1136,6 +1138,7 @@ export interface components {
       sort?: components['schemas']['SortObject'];
       first?: boolean;
       last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1167,7 +1170,6 @@ export interface components {
       date?: string;
       /** Format: int64 */
       newsletterId?: number;
-      keyword?: string;
     };
     ArticleResponse: {
       /** Format: int64 */
@@ -1189,6 +1191,8 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
@@ -1197,6 +1201,7 @@ export interface components {
       sort?: components['schemas']['SortObject'];
       first?: boolean;
       last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1238,6 +1243,11 @@ export interface components {
       totalCount: number;
       newsletters: components['schemas']['ArticleCountPerNewsletterResponse'][];
     };
+    ArticleSearchOptionsRequest: {
+      /** Format: int64 */
+      newsletterId?: number;
+      keyword: string;
+    };
     PreviousArticleRequest: {
       /** Format: int64 */
       newsletterId: number;
@@ -1259,6 +1269,9 @@ export interface components {
       arrivedDateTime: string;
       /** Format: int32 */
       expectedReadTime: number;
+      /** Format: int32 */
+      exposureRatio: number;
+      isSubscribed: boolean;
       newsletter: components['schemas']['NewsletterBasicResponse'];
     };
     SessionStatisticsResponse: {
@@ -2372,7 +2385,7 @@ export interface operations {
   login: {
     parameters: {
       query?: {
-        env?: string;
+        redirectUrl?: string;
       };
       header?: never;
       path: {
@@ -2506,38 +2519,6 @@ export interface operations {
         content: {
           '*/*': components['schemas']['ArticleNewsletterStatisticsResponse'];
         };
-      };
-    };
-  };
-  getArticlesBySearch: {
-    parameters: {
-      query: {
-        /** @description 검색 옵션 */
-        articlesOptionsRequest: components['schemas']['ArticlesOptionsRequest'];
-        /** @description 페이징 관련 요청 (예: ?page=0&size=10&sort=arrivedDateTime,desc) */
-        pageable: components['schemas']['Pageable'];
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 아티클 검색 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['PageArticleResponse'];
-        };
-      };
-      /** @description 잘못된 정렬 파라미터 요청 */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
     };
   };

@@ -1,0 +1,61 @@
+name: Frontend CI Base
+
+on:
+  workflow_call:
+    inputs:
+      run-build:
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  web-checks:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack & Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.12.1 --activate
+
+      - name: Setup pnpm store
+        working-directory: ./web
+        run: pnpm config set store-dir $GITHUB_WORKSPACE/.pnpm-store
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.pnpm-store
+          key: bombom-pnpm-store
+
+      - name: Install dependencies
+        working-directory: ./web
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Lint
+        run: pnpm run web:lint
+
+      - name: Type Check
+        run: pnpm run web:type-check
+
+      - name: Build
+        if: inputs.run-build == true
+        env:
+          CHANNEL_TALK_PLUGIN_KEY: ${{ secrets.CHANNEL_TALK_PLUGIN_KEY }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
+          MONITORING_STATUS_URL: ${{ vars.MONITORING_STATUS_URL }}
+          SERVER_TYPE: ${{ vars.SERVER_TYPE }}
+        run: pnpm run web:build
+
+      - name: Upload dist artifact
+        if: inputs.run-build == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: web/dist
