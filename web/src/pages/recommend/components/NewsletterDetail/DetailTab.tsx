@@ -29,14 +29,16 @@ const DetailTab = ({
   return (
     <>
       <Container isMobile={isMobile}>
-        {isSubscribed && (
-          <UnsubscribeButton
-            onClick={() => handleOpenConfirmModal(newsletterId)}
-          >
-            구독 해지
-          </UnsubscribeButton>
-        )}
         <Description isMobile={isMobile}>{newsletterDescription}</Description>
+        {isSubscribed && (
+          <ButtonWrapper>
+            <UnsubscribeButton
+              onClick={() => handleOpenConfirmModal(newsletterId)}
+            >
+              구독 해지
+            </UnsubscribeButton>
+          </ButtonWrapper>
+        )}
 
         {!isMobile && <NewsletterSubscribeGuide />}
       </Container>
@@ -66,16 +68,17 @@ const Container = styled.div<{ isMobile: boolean }>`
   flex-direction: column;
 `;
 
-const UnsubscribeButton = styled.button`
-  align-self: flex-start;
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
 
-  color: ${({ theme }) => theme.colors.dividers};
+const UnsubscribeButton = styled.button`
+  color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.caption};
 
-  transition: all 0.2s ease-in-out;
-
   &:hover {
-    color: ${({ theme }) => theme.colors.textSecondary};
+    text-decoration: underline;
   }
 `;
 
