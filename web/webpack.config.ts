@@ -98,13 +98,6 @@ export default (env: Env, argv: Argv) => {
       new webpack.DefinePlugin({
         'process.env': JSON.stringify(process.env),
         'process.env.ENABLE_MSW': JSON.stringify(env.ENABLE_MSW),
-        'process.env.CHANNEL_TALK_PLUGIN_KEY': JSON.stringify(
-          process.env.CHANNEL_TALK_PLUGIN_KEY,
-        ),
-        'process.env.SENTRY_DSN': JSON.stringify(process.env.SENTRY_DSN),
-        'process.env.CLARITY_PROJECT_ID': JSON.stringify(
-          process.env.CLARITY_PROJECT_ID,
-        ),
       }),
       new CopyWebpackPlugin({
         patterns: [
