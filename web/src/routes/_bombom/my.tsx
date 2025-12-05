@@ -51,7 +51,7 @@ function MyPage() {
   const { tab: activeTabParam } = useSearch({ from: '/_bombom/my' });
 
   const { data: userInfo } = useQuery(queries.me());
-  const { data: myNewsletters } = useQuery(queries.myNewsletters());
+  const { data: mySubscriptions } = useQuery(queries.mySubscriptions());
 
   const tabs = isWebView() ? [...DEFAULT_TABS, ...WEBVIEW_TABS] : DEFAULT_TABS;
 
@@ -72,7 +72,7 @@ function MyPage() {
       case 'newsletters':
         return (
           <SubscribedNewslettersSection
-            newsletters={myNewsletters ?? []}
+            newsletters={mySubscriptions ?? []}
             device={device}
           />
         );
