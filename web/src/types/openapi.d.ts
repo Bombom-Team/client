@@ -20,6 +20,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/members/me/subscriptions/{subscriptionId}/unsubscribe': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 뉴스레터 구독 취소
+     * @description 뉴스레터 구독을 취소합니다. 구독 리스트에서 삭제하고 unsubscribeUrl이 존재하는 경우 반환됩니다.
+     */
+    post: operations['unsubscribe'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/members/me/pet/attendance': {
     parameters: {
       query?: never;
@@ -352,6 +372,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/members/me/subscriptions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 구독한 뉴스레터 목록 조회
+     * @description 현재 로그인한 사용자가 구독한 뉴스레터 목록을 조회합니다.
+     */
+    get: operations['getSubscribedNewsletters'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/members/me/reading': {
     parameters: {
       query?: never;
@@ -464,26 +504,6 @@ export interface paths {
      * @description 현재 로그인한 사용자의 펫 정보를 조회합니다.
      */
     get: operations['getPet'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/members/me/newsletters': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 구독한 뉴스레터 목록 조회
-     * @description 로그인한 회원이 구독중인 뉴스레터 목록을 조회합니다.
-     */
-    get: operations['getSubscribedNewsletters'];
     put?: never;
     post?: never;
     delete?: never;
@@ -692,6 +712,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/articles/search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 아티클 검색
+     * @description 키워드로 아티클을 검색하여 페이징하여 조회합니다. (정렬 기본값: ?page=0&size=10&sort=arrivedDateTime,desc)
+     */
+    get: operations['getArticlesBySearch'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/articles/previous': {
     parameters: {
       query?: never;
@@ -752,6 +792,10 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    UnsubscribeResponse: {
+      unsubscribeUrl?: string;
+      hasUnsubscribeUrl: boolean;
+    };
     HighlightCreateRequest: {
       location: components['schemas']['HighlightLocationRequest'];
       /** Format: int64 */
@@ -886,6 +930,14 @@ export interface components {
       subscribeMethod?: string;
       isSubscribed?: boolean;
     };
+    SubscribedNewsletterResponse: {
+      /** Format: int64 */
+      newsletterId: number;
+      name: string;
+      imageUrl?: string;
+      description: string;
+      category: string;
+    };
     ReadingInformationResponse: {
       /**
        * Format: int32
@@ -968,14 +1020,6 @@ export interface components {
       /** @description 출석 여부 */
       isAttended: boolean;
     };
-    SubscribedNewsletterResponse: {
-      /** Format: int64 */
-      newsletterId: number;
-      name: string;
-      imageUrl?: string;
-      description: string;
-      category: string;
-    };
     Pageable: {
       /** Format: int32 */
       page?: number;
@@ -1003,17 +1047,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     PageableObject: {
@@ -1021,10 +1065,10 @@ export interface components {
       offset?: number;
       sort?: components['schemas']['SortObject'];
       /** Format: int32 */
-      pageNumber?: number;
+      pageSize?: number;
       paged?: boolean;
       /** Format: int32 */
-      pageSize?: number;
+      pageNumber?: number;
       unpaged?: boolean;
     };
     SortObject: {
@@ -1084,17 +1128,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     BookmarkStatusResponse: {
@@ -1123,7 +1167,6 @@ export interface components {
       date?: string;
       /** Format: int64 */
       newsletterId?: number;
-      keyword?: string;
     };
     ArticleResponse: {
       /** Format: int64 */
@@ -1145,17 +1188,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     ArticleDetailResponse: {
@@ -1194,6 +1237,11 @@ export interface components {
       totalCount: number;
       newsletters: components['schemas']['ArticleCountPerNewsletterResponse'][];
     };
+    ArticleSearchOptionsRequest: {
+      /** Format: int64 */
+      newsletterId?: number;
+      keyword: string;
+    };
     PreviousArticleRequest: {
       /** Format: int64 */
       newsletterId: number;
@@ -1215,6 +1263,9 @@ export interface components {
       arrivedDateTime: string;
       /** Format: int32 */
       expectedReadTime: number;
+      /** Format: int32 */
+      exposureRatio: number;
+      isSubscribed: boolean;
       newsletter: components['schemas']['NewsletterBasicResponse'];
     };
     SessionStatisticsResponse: {
@@ -1251,6 +1302,37 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  unsubscribe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        subscriptionId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 구독 취소 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['UnsubscribeResponse'];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['UnsubscribeResponse'];
+        };
       };
     };
   };
@@ -1950,6 +2032,35 @@ export interface operations {
       };
     };
   };
+  getSubscribedNewsletters: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 구독한 뉴스레터 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['SubscribedNewsletterResponse'][];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['SubscribedNewsletterResponse'][];
+        };
+      };
+    };
+  };
   getReadingInformation: {
     parameters: {
       query?: never;
@@ -2131,33 +2242,6 @@ export interface operations {
       };
     };
   };
-  getSubscribedNewsletters: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 구독한 뉴스레터 목록 조회 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['SubscribedNewsletterResponse'][];
-        };
-      };
-      /** @description 인증 실패 (로그인 필요) */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   getHighlightNewsletterStatistics: {
     parameters: {
       query?: never;
@@ -2295,7 +2379,7 @@ export interface operations {
   login: {
     parameters: {
       query?: {
-        env?: string;
+        redirectUrl?: string;
       };
       header?: never;
       path: {
@@ -2429,6 +2513,38 @@ export interface operations {
         content: {
           '*/*': components['schemas']['ArticleNewsletterStatisticsResponse'];
         };
+      };
+    };
+  };
+  getArticlesBySearch: {
+    parameters: {
+      query: {
+        /** @description 검색 옵션 */
+        articleSearchOptionsRequest: components['schemas']['ArticleSearchOptionsRequest'];
+        /** @description 페이징 관련 요청 (예: ?page=0&size=10&sort=arrivedDateTime,desc) */
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 아티클 검색 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageArticleResponse'];
+        };
+      };
+      /** @description 잘못된 정렬 파라미터 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
