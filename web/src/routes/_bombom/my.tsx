@@ -10,10 +10,8 @@ import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
-import NotificationSettingsSection from '@/pages/MyPage/NotificationSettingsSection';
 import ProfileSection from '@/pages/MyPage/ProfileSection';
 import SubscribedNewslettersSection from '@/pages/MyPage/SubscribedNewslettersSection';
-import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
 import AvatarIcon from '#/assets/svg/avatar.svg';
@@ -25,7 +23,7 @@ const DEFAULT_TABS = [
   { id: 'newsletters', label: '구독 뉴스레터' },
 ] as const;
 
-const WEBVIEW_TABS = [{ id: 'notification', label: '알림 설정' }] as const;
+// const WEBVIEW_TABS = [{ id: 'notification', label: '알림 설정' }] as const;
 
 export const Route = createFileRoute('/_bombom/my')({
   head: () => ({
@@ -53,7 +51,7 @@ function MyPage() {
   const { data: userInfo } = useQuery(queries.me());
   const { data: mySubscriptions } = useQuery(queries.mySubscriptions());
 
-  const tabs = isWebView() ? [...DEFAULT_TABS, ...WEBVIEW_TABS] : DEFAULT_TABS;
+  const tabs = DEFAULT_TABS;
 
   if (!userInfo) return null;
 
@@ -76,8 +74,8 @@ function MyPage() {
             device={device}
           />
         );
-      case 'notification':
-        return <NotificationSettingsSection />;
+      // case 'notification':
+      //   return <NotificationSettingsSection />;
       default:
         return null;
     }
