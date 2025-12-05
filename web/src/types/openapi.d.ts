@@ -1065,10 +1065,10 @@ export interface components {
       offset?: number;
       sort?: components['schemas']['SortObject'];
       /** Format: int32 */
-      pageNumber?: number;
+      pageSize?: number;
       paged?: boolean;
       /** Format: int32 */
-      pageSize?: number;
+      pageNumber?: number;
       unpaged?: boolean;
     };
     SortObject: {
@@ -1136,9 +1136,6 @@ export interface components {
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1199,9 +1196,6 @@ export interface components {
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2519,6 +2513,38 @@ export interface operations {
         content: {
           '*/*': components['schemas']['ArticleNewsletterStatisticsResponse'];
         };
+      };
+    };
+  };
+  getArticlesBySearch: {
+    parameters: {
+      query: {
+        /** @description 검색 옵션 */
+        articleSearchOptionsRequest: components['schemas']['ArticleSearchOptionsRequest'];
+        /** @description 페이징 관련 요청 (예: ?page=0&size=10&sort=arrivedDateTime,desc) */
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 아티클 검색 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageArticleResponse'];
+        };
+      };
+      /** @description 잘못된 정렬 파라미터 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
