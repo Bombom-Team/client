@@ -21,7 +21,7 @@ import {
   getMyMonthlyReadingRank,
   getReadingStatus,
   getUserInfo,
-  getMyNewsletters,
+  getMySubscriptions,
   getUserProfile,
 } from './members';
 import { getNewsletterDetail, getNewsletters } from './newsLetters';
@@ -138,6 +138,12 @@ export const queries = {
       queryFn: () => getMyMonthlyReadingRank(),
     }),
 
+  mySubscriptions: () =>
+    queryOptions({
+      queryKey: ['members', 'me', 'subscriptions'],
+      queryFn: getMySubscriptions,
+    }),
+
   // newsletters
   newsletters: () =>
     queryOptions({
@@ -145,12 +151,6 @@ export const queries = {
       queryFn: getNewsletters,
       staleTime: 1000 * 60 * 60 * 24 * 3, // 3 days
       gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days
-    }),
-
-  myNewsletters: () =>
-    queryOptions({
-      queryKey: ['newsletters', 'me'],
-      queryFn: getMyNewsletters,
     }),
 
   newsletterDetail: (params: GetNewsletterDetailParams) =>
