@@ -51,7 +51,7 @@ const PreviousTab = ({
     return (
       <Container>
         <ImageWrapper isMobile={isMobile}>
-          <img width={isMobile ? 180 : 220} src={subscribeBom} alt="empty" />
+          <img width={isMobile ? 130 : 180} src={subscribeBom} alt="empty" />
         </ImageWrapper>
         <OpenSubscribeButton onClick={openPreviousLetters}>
           지난 소식 보러가기
@@ -87,7 +87,7 @@ const Container = styled.div`
 
 const OpenSubscribeButton = styled.button`
   width: fit-content;
-  margin-bottom: 140px;
+  margin-bottom: 100px;
   padding: 8px 16px;
   border: 1px solid ${({ theme }) => theme.colors.primary};
   border-radius: 16px;
@@ -104,9 +104,8 @@ const OpenSubscribeButton = styled.button`
 
 const ImageWrapper = styled.div<{ isMobile: boolean }>`
   position: absolute;
-  top: 0;
-  left: ${({ isMobile }) =>
-    isMobile ? 'calc(50% + 40px)' : 'calc(50% + 20px)'};
+  top: ${({ isMobile }) => (isMobile ? '20px' : '0')};
+  left: calc(50% + 40px);
 
   pointer-events: none;
 `;
