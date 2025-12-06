@@ -73,16 +73,18 @@ export default PreviousTab;
 
 const Container = styled.div`
   position: relative;
+  height: 100%;
   padding: 48px 0;
 
   display: flex;
   gap: 8px;
   flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
+  align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.heading6};
+
+  overflow-x: hidden;
 `;
 
 const OpenSubscribeButton = styled.button`
@@ -94,7 +96,6 @@ const OpenSubscribeButton = styled.button`
 
   display: flex;
   align-items: center;
-  align-self: center;
   justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.white};
