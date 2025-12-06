@@ -10,6 +10,7 @@ import { WebToRNMessage } from '@bombom/shared/webview';
 import { LoginScreenOverlay } from '../login/LoginScreenOverlay';
 
 import * as WebBrowser from 'expo-web-browser';
+import * as SplashScreen from 'expo-splash-screen';
 
 import { ENV } from '@/constants/env';
 import { WEBVIEW_USER_AGENT } from '@/constants/webview';
@@ -28,12 +29,13 @@ export const MainScreen = () => {
   const { onNotification, registerFCMToken, handleLoggedInPermission } =
     useNotification();
 
-  const handleWebViewLoadEnd = () => {
+  const handleWebViewLoadEnd = async () => {
     console.log('WebView 로드 완료');
     if (webViewLoadEndCleanupRef.current) {
       webViewLoadEndCleanupRef.current();
     }
 
+    await SplashScreen.hideAsync();
     webViewLoadEndCleanupRef.current = onNotification();
   };
 
