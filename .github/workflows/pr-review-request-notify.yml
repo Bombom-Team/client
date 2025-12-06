@@ -23,6 +23,7 @@ jobs:
             const reviewer = context.payload.requested_reviewer.login;
             const reviewerMention = mapping[reviewer] ? `<@${mapping[reviewer]}>` : reviewer;
 
+            console.log(`Reviewer Mention: ${reviewerMention}`);
             core.setOutput("reviewer", reviewerMention);
 
       # Discord 알림 전송
