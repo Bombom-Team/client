@@ -29,13 +29,13 @@ export const MainScreen = () => {
   const { onNotification, registerFCMToken, handleLoggedInPermission } =
     useNotification();
 
-  const handleWebViewLoadEnd = async () => {
+  const handleWebViewLoadEnd = () => {
     console.log('WebView 로드 완료');
     if (webViewLoadEndCleanupRef.current) {
       webViewLoadEndCleanupRef.current();
     }
 
-    await SplashScreen.hideAsync();
+    SplashScreen.hide();
     webViewLoadEndCleanupRef.current = onNotification();
   };
 
