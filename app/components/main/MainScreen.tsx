@@ -10,6 +10,7 @@ import { WebToRNMessage } from '@bombom/shared/webview';
 import { LoginScreenOverlay } from '../login/LoginScreenOverlay';
 
 import * as WebBrowser from 'expo-web-browser';
+import * as SplashScreen from 'expo-splash-screen';
 
 import { ENV } from '@/constants/env';
 import { WEBVIEW_USER_AGENT } from '@/constants/webview';
@@ -34,6 +35,7 @@ export const MainScreen = () => {
       webViewLoadEndCleanupRef.current();
     }
 
+    SplashScreen.hide();
     webViewLoadEndCleanupRef.current = onNotification();
   };
 
