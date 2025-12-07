@@ -28,6 +28,8 @@ jobs:
             const author = pr.user.login;
             const authorMention   = mapping[author] ? `<@${mapping[author]}>` : author;
 
+            console.log(`Reviewer: ${reviewer}`);
+            console.log(`Author Mention: ${authorMention}`);
             core.setOutput("reviewer", reviewer);
             core.setOutput("authorMention", authorMention);
 
