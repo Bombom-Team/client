@@ -100,7 +100,7 @@ function RouteComponent() {
         {shouldShowSubscribePrompt && (
           <SubscribePrompt>
             <SubscribePromptText>
-              지속적으로 받아보고 싶다면 구독해주세요!
+              뉴스레터가 마음에 드셨다면, 구독으로 계속 만나보세요!
             </SubscribePromptText>
             <SubscribePromptButton
               text={getSubscribeButtonText()}
