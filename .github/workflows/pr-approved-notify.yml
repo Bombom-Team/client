@@ -30,6 +30,7 @@ jobs:
             const author = pr.user.login;
             const authorMention   = mapping[author] ? `<@${mapping[author]}>` : author;
 
+            console.log(`Author Mention: ${authorMention}`);
             core.setOutput("authorMention", authorMention);
 
       # 🔍 현재까지 APPROVED 리뷰 수 계산
@@ -40,16 +41,15 @@ jobs:
           script: |
             const prNumber = context.payload.pull_request.number;
 
-            // 리뷰 전체 조회
             const { data: reviews } = await github.rest.pulls.listReviews({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: prNumber
             });
 
-            // APPROVED 상태만 필터링
             const approvals = reviews.filter(r => r.state === "APPROVED");
 
+            console.log(`Approved reviewers: ${approvals.map(a => a.user.login).join(', ')}`);
             core.setOutput("count", approvals.length);
             core.setOutput("approvedReviewers", approvals.map(a => a.user.login).join(', '));
 
