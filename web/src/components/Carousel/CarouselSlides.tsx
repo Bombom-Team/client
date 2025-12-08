@@ -1,7 +1,17 @@
 import styled from '@emotion/styled';
-import { Children, useEffect, type PropsWithChildren } from 'react';
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useMemo,
+  type ComponentProps,
+  type PropsWithChildren,
+  type ReactElement,
+} from 'react';
 import { TRANSITIONS } from './Carousel.constants';
 import { useCarouselContext } from './CarouselContext';
+import { CarouselSlide } from './CarouselSlide';
 import useCarouselAccessibility from './useCarouselAccessibility';
 
 interface CarouselSlidesProps {
@@ -12,10 +22,11 @@ export function CarouselSlides({
   showNextSlidePart = false,
   children,
 }: PropsWithChildren<CarouselSlidesProps>) {
+  const list = useMemo(() => Children.toArray(children), [children]);
+
   const {
     slideIndex,
     slideCount,
-    slides,
     registerSlides,
     slideWrapperRef,
     isTransitioning,
@@ -32,10 +43,13 @@ export function CarouselSlides({
 
   const { handleFocus, handleBlur } = useCarouselAccessibility();
 
+  const slidesToRender = loop
+    ? [list[list.length - 1], ...list, list[0]]
+    : [...list];
+
   useEffect(() => {
-    const list = Children.toArray(children);
     registerSlides(list);
-  }, [children, registerSlides]);
+  }, [list, registerSlides]);
 
   return (
     <Container
@@ -49,7 +63,7 @@ export function CarouselSlides({
       tabIndex={0}
       aria-live="off"
       aria-atomic="true"
-      aria-label={`총 ${slideCount}개 중 ${slideIndex + 1}번째 슬라이드`}
+      aria-label={`총 ${slideCount}개 중 ${loop ? slideIndex : slideIndex + 1}번째 슬라이드`}
       onFocus={handleFocus}
       onBlur={handleBlur}
       {...(hasMultipleSlides && {
@@ -58,9 +72,22 @@ export function CarouselSlides({
         onTouchEnd: handleTouchEnd,
       })}
     >
-      {loop && slides[slides.length - 1]}
-      {children}
-      {loop && slides[0]}
+      {slidesToRender.map((child, index) => {
+        const isCurrent = index === slideIndex;
+
+        if (isValidElement(child) && child.type === CarouselSlide) {
+          return cloneElement(
+            child as ReactElement<ComponentProps<typeof CarouselSlide>>,
+            { isCurrent, key: index },
+          );
+        }
+
+        return (
+          <CarouselSlide isCurrent={isCurrent} key={index}>
+            {child}
+          </CarouselSlide>
+        );
+      })}
     </Container>
   );
 }

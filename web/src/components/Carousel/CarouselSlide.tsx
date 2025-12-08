@@ -1,8 +1,19 @@
 import styled from '@emotion/styled';
 import type { PropsWithChildren } from 'react';
 
-export function CarouselSlide({ children }: PropsWithChildren) {
-  return <Slide>{children}</Slide>;
+interface CarouselSlideProps {
+  isCurrent?: boolean;
+}
+
+export function CarouselSlide({
+  isCurrent = false,
+  children,
+}: PropsWithChildren<CarouselSlideProps>) {
+  return (
+    <Slide aria-hidden={!isCurrent} {...(!isCurrent && { inert: true })}>
+      {children}
+    </Slide>
+  );
 }
 
 const Slide = styled.li`
