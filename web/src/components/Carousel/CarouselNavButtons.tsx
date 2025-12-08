@@ -14,45 +14,47 @@ const CarouselNavButtons = ({
   const { prev, next } = useCarouselContext();
 
   return (
-    <>
-      <PrevSlideButton
-        type="button"
-        onClick={prev}
-        position={position}
-        aria-label="이전 슬라이드 이동"
-      >
+    <Container position={position}>
+      <NavButton type="button" onClick={prev} aria-label="이전 슬라이드 이동">
         <ChevronIcon
           direction="left"
           width="100%"
           height="100%"
           fill={theme.colors.primary}
         />
-      </PrevSlideButton>
+      </NavButton>
 
-      <NextSlideButton
-        type="button"
-        onClick={next}
-        position={position}
-        aria-label="다음 슬라이드 이동"
-      >
+      <NavButton type="button" onClick={next} aria-label="다음 슬라이드 이동">
         <ChevronIcon
           direction="right"
           width="100%"
           height="100%"
           fill={theme.colors.primary}
         />
-      </NextSlideButton>
-    </>
+      </NavButton>
+    </Container>
   );
 };
 
 export default CarouselNavButtons;
 
-const NavButton = styled.button<{ position: SlideButtonPosition }>`
-  position: absolute;
-  top: ${({ position }) => (position === 'middle' ? '50%' : 'auto')};
-  right: 8px;
-  bottom: ${({ position }) => (position === 'bottom' ? '8px' : 'auto')};
+const Container = styled.div<{ position: SlideButtonPosition }>`
+  position: ${({ position }) =>
+    position === 'middle' ? 'absolute' : 'relative'};
+  top: 50%;
+  left: 0;
+  width: 100%;
+  padding: 12px 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  transform: ${({ position }) =>
+    position === 'middle' ? 'translateY(-50%)' : 'none'};
+`;
+
+const NavButton = styled.button`
   width: clamp(32px, 10%, 48px);
   border-radius: 50%;
   box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
@@ -62,18 +64,7 @@ const NavButton = styled.button<{ position: SlideButtonPosition }>`
 
   background-color: ${({ theme }) => theme.colors.white};
 
-  transform: ${({ position }) =>
-    position === 'middle' ? 'translateY(-50%)' : 'none'};
-
   &:hover {
     background-color: ${({ theme }) => theme.colors.dividers};
   }
-`;
-
-const PrevSlideButton = styled(NavButton)`
-  left: 8px;
-`;
-
-const NextSlideButton = styled(NavButton)`
-  right: 8px;
 `;
