@@ -13,6 +13,7 @@ export const membersHandlers = [
         imageUrl: newsletter.imageUrl,
         description: newsletter.description,
         category: newsletter.category,
+        hasUnsubscribeUrl: true,
       }),
     );
 
@@ -25,7 +26,6 @@ export const membersHandlers = [
       const { subscriptionId } = params;
 
       return HttpResponse.json({
-        hasUnsubscribeUrl: true,
         unsubscribeUrl: `https://example.com/newsletters/${subscriptionId}/unsubscribe`,
       });
     },
