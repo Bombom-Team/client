@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useCallback, useState } from 'react';
 import { CarouselContext } from './CarouselContext';
 import useCarousel from './useCarousel';
 import type { AutoPlayOption } from './Carousel.types';
@@ -17,14 +16,10 @@ const CarouselRoot = ({
   hasAnimation = true,
   children,
 }: PropsWithChildren<CarouselRootProps>) => {
-  const [slideCount, setSlideCount] = useState(0);
-
-  const registerSlideCount = useCallback((count: number) => {
-    setSlideCount(count);
-  }, []);
-
   const {
     slideIndex,
+    slideCount,
+    registerSlideCount,
     next,
     prev,
     slideWrapperRef,
@@ -34,7 +29,7 @@ const CarouselRoot = ({
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
-  } = useCarousel({ slideCount, loop, autoPlay });
+  } = useCarousel({ loop, autoPlay });
 
   return (
     <CarouselContext.Provider

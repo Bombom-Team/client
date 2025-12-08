@@ -1,30 +1,34 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DEFAULT_SPEED,
-  INFINITY_START_SLIDE_INDEX,
   FINITE_START_SLIDE_INDEX,
-  SWIPE_OFFSET_THRESHOLD,
+  INFINITY_START_SLIDE_INDEX,
   SWIPE_ANGLE_THRESHOLD,
+  SWIPE_OFFSET_THRESHOLD,
 } from './Carousel.constants';
 import { calculateAngle } from '@/utils/math';
 import type { TouchEvent } from 'react';
 
 interface UseCarouselProps {
-  slideCount: number;
   loop: boolean;
   autoPlay: boolean | { delay: number };
 }
 
-const useCarousel = ({ slideCount, loop, autoPlay }: UseCarouselProps) => {
+const useCarousel = ({ loop, autoPlay }: UseCarouselProps) => {
   const [slideIndex, setSlideIndex] = useState(
     loop ? INFINITY_START_SLIDE_INDEX : FINITE_START_SLIDE_INDEX,
   );
+  const [slideCount, setSlideCount] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
   const timerIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const swipeOffsetRef = useRef(0);
   const swipeStartRef = useRef({ x: 0, y: 0 });
   const slideWrapperRef = useRef<HTMLUListElement>(null);
+
+  const registerSlideCount = useCallback((count: number) => {
+    setSlideCount(count);
+  }, []);
 
   const updateTransform = useCallback(() => {
     if (!slideWrapperRef.current) return;
@@ -168,6 +172,8 @@ const useCarousel = ({ slideCount, loop, autoPlay }: UseCarouselProps) => {
 
   return {
     slideIndex,
+    slideCount,
+    registerSlideCount,
     prev,
     next,
     slideWrapperRef,
