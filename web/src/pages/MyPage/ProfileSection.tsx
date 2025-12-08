@@ -223,11 +223,12 @@ const ProfileSection = ({ userInfo }: ProfileSectionProps) => {
       </FieldGroup>
 
       <Button
-        text="변경"
         onClick={handleProfileUpdate}
         disabled={isMemberInfoUpdating || hasError || !hasChanges}
         style={{ marginLeft: 'auto' }}
-      />
+      >
+        변경
+      </Button>
 
       <Divider />
 

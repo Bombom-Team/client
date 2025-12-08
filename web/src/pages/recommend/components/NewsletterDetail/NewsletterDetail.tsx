@@ -111,13 +111,14 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
         )}
 
         <SubscribeButton
-          text={getSubscribeButtonText()}
           onClick={handleSubscribeButtonClick}
           disabled={
             !isLoggedIn || (isLoggedIn && newsletterDetail.isSubscribed)
           }
           isMobile={isMobile}
-        />
+        >
+          {getSubscribeButtonText()}
+        </SubscribeButton>
       </FixedWrapper>
 
       <NewsletterTabs

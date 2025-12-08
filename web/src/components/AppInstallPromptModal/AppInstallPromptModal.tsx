@@ -39,14 +39,12 @@ const AppInstallPromptModal = ({
           </TextWrapper>
         </ContentWrapper>
         <ButtonSection>
-          <StyledPrimaryButton
-            text="편리한 앱으로 보기"
-            onClick={onInstallClick}
-          />
-          <StyledTextButton
-            text="모바일 웹으로 볼래요"
-            onClick={onLaterClick}
-          />
+          <InstallAppButton onClick={onInstallClick}>
+            편리한 앱으로 보기
+          </InstallAppButton>
+          <UseMobileWebButton onClick={onLaterClick} variant="secondary">
+            모바일 웹으로 볼래요
+          </UseMobileWebButton>
         </ButtonSection>
       </Container>
     </Modal>
@@ -117,22 +115,12 @@ const ButtonSection = styled.div`
   flex-direction: column;
 `;
 
-const StyledPrimaryButton = styled(Button)`
+const InstallAppButton = styled(Button)`
   width: 100%;
-  height: 56px;
-  border-radius: 12px;
-
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-const StyledTextButton = styled(Button)`
+const UseMobileWebButton = styled(Button)`
   width: 100%;
-  height: 48px;
-  border: none;
-
-  background: transparent;
-  color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body1};
-
-  transition: color 0.2s ease;
 `;

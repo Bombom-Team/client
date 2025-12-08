@@ -48,18 +48,17 @@ const ArticleDeleteModal = ({
         <ModalButtonGroup>
           <ModalButton
             isMobile={isMobile}
-            text="삭제"
             onClick={() => {
               onDelete();
               closeModal();
             }}
-          />
-          <ModalButton
-            isMobile={isMobile}
-            variant="outlined"
-            text="취소"
-            onClick={closeModal}
-          />
+            variant="secondary"
+          >
+            삭제
+          </ModalButton>
+          <ModalButton isMobile={isMobile} onClick={closeModal}>
+            취소
+          </ModalButton>
         </ModalButtonGroup>
       </Container>
     </Modal>
@@ -114,9 +113,6 @@ const ModalButtonGroup = styled.div`
 
 const ModalButton = styled(Button)<{ isMobile: boolean }>`
   width: ${({ isMobile }) => (isMobile ? '80px' : '160px')};
-  height: 48px;
-  border-radius: 8px;
-
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
