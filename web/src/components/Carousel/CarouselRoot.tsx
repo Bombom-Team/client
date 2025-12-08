@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { CarouselContext } from './CarouselContext';
 import useCarousel from './useCarousel';
 import type { AutoPlayOption } from './Carousel.types';
-import type { PropsWithChildren, ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 
 interface CarouselRootProps {
   loop?: boolean;
@@ -11,18 +11,16 @@ interface CarouselRootProps {
   hasAnimation?: boolean;
 }
 
-export function CarouselRoot({
+const CarouselRoot = ({
   loop = false,
   autoPlay = false,
   hasAnimation = true,
   children,
-}: PropsWithChildren<CarouselRootProps>) {
-  const [slides, setSlides] = useState<ReactNode[]>([]);
+}: PropsWithChildren<CarouselRootProps>) => {
   const [slideCount, setSlideCount] = useState(0);
 
-  const registerSlides = useCallback((arr: ReactNode[]) => {
-    setSlides(arr);
-    setSlideCount(arr.length);
+  const registerSlideCount = useCallback((count: number) => {
+    setSlideCount(count);
   }, []);
 
   const {
@@ -43,8 +41,7 @@ export function CarouselRoot({
       value={{
         slideIndex,
         slideCount,
-        slides,
-        registerSlides,
+        registerSlideCount,
 
         slideWrapperRef,
 
@@ -67,7 +64,9 @@ export function CarouselRoot({
       </Container>
     </CarouselContext.Provider>
   );
-}
+};
+
+export default CarouselRoot;
 
 const Container = styled.div`
   overflow: hidden;

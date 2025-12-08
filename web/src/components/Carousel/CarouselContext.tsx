@@ -1,12 +1,11 @@
 import { createContext, useContext } from 'react';
-import type { ReactNode, RefObject, TouchEvent } from 'react';
+import type { RefObject, TouchEvent } from 'react';
 
 export interface CarouselContextValue {
   // state
   slideIndex: number;
   slideCount: number;
-  slides: ReactNode[];
-  registerSlides: (arr: ReactNode[]) => void;
+  registerSlideCount: (count: number) => void;
 
   // refs
   slideWrapperRef: RefObject<HTMLUListElement | null>;

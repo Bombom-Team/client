@@ -11,23 +11,23 @@ import {
 } from 'react';
 import { TRANSITIONS } from './Carousel.constants';
 import { useCarouselContext } from './CarouselContext';
-import { CarouselSlide } from './CarouselSlide';
+import CarouselSlide from './CarouselSlide';
 import useCarouselAccessibility from './useCarouselAccessibility';
 
 interface CarouselSlidesProps {
   showNextSlidePart?: boolean;
 }
 
-export function CarouselSlides({
+const CarouselSlides = ({
   showNextSlidePart = false,
   children,
-}: PropsWithChildren<CarouselSlidesProps>) {
+}: PropsWithChildren<CarouselSlidesProps>) => {
   const list = useMemo(() => Children.toArray(children), [children]);
 
   const {
     slideIndex,
     slideCount,
-    registerSlides,
+    registerSlideCount,
     slideWrapperRef,
     isTransitioning,
     isSwiping,
@@ -48,8 +48,8 @@ export function CarouselSlides({
     : [...list];
 
   useEffect(() => {
-    registerSlides(list);
-  }, [list, registerSlides]);
+    registerSlideCount(list.length);
+  }, [list, registerSlideCount]);
 
   return (
     <Container
@@ -90,7 +90,9 @@ export function CarouselSlides({
       })}
     </Container>
   );
-}
+};
+
+export default CarouselSlides;
 
 const Container = styled.ul<{
   slideIndex: number;

@@ -5,16 +5,18 @@ interface CarouselSlideProps {
   isCurrent?: boolean;
 }
 
-export function CarouselSlide({
+const CarouselSlide = ({
   isCurrent = false,
   children,
-}: PropsWithChildren<CarouselSlideProps>) {
+}: PropsWithChildren<CarouselSlideProps>) => {
   return (
     <Slide aria-hidden={!isCurrent} {...(!isCurrent && { inert: true })}>
       {children}
     </Slide>
   );
-}
+};
+
+export default CarouselSlide;
 
 const Slide = styled.li`
   flex: 0 0 100%;
