@@ -50,6 +50,8 @@ const Container = styled.div<{ position: SlideButtonPosition }>`
   align-items: center;
   justify-content: space-between;
 
+  pointer-events: none;
+
   transform: ${({ position }) =>
     position === 'middle' ? 'translateY(-50%)' : 'none'};
 `;
@@ -63,6 +65,8 @@ const NavButton = styled.button`
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.white};
+
+  pointer-events: auto;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.dividers};
