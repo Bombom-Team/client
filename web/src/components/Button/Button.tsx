@@ -2,23 +2,22 @@ import { css, type Theme } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { ComponentProps } from 'react';
 
-type Variant = 'default' | 'outlined';
+type Variant = 'primary' | 'secondary' | 'transparent';
 
 interface ButtonProps extends ComponentProps<'button'> {
-  text: string;
   onClick: () => void;
   variant?: Variant;
 }
 
 const Button = ({
-  text,
   onClick,
-  variant = 'default',
+  variant = 'primary',
+  children,
   ...props
 }: ButtonProps) => {
   return (
     <Container type="button" onClick={onClick} variant={variant} {...props}>
-      {text}
+      {children}
     </Container>
   );
 };
@@ -33,10 +32,12 @@ const Container = styled.button<{
   border-radius: 16px;
 
   display: flex;
+  gap: 8px;
   align-items: center;
   justify-content: center;
 
   font: ${({ theme }) => theme.fonts.caption};
+  text-align: center;
 
   ${({ variant, theme }) => variantStyles[variant](theme)}
 
@@ -47,10 +48,14 @@ const Container = styled.button<{
     cursor: not-allowed;
     opacity: 0.5;
   }
+
+  &:hover {
+    transition: background-color 0.5s ease;
+  }
 `;
 
 const variantStyles = {
-  default: (theme: Theme) => css`
+  primary: (theme: Theme) => css`
     border: none;
 
     background-color: ${theme.colors.primary};
@@ -60,10 +65,20 @@ const variantStyles = {
       background-color: ${theme.colors.primaryDark};
     }
   `,
-  outlined: (theme: Theme) => css`
+  secondary: (theme: Theme) => css`
     border: 1px solid ${theme.colors.stroke};
 
     background-color: ${theme.colors.white};
+    color: ${theme.colors.textSecondary};
+
+    &:hover {
+      background-color: ${theme.colors.disabledBackground};
+    }
+  `,
+  transparent: (theme: Theme) => css`
+    border: none;
+
+    background-color: transparent;
     color: ${theme.colors.textPrimary};
 
     &:hover {
