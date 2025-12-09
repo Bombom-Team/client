@@ -2,7 +2,7 @@ import { css, type Theme } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { ComponentProps } from 'react';
 
-type Variant = 'primary' | 'secondary' | 'transparent';
+type Variant = 'filled' | 'outlined' | 'transparent';
 
 interface ButtonProps extends ComponentProps<'button'> {
   onClick: () => void;
@@ -11,7 +11,7 @@ interface ButtonProps extends ComponentProps<'button'> {
 
 const Button = ({
   onClick,
-  variant = 'primary',
+  variant = 'filled',
   children,
   ...props
 }: ButtonProps) => {
@@ -55,7 +55,7 @@ const Container = styled.button<{
 `;
 
 const variantStyles = {
-  primary: (theme: Theme) => css`
+  filled: (theme: Theme) => css`
     border: none;
 
     background-color: ${theme.colors.primary};
@@ -65,7 +65,7 @@ const variantStyles = {
       background-color: ${theme.colors.primaryDark};
     }
   `,
-  secondary: (theme: Theme) => css`
+  outlined: (theme: Theme) => css`
     border: 1px solid ${theme.colors.stroke};
 
     background-color: ${theme.colors.white};

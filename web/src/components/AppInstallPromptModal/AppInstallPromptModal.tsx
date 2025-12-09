@@ -42,7 +42,7 @@ const AppInstallPromptModal = ({
           <InstallAppButton onClick={onInstallClick}>
             편리한 앱으로 보기
           </InstallAppButton>
-          <UseMobileWebButton onClick={onLaterClick} variant="secondary">
+          <UseMobileWebButton onClick={onLaterClick} variant="outlined">
             모바일 웹으로 볼래요
           </UseMobileWebButton>
         </ButtonSection>

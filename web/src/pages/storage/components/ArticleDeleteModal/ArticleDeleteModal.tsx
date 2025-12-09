@@ -52,7 +52,7 @@ const ArticleDeleteModal = ({
               onDelete();
               closeModal();
             }}
-            variant="secondary"
+            variant="outlined"
           >
             삭제
           </ModalButton>

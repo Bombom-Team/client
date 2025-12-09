@@ -36,7 +36,7 @@ const LoginCard = () => {
           const envQuery = isLocal ? '?env=local' : '';
           window.location.href = `${ENV.baseUrl}/auth/login/google${envQuery}`;
         }}
-        variant="secondary"
+        variant="outlined"
       >
         <GoogleIcon width={24} height={24} fill="black" />
         Google로 계속하기
@@ -47,7 +47,7 @@ const LoginCard = () => {
             const envQuery = isLocal ? '?env=local' : '';
             window.location.href = `${ENV.baseUrl}/auth/login/apple${envQuery}`;
           }}
-          variant="secondary"
+          variant="outlined"
         >
           <AppleIcon width={24} height={24} fill="black" />
           Apple로 계속하기
