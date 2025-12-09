@@ -6,6 +6,10 @@ on:
       - main
       - dev
 
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   build:
     uses: ./.github/workflows/frontend-ci-base.yml
