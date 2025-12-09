@@ -105,6 +105,8 @@ export const MainScreen = () => {
     }
   };
 
+  console.log('PR 테스트입니다.');
+
   return (
     <Container>
       <WebViewContainer>
