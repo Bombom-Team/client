@@ -1,3 +1,5 @@
+import { OAuthProvider } from './types/auth';
+
 export interface WindowWithWebkit extends Window {
   webkit?: {
     messageHandlers?: {
@@ -12,9 +14,12 @@ export type WebToRNMessage =
   | { type: 'SHOW_LOGIN_SCREEN' }
   | {
       type: 'LOGIN_SUCCESS';
-      payload?: { isAuthenticated?: boolean; provider?: string };
+      payload?: { isAuthenticated?: boolean; provider?: OAuthProvider };
     }
-  | { type: 'LOGIN_FAILED'; payload?: { error?: string; provider?: string } }
+  | {
+      type: 'LOGIN_FAILED';
+      payload?: { error?: string; provider?: OAuthProvider };
+    }
   | { type: 'OPEN_BROWSER'; payload: { url: string } }
   | { type: 'REQUEST_DEVICE_UUID' }
   | { type: 'CHECK_NOTIFICATION_PERMISSION'; payload: { enabled: boolean } }
