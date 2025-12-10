@@ -794,7 +794,6 @@ export interface components {
   schemas: {
     UnsubscribeResponse: {
       unsubscribeUrl?: string;
-      hasUnsubscribeUrl: boolean;
     };
     HighlightCreateRequest: {
       location: components['schemas']['HighlightLocationRequest'];
@@ -937,6 +936,7 @@ export interface components {
       imageUrl?: string;
       description: string;
       category: string;
+      hasUnsubscribeUrl: boolean;
     };
     ReadingInformationResponse: {
       /**
