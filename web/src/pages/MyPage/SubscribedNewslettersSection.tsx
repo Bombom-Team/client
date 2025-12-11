@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { createPortal } from 'react-dom';
 import { useUnsubscribe } from './hooks/useUnsubscribe';
+import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Modal from '@/components/Modal/Modal';
 import NewsletterUnsubscribeConfirmation from '@/pages/MyPage/NewsletterUnsubscribeConfirmation';
@@ -44,14 +45,20 @@ const SubscribedNewslettersSection = ({
                     </NewsletterDescription>
                   </NewsletterInfo>
                 </NewsletterContent>
-                <UnsubscribeButton
-                  type="button"
-                  onClick={() =>
-                    handleOpenConfirmModal(newsletter.newsletterId)
-                  }
-                >
-                  구독 해지
-                </UnsubscribeButton>
+                {newsletter.hasUnsubscribeUrl ? (
+                  <UnsubscribeButton
+                    variant="outlined"
+                    onClick={() =>
+                      handleOpenConfirmModal(newsletter.newsletterId)
+                    }
+                  >
+                    구독 해지
+                  </UnsubscribeButton>
+                ) : (
+                  <UnsubscribeInfoText>
+                    구독을 확인 중입니다.
+                  </UnsubscribeInfoText>
+                )}
               </NewsletterCard>
             ))}
           </NewsletterGrid>
@@ -163,20 +170,18 @@ const EmptyMessage = styled.p`
   text-align: center;
 `;
 
-const UnsubscribeButton = styled.button`
-  padding: 4px 8px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
+const UnsubscribeButton = styled(Button)`
   border-radius: 8px;
-
   align-self: flex-end;
-
-  background: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body3};
-
-  transition: all 0.2s ease-in-out;
 
   &:hover {
     background: ${({ theme }) => theme.colors.primaryLight};
   }
+`;
+
+const UnsubscribeInfoText = styled.p`
+  align-self: flex-end;
+
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.body3};
 `;
