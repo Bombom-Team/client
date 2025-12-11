@@ -23,18 +23,6 @@ const CarouselSlides = ({
 }: PropsWithChildren<CarouselSlidesProps>) => {
   const list = useMemo(() => Children.toArray(children), [children]);
 
-  // 개발 환경에서만 CarouselSlide 체크
-  if (!isProduction) {
-    list.forEach((child, index) => {
-      if (isValidElement(child) && child.type !== CarouselSlide) {
-        console.warn(
-          `[Carousel.Slides] ${index}번째 child는 CarouselSlide 컴포넌트가 아닙니다. ` +
-            `Carousel.Slides의 children은 반드시 Carousel.Slide 컴포넌트만 사용해야 합니다.`,
-        );
-      }
-    });
-  }
-
   const {
     slideIndex,
     slideCount,
@@ -60,6 +48,18 @@ const CarouselSlides = ({
 
   useEffect(() => {
     registerSlideCount(list.length);
+
+    // 개발 환경에서만 CarouselSlide 체크
+    if (!isProduction) {
+      list.forEach((child, index) => {
+        if (isValidElement(child) && child.type !== CarouselSlide) {
+          console.warn(
+            `[Carousel.Slides] ${index}번째 child는 CarouselSlide 컴포넌트가 아닙니다. ` +
+              `Carousel.Slides의 children은 반드시 Carousel.Slide 컴포넌트만 사용해야 합니다.`,
+          );
+        }
+      });
+    }
   }, [list, registerSlideCount]);
 
   return (
