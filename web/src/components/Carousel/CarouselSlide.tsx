@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
+import { useCarouselContext } from './CarouselContext';
+import { useCarouselSlideIndex } from './CarouselSlideIndexContext';
 import type { PropsWithChildren } from 'react';
 
-interface CarouselSlideProps {
-  isCurrent?: boolean;
-}
+const CarouselSlide = ({ children }: PropsWithChildren) => {
+  const { slideIndex } = useCarouselContext();
+  const index = useCarouselSlideIndex();
 
-const CarouselSlide = ({
-  isCurrent = false,
-  children,
-}: PropsWithChildren<CarouselSlideProps>) => {
+  const isCurrent = slideIndex === index;
+
   return (
     <Slide aria-hidden={!isCurrent} {...(!isCurrent && { inert: true })}>
       {children}

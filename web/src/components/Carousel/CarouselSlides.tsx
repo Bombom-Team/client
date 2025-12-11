@@ -1,18 +1,17 @@
 import styled from '@emotion/styled';
 import {
   Children,
-  cloneElement,
   isValidElement,
   useEffect,
   useMemo,
-  type ComponentProps,
   type PropsWithChildren,
-  type ReactElement,
 } from 'react';
 import { TRANSITIONS } from './Carousel.constants';
 import { useCarouselContext } from './CarouselContext';
 import CarouselSlide from './CarouselSlide';
+import { CarouselSlideIndexContext } from './CarouselSlideIndexContext';
 import useCarouselAccessibility from './useCarouselAccessibility';
+import { isProduction } from '@/utils/environment';
 
 interface CarouselSlidesProps {
   showNextSlidePart?: boolean;
@@ -23,6 +22,18 @@ const CarouselSlides = ({
   children,
 }: PropsWithChildren<CarouselSlidesProps>) => {
   const list = useMemo(() => Children.toArray(children), [children]);
+
+  // 개발 환경에서만 CarouselSlide 체크
+  if (!isProduction) {
+    list.forEach((child, index) => {
+      if (isValidElement(child) && child.type !== CarouselSlide) {
+        console.warn(
+          `[Carousel.Slides] ${index}번째 child는 CarouselSlide 컴포넌트가 아닙니다. ` +
+            `Carousel.Slides의 children은 반드시 Carousel.Slide 컴포넌트만 사용해야 합니다.`,
+        );
+      }
+    });
+  }
 
   const {
     slideIndex,
@@ -72,22 +83,11 @@ const CarouselSlides = ({
         onTouchEnd: handleTouchEnd,
       })}
     >
-      {slidesToRender.map((child, index) => {
-        const isCurrent = index === slideIndex;
-
-        if (isValidElement(child) && child.type === CarouselSlide) {
-          return cloneElement(
-            child as ReactElement<ComponentProps<typeof CarouselSlide>>,
-            { isCurrent, key: index },
-          );
-        }
-
-        return (
-          <CarouselSlide isCurrent={isCurrent} key={index}>
-            {child}
-          </CarouselSlide>
-        );
-      })}
+      {slidesToRender.map((child, index) => (
+        <CarouselSlideIndexContext.Provider value={index} key={index}>
+          {child}
+        </CarouselSlideIndexContext.Provider>
+      ))}
     </Container>
   );
 };
