@@ -108,7 +108,6 @@ const NewsletterCard = styled.div<{ device: Device }>`
   display: flex;
   gap: 12px;
   flex-direction: column;
-  align-items: center;
 
   background: ${({ theme }) => theme.colors.white};
 
@@ -116,9 +115,10 @@ const NewsletterCard = styled.div<{ device: Device }>`
 `;
 
 const NewsletterContent = styled.div`
+  height: 72px;
+
   display: flex;
   gap: 12px;
-  align-items: center;
   justify-content: center;
 `;
 
@@ -172,7 +172,6 @@ const EmptyMessage = styled.p`
 
 const UnsubscribeButton = styled(Button)`
   border-radius: 8px;
-  align-self: flex-end;
 
   &:hover {
     background: ${({ theme }) => theme.colors.primaryLight};
