@@ -27,6 +27,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             NSTemporaryExceptionMinimumTLSVersion: 'TLSv1.2',
           },
         },
+        NSAppTransportSecurity: {
+          NSAllowsArbitraryLoads: true,
+        },
       },
       bundleIdentifier: 'com.antarctica.bombom',
       config: {

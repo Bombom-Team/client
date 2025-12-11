@@ -14,6 +14,7 @@
     "./webview": "./src/webview.ts",
     "./apis": "./src/apis/index.ts",
     "./env": "./src/env.ts",
-    "./utils": "./src/utils/index.ts"
+    "./utils": "./src/utils/index.ts",
+    "./types": "./src/types/index.ts"
   }
 }
