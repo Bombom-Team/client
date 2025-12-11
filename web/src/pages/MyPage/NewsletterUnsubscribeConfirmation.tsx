@@ -26,17 +26,16 @@ const NewsletterUnsubscribeConfirmation = ({
         <ModalButton
           isMobile={isMobile}
           variant="outlined"
-          text="네, 해지할래요"
           onClick={() => {
             onUnsubscribe();
             onClose();
           }}
-        />
-        <ModalButton
-          isMobile={isMobile}
-          text="아니요, 유지할래요"
-          onClick={onClose}
-        />
+        >
+          네, 해지할래요
+        </ModalButton>
+        <ModalButton isMobile={isMobile} onClick={onClose}>
+          아니요, 유지할래요
+        </ModalButton>
       </ModalButtonWrapper>
     </Container>
   );
