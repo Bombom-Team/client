@@ -83,11 +83,17 @@ const CarouselSlides = ({
         onTouchEnd: handleTouchEnd,
       })}
     >
-      {slidesToRender.map((child, index) => (
-        <CarouselSlideIndexContext.Provider value={index} key={index}>
-          {child}
-        </CarouselSlideIndexContext.Provider>
-      ))}
+      {slidesToRender.map((child, index) => {
+        const childKey =
+          isValidElement(child) && child.key !== null ? child.key : 'slide';
+        const key = `${childKey}-${index}`;
+
+        return (
+          <CarouselSlideIndexContext.Provider value={index} key={key}>
+            {child}
+          </CarouselSlideIndexContext.Provider>
+        );
+      })}
     </Container>
   );
 };
