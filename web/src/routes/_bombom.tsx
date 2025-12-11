@@ -1,11 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-import { useEffect } from 'react';
 import { queries } from '@/apis/queries';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
 import PageLayout from '@/components/PageLayout/PageLayout';
-import { useAuth } from '@/contexts/AuthContext';
 import { useAppInstallPrompt } from '@/hooks/useAppInstallPrompt';
+import { useInitializeAuth } from '@/hooks/useInitializeAuth';
 import { useWebViewNotificationActive } from '@/libs/webview/useWebViewNotificationActive';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 
@@ -42,9 +40,6 @@ export const Route = createFileRoute('/_bombom')({
 });
 
 function RouteComponent() {
-  const { updateAuthState } = useAuth();
-  const { data: userInfo } = useQuery(queries.userProfile());
-
   const {
     showModal,
     handleInstallClick,
@@ -53,12 +48,9 @@ function RouteComponent() {
     modalRef,
   } = useAppInstallPrompt();
 
+  useInitializeAuth();
   useWebViewRegisterToken();
   useWebViewNotificationActive();
-
-  useEffect(() => {
-    updateAuthState(userInfo ?? null);
-  }, [userInfo, updateAuthState]);
 
   return (
     <PageLayout>
