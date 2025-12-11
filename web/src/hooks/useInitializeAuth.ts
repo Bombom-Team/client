@@ -4,11 +4,12 @@ import { queries } from '@/apis/queries';
 import { useAuth } from '@/contexts/AuthContext';
 
 export const useInitializeAuth = () => {
-  const { updateAuthState } = useAuth();
+  const { updateAuthState, updateAuthLoading } = useAuth();
   const queryClient = useQueryClient();
-  const userInfo = queryClient.getQueryData(queries.userProfile().queryKey);
+  const userProfile = queryClient.getQueryData(queries.userProfile().queryKey);
 
   useEffect(() => {
-    updateAuthState(userInfo ?? null);
-  }, [userInfo, updateAuthState]);
+    updateAuthState(userProfile ?? null);
+    updateAuthLoading(false);
+  }, [userProfile, updateAuthState, updateAuthLoading]);
 };

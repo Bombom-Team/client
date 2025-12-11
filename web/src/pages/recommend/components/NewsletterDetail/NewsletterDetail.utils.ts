@@ -34,7 +34,7 @@ export const buildSubscribeUrl = (
 export const openSubscribeLink = (
   link: string,
   newsletterName: string,
-  userInfo?: UserInfo,
+  userInfo?: UserInfo | null,
 ) => {
   if (!userInfo) return;
 

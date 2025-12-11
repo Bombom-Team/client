@@ -2,15 +2,15 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import SlideCardList from '../SlideCardList/SlideCardList';
 import Skeleton from '@/components/Skeleton/Skeleton';
+import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
-import { useUserInfo } from '@/hooks/useUserInfo';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { isWebView } from '@/utils/device';
 import logo from '#/assets/avif/logo.avif';
 
 const NewsletterHero = () => {
-  const { userInfo, isLoading } = useUserInfo();
+  const { isLoggedIn, isLoading } = useAuth();
   const navigate = useNavigate();
   const device = useDevice();
   const isPC = device === 'pc';
@@ -33,7 +33,7 @@ const NewsletterHero = () => {
 
   return (
     <>
-      {userInfo ? (
+      {isLoggedIn ? (
         <SlideCardList />
       ) : (
         <Container>

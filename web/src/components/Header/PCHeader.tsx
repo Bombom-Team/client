@@ -4,7 +4,7 @@ import HeaderNavButtons from './HeaderNavButtons';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Skeleton from '../Skeleton/Skeleton';
-import { useUserInfo } from '@/hooks/useUserInfo';
+import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
 
 interface PCHeaderProps {
@@ -12,7 +12,7 @@ interface PCHeaderProps {
 }
 
 const PCHeader = ({ activeNav }: PCHeaderProps) => {
-  const { userInfo, isLoading } = useUserInfo();
+  const { userProfile, isLoading } = useAuth();
 
   return (
     <HeaderContainer>
@@ -26,8 +26,8 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
         <UserInfoWrapper>
           {isLoading ? (
             <Skeleton width="120px" height="40px" />
-          ) : userInfo ? (
-            <HeaderProfile userInfo={userInfo} device="pc" />
+          ) : userProfile ? (
+            <HeaderProfile userInfo={userProfile} device="pc" />
           ) : (
             <LoginButton />
           )}

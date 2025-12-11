@@ -1,30 +1,35 @@
 import {
   createContext,
-  useContext,
-  useState,
-  useMemo,
   useCallback,
+  useContext,
+  useMemo,
+  useState,
 } from 'react';
-import type { components } from '@/types/openapi';
+import type { UserInfo } from '@/types/me';
 import type { PropsWithChildren } from 'react';
 
-type UserProfile = components['schemas']['MemberProfileResponse'];
-
 export interface AuthContextType {
-  userProfile: UserProfile | null;
+  userProfile: UserInfo | null;
   isLoggedIn: boolean;
-  updateAuthState: (profile: UserProfile | null) => void;
+  updateAuthState: (profile: UserInfo | null) => void;
+  isLoading: boolean;
+  updateAuthLoading: (loading: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<UserInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const isLoggedIn = useMemo(() => Boolean(userProfile), [userProfile]);
 
-  const updateAuthState = useCallback((profile: UserProfile | null) => {
+  const updateAuthState = useCallback((profile: UserInfo | null) => {
     setUserProfile(profile);
+  }, []);
+
+  const updateAuthLoading = useCallback((loading: boolean) => {
+    setIsLoading(loading);
   }, []);
 
   return (
@@ -33,6 +38,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         userProfile,
         isLoggedIn,
         updateAuthState,
+        isLoading,
+        updateAuthLoading,
       }}
     >
       {children}
