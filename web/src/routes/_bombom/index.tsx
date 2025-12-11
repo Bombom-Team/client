@@ -6,6 +6,12 @@ import NewsletterHero from '@/pages/recommend/components/NewsletterHero/Newslett
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
 import type { Device } from '@/hooks/useDevice';
 import type { NewsletterTab } from '@/pages/recommend/components/NewsletterDetail/NewsletterDetail.types';
+import type { SearchSchemaInput } from '@tanstack/react-router';
+
+interface BombomIndexSearch {
+  newsletterDetail?: number;
+  tab?: NewsletterTab;
+}
 
 export const Route = createFileRoute('/_bombom/')({
   head: () => ({
@@ -16,13 +22,10 @@ export const Route = createFileRoute('/_bombom/')({
     ],
   }),
   component: Index,
-  validateSearch: (search: {
-    newsletterDetail?: number;
-    tab?: NewsletterTab;
-  }) => {
+  validateSearch: (search: BombomIndexSearch & SearchSchemaInput) => {
     return {
-      newsletterDetail: search.newsletterDetail,
-      tab: search.tab,
+      newsletterDetail: search?.newsletterDetail,
+      tab: search?.tab,
     };
   },
 });
