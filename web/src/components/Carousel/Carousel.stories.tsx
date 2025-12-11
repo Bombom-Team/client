@@ -63,7 +63,7 @@ export const Default: Story = {
 
 export const WithAutoPlay: Story = {
   render: () => (
-    <Carousel.Root autoPlay>
+    <Carousel.Root loop autoPlay>
       <Carousel.Slides>
         {slides.map(({ label, backgroundColor }) => (
           <Carousel.Slide key={label}>
@@ -77,7 +77,7 @@ export const WithAutoPlay: Story = {
 
 export const WithCustomAutoPlayDelay: Story = {
   render: () => (
-    <Carousel.Root autoPlay={{ delay: 1000 }}>
+    <Carousel.Root loop autoPlay={{ delay: 1000 }}>
       <Carousel.Slides>
         {slides.map(({ label, backgroundColor }) => (
           <Carousel.Slide key={label}>

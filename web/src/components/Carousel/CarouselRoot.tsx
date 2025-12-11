@@ -4,11 +4,15 @@ import useCarousel from './useCarousel';
 import type { AutoPlayOption } from './Carousel.types';
 import type { PropsWithChildren } from 'react';
 
-interface CarouselRootProps {
-  loop?: boolean;
-  autoPlay?: AutoPlayOption;
-  hasAnimation?: boolean;
-}
+/**
+ * 1. 무한 캐러셀만 자동 재생 설정 가능
+ * 2. 자동 재생 활성화 상태에서만 재생 속도 설정 가능
+ */
+type PlayOption =
+  | { loop: true; autoPlay?: AutoPlayOption }
+  | { loop?: false; autoPlay?: false };
+
+type CarouselRootProps = { hasAnimation?: boolean } & PlayOption;
 
 const CarouselRoot = ({
   loop = false,
