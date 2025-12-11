@@ -5,13 +5,13 @@ import {
   useMemo,
   useState,
 } from 'react';
-import type { UserInfo } from '@/types/me';
+import type { UserProfile } from '@/types/me';
 import type { PropsWithChildren } from 'react';
 
 export interface AuthContextType {
-  userProfile: UserInfo | null;
+  userProfile: UserProfile | null;
   isLoggedIn: boolean;
-  updateAuthState: (profile: UserInfo | null) => void;
+  updateAuthState: (profile: UserProfile | null) => void;
   isLoading: boolean;
   updateAuthLoading: (loading: boolean) => void;
 }
@@ -19,12 +19,12 @@ export interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [userProfile, setUserProfile] = useState<UserInfo | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isLoggedIn = useMemo(() => Boolean(userProfile), [userProfile]);
 
-  const updateAuthState = useCallback((profile: UserInfo | null) => {
+  const updateAuthState = useCallback((profile: UserProfile | null) => {
     setUserProfile(profile);
   }, []);
 

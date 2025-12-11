@@ -8,14 +8,14 @@ import { useDevice } from '@/hooks/useDevice';
 import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { copyToClipboard } from '@/utils/copy';
 import { isWebView } from '@/utils/device';
-import type { UserInfo } from '@/types/me';
+import type { UserProfile } from '@/types/me';
 import ChatIcon from '#/assets/svg/chat.svg';
 import CopyIcon from '#/assets/svg/copy.svg';
 import LogoutIcon from '#/assets/svg/logout.svg';
 import MailIcon from '#/assets/svg/mail.svg';
 
 interface ProfileDetailProps {
-  userInfo: UserInfo;
+  userInfo: UserProfile;
   onClose?: () => void;
 }
 

@@ -4,10 +4,10 @@ import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
 import Modal from '../Modal/Modal';
 import useModal from '../Modal/useModal';
 import type { Device } from '@/hooks/useDevice';
-import type { UserInfo } from '@/types/me';
+import type { UserProfile } from '@/types/me';
 
 interface HeaderProfileProps {
-  userInfo: UserInfo;
+  userInfo: UserProfile;
   device: Device;
 }
 
