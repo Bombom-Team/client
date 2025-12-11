@@ -1,5 +1,6 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
+import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 import { navigateToOAuthLogin } from '@/utils/auth';
 import { isIOS, isWebView } from '@/utils/device';
@@ -33,7 +34,7 @@ const LoginCard = () => {
         onClick={() => {
           navigateToOAuthLogin({ provider: 'google' });
         }}
-        type="button"
+        variant="outlined"
       >
         <GoogleIcon width={24} height={24} fill="black" />
         Google로 계속하기
@@ -43,7 +44,7 @@ const LoginCard = () => {
           onClick={() => {
             navigateToOAuthLogin({ provider: 'apple' });
           }}
-          type="button"
+          variant="outlined"
         >
           <AppleIcon width={24} height={24} fill="black" />
           Apple로 계속하기
@@ -134,26 +135,12 @@ const Divider = styled.div`
   );
 `;
 
-const LoginButton = styled.button`
+const LoginButton = styled(Button)`
   width: 100%;
   padding: 12px;
-  border: 2px solid ${({ theme }) => theme.colors.dividers};
-  border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 5%);
 
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
-
-  background-color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.body1};
-  text-align: center;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primaryLight};
-    transition: background-color 0.5s ease;
-  }
 `;
 
 const Terms = styled.p`
