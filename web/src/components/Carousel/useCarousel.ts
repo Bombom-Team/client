@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DEFAULT_SPEED,
-  FINITE_START_SLIDE_INDEX,
-  INFINITY_START_SLIDE_INDEX,
+  NON_LOOP_START_SLIDE_INDEX,
+  LOOP_START_SLIDE_INDEX,
   SWIPE_ANGLE_THRESHOLD,
   SWIPE_OFFSET_THRESHOLD,
 } from './Carousel.constants';
@@ -16,7 +16,7 @@ interface UseCarouselProps {
 
 const useCarousel = ({ loop, autoPlay }: UseCarouselProps) => {
   const [slideIndex, setSlideIndex] = useState(
-    loop ? INFINITY_START_SLIDE_INDEX : FINITE_START_SLIDE_INDEX,
+    loop ? LOOP_START_SLIDE_INDEX : NON_LOOP_START_SLIDE_INDEX,
   );
   const [slideCount, setSlideCount] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -42,12 +42,12 @@ const useCarousel = ({ loop, autoPlay }: UseCarouselProps) => {
 
     if (!loop) return;
 
-    if (slideIndex < INFINITY_START_SLIDE_INDEX) {
+    if (slideIndex < LOOP_START_SLIDE_INDEX) {
       setSlideIndex(slideCount);
     }
 
     if (slideIndex > slideCount) {
-      setSlideIndex(INFINITY_START_SLIDE_INDEX);
+      setSlideIndex(LOOP_START_SLIDE_INDEX);
     }
   }, [slideIndex, slideCount, loop]);
 
@@ -119,7 +119,7 @@ const useCarousel = ({ loop, autoPlay }: UseCarouselProps) => {
       }
 
       const offset = clientX - swipeStartRef.current.x;
-      const isFirstSlide = slideIndex === FINITE_START_SLIDE_INDEX;
+      const isFirstSlide = slideIndex === NON_LOOP_START_SLIDE_INDEX;
       const isLastSlide = slideIndex === slideCount - 1;
 
       const isSwipeBoundary =
