@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import SlideCardList from '../SlideCardList/SlideCardList';
-import Skeleton from '@/components/Skeleton/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
@@ -10,18 +9,10 @@ import { isWebView } from '@/utils/device';
 import logo from '#/assets/avif/logo.avif';
 
 const NewsletterHero = () => {
-  const { isLoggedIn, isLoading } = useAuth();
+  const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
   const device = useDevice();
   const isPC = device === 'pc';
-
-  if (isLoading) {
-    return (
-      <Container>
-        <Skeleton width="100%" height="280px" />
-      </Container>
-    );
-  }
 
   const handleLoginClick = () => {
     if (isWebView())

@@ -12,24 +12,17 @@ export interface AuthContextType {
   userProfile: UserProfile | null;
   isLoggedIn: boolean;
   updateAuthState: (profile: UserProfile | null) => void;
-  isLoading: boolean;
-  updateAuthLoading: (loading: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   const isLoggedIn = useMemo(() => Boolean(userProfile), [userProfile]);
 
   const updateAuthState = useCallback((profile: UserProfile | null) => {
     setUserProfile(profile);
-  }, []);
-
-  const updateAuthLoading = useCallback((loading: boolean) => {
-    setIsLoading(loading);
   }, []);
 
   return (
@@ -38,8 +31,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         userProfile,
         isLoggedIn,
         updateAuthState,
-        isLoading,
-        updateAuthLoading,
       }}
     >
       {children}
