@@ -1,7 +1,9 @@
 import styled from '@emotion/styled';
+import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 import type { Theme } from '@emotion/react';
+import mails from '#/assets/avif/mails.avif';
 
 const PAIN_POINTS = [
   {
@@ -38,6 +40,13 @@ const PainPoint = () => {
           </SpeechBubble>
         ))}
       </PainPointWrapper>
+      <PromoteWrapper device={device}>
+        <MailsImage src={mails} alt="mails" device={device} />
+        <PromoteTextBox device={device}>
+          <Lead>메일함에 이렇게 뉴스레터가 쌓여만 있지는 않으신가요?</Lead>
+          <Support>이제는 봄봄에서 한 번에 관리해요</Support>
+        </PromoteTextBox>
+      </PromoteWrapper>
     </Container>
   );
 };
@@ -71,8 +80,6 @@ const Subtitle = styled.p<{ device: Device }>`
 `;
 
 const Ellipsis = styled.div<{ device: Device }>`
-  margin: ${({ device }) => (device === 'mobile' ? '16px 0' : '24px 0')};
-
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
@@ -81,7 +88,6 @@ const Ellipsis = styled.div<{ device: Device }>`
 
 const PainPointWrapper = styled.div<{ device: Device }>`
   width: 100%;
-  max-width: ${({ device }) => (device === 'mobile' ? '360px' : '720px')};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '20px' : '44px')};
@@ -134,3 +140,42 @@ const addSpeechBubbleTailStyle = (
     }
   `;
 };
+
+const PromoteWrapper = styled.div<{ device: Device }>`
+  margin: ${({ device }) => (device === 'mobile' ? '16px 0' : '32px 0')};
+
+  display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '48px')};
+  flex-direction: column;
+  align-items: center;
+`;
+
+const MailsImage = styled(ImageWithFallback)<{ device: Device }>`
+  width: 100%;
+  max-width: ${({ device }) => (device === 'mobile' ? '280px' : '560px')};
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 10%);
+
+  filter: drop-shadow(0 2px 8px rgb(0 0 0 / 5%));
+`;
+
+const PromoteTextBox = styled.p<{ device: Device }>`
+  display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  flex-direction: column;
+
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading4};
+  font-weight: ${({ device }) => (device === 'mobile' ? 600 : 0)};
+  text-align: center;
+
+  word-break: keep-all;
+`;
+
+const Lead = styled.p`
+  color: ${({ theme }) => theme.colors.textPrimary};
+`;
+
+const Support = styled.p`
+  color: ${({ theme }) => theme.colors.primary};
+`;
