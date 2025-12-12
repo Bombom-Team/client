@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
+import type { Theme } from '@emotion/react';
 
 const PAIN_POINTS = [
   {
@@ -98,38 +99,34 @@ const SpeechBubble = styled.div<{ align: AlignType; device: Device }>`
     device === 'pc' ? theme.fonts.body1 : theme.fonts.body2};
   text-align: center;
 
-  ${({ align, device }) =>
-    device === 'pc' &&
-    (align === 'left'
-      ? `
-    align-self: flex-start;
-  `
-      : `
-    align-self: flex-end;
-  `)}
-
-  &::before {
-    position: absolute;
-    top: 50%;
-
-    border-style: solid;
-    content: '';
-
-    transform: translateY(-50%);
-
-    ${({ align, device, theme }) =>
-      device === 'pc'
-        ? align === 'left'
-          ? `
-      left: -12px;
-      border-width: 12px 16px 12px 0;
-      border-color: transparent ${theme.colors.primaryLight} transparent ${theme.colors.primaryLight};
-    `
-          : `
-      right: -12px;
-      border-width: 12px 0 12px 16px;
-      border-color: transparent transparent transparent ${theme.colors.primaryLight};
-    `
-        : 'display: none;'}
-  }
+  ${({ align, device, theme }) =>
+    addSpeechBubbleTailStyle(align, device, theme)}
 `;
+
+const addSpeechBubbleTailStyle = (
+  align: AlignType,
+  device: Device,
+  theme: Theme,
+) => {
+  if (device === 'mobile') return '';
+
+  const isLeft = align === 'left';
+  return `
+    align-self: ${isLeft ? 'flex-start' : 'flex-end'};
+
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: 12px;
+      border-style: solid;
+
+      ${isLeft ? 'left' : 'right'}: -36px;
+      border-width: ${isLeft ? '18px 48px 4px 0' : '18px 0 4px 48px'};
+      border-color: ${
+        isLeft
+          ? `transparent ${theme.colors.primaryLight} transparent transparent`
+          : `transparent transparent transparent ${theme.colors.primaryLight}`
+      };
+    }
+  `;
+};
