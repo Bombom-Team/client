@@ -31,13 +31,13 @@ const PainPoint = () => {
         <br />꼭 읽고 싶은 뉴스레터조차 흘려보내는 우리의 바쁜 일상
       </Subtitle>
       <Ellipsis device={device}>...</Ellipsis>
-      <SpeechBubbleWrapper device={device}>
+      <PainPointWrapper device={device}>
         {PAIN_POINTS.map((point, index) => (
           <SpeechBubble key={index} align={point.align} device={device}>
             {point.text}
           </SpeechBubble>
         ))}
-      </SpeechBubbleWrapper>
+      </PainPointWrapper>
     </Container>
   );
 };
@@ -79,26 +79,29 @@ const Ellipsis = styled.div<{ device: Device }>`
   letter-spacing: 4px;
 `;
 
-const SpeechBubbleWrapper = styled.div<{ device: Device }>`
+const PainPointWrapper = styled.div<{ device: Device }>`
   width: 100%;
-  max-width: 720px;
+  max-width: ${({ device }) => (device === 'mobile' ? '360px' : '720px')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '20px' : '32px')};
+  gap: ${({ device }) => (device === 'mobile' ? '20px' : '44px')};
   flex-direction: column;
   align-items: center;
 `;
 
 const SpeechBubble = styled.div<{ align: AlignType; device: Device }>`
   position: relative;
+  width: ${({ device }) => (device === 'mobile' ? '100%' : 'fit-content')};
   padding: ${({ device }) => (device === 'mobile' ? '20px 24px' : '24px 32px')};
   border-radius: 20px;
 
   background-color: ${({ theme }) => theme.colors.primaryLight};
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
   text-align: center;
+
+  word-break: keep-all;
 
   ${({ align, device, theme }) =>
     addSpeechBubbleTailStyle(align, device, theme)}
