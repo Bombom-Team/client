@@ -53,9 +53,10 @@ const TitleWrapper = styled.div<{ device: Device }>`
 
 const HeroBadge = styled.div<{ device: Device }>`
   padding: 4px 12px;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border: 1px solid ${({ theme }) => theme.colors.primaryLight};
   border-radius: 20px;
 
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
