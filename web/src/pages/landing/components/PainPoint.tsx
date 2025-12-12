@@ -46,10 +46,11 @@ export default PainPoint;
 
 const Container = styled.section<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'pc' ? '100px 60px' : '60px 20px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '60px 20px' : '100px 60px'};
 
   display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '40px' : '24px')};
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '40px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -58,23 +59,23 @@ const Container = styled.section<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'pc' ? theme.fonts.heading2 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
   text-align: center;
 `;
 
 const Subtitle = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'pc' ? theme.fonts.body1 : theme.fonts.body3};
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
   text-align: center;
 `;
 
 const Ellipsis = styled.div<{ device: Device }>`
-  margin: ${({ device }) => (device === 'pc' ? '24px 0' : '16px 0')};
+  margin: ${({ device }) => (device === 'mobile' ? '16px 0' : '24px 0')};
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'pc' ? theme.fonts.body1 : theme.fonts.body3};
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
   letter-spacing: 4px;
 `;
 
@@ -83,20 +84,20 @@ const SpeechBubbleWrapper = styled.div<{ device: Device }>`
   max-width: 720px;
 
   display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '32px' : '20px')};
+  gap: ${({ device }) => (device === 'mobile' ? '20px' : '32px')};
   flex-direction: column;
   align-items: center;
 `;
 
 const SpeechBubble = styled.div<{ align: AlignType; device: Device }>`
   position: relative;
-  padding: ${({ device }) => (device === 'pc' ? '24px 32px' : '20px 24px')};
+  padding: ${({ device }) => (device === 'mobile' ? '20px 24px' : '24px 32px')};
   border-radius: 20px;
 
   background-color: ${({ theme }) => theme.colors.primaryLight};
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'pc' ? theme.fonts.body1 : theme.fonts.body2};
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
   text-align: center;
 
   ${({ align, device, theme }) =>

@@ -34,7 +34,7 @@ export default LandingHero;
 const Container = styled.section<{ device: Device }>`
   width: 100%;
   min-height: 100vh;
-  padding: ${({ device }) => (device === 'pc' ? '80px 60px' : '24px 20px')};
+  padding: ${({ device }) => (device === 'mobile' ? '24px 20px' : '80px 60px')};
 
   display: flex;
   align-items: center;
@@ -43,7 +43,7 @@ const Container = styled.section<{ device: Device }>`
 
 const TitleWrapper = styled.div<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '32px' : '20px')};
+  gap: ${({ device }) => (device === 'mobile' ? '20px' : '32px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -65,7 +65,7 @@ const HeroBadge = styled.div<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'pc' ? theme.fonts.heading1 : theme.fonts.heading3};
+    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading1};
 `;
 
 const Highlight = styled.span`
@@ -75,7 +75,7 @@ const Highlight = styled.span`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'pc' ? theme.fonts.body1 : theme.fonts.body3};
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
 `;
 
 const PromptScroll = styled.div<{ device: Device }>`
@@ -86,5 +86,5 @@ const PromptScroll = styled.div<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'pc' ? theme.fonts.body2 : theme.fonts.caption};
+    device === 'mobile' ? theme.fonts.caption : theme.fonts.body2};
 `;
