@@ -21,8 +21,10 @@ function LandingPage() {
 
   return (
     <Container device={device}>
-      <LandingHero />
-      <PainPoint />
+      <ContentWrapper device={device}>
+        <LandingHero />
+        <PainPoint />
+      </ContentWrapper>
     </Container>
   );
 }
@@ -31,6 +33,11 @@ const Container = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   background: linear-gradient(
     180deg,
     #f9f8f8 0%,
@@ -38,4 +45,8 @@ const Container = styled.main<{ device: Device }>`
     rgb(212 79 19 / 25%) 80%,
     #f9f8f8 100%
   );
+`;
+
+const ContentWrapper = styled.div<{ device: Device }>`
+  max-width: ${({ device }) => (device === 'mobile' ? '360px' : '720px')};
 `;
