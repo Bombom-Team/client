@@ -70,7 +70,7 @@ const LandingFeatures = () => {
         description={
           <>
             <p>원하는 뉴스레터를 바로 알림으로</p>
-            <p>중요한 소식을 놓치지 않도록 제때 알려드려요</p>
+            <p>중요한 소식을 놓치지 않도록 알려드려요</p>
           </>
         }
         previewComponent={<img src={notification} alt="뉴스레터 알림" />}

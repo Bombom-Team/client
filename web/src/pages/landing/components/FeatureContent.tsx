@@ -30,8 +30,8 @@ const FeatureContent = ({
           <TitleWrapper>
             <Title device={device}>{title}</Title>
             <Icon
-              width={device === 'mobile' ? 24 : 36}
-              height={device === 'mobile' ? 24 : 36}
+              width={device === 'mobile' ? 24 : 32}
+              height={device === 'mobile' ? 24 : 32}
               fill={theme.colors.primary}
             />
           </TitleWrapper>
@@ -101,8 +101,10 @@ const TitleWrapper = styled.div`
 
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+  font: ${({ device, theme }) => {
+    if (device === 'mobile') return theme.fonts.heading4;
+    return device === 'tablet' ? theme.fonts.heading3 : theme.fonts.heading2;
+  }};
 `;
 
 const DescriptionWrapper = styled.div<{
@@ -118,8 +120,10 @@ const DescriptionWrapper = styled.div<{
   }};
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
+  font: ${({ device, theme }) => {
+    if (device === 'mobile') return theme.fonts.body3;
+    return device === 'tablet' ? theme.fonts.body1 : theme.fonts.bodyLarge;
+  }};
 `;
 
 const ImageSection = styled.div<{ device: Device }>`
@@ -129,7 +133,10 @@ const ImageSection = styled.div<{ device: Device }>`
   justify-content: center;
 
   img {
-    width: ${({ device }) => (device === 'mobile' ? '280px' : '400px')};
+    width: ${({ device }) => {
+      if (device === 'mobile') return '280px';
+      return device === 'tablet' ? '340px' : '400px';
+    }};
     height: auto;
     border-radius: 16px;
 
