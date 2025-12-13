@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { warningVisible } from '@/apis/constants/announceMessage';
 import { queries } from '@/apis/queries';
 import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
+import StorageUsageBar from '@/components/StorageUsageBar/StorageUsageBar';
 import RequireLogin from '@/hocs/RequireLogin';
 import { useDevice } from '@/hooks/useDevice';
 import MobileStorageContent from '@/pages/storage/components/MobileStorageContent/MobileStorageContent';
@@ -127,6 +128,14 @@ function Storage() {
               <StorageIcon color={theme.colors.white} />
             </TitleIconBox>
             <Title>뉴스레터 보관함</Title>
+            {!isMobile && (
+              <StorageUsageBarWrapper>
+                <StorageUsageBar
+                  cur={newsletterFilters?.totalCount ?? 0}
+                  max={500}
+                />
+              </StorageUsageBarWrapper>
+            )}
           </TitleWrapper>
         </>
       )}
@@ -170,6 +179,7 @@ function Storage() {
               disableEditMode={disableEditMode}
               deleteArticles={(articleIds) => deleteArticles(articleIds)}
               resetPage={resetPage}
+              totalStorageCount={newsletterFilters?.totalCount ?? 0}
             />
           )}
         </MainContentSection>
@@ -210,6 +220,11 @@ const TitleIconBox = styled.div`
 
 const Title = styled.h1`
   font: ${({ theme }) => theme.fonts.heading3};
+  white-space: nowrap;
+`;
+
+const StorageUsageBarWrapper = styled.div`
+  margin-left: 16px;
 `;
 
 const ContentWrapper = styled.div<{ isPC: boolean }>`
