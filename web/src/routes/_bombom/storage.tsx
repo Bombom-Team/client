@@ -170,6 +170,7 @@ function Storage() {
               onPageChange={handlePageChange}
               page={page}
               resetPage={resetPage}
+              totalStorageCount={newsletterFilters?.totalCount ?? 0}
             />
           ) : (
             <MobileStorageContent
