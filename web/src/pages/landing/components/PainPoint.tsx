@@ -75,8 +75,7 @@ const Title = styled.h2<{ device: Device }>`
 const Subtitle = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.heading5};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
   text-align: center;
 `;
 
@@ -166,8 +165,7 @@ const PromoteTextBox = styled.p<{ device: Device }>`
   flex-direction: column;
 
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading4};
-  font-weight: ${({ device }) => (device === 'mobile' ? 600 : 0)};
+    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
   text-align: center;
 
   word-break: keep-all;

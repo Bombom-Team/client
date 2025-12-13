@@ -75,8 +75,7 @@ const Highlight = styled.span`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.heading5};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
 `;
 
 const PromptScroll = styled.div<{ device: Device }>`
