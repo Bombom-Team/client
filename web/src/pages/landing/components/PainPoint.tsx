@@ -107,8 +107,6 @@ const SpeechBubble = styled.div<{ align: AlignType; device: Device }>`
     device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
   text-align: center;
 
-  word-break: keep-all;
-
   ${({ align, device, theme }) =>
     addSpeechBubbleTailStyle(align, device, theme)}
 `;
@@ -167,8 +165,6 @@ const PromoteTextBox = styled.div<{ device: Device }>`
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
   text-align: center;
-
-  word-break: keep-all;
 `;
 
 const Lead = styled.p`

@@ -49,4 +49,6 @@ const Container = styled.main<{ device: Device }>`
     rgb(212 79 19 / 25%) 80%,
     #f9f8f8 100%
   );
+
+  word-break: keep-all;
 `;

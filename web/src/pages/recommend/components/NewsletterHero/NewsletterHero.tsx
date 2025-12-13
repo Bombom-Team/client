@@ -97,8 +97,6 @@ const HeroTitle = styled.h1<{ isPC: boolean }>`
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme, isPC }) =>
     isPC ? theme.fonts.heading3 : theme.fonts.heading4};
-
-  word-break: keep-all;
 `;
 
 const HeroSubtitle = styled.p<{ isPC: boolean }>`
@@ -106,7 +104,6 @@ const HeroSubtitle = styled.p<{ isPC: boolean }>`
   font: ${({ theme, isPC }) => (isPC ? theme.fonts.body1 : theme.fonts.body2)};
 
   opacity: 0.9;
-  word-break: keep-all;
 `;
 
 const CTAButton = styled.button<{ isPC: boolean }>`
