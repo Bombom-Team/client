@@ -152,9 +152,9 @@ const MailsImage = styled(ImageWithFallback)<{ device: Device }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'mobile' ? '280px' : '560px')};
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgb(0 0 0 / 10%);
 
-  filter: drop-shadow(0 2px 8px rgb(0 0 0 / 5%));
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 10%))
+    drop-shadow(0 2px 4px rgb(0 0 0 / 10%));
 `;
 
 const PromoteTextBox = styled.div<{ device: Device }>`

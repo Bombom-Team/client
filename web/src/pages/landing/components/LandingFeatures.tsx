@@ -86,7 +86,7 @@ const Container = styled.section<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '84px' : '100px')};
+  gap: ${({ device }) => (device === 'mobile' ? '84px' : '168px')};
   flex-direction: column;
 `;
 
@@ -100,7 +100,9 @@ const CategoryImage = styled(ImageWithFallback)`
   left: 50%;
   width: 160px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgb(0 0 0 / 10%);
+
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 10%))
+    drop-shadow(0 2px 4px rgb(0 0 0 / 10%));
 
   transform: translate(-50%, -50%);
 `;
@@ -111,7 +113,9 @@ const NavBarImage = styled(ImageWithFallback)`
   left: 50%;
   width: 160px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgb(0 0 0 / 10%);
+
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 10%))
+    drop-shadow(0 2px 4px rgb(0 0 0 / 10%));
 
   transform: translate(-50%, -50%);
 `;
