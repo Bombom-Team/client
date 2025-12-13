@@ -50,7 +50,7 @@ const FeatureContent = ({
 
 export default FeatureContent;
 
-const Container = styled.section<{ device: Device }>`
+const Container = styled.article<{ device: Device }>`
   width: 100%;
 
   display: flex;

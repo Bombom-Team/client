@@ -159,7 +159,7 @@ const MailsImage = styled(ImageWithFallback)<{ device: Device }>`
   filter: drop-shadow(0 2px 8px rgb(0 0 0 / 5%));
 `;
 
-const PromoteTextBox = styled.p<{ device: Device }>`
+const PromoteTextBox = styled.div<{ device: Device }>`
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
   flex-direction: column;
