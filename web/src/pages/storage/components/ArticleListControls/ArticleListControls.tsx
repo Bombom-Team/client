@@ -6,7 +6,9 @@ import Checkbox from '@/components/Checkbox/Checkbox';
 import useModal from '@/components/Modal/useModal';
 import SearchInput from '@/components/SearchInput/SearchInput';
 import Select from '@/components/Select/Select';
+import StorageUsageBar from '@/components/StorageUsageBar/StorageUsageBar';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useDevice } from '@/hooks/useDevice';
 import { useSearchParamState } from '@/hooks/useSearchParamState';
 import type { Sort } from './ArticleListControls.types';
 import CancelIcon from '#/assets/svg/close.svg';
@@ -21,6 +23,7 @@ interface ArticleListControlsProps {
   isAllSelected: boolean;
   onToggleSelectAll: () => void;
   hasBookmarkedArticles?: boolean;
+  totalStorageCount: number;
 }
 
 const ArticleListControls = ({
@@ -32,7 +35,10 @@ const ArticleListControls = ({
   isAllSelected,
   onToggleSelectAll,
   hasBookmarkedArticles = false,
+  totalStorageCount,
 }: ArticleListControlsProps) => {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
   const [search, setSearch] = useState('');
   const [, setSearchParam] = useSearchParamState('search');
   const [sort, setSort] = useSearchParamState<Sort>('sort', {
@@ -61,37 +67,44 @@ const ArticleListControls = ({
         onChange={handleSearchChange}
       />
       <SummaryBar>
-        {editMode ? (
-          <DeleteWrapper>
-            <Checkbox
-              id="all"
-              checked={isAllSelected}
-              onChange={onToggleSelectAll}
-            />
-            <DeleteCount>{checkedCount}개 선택됨</DeleteCount>
-            <HorizontalDivider />
-            <DeleteIconButton
-              disabled={checkedCount === 0}
-              onClick={() => {
-                if (checkedCount === 0) return;
-
-                openModal();
-              }}
-            >
-              <DeleteIcon
-                fill={
-                  checkedCount === 0
-                    ? theme.colors.disabledBackground
-                    : theme.colors.error
-                }
+        <SummaryBox>
+          {editMode ? (
+            <DeleteWrapper>
+              <Checkbox
+                id="all"
+                checked={isAllSelected}
+                onChange={onToggleSelectAll}
               />
-            </DeleteIconButton>
+              <DeleteCount>{checkedCount}개 선택됨</DeleteCount>
+              <HorizontalDivider />
+              <DeleteIconButton
+                disabled={checkedCount === 0}
+                onClick={() => {
+                  if (checkedCount === 0) return;
 
-            <CancelIcon fill={theme.colors.black} onClick={onExitEditMode} />
-          </DeleteWrapper>
-        ) : (
-          <TextButton onClick={onEnterEditMode}>선택 삭제</TextButton>
-        )}
+                  openModal();
+                }}
+              >
+                <DeleteIcon
+                  fill={
+                    checkedCount === 0
+                      ? theme.colors.disabledBackground
+                      : theme.colors.error
+                  }
+                />
+              </DeleteIconButton>
+
+              <CancelIcon fill={theme.colors.black} onClick={onExitEditMode} />
+            </DeleteWrapper>
+          ) : (
+            <TextButton onClick={onEnterEditMode}>선택 삭제</TextButton>
+          )}
+          {isMobile && (
+            <StorageUsageBarWrapper>
+              <StorageUsageBar cur={totalStorageCount ?? 0} max={500} />
+            </StorageUsageBarWrapper>
+          )}
+        </SummaryBox>
 
         <Select
           options={[
@@ -129,6 +142,17 @@ const SummaryBar = styled.div`
   justify-content: space-between;
 `;
 
+const SummaryBox = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+`;
+
+const StorageUsageBarWrapper = styled.div`
+  max-width: 120px;
+  display: flex;
+`;
+
 const DeleteWrapper = styled.div`
   display: flex;
   gap: 8px;
@@ -158,6 +182,7 @@ const TextButton = styled.button`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body2};
+  white-space: nowrap;
 
   &:hover {
     text-decoration: underline;
