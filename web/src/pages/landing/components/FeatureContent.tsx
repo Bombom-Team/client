@@ -131,9 +131,9 @@ const ImageSection = styled.div<{ device: Device }>`
   img {
     width: ${({ device }) => (device === 'mobile' ? '280px' : '400px')};
     height: auto;
-    border-radius: 12px;
+    border-radius: 16px;
 
-    filter: drop-shadow(0 4px 6px rgb(0 0 0 / 10%))
-      drop-shadow(0 2px 4px rgb(0 0 0 / 10%));
+    filter: drop-shadow(0 10px 15px rgb(0 0 0 / 10%))
+      drop-shadow(0 4px 6px rgb(0 0 0 / 10%));
   }
 `;

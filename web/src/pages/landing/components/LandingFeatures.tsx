@@ -99,10 +99,10 @@ const CategoryImage = styled(ImageWithFallback)`
   top: 44%;
   left: 50%;
   width: 160px;
-  border-radius: 12px;
+  border-radius: 16px;
 
-  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 10%))
-    drop-shadow(0 2px 4px rgb(0 0 0 / 10%));
+  filter: drop-shadow(0 10px 15px rgb(0 0 0 / 10%))
+    drop-shadow(0 4px 6px rgb(0 0 0 / 10%));
 
   transform: translate(-50%, -50%);
 `;
@@ -112,10 +112,10 @@ const NavBarImage = styled(ImageWithFallback)`
   top: 80%;
   left: 50%;
   width: 160px;
-  border-radius: 12px;
+  border-radius: 16px;
 
-  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 10%))
-    drop-shadow(0 2px 4px rgb(0 0 0 / 10%));
+  filter: drop-shadow(0 10px 15px rgb(0 0 0 / 10%))
+    drop-shadow(0 4px 6px rgb(0 0 0 / 10%));
 
   transform: translate(-50%, -50%);
 `;
