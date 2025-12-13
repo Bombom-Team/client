@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
+import LandingAppDownload from '@/pages/landing/components/LandingAppDownload';
 import LandingHero from '@/pages/landing/components/LandingHero';
 import PainPoint from '@/pages/landing/components/PainPoint';
 import type { Device } from '@/hooks/useDevice';
@@ -24,6 +25,7 @@ function LandingPage() {
       <ContentWrapper device={device}>
         <LandingHero />
         <PainPoint />
+        <LandingAppDownload />
       </ContentWrapper>
     </Container>
   );
