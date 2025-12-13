@@ -87,6 +87,7 @@ const Ellipsis = styled.div<{ device: Device }>`
 
 const PainPointWrapper = styled.div<{ device: Device }>`
   width: 100%;
+  max-width: ${({ device }) => (device === 'mobile' ? '360px' : '720px')};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '20px' : '44px')};
