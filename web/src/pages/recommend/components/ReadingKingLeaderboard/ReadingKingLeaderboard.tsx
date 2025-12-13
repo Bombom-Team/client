@@ -7,7 +7,7 @@ import { RANKING } from './ReadingKingLeaderboard.constants';
 import ReadingKingLeaderboardSkeleton from './ReadingKingLeaderboardSkeleton';
 import ReadingKingMyRank from './ReadingKingMyRank';
 import { queries } from '@/apis/queries';
-import Carousel from '@/components/Carousel/Carousel';
+import { Carousel } from '@/components/Carousel/Carousel';
 import ArrowIcon from '@/components/icons/ArrowIcon';
 import Tooltip from '@/components/Tooltip/Tooltip';
 import { chunk } from '@/utils/array';
@@ -63,26 +63,30 @@ const ReadingKingLeaderboard = () => {
         </Tooltip>
       </TitleWrapper>
 
-      <Carousel hasSlideButton={true} slideButtonPosition="bottom">
-        {chunk(monthlyReadingRankContent, RANKING.boardUnit).map(
-          (leaderboard, leaderboardIndex) => (
-            <LeaderboardList
-              key={`leaderboard-${leaderboardIndex}`}
-              role="list"
-              aria-label={`이달의 독서왕 순위 ${leaderboardIndex + 1}페이지`}
-            >
-              {leaderboard.map((item, index) => (
-                <LeaderboardItem
-                  key={`rank-${index}` + item.nickname}
-                  rank={item.rank}
-                  name={item.nickname}
-                  readCount={item.monthlyReadCount}
-                />
-              ))}
-            </LeaderboardList>
-          ),
-        )}
-      </Carousel>
+      <Carousel.Root loop>
+        <Carousel.Slides>
+          {chunk(monthlyReadingRankContent, RANKING.boardUnit).map(
+            (leaderboard, leaderboardIndex) => (
+              <Carousel.Slide key={`slide-${leaderboardIndex}`}>
+                <LeaderboardList
+                  role="list"
+                  aria-label={`이달의 독서왕 순위 ${leaderboardIndex + 1}페이지`}
+                >
+                  {leaderboard.map((item, index) => (
+                    <LeaderboardItem
+                      key={`rank-${index}` + item.nickname}
+                      rank={item.rank}
+                      name={item.nickname}
+                      readCount={item.monthlyReadCount}
+                    />
+                  ))}
+                </LeaderboardList>
+              </Carousel.Slide>
+            ),
+          )}
+        </Carousel.Slides>
+        <Carousel.NavButtons position="bottom" />
+      </Carousel.Root>
 
       {userRank && (
         <>
