@@ -55,8 +55,7 @@ export default PainPoint;
 
 const Container = styled.section<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) =>
-    device === 'mobile' ? '60px 20px' : '100px 60px'};
+  padding: ${({ device }) => (device === 'mobile' ? '60px 0' : '100px 0')};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '24px' : '40px')};

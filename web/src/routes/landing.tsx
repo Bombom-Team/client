@@ -34,6 +34,7 @@ function LandingPage() {
 const Container = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
+  padding: ${({ device }) => (device === 'mobile' ? '0 20px' : '0 60px')};
 
   display: flex;
   flex-direction: column;
