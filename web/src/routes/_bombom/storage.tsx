@@ -3,7 +3,9 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useSearch } from '@tanstack/react-router';
 import { useState } from 'react';
+import { warningVisible } from '@/apis/constants/announceMessage';
 import { queries } from '@/apis/queries';
+import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
 import RequireLogin from '@/hocs/RequireLogin';
 import { useDevice } from '@/hooks/useDevice';
 import MobileStorageContent from '@/pages/storage/components/MobileStorageContent/MobileStorageContent';
@@ -13,10 +15,13 @@ import PCStorageContent from '@/pages/storage/components/PCStorageContent/PCStor
 import QuickMenu from '@/pages/storage/components/QuickMenu/QuickMenu';
 import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticlesMutation';
 import { useStorageFilters } from '@/pages/storage/hooks/useStorageFilters';
+import useWarningVisibleMutation from '@/pages/storage/hooks/useWarningVisibleMutation';
 import { isValidKeyword } from '@/pages/storage/utils/isValidKeyword';
 import type { GetArticlesStatisticsNewslettersResponse } from '@/apis/articles';
 import type { Sort } from '@/pages/storage/components/ArticleListControls/ArticleListControls.types';
 import StorageIcon from '#/assets/svg/storage.svg';
+
+const MIN_WARNING_LIMIT = 450;
 
 export const Route = createFileRoute('/_bombom/storage')({
   head: () => ({
@@ -53,6 +58,10 @@ function Storage() {
   const isPC = device === 'pc';
   const isMobile = device === 'mobile';
   const [editMode, setEditMode] = useState(false);
+  const { data: warningVisibleStatus } = useQuery(
+    queries.warningVisibleStatus(),
+  );
+
   const searchParam = useSearch({
     from: '/_bombom/storage',
     select: (state) => state.search,
@@ -75,6 +84,20 @@ function Storage() {
 
   const { mutate: deleteArticles } = useDeleteArticlesMutation();
 
+  const [warningChecked, setWarningChecked] = useState(false);
+  const isAnnounceVisible =
+    warningVisibleStatus?.isVisible &&
+    (newsletterFilters?.totalCount ?? 0) >= MIN_WARNING_LIMIT;
+  const { mutate: postWarningVisible } = useWarningVisibleMutation();
+
+  const handleCloseAnnounce = () => {
+    if (warningChecked) {
+      postWarningVisible({
+        isVisible: false,
+      });
+    }
+  };
+
   const enableEditMode = () => {
     setEditMode(true);
   };
@@ -89,15 +112,36 @@ function Storage() {
   return (
     <Container>
       {!isMobile && (
-        <TitleWrapper>
-          <TitleIconBox>
-            <StorageIcon color={theme.colors.white} />
-          </TitleIconBox>
-          <Title>뉴스레터 보관함</Title>
-        </TitleWrapper>
+        <>
+          {isPC && isAnnounceVisible && (
+            <AnnounceBar
+              isPC={isPC}
+              announceText={warningVisible}
+              checked={warningChecked}
+              onChangeChecked={setWarningChecked}
+              onClose={handleCloseAnnounce}
+            />
+          )}
+          <TitleWrapper>
+            <TitleIconBox>
+              <StorageIcon color={theme.colors.white} />
+            </TitleIconBox>
+            <Title>뉴스레터 보관함</Title>
+          </TitleWrapper>
+        </>
       )}
 
       <ContentWrapper isPC={isPC}>
+        {!isPC && isAnnounceVisible && (
+          <AnnounceBar
+            isPC={isPC}
+            announceText={warningVisible}
+            checked={warningChecked}
+            onChangeChecked={setWarningChecked}
+            onClose={handleCloseAnnounce}
+          />
+        )}
+
         <SidebarSection isPC={isPC}>
           {!newsletterFilters ? (
             <NewsletterFilterSkeleton />
