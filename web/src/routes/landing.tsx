@@ -37,6 +37,7 @@ const Container = styled.main<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '0 20px' : '0 60px')};
 
   display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;

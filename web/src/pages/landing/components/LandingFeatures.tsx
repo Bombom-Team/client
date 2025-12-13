@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
+import { useDevice, type Device } from '@/hooks/useDevice';
 import FeatureContent from '@/pages/landing/components/FeatureContent';
 import highlight from '#/assets/avif/highlight.avif';
 import navBar from '#/assets/avif/nav-bar.avif';
@@ -13,8 +14,10 @@ import EditIcon from '#/assets/svg/edit.svg';
 import MailIcon from '#/assets/svg/mail.svg';
 
 const LandingFeatures = () => {
+  const device = useDevice();
+
   return (
-    <>
+    <Container device={device}>
       <FeatureContent
         Icon={CompassIcon}
         title="뉴스레터 추천"
@@ -73,11 +76,19 @@ const LandingFeatures = () => {
         previewComponent={<img src={notification} alt="뉴스레터 알림" />}
         componentPosition="left"
       />
-    </>
+    </Container>
   );
 };
 
 export default LandingFeatures;
+
+const Container = styled.section<{ device: Device }>`
+  width: 100%;
+
+  display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '84px' : '100px')};
+  flex-direction: column;
+`;
 
 const MultipleImageWrapper = styled.div`
   position: relative;

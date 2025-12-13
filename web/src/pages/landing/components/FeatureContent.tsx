@@ -29,7 +29,11 @@ const FeatureContent = ({
         <TextSection device={device} componentPosition={componentPosition}>
           <TitleWrapper>
             <Title device={device}>{title}</Title>
-            <Icon width={24} height={24} fill={theme.colors.primary} />
+            <Icon
+              width={device === 'mobile' ? 24 : 36}
+              height={device === 'mobile' ? 24 : 36}
+              fill={theme.colors.primary}
+            />
           </TitleWrapper>
           <DescriptionWrapper
             device={device}
@@ -48,7 +52,6 @@ export default FeatureContent;
 
 const Container = styled.section<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '60px 0' : '100px 0')};
 
   display: flex;
   justify-content: center;
@@ -62,13 +65,13 @@ const ContentWrapper = styled.div<{
   max-width: ${({ device }) => (device === 'mobile' ? '400px' : '1000px')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '32px' : '60px')};
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '40px')};
   flex-direction: ${({ device, componentPosition }) => {
     if (device === 'mobile') return 'column';
     return componentPosition === 'left' ? 'row-reverse' : 'row';
   }};
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 `;
 
 const TextSection = styled.div<{
@@ -76,7 +79,7 @@ const TextSection = styled.div<{
   componentPosition: AlignType;
 }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
+  gap: ${({ device }) => (device === 'mobile' ? '16px' : '32px')};
   flex: 1;
   flex-direction: column;
   align-items: ${({ device, componentPosition }) => {
@@ -99,7 +102,7 @@ const TitleWrapper = styled.div`
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading3};
+    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
 `;
 
 const DescriptionWrapper = styled.div<{
@@ -107,6 +110,7 @@ const DescriptionWrapper = styled.div<{
   componentPosition: AlignType;
 }>`
   display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '4px' : '8px')};
   flex-direction: column;
   align-items: ${({ device, componentPosition }) => {
     if (device === 'mobile') return 'center';
@@ -115,7 +119,7 @@ const DescriptionWrapper = styled.div<{
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
 `;
 
 const ImageSection = styled.div<{ device: Device }>`
@@ -125,8 +129,7 @@ const ImageSection = styled.div<{ device: Device }>`
   justify-content: center;
 
   img {
-    width: 100%;
+    width: ${({ device }) => (device === 'mobile' ? '280px' : '400px')};
     height: auto;
-    min-width: 360px;
   }
 `;
