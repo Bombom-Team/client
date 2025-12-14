@@ -4,6 +4,7 @@ import { useDevice } from '@/hooks/useDevice';
 import LandingAppDownload from '@/pages/landing/components/LandingAppDownload';
 import LandingFeatures from '@/pages/landing/components/LandingFeatures';
 import LandingHero from '@/pages/landing/components/LandingHero';
+import LandingPopularNewsletters from '@/pages/landing/components/LandingPopularNewsletters';
 import PainPoint from '@/pages/landing/components/PainPoint';
 import type { Device } from '@/hooks/useDevice';
 
@@ -27,6 +28,7 @@ function LandingPage() {
       <PainPoint />
       <LandingAppDownload />
       <LandingFeatures />
+      <LandingPopularNewsletters />
     </Container>
   );
 }
