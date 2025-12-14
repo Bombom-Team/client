@@ -62,7 +62,6 @@ const ContentWrapper = styled.div<{
   componentPosition: AlignType;
 }>`
   width: 100%;
-  max-width: ${({ device }) => (device === 'mobile' ? '400px' : '1000px')};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '24px' : '40px')};

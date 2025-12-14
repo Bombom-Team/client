@@ -84,6 +84,7 @@ export default LandingFeatures;
 
 const Container = styled.section<{ device: Device }>`
   width: 100%;
+  max-width: ${({ device }) => (device === 'mobile' ? '400px' : '960px')};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '84px' : '168px')};
