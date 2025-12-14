@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   SWIPE_ANGLE_THRESHOLD,
   SWIPE_OFFSET_THRESHOLD,
@@ -11,7 +11,6 @@ const useCarouselSwipe = ({
   slideIndex,
   slideCount,
   loop,
-  isTransitioning,
   slideWrapperRef,
   onSwipe,
 }: {
@@ -19,7 +18,6 @@ const useCarouselSwipe = ({
   slideIndex: number;
   slideCount: number;
   loop: boolean;
-  isTransitioning: boolean;
   slideWrapperRef: RefObject<HTMLUListElement | null>;
   onSwipe: (direction: -1 | 1) => void;
 }) => {
@@ -27,38 +25,48 @@ const useCarouselSwipe = ({
   const swipeStartRef = useRef({ x: 0, y: 0 });
   const swipeOffsetRef = useRef(0);
 
-  const swipeStart = (x: number, y: number) => {
-    if (!enabled || isTransitioning) return;
-    setIsSwiping(true);
-    swipeStartRef.current = { x, y };
-  };
+  const swipeStart = useCallback(
+    (x: number, y: number) => {
+      if (!enabled) return;
 
-  const swipeMove = (x: number, y: number) => {
-    if (!isSwiping || !slideWrapperRef.current) return;
-
-    const angle = Math.abs(
-      calculateAngle(swipeStartRef.current.x, swipeStartRef.current.y, x, y),
-    );
-
-    if (angle > SWIPE_ANGLE_THRESHOLD && angle < 180 - SWIPE_ANGLE_THRESHOLD) {
-      setIsSwiping(false);
+      setIsSwiping(true);
+      swipeStartRef.current = { x, y };
       swipeOffsetRef.current = 0;
-      return;
-    }
+    },
+    [enabled],
+  );
 
-    const offset = x - swipeStartRef.current.x;
-    const isFirst = slideIndex === 0;
-    const isLast = slideIndex === slideCount - 1;
+  const swipeMove = useCallback(
+    (x: number, y: number) => {
+      if (!isSwiping || !slideWrapperRef.current) return;
 
-    const isBoundary =
-      !loop && ((offset > 0 && isFirst) || (offset < 0 && isLast));
+      const angle = Math.abs(
+        calculateAngle(swipeStartRef.current.x, swipeStartRef.current.y, x, y),
+      );
 
-    swipeOffsetRef.current = isBoundary ? 0 : offset;
+      if (
+        angle > SWIPE_ANGLE_THRESHOLD &&
+        angle < 180 - SWIPE_ANGLE_THRESHOLD
+      ) {
+        setIsSwiping(false);
+        return;
+      }
 
-    slideWrapperRef.current.style.transform = `translateX(calc(-${slideIndex * 100}% + ${swipeOffsetRef.current}px))`;
-  };
+      const offset = x - swipeStartRef.current.x;
+      const isFirst = slideIndex === 0;
+      const isLast = slideIndex === slideCount - 1;
 
-  const swipeEnd = () => {
+      const isBoundary =
+        !loop && ((offset > 0 && isFirst) || (offset < 0 && isLast));
+
+      swipeOffsetRef.current = isBoundary ? 0 : offset;
+
+      slideWrapperRef.current.style.transform = `translateX(calc(-${slideIndex * 100}% + ${swipeOffsetRef.current}px))`;
+    },
+    [isSwiping, slideIndex, slideCount, loop, slideWrapperRef],
+  );
+
+  const swipeEnd = useCallback(() => {
     if (!isSwiping) return;
     setIsSwiping(false);
 
@@ -68,18 +76,28 @@ const useCarouselSwipe = ({
 
     swipeOffsetRef.current = 0;
     slideWrapperRef.current?.style.removeProperty('transform');
-  };
+  }, [isSwiping, onSwipe, slideWrapperRef]);
+
+  const handleTouchStart = useCallback(
+    (e: TouchEvent) => {
+      const touchPoint = e.touches[0];
+      if (touchPoint) swipeStart(touchPoint.clientX, touchPoint.clientY);
+    },
+    [swipeStart],
+  );
+
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      const touchPoint = e.touches[0];
+      if (touchPoint) swipeMove(touchPoint.clientX, touchPoint.clientY);
+    },
+    [swipeMove],
+  );
 
   return {
     isSwiping,
-    handleTouchStart: (e: TouchEvent) => {
-      const t = e.touches[0];
-      if (t) swipeStart(t.clientX, t.clientY);
-    },
-    handleTouchMove: (e: TouchEvent) => {
-      const t = e.touches[0];
-      if (t) swipeMove(t.clientX, t.clientY);
-    },
+    handleTouchStart,
+    handleTouchMove,
     handleTouchEnd: swipeEnd,
   };
 };

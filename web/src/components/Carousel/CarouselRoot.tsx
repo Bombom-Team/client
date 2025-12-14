@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useCallback, useRef, type PropsWithChildren } from 'react';
+import { DEFAULT_SPEED } from './Carousel.constants';
 import { CarouselContext } from './CarouselContext';
 import useCarouselAutoPlay from './useCarouselAutoPlay';
 import useCarouselState from './useCarouselState';
@@ -39,11 +40,10 @@ const CarouselRoot = ({
 
   const { isSwiping, handleTouchStart, handleTouchMove, handleTouchEnd } =
     useCarouselSwipe({
-      enabled: slideCount > 1,
+      enabled: !isTransitioning,
       slideIndex,
       slideCount,
       loop,
-      isTransitioning,
       slideWrapperRef,
       onSwipe: (dir) => {
         setIsTransitioning(true);
@@ -52,18 +52,14 @@ const CarouselRoot = ({
     });
 
   const handleNext = useCallback(() => {
-    if (isTransitioning || isSwiping) return;
-
     setIsTransitioning(true);
     next();
-  }, [isTransitioning, isSwiping, setIsTransitioning, next]);
+  }, [setIsTransitioning, next]);
 
   const handlePrev = useCallback(() => {
-    if (isTransitioning || isSwiping) return;
-
     setIsTransitioning(true);
     prev();
-  }, [isTransitioning, isSwiping, setIsTransitioning, prev]);
+  }, [setIsTransitioning, prev]);
 
   const autoPlayEnabled =
     !!autoPlay && !isSwiping && !isTransitioning && slideCount > 1;
