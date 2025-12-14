@@ -1,26 +1,24 @@
 import { useEffect } from 'react';
-import { DEFAULT_SPEED } from './Carousel.constants';
 import type { AutoPlayOption } from './Carousel.types';
 
 const useCarouselAutoPlay = ({
   enabled,
-  isSwiping,
-  isTransitioning,
+  delay,
+  slideIndex,
   onNext,
 }: {
   enabled: false | AutoPlayOption;
-  isSwiping: boolean;
-  isTransitioning: boolean;
+  delay: number;
+  slideIndex: number;
   onNext: () => void;
 }) => {
   useEffect(() => {
-    if (!enabled || isSwiping || isTransitioning) return;
-
-    const delay = typeof enabled === 'object' ? enabled.delay : DEFAULT_SPEED;
+    if (!enabled) return;
 
     const id = setTimeout(onNext, delay);
+
     return () => clearTimeout(id);
-  }, [enabled, isSwiping, isTransitioning, onNext]);
+  }, [enabled, slideIndex, onNext, delay]);
 };
 
 export default useCarouselAutoPlay;

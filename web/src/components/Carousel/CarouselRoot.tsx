@@ -65,14 +65,14 @@ const CarouselRoot = ({
     prev();
   }, [isTransitioning, isSwiping, setIsTransitioning, prev]);
 
+  const autoPlayEnabled =
+    !!autoPlay && !isSwiping && !isTransitioning && slideCount > 1;
+
   useCarouselAutoPlay({
-    enabled: autoPlay,
-    isSwiping,
-    isTransitioning,
-    onNext: () => {
-      setIsTransitioning(true);
-      next();
-    },
+    enabled: autoPlayEnabled,
+    delay: typeof autoPlay === 'object' ? autoPlay.delay : DEFAULT_SPEED,
+    slideIndex,
+    onNext: handleNext,
   });
 
   return (
