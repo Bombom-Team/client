@@ -36,7 +36,8 @@ function LandingPage() {
 const Container = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
-  padding: ${({ device }) => (device === 'mobile' ? '0 20px' : '0 60px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0 20px 80px' : '0 60px 240px'};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};

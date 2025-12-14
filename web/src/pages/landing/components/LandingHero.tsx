@@ -34,7 +34,6 @@ export default LandingHero;
 const Container = styled.section<{ device: Device }>`
   width: 100%;
   min-height: 100vh;
-  padding: ${({ device }) => (device === 'mobile' ? '24px 0' : '80px 0')};
 
   display: flex;
   align-items: center;
