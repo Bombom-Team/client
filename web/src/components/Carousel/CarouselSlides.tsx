@@ -38,8 +38,6 @@ const CarouselSlides = ({
     loop,
   } = useCarouselContext();
 
-  const hasMultipleSlides = slideCount > 1;
-
   const { handleFocus, handleBlur } = useCarouselAccessibility();
 
   const slidesToRender = loop
@@ -69,19 +67,17 @@ const CarouselSlides = ({
       isTransitioning={isTransitioning}
       isSwiping={isSwiping}
       onTransitionEnd={handleTransitionEnd}
-      hasAnimation={hasMultipleSlides ? hasAnimation : false}
-      showNextSlidePart={hasMultipleSlides ? showNextSlidePart : false}
+      hasAnimation={hasAnimation}
+      showNextSlidePart={showNextSlidePart}
       tabIndex={0}
       aria-live="off"
       aria-atomic="true"
       aria-label={`총 ${slideCount}개 중 ${loop ? slideIndex : slideIndex + 1}번째 슬라이드`}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      {...(hasMultipleSlides && {
-        onTouchStart: handleTouchStart,
-        onTouchMove: handleTouchMove,
-        onTouchEnd: handleTouchEnd,
-      })}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {slidesToRender.map((child, index) => {
         const childKey =
