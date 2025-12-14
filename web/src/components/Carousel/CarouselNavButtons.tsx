@@ -11,25 +11,39 @@ interface CarouselNavButtonsProps {
 const CarouselNavButtons = ({
   position = 'middle',
 }: CarouselNavButtonsProps) => {
-  const { prev, next } = useCarouselContext();
+  const { loop, slideIndex, slideCount, handlePrev, handleNext } =
+    useCarouselContext();
+
+  const nextDisabled = !loop && slideIndex >= slideCount - 1;
+  const prevDisabled = !loop && slideIndex <= 0;
 
   return (
     <Container position={position}>
-      <NavButton type="button" onClick={prev} aria-label="이전 슬라이드 이동">
+      <NavButton
+        type="button"
+        onClick={handlePrev}
+        disabled={prevDisabled}
+        aria-label="이전 슬라이드 이동"
+      >
         <ChevronIcon
           direction="left"
           width="100%"
           height="100%"
-          fill={theme.colors.primary}
+          fill={prevDisabled ? theme.colors.disabledText : theme.colors.primary}
         />
       </NavButton>
 
-      <NavButton type="button" onClick={next} aria-label="다음 슬라이드 이동">
+      <NavButton
+        type="button"
+        onClick={handleNext}
+        disabled={nextDisabled}
+        aria-label="다음 슬라이드 이동"
+      >
         <ChevronIcon
           direction="right"
           width="100%"
           height="100%"
-          fill={theme.colors.primary}
+          fill={nextDisabled ? theme.colors.disabledText : theme.colors.primary}
         />
       </NavButton>
     </Container>
@@ -67,8 +81,4 @@ const NavButton = styled.button`
   background-color: ${({ theme }) => theme.colors.white};
 
   pointer-events: auto;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.dividers};
-  }
 `;
