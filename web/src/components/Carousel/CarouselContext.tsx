@@ -19,8 +19,8 @@ export interface CarouselContextValue {
   handleTouchEnd: () => void;
 
   // navigation
-  next: () => void;
-  prev: () => void;
+  handleNext: () => void;
+  handlePrev: () => void;
 
   // options
   loop: boolean;
