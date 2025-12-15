@@ -62,11 +62,7 @@ const Container = styled.article<{ device: Device; isVisible: boolean }>`
 
   transform: translate3d(0, 40px, 0);
 
-  ${({ isVisible }) =>
-    isVisible &&
-    `
-    animation: fade-in-up 1s ease forwards;
-  `}
+  ${({ isVisible }) => isVisible && `animation: fade-in-up 1s ease forwards;`}
 
   @keyframes fade-in-up {
     to {
