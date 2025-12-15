@@ -1,5 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 import type { ReactNode, ComponentType, SVGProps } from 'react';
@@ -22,9 +23,10 @@ const FeatureContent = ({
   componentPosition = 'right',
 }: FeatureContentProps) => {
   const device = useDevice();
+  const { animationRef, isVisible } = useScrollAnimation(0.4);
 
   return (
-    <Container device={device}>
+    <Container ref={animationRef} isVisible={isVisible} device={device}>
       <ContentWrapper device={device} componentPosition={componentPosition}>
         <TextSection device={device} componentPosition={componentPosition}>
           <TitleWrapper>
@@ -50,11 +52,28 @@ const FeatureContent = ({
 
 export default FeatureContent;
 
-const Container = styled.article<{ device: Device }>`
+const Container = styled.article<{ device: Device; isVisible: boolean }>`
   width: 100%;
 
   display: flex;
   justify-content: center;
+
+  opacity: 0;
+
+  transform: translate3d(0, 40px, 0);
+
+  ${({ isVisible }) =>
+    isVisible &&
+    `
+    animation: fade-in-up 1s ease forwards;
+  `}
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 `;
 
 const ContentWrapper = styled.div<{

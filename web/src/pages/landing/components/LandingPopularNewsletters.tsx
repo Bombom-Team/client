@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
+import { useScrollAnimation } from '@/pages/landing/hooks/useScrollAnimation';
 import type { Device } from '@/hooks/useDevice';
 import careet from '#/assets/avif/careet.avif';
 import dailybyte from '#/assets/avif/dailybyte.avif';
@@ -53,9 +54,10 @@ const newsletters = [
 
 const LandingPopularNewsletters = () => {
   const device = useDevice();
+  const { animationRef, isVisible } = useScrollAnimation(0.4);
 
   return (
-    <Container device={device}>
+    <Container ref={animationRef} device={device}>
       <TitleWrapper>
         <Title device={device}>인기 뉴스레터</Title>
         <Subtitle device={device}>
@@ -63,8 +65,13 @@ const LandingPopularNewsletters = () => {
         </Subtitle>
       </TitleWrapper>
       <NewslettersGrid device={device}>
-        {newsletters.map((newsletter) => (
-          <NewsletterCard key={newsletter.name} device={device}>
+        {newsletters.map((newsletter, index) => (
+          <NewsletterCard
+            key={newsletter.name}
+            isVisible={isVisible}
+            device={device}
+            index={index}
+          >
             <NewsletterThumbnail
               src={newsletter.imageSource}
               alt={newsletter.name}
@@ -129,7 +136,11 @@ const NewslettersGrid = styled.div<{ device: Device }>`
     device === 'mobile' ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)'};
 `;
 
-const NewsletterCard = styled.div<{ device: Device }>`
+const NewsletterCard = styled.div<{
+  device: Device;
+  isVisible: boolean;
+  index: number;
+}>`
   min-width: 0;
   padding: ${({ device }) => (device === 'mobile' ? '20px' : '24px')};
   border-radius: 16px;
@@ -141,6 +152,24 @@ const NewsletterCard = styled.div<{ device: Device }>`
   align-items: stretch;
 
   background: ${({ theme }) => theme.colors.white};
+
+  opacity: 0;
+
+  transform: translate3d(0, 40px, 0);
+
+  ${({ isVisible, index }) =>
+    isVisible &&
+    `
+    animation: fade-in-up 0.6s ease forwards;
+    animation-delay: ${index * 0.1}s;
+  `}
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 `;
 
 const NewsletterThumbnail = styled.img<{ device: Device }>`
