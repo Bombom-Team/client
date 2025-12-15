@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
@@ -24,9 +25,10 @@ type AlignType = 'left' | 'right';
 
 const PainPoint = () => {
   const device = useDevice();
+  const { animationRef, isVisible } = useScrollAnimation(0.4);
 
   return (
-    <Container device={device}>
+    <Container ref={animationRef} device={device}>
       <Title device={device}>왜 봄봄일까요?</Title>
       <Subtitle device={device}>
         복잡한 메일함 속에서 놓쳐버리는 가치 있는 글들
@@ -35,7 +37,13 @@ const PainPoint = () => {
       <Ellipsis device={device}>...</Ellipsis>
       <PainPointWrapper device={device}>
         {PAIN_POINTS.map((point, index) => (
-          <SpeechBubble key={index} align={point.align} device={device}>
+          <SpeechBubble
+            key={index}
+            align={point.align}
+            isVisible={isVisible}
+            device={device}
+            index={index}
+          >
             {point.text}
           </SpeechBubble>
         ))}
@@ -95,7 +103,12 @@ const PainPointWrapper = styled.div<{ device: Device }>`
   align-items: center;
 `;
 
-const SpeechBubble = styled.div<{ align: AlignType; device: Device }>`
+const SpeechBubble = styled.div<{
+  align: AlignType;
+  device: Device;
+  isVisible: boolean;
+  index: number;
+}>`
   position: relative;
   width: ${({ device }) => (device === 'mobile' ? '100%' : 'fit-content')};
   padding: ${({ device }) => (device === 'mobile' ? '20px 24px' : '24px 32px')};
@@ -106,6 +119,24 @@ const SpeechBubble = styled.div<{ align: AlignType; device: Device }>`
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
   text-align: center;
+
+  opacity: 0;
+
+  transform: translate3d(0, 40px, 0);
+
+  ${({ isVisible, index }) =>
+    isVisible &&
+    `
+    animation: fade-in-up 1.2s ease forwards;
+    animation-delay: ${index * 0.3}s;
+  `}
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 
   ${({ align, device, theme }) =>
     addSpeechBubbleTailStyle(align, device, theme)}
