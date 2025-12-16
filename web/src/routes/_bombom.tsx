@@ -8,12 +8,19 @@ import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken'
 
 let isFirstVisit = true;
 
+const LANDING_VISITED_KEY = 'hasVisitedLanding';
+
 export const Route = createFileRoute('/_bombom')({
   component: RouteComponent,
   beforeLoad: async ({
     context,
     location,
   }): Promise<void | ReturnType<typeof redirect>> => {
+    const hasVisitedLanding = localStorage.getItem(LANDING_VISITED_KEY);
+    if (!hasVisitedLanding) {
+      return redirect({ to: '/landing' });
+    }
+
     if (!isFirstVisit) return;
 
     const { queryClient } = context;

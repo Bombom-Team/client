@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import { useDevice } from '@/hooks/useDevice';
 import LandingAppDownload from '@/pages/landing/components/LandingAppDownload';
 import LandingFeatures from '@/pages/landing/components/LandingFeatures';
@@ -9,6 +10,8 @@ import LandingHero from '@/pages/landing/components/LandingHero';
 import LandingPopularNewsletters from '@/pages/landing/components/LandingPopularNewsletters';
 import PainPoint from '@/pages/landing/components/PainPoint';
 import type { Device } from '@/hooks/useDevice';
+
+const LANDING_VISITED_KEY = 'hasVisitedLanding';
 
 export const Route = createFileRoute('/landing')({
   head: () => ({
@@ -23,6 +26,10 @@ export const Route = createFileRoute('/landing')({
 
 function LandingPage() {
   const device = useDevice();
+
+  useEffect(() => {
+    localStorage.setItem(LANDING_VISITED_KEY, 'true');
+  }, []);
 
   return (
     <Container device={device}>
