@@ -17,11 +17,11 @@ const LandingAppDownload = () => {
   const [storeType, setStoreType] = useState<StoreType | null>(null);
 
   const handleStoreButtonClick = (type: StoreType) => {
-    if (device === 'mobile') {
-      downloadApp();
-    } else {
+    if (device === 'pc') {
       setStoreType(type);
       openModal();
+    } else {
+      downloadApp();
     }
   };
 
