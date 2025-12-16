@@ -1,4 +1,4 @@
-import ProgressBar from '../ProgressBar/ProgressBar';
+import ProgressBar from '../../../../components/ProgressBar/ProgressBar';
 
 interface StorageUsageBarProps {
   cur: number;

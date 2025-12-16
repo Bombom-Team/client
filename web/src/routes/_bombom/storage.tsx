@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { warningVisible } from '@/apis/constants/announceMessage';
 import { queries } from '@/apis/queries';
 import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
-import StorageUsageBar from '@/components/StorageUsageBar/StorageUsageBar';
 import RequireLogin from '@/hocs/RequireLogin';
 import { useDevice } from '@/hooks/useDevice';
 import MobileStorageContent from '@/pages/storage/components/MobileStorageContent/MobileStorageContent';
@@ -14,6 +13,7 @@ import NewsLetterFilter from '@/pages/storage/components/NewsletterFilter/Newsle
 import NewsletterFilterSkeleton from '@/pages/storage/components/NewsletterFilter/NewsletterFilterSkeleton';
 import PCStorageContent from '@/pages/storage/components/PCStorageContent/PCStorageContent';
 import QuickMenu from '@/pages/storage/components/QuickMenu/QuickMenu';
+import StorageUsageBar from '@/pages/storage/components/StorageUsageBar/StorageUsageBar';
 import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticlesMutation';
 import { useStorageFilters } from '@/pages/storage/hooks/useStorageFilters';
 import useWarningVisibleMutation from '@/pages/storage/hooks/useWarningVisibleMutation';
