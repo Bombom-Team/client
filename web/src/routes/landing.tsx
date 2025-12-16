@@ -4,6 +4,7 @@ import { useDevice } from '@/hooks/useDevice';
 import LandingAppDownload from '@/pages/landing/components/LandingAppDownload';
 import LandingFeatures from '@/pages/landing/components/LandingFeatures';
 import LandingGetStartedCTA from '@/pages/landing/components/LandingGetStartedCTA';
+import LandingHeader from '@/pages/landing/components/LandingHeader';
 import LandingHero from '@/pages/landing/components/LandingHero';
 import LandingPopularNewsletters from '@/pages/landing/components/LandingPopularNewsletters';
 import PainPoint from '@/pages/landing/components/PainPoint';
@@ -25,6 +26,7 @@ function LandingPage() {
 
   return (
     <Container device={device}>
+      <LandingHeader />
       <LandingHero />
       <PainPoint />
       <LandingAppDownload />
@@ -39,7 +41,7 @@ const Container = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
   padding: ${({ device }) =>
-    device === 'mobile' ? '0 20px 80px' : '0 60px 240px'};
+    device === 'mobile' ? '100px 20px 80px' : '120px 60px 240px'};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
