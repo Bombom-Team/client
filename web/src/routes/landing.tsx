@@ -48,7 +48,7 @@ const Container = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
   padding: ${({ device }) =>
-    device === 'mobile' ? '100px 20px 80px' : '120px 60px 240px'};
+    device === 'mobile' ? '0 20px 80px 20px' : '0 60px 240px 60px'};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
