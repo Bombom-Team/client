@@ -7,7 +7,6 @@ import useModal from '@/components/Modal/useModal';
 import SearchInput from '@/components/SearchInput/SearchInput';
 import Select from '@/components/Select/Select';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
-import { useDevice } from '@/hooks/useDevice';
 import { useSearchParamState } from '@/hooks/useSearchParamState';
 import StorageUsageBar from '@/pages/storage/components/StorageUsageBar/StorageUsageBar';
 import type { Sort } from './ArticleListControls.types';
@@ -37,8 +36,6 @@ const ArticleListControls = ({
   hasBookmarkedArticles = false,
   totalStorageCount,
 }: ArticleListControlsProps) => {
-  const device = useDevice();
-  const isMobile = device === 'mobile';
   const [search, setSearch] = useState('');
   const [, setSearchParam] = useSearchParamState('search');
   const [sort, setSort] = useSearchParamState<Sort>('sort', {
@@ -99,11 +96,10 @@ const ArticleListControls = ({
           ) : (
             <TextButton onClick={onEnterEditMode}>선택 삭제</TextButton>
           )}
-          {isMobile && (
-            <StorageUsageBarWrapper>
-              <StorageUsageBar cur={totalStorageCount ?? 0} max={500} />
-            </StorageUsageBarWrapper>
-          )}
+
+          <StorageUsageBarWrapper>
+            <StorageUsageBar cur={totalStorageCount ?? 0} max={500} />
+          </StorageUsageBarWrapper>
         </SummaryBox>
 
         <Select

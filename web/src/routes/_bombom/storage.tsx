@@ -86,17 +86,20 @@ function Storage() {
   const { mutate: deleteArticles } = useDeleteArticlesMutation();
 
   const [warningChecked, setWarningChecked] = useState(false);
-  const isAnnounceVisible =
+  const [isWarningClosed, setIsWarningClosed] = useState(false);
+  const isWarningVisible =
+    !isWarningClosed &&
     warningVisibleStatus?.isVisible &&
     (newsletterFilters?.totalCount ?? 0) >= MIN_WARNING_LIMIT;
   const { mutate: postWarningVisible } = useWarningVisibleMutation();
 
-  const handleCloseAnnounce = () => {
+  const handleCloseWarning = () => {
     if (warningChecked) {
       postWarningVisible({
         isVisible: false,
       });
     }
+    setIsWarningClosed(true);
   };
 
   const enableEditMode = () => {
@@ -114,12 +117,12 @@ function Storage() {
     <Container>
       {!isMobile && (
         <>
-          {isPC && isAnnounceVisible && (
+          {isPC && isWarningVisible && (
             <AnnounceBar
               announceText={warningVisible}
               checked={warningChecked}
               onChangeChecked={setWarningChecked}
-              onClose={handleCloseAnnounce}
+              onClose={handleCloseWarning}
             />
           )}
           <TitleWrapper>
@@ -127,25 +130,17 @@ function Storage() {
               <StorageIcon color={theme.colors.white} />
             </TitleIconBox>
             <Title>뉴스레터 보관함</Title>
-            {!isMobile && (
-              <StorageUsageBarWrapper>
-                <StorageUsageBar
-                  cur={newsletterFilters?.totalCount ?? 0}
-                  max={500}
-                />
-              </StorageUsageBarWrapper>
-            )}
           </TitleWrapper>
         </>
       )}
 
       <ContentWrapper isPC={isPC}>
-        {!isPC && isAnnounceVisible && (
+        {!isPC && isWarningVisible && (
           <AnnounceBar
             announceText={warningVisible}
             checked={warningChecked}
             onChangeChecked={setWarningChecked}
-            onClose={handleCloseAnnounce}
+            onClose={handleCloseWarning}
           />
         )}
 
