@@ -14,7 +14,7 @@ const LandingGetStartedCTA = () => {
           흩어진 메일은 정리하고 중요한 뉴스레터에 집중해, 매일 조금씩
           성장해보세요.
         </Description>
-        <GetStartedLink to="/login" device={device}>
+        <GetStartedLink to="/" device={device}>
           지금 시작하기
         </GetStartedLink>
       </ContentWrapper>
