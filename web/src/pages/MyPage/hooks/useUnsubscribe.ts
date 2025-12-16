@@ -10,15 +10,15 @@ export const useUnsubscribe = () => {
   const { mutateAsync: unsubscribeNewsletter } =
     useUnsubscribeNewsletterMutation();
   const {
-    modalRef: unsubscribeConfirmModalRef,
-    openModal: openUnsubscribeConfirmModal,
-    closeModal: closeUnsubscribeConfirmModal,
+    modalRef: unsubscribeModalRef,
+    openModal: openUnsubscribeModal,
+    closeModal: closeUnsubscribeModal,
     isOpen,
   } = useModal();
 
-  const handleOpenConfirmModal = (newsletterId: number) => {
+  const handleOpenUnsubscribeModal = (newsletterId: number) => {
     setSelectedNewsletterId(newsletterId);
-    openUnsubscribeConfirmModal();
+    openUnsubscribeModal();
   };
 
   const confirmUnsubscribe = async () => {
@@ -32,14 +32,14 @@ export const useUnsubscribe = () => {
       openExternalLink(data?.unsubscribeUrl);
     }
 
-    closeUnsubscribeConfirmModal();
+    closeUnsubscribeModal();
     setSelectedNewsletterId(null);
   };
 
   return {
-    unsubscribeConfirmModalRef,
-    handleOpenConfirmModal,
-    closeUnsubscribeConfirmModal,
+    unsubscribeModalRef,
+    handleOpenUnsubscribeModal,
+    closeUnsubscribeModal,
     isOpen,
     confirmUnsubscribe,
   };

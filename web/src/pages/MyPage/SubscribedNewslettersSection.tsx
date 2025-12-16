@@ -4,7 +4,7 @@ import { useUnsubscribe } from './hooks/useUnsubscribe';
 import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Modal from '@/components/Modal/Modal';
-import NewsletterUnsubscribeConfirmation from '@/pages/MyPage/NewsletterUnsubscribeConfirmation';
+import NewsletterUnsubscribeModal from '@/pages/MyPage/NewsletterUnsubscribeModal';
 import type { GetMySubscriptionsResponse } from '@/apis/members';
 import type { Device } from '@/hooks/useDevice';
 
@@ -18,10 +18,10 @@ const SubscribedNewslettersSection = ({
   device,
 }: SubscribedNewslettersSectionProps) => {
   const {
-    unsubscribeConfirmModalRef,
+    unsubscribeModalRef,
     isOpen,
-    closeUnsubscribeConfirmModal,
-    handleOpenConfirmModal,
+    closeUnsubscribeModal,
+    handleOpenUnsubscribeModal,
     confirmUnsubscribe,
   } = useUnsubscribe();
   return (
@@ -49,7 +49,7 @@ const SubscribedNewslettersSection = ({
                   <UnsubscribeButton
                     variant="outlined"
                     onClick={() =>
-                      handleOpenConfirmModal(newsletter.newsletterId)
+                      handleOpenUnsubscribeModal(newsletter.newsletterId)
                     }
                   >
                     구독 해지
@@ -68,14 +68,14 @@ const SubscribedNewslettersSection = ({
       </Container>
       {createPortal(
         <Modal
-          modalRef={unsubscribeConfirmModalRef}
-          closeModal={closeUnsubscribeConfirmModal}
+          modalRef={unsubscribeModalRef}
+          closeModal={closeUnsubscribeModal}
           isOpen={isOpen}
           showCloseButton={false}
         >
-          <NewsletterUnsubscribeConfirmation
+          <NewsletterUnsubscribeModal
             onUnsubscribe={confirmUnsubscribe}
-            onClose={closeUnsubscribeConfirmModal}
+            onClose={closeUnsubscribeModal}
           />
         </Modal>,
         document.body,

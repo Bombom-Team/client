@@ -7,7 +7,7 @@ interface NewsletterUnsubscribeModalProps {
   onUnsubscribe: () => void;
 }
 
-const NewsletterUnsubscribeConfirmation = ({
+const NewsletterUnsubscribeModal = ({
   onClose,
   onUnsubscribe,
 }: NewsletterUnsubscribeModalProps) => {
@@ -41,7 +41,7 @@ const NewsletterUnsubscribeConfirmation = ({
   );
 };
 
-export default NewsletterUnsubscribeConfirmation;
+export default NewsletterUnsubscribeModal;
 
 const Container = styled.div<{ isMobile: boolean }>`
   width: 100%;

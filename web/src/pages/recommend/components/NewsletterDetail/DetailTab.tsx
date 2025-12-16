@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import NewsletterSubscribeGuide from './NewsletterSubscribeGuide';
 import Modal from '@/components/Modal/Modal';
 import { useUnsubscribe } from '@/pages/MyPage/hooks/useUnsubscribe';
-import NewsletterUnsubscribeConfirmation from '@/pages/MyPage/NewsletterUnsubscribeConfirmation';
+import NewsletterUnsubscribeModal from '@/pages/MyPage/NewsletterUnsubscribeModal';
 
 interface DetailTabProps {
   newsletterDescription: string;
@@ -19,10 +19,10 @@ const DetailTab = ({
   isMobile,
 }: DetailTabProps) => {
   const {
-    unsubscribeConfirmModalRef,
+    unsubscribeModalRef,
     isOpen,
-    closeUnsubscribeConfirmModal,
-    handleOpenConfirmModal,
+    closeUnsubscribeModal,
+    handleOpenUnsubscribeModal,
     confirmUnsubscribe,
   } = useUnsubscribe();
 
@@ -33,7 +33,7 @@ const DetailTab = ({
         {isSubscribed && (
           <ButtonWrapper>
             <UnsubscribeButton
-              onClick={() => handleOpenConfirmModal(newsletterId)}
+              onClick={() => handleOpenUnsubscribeModal(newsletterId)}
             >
               구독 해지
             </UnsubscribeButton>
@@ -44,14 +44,14 @@ const DetailTab = ({
       </Container>
       {createPortal(
         <Modal
-          modalRef={unsubscribeConfirmModalRef}
-          closeModal={closeUnsubscribeConfirmModal}
+          modalRef={unsubscribeModalRef}
+          closeModal={closeUnsubscribeModal}
           isOpen={isOpen}
           showCloseButton={false}
         >
-          <NewsletterUnsubscribeConfirmation
+          <NewsletterUnsubscribeModal
             onUnsubscribe={confirmUnsubscribe}
-            onClose={closeUnsubscribeConfirmModal}
+            onClose={closeUnsubscribeModal}
           />
         </Modal>,
         document.body,
