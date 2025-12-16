@@ -2,10 +2,9 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { useDevice } from '@/hooks/useDevice';
+import type { AlignType } from '../types/position';
 import type { Device } from '@/hooks/useDevice';
 import type { ReactNode, ComponentType, SVGProps } from 'react';
-
-type AlignType = 'left' | 'right';
 
 interface FeatureContentProps {
   Icon: ComponentType<SVGProps<SVGSVGElement>>;

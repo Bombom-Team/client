@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { useDevice } from '@/hooks/useDevice';
+import type { AlignType } from '../types/position';
 import type { Device } from '@/hooks/useDevice';
 import type { Theme } from '@emotion/react';
 import mails from '#/assets/avif/mails.avif';
@@ -20,8 +21,6 @@ const PAIN_POINTS = [
     align: 'left' as const,
   },
 ];
-
-type AlignType = 'left' | 'right';
 
 const PainPoint = () => {
   const device = useDevice();
