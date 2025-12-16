@@ -1,16 +1,29 @@
 import styled from '@emotion/styled';
+import { Link } from '@tanstack/react-router';
 import HeaderLogo from '@/components/Header/HeaderLogo';
 import LoginButton from '@/components/Header/LoginButton';
+import Skeleton from '@/components/Skeleton/Skeleton';
 import { useDevice } from '@/hooks/useDevice';
+import { useUserInfo } from '@/hooks/useUserInfo';
 import type { Device } from '@/hooks/useDevice';
 
 const LandingHeader = () => {
   const device = useDevice();
+  const { isLoggedIn, isLoading } = useUserInfo();
+
   return (
     <Container device={device}>
       <HeaderWrapper>
         <HeaderLogo device={device} />
-        <LoginButton />
+        {isLoading ? (
+          <Skeleton width="100px" height="40px" borderRadius={12} />
+        ) : isLoggedIn ? (
+          <GoToService device={device} to="/">
+            서비스 이동
+          </GoToService>
+        ) : (
+          <LoginButton />
+        )}
       </HeaderWrapper>
     </Container>
   );
@@ -45,4 +58,26 @@ const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
+
+const GoToService = styled(Link)<{ device: Device }>`
+  padding: ${({ device }) => (device === 'mobile' ? '8px 12px' : '8px 16px')};
+  border: none;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.caption : theme.fonts.body2};
+
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primaryDark};
+  }
 `;
