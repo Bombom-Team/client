@@ -116,7 +116,6 @@ function Storage() {
         <>
           {isPC && isAnnounceVisible && (
             <AnnounceBar
-              isPC={isPC}
               announceText={warningVisible}
               checked={warningChecked}
               onChangeChecked={setWarningChecked}
@@ -143,7 +142,6 @@ function Storage() {
       <ContentWrapper isPC={isPC}>
         {!isPC && isAnnounceVisible && (
           <AnnounceBar
-            isPC={isPC}
             announceText={warningVisible}
             checked={warningChecked}
             onChangeChecked={setWarningChecked}

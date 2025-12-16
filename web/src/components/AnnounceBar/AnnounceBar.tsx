@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 import Button from '../Button/Button';
+import { useDevice } from '@/hooks/useDevice';
 import CloseIcon from '#/assets/svg/close.svg';
 
 interface AnnounceBarProps {
-  isPC: boolean;
   announceText: string[];
   checked: boolean;
   onChangeChecked: (checked: boolean) => void;
@@ -11,12 +11,13 @@ interface AnnounceBarProps {
 }
 
 const AnnounceBar = ({
-  isPC,
   announceText,
   checked,
   onChangeChecked,
   onClose,
 }: AnnounceBarProps) => {
+  const device = useDevice();
+  const isPC = device === 'pc';
   return (
     <Container isPC={isPC} role="status" aria-live="polite">
       <ContentWrapper isPC={isPC}>
