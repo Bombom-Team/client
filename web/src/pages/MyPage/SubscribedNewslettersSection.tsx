@@ -56,7 +56,7 @@ const SubscribedNewslettersSection = ({
                   </UnsubscribeButton>
                 ) : (
                   <UnsubscribeInfoText>
-                    구독 해지를 준비 중입니다.
+                    아직 구독 해지를 지원하지 않아요.
                   </UnsubscribeInfoText>
                 )}
               </NewsletterCard>
