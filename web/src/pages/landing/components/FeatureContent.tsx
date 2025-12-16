@@ -1,6 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useScrollVisible } from '../hooks/useScrollAnimation';
+import { useScrollVisible } from '../hooks/useScrollVisible';
 import { useDevice } from '@/hooks/useDevice';
 import type { AlignType } from '../types/position';
 import type { Device } from '@/hooks/useDevice';

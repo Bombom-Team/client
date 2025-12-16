@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useScrollVisible } from '../hooks/useScrollAnimation';
+import { useScrollVisible } from '../hooks/useScrollVisible';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { useDevice } from '@/hooks/useDevice';
 import type { AlignType } from '../types/position';

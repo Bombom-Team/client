@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
-import { useScrollVisible } from '../hooks/useScrollAnimation';
+import { useScrollVisible } from '../hooks/useScrollVisible';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 import careet from '#/assets/avif/careet.avif';
