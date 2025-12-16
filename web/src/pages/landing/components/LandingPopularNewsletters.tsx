@@ -72,11 +72,16 @@ const LandingPopularNewsletters = () => {
             device={device}
             index={index}
           >
-            <NewsletterThumbnail
-              src={newsletter.imageSource}
-              alt={newsletter.name}
-              device={device}
-            />
+            <NewsletterInfoHeader>
+              <NewsletterThumbnail
+                src={newsletter.imageSource}
+                alt={newsletter.name}
+                device={device}
+              />
+              <NewsletterCategory device={device}>
+                {newsletter.category}
+              </NewsletterCategory>
+            </NewsletterInfoHeader>
             <NewsletterName device={device}>{newsletter.name}</NewsletterName>
             <NewsletterDescription device={device}>
               {newsletter.description}
@@ -170,6 +175,22 @@ const NewsletterCard = styled.div<{
       transform: translate3d(0, 0, 0);
     }
   }
+`;
+
+const NewsletterInfoHeader = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+`;
+
+const NewsletterCategory = styled.div<{ device: Device }>`
+  padding: 4px 8px;
+  border-radius: 12px;
+
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.caption : theme.fonts.body3};
 `;
 
 const NewsletterThumbnail = styled.img<{ device: Device }>`
