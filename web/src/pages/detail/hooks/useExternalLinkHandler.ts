@@ -13,7 +13,6 @@ export const useExternalLinkHandler = (
       const link = (e.target as HTMLElement).closest('a');
       if (link && link.href) {
         e.preventDefault();
-        console.log(1);
         openExternalLink(link.href);
       }
     };

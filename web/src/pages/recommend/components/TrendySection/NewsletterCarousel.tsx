@@ -1,5 +1,5 @@
 import NewsletterCardList from './NewsletterCardList';
-import Carousel from '@/components/Carousel/Carousel';
+import { Carousel } from '@/components/Carousel/Carousel';
 import { chunk } from '@/utils/array';
 import type { Newsletter } from '@/types/newsletter';
 
@@ -15,17 +15,20 @@ const NewsletterCarousel = ({
   handleCardClick,
 }: NewsletterCarouselProps) => {
   return (
-    <Carousel hasSlideButton={false} showNextSlidePart={true}>
-      {chunk(newsletters, ITEMS_PER_SLIDE).map(
-        (newslettersOfSlide, slideIndex) => (
-          <NewsletterCardList
-            key={`newsletters-${slideIndex}`}
-            newsletters={newslettersOfSlide}
-            handleCardClick={handleCardClick}
-          />
-        ),
-      )}
-    </Carousel>
+    <Carousel.Root>
+      <Carousel.Slides showNextSlidePart>
+        {chunk(newsletters, ITEMS_PER_SLIDE).map(
+          (newslettersOfSlide, slideIndex) => (
+            <Carousel.Slide key={`newsletters-${slideIndex}`}>
+              <NewsletterCardList
+                newsletters={newslettersOfSlide}
+                handleCardClick={handleCardClick}
+              />
+            </Carousel.Slide>
+          ),
+        )}
+      </Carousel.Slides>
+    </Carousel.Root>
   );
 };
 
