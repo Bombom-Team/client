@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
+import { useScrollVisible } from '../hooks/useScrollAnimation';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { useDevice } from '@/hooks/useDevice';
 import type { AlignType } from '../types/position';
@@ -24,10 +24,10 @@ const PAIN_POINTS = [
 
 const PainPoint = () => {
   const device = useDevice();
-  const { animationRef, isVisible } = useScrollAnimation(0.4);
+  const { visibleRef, isVisible } = useScrollVisible(0.4);
 
   return (
-    <Container ref={animationRef} device={device}>
+    <Container ref={visibleRef} device={device}>
       <Title device={device}>왜 봄봄일까요?</Title>
       <Subtitle device={device}>
         복잡한 메일함 속에서 놓쳐버리는 가치 있는 글들

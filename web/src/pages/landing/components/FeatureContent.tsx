@@ -1,6 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
+import { useScrollVisible } from '../hooks/useScrollAnimation';
 import { useDevice } from '@/hooks/useDevice';
 import type { AlignType } from '../types/position';
 import type { Device } from '@/hooks/useDevice';
@@ -22,10 +22,10 @@ const FeatureContent = ({
   componentPosition = 'right',
 }: FeatureContentProps) => {
   const device = useDevice();
-  const { animationRef, isVisible } = useScrollAnimation(0.4);
+  const { visibleRef, isVisible } = useScrollVisible(0.4);
 
   return (
-    <Container ref={animationRef} isVisible={isVisible} device={device}>
+    <Container ref={visibleRef} isVisible={isVisible} device={device}>
       <ContentWrapper device={device} componentPosition={componentPosition}>
         <TextSection device={device} componentPosition={componentPosition}>
           <TitleWrapper>

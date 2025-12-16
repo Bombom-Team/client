@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
+import { useScrollVisible } from '../hooks/useScrollAnimation';
 import { useDevice } from '@/hooks/useDevice';
-import { useScrollAnimation } from '@/pages/landing/hooks/useScrollAnimation';
 import type { Device } from '@/hooks/useDevice';
 import careet from '#/assets/avif/careet.avif';
 import dailybyte from '#/assets/avif/dailybyte.avif';
@@ -54,10 +54,10 @@ const newsletters = [
 
 const LandingPopularNewsletters = () => {
   const device = useDevice();
-  const { animationRef, isVisible } = useScrollAnimation(0.4);
+  const { visibleRef, isVisible } = useScrollVisible(0.4);
 
   return (
-    <Container ref={animationRef} device={device}>
+    <Container ref={visibleRef} device={device}>
       <TitleWrapper>
         <Title device={device}>인기 뉴스레터</Title>
         <Subtitle device={device}>
