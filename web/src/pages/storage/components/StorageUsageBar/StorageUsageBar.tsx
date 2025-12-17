@@ -1,4 +1,5 @@
 import ProgressBar from '../../../../components/ProgressBar/ProgressBar';
+import { calculateRate } from '@/utils/math';
 
 interface StorageUsageBarProps {
   cur: number;
@@ -6,7 +7,7 @@ interface StorageUsageBarProps {
 }
 
 const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
-  const rate = Math.min(Math.round((cur / max) * 100), 100);
+  const rate = calculateRate(cur, max);
 
   return (
     <ProgressBar
