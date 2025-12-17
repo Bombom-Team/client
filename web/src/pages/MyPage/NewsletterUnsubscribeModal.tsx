@@ -33,7 +33,7 @@ const NewsletterUnsubscribeModal = ({
         >
           네, 해지할래요
         </ModalButton>
-        <ModalButton isMobile={isMobile} onClick={onClose}>
+        <ModalButton isMobile={isMobile} variant="outlined" onClick={onClose}>
           아니요, 유지할래요
         </ModalButton>
       </ModalButtonWrapper>
