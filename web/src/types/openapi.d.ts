@@ -20,6 +20,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/members/me/warning/near-capacity': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 최대 개수 임박 경고 설정 조회
+     * @description 아티클 최대 개수 임박 경고에 대해 '다시보지않기' 설정 여부를 조회합니다.
+     */
+    get: operations['getWarningSetting'];
+    put?: never;
+    /**
+     * 최대 개수 임박 경고 설정 변경
+     * @description 아티클 최대 개수 임박 경고에 대해 '다시보지않기' 설정 여부를 변경합니다.
+     */
+    post: operations['updateWarningSetting'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/members/me/subscriptions/{subscriptionId}/unsubscribe': {
     parameters: {
       query?: never;
@@ -330,6 +354,26 @@ export interface paths {
      * @description 특정 아티클을 읽음 처리합니다.
      */
     patch: operations['updateIsRead'];
+    trace?: never;
+  };
+  '/api/v1/notices': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 공지 목록 조회
+     * @description 공지 목록을 조회합니다.
+     */
+    get: operations['getNotices'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   '/api/v1/newsletters': {
@@ -792,9 +836,12 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /** @description 경고 설정 변경 요청 */
+    UpdateWarningSettingRequest: {
+      isVisible?: boolean;
+    };
     UnsubscribeResponse: {
       unsubscribeUrl?: string;
-      hasUnsubscribeUrl: boolean;
     };
     HighlightCreateRequest: {
       location: components['schemas']['HighlightLocationRequest'];
@@ -908,6 +955,56 @@ export interface components {
       color?: string;
       memo?: string;
     };
+    Pageable: {
+      /** Format: int32 */
+      page?: number;
+      /** Format: int32 */
+      size?: number;
+      sort?: string[];
+    };
+    NoticeResponse: {
+      /** Format: int64 */
+      noticeId: number;
+      categoryName: string;
+      title: string;
+      content: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    PageNoticeResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['NoticeResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      pageSize?: number;
+      /** Format: int32 */
+      pageNumber?: number;
+      paged?: boolean;
+      unpaged?: boolean;
+    };
+    SortObject: {
+      empty?: boolean;
+      sorted?: boolean;
+      unsorted?: boolean;
+    };
     NewsletterResponse: {
       /** Format: int64 */
       newsletterId: number;
@@ -930,6 +1027,9 @@ export interface components {
       subscribeMethod?: string;
       isSubscribed?: boolean;
     };
+    WarningSettingResponse: {
+      isVisible: boolean;
+    };
     SubscribedNewsletterResponse: {
       /** Format: int64 */
       newsletterId: number;
@@ -937,6 +1037,7 @@ export interface components {
       imageUrl?: string;
       description: string;
       category: string;
+      hasUnsubscribeUrl: boolean;
     };
     ReadingInformationResponse: {
       /**
@@ -1020,13 +1121,6 @@ export interface components {
       /** @description 출석 여부 */
       isAttended: boolean;
     };
-    Pageable: {
-      /** Format: int32 */
-      page?: number;
-      /** Format: int32 */
-      size?: number;
-      sort?: string[];
-    };
     HighlightResponse: {
       /** Format: int64 */
       id: number;
@@ -1059,22 +1153,6 @@ export interface components {
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
-    };
-    PageableObject: {
-      /** Format: int64 */
-      offset?: number;
-      sort?: components['schemas']['SortObject'];
-      /** Format: int32 */
-      pageSize?: number;
-      paged?: boolean;
-      /** Format: int32 */
-      pageNumber?: number;
-      unpaged?: boolean;
-    };
-    SortObject: {
-      empty?: boolean;
-      sorted?: boolean;
-      unsorted?: boolean;
     };
     /** @description 뉴스레터 별 하이라이트 개수 통계 */
     HighlightCountPerNewsletterResponse: {
@@ -1298,6 +1376,62 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getWarningSetting: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 경고 설정 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['WarningSettingResponse'];
+        };
+      };
+      /** @description 경고 설정 상태를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  updateWarningSetting: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateWarningSettingRequest'];
+      };
+    };
+    responses: {
+      /** @description 경고 설정 변경 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 경고 설정 상태를 찾을 수 없음 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -1972,6 +2106,28 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getNotices: {
+    parameters: {
+      query: {
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 공지 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageNoticeResponse'];
+        };
       };
     };
   };
