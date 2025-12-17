@@ -93,7 +93,7 @@ function Storage() {
   const { mutate: postWarningVisible } = useWarningVisibleMutation();
 
   const handleCloseWarning = () => {
-    if (warningChecked) {
+    if (warningChecked || !isPC) {
       postWarningVisible({
         isVisible: false,
       });
@@ -116,7 +116,7 @@ function Storage() {
     <Container>
       {!isMobile && (
         <>
-          {isPC && isWarningVisible && (
+          {isWarningVisible && (
             <AnnounceBar
               announceText={warningVisible}
               checked={warningChecked}
@@ -134,7 +134,7 @@ function Storage() {
       )}
 
       <ContentWrapper isPC={isPC}>
-        {!isPC && isWarningVisible && (
+        {isMobile && isWarningVisible && (
           <AnnounceBar
             announceText={warningVisible}
             checked={warningChecked}
