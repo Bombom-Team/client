@@ -26,6 +26,7 @@ import {
   getWarningVisible,
 } from './members';
 import { getNewsletterDetail, getNewsletters } from './newsLetters';
+import { getNotices } from './notice';
 import {
   getNotificationSettings,
   type GetNotificationSettingsParams,
@@ -42,6 +43,7 @@ import type {
 import type { GetHighlightsParams } from './highlight';
 import type { GetMonthlyReadingRankParams } from './members';
 import type { GetNewsletterDetailParams } from './newsLetters';
+import type { GetNoticesParams } from './notice';
 import type {
   GetPreviousArticleDetailParams,
   GetPreviousArticlesParams,
@@ -171,6 +173,13 @@ export const queries = {
     queryOptions({
       queryKey: ['highlights', params],
       queryFn: () => getHighlights(params ?? {}),
+    }),
+
+  // notices
+  notices: (params?: GetNoticesParams) =>
+    queryOptions({
+      queryKey: ['notices', params],
+      queryFn: () => getNotices(params ?? {}),
     }),
 
   // bookmarks
