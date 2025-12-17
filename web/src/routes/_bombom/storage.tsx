@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useSearch } from '@tanstack/react-router';
 import { useState } from 'react';
 import { queries } from '@/apis/queries';
+import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
 import RequireLogin from '@/hocs/RequireLogin';
 import { useDevice } from '@/hooks/useDevice';
 import MobileStorageContent from '@/pages/storage/components/MobileStorageContent/MobileStorageContent';
@@ -11,12 +12,16 @@ import NewsLetterFilter from '@/pages/storage/components/NewsletterFilter/Newsle
 import NewsletterFilterSkeleton from '@/pages/storage/components/NewsletterFilter/NewsletterFilterSkeleton';
 import PCStorageContent from '@/pages/storage/components/PCStorageContent/PCStorageContent';
 import QuickMenu from '@/pages/storage/components/QuickMenu/QuickMenu';
+import { warningVisible } from '@/pages/storage/constants/announceMessage';
 import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticlesMutation';
 import { useStorageFilters } from '@/pages/storage/hooks/useStorageFilters';
+import useWarningVisibleMutation from '@/pages/storage/hooks/useWarningVisibleMutation';
 import { isValidKeyword } from '@/pages/storage/utils/isValidKeyword';
 import type { GetArticlesStatisticsNewslettersResponse } from '@/apis/articles';
 import type { Sort } from '@/pages/storage/components/ArticleListControls/ArticleListControls.types';
 import StorageIcon from '#/assets/svg/storage.svg';
+
+const MIN_WARNING_LIMIT = 0;
 
 export const Route = createFileRoute('/_bombom/storage')({
   head: () => ({
@@ -53,6 +58,10 @@ function Storage() {
   const isPC = device === 'pc';
   const isMobile = device === 'mobile';
   const [editMode, setEditMode] = useState(false);
+  const { data: warningVisibleStatus } = useQuery(
+    queries.warningVisibleStatus(),
+  );
+
   const searchParam = useSearch({
     from: '/_bombom/storage',
     select: (state) => state.search,
@@ -75,6 +84,23 @@ function Storage() {
 
   const { mutate: deleteArticles } = useDeleteArticlesMutation();
 
+  const [warningChecked, setWarningChecked] = useState(false);
+  const [isWarningClosed, setIsWarningClosed] = useState(false);
+  const isWarningVisible =
+    !isWarningClosed &&
+    warningVisibleStatus?.isVisible &&
+    (newsletterFilters?.totalCount ?? 0) >= MIN_WARNING_LIMIT;
+  const { mutate: postWarningVisible } = useWarningVisibleMutation();
+
+  const handleCloseWarning = () => {
+    if (warningChecked || !isPC) {
+      postWarningVisible({
+        isVisible: false,
+      });
+    }
+    setIsWarningClosed(true);
+  };
+
   const enableEditMode = () => {
     setEditMode(true);
   };
@@ -89,15 +115,34 @@ function Storage() {
   return (
     <Container>
       {!isMobile && (
-        <TitleWrapper>
-          <TitleIconBox>
-            <StorageIcon color={theme.colors.white} />
-          </TitleIconBox>
-          <Title>뉴스레터 보관함</Title>
-        </TitleWrapper>
+        <>
+          {isWarningVisible && (
+            <AnnounceBar
+              announceText={warningVisible}
+              checked={warningChecked}
+              onChangeChecked={setWarningChecked}
+              onClose={handleCloseWarning}
+            />
+          )}
+          <TitleWrapper>
+            <TitleIconBox>
+              <StorageIcon color={theme.colors.white} />
+            </TitleIconBox>
+            <Title>뉴스레터 보관함</Title>
+          </TitleWrapper>
+        </>
       )}
 
       <ContentWrapper isPC={isPC}>
+        {isMobile && isWarningVisible && (
+          <AnnounceBar
+            announceText={warningVisible}
+            checked={warningChecked}
+            onChangeChecked={setWarningChecked}
+            onClose={handleCloseWarning}
+          />
+        )}
+
         <SidebarSection isPC={isPC}>
           {!newsletterFilters ? (
             <NewsletterFilterSkeleton />
@@ -117,6 +162,7 @@ function Storage() {
               onPageChange={handlePageChange}
               page={page}
               resetPage={resetPage}
+              totalStorageCount={newsletterFilters?.totalCount ?? 0}
             />
           ) : (
             <MobileStorageContent
@@ -126,6 +172,7 @@ function Storage() {
               disableEditMode={disableEditMode}
               deleteArticles={(articleIds) => deleteArticles(articleIds)}
               resetPage={resetPage}
+              totalStorageCount={newsletterFilters?.totalCount ?? 0}
             />
           )}
         </MainContentSection>
@@ -166,6 +213,7 @@ const TitleIconBox = styled.div`
 
 const Title = styled.h1`
   font: ${({ theme }) => theme.fonts.heading3};
+  white-space: nowrap;
 `;
 
 const ContentWrapper = styled.div<{ isPC: boolean }>`
