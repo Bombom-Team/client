@@ -18,10 +18,10 @@ const SubscribedNewslettersSection = ({
   device,
 }: SubscribedNewslettersSectionProps) => {
   const {
-    unsubscribeModalRef,
+    modalRef,
     isOpen,
-    closeUnsubscribeModal,
-    handleOpenUnsubscribeModal,
+    closeModal,
+    openUnsubscribeModal,
     confirmUnsubscribe,
   } = useUnsubscribe();
   return (
@@ -49,7 +49,7 @@ const SubscribedNewslettersSection = ({
                   <UnsubscribeButton
                     variant="outlined"
                     onClick={() =>
-                      handleOpenUnsubscribeModal(newsletter.newsletterId)
+                      openUnsubscribeModal(newsletter.newsletterId)
                     }
                   >
                     구독 해지
@@ -68,14 +68,14 @@ const SubscribedNewslettersSection = ({
       </Container>
       {createPortal(
         <Modal
-          modalRef={unsubscribeModalRef}
-          closeModal={closeUnsubscribeModal}
+          modalRef={modalRef}
+          closeModal={closeModal}
           isOpen={isOpen}
           showCloseButton={false}
         >
           <NewsletterUnsubscribeModal
             onUnsubscribe={confirmUnsubscribe}
-            onClose={closeUnsubscribeModal}
+            onClose={closeModal}
           />
         </Modal>,
         document.body,
