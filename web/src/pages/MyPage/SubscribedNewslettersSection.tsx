@@ -172,6 +172,7 @@ const EmptyMessage = styled.p`
 
 const UnsubscribeButton = styled(Button)`
   border-radius: 8px;
+  align-self: flex-end;
 
   &:hover {
     background: ${({ theme }) => theme.colors.primaryLight};
