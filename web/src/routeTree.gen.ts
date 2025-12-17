@@ -16,6 +16,7 @@ import { Route as BombomRouteImport } from './routes/_bombom';
 import { Route as BombomIndexRouteImport } from './routes/_bombom/index';
 import { Route as BombomTodayRouteImport } from './routes/_bombom/today';
 import { Route as BombomStorageRouteImport } from './routes/_bombom/storage';
+import { Route as BombomNoticeRouteImport } from './routes/_bombom/notice';
 import { Route as BombomMyRouteImport } from './routes/_bombom/my';
 import { Route as BombomMemoRouteImport } from './routes/_bombom/memo';
 import { Route as BombomGuideRouteImport } from './routes/_bombom/guide';
@@ -56,6 +57,11 @@ const BombomTodayRoute = BombomTodayRouteImport.update({
 const BombomStorageRoute = BombomStorageRouteImport.update({
   id: '/storage',
   path: '/storage',
+  getParentRoute: () => BombomRoute,
+} as any);
+const BombomNoticeRoute = BombomNoticeRouteImport.update({
+  id: '/notice',
+  path: '/notice',
   getParentRoute: () => BombomRoute,
 } as any);
 const BombomMyRoute = BombomMyRouteImport.update({
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/guide': typeof BombomGuideRoute;
   '/memo': typeof BombomMemoRoute;
   '/my': typeof BombomMyRoute;
+  '/notice': typeof BombomNoticeRoute;
   '/storage': typeof BombomStorageRoute;
   '/today': typeof BombomTodayRoute;
   '/': typeof BombomIndexRoute;
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/guide': typeof BombomGuideRoute;
   '/memo': typeof BombomMemoRoute;
   '/my': typeof BombomMyRoute;
+  '/notice': typeof BombomNoticeRoute;
   '/storage': typeof BombomStorageRoute;
   '/today': typeof BombomTodayRoute;
   '/': typeof BombomIndexRoute;
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/_bombom/guide': typeof BombomGuideRoute;
   '/_bombom/memo': typeof BombomMemoRoute;
   '/_bombom/my': typeof BombomMyRoute;
+  '/_bombom/notice': typeof BombomNoticeRoute;
   '/_bombom/storage': typeof BombomStorageRoute;
   '/_bombom/today': typeof BombomTodayRoute;
   '/_bombom/': typeof BombomIndexRoute;
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/guide'
     | '/memo'
     | '/my'
+    | '/notice'
     | '/storage'
     | '/today'
     | '/'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/guide'
     | '/memo'
     | '/my'
+    | '/notice'
     | '/storage'
     | '/today'
     | '/'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/_bombom/guide'
     | '/_bombom/memo'
     | '/_bombom/my'
+    | '/_bombom/notice'
     | '/_bombom/storage'
     | '/_bombom/today'
     | '/_bombom/'
@@ -250,6 +262,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BombomStorageRouteImport;
       parentRoute: typeof BombomRoute;
     };
+    '/_bombom/notice': {
+      id: '/_bombom/notice';
+      path: '/notice';
+      fullPath: '/notice';
+      preLoaderRoute: typeof BombomNoticeRouteImport;
+      parentRoute: typeof BombomRoute;
+    };
     '/_bombom/my': {
       id: '/_bombom/my';
       path: '/my';
@@ -307,6 +326,7 @@ interface BombomRouteChildren {
   BombomGuideRoute: typeof BombomGuideRoute;
   BombomMemoRoute: typeof BombomMemoRoute;
   BombomMyRoute: typeof BombomMyRoute;
+  BombomNoticeRoute: typeof BombomNoticeRoute;
   BombomStorageRoute: typeof BombomStorageRoute;
   BombomTodayRoute: typeof BombomTodayRoute;
   BombomIndexRoute: typeof BombomIndexRoute;
@@ -320,6 +340,7 @@ const BombomRouteChildren: BombomRouteChildren = {
   BombomGuideRoute: BombomGuideRoute,
   BombomMemoRoute: BombomMemoRoute,
   BombomMyRoute: BombomMyRoute,
+  BombomNoticeRoute: BombomNoticeRoute,
   BombomStorageRoute: BombomStorageRoute,
   BombomTodayRoute: BombomTodayRoute,
   BombomIndexRoute: BombomIndexRoute,
