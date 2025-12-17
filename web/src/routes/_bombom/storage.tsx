@@ -13,7 +13,6 @@ import NewsLetterFilter from '@/pages/storage/components/NewsletterFilter/Newsle
 import NewsletterFilterSkeleton from '@/pages/storage/components/NewsletterFilter/NewsletterFilterSkeleton';
 import PCStorageContent from '@/pages/storage/components/PCStorageContent/PCStorageContent';
 import QuickMenu from '@/pages/storage/components/QuickMenu/QuickMenu';
-import StorageUsageBar from '@/pages/storage/components/StorageUsageBar/StorageUsageBar';
 import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticlesMutation';
 import { useStorageFilters } from '@/pages/storage/hooks/useStorageFilters';
 import useWarningVisibleMutation from '@/pages/storage/hooks/useWarningVisibleMutation';
@@ -215,10 +214,6 @@ const TitleIconBox = styled.div`
 const Title = styled.h1`
   font: ${({ theme }) => theme.fonts.heading3};
   white-space: nowrap;
-`;
-
-const StorageUsageBarWrapper = styled.div`
-  margin-left: 16px;
 `;
 
 const ContentWrapper = styled.div<{ isPC: boolean }>`
