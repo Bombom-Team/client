@@ -9,7 +9,11 @@ export const useUnsubscribe = () => {
   >(null);
   const { mutateAsync: unsubscribeNewsletter } =
     useUnsubscribeNewsletterMutation();
-  const { modalRef, openModal, closeModal, isOpen } = useModal();
+  const { modalRef, openModal, closeModal, isOpen } = useModal({
+    onClose: () => {
+      setSelectedNewsletterId(null);
+    },
+  });
 
   const openUnsubscribeModal = (newsletterId: number) => {
     setSelectedNewsletterId(newsletterId);
@@ -26,9 +30,6 @@ export const useUnsubscribe = () => {
     if (data?.unsubscribeUrl) {
       openExternalLink(data?.unsubscribeUrl);
     }
-
-    closeModal();
-    setSelectedNewsletterId(null);
   };
 
   return {

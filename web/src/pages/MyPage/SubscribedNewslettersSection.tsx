@@ -24,6 +24,12 @@ const SubscribedNewslettersSection = ({
     openUnsubscribeModal,
     confirmUnsubscribe,
   } = useUnsubscribe();
+
+  const confirmUnsubscribeNewsletter = () => {
+    confirmUnsubscribe();
+    closeModal();
+  };
+
   return (
     <>
       <Container>
@@ -74,7 +80,7 @@ const SubscribedNewslettersSection = ({
           showCloseButton={false}
         >
           <NewsletterUnsubscribeModal
-            onUnsubscribe={confirmUnsubscribe}
+            onUnsubscribe={confirmUnsubscribeNewsletter}
             onClose={closeModal}
           />
         </Modal>,
