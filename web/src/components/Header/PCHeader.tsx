@@ -1,11 +1,14 @@
 import styled from '@emotion/styled';
+import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
 import HeaderNavButtons from './HeaderNavButtons';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
+import Button from '../Button/Button';
 import Skeleton from '../Skeleton/Skeleton';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import type { Nav } from '@/types/nav';
+import BellIcon from '#/assets/svg/bell.svg';
 
 interface PCHeaderProps {
   activeNav: Nav;
@@ -13,6 +16,7 @@ interface PCHeaderProps {
 
 const PCHeader = ({ activeNav }: PCHeaderProps) => {
   const { userInfo, isLoading } = useUserInfo();
+  const navigate = useNavigate();
 
   return (
     <HeaderContainer>
@@ -24,6 +28,12 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
         </NavWrapper>
 
         <UserInfoWrapper>
+          <Button
+            onClick={() => navigate({ to: '/notice' })}
+            variant={'transparent'}
+          >
+            <BellIcon color="black" />
+          </Button>
           {isLoading ? (
             <Skeleton width="120px" height="40px" />
           ) : userInfo ? (
@@ -78,8 +88,10 @@ const NavWrapper = styled.nav`
 `;
 
 const UserInfoWrapper = styled.div`
-  width: 220px;
+  width: 300px;
 
   display: flex;
+  gap: 8px;
+  align-items: center;
   justify-content: flex-end;
 `;

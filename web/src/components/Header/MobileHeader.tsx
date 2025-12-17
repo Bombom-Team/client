@@ -1,11 +1,14 @@
 import styled from '@emotion/styled';
+import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
 import HeaderNavButtons from './HeaderNavButtons';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
+import Button from '../Button/Button';
 import Skeleton from '../Skeleton/Skeleton';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import type { Nav } from '@/types/nav';
+import BellIcon from '#/assets/svg/bell.svg';
 
 interface MobileHeaderProps {
   activeNav: Nav;
@@ -13,18 +16,27 @@ interface MobileHeaderProps {
 
 const MobileHeader = ({ activeNav }: MobileHeaderProps) => {
   const { userInfo, isLoading } = useUserInfo();
+  const navigate = useNavigate();
 
   return (
     <>
       <MobileHeaderContainer>
         <HeaderLogo device="mobile" />
-        {isLoading ? (
-          <Skeleton width="120px" height="40px" />
-        ) : userInfo ? (
-          <HeaderProfile userInfo={userInfo} device="mobile" />
-        ) : (
-          <LoginButton />
-        )}
+        <UserInfoWrapper>
+          <Button
+            onClick={() => navigate({ to: '/notice' })}
+            variant={'transparent'}
+          >
+            <BellIcon color="black" />
+          </Button>
+          {isLoading ? (
+            <Skeleton width="120px" height="40px" />
+          ) : userInfo ? (
+            <HeaderProfile userInfo={userInfo} device="mobile" />
+          ) : (
+            <LoginButton />
+          )}
+        </UserInfoWrapper>
       </MobileHeaderContainer>
       <BottomNavWrapper>
         <HeaderNavButtons activeNav={activeNav} device="mobile" />
@@ -54,6 +66,10 @@ const MobileHeaderContainer = styled.header`
   justify-content: space-between;
 
   background: ${({ theme }) => theme.colors.white};
+`;
+const UserInfoWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const BottomNavWrapper = styled.nav`
