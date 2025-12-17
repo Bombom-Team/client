@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useSearch } from '@tanstack/react-router';
 import { useState } from 'react';
-import { warningVisible } from '@/apis/constants/announceMessage';
 import { queries } from '@/apis/queries';
 import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
 import RequireLogin from '@/hocs/RequireLogin';
@@ -13,6 +12,7 @@ import NewsLetterFilter from '@/pages/storage/components/NewsletterFilter/Newsle
 import NewsletterFilterSkeleton from '@/pages/storage/components/NewsletterFilter/NewsletterFilterSkeleton';
 import PCStorageContent from '@/pages/storage/components/PCStorageContent/PCStorageContent';
 import QuickMenu from '@/pages/storage/components/QuickMenu/QuickMenu';
+import { warningVisible } from '@/pages/storage/constants/announceMessage';
 import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticlesMutation';
 import { useStorageFilters } from '@/pages/storage/hooks/useStorageFilters';
 import useWarningVisibleMutation from '@/pages/storage/hooks/useWarningVisibleMutation';
@@ -21,7 +21,7 @@ import type { GetArticlesStatisticsNewslettersResponse } from '@/apis/articles';
 import type { Sort } from '@/pages/storage/components/ArticleListControls/ArticleListControls.types';
 import StorageIcon from '#/assets/svg/storage.svg';
 
-const MIN_WARNING_LIMIT = 450;
+const MIN_WARNING_LIMIT = 0;
 
 export const Route = createFileRoute('/_bombom/storage')({
   head: () => ({
