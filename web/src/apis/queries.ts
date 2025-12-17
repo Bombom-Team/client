@@ -23,6 +23,7 @@ import {
   getUserInfo,
   getMySubscriptions,
   getUserProfile,
+  getWarningVisible,
 } from './members';
 import { getNewsletterDetail, getNewsletters } from './newsLetters';
 import {
@@ -142,6 +143,12 @@ export const queries = {
     queryOptions({
       queryKey: ['members', 'me', 'subscriptions'],
       queryFn: getMySubscriptions,
+    }),
+
+  warningVisibleStatus: () =>
+    queryOptions({
+      queryKey: ['members', 'me', 'warning', 'near-capacity'],
+      queryFn: () => getWarningVisible(),
     }),
 
   // newsletters

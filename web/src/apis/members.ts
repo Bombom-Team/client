@@ -98,3 +98,24 @@ export const postNewsletterUnsubscribe = async ({
     path: `/members/me/subscriptions/${subscriptionId}/unsubscribe`,
   });
 };
+
+export type getWarningVisibleResponse =
+  components['schemas']['WarningSettingResponse'];
+
+export const getWarningVisible = async () => {
+  return await fetcher.get<getWarningVisibleResponse>({
+    path: '/members/me/warning/near-capacity',
+  });
+};
+
+export type PostWarningVisibleParams =
+  components['schemas']['UpdateWarningSettingRequest'];
+
+export const postWarningVisible = async ({
+  isVisible,
+}: PostWarningVisibleParams) => {
+  return await fetcher.post({
+    path: `/members/me/warning/near-capacity`,
+    body: { isVisible },
+  });
+};
