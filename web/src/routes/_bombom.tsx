@@ -5,10 +5,9 @@ import PageLayout from '@/components/PageLayout/PageLayout';
 import { useAppInstallPrompt } from '@/hooks/useAppInstallPrompt';
 import { useWebViewNotificationActive } from '@/libs/webview/useWebViewNotificationActive';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
+import { LANDING_VISITED_KEY } from '@/pages/landing/constants/localStorage';
 
 let isFirstVisit = true;
-
-const LANDING_VISITED_KEY = 'hasVisitedLanding';
 
 export const Route = createFileRoute('/_bombom')({
   component: RouteComponent,

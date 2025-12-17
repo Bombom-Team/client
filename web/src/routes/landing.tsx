@@ -9,9 +9,8 @@ import LandingHeader from '@/pages/landing/components/LandingHeader';
 import LandingHero from '@/pages/landing/components/LandingHero';
 import LandingPopularNewsletters from '@/pages/landing/components/LandingPopularNewsletters';
 import PainPoint from '@/pages/landing/components/PainPoint';
+import { LANDING_VISITED_KEY } from '@/pages/landing/constants/localStorage';
 import type { Device } from '@/hooks/useDevice';
-
-const LANDING_VISITED_KEY = 'hasVisitedLanding';
 
 export const Route = createFileRoute('/landing')({
   head: () => ({
