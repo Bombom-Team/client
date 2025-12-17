@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import useModal from '@/components/Modal/useModal';
 import { useUnsubscribeNewsletterMutation } from '@/pages/MyPage/hooks/useUnsubscribeNewsletterMutation';
 import { openExternalLink } from '@/utils/externalLink';
 
@@ -9,15 +8,9 @@ export const useUnsubscribe = () => {
   >(null);
   const { mutateAsync: unsubscribeNewsletter } =
     useUnsubscribeNewsletterMutation();
-  const { modalRef, openModal, closeModal, isOpen } = useModal({
-    onClose: () => {
-      setSelectedNewsletterId(null);
-    },
-  });
 
-  const openUnsubscribeModal = (newsletterId: number) => {
-    setSelectedNewsletterId(newsletterId);
-    openModal();
+  const selectNewsletter = (id: number | null) => {
+    setSelectedNewsletterId(id);
   };
 
   const confirmUnsubscribe = async () => {
@@ -33,10 +26,7 @@ export const useUnsubscribe = () => {
   };
 
   return {
-    modalRef,
-    openUnsubscribeModal,
-    closeModal,
-    isOpen,
+    selectNewsletter,
     confirmUnsubscribe,
   };
 };

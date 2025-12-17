@@ -4,6 +4,7 @@ import { useUnsubscribe } from './hooks/useUnsubscribe';
 import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
 import NewsletterUnsubscribeModal from '@/pages/MyPage/NewsletterUnsubscribeModal';
 import type { GetMySubscriptionsResponse } from '@/apis/members';
 import type { Device } from '@/hooks/useDevice';
@@ -17,13 +18,17 @@ const SubscribedNewslettersSection = ({
   newsletters,
   device,
 }: SubscribedNewslettersSectionProps) => {
-  const {
-    modalRef,
-    isOpen,
-    closeModal,
-    openUnsubscribeModal,
-    confirmUnsubscribe,
-  } = useUnsubscribe();
+  const { selectNewsletter, confirmUnsubscribe } = useUnsubscribe();
+  const { modalRef, openModal, closeModal, isOpen } = useModal({
+    onClose: () => {
+      selectNewsletter(null);
+    },
+  });
+
+  const openUnsubscribeModal = (newsletterId: number) => {
+    selectNewsletter(newsletterId);
+    openModal();
+  };
 
   const confirmUnsubscribeNewsletter = () => {
     confirmUnsubscribe();

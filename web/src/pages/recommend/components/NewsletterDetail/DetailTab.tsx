@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { createPortal } from 'react-dom';
 import NewsletterSubscribeGuide from './NewsletterSubscribeGuide';
 import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
 import { useUnsubscribe } from '@/pages/MyPage/hooks/useUnsubscribe';
 import NewsletterUnsubscribeModal from '@/pages/MyPage/NewsletterUnsubscribeModal';
 
@@ -18,13 +19,22 @@ const DetailTab = ({
   isSubscribed,
   isMobile,
 }: DetailTabProps) => {
-  const {
-    unsubscribeModalRef,
-    isOpen,
-    closeUnsubscribeModal,
-    handleOpenUnsubscribeModal,
-    confirmUnsubscribe,
-  } = useUnsubscribe();
+  const { selectNewsletter, confirmUnsubscribe } = useUnsubscribe();
+  const { modalRef, openModal, closeModal, isOpen } = useModal({
+    onClose: () => {
+      selectNewsletter(null);
+    },
+  });
+
+  const openUnsubscribeModal = (newsletterId: number) => {
+    selectNewsletter(newsletterId);
+    openModal();
+  };
+
+  const confirmUnsubscribeNewsletter = () => {
+    confirmUnsubscribe();
+    closeModal();
+  };
 
   return (
     <>
@@ -33,7 +43,7 @@ const DetailTab = ({
         {isSubscribed && (
           <ButtonWrapper>
             <UnsubscribeButton
-              onClick={() => handleOpenUnsubscribeModal(newsletterId)}
+              onClick={() => openUnsubscribeModal(newsletterId)}
             >
               구독 해지
             </UnsubscribeButton>
@@ -44,14 +54,14 @@ const DetailTab = ({
       </Container>
       {createPortal(
         <Modal
-          modalRef={unsubscribeModalRef}
-          closeModal={closeUnsubscribeModal}
+          modalRef={modalRef}
+          closeModal={closeModal}
           isOpen={isOpen}
           showCloseButton={false}
         >
           <NewsletterUnsubscribeModal
-            onUnsubscribe={confirmUnsubscribe}
-            onClose={closeUnsubscribeModal}
+            onUnsubscribe={confirmUnsubscribeNewsletter}
+            onClose={closeModal}
           />
         </Modal>,
         document.body,
