@@ -85,3 +85,24 @@ export const getMySubscriptions = async () => {
     path: '/members/me/subscriptions',
   });
 };
+
+export type getWarningVisibleResponse =
+  components['schemas']['WarningSettingResponse'];
+
+export const getWarningVisible = async () => {
+  return await fetcher.get<getWarningVisibleResponse>({
+    path: '/members/me/warning/near-capacity',
+  });
+};
+
+export type PostWarningVisibleParams =
+  components['schemas']['UpdateWarningSettingRequest'];
+
+export const postWarningVisible = async ({
+  isVisible,
+}: PostWarningVisibleParams) => {
+  return await fetcher.post({
+    path: `/members/me/warning/near-capacity`,
+    body: { isVisible },
+  });
+};
