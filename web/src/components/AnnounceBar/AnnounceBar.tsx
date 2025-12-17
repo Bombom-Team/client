@@ -60,8 +60,7 @@ const ContentWrapper = styled.div<{ isPC: boolean }>`
   flex: 1;
   flex-direction: ${({ isPC }) => (isPC ? 'row' : 'column')};
 
-  font: ${({ theme, isPC }) =>
-    isPC ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme, isPC }) => (isPC ? theme.fonts.body1 : theme.fonts.body3)};
 `;
 
 const CloseButton = styled(Button)`
@@ -79,6 +78,7 @@ const CloseButton = styled(Button)`
 const CheckboxText = styled.div<{ isPC: boolean }>`
   font: ${({ theme, isPC }) =>
     isPC ? theme.fonts.body1 : theme.fonts.caption};
+  white-space: nowrap;
 `;
 
 export default AnnounceBar;
