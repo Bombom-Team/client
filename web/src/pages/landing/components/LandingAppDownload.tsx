@@ -8,8 +8,8 @@ import QRCodeModal from '@/pages/recommend/components/QRCodeModal/QRCodeModal';
 import { downloadApp } from '@/utils/downloadApp';
 import type { Device } from '@/hooks/useDevice';
 import type { StoreType } from '@/pages/recommend/components/PromotionBanner/PromotionBanner.types';
+import playStoreIcon from '#/assets/avif/play_store.avif';
 import AppStoreIcon from '#/assets/svg/apple.svg';
-import PlayStoreIcon from '#/assets/svg/play-store.svg';
 
 const LandingAppDownload = () => {
   const device = useDevice();
@@ -53,7 +53,12 @@ const LandingAppDownload = () => {
               variant="outlined"
               device={device}
             >
-              <PlayStoreIcon width={32} />
+              <img
+                src={playStoreIcon}
+                alt="Google Play"
+                width={32}
+                height={32}
+              />
               Google Play 설치
             </GooglePlayStoreButton>
           </ButtonGroup>
