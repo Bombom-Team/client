@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import type { ComponentProps } from 'react';
 
-type Variant = 'default' | 'outlinePrimary';
+type Variant = 'default' | 'outlinePrimary' | 'outlineDefault';
 
 interface BadgeProps extends ComponentProps<'div'> {
   text: string;
@@ -23,8 +23,10 @@ function Badge({ text, variant = 'default', icon, ...props }: BadgeProps) {
 export default Badge;
 
 const IconWrapper = styled.span`
-  display: inline-flex;
   margin-right: 4px;
+
+  display: inline-flex;
+
   line-height: 0;
 `;
 
@@ -52,6 +54,11 @@ const variantStyles = {
     border: `2px solid ${theme.colors.white}`,
     backgroundColor: theme.colors.primary,
     color: theme.colors.white,
+    fontWeight: 600,
+  }),
+  outlineDefault: (theme: Theme) => ({
+    border: `1px solid ${theme.colors.black}`,
+    backgroundColor: theme.colors.white,
     fontWeight: 600,
   }),
 };
