@@ -20,11 +20,11 @@ const LandingFeatures = () => {
     <Container device={device}>
       <FeatureContent
         Icon={CompassIcon}
-        title="뉴스레터 추천"
+        title="취향에 맞는 뉴스레터를 찾아드려요"
         description={
           <>
-            <p>취향에 맞는 뉴스레터를 손쉽게 발견하세요</p>
-            <p>다양한 분야의 콘텐츠가 당신을 기다리고 있어요</p>
+            <p>다양한 카테고리에서 원하는 콘텐츠를 발견하고,</p>
+            <p>새로운 주제의 뉴스레터도 탐색해보세요.</p>
           </>
         }
         previewComponent={
@@ -37,11 +37,12 @@ const LandingFeatures = () => {
       />
       <FeatureContent
         Icon={MailIcon}
-        title="오늘의 뉴스레터"
+        title="쌓인 뉴스레터는 걱정하지 마세요"
         description={
           <>
-            <p>매일 새로운 뉴스레터를 만나고</p>
-            <p>가볍게 인사이트를 쌓아보세요</p>
+            <p>오늘 도착한 뉴스레터만 모아 보고,</p>
+            <p>지난 뉴스레터를 안전하게 보관해요.</p>
+            <p>스팸함에 묻히지 않도록, 빠짐없이 모아드려요.</p>
           </>
         }
         previewComponent={
@@ -54,11 +55,11 @@ const LandingFeatures = () => {
       />
       <FeatureContent
         Icon={EditIcon}
-        title="하이라이트 & 메모"
+        title="중요한 내용은 바로 기록하세요"
         description={
           <>
-            <p>읽는 흐름 속에서 중요한 부분을 표시하고</p>
-            <p>아이디어와 생각을 즉시 메모로 정리해보세요</p>
+            <p>읽다가 중요한 부분을 하이라이트로 표시하고,</p>
+            <p>떠오르는 생각과 아이디어를 메모로 남겨보세요.</p>
           </>
         }
         previewComponent={<img src={highlight} alt="하이라이트 & 메모" />}
@@ -66,11 +67,12 @@ const LandingFeatures = () => {
       />
       <FeatureContent
         Icon={BellIcon}
-        title="뉴스레터 알림"
+        title="꼭 읽어야 할 소식을 놓치지 마세요"
         description={
           <>
-            <p>원하는 뉴스레터를 바로 알림으로</p>
-            <p>중요한 소식을 놓치지 않도록 알려드려요</p>
+            <p>중요한 뉴스레터가 도착하면 즉시 알림을 받아보세요.</p>
+            <p>바쁜 일상에서 관심 있는 소식을 빠르게 확인하고,</p>
+            <p>읽고 싶은 타이밍을 놓치지 않도록 알려드려요.</p>
           </>
         }
         previewComponent={<img src={notification} alt="뉴스레터 알림" />}
@@ -84,7 +86,10 @@ export default LandingFeatures;
 
 const Container = styled.section<{ device: Device }>`
   width: 100%;
-  max-width: ${({ device }) => (device === 'mobile' ? '400px' : '960px')};
+  max-width: ${({ device }) => {
+    if (device === 'mobile') return '400px';
+    return device === 'tablet' ? '760px' : '1084px';
+  }};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '84px' : '168px')};
