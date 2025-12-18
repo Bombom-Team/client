@@ -6,7 +6,6 @@ import HeaderNavButtons from './HeaderNavButtons';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Button from '../Button/Button';
-import Skeleton from '../Skeleton/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
 import BellIcon from '#/assets/svg/bell.svg';
