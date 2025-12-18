@@ -86,6 +86,19 @@ export const getMySubscriptions = async () => {
   });
 };
 
+export type PostNewsletterUnsubscribeParams =
+  operations['unsubscribe']['parameters']['path'];
+export type PostNewsletterUnsubscribeResponse =
+  components['schemas']['UnsubscribeResponse'];
+
+export const postNewsletterUnsubscribe = async ({
+  subscriptionId,
+}: PostNewsletterUnsubscribeParams) => {
+  return await fetcher.post<never, PostNewsletterUnsubscribeResponse>({
+    path: `/members/me/subscriptions/${subscriptionId}/unsubscribe`,
+  });
+};
+
 export type getWarningVisibleResponse =
   components['schemas']['WarningSettingResponse'];
 

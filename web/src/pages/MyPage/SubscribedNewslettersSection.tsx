@@ -1,5 +1,11 @@
 import styled from '@emotion/styled';
+import { createPortal } from 'react-dom';
+import { useUnsubscribe } from './hooks/useUnsubscribe';
+import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
+import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
+import NewsletterUnsubscribeModal from '@/pages/MyPage/NewsletterUnsubscribeModal';
 import type { GetMySubscriptionsResponse } from '@/apis/members';
 import type { Device } from '@/hooks/useDevice';
 
@@ -12,37 +18,86 @@ const SubscribedNewslettersSection = ({
   newsletters,
   device,
 }: SubscribedNewslettersSectionProps) => {
+  const { selectNewsletter, confirmUnsubscribe } = useUnsubscribe();
+  const { modalRef, openModal, closeModal, isOpen } = useModal({
+    onClose: () => {
+      selectNewsletter(null);
+    },
+  });
+
+  const openUnsubscribeModal = (newsletterId: number) => {
+    selectNewsletter(newsletterId);
+    openModal();
+  };
+
+  const confirmUnsubscribeNewsletter = () => {
+    confirmUnsubscribe();
+    closeModal();
+  };
+
   return (
-    <Wrapper>
-      {newsletters && newsletters.length > 0 ? (
-        <NewsletterGrid device={device}>
-          {newsletters.map((newsletter) => (
-            <NewsletterCard key={newsletter.newsletterId} device={device}>
-              <NewsletterImage
-                src={newsletter.imageUrl ?? ''}
-                alt={newsletter.name}
-                width={60}
-                height={60}
-              />
-              <NewsletterInfo>
-                <NewsletterName>{newsletter.name}</NewsletterName>
-                <NewsletterDescription>
-                  {newsletter.description}
-                </NewsletterDescription>
-              </NewsletterInfo>
-            </NewsletterCard>
-          ))}
-        </NewsletterGrid>
-      ) : (
-        <EmptyMessage>구독 중인 뉴스레터가 없습니다.</EmptyMessage>
+    <>
+      <Container>
+        {newsletters && newsletters.length > 0 ? (
+          <NewsletterGrid device={device}>
+            {newsletters.map((newsletter) => (
+              <NewsletterCard key={newsletter.newsletterId} device={device}>
+                <NewsletterContent>
+                  <NewsletterImage
+                    src={newsletter.imageUrl ?? ''}
+                    alt={newsletter.name}
+                    width={60}
+                    height={60}
+                  />
+                  <NewsletterInfo>
+                    <NewsletterName>{newsletter.name}</NewsletterName>
+                    <NewsletterDescription>
+                      {newsletter.description}
+                    </NewsletterDescription>
+                  </NewsletterInfo>
+                </NewsletterContent>
+                {newsletter.hasUnsubscribeUrl ? (
+                  <UnsubscribeButton
+                    variant="outlined"
+                    onClick={() =>
+                      openUnsubscribeModal(newsletter.newsletterId)
+                    }
+                  >
+                    구독 해지
+                  </UnsubscribeButton>
+                ) : (
+                  <UnsubscribeInfoText>
+                    아직 구독 해지를 지원하지 않아요.
+                  </UnsubscribeInfoText>
+                )}
+              </NewsletterCard>
+            ))}
+          </NewsletterGrid>
+        ) : (
+          <EmptyMessage>구독 중인 뉴스레터가 없습니다.</EmptyMessage>
+        )}
+      </Container>
+      {createPortal(
+        <Modal
+          modalRef={modalRef}
+          closeModal={closeModal}
+          isOpen={isOpen}
+          showCloseButton={false}
+        >
+          <NewsletterUnsubscribeModal
+            onUnsubscribe={confirmUnsubscribeNewsletter}
+            onClose={closeModal}
+          />
+        </Modal>,
+        document.body,
       )}
-    </Wrapper>
+    </>
   );
 };
 
 export default SubscribedNewslettersSection;
 
-const Wrapper = styled.div`
+const Container = styled.div`
   display: flex;
   gap: 16px;
   flex-direction: column;
@@ -63,11 +118,19 @@ const NewsletterCard = styled.div<{ device: Device }>`
 
   display: flex;
   gap: 12px;
-  align-items: center;
+  flex-direction: column;
 
   background: ${({ theme }) => theme.colors.white};
 
   transition: all 0.2s ease-in-out;
+`;
+
+const NewsletterContent = styled.div`
+  height: 72px;
+
+  display: flex;
+  gap: 12px;
+  justify-content: center;
 `;
 
 const NewsletterImage = styled(ImageWithFallback)`
@@ -116,4 +179,20 @@ const EmptyMessage = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.body2};
   text-align: center;
+`;
+
+const UnsubscribeButton = styled(Button)`
+  border-radius: 8px;
+  align-self: flex-end;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.primaryLight};
+  }
+`;
+
+const UnsubscribeInfoText = styled.p`
+  align-self: flex-end;
+
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.body3};
 `;

@@ -130,6 +130,8 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
         {activeTab === 'detail' && (
           <DetailTab
             newsletterDescription={newsletterDetail.description}
+            newsletterId={newsletterId}
+            isSubscribed={newsletterDetail.isSubscribed}
             isMobile={isMobile}
           />
         )}
