@@ -5,6 +5,7 @@ import PageLayout from '@/components/PageLayout/PageLayout';
 import { useAppInstallPrompt } from '@/hooks/useAppInstallPrompt';
 import { useWebViewNotificationActive } from '@/libs/webview/useWebViewNotificationActive';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
+import { LANDING_VISITED_KEY } from '@/pages/landing/constants/localStorage';
 
 let isFirstVisit = true;
 
@@ -14,15 +15,14 @@ export const Route = createFileRoute('/_bombom')({
     context,
     location,
   }): Promise<void | ReturnType<typeof redirect>> => {
+    const hasVisitedLanding = localStorage.getItem(LANDING_VISITED_KEY);
+    if (!hasVisitedLanding) {
+      return redirect({ to: '/landing' });
+    }
+
     if (!isFirstVisit) return;
 
     const { queryClient } = context;
-
-    const data = queryClient.getQueryData(queries.userProfile().queryKey);
-    if (data) {
-      isFirstVisit = false;
-      return;
-    }
 
     try {
       const user = await queryClient.fetchQuery(queries.userProfile());

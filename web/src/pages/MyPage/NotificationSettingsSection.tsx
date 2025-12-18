@@ -2,14 +2,14 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import useNotificationMutation from './useNotificationMutation';
 import { queries } from '@/apis/queries';
-import { useUserInfo } from '@/hooks/useUserInfo';
+import { useAuth } from '@/contexts/AuthContext';
 import { useWebViewDeviceUuid } from '@/libs/webview/useWebViewDeviceUuid';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 
 const NotificationSettingsSection = () => {
-  const { userInfo } = useUserInfo();
+  const { userProfile } = useAuth();
   const deviceUuid = useWebViewDeviceUuid();
-  const memberId = userInfo?.id ?? 0;
+  const memberId = userProfile?.id ?? 0;
 
   const { data: notificationStatus } = useQuery(
     queries.notificationStatus({
@@ -24,7 +24,7 @@ const NotificationSettingsSection = () => {
   });
 
   const handleToggleClick = () => {
-    if (!userInfo?.id || !deviceUuid) return;
+    if (!userProfile?.id || !deviceUuid) return;
 
     const newStatus = !notificationStatus;
 
