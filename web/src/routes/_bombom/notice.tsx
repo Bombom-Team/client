@@ -52,7 +52,6 @@ export const Route = createFileRoute('/_bombom/notice')({
 
 function NoticePage() {
   const { data: notices } = useQuery(queries.notices());
-  console.log(notices);
   const device = useDevice();
 
   const sortedContents = [...contents].sort(
