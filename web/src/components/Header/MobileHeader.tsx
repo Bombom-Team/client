@@ -18,7 +18,7 @@ const MobileHeader = ({ activeNav }: MobileHeaderProps) => {
       <MobileHeaderContainer>
         <HeaderLogo device="mobile" />
         {userProfile ? (
-          <HeaderProfile userInfo={userProfile} device="mobile" />
+          <HeaderProfile userProfile={userProfile} device="mobile" />
         ) : (
           <LoginButton />
         )}

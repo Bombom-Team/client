@@ -24,7 +24,7 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
 
         <UserInfoWrapper>
           {userProfile ? (
-            <HeaderProfile userInfo={userProfile} device="pc" />
+            <HeaderProfile userProfile={userProfile} device="pc" />
           ) : (
             <LoginButton />
           )}

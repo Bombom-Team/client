@@ -7,11 +7,11 @@ import type { Device } from '@/hooks/useDevice';
 import type { UserProfile } from '@/types/me';
 
 interface HeaderProfileProps {
-  userInfo: UserProfile;
+  userProfile: UserProfile;
   device: Device;
 }
 
-const HeaderProfile = ({ userInfo, device }: HeaderProfileProps) => {
+const HeaderProfile = ({ userProfile, device }: HeaderProfileProps) => {
   const {
     modalRef: profileModalRef,
     openModal: openProfileModal,
@@ -19,24 +19,24 @@ const HeaderProfile = ({ userInfo, device }: HeaderProfileProps) => {
     isOpen,
   } = useModal({ scrollLock: false });
 
-  if (!userInfo) return null;
+  if (!userProfile) return null;
 
   return (
     <Container>
       <HeaderProfileWrapper type="button" onClick={openProfileModal}>
         <ProfileInfo>
           <ProfileImg
-            src={userInfo.profileImageUrl ?? ''}
+            src={userProfile.profileImageUrl ?? ''}
             alt="profile"
             width={32}
             height={32}
           />
           {device !== 'mobile' && (
-            <ProfileName>{userInfo.nickname}</ProfileName>
+            <ProfileName>{userProfile.nickname}</ProfileName>
           )}
         </ProfileInfo>
       </HeaderProfileWrapper>
-      {userInfo && (
+      {userProfile && (
         <Modal
           modalRef={profileModalRef}
           closeModal={closeProfileModal}
@@ -45,7 +45,10 @@ const HeaderProfile = ({ userInfo, device }: HeaderProfileProps) => {
           showCloseButton={false}
           showBackdrop={false}
         >
-          <ProfileDetail userInfo={userInfo} onClose={closeProfileModal} />
+          <ProfileDetail
+            userProfile={userProfile}
+            onClose={closeProfileModal}
+          />
         </Modal>
       )}
     </Container>
