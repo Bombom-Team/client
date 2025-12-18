@@ -1,3 +1,4 @@
+import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
@@ -27,7 +28,7 @@ const MobileHeader = ({ activeNav }: MobileHeaderProps) => {
             onClick={() => navigate({ to: '/notice' })}
             variant={'transparent'}
           >
-            <BellIcon color="black" />
+            <BellIcon width={20} height={20} fill={theme.colors.black} />
           </Button>
           {isLoading ? (
             <Skeleton width="120px" height="40px" />
