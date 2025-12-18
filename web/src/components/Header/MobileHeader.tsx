@@ -3,8 +3,7 @@ import HeaderLogo from './HeaderLogo';
 import HeaderNavButtons from './HeaderNavButtons';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
-import Skeleton from '../Skeleton/Skeleton';
-import { useUserInfo } from '@/hooks/useUserInfo';
+import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
 
 interface MobileHeaderProps {
@@ -12,16 +11,14 @@ interface MobileHeaderProps {
 }
 
 const MobileHeader = ({ activeNav }: MobileHeaderProps) => {
-  const { userInfo, isLoading } = useUserInfo();
+  const { userProfile } = useAuth();
 
   return (
     <>
       <MobileHeaderContainer>
         <HeaderLogo device="mobile" />
-        {isLoading ? (
-          <Skeleton width="120px" height="40px" />
-        ) : userInfo ? (
-          <HeaderProfile userInfo={userInfo} device="mobile" />
+        {userProfile ? (
+          <HeaderProfile userProfile={userProfile} device="mobile" />
         ) : (
           <LoginButton />
         )}

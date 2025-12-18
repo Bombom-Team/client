@@ -8,18 +8,18 @@ import { useDevice } from '@/hooks/useDevice';
 import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { copyToClipboard } from '@/utils/copy';
 import { isWebView } from '@/utils/device';
-import type { UserInfo } from '@/types/me';
+import type { UserProfile } from '@/types/me';
 import ChatIcon from '#/assets/svg/chat.svg';
 import CopyIcon from '#/assets/svg/copy.svg';
 import LogoutIcon from '#/assets/svg/logout.svg';
 import MailIcon from '#/assets/svg/mail.svg';
 
 interface ProfileDetailProps {
-  userInfo: UserInfo;
+  userProfile: UserProfile;
   onClose?: () => void;
 }
 
-const ProfileDetail = ({ userInfo, onClose }: ProfileDetailProps) => {
+const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
   const deviceType = useDevice();
 
   const { mutate: mutateLogout } = useMutation({
@@ -35,9 +35,9 @@ const ProfileDetail = ({ userInfo, onClose }: ProfileDetailProps) => {
   });
 
   const handleCopyEmail = () => {
-    if (!userInfo.email) return;
+    if (!userProfile.email) return;
 
-    copyToClipboard(userInfo.email);
+    copyToClipboard(userProfile.email);
     toast.success('이메일이 복사되었습니다.');
   };
 
@@ -45,18 +45,18 @@ const ProfileDetail = ({ userInfo, onClose }: ProfileDetailProps) => {
     mutateLogout();
   };
 
-  if (!userInfo) return null;
+  if (!userProfile) return null;
 
   return (
     <Container>
       <Profile>
         <ProfileImg
-          src={userInfo.profileImageUrl ?? ''}
+          src={userProfile.profileImageUrl ?? ''}
           alt="profile"
           width={36}
           height={36}
         />
-        <ProfileName>{userInfo.nickname}</ProfileName>
+        <ProfileName>{userProfile.nickname}</ProfileName>
       </Profile>
 
       <Divider />
@@ -67,7 +67,7 @@ const ProfileDetail = ({ userInfo, onClose }: ProfileDetailProps) => {
           <EmailTitle>봄봄 구독 이메일</EmailTitle>
         </EmailTitleWrapper>
         <ProfileEmail type="button" onClick={handleCopyEmail}>
-          <EmailText>{userInfo.email}</EmailText>
+          <EmailText>{userProfile.email}</EmailText>
           <CopyIcon width={16} height={16} />
         </ProfileEmail>
       </EmailWrapper>

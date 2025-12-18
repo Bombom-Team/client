@@ -24,12 +24,6 @@ export const Route = createFileRoute('/_bombom')({
 
     const { queryClient } = context;
 
-    const data = queryClient.getQueryData(queries.userProfile().queryKey);
-    if (data) {
-      isFirstVisit = false;
-      return;
-    }
-
     try {
       const user = await queryClient.fetchQuery(queries.userProfile());
       if (user) {

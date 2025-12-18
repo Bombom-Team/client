@@ -1,13 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
-import { queries } from '@/apis/queries';
 import PageLayout from '@/components/PageLayout/PageLayout';
 import RequireLoginCard from '@/components/RequireLoginCard/RequireLoginCard';
+import { useAuth } from '@/contexts/AuthContext';
 import type { PropsWithChildren } from 'react';
 
 const RequireLogin = ({ children }: PropsWithChildren) => {
-  const { data: user, error } = useQuery(queries.userProfile());
+  const { userProfile } = useAuth();
 
-  if (error || !user) {
+  if (!userProfile) {
     return (
       <PageLayout>
         <RequireLoginCard />
