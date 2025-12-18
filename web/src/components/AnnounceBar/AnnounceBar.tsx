@@ -5,8 +5,8 @@ import CloseIcon from '#/assets/svg/close.svg';
 
 interface AnnounceBarProps {
   announceText: string[];
-  checked: boolean;
-  onChangeChecked: (checked: boolean) => void;
+  checked?: boolean;
+  onChangeChecked?: (checked: boolean) => void;
   onClose: () => void;
 }
 
@@ -32,7 +32,7 @@ const AnnounceBar = ({
             <input
               type="checkbox"
               checked={checked}
-              onChange={(e) => onChangeChecked(e.target.checked)}
+              onChange={(e) => onChangeChecked?.(e.target.checked)}
             />
             <CheckboxText isPC={isPC}>다시 보지 않기</CheckboxText>
           </CheckboxWrapper>
@@ -53,6 +53,7 @@ const Container = styled.div<{ isPC: boolean }>`
   width: 100%;
   margin-bottom: 8px;
   padding: ${({ isPC }) => (isPC ? '12px 16px' : '8px 12px')};
+  border-radius: 12px;
 
   display: flex;
   gap: 4px;
