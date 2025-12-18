@@ -3,13 +3,13 @@ import { Link } from '@tanstack/react-router';
 import HeaderLogo from '@/components/Header/HeaderLogo';
 import LoginButton from '@/components/Header/LoginButton';
 import Skeleton from '@/components/Skeleton/Skeleton';
+import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
-import { useUserInfo } from '@/hooks/useUserInfo';
 import type { Device } from '@/hooks/useDevice';
 
 const LandingHeader = () => {
   const device = useDevice();
-  const { isLoggedIn, isLoading } = useUserInfo();
+  const { isLoggedIn, isLoading } = useAuth();
 
   return (
     <Container device={device}>

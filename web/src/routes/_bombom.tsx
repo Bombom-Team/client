@@ -3,7 +3,6 @@ import { queries } from '@/apis/queries';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
 import PageLayout from '@/components/PageLayout/PageLayout';
 import { useAppInstallPrompt } from '@/hooks/useAppInstallPrompt';
-import { useInitializeAuth } from '@/hooks/useInitializeAuth';
 import { useWebViewNotificationActive } from '@/libs/webview/useWebViewNotificationActive';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 import { LANDING_VISITED_KEY } from '@/pages/landing/constants/localStorage';
@@ -48,7 +47,6 @@ function RouteComponent() {
     modalRef,
   } = useAppInstallPrompt();
 
-  useInitializeAuth();
   useWebViewRegisterToken();
   useWebViewNotificationActive();
 

@@ -1,36 +1,28 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { createContext, useContext, useMemo } from 'react';
+import { queries } from '@/apis/queries';
 import type { UserProfile } from '@/types/me';
 import type { PropsWithChildren } from 'react';
 
 export interface AuthContextType {
-  userProfile: UserProfile | null;
+  userProfile: UserProfile | undefined;
+  isLoading: boolean;
   isLoggedIn: boolean;
-  updateAuthState: (profile: UserProfile | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const { data: userProfile, isLoading } = useQuery(queries.userProfile());
 
   const isLoggedIn = useMemo(() => Boolean(userProfile), [userProfile]);
-
-  const updateAuthState = useCallback((profile: UserProfile | null) => {
-    setUserProfile(profile);
-  }, []);
 
   return (
     <AuthContext.Provider
       value={{
         userProfile,
+        isLoading,
         isLoggedIn,
-        updateAuthState,
       }}
     >
       {children}
