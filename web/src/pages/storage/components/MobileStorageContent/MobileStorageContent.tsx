@@ -18,6 +18,7 @@ interface MobileStorageContentProps {
   disableEditMode: () => void;
   deleteArticles: (articleIds: number[]) => void;
   resetPage: () => void;
+  totalStorageCount: number;
 }
 
 export default function MobileStorageContent({
@@ -27,6 +28,7 @@ export default function MobileStorageContent({
   disableEditMode,
   deleteArticles,
   resetPage,
+  totalStorageCount,
 }: MobileStorageContentProps) {
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
@@ -99,6 +101,7 @@ export default function MobileStorageContent({
         isAllSelected={isAllSelected}
         onToggleSelectAll={toggleSelectAll}
         hasBookmarkedArticles={hasBookmarkedArticles}
+        totalStorageCount={totalStorageCount}
       />
       {isInfiniteLoading ? (
         <ArticleCardListSkeleton />

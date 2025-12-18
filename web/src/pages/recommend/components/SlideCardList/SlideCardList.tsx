@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import PromotionBanner from '../PromotionBanner/PromotionBanner';
 import QRCodeModal from '../QRCodeModal/QRCodeModal';
-import Carousel from '@/components/Carousel/Carousel';
+import { Carousel } from '@/components/Carousel/Carousel';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import type { StoreType } from '../PromotionBanner/PromotionBanner.types';
@@ -43,12 +43,21 @@ const SlideCardList = () => {
 
   return (
     <>
-      <Carousel isInfinity={true} autoPlay={true}>
-        {device === 'pc' && <PromotionBanner openModal={handleOpenModal} />}
-        {BANNERS.map(({ src, alt }, index) => (
-          <Banner key={`banner-${index}`} src={src} alt={alt} />
-        ))}
-      </Carousel>
+      <Carousel.Root loop autoPlay>
+        <Carousel.Slides>
+          {device === 'pc' && (
+            <Carousel.Slide>
+              <PromotionBanner openModal={handleOpenModal} />
+            </Carousel.Slide>
+          )}
+          {BANNERS.map(({ src, alt }, index) => (
+            <Carousel.Slide key={`banner-${index}`}>
+              <Banner src={src} alt={alt} />
+            </Carousel.Slide>
+          ))}
+        </Carousel.Slides>
+        <Carousel.NavButtons />
+      </Carousel.Root>
       <QRCodeModal
         modalRef={modalRef}
         isOpen={isOpen}

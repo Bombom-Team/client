@@ -1,36 +1,34 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DEFAULT_SPEED,
-  INFINITY_START_SLIDE_INDEX,
-  FINITE_START_SLIDE_INDEX,
-  SWIPE_OFFSET_THRESHOLD,
+  NON_LOOP_START_SLIDE_INDEX,
+  LOOP_START_SLIDE_INDEX,
   SWIPE_ANGLE_THRESHOLD,
+  SWIPE_OFFSET_THRESHOLD,
 } from './Carousel.constants';
 import { calculateAngle } from '@/utils/math';
 import type { TouchEvent } from 'react';
 
 interface UseCarouselProps {
-  slideCount: number;
-  isInfinity: boolean;
-  autoPlay: boolean;
-  autoPlaySpeedMs: number;
+  loop: boolean;
+  autoPlay: boolean | { delay: number };
 }
 
-const useCarousel = ({
-  slideCount,
-  isInfinity,
-  autoPlay,
-  autoPlaySpeedMs,
-}: UseCarouselProps) => {
+const useCarousel = ({ loop, autoPlay }: UseCarouselProps) => {
   const [slideIndex, setSlideIndex] = useState(
-    isInfinity ? INFINITY_START_SLIDE_INDEX : FINITE_START_SLIDE_INDEX,
+    loop ? LOOP_START_SLIDE_INDEX : NON_LOOP_START_SLIDE_INDEX,
   );
+  const [slideCount, setSlideCount] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
   const timerIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const swipeOffsetRef = useRef(0);
   const swipeStartRef = useRef({ x: 0, y: 0 });
   const slideWrapperRef = useRef<HTMLUListElement>(null);
+
+  const registerSlideCount = useCallback((count: number) => {
+    setSlideCount(count);
+  }, []);
 
   const updateTransform = useCallback(() => {
     if (!slideWrapperRef.current) return;
@@ -42,21 +40,22 @@ const useCarousel = ({
   const handleTransitionEnd = useCallback(() => {
     setIsTransitioning(false);
 
-    if (!isInfinity) return;
+    if (!loop) return;
 
-    if (slideIndex < INFINITY_START_SLIDE_INDEX) {
+    if (slideIndex < LOOP_START_SLIDE_INDEX) {
       setSlideIndex(slideCount);
     }
 
     if (slideIndex > slideCount) {
-      setSlideIndex(INFINITY_START_SLIDE_INDEX);
+      setSlideIndex(LOOP_START_SLIDE_INDEX);
     }
-  }, [slideIndex, slideCount, isInfinity]);
+  }, [slideIndex, slideCount, loop]);
 
   useEffect(() => {
     if (!autoPlay || isSwiping) return;
 
-    const autoSlideDelay = autoPlaySpeedMs ?? DEFAULT_SPEED;
+    const autoSlideDelay =
+      typeof autoPlay === 'object' ? autoPlay.delay : DEFAULT_SPEED;
     if (!isTransitioning) {
       timerIdRef.current = setTimeout(() => {
         setIsTransitioning(true);
@@ -69,23 +68,23 @@ const useCarousel = ({
         clearTimeout(timerIdRef.current);
       }
     };
-  }, [autoPlay, slideIndex, isTransitioning, autoPlaySpeedMs, isSwiping]);
+  }, [autoPlay, slideIndex, isTransitioning, isSwiping]);
 
-  const handlePrevButtonClick = useCallback(() => {
+  const prev = useCallback(() => {
     if (isTransitioning || isSwiping) return;
-    if (!isInfinity && slideIndex <= 0) return;
+    if (!loop && slideIndex <= 0) return;
 
     setIsTransitioning(true);
     setSlideIndex((prev) => prev - 1);
-  }, [isTransitioning, isSwiping, isInfinity, slideIndex]);
+  }, [isTransitioning, isSwiping, loop, slideIndex]);
 
-  const handleNextButtonClick = useCallback(() => {
+  const next = useCallback(() => {
     if (isTransitioning || isSwiping) return;
-    if (!isInfinity && slideIndex >= slideCount - 1) return;
+    if (!loop && slideIndex >= slideCount - 1) return;
 
     setIsTransitioning(true);
     setSlideIndex((prev) => prev + 1);
-  }, [isTransitioning, isSwiping, isInfinity, slideIndex, slideCount]);
+  }, [isTransitioning, isSwiping, loop, slideIndex, slideCount]);
 
   const swipeStart = useCallback(
     (clientX: number, clientY: number) => {
@@ -120,17 +119,16 @@ const useCarousel = ({
       }
 
       const offset = clientX - swipeStartRef.current.x;
-      const isFirstSlide = slideIndex === FINITE_START_SLIDE_INDEX;
+      const isFirstSlide = slideIndex === NON_LOOP_START_SLIDE_INDEX;
       const isLastSlide = slideIndex === slideCount - 1;
 
       const isSwipeBoundary =
-        !isInfinity &&
-        ((offset > 0 && isFirstSlide) || (offset < 0 && isLastSlide));
+        !loop && ((offset > 0 && isFirstSlide) || (offset < 0 && isLastSlide));
 
       swipeOffsetRef.current = isSwipeBoundary ? 0 : offset;
       updateTransform();
     },
-    [isInfinity, isSwiping, slideCount, slideIndex, updateTransform],
+    [loop, isSwiping, slideCount, slideIndex, updateTransform],
   );
 
   const swipeEnd = useCallback(() => {
@@ -174,12 +172,14 @@ const useCarousel = ({
 
   return {
     slideIndex,
+    slideCount,
+    registerSlideCount,
+    prev,
+    next,
+    slideWrapperRef,
     isTransitioning,
     isSwiping,
-    slideWrapperRef,
     handleTransitionEnd,
-    handlePrevButtonClick,
-    handleNextButtonClick,
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,

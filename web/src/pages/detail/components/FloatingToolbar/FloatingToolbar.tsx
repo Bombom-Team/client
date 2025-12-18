@@ -35,7 +35,7 @@ const FloatingToolbar = ({
       onPointerDown={handlePointerDownOnToolbar}
     >
       <ToolbarButton onClick={onHighlightButtonClick}>
-        {isNewMode ? <HighlightIcon /> : <HighlightOffIcon />}
+        {isNewMode ? <HighlightIcon width={24} /> : <HighlightOffIcon />}
       </ToolbarButton>
       <ToolbarButton onClick={onMemoButtonClick}>
         <MemoIcon />

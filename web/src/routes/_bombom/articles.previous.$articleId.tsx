@@ -103,10 +103,11 @@ function RouteComponent() {
               뉴스레터가 마음에 드셨다면, 구독으로 계속 만나보세요!
             </SubscribePromptText>
             <SubscribePromptButton
-              text={getSubscribeButtonText()}
               onClick={handleSubscribeClick}
               disabled={!isLoggedIn || (isLoggedIn && article.isSubscribed)}
-            />
+            >
+              {getSubscribeButtonText()}
+            </SubscribePromptButton>
           </SubscribePrompt>
         )}
 
@@ -282,7 +283,6 @@ const SubscribePromptText = styled.p`
 const SubscribePromptButton = styled(Button)`
   width: 100%;
   padding: 12px 24px;
-  border-radius: 8px;
 
   font: ${({ theme }) => theme.fonts.body1};
 `;
