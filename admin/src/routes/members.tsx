@@ -1,64 +1,58 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { FiSearch, FiShield } from 'react-icons/fi';
+import { getMembers } from '@/apis/members';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
-import type { Member } from '@/types/member';
 
 export const Route = createFileRoute('/members')({
   component: MembersPage,
 });
 
-// Mock data
-const mockMembers: Member[] = [
-  {
-    id: 1,
-    email: 'admin@bombom.news',
-    name: '관리자',
-    role: 'admin',
-    createdAt: '2024-01-15',
-    lastLogin: '2024-12-19',
-  },
-  {
-    id: 2,
-    email: 'user1@example.com',
-    name: '김철수',
-    role: 'user',
-    createdAt: '2024-02-20',
-    lastLogin: '2024-12-18',
-  },
-  {
-    id: 3,
-    email: 'user2@example.com',
-    name: '이영희',
-    role: 'user',
-    createdAt: '2024-03-10',
-    lastLogin: '2024-12-17',
-  },
-  {
-    id: 4,
-    email: 'user3@example.com',
-    name: '박민수',
-    role: 'user',
-    createdAt: '2024-04-05',
-    lastLogin: '2024-12-19',
-  },
-];
-
 function MembersPage() {
-  const [members] = useState<Member[]>(mockMembers);
   const [searchQuery, setSearchQuery] = useState('');
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['members'],
+    queryFn: getMembers,
+  });
+
+  const members = data?.content || [];
+  console.log(data);
 
   const filteredMembers = members.filter(
     (member) =>
-      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.nickname.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleMakeAdmin = (memberId: number) => {
     alert(`회원 ID ${memberId}를 관리자로 지정합니다.`);
   };
+
+  if (isLoading) {
+    return (
+      <Layout title="멤버 관리">
+        <Container>
+          <LoadingMessage>멤버 목록을 불러오는 중...</LoadingMessage>
+        </Container>
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout title="멤버 관리">
+        <Container>
+          <ErrorMessage>
+            멤버 목록을 불러오는데 실패했습니다.
+            {error instanceof Error && `: ${error.message}`}
+          </ErrorMessage>
+        </Container>
+      </Layout>
+    );
+  }
 
   return (
     <Layout title="멤버 관리">
@@ -85,27 +79,23 @@ function MembersPage() {
               <Th>이메일</Th>
               <Th>역할</Th>
               <Th>가입일</Th>
-              <Th>최근 로그인</Th>
-              <Th>액션</Th>
             </Tr>
           </Thead>
           <Tbody>
             {filteredMembers.map((member) => (
               <Tr key={member.id}>
                 <Td>{member.id}</Td>
-                <Td>{member.name}</Td>
+                <Td>{member.nickname}</Td>
                 <Td>{member.email}</Td>
                 <Td>
                   <Badge variant={member.role}>
-                    {member.role === 'admin' && <FiShield />}
-                    {member.role === 'admin' ? '관리자' : '일반 회원'}
+                    {member.role === 'ADMIN' && <FiShield />}
+                    {member.role === 'ADMIN' ? '관리자' : '일반 회원'}
                   </Badge>
                 </Td>
-                <Td>{member.createdAt}</Td>
-                <Td>{member.lastLogin}</Td>
                 <Td>
                   <ActionButtons>
-                    {member.role === 'user' && (
+                    {member.role === 'USER' && (
                       <Button
                         size="sm"
                         variant="secondary"
@@ -208,7 +198,7 @@ const Td = styled.td`
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
-const Badge = styled.span<{ variant: 'admin' | 'user' }>`
+const Badge = styled.span<{ variant: 'ADMIN' | 'USER' }>`
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.borderRadius.full};
 
@@ -217,9 +207,9 @@ const Badge = styled.span<{ variant: 'admin' | 'user' }>`
   align-items: center;
 
   background-color: ${({ variant, theme }) =>
-    variant === 'admin' ? theme.colors.primary : theme.colors.gray200};
+    variant === 'ADMIN' ? theme.colors.primary : theme.colors.gray200};
   color: ${({ variant, theme }) =>
-    variant === 'admin' ? theme.colors.white : theme.colors.gray700};
+    variant === 'ADMIN' ? theme.colors.white : theme.colors.gray700};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
@@ -227,4 +217,20 @@ const Badge = styled.span<{ variant: 'admin' | 'user' }>`
 const ActionButtons = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const LoadingMessage = styled.div`
+  padding: ${({ theme }) => theme.spacing.xl};
+
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.base};
+  text-align: center;
+`;
+
+const ErrorMessage = styled.div`
+  padding: ${({ theme }) => theme.spacing.xl};
+
+  color: ${({ theme }) => theme.colors.error};
+  font-size: ${({ theme }) => theme.fontSize.base};
+  text-align: center;
 `;
