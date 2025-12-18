@@ -11,39 +11,35 @@ interface CarouselNavButtonsProps {
 const CarouselNavButtons = ({
   position = 'middle',
 }: CarouselNavButtonsProps) => {
-  const { loop, slideIndex, slideCount, handlePrev, handleNext } =
-    useCarouselContext();
-
-  const nextDisabled = !loop && slideIndex >= slideCount - 1;
-  const prevDisabled = !loop && slideIndex <= 0;
+  const { canGoPrev, canGoNext, handlePrev, handleNext } = useCarouselContext();
 
   return (
     <Container position={position}>
       <NavButton
         type="button"
         onClick={handlePrev}
-        disabled={prevDisabled}
+        disabled={!canGoPrev}
         aria-label="이전 슬라이드 이동"
       >
         <ChevronIcon
           direction="left"
           width="100%"
           height="100%"
-          fill={prevDisabled ? theme.colors.disabledText : theme.colors.primary}
+          fill={canGoPrev ? theme.colors.primary : theme.colors.disabledText}
         />
       </NavButton>
 
       <NavButton
         type="button"
         onClick={handleNext}
-        disabled={nextDisabled}
+        disabled={!canGoNext}
         aria-label="다음 슬라이드 이동"
       >
         <ChevronIcon
           direction="right"
           width="100%"
           height="100%"
-          fill={nextDisabled ? theme.colors.disabledText : theme.colors.primary}
+          fill={canGoNext ? theme.colors.primary : theme.colors.disabledText}
         />
       </NavButton>
     </Container>

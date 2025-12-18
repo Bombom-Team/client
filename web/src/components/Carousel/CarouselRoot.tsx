@@ -28,8 +28,10 @@ const CarouselRoot = ({
 
   const {
     slideIndex,
-    slideCount,
     setSlideIndex,
+    slideCount,
+    canGoPrev,
+    canGoNext,
     registerSlideCount,
     prev,
     next,
@@ -42,12 +44,12 @@ const CarouselRoot = ({
     useCarouselSwipe({
       enabled: !isTransitioning,
       slideIndex,
-      slideCount,
-      loop,
+      canGoPrev,
+      canGoNext,
       slideWrapperRef,
       onSwipe: (dir) => {
         setIsTransitioning(true);
-        setSlideIndex((i) => i + dir);
+        setSlideIndex((prev) => prev + dir);
       },
     });
 
@@ -77,6 +79,8 @@ const CarouselRoot = ({
         slideIndex,
         slideCount,
         registerSlideCount,
+        canGoPrev,
+        canGoNext,
         slideWrapperRef,
         isTransitioning,
         isSwiping,

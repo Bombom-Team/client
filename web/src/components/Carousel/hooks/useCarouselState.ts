@@ -10,6 +10,9 @@ const useCarouselState = ({ loop }: { loop: boolean }) => {
   );
   const [slideCount, setSlideCount] = useState(0);
 
+  const canGoPrev = loop || slideIndex > NON_LOOP_START_SLIDE_INDEX;
+  const canGoNext = loop || slideIndex < slideCount - 1;
+
   const registerSlideCount = useCallback((count: number) => {
     setSlideCount(count);
   }, []);
@@ -24,8 +27,10 @@ const useCarouselState = ({ loop }: { loop: boolean }) => {
 
   return {
     slideIndex,
-    slideCount,
     setSlideIndex,
+    slideCount,
+    canGoPrev,
+    canGoNext,
     registerSlideCount,
     prev,
     next,

@@ -6,6 +6,8 @@ export interface CarouselContextValue {
   slideIndex: number;
   slideCount: number;
   registerSlideCount: (count: number) => void;
+  canGoPrev: boolean;
+  canGoNext: boolean;
 
   // refs
   slideWrapperRef: RefObject<HTMLUListElement | null>;
