@@ -27,6 +27,7 @@ const CarouselSlides = ({
     slideIndex,
     slideCount,
     registerSlideCount,
+    canGoNext,
     slideWrapperRef,
     isTransitioning,
     isSwiping,
@@ -68,7 +69,7 @@ const CarouselSlides = ({
       isSwiping={isSwiping}
       onTransitionEnd={handleTransitionEnd}
       hasAnimation={hasAnimation}
-      showNextSlidePart={showNextSlidePart}
+      showNextSlidePart={showNextSlidePart && canGoNext}
       tabIndex={0}
       aria-live="off"
       aria-atomic="true"
