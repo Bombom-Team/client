@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   SWIPE_ANGLE_THRESHOLD,
   SWIPE_OFFSET_THRESHOLD,
@@ -24,6 +24,11 @@ const useCarouselSwipe = ({
   const [isSwiping, setIsSwiping] = useState(false);
   const swipeStartRef = useRef({ x: 0, y: 0 });
   const swipeOffsetRef = useRef(0);
+  const isFirst = useMemo(() => !loop && slideIndex === 0, [loop, slideIndex]);
+  const isLast = useMemo(
+    () => !loop && slideIndex === slideCount - 1,
+    [loop, slideIndex, slideCount],
+  );
 
   const swipeStart = useCallback(
     (x: number, y: number) => {
@@ -53,30 +58,36 @@ const useCarouselSwipe = ({
       }
 
       const offset = x - swipeStartRef.current.x;
-      const isFirst = slideIndex === 0;
-      const isLast = slideIndex === slideCount - 1;
 
-      const isBoundary =
-        !loop && ((offset > 0 && isFirst) || (offset < 0 && isLast));
+      const isBoundary = (offset > 0 && isFirst) || (offset < 0 && isLast);
 
-      swipeOffsetRef.current = isBoundary ? 0 : offset;
+      swipeOffsetRef.current = isBoundary ? offset * 0.3 : offset;
 
       slideWrapperRef.current.style.transform = `translateX(calc(-${slideIndex * 100}% + ${swipeOffsetRef.current}px))`;
     },
-    [isSwiping, slideIndex, slideCount, loop, slideWrapperRef],
+    [isSwiping, slideWrapperRef, isFirst, isLast, slideIndex],
   );
 
   const swipeEnd = useCallback(() => {
     if (!isSwiping) return;
     setIsSwiping(false);
 
-    if (Math.abs(swipeOffsetRef.current) >= SWIPE_OFFSET_THRESHOLD) {
-      onSwipe(swipeOffsetRef.current > 0 ? -1 : 1);
+    const swipeDirection = swipeOffsetRef.current > 0 ? -1 : 1;
+    const canSwipe =
+      loop ||
+      (swipeDirection === 1 && !isLast) ||
+      (swipeDirection === -1 && !isFirst);
+
+    if (
+      Math.abs(swipeOffsetRef.current) >= SWIPE_OFFSET_THRESHOLD &&
+      canSwipe
+    ) {
+      onSwipe(swipeDirection);
     }
 
     swipeOffsetRef.current = 0;
     slideWrapperRef.current?.style.removeProperty('transform');
-  }, [isSwiping, onSwipe, slideWrapperRef]);
+  }, [isFirst, isLast, isSwiping, loop, onSwipe, slideWrapperRef]);
 
   const handleTouchStart = useCallback(
     (e: TouchEvent) => {
