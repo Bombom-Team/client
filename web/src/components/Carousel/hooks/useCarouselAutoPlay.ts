@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { AutoPlayOption } from './Carousel.types';
+import type { AutoPlayOption } from '../Carousel.types';
 
 const useCarouselAutoPlay = ({
   enabled,

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import {
   LOOP_START_SLIDE_INDEX,
   NON_LOOP_START_SLIDE_INDEX,
-} from './Carousel.constants';
+} from '../Carousel.constants';
 
 const useCarouselState = ({ loop }: { loop: boolean }) => {
   const [slideIndex, setSlideIndex] = useState(

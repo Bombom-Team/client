@@ -7,10 +7,10 @@ import {
   type PropsWithChildren,
 } from 'react';
 import { TRANSITIONS } from './Carousel.constants';
-import { useCarouselContext } from './CarouselContext';
 import CarouselSlide from './CarouselSlide';
-import { CarouselSlideIndexContext } from './CarouselSlideIndexContext';
-import useCarouselAccessibility from './useCarouselAccessibility';
+import { useCarouselContext } from './contexts/CarouselContext';
+import { CarouselSlideIndexContext } from './contexts/CarouselSlideIndexContext';
+import useCarouselAccessibility from './hooks/useCarouselAccessibility';
 import { isProduction } from '@/utils/environment';
 
 interface CarouselSlidesProps {

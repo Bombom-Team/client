@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { LOOP_START_SLIDE_INDEX } from './Carousel.constants';
+import { LOOP_START_SLIDE_INDEX } from '../Carousel.constants';
 
 const useCarouselTransition = ({
   slideIndex,

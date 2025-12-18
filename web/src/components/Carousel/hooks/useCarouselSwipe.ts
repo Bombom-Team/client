@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   SWIPE_ANGLE_THRESHOLD,
   SWIPE_OFFSET_THRESHOLD,
-} from './Carousel.constants';
+} from '../Carousel.constants';
 import { calculateAngle } from '@/utils/math';
 import type { RefObject, TouchEvent } from 'react';
 

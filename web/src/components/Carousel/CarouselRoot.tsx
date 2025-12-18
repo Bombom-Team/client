@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import { useCallback, useRef, type PropsWithChildren } from 'react';
 import { DEFAULT_SPEED } from './Carousel.constants';
-import { CarouselContext } from './CarouselContext';
-import useCarouselAutoPlay from './useCarouselAutoPlay';
-import useCarouselState from './useCarouselState';
-import useCarouselSwipe from './useCarouselSwipe';
-import useCarouselTransition from './useCarouselTransition';
+import { CarouselContext } from './contexts/CarouselContext';
+import useCarouselAutoPlay from './hooks/useCarouselAutoPlay';
+import useCarouselState from './hooks/useCarouselState';
+import useCarouselSwipe from './hooks/useCarouselSwipe';
+import useCarouselTransition from './hooks/useCarouselTransition';
 import type { AutoPlayOption } from './Carousel.types';
 
 /**

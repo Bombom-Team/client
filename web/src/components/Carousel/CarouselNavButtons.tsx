@@ -1,6 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useCarouselContext } from './CarouselContext';
+import { useCarouselContext } from './contexts/CarouselContext';
 import ChevronIcon from '../icons/ChevronIcon';
 import type { SlideButtonPosition } from './Carousel.types';
 
