@@ -64,4 +64,5 @@ const ContentWrapper = styled.div<{ isOpen: boolean }>`
   padding: ${({ isOpen }) => (isOpen ? '8px 10px' : '0')};
 
   background-color: ${({ theme }) => theme.colors.disabledBackground};
+  line-height: 2;
 `;
