@@ -8,6 +8,7 @@ const fonts = {
   heading4: `600 24px/32px ${fontFamily}`,
   heading5: `600 18px/28px ${fontFamily}`,
   heading6: `600 16px/24px ${fontFamily}`,
+  bodyLarge: `400 18px/28px ${fontFamily}`,
   body1: `400 16px/24px ${fontFamily}`,
   body2: `400 14px/22px ${fontFamily}`,
   body3: `400 12px/20px ${fontFamily}`,
