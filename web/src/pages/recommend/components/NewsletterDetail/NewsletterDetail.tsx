@@ -8,9 +8,9 @@ import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
+import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
 import { useSearchParamState } from '@/hooks/useSearchParamState';
-import { useUserInfo } from '@/hooks/useUserInfo';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { openExternalLink } from '@/utils/externalLink';
 import type { NewsletterTab } from './NewsletterDetail.types';
@@ -23,7 +23,7 @@ interface NewsletterDetailProps {
 
 const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
   const deviceType = useDevice();
-  const { userInfo, isLoggedIn } = useUserInfo();
+  const { userProfile, isLoggedIn } = useAuth();
   const [activeTab, setActiveTab] = useSearchParamState<NewsletterTab>('tab', {
     defaultValue: 'detail',
   });
@@ -61,7 +61,7 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
     openSubscribeLink(
       newsletterDetail.subscribeUrl,
       newsletterDetail.name,
-      userInfo,
+      userProfile,
     );
   };
 

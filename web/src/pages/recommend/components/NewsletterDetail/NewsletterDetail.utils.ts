@@ -2,7 +2,7 @@ import { MAILY_DOMAIN, STIBEE_DOMAIN } from './NewsletterDetail.constant';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { copyToClipboard } from '@/utils/copy';
 import { openExternalLink } from '@/utils/externalLink';
-import type { UserInfo } from '@/types/me';
+import type { UserProfile } from '@/types/me';
 
 export const isStibee = (baseUrl: string) => {
   return baseUrl.includes(STIBEE_DOMAIN);
@@ -34,12 +34,12 @@ export const buildSubscribeUrl = (
 export const openSubscribeLink = (
   link: string,
   newsletterName: string,
-  userInfo?: UserInfo,
+  userProfile?: UserProfile | null,
 ) => {
-  if (!userInfo) return;
+  if (!userProfile) return;
 
   if (!isStibee(link) && !isMaily(link)) {
-    copyToClipboard(userInfo.email);
+    copyToClipboard(userProfile.email);
     alert('이메일이 복사되었습니다. 이 이메일로 뉴스레터를 구독해주세요.');
   }
 
@@ -49,7 +49,7 @@ export const openSubscribeLink = (
     label: newsletterName ?? 'Unknown Newsletter',
   });
 
-  const subscribeUrl = buildSubscribeUrl(link, userInfo);
+  const subscribeUrl = buildSubscribeUrl(link, userProfile);
 
   openExternalLink(subscribeUrl);
 };

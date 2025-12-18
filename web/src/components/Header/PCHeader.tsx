@@ -7,7 +7,7 @@ import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Button from '../Button/Button';
 import Skeleton from '../Skeleton/Skeleton';
-import { useUserInfo } from '@/hooks/useUserInfo';
+import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
 import BellIcon from '#/assets/svg/bell.svg';
 
@@ -16,8 +16,8 @@ interface PCHeaderProps {
 }
 
 const PCHeader = ({ activeNav }: PCHeaderProps) => {
-  const { userInfo, isLoading } = useUserInfo();
   const navigate = useNavigate();
+  const { userProfile } = useAuth();
 
   return (
     <HeaderContainer>
@@ -35,10 +35,8 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
           >
             <BellIcon width={24} height={24} fill={theme.colors.black} />
           </Button>
-          {isLoading ? (
-            <Skeleton width="120px" height="40px" />
-          ) : userInfo ? (
-            <HeaderProfile userInfo={userInfo} device="pc" />
+          {userProfile ? (
+            <HeaderProfile userProfile={userProfile} device="pc" />
           ) : (
             <LoginButton />
           )}

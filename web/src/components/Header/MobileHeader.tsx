@@ -7,7 +7,7 @@ import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Button from '../Button/Button';
 import Skeleton from '../Skeleton/Skeleton';
-import { useUserInfo } from '@/hooks/useUserInfo';
+import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
 import BellIcon from '#/assets/svg/bell.svg';
 
@@ -16,8 +16,8 @@ interface MobileHeaderProps {
 }
 
 const MobileHeader = ({ activeNav }: MobileHeaderProps) => {
-  const { userInfo, isLoading } = useUserInfo();
   const navigate = useNavigate();
+  const { userProfile } = useAuth();
 
   return (
     <>
@@ -30,14 +30,12 @@ const MobileHeader = ({ activeNav }: MobileHeaderProps) => {
           >
             <BellIcon width={20} height={20} fill={theme.colors.black} />
           </Button>
-          {isLoading ? (
-            <Skeleton width="120px" height="40px" />
-          ) : userInfo ? (
-            <HeaderProfile userInfo={userInfo} device="mobile" />
-          ) : (
-            <LoginButton />
-          )}
         </UserInfoWrapper>
+        {userProfile ? (
+          <HeaderProfile userProfile={userProfile} device="mobile" />
+        ) : (
+          <LoginButton />
+        )}
       </MobileHeaderContainer>
       <BottomNavWrapper>
         <HeaderNavButtons activeNav={activeNav} device="mobile" />
