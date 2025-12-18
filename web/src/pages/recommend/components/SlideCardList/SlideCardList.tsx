@@ -43,7 +43,7 @@ const SlideCardList = () => {
 
   return (
     <>
-      <Carousel.Root>
+      <Carousel.Root loop autoPlay>
         <Carousel.Slides>
           {device === 'pc' && (
             <Carousel.Slide>
