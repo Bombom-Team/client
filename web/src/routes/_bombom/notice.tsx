@@ -2,38 +2,14 @@ import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { queries } from '@/apis/queries';
 import Accordion from '@/components/Accordion/Accordion';
 import Badge from '@/components/Badge/Badge';
 import { useDevice } from '@/hooks/useDevice';
+import EmptyNoticeCard from '@/pages/notice/components/EmptyNoticeCard';
 import type { Device } from '@/hooks/useDevice';
 import MenuIcon from '#/assets/svg/menu.svg';
-
-const contents = [
-  {
-    noticeId: 0,
-    categoryName: 'update',
-    title: '봄이가 10단계로 새롭게 업데이트됐어요!',
-    content:
-      '안녕하세요 봄봄입니다. 이번 겨울, 봄봄을 더 재미있게 이용하실 수 있도록 대규모 업데이트를 진행하였습니다. 봄이 10단계 업그레이드 봄이를 아껴주신 여러분 덕분에 봄이가 드디어 10단계까지 성장할 수 있게 되었습니다.',
-    createdAt: '2025-12-09T14:53:03.183Z',
-  },
-  {
-    noticeId: 1,
-    categoryName: 'notice',
-    title: '서버 이전 작업으로 인한 서비스 중단 공지 (11.27~11.28)',
-    content: 'string',
-    createdAt: '2025-12-12T14:53:03.183Z',
-  },
-  {
-    noticeId: 2,
-    categoryName: 'update',
-    title: '앱에서 알림을 받을 수 있어요 !',
-    content: 'string',
-    createdAt: '2025-12-15T14:53:03.183Z',
-  },
-];
 
 export const Route = createFileRoute('/_bombom/notice')({
   head: () => ({
@@ -54,13 +30,16 @@ function NoticePage() {
   const { data: notices } = useQuery(queries.notices());
   const device = useDevice();
 
-  const sortedContents = [...contents].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  const [openNoticeId, setOpenNoticeId] = useState<number | null | undefined>(
+    null,
   );
 
-  const [openNoticeId, setOpenNoticeId] = useState<number | null>(
-    sortedContents[0]?.noticeId ?? null,
-  );
+  useEffect(() => {
+    if (notices?.content?.length) {
+      setOpenNoticeId(notices?.content[0]?.noticeId);
+    }
+  }, [notices]);
+
   const handleToggle = (noticeId: number) => {
     setOpenNoticeId((prev) => (prev === noticeId ? null : noticeId));
   };
@@ -75,7 +54,8 @@ function NoticePage() {
       </TitleWrapper>
 
       <ContentWrapper device={device}>
-        {sortedContents.map((content) => {
+        {notices?.content?.length === 0 && <EmptyNoticeCard />}
+        {notices?.content?.map((content) => {
           const isOpen = openNoticeId === content.noticeId;
 
           return (
