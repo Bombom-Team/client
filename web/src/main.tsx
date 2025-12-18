@@ -5,11 +5,12 @@ import {
   init as initSentry,
   tanstackRouterBrowserTracingIntegration,
 } from '@sentry/react';
-import { QueryClient } from '@tanstack/react-query';
+import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ENV } from './apis/env';
+import { queries } from './apis/queries';
 import GAInitializer from './libs/googleAnalytics/GAInitializer';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
@@ -18,6 +19,24 @@ import { isDevelopment, isProduction } from './utils/environment';
 if (isProduction) Clarity.init(ENV.clarityProjectId);
 
 export const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => {
+      if (error instanceof ApiError && error.status === 401) {
+        queryClient.invalidateQueries({
+          queryKey: queries.userProfile().queryKey,
+        });
+      }
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      if (error instanceof ApiError && error.status === 401) {
+        queryClient.invalidateQueries({
+          queryKey: queries.userProfile().queryKey,
+        });
+      }
+    },
+  }),
   defaultOptions: {
     queries: {
       retry: (failureCount, error) => {
