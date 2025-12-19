@@ -2,11 +2,11 @@ import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { createNotice as createNoticeRequest } from '@/apis/notices';
+import { createNotice } from '@/apis/notices/notices.api';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { useNotices } from '@/contexts/NoticeContext';
-import type { NoticeCategoryType } from '@/apis/notices';
+import type { NoticeCategoryType } from '@/types/notice';
 
 export const Route = createFileRoute('/notices/new')({
   component: NewNoticePage,
@@ -27,7 +27,7 @@ function NewNoticePage() {
     NOTICE_CATEGORY_OPTIONS[0]?.value ?? 'NOTICE',
   );
   const { mutateAsync: createNoticeMutation, isPending } = useMutation({
-    mutationFn: createNoticeRequest,
+    mutationFn: createNotice,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -1,3 +1,5 @@
+export type NoticeCategoryType = 'NOTICE' | 'EVENT';
+
 export interface Notice {
   id: number;
   title: string;
@@ -5,5 +7,5 @@ export interface Notice {
   author: string;
   createdAt: string;
   views: number;
-  noticeCategory: string;
+  noticeCategory: NoticeCategoryType;
 }

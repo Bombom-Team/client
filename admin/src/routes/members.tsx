@@ -1,10 +1,5 @@
 import styled from '@emotion/styled';
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import {
@@ -13,7 +8,8 @@ import {
   FiSearch,
   FiShield,
 } from 'react-icons/fi';
-import { getMembers, updateMemberRole } from '@/apis/members';
+import { updateMemberRole } from '@/apis/members/members.api';
+import { membersQueries } from '@/apis/members/members.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 
@@ -32,12 +28,12 @@ function MembersPage() {
   const normalizedQuery = trimmedSearchQuery.toLowerCase();
   const serverSearchQuery = trimmedSearchQuery || undefined;
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['members', currentPage, serverSearchQuery],
-    queryFn: () =>
-      getMembers({ page: currentPage, size: PAGE_SIZE, name: serverSearchQuery }),
-    placeholderData: keepPreviousData,
+  const membersListQuery = membersQueries.list({
+    page: currentPage,
+    size: PAGE_SIZE,
+    name: serverSearchQuery,
   });
+  const { data, isLoading, error } = useQuery(membersListQuery);
 
   const { mutate: changeMemberRole, isPending: isUpdatingRole } = useMutation({
     mutationFn: ({
