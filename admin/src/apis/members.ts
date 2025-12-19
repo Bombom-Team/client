@@ -28,14 +28,16 @@ export interface GetMembersResponse {
 export interface GetMembersParams {
   page?: number;
   size?: number;
+  name?: string;
 }
 
-export const getMembers = async ({ page, size }: GetMembersParams = {}) => {
+export const getMembers = async ({ page, size, name }: GetMembersParams = {}) => {
   return fetcher.get<GetMembersResponse>({
     path: '/members',
     query: {
       page,
       size,
+      name,
     },
   });
 };

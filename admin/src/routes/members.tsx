@@ -28,10 +28,14 @@ function MembersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
   const [updatingMemberId, setUpdatingMemberId] = useState<number | null>(null);
+  const trimmedSearchQuery = searchQuery.trim();
+  const normalizedQuery = trimmedSearchQuery.toLowerCase();
+  const serverSearchQuery = trimmedSearchQuery || undefined;
   const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery({
-    queryKey: ['members', currentPage],
-    queryFn: () => getMembers({ page: currentPage, size: PAGE_SIZE }),
+    queryKey: ['members', currentPage, serverSearchQuery],
+    queryFn: () =>
+      getMembers({ page: currentPage, size: PAGE_SIZE, name: serverSearchQuery }),
     placeholderData: keepPreviousData,
   });
 
@@ -67,7 +71,6 @@ function MembersPage() {
   });
 
   const members = data?.content || [];
-  const normalizedQuery = searchQuery.trim().toLowerCase();
   const filteredMembers = members.filter((member) => {
     if (!normalizedQuery) {
       return true;
