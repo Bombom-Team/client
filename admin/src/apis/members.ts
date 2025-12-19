@@ -39,3 +39,15 @@ export const getMembers = async ({ page, size }: GetMembersParams = {}) => {
     },
   });
 };
+
+export interface UpdateMemberRoleParams {
+  memberId: number;
+  authority: 'ADMIN' | 'USER';
+}
+
+export const updateMemberRole = async ({ memberId, authority }: UpdateMemberRoleParams) => {
+  return fetcher.patch<{ authority: UpdateMemberRoleParams['authority'] }, void>({
+    path: `/members/${memberId}/role`,
+    body: { authority },
+  });
+};

@@ -1,5 +1,10 @@
 import styled from '@emotion/styled';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import {
@@ -8,7 +13,7 @@ import {
   FiSearch,
   FiShield,
 } from 'react-icons/fi';
-import { getMembers } from '@/apis/members';
+import { getMembers, updateMemberRole } from '@/apis/members';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 
@@ -22,10 +27,43 @@ const MAX_VISIBLE_PAGES = 5;
 function MembersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
+  const [updatingMemberId, setUpdatingMemberId] = useState<number | null>(null);
+  const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery({
     queryKey: ['members', currentPage],
     queryFn: () => getMembers({ page: currentPage, size: PAGE_SIZE }),
     placeholderData: keepPreviousData,
+  });
+
+  const { mutate: changeMemberRole, isPending: isUpdatingRole } = useMutation({
+    mutationFn: ({
+      memberId,
+      authority,
+    }: {
+      memberId: number;
+      authority: 'ADMIN' | 'USER';
+    }) => updateMemberRole({ memberId, authority }),
+    onMutate: ({ memberId }) => {
+      setUpdatingMemberId(memberId);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['members'] });
+      if (variables.authority === 'ADMIN') {
+        alert('해당 멤버의 권한을 관리자 권한으로 변경했습니다.');
+      } else {
+        alert('해당 멤버의 권한을 일반 회원으로 변경했습니다.');
+      }
+    },
+    onError: (mutationError) => {
+      let message = '권한 변경에 실패했습니다. 잠시 후 다시 시도해주세요.';
+      if (mutationError instanceof Error && mutationError.message) {
+        message += `\n${mutationError.message}`;
+      }
+      alert(message);
+    },
+    onSettled: () => {
+      setUpdatingMemberId(null);
+    },
   });
 
   const members = data?.content || [];
@@ -50,7 +88,11 @@ function MembersPage() {
   };
 
   const handleMakeAdmin = (memberId: number) => {
-    alert(`회원 ID ${memberId}를 관리자로 지정합니다.`);
+    changeMemberRole({ memberId, authority: 'ADMIN' });
+  };
+
+  const handleChangeToUser = (memberId: number) => {
+    changeMemberRole({ memberId, authority: 'USER' });
   };
 
   const handlePageChange = (page: number) => {
@@ -140,8 +182,27 @@ function MembersPage() {
                           size="sm"
                           variant="secondary"
                           onClick={() => handleMakeAdmin(member.id)}
+                          disabled={
+                            isUpdatingRole && updatingMemberId === member.id
+                          }
                         >
-                          관리자 지정
+                          {isUpdatingRole && updatingMemberId === member.id
+                            ? '변경 중...'
+                            : '관리자 지정'}
+                        </Button>
+                      )}
+                      {member.role === 'ADMIN' && (
+                        <Button
+                          size="sm"
+                          variant="danger"
+                          onClick={() => handleChangeToUser(member.id)}
+                          disabled={
+                            isUpdatingRole && updatingMemberId === member.id
+                          }
+                        >
+                          {isUpdatingRole && updatingMemberId === member.id
+                            ? '변경 중...'
+                            : '일반 회원 전환'}
                         </Button>
                       )}
                     </ActionButtons>
