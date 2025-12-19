@@ -25,8 +25,17 @@ export interface GetMembersResponse {
   totalPages: number;
 }
 
-export const getMembers = async () => {
+export interface GetMembersParams {
+  page?: number;
+  size?: number;
+}
+
+export const getMembers = async ({ page, size }: GetMembersParams = {}) => {
   return fetcher.get<GetMembersResponse>({
     path: '/members',
+    query: {
+      page,
+      size,
+    },
   });
 };
