@@ -1,21 +1,36 @@
 import styled from '@emotion/styled';
+import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import { createNotice as createNoticeRequest } from '@/apis/notices';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { useNotices } from '@/contexts/NoticeContext';
+import type { NoticeCategoryType } from '@/apis/notices';
 
 export const Route = createFileRoute('/notices/new')({
   component: NewNoticePage,
 });
 
+const NOTICE_CATEGORY_OPTIONS: { label: string; value: NoticeCategoryType }[] =
+  [
+    { label: '공지사항', value: 'NOTICE' },
+    { label: '이벤트', value: 'EVENT' },
+  ];
+
 function NewNoticePage() {
   const navigate = useNavigate();
-  const { createNotice } = useNotices();
+  const { createNotice: addNotice } = useNotices();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [noticeCategory, setNoticeCategory] = useState(
+    NOTICE_CATEGORY_OPTIONS[0]?.value ?? 'NOTICE',
+  );
+  const { mutateAsync: createNoticeMutation, isPending } = useMutation({
+    mutationFn: createNoticeRequest,
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim() || !content.trim()) {
@@ -23,8 +38,17 @@ function NewNoticePage() {
       return;
     }
 
-    createNotice(title, content);
-    navigate({ to: '/notices' });
+    try {
+      await createNoticeMutation({ title, content, noticeCategory });
+      addNotice(title, content, noticeCategory);
+      navigate({ to: '/notices' });
+    } catch (error) {
+      let message = '공지사항 등록에 실패했습니다. 잠시 후 다시 시도해주세요.';
+      if (error instanceof Error && error.message) {
+        message += `\n${error.message}`;
+      }
+      alert(message);
+    }
   };
 
   const handleCancel = () => {
@@ -42,6 +66,23 @@ function NewNoticePage() {
     <Layout title="새 공지사항 작성">
       <Container>
         <Form onSubmit={handleSubmit}>
+          <FormGroup>
+            <Label htmlFor="category">카테고리</Label>
+            <Select
+              id="category"
+              value={noticeCategory}
+              onChange={(e) =>
+                setNoticeCategory(e.target.value as NoticeCategoryType)
+              }
+            >
+              {NOTICE_CATEGORY_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+          </FormGroup>
+
           <FormGroup>
             <Label htmlFor="title">제목</Label>
             <Input
@@ -67,7 +108,9 @@ function NewNoticePage() {
             <Button type="button" variant="secondary" onClick={handleCancel}>
               취소
             </Button>
-            <Button type="submit">등록</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? '등록 중...' : '등록'}
+            </Button>
           </ButtonGroup>
         </Form>
       </Container>
@@ -138,4 +181,18 @@ const ButtonGroup = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
   justify-content: flex-end;
+`;
+
+const Select = styled.select`
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSize.base};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
 `;

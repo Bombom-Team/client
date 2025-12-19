@@ -5,4 +5,5 @@ export interface Notice {
   author: string;
   createdAt: string;
   views: number;
+  noticeCategory: string;
 }

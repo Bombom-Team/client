@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 interface NoticeContextValue {
   notices: Notice[];
   getNotice: (id: number) => Notice | undefined;
-  createNotice: (title: string, content: string) => void;
+  createNotice: (title: string, content: string, noticeCategory: string) => void;
   deleteNotice: (id: number) => void;
   updateNotice: (id: number, title: string, content: string) => void;
 }
@@ -21,6 +21,7 @@ const initialNotices: Notice[] = [
     author: '관리자',
     createdAt: '2024-12-18',
     views: 245,
+    noticeCategory: 'SERVICE',
   },
   {
     id: 2,
@@ -30,6 +31,7 @@ const initialNotices: Notice[] = [
     author: '관리자',
     createdAt: '2024-12-15',
     views: 189,
+    noticeCategory: 'UPDATE',
   },
   {
     id: 3,
@@ -39,6 +41,7 @@ const initialNotices: Notice[] = [
     author: '관리자',
     createdAt: '2024-12-10',
     views: 312,
+    noticeCategory: 'POLICY',
   },
 ];
 
@@ -54,7 +57,7 @@ export const NoticeProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const createNotice = useCallback(
-    (title: string, content: string) => {
+    (title: string, content: string, noticeCategory: string) => {
       const newNotice: Notice = {
         id: nextId,
         title,
@@ -62,6 +65,7 @@ export const NoticeProvider = ({ children }: { children: ReactNode }) => {
         author: '관리자',
         createdAt: new Date().toISOString().split('T')[0],
         views: 0,
+        noticeCategory,
       };
       setNotices((prev) => [newNotice, ...prev]);
       setNextId((prev) => prev + 1);
