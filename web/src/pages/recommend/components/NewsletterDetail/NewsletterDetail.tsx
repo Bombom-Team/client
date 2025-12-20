@@ -223,6 +223,8 @@ export const InfoBox = styled.div`
   display: flex;
   gap: 8px;
   flex-direction: column;
+
+  container: newsletter-item / inline-size;
 `;
 
 export const TitleWrapper = styled.div<{ isMobile: boolean }>`
@@ -270,6 +272,11 @@ export const NewsletterInfo = styled.div<{ isMobile: boolean }>`
 
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
+
+  @container newsletter-item (max-width: 240px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const StyledBadge = styled(Badge)<{ isMobile: boolean }>`
