@@ -7,6 +7,15 @@ import {
 import { calculateAngle } from '@/utils/math';
 import type { RefObject, TouchEvent } from 'react';
 
+interface UseCarouselSwipeParams {
+  enabled: boolean;
+  slideIndex: number;
+  canGoPrev: boolean;
+  canGoNext: boolean;
+  slideWrapperRef: RefObject<HTMLUListElement | null>;
+  onSwipe: (direction: -1 | 1) => void;
+}
+
 const useCarouselSwipe = ({
   enabled,
   slideIndex,
@@ -14,14 +23,7 @@ const useCarouselSwipe = ({
   canGoNext,
   slideWrapperRef,
   onSwipe,
-}: {
-  enabled: boolean;
-  slideIndex: number;
-  canGoPrev: boolean;
-  canGoNext: boolean;
-  slideWrapperRef: RefObject<HTMLUListElement | null>;
-  onSwipe: (direction: -1 | 1) => void;
-}) => {
+}: UseCarouselSwipeParams) => {
   const [isSwiping, setIsSwiping] = useState(false);
   const swipeStartRef = useRef({ x: 0, y: 0 });
   const swipeOffsetRef = useRef(0);

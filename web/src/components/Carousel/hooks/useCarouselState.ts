@@ -4,7 +4,11 @@ import {
   NON_LOOP_START_SLIDE_INDEX,
 } from '../Carousel.constants';
 
-const useCarouselState = ({ loop }: { loop: boolean }) => {
+interface UseCarouselStateParams {
+  loop: boolean;
+}
+
+const useCarouselState = ({ loop }: UseCarouselStateParams) => {
   const [slideIndex, setSlideIndex] = useState(
     loop ? LOOP_START_SLIDE_INDEX : NON_LOOP_START_SLIDE_INDEX,
   );

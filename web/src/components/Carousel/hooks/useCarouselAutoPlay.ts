@@ -1,17 +1,19 @@
 import { useEffect } from 'react';
 import type { AutoPlayOption } from '../Carousel.types';
 
+interface UseCarouselAutoPlayParams {
+  enabled: false | AutoPlayOption;
+  delay: number;
+  slideIndex: number;
+  onNext: () => void;
+}
+
 const useCarouselAutoPlay = ({
   enabled,
   delay,
   slideIndex,
   onNext,
-}: {
-  enabled: false | AutoPlayOption;
-  delay: number;
-  slideIndex: number;
-  onNext: () => void;
-}) => {
+}: UseCarouselAutoPlayParams) => {
   useEffect(() => {
     if (!enabled) return;
 

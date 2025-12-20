@@ -1,17 +1,19 @@
 import { useCallback, useState } from 'react';
 import { LOOP_START_SLIDE_INDEX } from '../Carousel.constants';
 
+interface UseCarouselTransitionParams {
+  slideIndex: number;
+  slideCount: number;
+  loop: boolean;
+  setSlideIndex: React.Dispatch<React.SetStateAction<number>>;
+}
+
 const useCarouselTransition = ({
   slideIndex,
   slideCount,
   loop,
   setSlideIndex,
-}: {
-  slideIndex: number;
-  slideCount: number;
-  loop: boolean;
-  setSlideIndex: React.Dispatch<React.SetStateAction<number>>;
-}) => {
+}: UseCarouselTransitionParams) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handleTransitionEnd = useCallback(() => {
