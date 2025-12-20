@@ -21,7 +21,7 @@ import type { GetArticlesStatisticsNewslettersResponse } from '@/apis/articles';
 import type { Sort } from '@/pages/storage/components/ArticleListControls/ArticleListControls.types';
 import StorageIcon from '#/assets/svg/storage.svg';
 
-const MIN_WARNING_LIMIT = 0;
+const MIN_WARNING_LIMIT = 450;
 
 export const Route = createFileRoute('/_bombom/storage')({
   head: () => ({
