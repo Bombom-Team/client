@@ -1,5 +1,6 @@
 import { fetcher } from '@bombom/shared/apis';
 import type { components } from '@/types/openapi';
+
 export type GetNoticesParams = components['schemas']['Pageable'];
 export type GetNoticesResponse = components['schemas']['PageNoticeResponse'];
 
