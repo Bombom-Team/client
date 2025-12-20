@@ -59,11 +59,7 @@ function NoticePage() {
           const isOpen = openNoticeId === content.noticeId;
 
           return (
-            <Accordion
-              key={content.noticeId}
-              isOpen={isOpen}
-              onToggle={() => handleToggle(content.noticeId)}
-            >
+            <Accordion key={content.noticeId}>
               <Accordion.Header
                 isOpen={isOpen}
                 onToggle={() => handleToggle(content.noticeId)}
