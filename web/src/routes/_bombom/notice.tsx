@@ -78,7 +78,7 @@ function NoticePage() {
               </Accordion.Header>
 
               <Accordion.Content isOpen={isOpen}>
-                {content.content.split('.').map((text, idx) => (
+                {content.content.split('\n').map((text, idx) => (
                   <AccordionContent key={idx}>{text}</AccordionContent>
                 ))}
               </Accordion.Content>
