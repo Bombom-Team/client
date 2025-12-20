@@ -157,6 +157,8 @@ export const Container = styled.div<{ isMobile: boolean }>`
 
   display: flex;
   flex-direction: column;
+
+  word-break: keep-all;
 `;
 
 const VisuallyHidden = styled.button`
