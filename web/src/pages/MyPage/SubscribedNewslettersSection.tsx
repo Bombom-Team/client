@@ -56,20 +56,9 @@ const SubscribedNewslettersSection = ({
                     </NewsletterDescription>
                   </NewsletterInfo>
                 </NewsletterContent>
-                {newsletter.hasUnsubscribeUrl ? (
-                  <UnsubscribeButton
-                    variant="outlined"
-                    onClick={() =>
-                      openUnsubscribeModal(newsletter.newsletterId)
-                    }
-                  >
-                    구독 해지
-                  </UnsubscribeButton>
-                ) : (
-                  <UnsubscribeInfoText>
-                    아직 구독 해지를 지원하지 않아요.
-                  </UnsubscribeInfoText>
-                )}
+                <UnsubscribeInfoText>
+                  아직 구독 해지를 지원하지 않아요.
+                </UnsubscribeInfoText>
               </NewsletterCard>
             ))}
           </NewsletterGrid>
