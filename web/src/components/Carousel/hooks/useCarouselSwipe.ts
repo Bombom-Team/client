@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import {
   SWIPE_ANGLE_THRESHOLD,
   SWIPE_OFFSET_THRESHOLD,
+  SWIPE_RESISTANCE_FACTOR,
 } from '../Carousel.constants';
 import { calculateAngle } from '@/utils/math';
 import type { RefObject, TouchEvent } from 'react';
@@ -56,7 +57,9 @@ const useCarouselSwipe = ({
 
       const canSwipe = (offset > 0 && canGoPrev) || (offset < 0 && canGoNext);
 
-      swipeOffsetRef.current = canSwipe ? offset : offset * 0.3;
+      swipeOffsetRef.current = canSwipe
+        ? offset
+        : offset * SWIPE_RESISTANCE_FACTOR;
 
       slideWrapperRef.current.style.transform = `translateX(calc(-${slideIndex * 100}% + ${swipeOffsetRef.current}px))`;
     },
