@@ -1,4 +1,3 @@
-import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
@@ -8,7 +7,7 @@ import LoginButton from './LoginButton';
 import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
-import BellIcon from '#/assets/svg/bell.svg';
+import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 
 interface MobileHeaderProps {
   activeNav: Nav;
@@ -27,7 +26,7 @@ const MobileHeader = ({ activeNav }: MobileHeaderProps) => {
             onClick={() => navigate({ to: '/notice' })}
             variant={'transparent'}
           >
-            <BellIcon width={20} height={20} fill={theme.colors.black} />
+            <MegaphoneIcon width={22} height={24} />
           </Button>
           {userProfile ? (
             <HeaderProfile userProfile={userProfile} device="mobile" />
@@ -67,6 +66,7 @@ const MobileHeaderContainer = styled.header`
 `;
 const UserInfoWrapper = styled.div`
   display: flex;
+  gap: 6px;
   justify-content: flex-end;
 `;
 

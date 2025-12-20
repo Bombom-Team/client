@@ -1,4 +1,3 @@
-import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
@@ -8,7 +7,7 @@ import LoginButton from './LoginButton';
 import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
-import BellIcon from '#/assets/svg/bell.svg';
+import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 
 interface PCHeaderProps {
   activeNav: Nav;
@@ -32,7 +31,7 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
             onClick={() => navigate({ to: '/notice' })}
             variant={'transparent'}
           >
-            <BellIcon width={24} height={24} fill={theme.colors.black} />
+            <MegaphoneIcon width={22} height={24} />
           </Button>
           {userProfile ? (
             <HeaderProfile userProfile={userProfile} device="pc" />
