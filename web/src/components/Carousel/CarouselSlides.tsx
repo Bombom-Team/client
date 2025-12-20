@@ -5,6 +5,7 @@ import {
   useEffect,
   useMemo,
   type PropsWithChildren,
+  type TouchEvent,
 } from 'react';
 import { TRANSITIONS } from './Carousel.constants';
 import CarouselSlide from './CarouselSlide';
@@ -27,14 +28,15 @@ const CarouselSlides = ({
     slideIndex,
     slideCount,
     registerSlideCount,
+    syncLoopSlideIndex,
     canGoNext,
     slideWrapperRef,
     isTransitioning,
+    stopTransition,
     isSwiping,
-    handleTransitionEnd,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
+    startSwipe,
+    moveSwipe,
+    endSwipe,
     hasAnimation,
     loop,
   } = useCarouselContext();
@@ -44,6 +46,21 @@ const CarouselSlides = ({
   const slidesToRender = loop
     ? [list[list.length - 1], ...list, list[0]]
     : [...list];
+
+  const handleTransitionEnd = () => {
+    stopTransition();
+    syncLoopSlideIndex();
+  };
+
+  const handleTouchStart = (e: TouchEvent) => {
+    const touchPoint = e.touches[0];
+    if (touchPoint) startSwipe(touchPoint.clientX, touchPoint.clientY);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    const touchPoint = e.touches[0];
+    if (touchPoint) moveSwipe(touchPoint.clientX, touchPoint.clientY);
+  };
 
   useEffect(() => {
     registerSlideCount(list.length);
@@ -78,7 +95,7 @@ const CarouselSlides = ({
       onBlur={handleBlur}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      onTouchEnd={endSwipe}
     >
       {slidesToRender.map((child, index) => {
         const childKey =

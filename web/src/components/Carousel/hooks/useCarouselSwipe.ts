@@ -5,7 +5,7 @@ import {
   SWIPE_RESISTANCE_FACTOR,
 } from '../Carousel.constants';
 import { calculateAngle } from '@/utils/math';
-import type { RefObject, TouchEvent } from 'react';
+import type { RefObject } from 'react';
 
 interface UseCarouselSwipeParams {
   enabled: boolean;
@@ -28,7 +28,7 @@ const useCarouselSwipe = ({
   const swipeStartRef = useRef({ x: 0, y: 0 });
   const swipeOffsetRef = useRef(0);
 
-  const swipeStart = useCallback(
+  const startSwipe = useCallback(
     (x: number, y: number) => {
       if (!enabled) return;
 
@@ -39,7 +39,7 @@ const useCarouselSwipe = ({
     [enabled],
   );
 
-  const swipeMove = useCallback(
+  const moveSwipe = useCallback(
     (x: number, y: number) => {
       if (!isSwiping || !slideWrapperRef.current) return;
 
@@ -68,7 +68,7 @@ const useCarouselSwipe = ({
     [isSwiping, slideWrapperRef, canGoPrev, canGoNext, slideIndex],
   );
 
-  const swipeEnd = useCallback(() => {
+  const endSwipe = useCallback(() => {
     if (!isSwiping) return;
     setIsSwiping(false);
 
@@ -88,27 +88,11 @@ const useCarouselSwipe = ({
     slideWrapperRef.current?.style.removeProperty('transform');
   }, [isSwiping, canGoNext, canGoPrev, onSwipe, slideWrapperRef]);
 
-  const handleTouchStart = useCallback(
-    (e: TouchEvent) => {
-      const touchPoint = e.touches[0];
-      if (touchPoint) swipeStart(touchPoint.clientX, touchPoint.clientY);
-    },
-    [swipeStart],
-  );
-
-  const handleTouchMove = useCallback(
-    (e: TouchEvent) => {
-      const touchPoint = e.touches[0];
-      if (touchPoint) swipeMove(touchPoint.clientX, touchPoint.clientY);
-    },
-    [swipeMove],
-  );
-
   return {
     isSwiping,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd: swipeEnd,
+    startSwipe,
+    moveSwipe,
+    endSwipe,
   };
 };
 

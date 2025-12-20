@@ -29,15 +29,27 @@ const useCarouselState = ({ loop }: UseCarouselStateParams) => {
     setSlideIndex((prev) => prev + 1);
   }, []);
 
+  const syncLoopSlideIndex = useCallback(() => {
+    if (!loop) return;
+
+    if (slideIndex < LOOP_START_SLIDE_INDEX) {
+      setSlideIndex(slideCount);
+    }
+
+    if (slideIndex > slideCount) {
+      setSlideIndex(LOOP_START_SLIDE_INDEX);
+    }
+  }, [loop, slideIndex, slideCount]);
+
   return {
     slideIndex,
-    setSlideIndex,
+    goPrev,
+    goNext,
+    syncLoopSlideIndex,
     slideCount,
     canGoPrev,
     canGoNext,
     registerSlideCount,
-    goPrev,
-    goNext,
   };
 };
 

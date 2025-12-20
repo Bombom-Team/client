@@ -11,7 +11,18 @@ interface CarouselNavButtonsProps {
 const CarouselNavButtons = ({
   position = 'middle',
 }: CarouselNavButtonsProps) => {
-  const { canGoPrev, canGoNext, handlePrev, handleNext } = useCarouselContext();
+  const { goNext, goPrev, canGoPrev, canGoNext, startTransition } =
+    useCarouselContext();
+
+  const handleNext = () => {
+    startTransition();
+    goNext();
+  };
+
+  const handlePrev = () => {
+    startTransition();
+    goPrev();
+  };
 
   return (
     <Container position={position}>

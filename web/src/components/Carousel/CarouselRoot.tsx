@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useCallback, useRef, type PropsWithChildren } from 'react';
+import { useRef, type PropsWithChildren } from 'react';
 import { DEFAULT_SPEED } from './Carousel.constants';
 import { CarouselContext } from './contexts/CarouselContext';
 import useCarouselAutoPlay from './hooks/useCarouselAutoPlay';
@@ -28,40 +28,36 @@ const CarouselRoot = ({
 
   const {
     slideIndex,
-    setSlideIndex,
+    goPrev,
+    goNext,
+    syncLoopSlideIndex,
     slideCount,
     canGoPrev,
     canGoNext,
     registerSlideCount,
-    goPrev,
-    goNext,
   } = useCarouselState({ loop });
 
-  const { isTransitioning, setIsTransitioning, handleTransitionEnd } =
-    useCarouselTransition({ slideIndex, slideCount, loop, setSlideIndex });
+  const { isTransitioning, startTransition, stopTransition } =
+    useCarouselTransition();
 
-  const { isSwiping, handleTouchStart, handleTouchMove, handleTouchEnd } =
-    useCarouselSwipe({
-      enabled: !isTransitioning,
-      slideIndex,
-      canGoPrev,
-      canGoNext,
-      slideWrapperRef,
-      onSwipe: (dir) => {
-        setIsTransitioning(true);
-        setSlideIndex((prev) => prev + dir);
-      },
-    });
-
-  const handleNext = useCallback(() => {
-    setIsTransitioning(true);
-    goNext();
-  }, [setIsTransitioning, goNext]);
-
-  const handlePrev = useCallback(() => {
-    setIsTransitioning(true);
-    goPrev();
-  }, [setIsTransitioning, goPrev]);
+  const { isSwiping, startSwipe, moveSwipe, endSwipe } = useCarouselSwipe({
+    enabled: !isTransitioning,
+    slideIndex,
+    canGoPrev,
+    canGoNext,
+    slideWrapperRef,
+    onSwipe: (dir) => {
+      startTransition();
+      if (dir === -1 && canGoPrev) {
+        goPrev();
+        return;
+      }
+      if (dir === 1 && canGoNext) {
+        goNext();
+        return;
+      }
+    },
+  });
 
   const autoPlayEnabled =
     !!autoPlay && !isSwiping && !isTransitioning && slideCount > 1;
@@ -70,7 +66,10 @@ const CarouselRoot = ({
     enabled: autoPlayEnabled,
     delay: typeof autoPlay === 'object' ? autoPlay.delay : DEFAULT_SPEED,
     slideIndex,
-    onNext: handleNext,
+    onNext: () => {
+      startTransition();
+      goNext();
+    },
   });
 
   return (
@@ -78,18 +77,20 @@ const CarouselRoot = ({
       value={{
         slideIndex,
         slideCount,
+        goPrev,
+        goNext,
+        syncLoopSlideIndex,
         registerSlideCount,
         canGoPrev,
         canGoNext,
         slideWrapperRef,
         isTransitioning,
+        startTransition,
+        stopTransition,
         isSwiping,
-        handleNext,
-        handlePrev,
-        handleTransitionEnd,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd,
+        startSwipe,
+        moveSwipe,
+        endSwipe,
         loop,
         hasAnimation,
       }}
