@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { createPortal } from 'react-dom';
 import { useUnsubscribe } from './hooks/useUnsubscribe';
-import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
@@ -19,16 +18,16 @@ const SubscribedNewslettersSection = ({
   device,
 }: SubscribedNewslettersSectionProps) => {
   const { selectNewsletter, confirmUnsubscribe } = useUnsubscribe();
-  const { modalRef, openModal, closeModal, isOpen } = useModal({
+  const { modalRef, closeModal, isOpen } = useModal({
     onClose: () => {
       selectNewsletter(null);
     },
   });
 
-  const openUnsubscribeModal = (newsletterId: number) => {
-    selectNewsletter(newsletterId);
-    openModal();
-  };
+  // const openUnsubscribeModal = (newsletterId: number) => {
+  //   selectNewsletter(newsletterId);
+  //   openModal();
+  // };
 
   const confirmUnsubscribeNewsletter = () => {
     confirmUnsubscribe();
@@ -56,20 +55,9 @@ const SubscribedNewslettersSection = ({
                     </NewsletterDescription>
                   </NewsletterInfo>
                 </NewsletterContent>
-                {newsletter.hasUnsubscribeUrl ? (
-                  <UnsubscribeButton
-                    variant="outlined"
-                    onClick={() =>
-                      openUnsubscribeModal(newsletter.newsletterId)
-                    }
-                  >
-                    구독 해지
-                  </UnsubscribeButton>
-                ) : (
-                  <UnsubscribeInfoText>
-                    아직 구독 해지를 지원하지 않아요.
-                  </UnsubscribeInfoText>
-                )}
+                <UnsubscribeInfoText>
+                  아직 구독 해지를 지원하지 않아요.
+                </UnsubscribeInfoText>
               </NewsletterCard>
             ))}
           </NewsletterGrid>
@@ -181,14 +169,14 @@ const EmptyMessage = styled.p`
   text-align: center;
 `;
 
-const UnsubscribeButton = styled(Button)`
-  border-radius: 8px;
-  align-self: flex-end;
+// const UnsubscribeButton = styled(Button)`
+//   border-radius: 8px;
+//   align-self: flex-end;
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.primaryLight};
-  }
-`;
+//   &:hover {
+//     background: ${({ theme }) => theme.colors.primaryLight};
+//   }
+// `;
 
 const UnsubscribeInfoText = styled.p`
   align-self: flex-end;
