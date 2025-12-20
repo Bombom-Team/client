@@ -224,7 +224,7 @@ export const InfoBox = styled.div`
   gap: 8px;
   flex-direction: column;
 
-  container: newsletter-item / inline-size;
+  container: info-box / inline-size;
 `;
 
 export const TitleWrapper = styled.div<{ isMobile: boolean }>`
@@ -273,7 +273,7 @@ export const NewsletterInfo = styled.div<{ isMobile: boolean }>`
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 
-  @container newsletter-item (max-width: 320px) {
+  @container info-box (max-width: 320px) {
     flex-direction: column;
     align-items: flex-start;
   }
