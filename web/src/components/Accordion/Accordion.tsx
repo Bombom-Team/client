@@ -1,14 +1,15 @@
 import styled from '@emotion/styled';
 import ChevronIcon from '../icons/ChevronIcon';
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 
 interface AccordionProps {
   isOpen: boolean;
   onToggle: () => void;
-  children: ReactNode;
 }
 
-const Accordion = ({ children }: AccordionProps) => {
+type AccordionContentProps = Omit<AccordionProps, 'onToggle'>;
+
+const Accordion = ({ children }: PropsWithChildren) => {
   return <Container>{children}</Container>;
 };
 
@@ -16,11 +17,7 @@ const Header = ({
   children,
   isOpen,
   onToggle,
-}: {
-  children: ReactNode;
-  isOpen: boolean;
-  onToggle: () => void;
-}) => {
+}: PropsWithChildren<AccordionProps>) => {
   return (
     <HeaderWrapper onClick={onToggle}>
       {children}
@@ -32,10 +29,7 @@ const Header = ({
 const Content = ({
   children,
   isOpen,
-}: {
-  children: ReactNode;
-  isOpen: boolean;
-}) => {
+}: PropsWithChildren<AccordionContentProps>) => {
   return <ContentWrapper isOpen={isOpen}>{children}</ContentWrapper>;
 };
 
