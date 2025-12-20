@@ -273,7 +273,7 @@ export const NewsletterInfo = styled.div<{ isMobile: boolean }>`
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 
-  @container newsletter-item (max-width: 240px) {
+  @container newsletter-item (max-width: 320px) {
     flex-direction: column;
     align-items: flex-start;
   }
