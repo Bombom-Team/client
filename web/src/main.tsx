@@ -5,7 +5,7 @@ import {
   init as initSentry,
   tanstackRouterBrowserTracingIntegration,
 } from '@sentry/react';
-import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
+import { QueryCache, QueryClient } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -22,18 +22,12 @@ export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error) => {
       if (error instanceof ApiError && error.status === 401) {
-        queryClient.invalidateQueries({
-          queryKey: queries.userProfile().queryKey,
-        });
-      }
-    },
-  }),
-  mutationCache: new MutationCache({
-    onError: (error) => {
-      if (error instanceof ApiError && error.status === 401) {
-        queryClient.invalidateQueries({
-          queryKey: queries.userProfile().queryKey,
-        });
+        const data = queryClient.getQueryData(queries.userProfile().queryKey);
+        if (data) {
+          queryClient.invalidateQueries({
+            queryKey: queries.userProfile().queryKey,
+          });
+        }
       }
     },
   }),
