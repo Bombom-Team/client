@@ -223,8 +223,6 @@ export const InfoBox = styled.div`
   display: flex;
   gap: 8px;
   flex-direction: column;
-
-  container: info-box / inline-size;
 `;
 
 export const TitleWrapper = styled.div<{ isMobile: boolean }>`
@@ -268,15 +266,11 @@ const SubscribeMethodInfo = styled.div<{ isMobile: boolean }>`
 export const NewsletterInfo = styled.div<{ isMobile: boolean }>`
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
   align-items: center;
 
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
-
-  @container info-box (max-width: 320px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 `;
 
 const StyledBadge = styled(Badge)<{ isMobile: boolean }>`
