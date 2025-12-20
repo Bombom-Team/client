@@ -24,7 +24,7 @@ const ReadingKingLeaderboard = () => {
   const openRankExplain = () => setRankExplainOpened(true);
   const closeRankExplain = () => setRankExplainOpened(false);
 
-  const monthlyReadingRankContent = monthlyReadingRank ?? [];
+  const monthlyReadingRankContent = monthlyReadingRank?.data ?? [];
   const haveNoContent = !isLoading && monthlyReadingRankContent.length === 0;
 
   if (!isLoading && haveNoContent) return null;
