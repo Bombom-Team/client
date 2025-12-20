@@ -33,8 +33,8 @@ const CarouselRoot = ({
     canGoPrev,
     canGoNext,
     registerSlideCount,
-    prev,
-    next,
+    goPrev,
+    goNext,
   } = useCarouselState({ loop });
 
   const { isTransitioning, setIsTransitioning, handleTransitionEnd } =
@@ -55,13 +55,13 @@ const CarouselRoot = ({
 
   const handleNext = useCallback(() => {
     setIsTransitioning(true);
-    next();
-  }, [setIsTransitioning, next]);
+    goNext();
+  }, [setIsTransitioning, goNext]);
 
   const handlePrev = useCallback(() => {
     setIsTransitioning(true);
-    prev();
-  }, [setIsTransitioning, prev]);
+    goPrev();
+  }, [setIsTransitioning, goPrev]);
 
   const autoPlayEnabled =
     !!autoPlay && !isSwiping && !isTransitioning && slideCount > 1;

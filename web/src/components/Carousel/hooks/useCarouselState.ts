@@ -21,11 +21,11 @@ const useCarouselState = ({ loop }: UseCarouselStateParams) => {
     setSlideCount(count);
   }, []);
 
-  const prev = useCallback(() => {
+  const goPrev = useCallback(() => {
     setSlideIndex((prev) => prev - 1);
   }, []);
 
-  const next = useCallback(() => {
+  const goNext = useCallback(() => {
     setSlideIndex((prev) => prev + 1);
   }, []);
 
@@ -36,8 +36,8 @@ const useCarouselState = ({ loop }: UseCarouselStateParams) => {
     canGoPrev,
     canGoNext,
     registerSlideCount,
-    prev,
-    next,
+    goPrev,
+    goNext,
   };
 };
 
