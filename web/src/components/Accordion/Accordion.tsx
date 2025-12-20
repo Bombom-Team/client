@@ -21,7 +21,7 @@ const Header = ({
   return (
     <HeaderWrapper onClick={onToggle}>
       {children}
-      <ChevronIcon direction={isOpen ? 'down' : 'up'} width={20} />
+      <ChevronIcon direction={isOpen ? 'up' : 'down'} width={20} />
     </HeaderWrapper>
   );
 };
