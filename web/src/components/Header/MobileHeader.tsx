@@ -29,12 +29,12 @@ const MobileHeader = ({ activeNav }: MobileHeaderProps) => {
           >
             <BellIcon width={20} height={20} fill={theme.colors.black} />
           </Button>
+          {userProfile ? (
+            <HeaderProfile userProfile={userProfile} device="mobile" />
+          ) : (
+            <LoginButton />
+          )}
         </UserInfoWrapper>
-        {userProfile ? (
-          <HeaderProfile userProfile={userProfile} device="mobile" />
-        ) : (
-          <LoginButton />
-        )}
       </MobileHeaderContainer>
       <BottomNavWrapper>
         <HeaderNavButtons activeNav={activeNav} device="mobile" />
