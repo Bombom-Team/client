@@ -23,6 +23,7 @@ import {
   getUserInfo,
   getMySubscriptions,
   getUserProfile,
+  getWarningVisible,
 } from './members';
 import { getNewsletterDetail, getNewsletters } from './newsLetters';
 import {
@@ -117,7 +118,8 @@ export const queries = {
     queryOptions({
       queryKey: ['members', 'me', 'profile'],
       queryFn: getUserProfile,
-      retry: false,
+      staleTime: 5 * 60 * 1000, // 5분
+      refetchOnWindowFocus: false, // 탭 이동해도 안 튀게
     }),
 
   readingStatus: () =>
@@ -142,6 +144,12 @@ export const queries = {
     queryOptions({
       queryKey: ['members', 'me', 'subscriptions'],
       queryFn: getMySubscriptions,
+    }),
+
+  warningVisibleStatus: () =>
+    queryOptions({
+      queryKey: ['members', 'me', 'warning', 'near-capacity'],
+      queryFn: () => getWarningVisible(),
     }),
 
   // newsletters

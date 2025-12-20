@@ -20,6 +20,7 @@ interface PCStorageContentProps {
   onPageChange: (page: number) => void;
   page: number;
   resetPage: () => void;
+  totalStorageCount: number;
 }
 
 export default function PCStorageContent({
@@ -31,6 +32,7 @@ export default function PCStorageContent({
   onPageChange,
   page,
   resetPage,
+  totalStorageCount,
 }: PCStorageContentProps) {
   const queryParams = {
     ...baseQueryParams,
@@ -89,6 +91,7 @@ export default function PCStorageContent({
         isAllSelected={isAllSelected}
         onToggleSelectAll={toggleSelectAll}
         hasBookmarkedArticles={hasBookmarkedArticles}
+        totalStorageCount={totalStorageCount}
       />
       {isLoading ? (
         <ArticleCardListSkeleton />

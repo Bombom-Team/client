@@ -9,10 +9,7 @@ import { AuthProvider } from '../contexts/AuthContext';
 import { EmotionThemeProvider } from '../contexts/ThemeContext';
 import { WebViewProvider } from '../contexts/WebViewContext';
 
-SplashScreen.setOptions({
-  duration: 1_500,
-  fade: true,
-});
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   useEffect(() => {

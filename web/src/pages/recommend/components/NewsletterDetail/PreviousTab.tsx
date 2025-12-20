@@ -50,7 +50,9 @@ const PreviousTab = ({
   if (previousNewsletterUrl) {
     return (
       <Container>
-        <img width={isMobile ? 120 : 160} src={subscribeBom} alt="empty" />
+        <ImageWrapper isMobile={isMobile}>
+          <img width={isMobile ? 130 : 180} src={subscribeBom} alt="empty" />
+        </ImageWrapper>
         <OpenSubscribeButton onClick={openPreviousLetters}>
           지난 소식 보러가기
           <OpenIcon fill={theme.colors.primary} width={16} height={16} />
@@ -70,20 +72,24 @@ const PreviousTab = ({
 export default PreviousTab;
 
 const Container = styled.div`
-  padding: 24px 0;
+  position: relative;
+  height: 100%;
+  padding: 48px 0;
 
   display: flex;
   gap: 8px;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.heading6};
+
+  overflow-x: hidden;
 `;
 
 const OpenSubscribeButton = styled.button`
   width: fit-content;
+  margin-bottom: 100px;
   padding: 8px 16px;
   border: 1px solid ${({ theme }) => theme.colors.primary};
   border-radius: 16px;
@@ -95,4 +101,12 @@ const OpenSubscribeButton = styled.button`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
+`;
+
+const ImageWrapper = styled.div<{ isMobile: boolean }>`
+  position: absolute;
+  top: ${({ isMobile }) => (isMobile ? '20px' : '0')};
+  left: calc(50% + 40px);
+
+  pointer-events: none;
 `;

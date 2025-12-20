@@ -6,8 +6,8 @@ import { useMemo } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
+import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
-import { useUserInfo } from '@/hooks/useUserInfo';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
@@ -32,7 +32,7 @@ export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
 
 function RouteComponent() {
   const device = useDevice();
-  const { userInfo, isLoggedIn } = useUserInfo();
+  const { userProfile, isLoggedIn } = useAuth();
   const { articleId } = Route.useParams();
   const { subscribeUrl } = useRouterState({
     select: (routerState) => ({
@@ -60,7 +60,7 @@ function RouteComponent() {
       action: '구독하기 버튼 클릭',
       label: article.newsletter.name,
     });
-    openSubscribeLink(subscribeUrl, article.newsletter.name, userInfo);
+    openSubscribeLink(subscribeUrl, article.newsletter.name, userProfile);
   };
 
   const handleScrollUp = () => {
@@ -100,13 +100,14 @@ function RouteComponent() {
         {shouldShowSubscribePrompt && (
           <SubscribePrompt>
             <SubscribePromptText>
-              지속적으로 받아보고 싶다면 구독해주세요!
+              뉴스레터가 마음에 드셨다면, 구독으로 계속 만나보세요!
             </SubscribePromptText>
             <SubscribePromptButton
-              text={getSubscribeButtonText()}
               onClick={handleSubscribeClick}
               disabled={!isLoggedIn || (isLoggedIn && article.isSubscribed)}
-            />
+            >
+              {getSubscribeButtonText()}
+            </SubscribePromptButton>
           </SubscribePrompt>
         )}
 
@@ -282,7 +283,6 @@ const SubscribePromptText = styled.p`
 const SubscribePromptButton = styled(Button)`
   width: 100%;
   padding: 12px 24px;
-  border-radius: 8px;
 
   font: ${({ theme }) => theme.fonts.body1};
 `;

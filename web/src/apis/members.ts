@@ -85,3 +85,37 @@ export const getMySubscriptions = async () => {
     path: '/members/me/subscriptions',
   });
 };
+
+export type PostNewsletterUnsubscribeParams =
+  operations['unsubscribe']['parameters']['path'];
+export type PostNewsletterUnsubscribeResponse =
+  components['schemas']['UnsubscribeResponse'];
+
+export const postNewsletterUnsubscribe = async ({
+  subscriptionId,
+}: PostNewsletterUnsubscribeParams) => {
+  return await fetcher.post<never, PostNewsletterUnsubscribeResponse>({
+    path: `/members/me/subscriptions/${subscriptionId}/unsubscribe`,
+  });
+};
+
+export type getWarningVisibleResponse =
+  components['schemas']['WarningSettingResponse'];
+
+export const getWarningVisible = async () => {
+  return await fetcher.get<getWarningVisibleResponse>({
+    path: '/members/me/warning/near-capacity',
+  });
+};
+
+export type PostWarningVisibleParams =
+  components['schemas']['UpdateWarningSettingRequest'];
+
+export const postWarningVisible = async ({
+  isVisible,
+}: PostWarningVisibleParams) => {
+  return await fetcher.post({
+    path: `/members/me/warning/near-capacity`,
+    body: { isVisible },
+  });
+};

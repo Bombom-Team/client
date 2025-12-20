@@ -10,6 +10,7 @@ import { WebToRNMessage } from '@bombom/shared/webview';
 import { LoginScreenOverlay } from '../login/LoginScreenOverlay';
 
 import * as WebBrowser from 'expo-web-browser';
+import * as SplashScreen from 'expo-splash-screen';
 
 import { ENV } from '@/constants/env';
 import { WEBVIEW_USER_AGENT } from '@/constants/webview';
@@ -34,6 +35,7 @@ export const MainScreen = () => {
       webViewLoadEndCleanupRef.current();
     }
 
+    SplashScreen.hide();
     webViewLoadEndCleanupRef.current = onNotification();
   };
 
@@ -110,6 +112,26 @@ export const MainScreen = () => {
           ref={webViewRef}
           source={{ uri: ENV.webUrl }}
           userAgent={`${navigator.userAgent} ${WEBVIEW_USER_AGENT}`}
+          scalesPageToFit={false}
+          automaticallyAdjustsScrollIndicatorInsets={false}
+          injectedJavaScript={`
+            const meta = document.querySelector('meta[name=viewport]');
+            if (meta) {
+              meta.setAttribute(
+                'content',
+                'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'
+              );
+            } else {
+              const metaTag = document.createElement('meta');
+              metaTag.setAttribute('name', 'viewport');
+              metaTag.setAttribute(
+                'content',
+                'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'
+              );
+              document.head.appendChild(metaTag);
+            }
+            true;
+          `}
           allowsBackForwardNavigationGestures
           sharedCookiesEnabled
           thirdPartyCookiesEnabled

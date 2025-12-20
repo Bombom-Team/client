@@ -1,18 +1,20 @@
 import styled from '@emotion/styled';
 import NewsletterSubscribeGuide from './NewsletterSubscribeGuide';
-
 interface DetailTabProps {
   newsletterDescription: string;
+  newsletterId: number;
+  isSubscribed: boolean | undefined;
   isMobile: boolean;
 }
 
 const DetailTab = ({ newsletterDescription, isMobile }: DetailTabProps) => {
   return (
-    <Container isMobile={isMobile}>
-      <Description isMobile={isMobile}>{newsletterDescription}</Description>
-
-      {!isMobile && <NewsletterSubscribeGuide />}
-    </Container>
+    <>
+      <Container isMobile={isMobile}>
+        <Description isMobile={isMobile}>{newsletterDescription}</Description>
+        {!isMobile && <NewsletterSubscribeGuide />}
+      </Container>
+    </>
   );
 };
 
