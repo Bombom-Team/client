@@ -53,9 +53,9 @@ const HeaderWrapper = styled.div`
 `;
 
 const ContentWrapper = styled.div<{ isOpen: boolean }>`
-  overflow: hidden;
-  max-height: ${({ isOpen }) => (isOpen ? '1000px' : '0')};
   padding: ${({ isOpen }) => (isOpen ? '8px 10px' : '0')};
+
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
 
   background-color: ${({ theme }) => theme.colors.disabledBackground};
   line-height: 2;
