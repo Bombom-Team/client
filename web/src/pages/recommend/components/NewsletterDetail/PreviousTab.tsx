@@ -2,6 +2,7 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import PreviousArticleListItem from './PreviousArticleListItem';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { openExternalLink } from '@/utils/externalLink';
 import type { GetPreviousArticlesResponse } from '@/apis/previousArticles';
 import sadBom from '#/assets/avif/sad-bom.avif';
@@ -10,6 +11,7 @@ import OpenIcon from '#/assets/svg/open.svg';
 
 interface PreviousTabProps {
   newsletterSubscribeUrl: string;
+  newsletterName: string;
   previousArticles?: GetPreviousArticlesResponse | null;
   previousNewsletterUrl?: string;
   isMobile: boolean;
@@ -17,14 +19,20 @@ interface PreviousTabProps {
 
 const PreviousTab = ({
   newsletterSubscribeUrl,
+  newsletterName,
   previousArticles,
   previousNewsletterUrl,
   isMobile,
 }: PreviousTabProps) => {
   const navigate = useNavigate();
 
-  const openPreviousLetters = () => {
+  const handlePreviousButtonClick = () => {
     if (!previousNewsletterUrl) return;
+    trackEvent({
+      category: 'Newsletter',
+      action: '지난 소식 보러가기 버튼 클릭',
+      label: newsletterName,
+    });
     openExternalLink(previousNewsletterUrl);
   };
 
@@ -53,7 +61,7 @@ const PreviousTab = ({
         <ImageWrapper isMobile={isMobile}>
           <img width={isMobile ? 130 : 180} src={subscribeBom} alt="empty" />
         </ImageWrapper>
-        <OpenSubscribeButton onClick={openPreviousLetters}>
+        <OpenSubscribeButton onClick={handlePreviousButtonClick}>
           지난 소식 보러가기
           <OpenIcon fill={theme.colors.primary} width={16} height={16} />
         </OpenSubscribeButton>
