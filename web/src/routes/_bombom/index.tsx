@@ -39,7 +39,7 @@ export const Route = createFileRoute('/_bombom/')({
 
 function Index() {
   const [isAnnounceOpen, setIsAnnounceOpen] = useState(true);
-  const [hideAnnounceForever, setHideAnnounceForever] =
+  const [isAnnounceVisible, setIsAnnounceVisible] =
     useLocalStorageState<boolean>(ANNOUNCEBAR_VISIBLE_KEY);
   const device = useDevice();
   const { data: notices } = useQuery(queries.notices());
@@ -51,14 +51,14 @@ function Index() {
 
   const handleCloseAnnounce = () => {
     if (announceChecked) {
-      setHideAnnounceForever(false);
+      setIsAnnounceVisible(false);
     }
     setIsAnnounceOpen(false);
   };
 
   return (
     <Container device={device}>
-      {firstNotice && isAnnounceOpen && hideAnnounceForever && (
+      {firstNotice && isAnnounceOpen && isAnnounceVisible && (
         <AnnounceBar
           announceText={[firstNotice.title]}
           checked={announceChecked}
