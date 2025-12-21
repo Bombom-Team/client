@@ -139,6 +139,7 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
         {activeTab === 'previous' && (
           <PreviousTab
             previousArticles={previousArticles}
+            newsletterName={newsletterDetail.name}
             previousNewsletterUrl={newsletterDetail.previousNewsletterUrl}
             newsletterSubscribeUrl={newsletterDetail.subscribeUrl}
             isMobile={isMobile}
