@@ -18,7 +18,6 @@ const router = createRouter({
   context: {
     queryClient,
   },
-  basepath: '/admin',
 });
 
 declare module '@tanstack/react-router' {
