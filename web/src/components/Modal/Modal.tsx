@@ -147,7 +147,7 @@ const contentWrapperStyles = (isMobile: boolean) => ({
   `,
   bottom: css`
     height: 100%;
-    padding: 32px;
+    padding: ${isMobile ? '24px 12px' : '32px'};
 
     align-items: center;
   `,

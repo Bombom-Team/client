@@ -158,6 +158,8 @@ export const Container = styled.div<{ isMobile: boolean }>`
 
   display: flex;
   flex-direction: column;
+
+  word-break: keep-all;
 `;
 
 const VisuallyHidden = styled.button`
@@ -265,6 +267,7 @@ const SubscribeMethodInfo = styled.div<{ isMobile: boolean }>`
 export const NewsletterInfo = styled.div<{ isMobile: boolean }>`
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
   align-items: center;
 
   font: ${({ theme, isMobile }) =>
