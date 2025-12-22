@@ -74,9 +74,7 @@ function NoticePage() {
               </Accordion.Header>
 
               <Accordion.Content isOpen={isOpen}>
-                {content.content.split('\n').map((text, idx) => (
-                  <AccordionContent key={idx}>{text}</AccordionContent>
-                ))}
+                <AccordionContent>{content.content}</AccordionContent>
               </Accordion.Content>
             </Accordion>
           );
@@ -152,4 +150,5 @@ const AccordionDescription = styled.span`
 
 const AccordionContent = styled.div`
   width: 100%;
+  white-space: pre-line;
 `;
