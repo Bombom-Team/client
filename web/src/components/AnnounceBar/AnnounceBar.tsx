@@ -8,6 +8,7 @@ interface AnnounceBarProps {
   checked?: boolean;
   onChangeChecked?: (checked: boolean) => void;
   onClose: () => void;
+  onClick?: () => void;
 }
 
 const AnnounceBar = ({
@@ -15,12 +16,19 @@ const AnnounceBar = ({
   checked,
   onChangeChecked,
   onClose,
+  onClick,
 }: AnnounceBarProps) => {
   const device = useDevice();
   const isPC = device === 'pc';
   const isMobile = device === 'mobile';
   return (
-    <Container isPC={isPC} role="status" aria-live="polite">
+    <Container
+      isPC={isPC}
+      clickable={!!onClick}
+      role="status"
+      aria-live="polite"
+      onClick={onClick}
+    >
       <Content isPC={isPC}>
         <ContentWrapper isPC={isPC}>
           {announceText.map((text, index) => (
@@ -49,7 +57,7 @@ const AnnounceBar = ({
   );
 };
 
-const Container = styled.div<{ isPC: boolean }>`
+const Container = styled.div<{ isPC: boolean; clickable: boolean }>`
   width: 100%;
   margin-bottom: 8px;
   padding: ${({ isPC }) => (isPC ? '12px 16px' : '8px 12px')};
@@ -61,6 +69,8 @@ const Container = styled.div<{ isPC: boolean }>`
   align-items: center;
 
   background-color: #fef3c6;
+
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'default')};
 `;
 
 const ContentWrapper = styled.div<{ isPC: boolean }>`

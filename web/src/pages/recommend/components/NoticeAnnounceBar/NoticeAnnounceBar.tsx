@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useAnnounceBar } from '../../hooks/useAnnounceBar';
 import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
@@ -13,6 +14,7 @@ interface NoticeAnnounceBarProps {
 
 const NoticeAnnounceBar = ({ notice }: { notice: NoticeAnnounceBarProps }) => {
   const device = useDevice();
+  const navigate = useNavigate();
   const [isAnnounceOpen, setIsAnnounceOpen] = useState(true);
   const { isVisible, hide } = useAnnounceBar(notice.noticeId);
   const [announceChecked, setAnnounceChecked] = useState(false);
@@ -34,6 +36,7 @@ const NoticeAnnounceBar = ({ notice }: { notice: NoticeAnnounceBarProps }) => {
       checked={announceChecked}
       onChangeChecked={setAnnounceChecked}
       onClose={handleCloseAnnounce}
+      onClick={() => navigate({ to: '/notice' })}
     />
   );
 };
