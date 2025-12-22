@@ -6,14 +6,12 @@ import ReadingKingLeaderboard from '../../pages/recommend/components/ReadingKing
 import { queries } from '@/apis/queries';
 import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
 import { useDevice } from '@/hooks/useDevice';
-import { useLocalStorageState } from '@/hooks/useLocalStorageState';
 import NewsletterHero from '@/pages/recommend/components/NewsletterHero/NewsletterHero';
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
+import { useAnnounceBar } from '@/pages/recommend/hooks/useAnnounceBar';
 import type { Device } from '@/hooks/useDevice';
 import type { NewsletterTab } from '@/pages/recommend/components/NewsletterDetail/NewsletterDetail.types';
 import type { SearchSchemaInput } from '@tanstack/react-router';
-
-const ANNOUNCEBAR_VISIBLE_KEY = 'announcebar-visible';
 
 interface BombomIndexSearch {
   newsletterDetail?: number;
@@ -38,27 +36,28 @@ export const Route = createFileRoute('/_bombom/')({
 });
 
 function Index() {
-  const [isAnnounceOpen, setIsAnnounceOpen] = useState(true);
-  const [isAnnounceVisible, setIsAnnounceVisible] =
-    useLocalStorageState<boolean>(ANNOUNCEBAR_VISIBLE_KEY);
   const device = useDevice();
   const { data: notices } = useQuery(queries.notices());
 
   const recentNotice = notices?.content || [];
   const firstNotice = recentNotice[0];
 
+  const [isAnnounceOpen, setIsAnnounceOpen] = useState(true);
+
+  const { isVisible, hide } = useAnnounceBar(firstNotice?.noticeId);
+
   const [announceChecked, setAnnounceChecked] = useState(false);
 
   const handleCloseAnnounce = () => {
     if (announceChecked) {
-      setIsAnnounceVisible(false);
+      hide();
     }
     setIsAnnounceOpen(false);
   };
 
   return (
     <Container device={device}>
-      {firstNotice && isAnnounceOpen && isAnnounceVisible && (
+      {firstNotice && isAnnounceOpen && isVisible && (
         <AnnounceBar
           announceText={[firstNotice.title]}
           checked={announceChecked}
