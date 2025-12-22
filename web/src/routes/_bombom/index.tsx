@@ -1,14 +1,12 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
 import ReadingKingLeaderboard from '../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
 import { queries } from '@/apis/queries';
-import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
 import { useDevice } from '@/hooks/useDevice';
 import NewsletterHero from '@/pages/recommend/components/NewsletterHero/NewsletterHero';
+import NoticeAnnounceBar from '@/pages/recommend/components/NoticeAnnounceBar/NoticeAnnounceBar';
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
-import { useAnnounceBar } from '@/pages/recommend/hooks/useAnnounceBar';
 import type { Device } from '@/hooks/useDevice';
 import type { NewsletterTab } from '@/pages/recommend/components/NewsletterDetail/NewsletterDetail.types';
 import type { SearchSchemaInput } from '@tanstack/react-router';
@@ -42,29 +40,9 @@ function Index() {
   const recentNotice = notices?.content || [];
   const firstNotice = recentNotice[0];
 
-  const [isAnnounceOpen, setIsAnnounceOpen] = useState(true);
-
-  const { isVisible, hide } = useAnnounceBar(firstNotice?.noticeId);
-
-  const [announceChecked, setAnnounceChecked] = useState(false);
-
-  const handleCloseAnnounce = () => {
-    if (announceChecked) {
-      hide();
-    }
-    setIsAnnounceOpen(false);
-  };
-
   return (
     <Container device={device}>
-      {firstNotice && isAnnounceOpen && isVisible && (
-        <AnnounceBar
-          announceText={[firstNotice.title]}
-          checked={announceChecked}
-          onChangeChecked={setAnnounceChecked}
-          onClose={handleCloseAnnounce}
-        />
-      )}
+      {firstNotice && <NoticeAnnounceBar notice={firstNotice} />}
       <MainContent device={device}>
         <MainSection device={device}>
           <NewsletterHero />
