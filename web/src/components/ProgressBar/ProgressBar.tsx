@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useDevice } from '@/hooks/useDevice';
 
 type Variant = 'rounded' | 'rectangular';
 
@@ -25,9 +24,6 @@ const ProgressBar = ({
   variant = 'rounded',
   ...props
 }: ProgressBarProps) => {
-  const device = useDevice();
-
-  const isMobile = device === 'mobile';
   return (
     <Container {...props}>
       <ProgressOverlay variant={variant}>
