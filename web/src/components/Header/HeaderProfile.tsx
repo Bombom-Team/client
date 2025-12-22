@@ -64,7 +64,6 @@ const Container = styled.div`
 `;
 
 const HeaderProfileWrapper = styled.button`
-  min-width: 200px;
   padding: 8px 12px;
   border-radius: 12px;
 

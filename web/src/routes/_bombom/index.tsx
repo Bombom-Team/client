@@ -1,9 +1,14 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
 import ReadingKingLeaderboard from '../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
+import { queries } from '@/apis/queries';
+import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
 import { useDevice } from '@/hooks/useDevice';
 import NewsletterHero from '@/pages/recommend/components/NewsletterHero/NewsletterHero';
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
+import { useAnnounceBar } from '@/pages/recommend/hooks/useAnnounceBar';
 import type { Device } from '@/hooks/useDevice';
 import type { NewsletterTab } from '@/pages/recommend/components/NewsletterDetail/NewsletterDetail.types';
 import type { SearchSchemaInput } from '@tanstack/react-router';
@@ -32,16 +37,43 @@ export const Route = createFileRoute('/_bombom/')({
 
 function Index() {
   const device = useDevice();
+  const { data: notices } = useQuery(queries.notices());
+
+  const recentNotice = notices?.content || [];
+  const firstNotice = recentNotice[0];
+
+  const [isAnnounceOpen, setIsAnnounceOpen] = useState(true);
+
+  const { isVisible, hide } = useAnnounceBar(firstNotice?.noticeId);
+
+  const [announceChecked, setAnnounceChecked] = useState(false);
+
+  const handleCloseAnnounce = () => {
+    if (announceChecked) {
+      hide();
+    }
+    setIsAnnounceOpen(false);
+  };
 
   return (
     <Container device={device}>
-      <MainSection device={device}>
-        <NewsletterHero />
-        <TrendySection />
-      </MainSection>
-      <SideSection device={device}>
-        <ReadingKingLeaderboard />
-      </SideSection>
+      {firstNotice && isAnnounceOpen && isVisible && (
+        <AnnounceBar
+          announceText={[firstNotice.title]}
+          checked={announceChecked}
+          onChangeChecked={setAnnounceChecked}
+          onClose={handleCloseAnnounce}
+        />
+      )}
+      <MainContent device={device}>
+        <MainSection device={device}>
+          <NewsletterHero />
+          <TrendySection />
+        </MainSection>
+        <SideSection device={device}>
+          <ReadingKingLeaderboard />
+        </SideSection>
+      </MainContent>
     </Container>
   );
 }
@@ -54,8 +86,15 @@ const Container = styled.div<{ device: Device }>`
   display: flex;
   gap: ${({ device }) =>
     device === 'mobile' ? '20px' : device === 'tablet' ? '24px' : '32px'};
-  flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
+  flex-direction: ${({ device }) =>
+    device === 'mobile' ? 'column' : 'column'};
   align-items: flex-start;
+`;
+
+const MainContent = styled.div<{ device: Device }>`
+  display: flex;
+  gap: 24px;
+  flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
 `;
 
 const MainSection = styled.section<{ device: Device }>`
