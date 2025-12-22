@@ -1,27 +1,39 @@
 import styled from '@emotion/styled';
+import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
 import HeaderNavButtons from './HeaderNavButtons';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
+import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
+import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 
 interface MobileHeaderProps {
   activeNav: Nav;
 }
 
 const MobileHeader = ({ activeNav }: MobileHeaderProps) => {
+  const navigate = useNavigate();
   const { userProfile } = useAuth();
 
   return (
     <>
       <MobileHeaderContainer>
         <HeaderLogo device="mobile" />
-        {userProfile ? (
-          <HeaderProfile userProfile={userProfile} device="mobile" />
-        ) : (
-          <LoginButton />
-        )}
+        <UserInfoWrapper>
+          <Button
+            onClick={() => navigate({ to: '/notice' })}
+            variant={'transparent'}
+          >
+            <MegaphoneIcon width={22} height={24} />
+          </Button>
+          {userProfile ? (
+            <HeaderProfile userProfile={userProfile} device="mobile" />
+          ) : (
+            <LoginButton />
+          )}
+        </UserInfoWrapper>
       </MobileHeaderContainer>
       <BottomNavWrapper>
         <HeaderNavButtons activeNav={activeNav} device="mobile" />
@@ -51,6 +63,11 @@ const MobileHeaderContainer = styled.header`
   justify-content: space-between;
 
   background: ${({ theme }) => theme.colors.white};
+`;
+const UserInfoWrapper = styled.div`
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
 `;
 
 const BottomNavWrapper = styled.nav`

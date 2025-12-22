@@ -1,16 +1,20 @@
 import styled from '@emotion/styled';
+import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
 import HeaderNavButtons from './HeaderNavButtons';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
+import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
+import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 
 interface PCHeaderProps {
   activeNav: Nav;
 }
 
 const PCHeader = ({ activeNav }: PCHeaderProps) => {
+  const navigate = useNavigate();
   const { userProfile } = useAuth();
 
   return (
@@ -23,6 +27,12 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
         </NavWrapper>
 
         <UserInfoWrapper>
+          <Button
+            onClick={() => navigate({ to: '/notice' })}
+            variant={'transparent'}
+          >
+            <MegaphoneIcon width={22} height={24} />
+          </Button>
           {userProfile ? (
             <HeaderProfile userProfile={userProfile} device="pc" />
           ) : (
@@ -75,8 +85,10 @@ const NavWrapper = styled.nav`
 `;
 
 const UserInfoWrapper = styled.div`
-  width: 220px;
+  width: 300px;
 
   display: flex;
+  gap: 8px;
+  align-items: center;
   justify-content: flex-end;
 `;

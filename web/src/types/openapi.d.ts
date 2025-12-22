@@ -356,6 +356,26 @@ export interface paths {
     patch: operations['updateIsRead'];
     trace?: never;
   };
+  '/api/v1/notices': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 공지 목록 조회
+     * @description 공지 목록을 조회합니다.
+     */
+    get: operations['getNotices'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/newsletters': {
     parameters: {
       query?: never;
@@ -935,6 +955,56 @@ export interface components {
       color?: string;
       memo?: string;
     };
+    Pageable: {
+      /** Format: int32 */
+      page?: number;
+      /** Format: int32 */
+      size?: number;
+      sort?: string[];
+    };
+    NoticeResponse: {
+      /** Format: int64 */
+      noticeId: number;
+      categoryName: string;
+      title: string;
+      content: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    PageNoticeResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['NoticeResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      pageSize?: number;
+      /** Format: int32 */
+      pageNumber?: number;
+      paged?: boolean;
+      unpaged?: boolean;
+    };
+    SortObject: {
+      empty?: boolean;
+      sorted?: boolean;
+      unsorted?: boolean;
+    };
     NewsletterResponse: {
       /** Format: int64 */
       newsletterId: number;
@@ -1051,13 +1121,6 @@ export interface components {
       /** @description 출석 여부 */
       isAttended: boolean;
     };
-    Pageable: {
-      /** Format: int32 */
-      page?: number;
-      /** Format: int32 */
-      size?: number;
-      sort?: string[];
-    };
     HighlightResponse: {
       /** Format: int64 */
       id: number;
@@ -1090,22 +1153,6 @@ export interface components {
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
-    };
-    PageableObject: {
-      /** Format: int64 */
-      offset?: number;
-      sort?: components['schemas']['SortObject'];
-      /** Format: int32 */
-      pageSize?: number;
-      paged?: boolean;
-      /** Format: int32 */
-      pageNumber?: number;
-      unpaged?: boolean;
-    };
-    SortObject: {
-      empty?: boolean;
-      sorted?: boolean;
-      unsorted?: boolean;
     };
     /** @description 뉴스레터 별 하이라이트 개수 통계 */
     HighlightCountPerNewsletterResponse: {
@@ -2059,6 +2106,28 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getNotices: {
+    parameters: {
+      query: {
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 공지 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageNoticeResponse'];
+        };
       };
     };
   };
