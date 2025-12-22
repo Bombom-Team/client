@@ -7,7 +7,7 @@ import { Layout } from '@/components/Layout';
 import Pagination from '@/components/Pagination';
 import { MembersTableBody } from '@/pages/members/MembersTableBody';
 
-export const Route = createFileRoute('/members')({
+export const Route = createFileRoute('/_admin/members')({
   component: MembersPage,
 });
 

@@ -8,7 +8,7 @@ import { Layout } from '@/components/Layout';
 import { useNotices } from '@/contexts/NoticeContext';
 import type { NoticeCategoryType } from '@/types/notice';
 
-export const Route = createFileRoute('/notices/new')({
+export const Route = createFileRoute('/_admin/notices/new')({
   component: NewNoticePage,
 });
 

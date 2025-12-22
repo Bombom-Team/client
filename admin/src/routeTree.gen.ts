@@ -9,161 +9,212 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as NoticesRouteImport } from './routes/notices'
-import { Route as MembersRouteImport } from './routes/members'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as NoticesIndexRouteImport } from './routes/notices/index'
-import { Route as NoticesNewRouteImport } from './routes/notices/new'
-import { Route as NoticesNoticeIdRouteImport } from './routes/notices/$noticeId'
+import { Route as AdminRouteImport } from './routes/_admin'
+import { Route as R403RouteImport } from './routes/403'
+import { Route as AdminIndexRouteImport } from './routes/_admin/index'
+import { Route as AdminNoticesRouteImport } from './routes/_admin/notices'
+import { Route as AdminMembersRouteImport } from './routes/_admin/members'
+import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/index'
+import { Route as AdminNoticesNewRouteImport } from './routes/_admin/notices/new'
+import { Route as AdminNoticesNoticeIdRouteImport } from './routes/_admin/notices/$noticeId'
 
-const NoticesRoute = NoticesRouteImport.update({
+const AdminRoute = AdminRouteImport.update({
+  id: '/_admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const R403Route = R403RouteImport.update({
+  id: '/403',
+  path: '/403',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNoticesRoute = AdminNoticesRouteImport.update({
   id: '/notices',
   path: '/notices',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AdminRoute,
 } as any)
-const MembersRoute = MembersRouteImport.update({
+const AdminMembersRoute = AdminMembersRouteImport.update({
   id: '/members',
   path: '/members',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AdminRoute,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AdminNoticesIndexRoute = AdminNoticesIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AdminNoticesRoute,
 } as any)
-const NoticesIndexRoute = NoticesIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => NoticesRoute,
-} as any)
-const NoticesNewRoute = NoticesNewRouteImport.update({
+const AdminNoticesNewRoute = AdminNoticesNewRouteImport.update({
   id: '/new',
   path: '/new',
-  getParentRoute: () => NoticesRoute,
+  getParentRoute: () => AdminNoticesRoute,
 } as any)
-const NoticesNoticeIdRoute = NoticesNoticeIdRouteImport.update({
+const AdminNoticesNoticeIdRoute = AdminNoticesNoticeIdRouteImport.update({
   id: '/$noticeId',
   path: '/$noticeId',
-  getParentRoute: () => NoticesRoute,
+  getParentRoute: () => AdminNoticesRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/members': typeof MembersRoute
-  '/notices': typeof NoticesRouteWithChildren
-  '/notices/$noticeId': typeof NoticesNoticeIdRoute
-  '/notices/new': typeof NoticesNewRoute
-  '/notices/': typeof NoticesIndexRoute
+  '/403': typeof R403Route
+  '/members': typeof AdminMembersRoute
+  '/notices': typeof AdminNoticesRouteWithChildren
+  '/': typeof AdminIndexRoute
+  '/notices/$noticeId': typeof AdminNoticesNoticeIdRoute
+  '/notices/new': typeof AdminNoticesNewRoute
+  '/notices/': typeof AdminNoticesIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/members': typeof MembersRoute
-  '/notices/$noticeId': typeof NoticesNoticeIdRoute
-  '/notices/new': typeof NoticesNewRoute
-  '/notices': typeof NoticesIndexRoute
+  '/403': typeof R403Route
+  '/members': typeof AdminMembersRoute
+  '/': typeof AdminIndexRoute
+  '/notices/$noticeId': typeof AdminNoticesNoticeIdRoute
+  '/notices/new': typeof AdminNoticesNewRoute
+  '/notices': typeof AdminNoticesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/members': typeof MembersRoute
-  '/notices': typeof NoticesRouteWithChildren
-  '/notices/$noticeId': typeof NoticesNoticeIdRoute
-  '/notices/new': typeof NoticesNewRoute
-  '/notices/': typeof NoticesIndexRoute
+  '/403': typeof R403Route
+  '/_admin': typeof AdminRouteWithChildren
+  '/_admin/members': typeof AdminMembersRoute
+  '/_admin/notices': typeof AdminNoticesRouteWithChildren
+  '/_admin/': typeof AdminIndexRoute
+  '/_admin/notices/$noticeId': typeof AdminNoticesNoticeIdRoute
+  '/_admin/notices/new': typeof AdminNoticesNewRoute
+  '/_admin/notices/': typeof AdminNoticesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
+    | '/403'
     | '/members'
     | '/notices'
+    | '/'
     | '/notices/$noticeId'
     | '/notices/new'
     | '/notices/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/members' | '/notices/$noticeId' | '/notices/new' | '/notices'
-  id:
-    | '__root__'
-    | '/'
+  to:
+    | '/403'
     | '/members'
-    | '/notices'
+    | '/'
     | '/notices/$noticeId'
     | '/notices/new'
-    | '/notices/'
+    | '/notices'
+  id:
+    | '__root__'
+    | '/403'
+    | '/_admin'
+    | '/_admin/members'
+    | '/_admin/notices'
+    | '/_admin/'
+    | '/_admin/notices/$noticeId'
+    | '/_admin/notices/new'
+    | '/_admin/notices/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  MembersRoute: typeof MembersRoute
-  NoticesRoute: typeof NoticesRouteWithChildren
+  R403Route: typeof R403Route
+  AdminRoute: typeof AdminRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/notices': {
-      id: '/notices'
-      path: '/notices'
-      fullPath: '/notices'
-      preLoaderRoute: typeof NoticesRouteImport
+    '/_admin': {
+      id: '/_admin'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/members': {
-      id: '/members'
-      path: '/members'
-      fullPath: '/members'
-      preLoaderRoute: typeof MembersRouteImport
+    '/403': {
+      id: '/403'
+      path: '/403'
+      fullPath: '/403'
+      preLoaderRoute: typeof R403RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_admin/': {
+      id: '/_admin/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/notices/': {
-      id: '/notices/'
+    '/_admin/notices': {
+      id: '/_admin/notices'
+      path: '/notices'
+      fullPath: '/notices'
+      preLoaderRoute: typeof AdminNoticesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/members': {
+      id: '/_admin/members'
+      path: '/members'
+      fullPath: '/members'
+      preLoaderRoute: typeof AdminMembersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/notices/': {
+      id: '/_admin/notices/'
       path: '/'
       fullPath: '/notices/'
-      preLoaderRoute: typeof NoticesIndexRouteImport
-      parentRoute: typeof NoticesRoute
+      preLoaderRoute: typeof AdminNoticesIndexRouteImport
+      parentRoute: typeof AdminNoticesRoute
     }
-    '/notices/new': {
-      id: '/notices/new'
+    '/_admin/notices/new': {
+      id: '/_admin/notices/new'
       path: '/new'
       fullPath: '/notices/new'
-      preLoaderRoute: typeof NoticesNewRouteImport
-      parentRoute: typeof NoticesRoute
+      preLoaderRoute: typeof AdminNoticesNewRouteImport
+      parentRoute: typeof AdminNoticesRoute
     }
-    '/notices/$noticeId': {
-      id: '/notices/$noticeId'
+    '/_admin/notices/$noticeId': {
+      id: '/_admin/notices/$noticeId'
       path: '/$noticeId'
       fullPath: '/notices/$noticeId'
-      preLoaderRoute: typeof NoticesNoticeIdRouteImport
-      parentRoute: typeof NoticesRoute
+      preLoaderRoute: typeof AdminNoticesNoticeIdRouteImport
+      parentRoute: typeof AdminNoticesRoute
     }
   }
 }
 
-interface NoticesRouteChildren {
-  NoticesNoticeIdRoute: typeof NoticesNoticeIdRoute
-  NoticesNewRoute: typeof NoticesNewRoute
-  NoticesIndexRoute: typeof NoticesIndexRoute
+interface AdminNoticesRouteChildren {
+  AdminNoticesNoticeIdRoute: typeof AdminNoticesNoticeIdRoute
+  AdminNoticesNewRoute: typeof AdminNoticesNewRoute
+  AdminNoticesIndexRoute: typeof AdminNoticesIndexRoute
 }
 
-const NoticesRouteChildren: NoticesRouteChildren = {
-  NoticesNoticeIdRoute: NoticesNoticeIdRoute,
-  NoticesNewRoute: NoticesNewRoute,
-  NoticesIndexRoute: NoticesIndexRoute,
+const AdminNoticesRouteChildren: AdminNoticesRouteChildren = {
+  AdminNoticesNoticeIdRoute: AdminNoticesNoticeIdRoute,
+  AdminNoticesNewRoute: AdminNoticesNewRoute,
+  AdminNoticesIndexRoute: AdminNoticesIndexRoute,
 }
 
-const NoticesRouteWithChildren =
-  NoticesRoute._addFileChildren(NoticesRouteChildren)
+const AdminNoticesRouteWithChildren = AdminNoticesRoute._addFileChildren(
+  AdminNoticesRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminMembersRoute: typeof AdminMembersRoute
+  AdminNoticesRoute: typeof AdminNoticesRouteWithChildren
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminMembersRoute: AdminMembersRoute,
+  AdminNoticesRoute: AdminNoticesRouteWithChildren,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  MembersRoute: MembersRoute,
-  NoticesRoute: NoticesRouteWithChildren,
+  R403Route: R403Route,
+  AdminRoute: AdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

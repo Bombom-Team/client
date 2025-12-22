@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { FiBell, FiTrendingUp, FiUsers } from 'react-icons/fi';
 import { Layout } from '@/components/Layout';
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_admin/')({
   component: IndexPage,
 });
 

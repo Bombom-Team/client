@@ -5,7 +5,7 @@ import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { useNotices } from '@/contexts/NoticeContext';
 
-export const Route = createFileRoute('/notices/$noticeId')({
+export const Route = createFileRoute('/_admin/notices/$noticeId')({
   component: NoticeDetailPage,
 });
 
