@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
+import DetailPageHeader from '@/components/Header/DetailPageHeader';
 import Spacing from '@/components/Spacing/Spacing';
+import { useDevice } from '@/hooks/useDevice';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
 import { useScrollThreshold } from '@/hooks/useScrollThreshold';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
@@ -30,6 +32,7 @@ export const Route = createFileRoute('/_bombom/articles/guide/$guideId')({
 });
 
 function GuideMailPage() {
+  const device = useDevice();
   const { guideId } = Route.useParams();
   const guideIdNumber = Number(guideId);
   const [guideArticles, setGuideArticles] =
@@ -75,6 +78,8 @@ function GuideMailPage() {
 
   return (
     <Container>
+      {device !== 'pc' && <DetailPageHeader />}
+
       <ArticleHeader
         title={guideArticle.title}
         newsletterCategory={guideArticle.newsletter.category}

@@ -1,18 +1,15 @@
 import styled from '@emotion/styled';
 import { useRouter } from '@tanstack/react-router';
 import ChevronIcon from '@/components/icons/ChevronIcon';
-import BookmarkActiveIcon from '#/assets/svg/bookmark-active.svg';
-import BookmarkInactiveIcon from '#/assets/svg/bookmark-inactive.svg';
+import type { ReactNode } from 'react';
 
 interface DetailPageHeaderProps {
-  bookmarked?: boolean;
-  onBookmarkClick?: (bookmarked: boolean) => void;
+  left?: ReactNode;
+  title?: ReactNode;
+  right?: ReactNode;
 }
 
-const DetailPageHeader = ({
-  bookmarked = false,
-  onBookmarkClick,
-}: DetailPageHeaderProps) => {
+const DetailPageHeader = ({ left, title, right }: DetailPageHeaderProps) => {
   const router = useRouter();
 
   const handleBackClick = () => {
@@ -21,19 +18,17 @@ const DetailPageHeader = ({
 
   return (
     <Container>
-      <BackButton type="button" onClick={handleBackClick} aria-label="뒤로가기">
-        <StyledChevronIcon direction="left" />
-      </BackButton>
-      <BookmarkButton
-        type="button"
-        onClick={() => onBookmarkClick?.(bookmarked)}
-      >
-        <BookmarkIcon
-          as={bookmarked ? BookmarkActiveIcon : BookmarkInactiveIcon}
-          width={28}
-          height={28}
-        />
-      </BookmarkButton>
+      {left ?? (
+        <BackButton
+          type="button"
+          onClick={handleBackClick}
+          aria-label="뒤로가기"
+        >
+          <StyledChevronIcon direction="left" />
+        </BackButton>
+      )}
+      {title && <Title>{title}</Title>}
+      {right}
     </Container>
   );
 };
@@ -48,9 +43,7 @@ const Container = styled.header`
   height: calc(
     ${({ theme }) => theme.heights.headerMobile} + env(safe-area-inset-top)
   );
-
-  /* padding: 4px 8px; */
-  padding-top: calc(4px + env(safe-area-inset-top));
+  padding: calc(4px + env(safe-area-inset-top)) 8px;
   box-shadow:
     0 8px 12px -6px rgb(0 0 0 / 10%),
     0 3px 5px -4px rgb(0 0 0 / 10%);
@@ -79,28 +72,12 @@ const BackButton = styled.button`
   }
 `;
 
-const BookmarkButton = styled.button`
-  margin-left: auto;
-  padding: 8px;
+const Title = styled.h1`
+  flex: 1;
 
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-
-  background-color: ${({ theme }) => theme.colors.white};
-
-  & > svg {
-    transition: transform 0.2s ease;
-  }
-
-  &:hover > svg {
-    transform: scale(1.1);
-  }
-`;
-
-const BookmarkIcon = styled.svg`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.heading3};
+  text-align: center;
 `;
 
 const StyledChevronIcon = styled(ChevronIcon)`
