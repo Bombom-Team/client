@@ -1,9 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { ENV } from '../../apis/env';
-import {
-  MONTHLY_READING_RANK,
-  getRankingMetadata,
-} from '../datas/monthlyReadingRank';
+import { getRankingMetadata } from '../datas/monthlyReadingRank';
 import { TRENDY_NEWSLETTERS } from '../datas/trendyNewsLetter';
 
 const baseURL = ENV.baseUrl;
@@ -40,12 +37,12 @@ export const membersHandlers = [
     const limit = url.searchParams.get('limit');
     const limitNumber = limit ? Number(limit) : 10;
 
-    const data = MONTHLY_READING_RANK.slice(0, limitNumber);
-    const metadata = getRankingMetadata();
+    const { data, ...metadata } = getRankingMetadata();
+    const rankingData = data.slice(0, limitNumber);
 
     return HttpResponse.json({
       ...metadata,
-      data,
+      data: rankingData,
     });
   }),
 ];
