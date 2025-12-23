@@ -44,7 +44,7 @@ function NoticesPage() {
           <Title>공지사항 ({data.totalElements}개)</Title>
           <Link to="/notices/new">
             <Button>
-              <FiPlus style={{ marginRight: '8px' }} />새 공지사항
+              <FiPlus />새 공지사항
             </Button>
           </Link>
         </Header>

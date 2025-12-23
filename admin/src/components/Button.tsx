@@ -7,6 +7,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const StyledButton = styled.button<ButtonProps>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+
   padding: ${({ size, theme }) => {
     if (size === 'sm') return `${theme.spacing.sm} ${theme.spacing.md}`;
     if (size === 'lg') return `${theme.spacing.md} ${theme.spacing.xl}`;
@@ -41,10 +46,14 @@ const StyledButton = styled.button<ButtonProps>`
 
   &:hover:not(:disabled) {
     background-color: ${({ variant, theme }) => {
-      if (variant === 'secondary') return theme.colors.gray300;
-      if (variant === 'danger') return '#DC2626';
-      return theme.colors.primaryHover;
-    }};
+    if (variant === 'secondary') return theme.colors.gray300;
+    if (variant === 'danger') return '#DC2626';
+    return theme.colors.primaryHover;
+  }};
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
 `;
 
