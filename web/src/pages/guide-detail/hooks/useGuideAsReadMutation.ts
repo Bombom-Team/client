@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { patchGuideArticleRead } from '@/apis/guide';
+import { patchGuideArticleRead } from '@/apis/guide/guide.api';
 
 interface UseGuideAsReadMutationParams {
   onSuccess: () => void;
