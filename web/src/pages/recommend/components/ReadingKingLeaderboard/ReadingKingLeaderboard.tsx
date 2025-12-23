@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import LeaderboardItem from './LeaderboardItem';
 import { RANKING } from './ReadingKingLeaderboard.constants';
 import ReadingKingLeaderboardSkeleton from './ReadingKingLeaderboardSkeleton';
@@ -19,16 +18,13 @@ const ReadingKingLeaderboard = () => {
   } = useQuery(queries.monthlyReadingRank({ limit: RANKING.maxRank }));
   const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
 
-  const { leftTime, isComplete } = useCountdown({
+  const { leftTime } = useCountdown({
     targetTime: monthlyReadingRank?.nextRefreshAt ?? new Date().toISOString(),
     initialTime: monthlyReadingRank?.serverTime,
-  });
-
-  useEffect(() => {
-    if (isComplete) {
+    onComplete: () => {
       refetch();
-    }
-  }, [isComplete, refetch]);
+    },
+  });
 
   const monthlyReadingRankContent = monthlyReadingRank?.data ?? [];
   const haveNoContent = !isLoading && monthlyReadingRankContent.length === 0;
