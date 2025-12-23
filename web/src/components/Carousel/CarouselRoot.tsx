@@ -1,8 +1,12 @@
 import styled from '@emotion/styled';
-import { CarouselContext } from './CarouselContext';
-import useCarousel from './useCarousel';
+import { useRef, type PropsWithChildren } from 'react';
+import { DEFAULT_SPEED } from './Carousel.constants';
+import { CarouselContext } from './contexts/CarouselContext';
+import useCarouselAutoPlay from './hooks/useCarouselAutoPlay';
+import useCarouselState from './hooks/useCarouselState';
+import useCarouselSwipe from './hooks/useCarouselSwipe';
+import useCarouselTransition from './hooks/useCarouselTransition';
 import type { AutoPlayOption } from './Carousel.types';
-import type { PropsWithChildren } from 'react';
 
 /**
  * 1. 무한 캐러셀만 자동 재생 설정 가능
@@ -20,36 +24,73 @@ const CarouselRoot = ({
   hasAnimation = true,
   children,
 }: PropsWithChildren<CarouselRootProps>) => {
+  const slideWrapperRef = useRef<HTMLUListElement>(null);
+
   const {
     slideIndex,
+    goPrev,
+    goNext,
+    syncLoopSlideIndex,
     slideCount,
+    canGoPrev,
+    canGoNext,
     registerSlideCount,
-    next,
-    prev,
+  } = useCarouselState({ loop });
+
+  const { isTransitioning, startTransition, stopTransition } =
+    useCarouselTransition();
+
+  const { isSwiping, startSwipe, moveSwipe, endSwipe } = useCarouselSwipe({
+    enabled: !isTransitioning,
+    slideIndex,
+    canGoPrev,
+    canGoNext,
     slideWrapperRef,
-    isTransitioning,
-    isSwiping,
-    handleTransitionEnd,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
-  } = useCarousel({ loop, autoPlay });
+    onSwipe: (dir) => {
+      startTransition();
+      if (dir === -1 && canGoPrev) {
+        goPrev();
+        return;
+      }
+      if (dir === 1 && canGoNext) {
+        goNext();
+        return;
+      }
+    },
+  });
+
+  const autoPlayEnabled =
+    !!autoPlay && !isSwiping && !isTransitioning && slideCount > 1;
+
+  useCarouselAutoPlay({
+    enabled: autoPlayEnabled,
+    delay: typeof autoPlay === 'object' ? autoPlay.delay : DEFAULT_SPEED,
+    slideIndex,
+    onNext: () => {
+      startTransition();
+      goNext();
+    },
+  });
 
   return (
     <CarouselContext.Provider
       value={{
         slideIndex,
         slideCount,
+        goPrev,
+        goNext,
+        syncLoopSlideIndex,
         registerSlideCount,
+        canGoPrev,
+        canGoNext,
         slideWrapperRef,
         isTransitioning,
+        startTransition,
+        stopTransition,
         isSwiping,
-        handleTransitionEnd,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd,
-        next,
-        prev,
+        startSwipe,
+        moveSwipe,
+        endSwipe,
         loop,
         hasAnimation,
       }}

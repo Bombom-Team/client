@@ -1,26 +1,28 @@
 import { createContext, useContext } from 'react';
-import type { RefObject, TouchEvent } from 'react';
+import type { RefObject } from 'react';
 
 export interface CarouselContextValue {
   // state
   slideIndex: number;
   slideCount: number;
+  goPrev: () => void;
+  goNext: () => void;
+  syncLoopSlideIndex: () => void;
   registerSlideCount: (count: number) => void;
+  canGoPrev: boolean;
+  canGoNext: boolean;
 
   // refs
   slideWrapperRef: RefObject<HTMLUListElement | null>;
 
   // transition/swipe
   isTransitioning: boolean;
+  startTransition: () => void;
+  stopTransition: () => void;
   isSwiping: boolean;
-  handleTransitionEnd: () => void;
-  handleTouchStart: (e: TouchEvent) => void;
-  handleTouchMove: (e: TouchEvent) => void;
-  handleTouchEnd: () => void;
-
-  // navigation
-  next: () => void;
-  prev: () => void;
+  startSwipe: (x: number, y: number) => void;
+  moveSwipe: (x: number, y: number) => void;
+  endSwipe: () => void;
 
   // options
   loop: boolean;

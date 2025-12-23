@@ -80,4 +80,5 @@ export const ProgressCaption = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.caption};
   text-align: end;
+  white-space: nowrap;
 `;

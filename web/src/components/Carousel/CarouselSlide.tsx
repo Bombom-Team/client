@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { useCarouselContext } from './CarouselContext';
-import { useCarouselSlideIndex } from './CarouselSlideIndexContext';
+import { useCarouselContext } from './contexts/CarouselContext';
+import { useCarouselSlideIndex } from './contexts/CarouselSlideIndexContext';
 import type { PropsWithChildren } from 'react';
 
 const CarouselSlide = ({ children }: PropsWithChildren) => {

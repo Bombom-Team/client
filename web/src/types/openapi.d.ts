@@ -955,56 +955,6 @@ export interface components {
       color?: string;
       memo?: string;
     };
-    Pageable: {
-      /** Format: int32 */
-      page?: number;
-      /** Format: int32 */
-      size?: number;
-      sort?: string[];
-    };
-    NoticeResponse: {
-      /** Format: int64 */
-      noticeId: number;
-      categoryName: string;
-      title: string;
-      content: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    PageNoticeResponse: {
-      /** Format: int64 */
-      totalElements?: number;
-      /** Format: int32 */
-      totalPages?: number;
-      first?: boolean;
-      last?: boolean;
-      /** Format: int32 */
-      size?: number;
-      content?: components['schemas']['NoticeResponse'][];
-      /** Format: int32 */
-      number?: number;
-      sort?: components['schemas']['SortObject'];
-      /** Format: int32 */
-      numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
-      empty?: boolean;
-    };
-    PageableObject: {
-      /** Format: int64 */
-      offset?: number;
-      sort?: components['schemas']['SortObject'];
-      /** Format: int32 */
-      pageSize?: number;
-      paged?: boolean;
-      /** Format: int32 */
-      pageNumber?: number;
-      unpaged?: boolean;
-    };
-    SortObject: {
-      empty?: boolean;
-      sorted?: boolean;
-      unsorted?: boolean;
-    };
     NewsletterResponse: {
       /** Format: int64 */
       newsletterId: number;

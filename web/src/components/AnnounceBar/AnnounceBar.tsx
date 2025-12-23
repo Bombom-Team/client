@@ -5,9 +5,10 @@ import CloseIcon from '#/assets/svg/close.svg';
 
 interface AnnounceBarProps {
   announceText: string[];
-  checked: boolean;
-  onChangeChecked: (checked: boolean) => void;
+  checked?: boolean;
+  onChangeChecked?: (checked: boolean) => void;
   onClose: () => void;
+  onClick?: () => void;
 }
 
 const AnnounceBar = ({
@@ -15,12 +16,19 @@ const AnnounceBar = ({
   checked,
   onChangeChecked,
   onClose,
+  onClick,
 }: AnnounceBarProps) => {
   const device = useDevice();
   const isPC = device === 'pc';
   const isMobile = device === 'mobile';
   return (
-    <Container isPC={isPC} role="status" aria-live="polite">
+    <Container
+      isPC={isPC}
+      clickable={!!onClick}
+      role="status"
+      aria-live="polite"
+      onClick={onClick}
+    >
       <Content isPC={isPC}>
         <ContentWrapper isPC={isPC}>
           {announceText.map((text, index) => (
@@ -32,7 +40,7 @@ const AnnounceBar = ({
             <input
               type="checkbox"
               checked={checked}
-              onChange={(e) => onChangeChecked(e.target.checked)}
+              onChange={(e) => onChangeChecked?.(e.target.checked)}
             />
             <CheckboxText isPC={isPC}>다시 보지 않기</CheckboxText>
           </CheckboxWrapper>
@@ -49,10 +57,11 @@ const AnnounceBar = ({
   );
 };
 
-const Container = styled.div<{ isPC: boolean }>`
+const Container = styled.div<{ isPC: boolean; clickable: boolean }>`
   width: 100%;
   margin-bottom: 8px;
   padding: ${({ isPC }) => (isPC ? '12px 16px' : '8px 12px')};
+  border-radius: 12px;
 
   display: flex;
   gap: 4px;
@@ -60,6 +69,8 @@ const Container = styled.div<{ isPC: boolean }>`
   align-items: center;
 
   background-color: #fef3c6;
+
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'default')};
 `;
 
 const ContentWrapper = styled.div<{ isPC: boolean }>`

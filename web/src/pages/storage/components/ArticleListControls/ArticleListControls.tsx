@@ -7,6 +7,7 @@ import useModal from '@/components/Modal/useModal';
 import SearchInput from '@/components/SearchInput/SearchInput';
 import Select from '@/components/Select/Select';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useDevice } from '@/hooks/useDevice';
 import { useSearchParamState } from '@/hooks/useSearchParamState';
 import StorageUsageBar from '@/pages/storage/components/StorageUsageBar/StorageUsageBar';
 import type { Sort } from './ArticleListControls.types';
@@ -44,6 +45,9 @@ const ArticleListControls = ({
   const debouncedSearchInput = useDebouncedValue(search, 500);
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
@@ -64,7 +68,7 @@ const ArticleListControls = ({
         onChange={handleSearchChange}
       />
       <SummaryBar>
-        <SummaryBox>
+        <SummaryBox isMobile={isMobile}>
           {editMode ? (
             <DeleteWrapper>
               <Checkbox
@@ -125,6 +129,8 @@ const ArticleListControls = ({
 export default ArticleListControls;
 
 const Container = styled.div`
+  margin-bottom: 2px;
+
   display: flex;
   gap: 8px;
   flex-direction: column;
@@ -138,14 +144,14 @@ const SummaryBar = styled.div`
   justify-content: space-between;
 `;
 
-const SummaryBox = styled.div`
+const SummaryBox = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: 20px;
+  gap: ${({ isMobile }) => (isMobile ? '12px' : '16px')};
   align-items: center;
 `;
 
 const StorageUsageBarWrapper = styled.div`
-  max-width: 120px;
+  max-width: 160px;
   display: flex;
 `;
 
