@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { noticesQueries } from '@/apis/notices/notices.query';
-import type { Notice } from '@/types/notice';
+import { type Notice, NOTICE_CATEGORY_LABELS } from '@/types/notice';
 
 export function NoticeList({ notices }: { notices: Notice[] }) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { mutate: deleteNotice } = useMutation({
     ...noticesQueries.mutation.delete(),
@@ -35,32 +36,45 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
   return (
     <Container>
       {notices.map((notice) => (
-        <NoticeItem key={notice.id}>
+        <NoticeItem
+          key={notice.id}
+          onClick={() =>
+            navigate({
+              to: '/notices/$noticeId',
+              params: { noticeId: notice.id.toString() },
+            })
+          }
+        >
           <NoticeHeader>
-            <div>
-              <Link
-                to="/notices/$noticeId"
-                params={{ noticeId: notice.id.toString() }}
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-              >
-                <CategoryBadge category={notice.noticeCategory}>
-                  {notice.noticeCategory}
-                </CategoryBadge>
-                <NoticeTitle>{notice.title}</NoticeTitle>
-              </Link>
-              <NoticeMeta>
-                <DateText>{notice.createdAt}</DateText>
-              </NoticeMeta>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <CategoryBadge category={notice.noticeCategory}>
+                {NOTICE_CATEGORY_LABELS[notice.noticeCategory] ??
+                  notice.noticeCategory}
+              </CategoryBadge>
+              <NoticeTitle>{notice.title}</NoticeTitle>
             </div>
             <NoticeActions>
-              <IconButton onClick={() => handleEdit(notice.id)}>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEdit(notice.id);
+                }}
+              >
                 <FiEdit size={18} />
               </IconButton>
-              <IconButton onClick={() => handleDelete(notice.id)}>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(notice.id);
+                }}
+              >
                 <FiTrash2 size={18} />
               </IconButton>
             </NoticeActions>
           </NoticeHeader>
+          <NoticeMeta>
+            <DateText>{notice.createdAt}</DateText>
+          </NoticeMeta>
         </NoticeItem>
       ))}
     </Container>

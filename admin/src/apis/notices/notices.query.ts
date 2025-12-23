@@ -1,5 +1,5 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { getNotices, deleteNotice } from './notices.api';
+import { getNotices, deleteNotice, getNoticeDetail } from './notices.api';
 import type { GetNoticesParams } from './notices.api';
 
 const NOTICES_STALE_TIME = 1000 * 60; // 1 minute
@@ -13,6 +13,14 @@ export const noticesQueries = {
       queryKey: ['notices', params] as const,
       queryFn: () => getNotices(params),
       placeholderData: keepPreviousData,
+      staleTime: NOTICES_STALE_TIME,
+      gcTime: NOTICES_GC_TIME,
+    }),
+
+  detail: (noticeId: number) =>
+    queryOptions({
+      queryKey: ['notices', 'detail', noticeId] as const,
+      queryFn: () => getNoticeDetail(noticeId),
       staleTime: NOTICES_STALE_TIME,
       gcTime: NOTICES_GC_TIME,
     }),

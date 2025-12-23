@@ -37,3 +37,9 @@ export const deleteNotice = async (noticeId: number) => {
     path: `/notices/${noticeId}`,
   });
 };
+
+export const getNoticeDetail = async (noticeId: number) => {
+  return fetcher.get<Notice>({
+    path: `/notices/${noticeId}`,
+  });
+};
