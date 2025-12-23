@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
+import { useDevice } from './useDevice';
 import {
   hideChannelButton,
   showChannelButton,
 } from '@/libs/channelTalk/channelTalk.utils';
 import { initChannelTalk } from '@/libs/channelTalk/initChannelTalk';
-import { useDevice } from './useDevice';
 
 export const useChannelTalk = () => {
   const device = useDevice();
