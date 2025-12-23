@@ -23,7 +23,7 @@ import StorageIcon from '#/assets/svg/storage.svg';
 
 const MIN_WARNING_LIMIT = 450;
 
-export const Route = createFileRoute('/_bombom/storage')({
+export const Route = createFileRoute('/_bombom/_main/storage')({
   head: () => ({
     meta: [
       {
@@ -63,7 +63,7 @@ function Storage() {
   );
 
   const searchParam = useSearch({
-    from: '/_bombom/storage',
+    from: '/_bombom/_main/storage',
     select: (state) => state.search,
   });
   const keywordIsValid = isValidKeyword(searchParam);

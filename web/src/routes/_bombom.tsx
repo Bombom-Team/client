@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
-import PageLayout from '@/components/PageLayout/PageLayout';
+import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
 import { useAppInstallPrompt } from '@/hooks/useAppInstallPrompt';
 import { useWebViewNotificationActive } from '@/libs/webview/useWebViewNotificationActive';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
@@ -51,7 +51,7 @@ function RouteComponent() {
   useWebViewNotificationActive();
 
   return (
-    <PageLayout>
+    <BomBomPageLayout>
       <Outlet />
       <AppInstallPromptModal
         modalRef={modalRef}
@@ -60,6 +60,6 @@ function RouteComponent() {
         onInstallClick={handleInstallClick}
         onLaterClick={handleLaterClick}
       />
-    </PageLayout>
+    </BomBomPageLayout>
   );
 }

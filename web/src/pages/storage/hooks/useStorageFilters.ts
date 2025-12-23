@@ -8,7 +8,7 @@ export const useStorageFilters = () => {
     sort: sortParam,
     search: searchParam,
     newsletterId: newsletterIdParams,
-  } = useSearch({ from: '/_bombom/storage' });
+  } = useSearch({ from: '/_bombom/_main/storage' });
   const [page, setPage] = useState(1);
 
   const baseQueryParams: GetArticlesWithSearchParams = {

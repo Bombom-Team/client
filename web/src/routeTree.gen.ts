@@ -14,15 +14,16 @@ import { Route as MaintenanceRouteImport } from './routes/maintenance';
 import { Route as LoginRouteImport } from './routes/login';
 import { Route as LandingRouteImport } from './routes/landing';
 import { Route as BombomRouteImport } from './routes/_bombom';
-import { Route as BombomIndexRouteImport } from './routes/_bombom/index';
-import { Route as BombomTodayRouteImport } from './routes/_bombom/today';
-import { Route as BombomStorageRouteImport } from './routes/_bombom/storage';
-import { Route as BombomNoticeRouteImport } from './routes/_bombom/notice';
-import { Route as BombomMyRouteImport } from './routes/_bombom/my';
-import { Route as BombomMemoRouteImport } from './routes/_bombom/memo';
-import { Route as BombomGuideRouteImport } from './routes/_bombom/guide';
-import { Route as BombomBookmarkRouteImport } from './routes/_bombom/bookmark';
+import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
+import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
 import { Route as BombomArticlesArticleIdRouteImport } from './routes/_bombom/articles.$articleId';
+import { Route as BombomMainTodayRouteImport } from './routes/_bombom/_main/today';
+import { Route as BombomMainStorageRouteImport } from './routes/_bombom/_main/storage';
+import { Route as BombomMainNoticeRouteImport } from './routes/_bombom/_main/notice';
+import { Route as BombomMainMyRouteImport } from './routes/_bombom/_main/my';
+import { Route as BombomMainMemoRouteImport } from './routes/_bombom/_main/memo';
+import { Route as BombomMainGuideRouteImport } from './routes/_bombom/_main/guide';
+import { Route as BombomMainBookmarkRouteImport } from './routes/_bombom/_main/bookmark';
 import { Route as BombomArticlesPreviousArticleIdRouteImport } from './routes/_bombom/articles.previous.$articleId';
 import { Route as BombomArticlesGuideGuideIdRouteImport } from './routes/_bombom/articles.guide.$guideId';
 
@@ -50,50 +51,54 @@ const BombomRoute = BombomRouteImport.update({
   id: '/_bombom',
   getParentRoute: () => rootRouteImport,
 } as any);
-const BombomIndexRoute = BombomIndexRouteImport.update({
+const BombomMainRoute = BombomMainRouteImport.update({
+  id: '/_main',
+  getParentRoute: () => BombomRoute,
+} as any);
+const BombomMainIndexRoute = BombomMainIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => BombomRoute,
-} as any);
-const BombomTodayRoute = BombomTodayRouteImport.update({
-  id: '/today',
-  path: '/today',
-  getParentRoute: () => BombomRoute,
-} as any);
-const BombomStorageRoute = BombomStorageRouteImport.update({
-  id: '/storage',
-  path: '/storage',
-  getParentRoute: () => BombomRoute,
-} as any);
-const BombomNoticeRoute = BombomNoticeRouteImport.update({
-  id: '/notice',
-  path: '/notice',
-  getParentRoute: () => BombomRoute,
-} as any);
-const BombomMyRoute = BombomMyRouteImport.update({
-  id: '/my',
-  path: '/my',
-  getParentRoute: () => BombomRoute,
-} as any);
-const BombomMemoRoute = BombomMemoRouteImport.update({
-  id: '/memo',
-  path: '/memo',
-  getParentRoute: () => BombomRoute,
-} as any);
-const BombomGuideRoute = BombomGuideRouteImport.update({
-  id: '/guide',
-  path: '/guide',
-  getParentRoute: () => BombomRoute,
-} as any);
-const BombomBookmarkRoute = BombomBookmarkRouteImport.update({
-  id: '/bookmark',
-  path: '/bookmark',
-  getParentRoute: () => BombomRoute,
+  getParentRoute: () => BombomMainRoute,
 } as any);
 const BombomArticlesArticleIdRoute = BombomArticlesArticleIdRouteImport.update({
   id: '/articles/$articleId',
   path: '/articles/$articleId',
   getParentRoute: () => BombomRoute,
+} as any);
+const BombomMainTodayRoute = BombomMainTodayRouteImport.update({
+  id: '/today',
+  path: '/today',
+  getParentRoute: () => BombomMainRoute,
+} as any);
+const BombomMainStorageRoute = BombomMainStorageRouteImport.update({
+  id: '/storage',
+  path: '/storage',
+  getParentRoute: () => BombomMainRoute,
+} as any);
+const BombomMainNoticeRoute = BombomMainNoticeRouteImport.update({
+  id: '/notice',
+  path: '/notice',
+  getParentRoute: () => BombomMainRoute,
+} as any);
+const BombomMainMyRoute = BombomMainMyRouteImport.update({
+  id: '/my',
+  path: '/my',
+  getParentRoute: () => BombomMainRoute,
+} as any);
+const BombomMainMemoRoute = BombomMainMemoRouteImport.update({
+  id: '/memo',
+  path: '/memo',
+  getParentRoute: () => BombomMainRoute,
+} as any);
+const BombomMainGuideRoute = BombomMainGuideRouteImport.update({
+  id: '/guide',
+  path: '/guide',
+  getParentRoute: () => BombomMainRoute,
+} as any);
+const BombomMainBookmarkRoute = BombomMainBookmarkRouteImport.update({
+  id: '/bookmark',
+  path: '/bookmark',
+  getParentRoute: () => BombomMainRoute,
 } as any);
 const BombomArticlesPreviousArticleIdRoute =
   BombomArticlesPreviousArticleIdRouteImport.update({
@@ -113,15 +118,15 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
-  '/bookmark': typeof BombomBookmarkRoute;
-  '/guide': typeof BombomGuideRoute;
-  '/memo': typeof BombomMemoRoute;
-  '/my': typeof BombomMyRoute;
-  '/notice': typeof BombomNoticeRoute;
-  '/storage': typeof BombomStorageRoute;
-  '/today': typeof BombomTodayRoute;
-  '/': typeof BombomIndexRoute;
+  '/bookmark': typeof BombomMainBookmarkRoute;
+  '/guide': typeof BombomMainGuideRoute;
+  '/memo': typeof BombomMainMemoRoute;
+  '/my': typeof BombomMainMyRoute;
+  '/notice': typeof BombomMainNoticeRoute;
+  '/storage': typeof BombomMainStorageRoute;
+  '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
+  '/': typeof BombomMainIndexRoute;
   '/articles/guide/$guideId': typeof BombomArticlesGuideGuideIdRoute;
   '/articles/previous/$articleId': typeof BombomArticlesPreviousArticleIdRoute;
 }
@@ -130,15 +135,15 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
-  '/bookmark': typeof BombomBookmarkRoute;
-  '/guide': typeof BombomGuideRoute;
-  '/memo': typeof BombomMemoRoute;
-  '/my': typeof BombomMyRoute;
-  '/notice': typeof BombomNoticeRoute;
-  '/storage': typeof BombomStorageRoute;
-  '/today': typeof BombomTodayRoute;
-  '/': typeof BombomIndexRoute;
+  '/bookmark': typeof BombomMainBookmarkRoute;
+  '/guide': typeof BombomMainGuideRoute;
+  '/memo': typeof BombomMainMemoRoute;
+  '/my': typeof BombomMainMyRoute;
+  '/notice': typeof BombomMainNoticeRoute;
+  '/storage': typeof BombomMainStorageRoute;
+  '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
+  '/': typeof BombomMainIndexRoute;
   '/articles/guide/$guideId': typeof BombomArticlesGuideGuideIdRoute;
   '/articles/previous/$articleId': typeof BombomArticlesPreviousArticleIdRoute;
 }
@@ -149,15 +154,16 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
-  '/_bombom/bookmark': typeof BombomBookmarkRoute;
-  '/_bombom/guide': typeof BombomGuideRoute;
-  '/_bombom/memo': typeof BombomMemoRoute;
-  '/_bombom/my': typeof BombomMyRoute;
-  '/_bombom/notice': typeof BombomNoticeRoute;
-  '/_bombom/storage': typeof BombomStorageRoute;
-  '/_bombom/today': typeof BombomTodayRoute;
-  '/_bombom/': typeof BombomIndexRoute;
+  '/_bombom/_main': typeof BombomMainRouteWithChildren;
+  '/_bombom/_main/bookmark': typeof BombomMainBookmarkRoute;
+  '/_bombom/_main/guide': typeof BombomMainGuideRoute;
+  '/_bombom/_main/memo': typeof BombomMainMemoRoute;
+  '/_bombom/_main/my': typeof BombomMainMyRoute;
+  '/_bombom/_main/notice': typeof BombomMainNoticeRoute;
+  '/_bombom/_main/storage': typeof BombomMainStorageRoute;
+  '/_bombom/_main/today': typeof BombomMainTodayRoute;
   '/_bombom/articles/$articleId': typeof BombomArticlesArticleIdRoute;
+  '/_bombom/_main/': typeof BombomMainIndexRoute;
   '/_bombom/articles/guide/$guideId': typeof BombomArticlesGuideGuideIdRoute;
   '/_bombom/articles/previous/$articleId': typeof BombomArticlesPreviousArticleIdRoute;
 }
@@ -175,8 +181,8 @@ export interface FileRouteTypes {
     | '/notice'
     | '/storage'
     | '/today'
-    | '/'
     | '/articles/$articleId'
+    | '/'
     | '/articles/guide/$guideId'
     | '/articles/previous/$articleId';
   fileRoutesByTo: FileRoutesByTo;
@@ -192,8 +198,8 @@ export interface FileRouteTypes {
     | '/notice'
     | '/storage'
     | '/today'
-    | '/'
     | '/articles/$articleId'
+    | '/'
     | '/articles/guide/$guideId'
     | '/articles/previous/$articleId';
   id:
@@ -203,15 +209,16 @@ export interface FileRouteTypes {
     | '/login'
     | '/maintenance'
     | '/signup'
-    | '/_bombom/bookmark'
-    | '/_bombom/guide'
-    | '/_bombom/memo'
-    | '/_bombom/my'
-    | '/_bombom/notice'
-    | '/_bombom/storage'
-    | '/_bombom/today'
-    | '/_bombom/'
+    | '/_bombom/_main'
+    | '/_bombom/_main/bookmark'
+    | '/_bombom/_main/guide'
+    | '/_bombom/_main/memo'
+    | '/_bombom/_main/my'
+    | '/_bombom/_main/notice'
+    | '/_bombom/_main/storage'
+    | '/_bombom/_main/today'
     | '/_bombom/articles/$articleId'
+    | '/_bombom/_main/'
     | '/_bombom/articles/guide/$guideId'
     | '/_bombom/articles/previous/$articleId';
   fileRoutesById: FileRoutesById;
@@ -261,61 +268,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BombomRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-    '/_bombom/': {
-      id: '/_bombom/';
+    '/_bombom/_main': {
+      id: '/_bombom/_main';
+      path: '';
+      fullPath: '';
+      preLoaderRoute: typeof BombomMainRouteImport;
+      parentRoute: typeof BombomRoute;
+    };
+    '/_bombom/_main/': {
+      id: '/_bombom/_main/';
       path: '/';
       fullPath: '/';
-      preLoaderRoute: typeof BombomIndexRouteImport;
-      parentRoute: typeof BombomRoute;
-    };
-    '/_bombom/today': {
-      id: '/_bombom/today';
-      path: '/today';
-      fullPath: '/today';
-      preLoaderRoute: typeof BombomTodayRouteImport;
-      parentRoute: typeof BombomRoute;
-    };
-    '/_bombom/storage': {
-      id: '/_bombom/storage';
-      path: '/storage';
-      fullPath: '/storage';
-      preLoaderRoute: typeof BombomStorageRouteImport;
-      parentRoute: typeof BombomRoute;
-    };
-    '/_bombom/notice': {
-      id: '/_bombom/notice';
-      path: '/notice';
-      fullPath: '/notice';
-      preLoaderRoute: typeof BombomNoticeRouteImport;
-      parentRoute: typeof BombomRoute;
-    };
-    '/_bombom/my': {
-      id: '/_bombom/my';
-      path: '/my';
-      fullPath: '/my';
-      preLoaderRoute: typeof BombomMyRouteImport;
-      parentRoute: typeof BombomRoute;
-    };
-    '/_bombom/memo': {
-      id: '/_bombom/memo';
-      path: '/memo';
-      fullPath: '/memo';
-      preLoaderRoute: typeof BombomMemoRouteImport;
-      parentRoute: typeof BombomRoute;
-    };
-    '/_bombom/guide': {
-      id: '/_bombom/guide';
-      path: '/guide';
-      fullPath: '/guide';
-      preLoaderRoute: typeof BombomGuideRouteImport;
-      parentRoute: typeof BombomRoute;
-    };
-    '/_bombom/bookmark': {
-      id: '/_bombom/bookmark';
-      path: '/bookmark';
-      fullPath: '/bookmark';
-      preLoaderRoute: typeof BombomBookmarkRouteImport;
-      parentRoute: typeof BombomRoute;
+      preLoaderRoute: typeof BombomMainIndexRouteImport;
+      parentRoute: typeof BombomMainRoute;
     };
     '/_bombom/articles/$articleId': {
       id: '/_bombom/articles/$articleId';
@@ -323,6 +288,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/articles/$articleId';
       preLoaderRoute: typeof BombomArticlesArticleIdRouteImport;
       parentRoute: typeof BombomRoute;
+    };
+    '/_bombom/_main/today': {
+      id: '/_bombom/_main/today';
+      path: '/today';
+      fullPath: '/today';
+      preLoaderRoute: typeof BombomMainTodayRouteImport;
+      parentRoute: typeof BombomMainRoute;
+    };
+    '/_bombom/_main/storage': {
+      id: '/_bombom/_main/storage';
+      path: '/storage';
+      fullPath: '/storage';
+      preLoaderRoute: typeof BombomMainStorageRouteImport;
+      parentRoute: typeof BombomMainRoute;
+    };
+    '/_bombom/_main/notice': {
+      id: '/_bombom/_main/notice';
+      path: '/notice';
+      fullPath: '/notice';
+      preLoaderRoute: typeof BombomMainNoticeRouteImport;
+      parentRoute: typeof BombomMainRoute;
+    };
+    '/_bombom/_main/my': {
+      id: '/_bombom/_main/my';
+      path: '/my';
+      fullPath: '/my';
+      preLoaderRoute: typeof BombomMainMyRouteImport;
+      parentRoute: typeof BombomMainRoute;
+    };
+    '/_bombom/_main/memo': {
+      id: '/_bombom/_main/memo';
+      path: '/memo';
+      fullPath: '/memo';
+      preLoaderRoute: typeof BombomMainMemoRouteImport;
+      parentRoute: typeof BombomMainRoute;
+    };
+    '/_bombom/_main/guide': {
+      id: '/_bombom/_main/guide';
+      path: '/guide';
+      fullPath: '/guide';
+      preLoaderRoute: typeof BombomMainGuideRouteImport;
+      parentRoute: typeof BombomMainRoute;
+    };
+    '/_bombom/_main/bookmark': {
+      id: '/_bombom/_main/bookmark';
+      path: '/bookmark';
+      fullPath: '/bookmark';
+      preLoaderRoute: typeof BombomMainBookmarkRouteImport;
+      parentRoute: typeof BombomMainRoute;
     };
     '/_bombom/articles/previous/$articleId': {
       id: '/_bombom/articles/previous/$articleId';
@@ -341,29 +355,41 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface BombomMainRouteChildren {
+  BombomMainBookmarkRoute: typeof BombomMainBookmarkRoute;
+  BombomMainGuideRoute: typeof BombomMainGuideRoute;
+  BombomMainMemoRoute: typeof BombomMainMemoRoute;
+  BombomMainMyRoute: typeof BombomMainMyRoute;
+  BombomMainNoticeRoute: typeof BombomMainNoticeRoute;
+  BombomMainStorageRoute: typeof BombomMainStorageRoute;
+  BombomMainTodayRoute: typeof BombomMainTodayRoute;
+  BombomMainIndexRoute: typeof BombomMainIndexRoute;
+}
+
+const BombomMainRouteChildren: BombomMainRouteChildren = {
+  BombomMainBookmarkRoute: BombomMainBookmarkRoute,
+  BombomMainGuideRoute: BombomMainGuideRoute,
+  BombomMainMemoRoute: BombomMainMemoRoute,
+  BombomMainMyRoute: BombomMainMyRoute,
+  BombomMainNoticeRoute: BombomMainNoticeRoute,
+  BombomMainStorageRoute: BombomMainStorageRoute,
+  BombomMainTodayRoute: BombomMainTodayRoute,
+  BombomMainIndexRoute: BombomMainIndexRoute,
+};
+
+const BombomMainRouteWithChildren = BombomMainRoute._addFileChildren(
+  BombomMainRouteChildren,
+);
+
 interface BombomRouteChildren {
-  BombomBookmarkRoute: typeof BombomBookmarkRoute;
-  BombomGuideRoute: typeof BombomGuideRoute;
-  BombomMemoRoute: typeof BombomMemoRoute;
-  BombomMyRoute: typeof BombomMyRoute;
-  BombomNoticeRoute: typeof BombomNoticeRoute;
-  BombomStorageRoute: typeof BombomStorageRoute;
-  BombomTodayRoute: typeof BombomTodayRoute;
-  BombomIndexRoute: typeof BombomIndexRoute;
+  BombomMainRoute: typeof BombomMainRouteWithChildren;
   BombomArticlesArticleIdRoute: typeof BombomArticlesArticleIdRoute;
   BombomArticlesGuideGuideIdRoute: typeof BombomArticlesGuideGuideIdRoute;
   BombomArticlesPreviousArticleIdRoute: typeof BombomArticlesPreviousArticleIdRoute;
 }
 
 const BombomRouteChildren: BombomRouteChildren = {
-  BombomBookmarkRoute: BombomBookmarkRoute,
-  BombomGuideRoute: BombomGuideRoute,
-  BombomMemoRoute: BombomMemoRoute,
-  BombomMyRoute: BombomMyRoute,
-  BombomNoticeRoute: BombomNoticeRoute,
-  BombomStorageRoute: BombomStorageRoute,
-  BombomTodayRoute: BombomTodayRoute,
-  BombomIndexRoute: BombomIndexRoute,
+  BombomMainRoute: BombomMainRouteWithChildren,
   BombomArticlesArticleIdRoute: BombomArticlesArticleIdRoute,
   BombomArticlesGuideGuideIdRoute: BombomArticlesGuideGuideIdRoute,
   BombomArticlesPreviousArticleIdRoute: BombomArticlesPreviousArticleIdRoute,

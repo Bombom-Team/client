@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
-import { useLocation } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import {
   MOBILE_HORIZONTAL_PADDING,
   PC_HORIZONTAL_PADDING,
 } from './PageLayout.constants';
-import Header from '../Header/Header';
+import PCHeader from '../Header/PCHeader';
+import { useActiveNav } from '@/hooks/useActiveNav';
 import { useDevice } from '@/hooks/useDevice';
 import {
   hideChannelButton,
@@ -14,13 +14,10 @@ import {
 import { initChannelTalk } from '@/libs/channelTalk/initChannelTalk';
 import type { PropsWithChildren } from 'react';
 
-const PageLayout = ({ children }: PropsWithChildren) => {
+const BomBomPageLayout = ({ children }: PropsWithChildren) => {
+  const activeNav = useActiveNav();
   const device = useDevice();
-  const location = useLocation();
-  const isMobile = device === 'mobile';
-
-  const isHeaderVisible =
-    device === 'pc' || !location.pathname.startsWith('/articles/$articleId');
+  const isPC = device === 'pc';
 
   useEffect(() => {
     initChannelTalk();
@@ -35,30 +32,30 @@ const PageLayout = ({ children }: PropsWithChildren) => {
   }, [device]);
 
   return (
-    <Container isMobile={isMobile}>
-      {isHeaderVisible && <Header />}
+    <Container isPC={isPC}>
+      {isPC && <PCHeader activeNav={activeNav} />}
       {children}
     </Container>
   );
 };
 
-export default PageLayout;
+export default BomBomPageLayout;
 
-const Container = styled.div<{ isMobile: boolean }>`
+const Container = styled.div<{ isPC: boolean }>`
   min-height: 100dvh;
-  padding: ${({ isMobile, theme }) => {
-    const sidePadding = isMobile
-      ? `${MOBILE_HORIZONTAL_PADDING}px`
-      : `${PC_HORIZONTAL_PADDING}px`;
+  padding: ${({ isPC, theme }) => {
+    const sidePadding = isPC
+      ? `${PC_HORIZONTAL_PADDING}px`
+      : `${MOBILE_HORIZONTAL_PADDING}px`;
 
-    const headerHeight = isMobile
-      ? theme.heights.headerMobile
-      : theme.heights.headerPC;
+    const headerHeight = isPC
+      ? theme.heights.headerPC
+      : theme.heights.headerMobile;
 
     const topPadding = `calc(${headerHeight} + env(safe-area-inset-top) + ${sidePadding})`;
-    const bottomPadding = isMobile
-      ? `calc(${theme.heights.bottomNav} + env(safe-area-inset-bottom) + ${sidePadding})`
-      : `calc(env(safe-area-inset-bottom) + ${sidePadding})`;
+    const bottomPadding = isPC
+      ? `calc(env(safe-area-inset-bottom) + ${sidePadding})`
+      : `calc(${theme.heights.bottomNav} + env(safe-area-inset-bottom) + ${sidePadding})`;
 
     return `${topPadding} ${sidePadding} ${bottomPadding} ${sidePadding}`;
   }};

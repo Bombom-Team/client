@@ -3,8 +3,8 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo } from 'react';
-import ArticleCardList from '../../pages/today/components/ArticleCardList/ArticleCardList';
-import ReadingStatusCard from '../../pages/today/components/ReadingStatusCard/ReadingStatusCard';
+import ArticleCardList from '../../../pages/today/components/ArticleCardList/ArticleCardList';
+import ReadingStatusCard from '../../../pages/today/components/ReadingStatusCard/ReadingStatusCard';
 import { getPet } from '@/apis/pet';
 import { queries } from '@/apis/queries';
 import PetCard from '@/components/PetCard/PetCard';
@@ -24,7 +24,7 @@ import type { LocalGuideMail } from '@/types/guide';
 import type { CSSObject, Theme } from '@emotion/react';
 import HomeIcon from '#/assets/svg/home.svg';
 
-export const Route = createFileRoute('/_bombom/today')({
+export const Route = createFileRoute('/_bombom/_main/today')({
   head: () => ({
     meta: [
       {
