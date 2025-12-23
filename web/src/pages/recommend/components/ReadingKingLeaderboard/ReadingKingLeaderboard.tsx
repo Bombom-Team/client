@@ -14,14 +14,14 @@ import { chunk } from '@/utils/array';
 import { padTimeDigit } from '@/utils/time';
 
 const ReadingKingLeaderboard = () => {
+  const [rankExplainOpened, setRankExplainOpened] = useState(false);
+
   const {
     data: monthlyReadingRank,
     isLoading,
     refetch,
   } = useQuery(queries.monthlyReadingRank({ limit: RANKING.maxRank }));
   const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
-
-  const [isTooltipOpened, setIsTooltipOpened] = useState(false);
 
   const { leftTime } = useCountdown({
     targetTime: monthlyReadingRank?.nextRefreshAt ?? new Date().toISOString(),
@@ -31,6 +31,9 @@ const ReadingKingLeaderboard = () => {
       refetch();
     },
   });
+
+  const openRankExplain = () => setRankExplainOpened(true);
+  const closeRankExplain = () => setRankExplainOpened(false);
 
   const monthlyReadingRankContent = monthlyReadingRank?.data ?? [];
   const haveNoContent = !isLoading && monthlyReadingRankContent.length === 0;
@@ -46,11 +49,13 @@ const ReadingKingLeaderboard = () => {
         </TitleIcon>
         <Title>이달의 독서왕</Title>
         <CountDown
-          onMouseEnter={() => setIsTooltipOpened(true)}
-          onMouseLeave={() => setIsTooltipOpened(false)}
+          onMouseEnter={openRankExplain}
+          onMouseLeave={closeRankExplain}
+          onFocus={openRankExplain}
+          onBlur={closeRankExplain}
         >
           {`${padTimeDigit(leftTime.minutes)}:${padTimeDigit(leftTime.seconds)}`}
-          <Tooltip opened={isTooltipOpened} position="bottom">
+          <Tooltip opened={rankExplainOpened} position="bottom">
             순위는 10분마다 갱신됩니다
           </Tooltip>
         </CountDown>
