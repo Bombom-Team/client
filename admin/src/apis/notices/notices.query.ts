@@ -1,5 +1,5 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { getNotices } from './notices.api';
+import { getNotices, deleteNotice } from './notices.api';
 import type { GetNoticesParams } from './notices.api';
 
 const NOTICES_STALE_TIME = 1000 * 60; // 1 minute
@@ -16,4 +16,9 @@ export const noticesQueries = {
       staleTime: NOTICES_STALE_TIME,
       gcTime: NOTICES_GC_TIME,
     }),
+  mutation: {
+    delete: () => ({
+      mutationFn: deleteNotice,
+    }),
+  },
 };

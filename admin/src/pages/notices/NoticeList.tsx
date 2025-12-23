@@ -1,11 +1,18 @@
 import styled from '@emotion/styled';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
-import { useNotices } from '@/contexts/NoticeContext';
+import { noticesQueries } from '@/apis/notices/notices.query';
 import type { Notice } from '@/types/notice';
 
 export function NoticeList({ notices }: { notices: Notice[] }) {
-  const { deleteNotice } = useNotices();
+  const queryClient = useQueryClient();
+  const { mutate: deleteNotice } = useMutation({
+    ...noticesQueries.mutation.delete(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: noticesQueries.all });
+    },
+  });
 
   const handleEdit = (noticeId: number) => {
     alert(`공지사항 ID ${noticeId}를 수정합니다. (수정 기능은 아직 미구현)`);

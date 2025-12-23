@@ -31,3 +31,9 @@ export const createNotice = async (payload: CreateNoticeParams) => {
     body: payload,
   });
 };
+
+export const deleteNotice = async (noticeId: number) => {
+  return fetcher.delete({
+    path: `/notices/${noticeId}`,
+  });
+};

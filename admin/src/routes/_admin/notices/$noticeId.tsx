@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { noticesQueries } from '@/apis/notices/notices.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { useNotices } from '@/contexts/NoticeContext';
@@ -11,7 +13,16 @@ export const Route = createFileRoute('/_admin/notices/$noticeId')({
 function NoticeDetailPage() {
   const { noticeId } = Route.useParams();
   const navigate = useNavigate();
-  const { getNotice, deleteNotice } = useNotices();
+  const queryClient = useQueryClient();
+  const { getNotice } = useNotices();
+
+  const { mutate: deleteNotice } = useMutation({
+    ...noticesQueries.mutation.delete(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: noticesQueries.all });
+      goToList();
+    },
+  });
 
   const goToList = () => {
     navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
@@ -39,7 +50,6 @@ function NoticeDetailPage() {
   const handleDelete = () => {
     if (confirm('정말 삭제하시겠습니까?')) {
       deleteNotice(notice.id);
-      goToList();
     }
   };
 
