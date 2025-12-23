@@ -29,9 +29,16 @@ export const useCountdown = ({
     seconds: 0,
     totalSeconds: 0,
   });
-  const [isComplete, setIsComplete] = useState(false);
+
+  const timerIdRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const targetTimeMs = useRef(new Date(targetTime).getTime());
   const getCurrentTime = useRef<(() => number) | null>(null);
+  const isCompleteRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   const createCurrentTimeTracker = useCallback((currentTimeMs: number) => {
     const startPerformanceTime = performance.now();
@@ -47,38 +54,44 @@ export const useCountdown = ({
     }
 
     targetTimeMs.current = new Date(targetTime).getTime();
+    isCompleteRef.current = false;
   }, [createCurrentTimeTracker, initialTime, targetTime]);
 
-  const updateTimeLeft = useCallback(() => {
+  const updateLeftTime = useCallback(() => {
     if (!getCurrentTime.current) return;
 
     const currentTime = getCurrentTime.current();
     const timeDiff = Math.max(0, targetTimeMs.current - currentTime);
-
     const remainTime = convertMillisecondsToTime(timeDiff);
-    setLeftTime(remainTime);
 
-    if (remainTime.totalSeconds <= 0 && !isComplete) {
-      setIsComplete(true);
-      onComplete?.();
-    }
-  }, [onComplete, isComplete]);
+    setLeftTime(remainTime);
+  }, []);
 
   useEffect(() => {
-    if (isComplete) return;
+    if (leftTime.totalSeconds > 0 || isCompleteRef.current) return;
 
-    updateTimeLeft();
+    isCompleteRef.current = true;
 
-    const timerId = setInterval(updateTimeLeft, interval);
+    if (timerIdRef.current) {
+      clearInterval(timerIdRef.current);
+      timerIdRef.current = null;
+    }
+
+    onCompleteRef.current?.();
+  }, [leftTime.totalSeconds]);
+
+  useEffect(() => {
+    updateLeftTime();
+
+    timerIdRef.current = setInterval(updateLeftTime, interval);
 
     return () => {
-      clearInterval(timerId);
+      if (timerIdRef.current) {
+        clearInterval(timerIdRef.current);
+        timerIdRef.current = null;
+      }
     };
-  }, [interval, updateTimeLeft, isComplete]);
+  }, [interval, updateLeftTime]);
 
-  useEffect(() => {
-    setIsComplete(false);
-  }, [targetTime, initialTime]);
-
-  return { leftTime, isComplete };
+  return { leftTime };
 };
