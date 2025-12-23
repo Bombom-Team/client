@@ -1,22 +1,26 @@
 import styled from '@emotion/styled';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { createNotice } from '@/apis/notices/notices.api';
+import { noticesQueries } from '@/apis/notices/notices.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { useNotices } from '@/contexts/NoticeContext';
-import type { NoticeCategoryType } from '@/types/notice';
+import {
+  type NoticeCategoryType,
+  NOTICE_CATEGORY_LABELS,
+} from '@/types/notice';
 
 export const Route = createFileRoute('/_admin/notices/new')({
   component: NewNoticePage,
 });
 
 const NOTICE_CATEGORY_OPTIONS: { label: string; value: NoticeCategoryType }[] =
-  [
-    { label: '공지사항', value: 'NOTICE' },
-    { label: '이벤트', value: 'EVENT' },
-  ];
+  Object.entries(NOTICE_CATEGORY_LABELS).map(([value, label]) => ({
+    label,
+    value: value as NoticeCategoryType,
+  }));
 
 function NewNoticePage() {
   const navigate = useNavigate();
@@ -26,8 +30,12 @@ function NewNoticePage() {
   const [noticeCategory, setNoticeCategory] = useState(
     NOTICE_CATEGORY_OPTIONS[0]?.value ?? 'NOTICE',
   );
+  const queryClient = useQueryClient();
   const { mutateAsync: createNoticeMutation, isPending } = useMutation({
     mutationFn: createNotice,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: noticesQueries.all });
+    },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,6 +49,7 @@ function NewNoticePage() {
     try {
       await createNoticeMutation({ title, content, noticeCategory });
       addNotice(title, content, noticeCategory);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
     } catch (error) {
       let message = '공지사항 등록에 실패했습니다. 잠시 후 다시 시도해주세요.';
@@ -53,11 +62,13 @@ function NewNoticePage() {
 
   const handleCancel = () => {
     if (!title.trim() && !content.trim()) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
       return;
     }
 
     if (confirm('작성 중인 내용이 사라집니다. 취소하시겠습니까?')) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
     }
   };
