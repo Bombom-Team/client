@@ -5,6 +5,7 @@ interface UseCountdownParams {
   targetTime: string | Date;
   initialTime?: string | Date;
   onComplete?: () => void;
+  completeDelay?: number;
   interval?: number;
 }
 
@@ -20,6 +21,7 @@ export const useCountdown = ({
   targetTime,
   initialTime,
   onComplete,
+  completeDelay = 0,
   interval = 1000,
 }: UseCountdownParams) => {
   const [leftTime, setLeftTime] = useState<Time>({
@@ -30,11 +32,12 @@ export const useCountdown = ({
     totalSeconds: 0,
   });
 
-  const timerIdRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const targetTimeMs = useRef(new Date(targetTime).getTime());
   const getCurrentTime = useRef<(() => number) | null>(null);
   const isCompleteRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
+  const delayTimerIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     onCompleteRef.current = onComplete;
@@ -71,24 +74,33 @@ export const useCountdown = ({
     if (leftTime.totalSeconds > 0 || isCompleteRef.current) return;
 
     isCompleteRef.current = true;
-
-    if (timerIdRef.current) {
-      clearInterval(timerIdRef.current);
-      timerIdRef.current = null;
+    if (intervalIdRef.current) {
+      clearInterval(intervalIdRef.current);
+      intervalIdRef.current = null;
     }
 
-    onCompleteRef.current?.();
-  }, [leftTime.totalSeconds]);
+    if (completeDelay > 0) {
+      delayTimerIdRef.current = setTimeout(() => {
+        onCompleteRef.current?.();
+      }, completeDelay);
+    } else {
+      onCompleteRef.current?.();
+    }
+  }, [leftTime.totalSeconds, completeDelay]);
 
   useEffect(() => {
     updateLeftTime();
 
-    timerIdRef.current = setInterval(updateLeftTime, interval);
+    intervalIdRef.current = setInterval(updateLeftTime, interval);
 
     return () => {
-      if (timerIdRef.current) {
-        clearInterval(timerIdRef.current);
-        timerIdRef.current = null;
+      if (intervalIdRef.current) {
+        clearInterval(intervalIdRef.current);
+        intervalIdRef.current = null;
+      }
+      if (delayTimerIdRef.current) {
+        clearTimeout(delayTimerIdRef.current);
+        delayTimerIdRef.current = null;
       }
     };
   }, [interval, updateLeftTime, targetTime]);
