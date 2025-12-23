@@ -34,10 +34,16 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
               <Link
                 to="/notices/$noticeId"
                 params={{ noticeId: notice.id.toString() }}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
               >
+                <CategoryBadge category={notice.noticeCategory}>
+                  {notice.noticeCategory}
+                </CategoryBadge>
                 <NoticeTitle>{notice.title}</NoticeTitle>
               </Link>
-              {/* NoticeMeta removed as API does not provide author/date/views */}
+              <NoticeMeta>
+                <DateText>{notice.createdAt}</DateText>
+              </NoticeMeta>
             </div>
             <NoticeActions>
               <IconButton onClick={() => handleEdit(notice.id)}>
@@ -83,7 +89,7 @@ const NoticeHeader = styled.div`
 `;
 
 const NoticeTitle = styled.h4`
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  margin-bottom: 0;
 
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
@@ -115,4 +121,25 @@ const EmptyState = styled.div`
 
   color: ${({ theme }) => theme.colors.gray500};
   text-align: center;
+`;
+
+const NoticeMeta = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.md};
+  margin-top: ${({ theme }) => theme.spacing.sm};
+`;
+
+const CategoryBadge = styled.span<{ category: string }>`
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+`;
+
+const DateText = styled.span`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
