@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { convertMillisecondsToTime } from '@/utils/time';
 
 interface UseCountdownParams {
@@ -31,25 +31,25 @@ export const useCountdown = ({
   });
 
   const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const targetTimeMs = useRef(new Date(targetTime).getTime());
   const onCompleteRef = useRef(onComplete);
   const delayTimerIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const targetTimeMs = useMemo(
+    () => new Date(targetTime).getTime(),
+    [targetTime],
+  );
 
   useEffect(() => {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
-  useEffect(() => {
-    targetTimeMs.current = new Date(targetTime).getTime();
-  }, [targetTime]);
-
   const updateLeftTime = useCallback(() => {
     const currentTime = Date.now();
-    const timeDiff = Math.max(0, targetTimeMs.current - currentTime);
+    const timeDiff = Math.max(0, targetTimeMs - currentTime);
     const remainTime = convertMillisecondsToTime(timeDiff);
 
     setLeftTime(remainTime);
-  }, []);
+  }, [targetTimeMs]);
 
   useEffect(() => {
     if (leftTime.totalSeconds > 0) return;
