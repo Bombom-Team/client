@@ -91,7 +91,7 @@ export const useCountdown = ({
         timerIdRef.current = null;
       }
     };
-  }, [interval, updateLeftTime]);
+  }, [interval, updateLeftTime, targetTime]);
 
   return { leftTime };
 };
