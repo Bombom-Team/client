@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useEffect } from 'react';
 import {
   MOBILE_HORIZONTAL_PADDING,
   PC_HORIZONTAL_PADDING,
@@ -7,29 +6,12 @@ import {
 import PCHeader from '../Header/PCHeader';
 import { useActiveNav } from '@/hooks/useActiveNav';
 import { useDevice } from '@/hooks/useDevice';
-import {
-  hideChannelButton,
-  showChannelButton,
-} from '@/libs/channelTalk/channelTalk.utils';
-import { initChannelTalk } from '@/libs/channelTalk/initChannelTalk';
 import type { PropsWithChildren } from 'react';
 
 const BomBomPageLayout = ({ children }: PropsWithChildren) => {
   const activeNav = useActiveNav();
   const device = useDevice();
   const isPC = device === 'pc';
-
-  useEffect(() => {
-    initChannelTalk();
-  }, []);
-
-  useEffect(() => {
-    if (device === 'pc') {
-      showChannelButton();
-    } else {
-      hideChannelButton();
-    }
-  }, [device]);
 
   return (
     <Container isPC={isPC}>
