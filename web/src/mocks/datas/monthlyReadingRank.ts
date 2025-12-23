@@ -55,19 +55,21 @@ export const MONTHLY_READING_RANK_UPDATED = [
 ];
 
 export const getRankingMetadata = () => {
+  const INTERVAL_SECONDS = 15;
+  const INTERVAL_MS = INTERVAL_SECONDS * 1000;
   const now = new Date();
 
-  const secondsSinceEpoch = Math.floor(now.getTime() / 1000);
-  const intervalCount = Math.floor(secondsSinceEpoch / 15);
-  const shouldUseUpdatedData = intervalCount % 2 === 1;
+  const currentTimeSeconds = Math.floor(now.getTime() / 1000);
+  const intervalCount = Math.floor(currentTimeSeconds / INTERVAL_SECONDS);
+  const isUpdatedData = intervalCount % 2 === 1;
 
-  const data = shouldUseUpdatedData
+  const data = isUpdatedData
     ? MONTHLY_READING_RANK_UPDATED
     : MONTHLY_READING_RANK;
 
   return {
     rankingUpdatedAt: now.toISOString(),
-    nextRefreshAt: new Date(now.getTime() + 15000).toISOString(),
+    nextRefreshAt: new Date(now.getTime() + INTERVAL_MS).toISOString(),
     serverTime: now.toISOString(),
     data,
   };
