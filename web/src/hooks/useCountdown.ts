@@ -53,18 +53,20 @@ export const useCountdown = ({
     if (!getCurrentTime.current) return;
 
     const currentTime = getCurrentTime.current();
-    const timeDiff = targetTimeMs.current - currentTime;
+    const timeDiff = Math.max(0, targetTimeMs.current - currentTime);
 
     const remainTime = convertMillisecondsToTime(timeDiff);
     setLeftTime(remainTime);
 
-    if (remainTime.totalSeconds <= 0 && onComplete) {
+    if (remainTime.totalSeconds <= 0 && !isComplete) {
       setIsComplete(true);
-      onComplete();
+      onComplete?.();
     }
-  }, [onComplete]);
+  }, [onComplete, isComplete]);
 
   useEffect(() => {
+    if (isComplete) return;
+
     updateTimeLeft();
 
     const timerId = setInterval(updateTimeLeft, interval);
@@ -72,7 +74,11 @@ export const useCountdown = ({
     return () => {
       clearInterval(timerId);
     };
-  }, [interval, updateTimeLeft]);
+  }, [interval, updateTimeLeft, isComplete]);
+
+  useEffect(() => {
+    setIsComplete(false);
+  }, [targetTime, initialTime]);
 
   return { leftTime, isComplete };
 };

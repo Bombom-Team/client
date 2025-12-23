@@ -1,7 +1,6 @@
-import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import LeaderboardItem from './LeaderboardItem';
 import { RANKING } from './ReadingKingLeaderboard.constants';
 import ReadingKingLeaderboardSkeleton from './ReadingKingLeaderboardSkeleton';
@@ -9,20 +8,27 @@ import ReadingKingMyRank from './ReadingKingMyRank';
 import { queries } from '@/apis/queries';
 import { Carousel } from '@/components/Carousel/Carousel';
 import ArrowIcon from '@/components/icons/ArrowIcon';
-import Tooltip from '@/components/Tooltip/Tooltip';
+import { useCountdown } from '@/hooks/useCountdown';
 import { chunk } from '@/utils/array';
-import ReadingKingHelpIcon from '#/assets/svg/help.svg';
 
 const ReadingKingLeaderboard = () => {
-  const [rankExplainOpened, setRankExplainOpened] = useState(false);
-
-  const { data: monthlyReadingRank, isLoading } = useQuery(
-    queries.monthlyReadingRank({ limit: RANKING.maxRank }),
-  );
+  const {
+    data: monthlyReadingRank,
+    isLoading,
+    refetch,
+  } = useQuery(queries.monthlyReadingRank({ limit: RANKING.maxRank }));
   const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
 
-  const openRankExplain = () => setRankExplainOpened(true);
-  const closeRankExplain = () => setRankExplainOpened(false);
+  const { leftTime, isComplete } = useCountdown({
+    targetTime: monthlyReadingRank?.nextRefreshAt ?? new Date().toISOString(),
+    initialTime: monthlyReadingRank?.serverTime,
+  });
+
+  useEffect(() => {
+    if (isComplete) {
+      refetch();
+    }
+  }, [isComplete, refetch]);
 
   const monthlyReadingRankContent = monthlyReadingRank?.data ?? [];
   const haveNoContent = !isLoading && monthlyReadingRankContent.length === 0;
@@ -37,30 +43,7 @@ const ReadingKingLeaderboard = () => {
           <ArrowIcon width={16} height={16} direction="upRight" />
         </TitleIcon>
         <Title>이달의 독서왕</Title>
-        <TooltipButton
-          type="button"
-          aria-label="이달의 독서왕 랭킹 안내"
-          aria-expanded={rankExplainOpened}
-          aria-describedby="rank-explain-tooltip"
-          onMouseEnter={openRankExplain}
-          onMouseLeave={closeRankExplain}
-          onFocus={openRankExplain}
-          onBlur={closeRankExplain}
-        >
-          <ReadingKingHelpIcon
-            width={20}
-            height={20}
-            fill={theme.colors.primary}
-          />
-        </TooltipButton>
-
-        <Tooltip
-          id="rank-explain-tooltip"
-          opened={rankExplainOpened}
-          position="right"
-        >
-          순위는 10분마다 갱신됩니다.
-        </Tooltip>
+        <CountDown>{`${String(leftTime.minutes).padStart(2, '0')}:${String(leftTime.seconds).padStart(2, '0')}`}</CountDown>
       </TitleWrapper>
 
       <Carousel.Root loop>
@@ -143,6 +126,11 @@ export const TitleIcon = styled.div`
 export const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
+`;
+
+export const CountDown = styled.p`
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.body2};
 `;
 
 export const TooltipButton = styled.button`
