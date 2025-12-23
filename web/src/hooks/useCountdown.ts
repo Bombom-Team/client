@@ -19,7 +19,7 @@ interface Time {
 export const useCountdown = ({
   targetTime,
   onComplete,
-  completeDelay = 0,
+  completeDelay,
   interval = 1000,
 }: UseCountdownParams) => {
   const [leftTime, setLeftTime] = useState<Time>({
@@ -62,7 +62,7 @@ export const useCountdown = ({
       intervalIdRef.current = null;
     }
 
-    if (completeDelay > 0) {
+    if (completeDelay) {
       delayTimerIdRef.current = setTimeout(() => {
         onCompleteRef.current?.();
       }, completeDelay);
