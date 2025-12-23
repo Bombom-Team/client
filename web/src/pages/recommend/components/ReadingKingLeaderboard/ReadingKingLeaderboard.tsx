@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import LeaderboardItem from './LeaderboardItem';
 import { RANKING } from './ReadingKingLeaderboard.constants';
 import ReadingKingLeaderboardSkeleton from './ReadingKingLeaderboardSkeleton';
@@ -7,8 +8,10 @@ import ReadingKingMyRank from './ReadingKingMyRank';
 import { queries } from '@/apis/queries';
 import { Carousel } from '@/components/Carousel/Carousel';
 import ArrowIcon from '@/components/icons/ArrowIcon';
+import Tooltip from '@/components/Tooltip/Tooltip';
 import { useCountdown } from '@/hooks/useCountdown';
 import { chunk } from '@/utils/array';
+import { padTimeDigit } from '@/utils/time';
 
 const ReadingKingLeaderboard = () => {
   const {
@@ -17,6 +20,8 @@ const ReadingKingLeaderboard = () => {
     refetch,
   } = useQuery(queries.monthlyReadingRank({ limit: RANKING.maxRank }));
   const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
+
+  const [isTooltipOpened, setIsTooltipOpened] = useState(false);
 
   const { leftTime } = useCountdown({
     targetTime: monthlyReadingRank?.nextRefreshAt ?? new Date().toISOString(),
@@ -40,7 +45,15 @@ const ReadingKingLeaderboard = () => {
           <ArrowIcon width={16} height={16} direction="upRight" />
         </TitleIcon>
         <Title>이달의 독서왕</Title>
-        <CountDown>{`${String(leftTime.minutes).padStart(2, '0')}:${String(leftTime.seconds).padStart(2, '0')}`}</CountDown>
+        <CountDown
+          onMouseEnter={() => setIsTooltipOpened(true)}
+          onMouseLeave={() => setIsTooltipOpened(false)}
+        >
+          {`${padTimeDigit(leftTime.minutes)}:${padTimeDigit(leftTime.seconds)}`}
+          <Tooltip opened={isTooltipOpened} position="bottom">
+            순위는 10분마다 갱신됩니다
+          </Tooltip>
+        </CountDown>
       </TitleWrapper>
 
       <Carousel.Root loop>
@@ -126,8 +139,12 @@ export const Title = styled.h3`
 `;
 
 export const CountDown = styled.p`
+  position: relative;
+
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
+
+  cursor: help;
 `;
 
 export const TooltipButton = styled.button`
