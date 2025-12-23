@@ -13,3 +13,7 @@ export const convertMillisecondsToTime = (milliseconds: number) => {
     totalSeconds,
   };
 };
+
+export const padTimeDigit = (time: number) => {
+  return String(time).padStart(2, '0');
+};
