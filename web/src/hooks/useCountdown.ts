@@ -32,7 +32,6 @@ export const useCountdown = ({
 
   const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const targetTimeMs = useRef(new Date(targetTime).getTime());
-  const isCompleteRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
   const delayTimerIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -42,7 +41,6 @@ export const useCountdown = ({
 
   useEffect(() => {
     targetTimeMs.current = new Date(targetTime).getTime();
-    isCompleteRef.current = false;
   }, [targetTime]);
 
   const updateLeftTime = useCallback(() => {
@@ -54,9 +52,8 @@ export const useCountdown = ({
   }, []);
 
   useEffect(() => {
-    if (leftTime.totalSeconds > 0 || isCompleteRef.current) return;
+    if (leftTime.totalSeconds > 0) return;
 
-    isCompleteRef.current = true;
     if (intervalIdRef.current) {
       clearInterval(intervalIdRef.current);
       intervalIdRef.current = null;
