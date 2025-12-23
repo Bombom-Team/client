@@ -24,9 +24,7 @@ export const queryClient = new QueryClient({
       if (error instanceof ApiError && error.status === 401) {
         const data = queryClient.getQueryData(queries.userProfile().queryKey);
         if (data) {
-          queryClient.invalidateQueries({
-            queryKey: queries.userProfile().queryKey,
-          });
+          window.location.reload();
         }
       }
     },
