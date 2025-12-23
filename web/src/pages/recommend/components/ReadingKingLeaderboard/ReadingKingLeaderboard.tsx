@@ -25,7 +25,6 @@ const ReadingKingLeaderboard = () => {
 
   const { leftTime } = useCountdown({
     targetTime: monthlyReadingRank?.nextRefreshAt ?? new Date().toISOString(),
-    initialTime: monthlyReadingRank?.serverTime,
     completeDelay: 1000,
     onComplete: () => {
       refetch();

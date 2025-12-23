@@ -3,7 +3,6 @@ import { convertMillisecondsToTime } from '@/utils/time';
 
 interface UseCountdownParams {
   targetTime: string | Date;
-  initialTime?: string | Date;
   onComplete?: () => void;
   completeDelay?: number;
   interval?: number;
@@ -19,7 +18,6 @@ interface Time {
 
 export const useCountdown = ({
   targetTime,
-  initialTime,
   onComplete,
   completeDelay = 0,
   interval = 1000,
@@ -34,7 +32,6 @@ export const useCountdown = ({
 
   const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const targetTimeMs = useRef(new Date(targetTime).getTime());
-  const getCurrentTime = useRef<(() => number) | null>(null);
   const isCompleteRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
   const delayTimerIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -43,27 +40,13 @@ export const useCountdown = ({
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
-  const createCurrentTimeTracker = useCallback((currentTimeMs: number) => {
-    const startPerformanceTime = performance.now();
-    return () => currentTimeMs + (performance.now() - startPerformanceTime);
-  }, []);
-
   useEffect(() => {
-    if (initialTime) {
-      const initialTimeMs = new Date(initialTime).getTime();
-      getCurrentTime.current = createCurrentTimeTracker(initialTimeMs);
-    } else {
-      getCurrentTime.current = () => Date.now();
-    }
-
     targetTimeMs.current = new Date(targetTime).getTime();
     isCompleteRef.current = false;
-  }, [createCurrentTimeTracker, initialTime, targetTime]);
+  }, [targetTime]);
 
   const updateLeftTime = useCallback(() => {
-    if (!getCurrentTime.current) return;
-
-    const currentTime = getCurrentTime.current();
+    const currentTime = Date.now();
     const timeDiff = Math.max(0, targetTimeMs.current - currentTime);
     const remainTime = convertMillisecondsToTime(timeDiff);
 
