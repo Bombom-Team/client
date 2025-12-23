@@ -15,10 +15,6 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
     },
   });
 
-  const handleEdit = (noticeId: number) => {
-    alert(`공지사항 ID ${noticeId}를 수정합니다. (수정 기능은 아직 미구현)`);
-  };
-
   const handleDelete = (noticeId: number) => {
     if (confirm('정말 삭제하시겠습니까?')) {
       deleteNotice(noticeId);
@@ -57,7 +53,10 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleEdit(notice.id);
+                  navigate({
+                    to: '/notices/$noticeId/edit',
+                    params: { noticeId: notice.id.toString() },
+                  });
                 }}
               >
                 <FiEdit size={18} />

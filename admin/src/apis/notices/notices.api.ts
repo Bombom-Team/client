@@ -38,8 +38,23 @@ export const deleteNotice = async (noticeId: number) => {
   });
 };
 
+export type UpdateNoticeParams = Partial<CreateNoticeParams>;
+
 export const getNoticeDetail = async (noticeId: number) => {
   return fetcher.get<Notice>({
     path: `/notices/${noticeId}`,
+  });
+};
+
+export const updateNotice = async ({
+  noticeId,
+  payload,
+}: {
+  noticeId: number;
+  payload: UpdateNoticeParams;
+}) => {
+  return fetcher.patch<UpdateNoticeParams, void>({
+    path: `/notices/${noticeId}`,
+    body: payload,
   });
 };
