@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { FiCalendar, FiEye, FiUser } from 'react-icons/fi';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { useNotices } from '@/contexts/NoticeContext';
@@ -14,6 +13,10 @@ function NoticeDetailPage() {
   const navigate = useNavigate();
   const { getNotice, deleteNotice } = useNotices();
 
+  const goToList = () => {
+    navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
+  };
+
   const notice = getNotice(parseInt(noticeId));
 
   if (!notice) {
@@ -22,12 +25,7 @@ function NoticeDetailPage() {
         <Container>
           <div>공지사항을 찾을 수 없습니다.</div>
           <ButtonGroup>
-            <Button
-              variant="secondary"
-              onClick={() => navigate({ to: '/notices' })}
-            >
-              목록으로 돌아가기
-            </Button>
+            <Button onClick={goToList}>목록으로 돌아가기</Button>
           </ButtonGroup>
         </Container>
       </Layout>
@@ -41,40 +39,19 @@ function NoticeDetailPage() {
   const handleDelete = () => {
     if (confirm('정말 삭제하시겠습니까?')) {
       deleteNotice(notice.id);
-      navigate({ to: '/notices' });
+      goToList();
     }
   };
 
   return (
     <Layout title="공지사항 상세">
       <Container>
-        <Header>
-          <Title>{notice.title}</Title>
-          <Meta>
-            <MetaItem>
-              <FiUser />
-              <span>{notice.author}</span>
-            </MetaItem>
-            <MetaItem>
-              <FiCalendar />
-              <span>{notice.createdAt}</span>
-            </MetaItem>
-            <MetaItem>
-              <FiEye />
-              <span>조회 {notice.views}</span>
-            </MetaItem>
-          </Meta>
-        </Header>
+        <Title>{notice.title}</Title>
 
         <Content>{notice.content}</Content>
 
         <ButtonGroup>
-          <Button
-            variant="secondary"
-            onClick={() => navigate({ to: '/notices' })}
-          >
-            목록
-          </Button>
+          <Button onClick={goToList}>목록</Button>
           <Button variant="secondary" onClick={handleEdit}>
             수정
           </Button>
@@ -97,34 +74,6 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const Header = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-  padding-bottom: ${({ theme }) => theme.spacing.lg};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
-`;
-
-const Title = styled.h1`
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-
-  color: ${({ theme }) => theme.colors.gray900};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
-  font-size: ${({ theme }) => theme.fontSize['2xl']};
-`;
-
-const Meta = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.lg};
-
-  color: ${({ theme }) => theme.colors.gray500};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-`;
-
-const MetaItem = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
-  align-items: center;
-`;
-
 const Content = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.xl};
 
@@ -141,4 +90,14 @@ const ButtonGroup = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
   justify-content: flex-end;
+`;
+
+const Title = styled.h1`
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  padding-bottom: ${({ theme }) => theme.spacing.lg};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
+
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize['2xl']};
 `;

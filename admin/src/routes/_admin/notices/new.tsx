@@ -41,7 +41,7 @@ function NewNoticePage() {
     try {
       await createNoticeMutation({ title, content, noticeCategory });
       addNotice(title, content, noticeCategory);
-      navigate({ to: '/notices' });
+      navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
     } catch (error) {
       let message = '공지사항 등록에 실패했습니다. 잠시 후 다시 시도해주세요.';
       if (error instanceof Error && error.message) {
@@ -53,12 +53,12 @@ function NewNoticePage() {
 
   const handleCancel = () => {
     if (!title.trim() && !content.trim()) {
-      navigate({ to: '/notices' });
+      navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
       return;
     }
 
     if (confirm('작성 중인 내용이 사라집니다. 취소하시겠습니까?')) {
-      navigate({ to: '/notices' });
+      navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
     }
   };
 

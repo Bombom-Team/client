@@ -1,10 +1,28 @@
 import { fetcher } from '@bombom/shared/apis';
-import type { NoticeCategoryType } from '@/types/notice';
+import type { PageableResponse } from '@/apis/types/PageableResponse';
+import type { Notice, NoticeCategoryType } from '@/types/notice';
+
+export type GetNoticesParams = {
+  keyword?: string;
+  category?: NoticeCategoryType;
+  page?: number;
+  size?: number;
+  sort?: string[];
+};
+
+export type GetNoticesResponse = PageableResponse<Notice>;
 
 export type CreateNoticeParams = {
   title: string;
   content: string;
   noticeCategory: NoticeCategoryType;
+};
+
+export const getNotices = async (params: GetNoticesParams = {}) => {
+  return fetcher.get<GetNoticesResponse>({
+    path: '/notices',
+    query: params,
+  });
 };
 
 export const createNotice = async (payload: CreateNoticeParams) => {

@@ -1,11 +1,9 @@
-export type NoticeCategoryType = 'NOTICE' | 'EVENT';
+export type NoticeCategoryType = 'NOTICE' | 'UPDATE' | 'EVENT' | 'CHECK';
 
 export interface Notice {
   id: number;
   title: string;
   content: string;
-  author: string;
   createdAt: string;
-  views: number;
   noticeCategory: NoticeCategoryType;
 }

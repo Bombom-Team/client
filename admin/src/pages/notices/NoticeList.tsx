@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
-import { FiEdit, FiEye, FiTrash2 } from 'react-icons/fi';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useNotices } from '@/contexts/NoticeContext';
 import type { Notice } from '@/types/notice';
 
@@ -37,16 +37,7 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
               >
                 <NoticeTitle>{notice.title}</NoticeTitle>
               </Link>
-              <NoticeMeta>
-                <span>{notice.author}</span>
-                <span>•</span>
-                <span>{notice.createdAt}</span>
-                <span>•</span>
-                <ViewCount>
-                  <FiEye />
-                  <span>{notice.views}</span>
-                </ViewCount>
-              </NoticeMeta>
+              {/* NoticeMeta removed as API does not provide author/date/views */}
             </div>
             <NoticeActions>
               <IconButton onClick={() => handleEdit(notice.id)}>
@@ -99,14 +90,6 @@ const NoticeTitle = styled.h4`
   font-size: ${({ theme }) => theme.fontSize.lg};
 `;
 
-const NoticeMeta = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
-
-  color: ${({ theme }) => theme.colors.gray500};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-`;
-
 const NoticeActions = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
@@ -125,12 +108,6 @@ const IconButton = styled.button`
     background-color: ${({ theme }) => theme.colors.gray100};
     color: ${({ theme }) => theme.colors.primary};
   }
-`;
-
-const ViewCount = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
-  align-items: center;
 `;
 
 const EmptyState = styled.div`
