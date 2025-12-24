@@ -39,9 +39,12 @@ const useNotification = () => {
 
         await setTokenRegistered();
         console.log('FCM 토큰이 성공적으로 등록되었습니다.');
+        return true;
       }
+      return false;
     } catch (error) {
       console.error('FCM 토큰 등록에 실패했습니다.', error);
+      return false;
     }
   }, []);
 
@@ -74,27 +77,22 @@ const useNotification = () => {
       const alreadyRequested = await hasRequestedPermission();
       const tokenRegistered = await hasTokenRegistered();
 
-      if (!alreadyRequested && !tokenRegistered) {
-        const updatedPermission = await requestNotificationPermission();
-        if (updatedPermission) {
-          await registerFCMToken(memberId);
-          sendMessageToWeb({
-            type: 'REQUEST_NOTIFICATION_ACTIVE',
-          });
-        }
+      if (alreadyRequested && tokenRegistered) {
+        console.log('알림 권한 및 토큰 등록이 이미 완료되었습니다.');
         return;
       }
 
-      if (alreadyRequested && !tokenRegistered) {
-        console.log('기존 사용자 토큰 재등록 시도...');
-        await registerFCMToken(memberId);
+      if (!alreadyRequested) {
+        const granted = await requestNotificationPermission();
+        if (!granted) return;
+      }
+
+      const isRegisterSucceed = await registerFCMToken(memberId);
+      if (isRegisterSucceed) {
         sendMessageToWeb({
           type: 'REQUEST_NOTIFICATION_ACTIVE',
         });
-        return;
       }
-
-      console.log('알림 권한 및 토큰 등록이 이미 완료되었습니다.');
     } catch (error) {
       console.error('권한 요청 및 등록 실패:', error);
     }
