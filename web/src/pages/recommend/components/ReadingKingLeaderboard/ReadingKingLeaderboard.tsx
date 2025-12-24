@@ -19,6 +19,7 @@ const ReadingKingLeaderboard = () => {
   const {
     data: monthlyReadingRank,
     isLoading,
+    isFetching,
     refetch,
   } = useQuery(queries.monthlyReadingRank({ limit: RANKING.maxRank }));
   const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
@@ -47,17 +48,20 @@ const ReadingKingLeaderboard = () => {
           <ArrowIcon width={16} height={16} direction="upRight" />
         </TitleIcon>
         <Title>이달의 독서왕</Title>
-        <CountDown
-          onMouseEnter={openRankExplain}
-          onMouseLeave={closeRankExplain}
-          onFocus={openRankExplain}
-          onBlur={closeRankExplain}
-        >
-          {`${padTimeDigit(leftTime.minutes)}:${padTimeDigit(leftTime.seconds)}`}
-          <Tooltip opened={rankExplainOpened} position="bottom">
-            순위는 10분마다 갱신됩니다.
-          </Tooltip>
-        </CountDown>
+        <CountdownWrapper>
+          <Countdown
+            onMouseEnter={openRankExplain}
+            onMouseLeave={closeRankExplain}
+            onFocus={openRankExplain}
+            onBlur={closeRankExplain}
+          >
+            {`${padTimeDigit(leftTime.minutes)}:${padTimeDigit(leftTime.seconds)}`}
+            <Tooltip opened={rankExplainOpened} position="bottom">
+              순위는 10분마다 갱신됩니다.
+            </Tooltip>
+          </Countdown>
+          {isFetching && <CountdownLoadingDots />}
+        </CountdownWrapper>
       </TitleWrapper>
 
       <Carousel.Root loop>
@@ -142,13 +146,65 @@ export const Title = styled.h3`
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-export const CountDown = styled.p`
+const CountdownWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Countdown = styled.p`
   position: relative;
+  width: 36px;
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
 
   cursor: help;
+`;
+
+export const CountdownLoadingDots = styled.div`
+  --dot-gradient: no-repeat
+    radial-gradient(
+      circle closest-side,
+      ${({ theme }) => theme.colors.primaryDark} 70%,
+      #0000
+    );
+
+  width: 36px;
+
+  background:
+    var(--dot-gradient) 0% 50%,
+    var(--dot-gradient) 50% 50%,
+    var(--dot-gradient) 100% 50%;
+  background-size: calc(100% / 3) 100%;
+
+  animation: l7 1s infinite linear;
+
+  aspect-ratio: 4;
+
+  @keyframes l7 {
+    33% {
+      background-size:
+        calc(100% / 3) 0%,
+        calc(100% / 3) 100%,
+        calc(100% / 3) 100%;
+    }
+
+    50% {
+      background-size:
+        calc(100% / 3) 100%,
+        calc(100% / 3) 0%,
+        calc(100% / 3) 100%;
+    }
+
+    66% {
+      background-size:
+        calc(100% / 3) 100%,
+        calc(100% / 3) 100%,
+        calc(100% / 3) 0%;
+    }
+  }
 `;
 
 export const TooltipButton = styled.button`
