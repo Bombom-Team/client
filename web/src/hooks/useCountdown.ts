@@ -83,7 +83,7 @@ export const useCountdown = ({
         delayTimerIdRef.current = null;
       }
     };
-  }, [interval, updateLeftTime, targetTime]);
+  }, [interval, updateLeftTime, targetTimeMs]);
 
   return { leftTime };
 };
