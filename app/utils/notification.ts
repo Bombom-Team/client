@@ -14,7 +14,6 @@ export const createAndroidChannel = async () => {
   }
 };
 
-
 // 사용자 알림 권한 요청
 export const requestNotificationPermission = async () => {
   try {
@@ -45,11 +44,20 @@ export const checkNotificationPermission = async () => {
     return false;
   }
 
-  const authStatus = await messaging().hasPermission();
-  return (
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL
-  );
+  if (Platform.OS === 'ios') {
+    const iosGrantedStatus = await messaging().hasPermission();
+    return (
+      iosGrantedStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      iosGrantedStatus === messaging.AuthorizationStatus.PROVISIONAL
+    );
+  }
+
+  if (Platform.OS === 'android') {
+    const { status } = await Notifications.getPermissionsAsync();
+    return status === 'granted';
+  }
+
+  return false;
 };
 
 export const goToSystemPermission = async (enabled: boolean) => {
