@@ -146,14 +146,14 @@ export const Title = styled.h3`
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-const CountdownWrapper = styled.div`
+export const CountdownWrapper = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
   justify-content: center;
 `;
 
-export const Countdown = styled.p`
+const Countdown = styled.p`
   position: relative;
   width: 36px;
 
@@ -163,7 +163,7 @@ export const Countdown = styled.p`
   cursor: help;
 `;
 
-export const CountdownLoadingDots = styled.div`
+const CountdownLoadingDots = styled.div`
   --dot-gradient: no-repeat
     radial-gradient(
       circle closest-side,
@@ -205,12 +205,6 @@ export const CountdownLoadingDots = styled.div`
         calc(100% / 3) 0%;
     }
   }
-`;
-
-export const TooltipButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 export const LeaderboardList = styled.div`
