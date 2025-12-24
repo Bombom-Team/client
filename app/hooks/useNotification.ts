@@ -64,7 +64,7 @@ const useNotification = () => {
     }
   }, [sendMessageToWeb]);
 
-  const handleLoggedInPermission = async (memberId?: number) => {
+  const alreadyLoggedInRegister = async (memberId?: number) => {
     try {
       if (!memberId) {
         console.log('memberId가 없어 권한 요청을 건너뜁니다.');
@@ -160,7 +160,7 @@ const useNotification = () => {
   return {
     onNotification,
     registerFCMToken,
-    handleLoggedInPermission,
+    alreadyLoggedInRegister,
   };
 };
 

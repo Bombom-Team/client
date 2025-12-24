@@ -26,7 +26,7 @@ export const MainScreen = () => {
   const webViewLoadEndCleanupRef = useRef<() => void>(null);
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
-  const { onNotification, registerFCMToken, handleLoggedInPermission } =
+  const { onNotification, registerFCMToken, alreadyLoggedInRegister } =
     useNotification();
 
   const handleWebViewLoadEnd = () => {
@@ -88,7 +88,7 @@ export const MainScreen = () => {
 
         case 'REGISTER_FCM_TOKEN_LOGGED_IN':
           if (message.payload.memberId) {
-            handleLoggedInPermission(message.payload.memberId);
+            alreadyLoggedInRegister(message.payload.memberId);
           }
           break;
 
