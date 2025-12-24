@@ -109,3 +109,23 @@ export const getFCMToken = async () => {
     console.error('FCM 토큰을 가져오는데 실패했습니다.', error);
   }
 };
+
+export const hasTokenRegistered = async (): Promise<boolean> => {
+  try {
+    const key = 'fcm_token_registered';
+    const tokenRegistered = await AsyncStorage.getItem(key);
+    return tokenRegistered === 'true';
+  } catch (error) {
+    console.error('토큰 등록 기록 확인 실패:', error);
+    return false;
+  }
+};
+
+export const setTokenRegistered = async (): Promise<void> => {
+  try {
+    const key = 'fcm_token_registered';
+    await AsyncStorage.setItem(key, 'true');
+  } catch (error) {
+    console.error('토큰 등록 기록 저장 실패:', error);
+  }
+};
