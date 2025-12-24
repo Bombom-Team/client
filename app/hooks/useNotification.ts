@@ -2,9 +2,9 @@ import { useEffect, useCallback } from 'react';
 import * as Notifications from 'expo-notifications';
 import messaging from '@react-native-firebase/messaging';
 import {
+  checkNotificationPermission,
   createAndroidChannel,
   getFCMToken,
-  hasRequestedPermission,
   hasTokenRegistered,
   requestNotificationPermission,
   setTokenRegistered,
@@ -74,15 +74,14 @@ const useNotification = () => {
         return;
       }
 
-      const alreadyRequested = await hasRequestedPermission();
       const tokenRegistered = await hasTokenRegistered();
-
-      if (alreadyRequested && tokenRegistered) {
+      const isGranted = await checkNotificationPermission();
+      if (isGranted && tokenRegistered) {
         console.log('알림 권한 및 토큰 등록이 이미 완료되었습니다.');
         return;
       }
 
-      if (!alreadyRequested) {
+      if (!isGranted) {
         const granted = await requestNotificationPermission();
         if (!granted) return;
       }

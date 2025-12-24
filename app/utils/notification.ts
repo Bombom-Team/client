@@ -14,32 +14,12 @@ export const createAndroidChannel = async () => {
   }
 };
 
-export const hasRequestedPermission = async (): Promise<boolean> => {
-  try {
-    const key = 'notification_permission_requested';
-    const permissionRequested = await AsyncStorage.getItem(key);
-    return permissionRequested === 'true';
-  } catch (error) {
-    console.error('권한 요청 기록 확인 실패:', error);
-    return false;
-  }
-};
-
-const setPermissionRequested = async (): Promise<void> => {
-  try {
-    const key = 'notification_permission_requested';
-    await AsyncStorage.setItem(key, 'true');
-  } catch (error) {
-    console.error('권한 요청 기록 저장 실패:', error);
-  }
-};
 
 // 사용자 알림 권한 요청
 export const requestNotificationPermission = async () => {
   try {
     if (Platform.OS === 'ios') {
       const auth = await messaging().requestPermission();
-      await setPermissionRequested();
 
       return (
         auth === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -49,7 +29,6 @@ export const requestNotificationPermission = async () => {
 
     if (Platform.OS === 'android') {
       const { status } = await Notifications.requestPermissionsAsync();
-      await setPermissionRequested();
 
       return status === 'granted';
     }
