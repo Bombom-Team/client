@@ -153,7 +153,7 @@ export const CountdownWrapper = styled.div`
   justify-content: center;
 `;
 
-const Countdown = styled.p`
+const Countdown = styled.div`
   position: relative;
   width: 36px;
 
