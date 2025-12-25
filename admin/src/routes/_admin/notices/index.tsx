@@ -25,9 +25,23 @@ export const Route = createFileRoute('/_admin/notices/')({
 
 function NoticesPage() {
   const search = useSearch({ from: Route.id });
-  const navigate = useNavigate();
 
+  return (
+    <Layout title="공지사항">
+      <ErrorBoundary fallback={<div>에러가 발생했습니다.</div>}>
+        <Suspense fallback={<div>로딩 중...</div>}>
+          <NoticeContent search={search} />
+        </Suspense>
+      </ErrorBoundary>
+    </Layout>
+  );
+}
+
+function NoticeContent({ search }: { search: Record<string, unknown> }) {
+  const navigate = useNavigate();
   const { data } = useSuspenseQuery(noticesQueries.list(search));
+
+  if (!data) return null;
 
   const handlePageChange = (page: number) => {
     navigate({
@@ -36,37 +50,29 @@ function NoticesPage() {
     });
   };
 
-  if (!data) return null;
-
   return (
-    <Layout title="공지사항">
-      <Container>
-        <Header>
-          <Title>공지사항 ({data.totalElements}개)</Title>
-          <Link to="/notices/new">
-            <Button>
-              <FiPlus />새 공지사항
-            </Button>
-          </Link>
-        </Header>
+    <Container>
+      <Header>
+        <Title>공지사항 ({data.totalElements}개)</Title>
+        <Link to="/notices/new">
+          <Button>
+            <FiPlus />새 공지사항
+          </Button>
+        </Link>
+      </Header>
 
-        <ErrorBoundary fallback={<div>에러가 발생했습니다.</div>}>
-          <Suspense fallback={<div>로딩 중...</div>}>
-            <NoticeList notices={data.content} />
-          </Suspense>
-        </ErrorBoundary>
+      <NoticeList notices={data.content} />
 
-        {data.totalElements > 0 && (
-          <Pagination
-            totalCount={data.totalElements}
-            totalPages={data.totalPages}
-            currentPage={data.number}
-            onPageChange={handlePageChange}
-            countUnitLabel="개"
-          />
-        )}
-      </Container>
-    </Layout>
+      {data.totalElements > 0 && (
+        <Pagination
+          totalCount={data.totalElements}
+          totalPages={data.totalPages}
+          currentPage={data.number}
+          onPageChange={handlePageChange}
+          countUnitLabel="개"
+        />
+      )}
+    </Container>
   );
 }
 
