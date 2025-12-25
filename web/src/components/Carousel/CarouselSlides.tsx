@@ -5,12 +5,13 @@ import {
   useEffect,
   useMemo,
   type PropsWithChildren,
+  type TouchEvent,
 } from 'react';
 import { TRANSITIONS } from './Carousel.constants';
-import { useCarouselContext } from './CarouselContext';
 import CarouselSlide from './CarouselSlide';
-import { CarouselSlideIndexContext } from './CarouselSlideIndexContext';
-import useCarouselAccessibility from './useCarouselAccessibility';
+import { useCarouselContext } from './contexts/CarouselContext';
+import { CarouselSlideIndexContext } from './contexts/CarouselSlideIndexContext';
+import useCarouselAccessibility from './hooks/useCarouselAccessibility';
 import { isProduction } from '@/utils/environment';
 
 interface CarouselSlidesProps {
@@ -27,24 +28,39 @@ const CarouselSlides = ({
     slideIndex,
     slideCount,
     registerSlideCount,
+    syncLoopSlideIndex,
+    canGoNext,
     slideWrapperRef,
     isTransitioning,
+    stopTransition,
     isSwiping,
-    handleTransitionEnd,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
+    startSwipe,
+    moveSwipe,
+    endSwipe,
     hasAnimation,
     loop,
   } = useCarouselContext();
-
-  const hasMultipleSlides = slideCount > 1;
 
   const { handleFocus, handleBlur } = useCarouselAccessibility();
 
   const slidesToRender = loop
     ? [list[list.length - 1], ...list, list[0]]
     : [...list];
+
+  const handleTransitionEnd = () => {
+    stopTransition();
+    syncLoopSlideIndex();
+  };
+
+  const handleTouchStart = (e: TouchEvent) => {
+    const touchPoint = e.touches[0];
+    if (touchPoint) startSwipe(touchPoint.clientX, touchPoint.clientY);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    const touchPoint = e.touches[0];
+    if (touchPoint) moveSwipe(touchPoint.clientX, touchPoint.clientY);
+  };
 
   useEffect(() => {
     registerSlideCount(list.length);
@@ -69,19 +85,17 @@ const CarouselSlides = ({
       isTransitioning={isTransitioning}
       isSwiping={isSwiping}
       onTransitionEnd={handleTransitionEnd}
-      hasAnimation={hasMultipleSlides ? hasAnimation : false}
-      showNextSlidePart={hasMultipleSlides ? showNextSlidePart : false}
+      hasAnimation={hasAnimation}
+      showNextSlidePart={showNextSlidePart && canGoNext}
       tabIndex={0}
       aria-live="off"
       aria-atomic="true"
       aria-label={`총 ${slideCount}개 중 ${loop ? slideIndex : slideIndex + 1}번째 슬라이드`}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      {...(hasMultipleSlides && {
-        onTouchStart: handleTouchStart,
-        onTouchMove: handleTouchMove,
-        onTouchEnd: handleTouchEnd,
-      })}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={endSwipe}
     >
       {slidesToRender.map((child, index) => {
         const childKey =

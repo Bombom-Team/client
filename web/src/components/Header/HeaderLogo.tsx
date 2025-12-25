@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { Device } from '@/hooks/useDevice';
+import textLogo from '#/assets/avif/bombom-text-logo.avif';
 import logo from '#/assets/avif/logo.avif';
 
 interface HeaderLogoProps {
@@ -22,7 +23,7 @@ const HeaderLogo = ({ device }: HeaderLogoProps) => {
     >
       <Logo src={logo} alt="logo" />
       <TitleBox>
-        <Title>봄봄</Title>
+        <TextLogo src={textLogo} alt="text logo" />
         {device === 'pc' && (
           <SubTitle>당신의 하루에 찾아오는 작은 설렘</SubTitle>
         )}
@@ -33,30 +34,27 @@ const HeaderLogo = ({ device }: HeaderLogoProps) => {
 
 export default HeaderLogo;
 
-const Logo = styled.img`
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
-`;
-
 const Container = styled(Link)`
   display: flex;
   gap: 12px;
   align-items: center;
 `;
 
-const TitleBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+const Logo = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
 `;
 
-const Title = styled.div`
-  background: linear-gradient(144.324deg, #4b5563 0%, #f96 50%, #ffd700 100%);
-  background-clip: text;
-  font: ${({ theme }) => theme.fonts.heading4};
+const TextLogo = styled.img`
+  width: 42px;
+`;
 
-  -webkit-text-fill-color: transparent;
+const TitleBox = styled.div`
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const SubTitle = styled.div`
