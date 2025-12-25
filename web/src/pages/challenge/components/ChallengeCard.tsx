@@ -58,7 +58,9 @@ const ChallengeCard = ({
           </ComingSoonBadge>
         )}
 
-        <DetailButton onClick={handleDetailClick}>자세히 보기 →</DetailButton>
+        <DetailButton variant="transparent" onClick={handleDetailClick}>
+          자세히 보기 →
+        </DetailButton>
       </Footer>
     </Container>
   );
@@ -110,7 +112,7 @@ const Applicant = styled.span`
 `;
 
 const DDay = styled.span`
-  color: ${({ theme }) => theme.colors.info};
+  color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
   font-weight: 600;
 `;
@@ -121,8 +123,8 @@ const Tag = styled.span`
 
   align-self: flex-start;
 
-  background-color: #eff6ff;
-  color: ${({ theme }) => theme.colors.info};
+  background-color: ${({ theme }) => `${theme.colors.primaryLight}40`};
+  color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body3};
   font-weight: 600;
 `;
@@ -141,18 +143,13 @@ const ComingSoonBadge = styled(Button)`
   font-weight: 600;
 `;
 
-const DetailButton = styled.button`
-  padding: 0;
-  border: none;
-
-  background: none;
-  color: ${({ theme }) => theme.colors.info};
+const DetailButton = styled(Button)`
+  color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
   font-weight: 600;
 
-  cursor: pointer;
-
   &:hover {
+    background-color: transparent;
     text-decoration: underline;
   }
 `;
