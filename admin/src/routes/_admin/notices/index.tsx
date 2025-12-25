@@ -31,6 +31,7 @@ function NoticesPage() {
 
   const handlePageChange = (page: number) => {
     navigate({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       search: { ...search, page } as any,
     });
   };
