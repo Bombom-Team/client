@@ -49,7 +49,7 @@ function Index() {
         <MainSection device={device}>
           <NewsletterHero />
           <ChallengeCard
-            title="한달 함께봄봄 챌린지"
+            title="한달 뉴스레터 읽기 챌린지"
             status="COMING_SOON"
             day={{
               start: new Date('2026-01-05'),
