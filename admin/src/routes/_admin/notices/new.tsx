@@ -7,6 +7,7 @@ import { noticesQueries } from '@/apis/notices/notices.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { useNotices } from '@/contexts/NoticeContext';
+import { NoticeDetailView } from '@/pages/notices/NoticeDetailView';
 import {
   type NoticeCategoryType,
   NOTICE_CATEGORY_LABELS,
@@ -30,6 +31,8 @@ function NewNoticePage() {
   const [noticeCategory, setNoticeCategory] = useState(
     NOTICE_CATEGORY_OPTIONS[0]?.value ?? 'NOTICE',
   );
+  const [isPreview, setIsPreview] = useState(false);
+
   const queryClient = useQueryClient();
   const { mutateAsync: createNoticeMutation, isPending } = useMutation({
     mutationFn: createNotice,
@@ -38,14 +41,15 @@ function NewNoticePage() {
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleDisplayPreview = () => {
     if (!title.trim() || !content.trim()) {
       alert('제목과 내용을 모두 입력해주세요.');
       return;
     }
+    setIsPreview(true);
+  };
 
+  const handleRegister = async () => {
     try {
       await createNoticeMutation({ title, content, noticeCategory });
       addNotice(title, content, noticeCategory);
@@ -73,10 +77,40 @@ function NewNoticePage() {
     }
   };
 
+  if (isPreview) {
+    return (
+      <Layout title="새 공지사항 미리보기">
+        <NoticeDetailView
+          notice={{
+            id: 0,
+            title,
+            content,
+            noticeCategory,
+            createdAt: new Date().toISOString(),
+          }}
+        >
+          <ButtonGroup>
+            <Button variant="secondary" onClick={() => setIsPreview(false)}>
+              수정 계속하기
+            </Button>
+            <Button onClick={handleRegister} disabled={isPending}>
+              {isPending ? '등록 중...' : '등록'}
+            </Button>
+          </ButtonGroup>
+        </NoticeDetailView>
+      </Layout>
+    );
+  }
+
   return (
     <Layout title="새 공지사항 작성">
       <Container>
-        <Form onSubmit={handleSubmit}>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleDisplayPreview();
+          }}
+        >
           <FormGroup>
             <Label htmlFor="category">카테고리</Label>
             <Select
@@ -119,9 +153,7 @@ function NewNoticePage() {
             <Button type="button" variant="secondary" onClick={handleCancel}>
               취소
             </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? '등록 중...' : '등록'}
-            </Button>
+            <Button type="submit">등록</Button>
           </ButtonGroup>
         </Form>
       </Container>
