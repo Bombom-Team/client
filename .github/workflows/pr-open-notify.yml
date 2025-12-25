@@ -33,6 +33,12 @@ jobs:
 
             console.log(`Assigned ${author} as PR assignee`);
 
+      # frontend 팀 reviewers 자동 배정
+      - name: Auto Assign Reviewers
+        uses: kentaro-m/auto-assign-action@v1.2.1
+        with:
+          configuration-path: .github/auto_assign_frontend.yml
+
       # notify_ids.json 기반으로 reviewer = 3명, author 제외 후 멘션
       - name: Load Reviewers from JSON
         id: get-reviewers
