@@ -51,10 +51,9 @@ function Index() {
           <ChallengeCard
             title="한달 함께봄봄 챌린지"
             status="COMING_SOON"
-            tag="4주 완성반"
             day={{
               start: new Date('2026-01-05'),
-              end: new Date('2026-02-01'),
+              end: new Date('2026-02-04'),
             }}
             applicantCount={0}
           />

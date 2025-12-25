@@ -12,7 +12,7 @@ interface ChallengeCardProps {
     start: Date;
     end: Date;
   };
-  tag: string;
+  tag?: string;
   status: ChallengeStatus;
 }
 
@@ -41,7 +41,7 @@ const ChallengeCard = ({
       <Header>
         <TitleSection>
           <Title>{title}</Title>
-          <Tag>{tag}</Tag>
+          {tag && <Tag>{tag}</Tag>}
         </TitleSection>
         <Meta>
           {applicantCount > 0 && (
@@ -70,14 +70,15 @@ export default ChallengeCard;
 
 const Container = styled.div`
   width: 100%;
+  height: 172px;
   max-width: 440px;
   padding: 20px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 14px;
 
   display: flex;
-  gap: 24px;
   flex-direction: column;
+  justify-content: space-between;
 
   background-color: ${({ theme }) => theme.colors.white};
 `;
