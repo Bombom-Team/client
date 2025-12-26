@@ -52,11 +52,11 @@ const StyledButton = styled.button<ButtonProps>`
 
   &:hover:not(:disabled) {
     background-color: ${({ variant, theme }) => {
-    if (variant === 'secondary') return theme.colors.gray300;
-    if (variant === 'danger') return '#DC2626';
-    if (variant === 'outline') return theme.colors.gray50;
-    return theme.colors.primaryHover;
-  }};
+      if (variant === 'secondary') return theme.colors.gray300;
+      if (variant === 'danger') return '#DC2626';
+      if (variant === 'outline') return theme.colors.gray50;
+      return theme.colors.primaryHover;
+    }};
   }
 
   &:active:not(:disabled) {

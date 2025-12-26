@@ -1,4 +1,8 @@
-import { keepPreviousData, queryOptions, useMutation } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  queryOptions,
+  useMutation,
+} from '@tanstack/react-query';
 import {
   getNewsletterDetail,
   getNewsletters,

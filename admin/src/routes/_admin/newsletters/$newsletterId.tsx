@@ -29,6 +29,7 @@ function NewsletterDetailView() {
       deleteNewsletter(Number(newsletterId), {
         onSuccess: () => {
           alert('삭제되었습니다.');
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           navigate({ to: '/newsletters' } as any);
         },
         onError: (error) => {
@@ -120,8 +121,6 @@ function NewsletterDetailView() {
 
         <SectionTitle>지난 뉴스레터 정책</SectionTitle>
         <GridContainer>
-
-
           <GridItem>
             <Label>공개 전략</Label>
             <Value>{newsletter.previousStrategy}</Value>

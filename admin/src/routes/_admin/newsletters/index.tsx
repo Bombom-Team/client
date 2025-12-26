@@ -29,17 +29,7 @@ function NewslettersPage() {
   const search = useSearch({ from: Route.id });
 
   return (
-    <Layout
-      title="뉴스레터 관리"
-      rightAction={
-        /* <Link to="/newsletters/new"> */
-        <Button>
-          <FiPlus />
-          뉴스레터 등록
-        </Button>
-        /* </Link> */
-      }
-    >
+    <Layout title="뉴스레터 관리">
       <ErrorBoundary
         fallbackRender={({ error }) => (
           <div className="p-4 text-red-500">
@@ -84,6 +74,13 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
 
   return (
     <Container>
+      <TopAction>
+        <Button>
+          <FiPlus />
+          뉴스레터 등록
+        </Button>
+      </TopAction>
+
       <SearchSection>
         <SearchForm onSubmit={handleSearch}>
           <SearchInputWrapper>
@@ -96,16 +93,26 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
           </SearchInputWrapper>
           <CategorySelect
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => {
+              const newCategory = e.target.value;
+              setSelectedCategory(newCategory);
+              navigate({
+                search: {
+                  ...search,
+                  page: 0,
+                  keyword: keyword || undefined,
+                  category: newCategory || undefined,
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } as any,
+              });
+            }}
           >
             <option value="">카테고리 전체</option>
-            {Object.entries(NEWSLETTER_CATEGORY_LABELS).map(
-              ([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ),
-            )}
+            {Object.entries(NEWSLETTER_CATEGORY_LABELS).map(([key, label]) => (
+              <option key={key} value={label}>
+                {label}
+              </option>
+            ))}
           </CategorySelect>
         </SearchForm>
       </SearchSection>
@@ -165,6 +172,11 @@ const SearchSection = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   /* box-shadow: ${({ theme }) => theme.shadows.sm}; */
+`;
+
+const TopAction = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const SearchForm = styled.form`
@@ -236,11 +248,13 @@ const NewsletterCard = styled(Link)`
   gap: ${({ theme }) => theme.spacing.sm};
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 
   &:hover {
-      transform: translateY(-2px);
-      box-shadow: ${({ theme }) => theme.shadows.md};
+    transform: translateY(-2px);
+    box-shadow: ${({ theme }) => theme.shadows.md};
   }
 `;
 
@@ -267,8 +281,8 @@ const Info = styled.div`
 `;
 
 const Category = styled.span`
-  background-color: #FFEDD5;
-  color: #EA580C;
+  background-color: #ffedd5;
+  color: #ea580c;
   font-size: 10px;
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   padding: 3px 8px;
