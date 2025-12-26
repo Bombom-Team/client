@@ -25,7 +25,7 @@ const DEFAULT_TABS = [
 
 // const WEBVIEW_TABS = [{ id: 'notification', label: '알림 설정' }] as const;
 
-export const Route = createFileRoute('/_bombom/my')({
+export const Route = createFileRoute('/_bombom/_main/my')({
   head: () => ({
     meta: [
       {
@@ -46,7 +46,7 @@ export const Route = createFileRoute('/_bombom/my')({
 function MyPage() {
   const device = useDevice();
   const navigate = useNavigate();
-  const { tab: activeTabParam } = useSearch({ from: '/_bombom/my' });
+  const { tab: activeTabParam } = useSearch({ from: '/_bombom/_main/my' });
 
   const { data: userInfo } = useQuery(queries.me());
   const { data: mySubscriptions } = useQuery(queries.mySubscriptions());
