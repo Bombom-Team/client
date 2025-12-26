@@ -8,7 +8,7 @@ interface AnnounceBarProps {
   checked?: boolean;
   onChangeChecked?: (checked: boolean) => void;
   onClose: () => void;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const AnnounceBar = ({
@@ -40,12 +40,20 @@ const AnnounceBar = ({
             <input
               type="checkbox"
               checked={checked}
+              onClick={(e) => e.stopPropagation()}
               onChange={(e) => onChangeChecked?.(e.target.checked)}
             />
             <CheckboxText isPC={isPC}>다시 보지 않기</CheckboxText>
           </CheckboxWrapper>
         )}
-        <CloseButton aria-label="공지 닫기" onClick={onClose}>
+        <CloseButton
+          aria-label="공지 닫기"
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+            e.stopPropagation();
+            onClose();
+          }}
+        >
+          {' '}
           <CloseIcon
             width={isPC ? '24px' : '18px'}
             height={isPC ? '24px' : '18px'}
