@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
-import type { ButtonHTMLAttributes } from 'react';
+import React, { type ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'outline';
   size?: 'sm' | 'md' | 'lg';
+  as?: React.ElementType;
 }
 
 const StyledButton = styled.button<ButtonProps>`

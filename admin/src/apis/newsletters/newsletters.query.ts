@@ -46,3 +46,10 @@ export const useCreateNewsletter = () => {
       import('./newsletters.api').then((mod) => mod.createNewsletter(data)),
   });
 };
+
+export const useUpdateNewsletter = () => {
+  return useMutation({
+    mutationFn: (data: import('@/types/newsletter').UpdateNewsletterRequest) =>
+      import('./newsletters.api').then((mod) => mod.updateNewsletter(data)),
+  });
+};

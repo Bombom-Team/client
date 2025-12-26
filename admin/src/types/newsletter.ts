@@ -69,7 +69,6 @@ export interface NewsletterDetail {
   subscriptionCount: number;
   sender: string;
   previousNewsletterUrl: string;
-  previousAllowed: boolean;
   subscribeMethod: string;
   previousStrategy: string;
   previousFixedCount: number;
@@ -89,4 +88,13 @@ export interface CreateNewsletterRequest {
   sender: string;
   previousNewsletterUrl: string;
   subscribeMethod: string;
+  previousStrategy: string;
+  previousFixedCount: number;
+  previousRecentCount: number;
+  previousExposureRatio: number;
+}
+
+export interface UpdateNewsletterRequest
+  extends Partial<CreateNewsletterRequest> {
+  id: number;
 }

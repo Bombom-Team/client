@@ -1,7 +1,14 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { useCreateNewsletter } from '@/apis/newsletters/newsletters.query';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
+import {
+  newslettersQueries,
+  useUpdateNewsletter,
+} from '@/apis/newsletters/newsletters.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import {
@@ -22,15 +29,20 @@ import {
   Select,
   TextArea,
 } from './NewsletterFormStyles';
+import type { ChangeEvent, FormEvent } from 'react';
 
-export const Route = createFileRoute('/_admin/newsletters/new')({
-  component: NewsletterCreatePage,
+export const Route = createFileRoute('/_admin/newsletters/$newsletterId/edit')({
+  component: NewsletterEditPage,
 });
 
-function NewsletterCreatePage() {
+function NewsletterEditPage() {
+  const { newsletterId } = useParams({ from: Route.id });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { mutate: createNewsletter, isPending } = useCreateNewsletter();
+  const { data: newsletter } = useSuspenseQuery(
+    newslettersQueries.detail(Number(newsletterId)),
+  );
+  const { mutate: updateNewsletter, isPending } = useUpdateNewsletter();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -50,6 +62,31 @@ function NewsletterCreatePage() {
     previousExposureRatio: 0,
   });
 
+  useEffect(() => {
+    if (newsletter) {
+      setFormData({
+        name: newsletter.name,
+        description: newsletter.description,
+        imageUrl: newsletter.imageUrl,
+        email: newsletter.email,
+        category:
+          (Object.entries(NEWSLETTER_CATEGORY_LABELS).find(
+            ([, label]) => label === newsletter.categoryName,
+          )?.[1] as NewsletterCategoryType) || '',
+        mainPageUrl: newsletter.mainPageUrl,
+        subscribeUrl: newsletter.subscribeUrl,
+        issueCycle: newsletter.issueCycle,
+        sender: newsletter.sender,
+        previousNewsletterUrl: newsletter.previousNewsletterUrl || '',
+        subscribeMethod: newsletter.subscribeMethod,
+        previousStrategy: newsletter.previousStrategy || 'INACTIVE',
+        previousFixedCount: newsletter.previousFixedCount || 0,
+        previousRecentCount: newsletter.previousRecentCount || 0,
+        previousExposureRatio: newsletter.previousExposureRatio || 0,
+      });
+    }
+  }, [newsletter]);
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
@@ -67,26 +104,33 @@ function NewsletterCreatePage() {
       return;
     }
 
-    createNewsletter(
+    updateNewsletter(
       {
+        id: Number(newsletterId),
         ...formData,
         category: formData.category as string,
       },
       {
         onSuccess: () => {
-          alert('뉴스레터가 성공적으로 등록되었습니다.');
+          alert('뉴스레터가 성공적으로 수정되었습니다.');
+          void queryClient.invalidateQueries({
+            queryKey: ['newsletters', 'detail', Number(newsletterId)],
+          });
           void queryClient.invalidateQueries({ queryKey: ['newsletters'] });
-          void navigate({ to: '/newsletters' });
+          void navigate({
+            to: '/newsletters/$newsletterId',
+            params: { newsletterId },
+          });
         },
         onError: (error) => {
-          alert(`등록 실패: ${error.message}`);
+          alert(`수정 실패: ${error.message}`);
         },
       },
     );
   };
 
   return (
-    <Layout title="뉴스레터 등록">
+    <Layout title="뉴스레터 수정">
       <Container>
         <Form onSubmit={handleSubmit}>
           <Section>
@@ -289,13 +333,16 @@ function NewsletterCreatePage() {
               type="button"
               variant="secondary"
               onClick={() => {
-                void navigate({ to: '/newsletters' });
+                void navigate({
+                  to: '/newsletters/$newsletterId',
+                  params: { newsletterId },
+                });
               }}
             >
               취소
             </Button>
             <Button type="submit" disabled={isPending}>
-              {isPending ? '등록 중...' : '등록하기'}
+              {isPending ? '수정 중...' : '수정하기'}
             </Button>
           </Footer>
         </Form>

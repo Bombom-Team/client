@@ -5,6 +5,7 @@ import type {
   Newsletter,
   NewsletterDetail,
   NewsletterSortType,
+  UpdateNewsletterRequest,
 } from '@/types/newsletter';
 
 export type GetNewslettersParams = {
@@ -41,5 +42,14 @@ export const createNewsletter = async (data: CreateNewsletterRequest) => {
     path: '/newsletters',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body: data as any,
+  });
+};
+
+export const updateNewsletter = async (data: UpdateNewsletterRequest) => {
+  const { id, ...body } = data;
+  return fetcher.patch({
+    path: `/newsletters/${id}`,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    body: body as any,
   });
 };
