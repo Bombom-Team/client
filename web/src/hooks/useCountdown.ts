@@ -5,7 +5,7 @@ interface UseCountdownParams {
   targetTime: string | Date;
   onComplete?: () => void;
   completeDelay?: number;
-  interval?: number;
+  intervalMs?: number;
 }
 
 interface Time {
@@ -20,7 +20,7 @@ export const useCountdown = ({
   targetTime,
   onComplete,
   completeDelay,
-  interval = 1000,
+  intervalMs = 1000,
 }: UseCountdownParams) => {
   const [leftTime, setLeftTime] = useState<Time>({
     days: 0,
@@ -71,7 +71,7 @@ export const useCountdown = ({
   useEffect(() => {
     updateLeftTime();
 
-    intervalIdRef.current = setInterval(updateLeftTime, interval);
+    intervalIdRef.current = setInterval(updateLeftTime, intervalMs);
 
     return () => {
       if (intervalIdRef.current) {
@@ -83,7 +83,7 @@ export const useCountdown = ({
         delayTimerIdRef.current = null;
       }
     };
-  }, [interval, updateLeftTime, targetTimeMs]);
+  }, [intervalMs, updateLeftTime, targetTimeMs]);
 
   return { leftTime };
 };
