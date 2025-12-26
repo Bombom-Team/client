@@ -53,3 +53,24 @@ export const NEWSLETTER_SORT_LABELS: Record<NewsletterSortType, string> = {
   LATEST: '최신순',
   POPULAR: '인기순',
 };
+
+export interface NewsletterDetail {
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+  email: string;
+  categoryName: string;
+  mainPageUrl: string;
+  subscribeUrl: string;
+  issueCycle: string;
+  subscriptionCount: number;
+  sender: string;
+  previousNewsletterUrl: string;
+  previousAllowed: boolean;
+  subscribeMethod: string;
+  previousStrategy: string;
+  previousFixedCount: number;
+  previousRecentCount: number;
+  previousExposureRatio: number;
+}

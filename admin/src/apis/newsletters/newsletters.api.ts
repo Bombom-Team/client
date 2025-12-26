@@ -1,6 +1,10 @@
 import { fetcher } from '@bombom/shared/apis';
 import type { PageableResponse } from '@/apis/types/PageableResponse';
-import type { Newsletter, NewsletterSortType } from '@/types/newsletter';
+import type {
+  Newsletter,
+  NewsletterDetail,
+  NewsletterSortType,
+} from '@/types/newsletter';
 
 export type GetNewslettersParams = {
   keyword?: string;
@@ -16,5 +20,11 @@ export const getNewsletters = async (params: GetNewslettersParams = {}) => {
   return fetcher.get<GetNewslettersResponse>({
     path: '/newsletters',
     query: params,
+  });
+};
+
+export const getNewsletterDetail = async (id: number) => {
+  return fetcher.get<NewsletterDetail>({
+    path: `/newsletters/${id}`,
   });
 };

@@ -1,5 +1,5 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { getNewsletters } from './newsletters.api';
+import { getNewsletterDetail, getNewsletters } from './newsletters.api';
 import type { GetNewslettersParams } from './newsletters.api';
 
 const NEWSLETTERS_STALE_TIME = 1000 * 60; // 1 minute
@@ -13,6 +13,14 @@ export const newslettersQueries = {
       queryKey: ['newsletters', params] as const,
       queryFn: () => getNewsletters(params),
       placeholderData: keepPreviousData,
+      staleTime: NEWSLETTERS_STALE_TIME,
+      gcTime: NEWSLETTERS_GC_TIME,
+    }),
+
+  detail: (id: number) =>
+    queryOptions({
+      queryKey: ['newsletters', 'detail', id] as const,
+      queryFn: () => getNewsletterDetail(id),
       staleTime: NEWSLETTERS_STALE_TIME,
       gcTime: NEWSLETTERS_GC_TIME,
     }),

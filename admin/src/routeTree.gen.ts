@@ -18,6 +18,7 @@ import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/i
 import { Route as AdminNewslettersIndexRouteImport } from './routes/_admin/newsletters/index'
 import { Route as AdminNoticesNewRouteImport } from './routes/_admin/notices/new'
 import { Route as AdminNoticesNoticeIdRouteImport } from './routes/_admin/notices/$noticeId'
+import { Route as AdminNewslettersNewsletterIdRouteImport } from './routes/_admin/newsletters/$newsletterId'
 import { Route as AdminNoticesNoticeIdIndexRouteImport } from './routes/_admin/notices/$noticeId/index'
 import { Route as AdminNoticesNoticeIdEditRouteImport } from './routes/_admin/notices/$noticeId/edit'
 
@@ -65,6 +66,12 @@ const AdminNoticesNoticeIdRoute = AdminNoticesNoticeIdRouteImport.update({
   path: '/$noticeId',
   getParentRoute: () => AdminNoticesRoute,
 } as any)
+const AdminNewslettersNewsletterIdRoute =
+  AdminNewslettersNewsletterIdRouteImport.update({
+    id: '/newsletters/$newsletterId',
+    path: '/newsletters/$newsletterId',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminNoticesNoticeIdIndexRoute =
   AdminNoticesNoticeIdIndexRouteImport.update({
     id: '/',
@@ -83,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/members': typeof AdminMembersRoute
   '/notices': typeof AdminNoticesRouteWithChildren
   '/': typeof AdminIndexRoute
+  '/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRoute
   '/notices/$noticeId': typeof AdminNoticesNoticeIdRouteWithChildren
   '/notices/new': typeof AdminNoticesNewRoute
   '/newsletters': typeof AdminNewslettersIndexRoute
@@ -94,6 +102,7 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route
   '/members': typeof AdminMembersRoute
   '/': typeof AdminIndexRoute
+  '/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRoute
   '/notices/new': typeof AdminNoticesNewRoute
   '/newsletters': typeof AdminNewslettersIndexRoute
   '/notices': typeof AdminNoticesIndexRoute
@@ -107,6 +116,7 @@ export interface FileRoutesById {
   '/_admin/members': typeof AdminMembersRoute
   '/_admin/notices': typeof AdminNoticesRouteWithChildren
   '/_admin/': typeof AdminIndexRoute
+  '/_admin/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRoute
   '/_admin/notices/$noticeId': typeof AdminNoticesNoticeIdRouteWithChildren
   '/_admin/notices/new': typeof AdminNoticesNewRoute
   '/_admin/newsletters/': typeof AdminNewslettersIndexRoute
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/notices'
     | '/'
+    | '/newsletters/$newsletterId'
     | '/notices/$noticeId'
     | '/notices/new'
     | '/newsletters'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/members'
     | '/'
+    | '/newsletters/$newsletterId'
     | '/notices/new'
     | '/newsletters'
     | '/notices'
@@ -144,6 +156,7 @@ export interface FileRouteTypes {
     | '/_admin/members'
     | '/_admin/notices'
     | '/_admin/'
+    | '/_admin/newsletters/$newsletterId'
     | '/_admin/notices/$noticeId'
     | '/_admin/notices/new'
     | '/_admin/newsletters/'
@@ -222,6 +235,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNoticesNoticeIdRouteImport
       parentRoute: typeof AdminNoticesRoute
     }
+    '/_admin/newsletters/$newsletterId': {
+      id: '/_admin/newsletters/$newsletterId'
+      path: '/newsletters/$newsletterId'
+      fullPath: '/newsletters/$newsletterId'
+      preLoaderRoute: typeof AdminNewslettersNewsletterIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_admin/notices/$noticeId/': {
       id: '/_admin/notices/$noticeId/'
       path: '/'
@@ -272,6 +292,7 @@ interface AdminRouteChildren {
   AdminMembersRoute: typeof AdminMembersRoute
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminNewslettersNewsletterIdRoute: typeof AdminNewslettersNewsletterIdRoute
   AdminNewslettersIndexRoute: typeof AdminNewslettersIndexRoute
 }
 
@@ -279,6 +300,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMembersRoute: AdminMembersRoute,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
+  AdminNewslettersNewsletterIdRoute: AdminNewslettersNewsletterIdRoute,
   AdminNewslettersIndexRoute: AdminNewslettersIndexRoute,
 }
 
