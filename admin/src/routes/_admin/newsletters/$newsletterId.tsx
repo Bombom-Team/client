@@ -111,7 +111,7 @@ function NewsletterDetailView() {
                 target="_blank"
                 rel="noreferrer"
               >
-                {newsletter.previousNewsletterUrl}
+                바로가기 ↗
               </LinkValue>
             </LinkItem>
           )}
