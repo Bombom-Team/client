@@ -1,7 +1,14 @@
 import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, useParams } from '@tanstack/react-router';
-import { newslettersQueries } from '@/apis/newsletters/newsletters.query';
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from '@tanstack/react-router';
+import {
+  newslettersQueries,
+  useDeleteNewsletter,
+} from '@/apis/newsletters/newsletters.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 
@@ -11,9 +18,25 @@ export const Route = createFileRoute('/_admin/newsletters/$newsletterId')({
 
 function NewsletterDetailView() {
   const { newsletterId } = useParams({ from: Route.id });
+  const navigate = useNavigate();
   const { data: newsletter } = useSuspenseQuery(
     newslettersQueries.detail(Number(newsletterId)),
   );
+  const { mutate: deleteNewsletter } = useDeleteNewsletter();
+
+  const handleDelete = () => {
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      deleteNewsletter(Number(newsletterId), {
+        onSuccess: () => {
+          alert('삭제되었습니다.');
+          navigate({ to: '/newsletters' } as any);
+        },
+        onError: (error) => {
+          alert(`삭제 실패: ${error.message}`);
+        },
+      });
+    }
+  };
 
   if (!newsletter) return null;
 
@@ -124,6 +147,9 @@ function NewsletterDetailView() {
 
         <Footer>
           <Button>수정 하기</Button>
+          <Button variant="outline" size="sm" onClick={handleDelete}>
+            삭제
+          </Button>
         </Footer>
       </Container>
     </Layout>
@@ -259,5 +285,6 @@ const LinkValue = styled.a`
 const Footer = styled.div`
   display: flex;
   justify-content: flex-end;
+  gap: ${({ theme }) => theme.spacing.sm};
   margin-top: ${({ theme }) => theme.spacing.lg};
 `;

@@ -1,6 +1,10 @@
-import { keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { getNewsletterDetail, getNewsletters } from './newsletters.api';
-import type { GetNewslettersParams } from './newsletters.api';
+import { keepPreviousData, queryOptions, useMutation } from '@tanstack/react-query';
+import {
+  getNewsletterDetail,
+  getNewsletters,
+  type GetNewslettersParams,
+  deleteNewsletter,
+} from './newsletters.api';
 
 const NEWSLETTERS_STALE_TIME = 1000 * 60; // 1 minute
 const NEWSLETTERS_GC_TIME = 1000 * 60 * 5; // 5 minutes
@@ -24,4 +28,10 @@ export const newslettersQueries = {
       staleTime: NEWSLETTERS_STALE_TIME,
       gcTime: NEWSLETTERS_GC_TIME,
     }),
+};
+
+export const useDeleteNewsletter = () => {
+  return useMutation({
+    mutationFn: deleteNewsletter,
+  });
 };

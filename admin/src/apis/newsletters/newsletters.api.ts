@@ -28,3 +28,8 @@ export const getNewsletterDetail = async (id: number) => {
     path: `/newsletters/${id}`,
   });
 };
+export const deleteNewsletter = async (id: number) => {
+  return fetcher.delete({
+    path: `/newsletters/${id}`,
+  });
+};
