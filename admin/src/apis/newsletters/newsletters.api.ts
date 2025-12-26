@@ -12,6 +12,7 @@ export type GetNewslettersParams = {
   sort?: NewsletterSortType;
   page?: number;
   size?: number;
+  previousStrategy?: string;
 };
 
 export type GetNewslettersResponse = PageableResponse<Newsletter>;

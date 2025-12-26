@@ -33,6 +33,7 @@ export interface Newsletter {
   categoryName: string;
   issueCycle: string;
   subscriptionCount: number;
+  previousStrategy?: PreviousStrategyType;
 }
 
 export type NewsletterSortType = 'LATEST' | 'POPULAR';
@@ -40,6 +41,19 @@ export type NewsletterSortType = 'LATEST' | 'POPULAR';
 export const NEWSLETTER_SORT_LABELS: Record<NewsletterSortType, string> = {
   LATEST: '최신순',
   POPULAR: '인기순',
+};
+
+export type PreviousStrategyType =
+  | 'FIXED_WITH_RECENT'
+  | 'FIXED_ONLY'
+  | 'RECENT_ONLY'
+  | 'INACTIVE';
+
+export const PREVIOUS_STRATEGY_LABELS: Record<PreviousStrategyType, string> = {
+  FIXED_WITH_RECENT: '고정+최신',
+  FIXED_ONLY: '고정만',
+  RECENT_ONLY: '최신만',
+  INACTIVE: '비활성',
 };
 
 export interface NewsletterDetail {

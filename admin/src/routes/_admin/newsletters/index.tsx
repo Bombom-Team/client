@@ -12,7 +12,10 @@ import { FiPlus } from 'react-icons/fi';
 import { newslettersQueries } from '@/apis/newsletters/newsletters.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
-import { NEWSLETTER_CATEGORY_LABELS } from '@/types/newsletter';
+import {
+  NEWSLETTER_CATEGORY_LABELS,
+  PREVIOUS_STRATEGY_LABELS,
+} from '@/types/newsletter';
 
 export const Route = createFileRoute('/_admin/newsletters/')({
   component: NewslettersPage,
@@ -22,6 +25,7 @@ export const Route = createFileRoute('/_admin/newsletters/')({
     size: Number(search.size ?? 20),
     keyword: (search.keyword as string) || undefined,
     category: (search.category as string) || undefined,
+    previousStrategy: (search.previousStrategy as string) || undefined,
   }),
 });
 
@@ -67,6 +71,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
         page: 0,
         keyword: keyword || undefined,
         category: selectedCategory || undefined,
+        previousStrategy: search.previousStrategy,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
     });
@@ -102,6 +107,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
                   page: 0,
                   keyword: keyword || undefined,
                   category: newCategory || undefined,
+                  previousStrategy: search.previousStrategy,
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 } as any,
               });
@@ -114,6 +120,28 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
               </option>
             ))}
           </CategorySelect>
+          <FilterSelect
+            value={(search.previousStrategy as string) || ''}
+            onChange={(e) => {
+              navigate({
+                search: {
+                  ...search,
+                  page: 0,
+                  keyword: keyword || undefined,
+                  category: selectedCategory || undefined,
+                  previousStrategy: e.target.value || undefined,
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } as any,
+              });
+            }}
+          >
+            <option value="">지난 아티클 공개 전략</option>
+            {Object.entries(PREVIOUS_STRATEGY_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </FilterSelect>
         </SearchForm>
       </SearchSection>
 
@@ -208,6 +236,20 @@ const SearchInput = styled.input`
 `;
 
 const CategorySelect = styled.select`
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  background-color: white;
+  min-width: 150px;
+  font-size: ${({ theme }) => theme.fontSize.base};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const FilterSelect = styled.select`
   padding: ${({ theme }) => theme.spacing.md};
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
