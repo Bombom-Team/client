@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { postBookmark } from '@/apis/bookmark';
+import { postBookmark } from '@/apis/bookmark/bookmark.api';
 import { queries } from '@/apis/queries';
 
 const useAddBookmarkMutation = ({ articleId }: { articleId: number }) => {

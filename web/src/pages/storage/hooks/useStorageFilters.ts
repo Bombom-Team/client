@@ -1,7 +1,7 @@
 import { useSearch } from '@tanstack/react-router';
 import { useCallback, useState } from 'react';
 import { ARTICLE_SIZE } from '../constants/article';
-import type { GetArticlesWithSearchParams } from '@/apis/articles';
+import type { GetArticlesWithSearchParams } from '@/apis/articles/articles.api';
 
 export const useStorageFilters = () => {
   const {
