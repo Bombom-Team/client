@@ -65,15 +65,27 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "봄봄",
-        "url": "https://www.bombom.news",
-        "description": "뉴스레터, 아티클, 트렌드 정보를 한 곳에!",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://www.bombom.news/search?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.bombom.news/#website",
+            "url": "https://www.bombom.news",
+            "name": "봄봄",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://www.bombom.news/search?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": ["봄봄 소개", "로그인", "자주 묻는 질문"],
+            "url": [
+              "https://www.bombom.news/landing",
+              "https://www.bombom.news/login"
+            ]
+          }
+        ]
       }
     </script>
   </head>
