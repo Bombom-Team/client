@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router';
 import PreviousArticleListItem from './PreviousArticleListItem';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { openExternalLink } from '@/utils/externalLink';
-import type { GetPreviousArticlesResponse } from '@/apis/previousArticles';
+import type { GetPreviousArticlesResponse } from '@/apis/previousArticles/previousArticles.api';
 import sadBom from '#/assets/avif/sad-bom.avif';
 import subscribeBom from '#/assets/avif/subscribe-bom.avif';
 import OpenIcon from '#/assets/svg/open.svg';

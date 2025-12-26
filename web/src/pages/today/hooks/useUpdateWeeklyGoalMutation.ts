@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { patchWeeklyReadingGoal } from '@/apis/members';
+import { patchWeeklyReadingGoal } from '@/apis/members/members.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 

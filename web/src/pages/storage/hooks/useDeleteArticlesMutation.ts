@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteArticle } from '@/apis/articles';
+import { deleteArticle } from '@/apis/articles/articles.api';
 import { queries } from '@/apis/queries';
 import { formatDate } from '@/utils/date';
 

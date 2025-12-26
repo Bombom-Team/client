@@ -17,7 +17,7 @@ import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticl
 import { useStorageFilters } from '@/pages/storage/hooks/useStorageFilters';
 import useWarningVisibleMutation from '@/pages/storage/hooks/useWarningVisibleMutation';
 import { isValidKeyword } from '@/pages/storage/utils/isValidKeyword';
-import type { GetArticlesStatisticsNewslettersResponse } from '@/apis/articles';
+import type { GetArticlesStatisticsNewslettersResponse } from '@/apis/articles/articles.api';
 import type { Sort } from '@/pages/storage/components/ArticleListControls/ArticleListControls.types';
 import StorageIcon from '#/assets/svg/storage.svg';
 
