@@ -1,11 +1,16 @@
-export type NoticeCategoryType = 'NOTICE' | 'EVENT';
+export type NoticeCategoryType = 'NOTICE' | 'UPDATE' | 'EVENT' | 'CHECK';
 
 export interface Notice {
   id: number;
   title: string;
-  content: string;
-  author: string;
+  content?: string;
   createdAt: string;
-  views: number;
   noticeCategory: NoticeCategoryType;
 }
+
+export const NOTICE_CATEGORY_LABELS: Record<NoticeCategoryType, string> = {
+  NOTICE: '공지',
+  UPDATE: '업데이트',
+  EVENT: '이벤트',
+  CHECK: '점검',
+};

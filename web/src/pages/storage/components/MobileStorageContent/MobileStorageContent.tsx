@@ -9,7 +9,7 @@ import InvalidSearchCard from '../InvalidSearchCard/InvalidSearchCard';
 import useInfiniteArticles from '@/pages/storage/hooks/useInfiniteArticles';
 import ArticleCardListSkeleton from '@/pages/today/components/ArticleCardList/ArticleCardListSkeleton';
 import EmptyLetterCard from '@/pages/today/components/EmptyLetterCard/EmptyLetterCard';
-import type { GetArticlesWithSearchParams } from '@/apis/articles';
+import type { GetArticlesWithSearchParams } from '@/apis/articles/articles.api';
 
 interface MobileStorageContentProps {
   baseQueryParams: GetArticlesWithSearchParams;

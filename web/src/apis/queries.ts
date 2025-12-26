@@ -1,238 +1,38 @@
-import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
-import {
-  getArticleById,
-  getArticles,
-  getArticlesStatisticsNewsletters,
-  getArticlesWithSearch,
-  type GetArticleByIdParams,
-  type GetArticlesParams,
-  type GetArticleStatisticsNewslettersParams,
-  type GetArticlesWithSearchParams,
-} from './articles';
-import { getSignupCheck } from './auth';
-import {
-  getArticleBookmarkStatus,
-  getBookmarks,
-  getBookmarksStatisticsNewsletters,
-} from './bookmark';
-import { getHighlights, getHighlightStatisticsNewsletter } from './highlight';
-import {
-  getMonthlyReadingRank,
-  getMyMonthlyReadingRank,
-  getReadingStatus,
-  getUserInfo,
-  getMySubscriptions,
-  getUserProfile,
-  getWarningVisible,
-} from './members';
-import { getNewsletterDetail, getNewsletters } from './newsLetters';
-import { getNotices } from './notice';
-import {
-  getNotificationSettings,
-  type GetNotificationSettingsParams,
-} from './notification';
-import {
-  getPreviousArticleDetail,
-  getPreviousArticles,
-} from './previousArticles';
-import type { GetSignupCheckParams } from './auth';
-import type {
-  GetArticleBookmarkStatusParams,
-  GetBookmarksParams,
-} from './bookmark';
-import type { GetHighlightsParams } from './highlight';
-import type { GetMonthlyReadingRankParams } from './members';
-import type { GetNewsletterDetailParams } from './newsLetters';
-import type { GetNoticesParams } from './notice';
-import type {
-  GetPreviousArticleDetailParams,
-  GetPreviousArticlesParams,
-} from './previousArticles';
+import { articlesQueries } from './articles/articles.query';
+import { authQueries } from './auth/auth.query';
+import { bookmarkQueries } from './bookmark/bookmark.query';
+import { highlightQueries } from './highlight/highlight.query';
+import { membersQueries } from './members/members.query';
+import { newslettersQueries } from './newsletters/newsletters.query';
+import { noticeQueries } from './notice/notice.query';
+import { notificationQueries } from './notification/notification.query';
+import { previousArticlesQueries } from './previousArticles/previousArticles.query';
 
 export const queries = {
   // articles
-  articles: (params: GetArticlesParams) =>
-    queryOptions({
-      queryKey: ['articles', { keyword: '', ...params }],
-      queryFn: () => getArticles(params),
-    }),
-
-  articlesWithSearch: (params: GetArticlesWithSearchParams) =>
-    queryOptions({
-      queryKey: ['articles', 'search', params],
-      queryFn: () => getArticlesWithSearch(params),
-    }),
-
-  infiniteArticles: (params: GetArticlesParams) =>
-    infiniteQueryOptions({
-      queryKey: ['articles', 'infinite', { keyword: '', ...params }],
-      queryFn: ({ pageParam = 0 }) =>
-        getArticles({
-          ...params,
-          page: pageParam,
-        }),
-      getNextPageParam: (lastPage) => {
-        if (!lastPage || lastPage.last) return undefined;
-
-        return (lastPage.number ?? 0) + 1;
-      },
-      initialPageParam: 0,
-    }),
-
-  infiniteArticlesWithSearch: (params: GetArticlesWithSearchParams) =>
-    infiniteQueryOptions({
-      queryKey: ['articles', 'search', 'infinite', params],
-      queryFn: ({ pageParam = 0 }) =>
-        getArticlesWithSearch({
-          ...params,
-          page: pageParam,
-        }),
-      getNextPageParam: (lastPage) => {
-        if (!lastPage || lastPage.last) return undefined;
-
-        return (lastPage.number ?? 0) + 1;
-      },
-      initialPageParam: 0,
-    }),
-
-  articleById: (params: GetArticleByIdParams) =>
-    queryOptions({
-      queryKey: ['articles', params.id],
-      queryFn: () => getArticleById(params),
-    }),
-
-  articlesStatisticsNewsletters: (
-    params: GetArticleStatisticsNewslettersParams,
-  ) =>
-    queryOptions({
-      queryKey: ['articles', 'statistics', 'newsletters', params],
-      queryFn: () => getArticlesStatisticsNewsletters(params),
-    }),
-
-  // members
-  me: () =>
-    queryOptions({
-      queryKey: ['members', 'me'],
-      queryFn: getUserInfo,
-    }),
-
-  userProfile: () =>
-    queryOptions({
-      queryKey: ['members', 'me', 'profile'],
-      queryFn: getUserProfile,
-      staleTime: 5 * 60 * 1000, // 5분
-      refetchOnWindowFocus: false, // 탭 이동해도 안 튀게
-    }),
-
-  readingStatus: () =>
-    queryOptions({
-      queryKey: ['members', 'me', 'reading'],
-      queryFn: getReadingStatus,
-    }),
-
-  monthlyReadingRank: (params: GetMonthlyReadingRankParams) =>
-    queryOptions({
-      queryKey: ['members', 'me', 'reading', 'month', 'rank', params],
-      queryFn: () => getMonthlyReadingRank(params),
-    }),
-
-  myMonthlyReadingRank: () =>
-    queryOptions({
-      queryKey: ['members', 'me', 'reading', 'month', 'rank', 'me'],
-      queryFn: () => getMyMonthlyReadingRank(),
-    }),
-
-  mySubscriptions: () =>
-    queryOptions({
-      queryKey: ['members', 'me', 'subscriptions'],
-      queryFn: getMySubscriptions,
-    }),
-
-  warningVisibleStatus: () =>
-    queryOptions({
-      queryKey: ['members', 'me', 'warning', 'near-capacity'],
-      queryFn: () => getWarningVisible(),
-    }),
-
-  // newsletters
-  newsletters: () =>
-    queryOptions({
-      queryKey: ['newsletters'],
-      queryFn: getNewsletters,
-      staleTime: 1000 * 60 * 60 * 24 * 3, // 3 days
-      gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days
-    }),
-
-  newsletterDetail: (params: GetNewsletterDetailParams) =>
-    queryOptions({
-      queryKey: ['newsletters', params.id],
-      queryFn: () => getNewsletterDetail(params),
-    }),
-
-  // highlights
-  highlights: (params?: GetHighlightsParams) =>
-    queryOptions({
-      queryKey: ['highlights', params],
-      queryFn: () => getHighlights(params ?? {}),
-    }),
-
-  // notices
-  notices: (params?: GetNoticesParams) =>
-    queryOptions({
-      queryKey: ['notices', params],
-      queryFn: () => getNotices(params ?? {}),
-    }),
-
-  // bookmarks
-  bookmarks: (params?: GetBookmarksParams) =>
-    queryOptions({
-      queryKey: ['bookmarks', params],
-      queryFn: () => getBookmarks(params),
-    }),
-
-  articleBookmarkStatus: (params: GetArticleBookmarkStatusParams) =>
-    queryOptions({
-      queryKey: ['bookmarks', 'status', 'articles', params.articleId],
-      queryFn: () => getArticleBookmarkStatus(params),
-    }),
-
-  bookmarksStatisticsNewsletters: () =>
-    queryOptions({
-      queryKey: ['bookmarks', 'statistics', 'newsletters'],
-      queryFn: getBookmarksStatisticsNewsletters,
-    }),
-
-  highlightStatisticsNewsletter: () =>
-    queryOptions({
-      queryKey: ['highlights', 'statistics', 'newsletters'],
-      queryFn: getHighlightStatisticsNewsletter,
-    }),
+  ...articlesQueries,
 
   // auth
-  signupCheck: (params: GetSignupCheckParams) =>
-    queryOptions({
-      queryKey: ['auth', 'signup', 'check', params],
-      queryFn: () => getSignupCheck(params),
-      enabled: false,
-    }),
+  ...authQueries,
 
-  // previous articles
-  previousArticles: (params: GetPreviousArticlesParams) =>
-    queryOptions({
-      queryKey: ['articles', 'previous', params],
-      queryFn: () => getPreviousArticles(params),
-    }),
+  // bookmarks
+  ...bookmarkQueries,
 
-  previousArticleDetail: (params: GetPreviousArticleDetailParams) =>
-    queryOptions({
-      queryKey: ['articles', 'previous', params],
-      queryFn: () => getPreviousArticleDetail(params),
-    }),
+  // highlights
+  ...highlightQueries,
+
+  // members
+  ...membersQueries,
+
+  // newsletters
+  ...newslettersQueries,
+
+  // notices
+  ...noticeQueries,
 
   // notification
-  notificationStatus: (params: GetNotificationSettingsParams) =>
-    queryOptions({
-      queryKey: ['notifications', 'tokens', 'settings', 'status', params],
-      queryFn: () => getNotificationSettings(params),
-    }),
+  ...notificationQueries,
+
+  // previous articles
+  ...previousArticlesQueries,
 };

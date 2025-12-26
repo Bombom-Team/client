@@ -5,7 +5,6 @@ import type { ComponentProps } from 'react';
 type Variant = 'filled' | 'outlined' | 'transparent';
 
 interface ButtonProps extends ComponentProps<'button'> {
-  onClick: () => void;
   variant?: Variant;
 }
 
