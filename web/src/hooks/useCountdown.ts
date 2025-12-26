@@ -32,7 +32,6 @@ export const useCountdown = ({
 
   const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const onCompleteRef = useRef(onComplete);
-  const delayTimerIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const targetTimeMs = useMemo(
     () => new Date(targetTime).getTime(),
@@ -60,9 +59,11 @@ export const useCountdown = ({
     }
 
     if (completeDelay) {
-      delayTimerIdRef.current = setTimeout(() => {
+      const delayTimerId = setTimeout(() => {
         onCompleteRef.current?.();
       }, completeDelay);
+
+      return () => clearTimeout(delayTimerId);
     } else {
       onCompleteRef.current?.();
     }
@@ -77,10 +78,6 @@ export const useCountdown = ({
       if (intervalIdRef.current) {
         clearInterval(intervalIdRef.current);
         intervalIdRef.current = null;
-      }
-      if (delayTimerIdRef.current) {
-        clearTimeout(delayTimerIdRef.current);
-        delayTimerIdRef.current = null;
       }
     };
   }, [updateLeftTime, targetTimeMs]);
