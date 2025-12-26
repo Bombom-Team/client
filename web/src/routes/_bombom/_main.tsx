@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import HeaderNavButtons from '@/components/Header/HeaderNavButtons';
-import MobileHeader from '@/components/Header/MobileHeader';
+import MobileMainHeader from '@/components/Header/MobileMainHeader';
 import { useActiveNav } from '@/hooks/useActiveNav';
 import { useDevice } from '@/hooks/useDevice';
 
@@ -16,7 +16,7 @@ function RouteComponent() {
 
   return (
     <>
-      {!isPC && <MobileHeader />}
+      {!isPC && <MobileMainHeader />}
       <Outlet />
       {!isPC && (
         <BottomNavWrapper>

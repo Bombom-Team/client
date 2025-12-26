@@ -7,7 +7,7 @@ import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 
-const MobileHeader = () => {
+const MobileMainHeader = () => {
   const navigate = useNavigate();
   const { userProfile } = useAuth();
 
@@ -31,7 +31,7 @@ const MobileHeader = () => {
   );
 };
 
-export default MobileHeader;
+export default MobileMainHeader;
 
 const Container = styled.header`
   position: fixed;
