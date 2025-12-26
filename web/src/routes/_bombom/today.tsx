@@ -5,7 +5,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import ArticleCardList from '../../pages/today/components/ArticleCardList/ArticleCardList';
 import ReadingStatusCard from '../../pages/today/components/ReadingStatusCard/ReadingStatusCard';
-import { getPet } from '@/apis/pet';
+import { getPet } from '@/apis/pet/pet.api';
 import { queries } from '@/apis/queries';
 import PetCard from '@/components/PetCard/PetCard';
 import PetCardSkeleton from '@/components/PetCard/PetCardSkeleton';

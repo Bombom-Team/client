@@ -33,18 +33,25 @@ jobs:
 
             console.log(`Assigned ${author} as PR assignee`);
 
-      # notify_ids.json 기반으로 reviewer = 3명, author 제외 후 멘션
+      # frontend 팀 reviewers 자동 배정
+      - name: Auto Assign Reviewers
+        uses: kentaro-m/auto-assign-action@v1.2.1
+        with:
+          configuration-path: .github/auto_assign_frontend.yml
+
+      # notify_ids.jsonc frontend 그룹 상위 3명 기반 멘션 구성
       - name: Load Reviewers from JSON
         id: get-reviewers
         uses: actions/github-script@v6
         with:
           script: |
             const fs = require('fs');
-            const mapping = JSON.parse(fs.readFileSync('.github/notify_ids.json', 'utf8'));
+            const mapping = JSON.parse(fs.readFileSync('.github/notify_ids.jsonc', 'utf8'));
             const members = Object.keys(mapping);
+            const frontends = members.slice(0, 3);
 
             const author = context.payload.pull_request.user.login;
-            const filtered = members.filter(member => member !== author);
+            const filtered = frontends.filter(member => member !== author);
 
             const mentions = filtered
               .map(login => `<@${mapping[login]}>`)

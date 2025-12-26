@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { postSignup } from '@/apis/auth';
+import { postSignup } from '@/apis/auth/auth.api';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { GUIDE_MAIL_STORAGE_KEY } from '@/pages/guide-detail/constants/guideMail';

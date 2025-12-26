@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { isValidKeyword } from '../utils/isValidKeyword';
 import { queries } from '@/apis/queries';
-import type { GetArticlesWithSearchParams } from '@/apis/articles';
+import type { GetArticlesWithSearchParams } from '@/apis/articles/articles.api';
 
 const useArticles = (params: GetArticlesWithSearchParams) => {
   const { keyword, ...paramsWithoutKeyword } = params;
