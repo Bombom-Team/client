@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
   createFileRoute,
   useNavigate,
@@ -19,6 +19,7 @@ export const Route = createFileRoute('/_admin/newsletters/$newsletterId')({
 function NewsletterDetailView() {
   const { newsletterId } = useParams({ from: Route.id });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: newsletter } = useSuspenseQuery(
     newslettersQueries.detail(Number(newsletterId)),
   );
@@ -29,6 +30,7 @@ function NewsletterDetailView() {
       deleteNewsletter(Number(newsletterId), {
         onSuccess: () => {
           alert('삭제되었습니다.');
+          queryClient.invalidateQueries({ queryKey: ['newsletters'] });
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           navigate({ to: '/newsletters' } as any);
         },

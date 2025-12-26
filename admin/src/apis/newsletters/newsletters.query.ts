@@ -39,3 +39,10 @@ export const useDeleteNewsletter = () => {
     mutationFn: deleteNewsletter,
   });
 };
+
+export const useCreateNewsletter = () => {
+  return useMutation({
+    mutationFn: (data: import('@/types/newsletter').CreateNewsletterRequest) =>
+      import('./newsletters.api').then((mod) => mod.createNewsletter(data)),
+  });
+};

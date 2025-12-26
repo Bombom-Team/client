@@ -80,10 +80,12 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
   return (
     <Container>
       <TopAction>
-        <Button>
-          <FiPlus />
-          뉴스레터 등록
-        </Button>
+        <Link to="/newsletters/new">
+          <Button>
+            <FiPlus />
+            뉴스레터 등록
+          </Button>
+        </Link>
       </TopAction>
 
       <SearchSection>

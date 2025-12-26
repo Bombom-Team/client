@@ -76,3 +76,17 @@ export interface NewsletterDetail {
   previousRecentCount: number;
   previousExposureRatio: number;
 }
+
+export interface CreateNewsletterRequest {
+  name: string;
+  description: string;
+  imageUrl: string;
+  email: string;
+  category: string;
+  mainPageUrl: string;
+  subscribeUrl: string;
+  issueCycle: string;
+  sender: string;
+  previousNewsletterUrl: string;
+  subscribeMethod: string;
+}

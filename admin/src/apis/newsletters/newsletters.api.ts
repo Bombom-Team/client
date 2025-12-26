@@ -1,6 +1,7 @@
 import { fetcher } from '@bombom/shared/apis';
 import type { PageableResponse } from '@/apis/types/PageableResponse';
 import type {
+  CreateNewsletterRequest,
   Newsletter,
   NewsletterDetail,
   NewsletterSortType,
@@ -32,5 +33,13 @@ export const getNewsletterDetail = async (id: number) => {
 export const deleteNewsletter = async (id: number) => {
   return fetcher.delete({
     path: `/newsletters/${id}`,
+  });
+};
+
+export const createNewsletter = async (data: CreateNewsletterRequest) => {
+  return fetcher.post({
+    path: '/newsletters',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    body: data as any,
   });
 };
