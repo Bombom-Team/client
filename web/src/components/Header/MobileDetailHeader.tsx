@@ -3,13 +3,12 @@ import { useRouter } from '@tanstack/react-router';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import type { ReactNode } from 'react';
 
-interface DetailPageHeaderProps {
+interface MobileDetailHeaderProps {
   left?: ReactNode;
-  title?: ReactNode;
   right?: ReactNode;
 }
 
-const DetailPageHeader = ({ left, title, right }: DetailPageHeaderProps) => {
+const MobileDetailHeader = ({ left, right }: MobileDetailHeaderProps) => {
   const router = useRouter();
 
   const handleBackClick = () => {
@@ -27,13 +26,12 @@ const DetailPageHeader = ({ left, title, right }: DetailPageHeaderProps) => {
           <StyledChevronIcon direction="left" />
         </BackButton>
       )}
-      {title && <Title>{title}</Title>}
       {right}
     </Container>
   );
 };
 
-export default DetailPageHeader;
+export default MobileDetailHeader;
 
 const Container = styled.header`
   position: fixed;
@@ -70,14 +68,6 @@ const BackButton = styled.button`
   &:hover > svg {
     transform: scale(1.1);
   }
-`;
-
-const Title = styled.h1`
-  flex: 1;
-
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading3};
-  text-align: center;
 `;
 
 const StyledChevronIcon = styled(ChevronIcon)`

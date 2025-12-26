@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
-import DetailPageHeader from '@/components/Header/DetailPageHeader';
+import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import Spacing from '@/components/Spacing/Spacing';
 import { useDevice } from '@/hooks/useDevice';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
@@ -78,7 +78,7 @@ function GuideMailPage() {
 
   return (
     <Container>
-      {device !== 'pc' && <DetailPageHeader />}
+      {device !== 'pc' && <MobileDetailHeader />}
 
       <ArticleHeader
         title={guideArticle.title}

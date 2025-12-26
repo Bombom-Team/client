@@ -5,7 +5,7 @@ import { createFileRoute, useRouterState } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
-import DetailPageHeader from '@/components/Header/DetailPageHeader';
+import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
@@ -77,7 +77,7 @@ function RouteComponent() {
   return (
     <Container>
       {device !== 'pc' && (
-        <DetailPageHeader
+        <MobileDetailHeader
           right={<Button onClick={handleSubscribeClick}>구독하기</Button>}
         />
       )}

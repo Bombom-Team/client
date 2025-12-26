@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
-import DetailPageHeader from '@/components/Header/DetailPageHeader';
+import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import Spacing from '@/components/Spacing/Spacing';
 import { useDevice } from '@/hooks/useDevice';
@@ -67,7 +67,7 @@ function ArticleDetailPage() {
   return (
     <>
       {device !== 'pc' && (
-        <DetailPageHeader
+        <MobileDetailHeader
           right={
             <BookmarkButton type="button" onClick={toggleBookmark}>
               <BookmarkIcon
