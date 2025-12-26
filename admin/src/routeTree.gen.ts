@@ -15,6 +15,7 @@ import { Route as AdminIndexRouteImport } from './routes/_admin/index'
 import { Route as AdminNoticesRouteImport } from './routes/_admin/notices'
 import { Route as AdminMembersRouteImport } from './routes/_admin/members'
 import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/index'
+import { Route as AdminNewslettersIndexRouteImport } from './routes/_admin/newsletters/index'
 import { Route as AdminNoticesNewRouteImport } from './routes/_admin/notices/new'
 import { Route as AdminNoticesNoticeIdRouteImport } from './routes/_admin/notices/$noticeId'
 import { Route as AdminNoticesNoticeIdIndexRouteImport } from './routes/_admin/notices/$noticeId/index'
@@ -49,6 +50,11 @@ const AdminNoticesIndexRoute = AdminNoticesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminNoticesRoute,
 } as any)
+const AdminNewslettersIndexRoute = AdminNewslettersIndexRouteImport.update({
+  id: '/newsletters/',
+  path: '/newsletters/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminNoticesNewRoute = AdminNoticesNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AdminIndexRoute
   '/notices/$noticeId': typeof AdminNoticesNoticeIdRouteWithChildren
   '/notices/new': typeof AdminNoticesNewRoute
+  '/newsletters': typeof AdminNewslettersIndexRoute
   '/notices/': typeof AdminNoticesIndexRoute
   '/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
   '/notices/$noticeId/': typeof AdminNoticesNoticeIdIndexRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/members': typeof AdminMembersRoute
   '/': typeof AdminIndexRoute
   '/notices/new': typeof AdminNoticesNewRoute
+  '/newsletters': typeof AdminNewslettersIndexRoute
   '/notices': typeof AdminNoticesIndexRoute
   '/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
   '/notices/$noticeId': typeof AdminNoticesNoticeIdIndexRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/_admin/': typeof AdminIndexRoute
   '/_admin/notices/$noticeId': typeof AdminNoticesNoticeIdRouteWithChildren
   '/_admin/notices/new': typeof AdminNoticesNewRoute
+  '/_admin/newsletters/': typeof AdminNewslettersIndexRoute
   '/_admin/notices/': typeof AdminNoticesIndexRoute
   '/_admin/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
   '/_admin/notices/$noticeId/': typeof AdminNoticesNoticeIdIndexRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/notices/$noticeId'
     | '/notices/new'
+    | '/newsletters'
     | '/notices/'
     | '/notices/$noticeId/edit'
     | '/notices/$noticeId/'
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/'
     | '/notices/new'
+    | '/newsletters'
     | '/notices'
     | '/notices/$noticeId/edit'
     | '/notices/$noticeId'
@@ -135,6 +146,7 @@ export interface FileRouteTypes {
     | '/_admin/'
     | '/_admin/notices/$noticeId'
     | '/_admin/notices/new'
+    | '/_admin/newsletters/'
     | '/_admin/notices/'
     | '/_admin/notices/$noticeId/edit'
     | '/_admin/notices/$noticeId/'
@@ -188,6 +200,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/notices/'
       preLoaderRoute: typeof AdminNoticesIndexRouteImport
       parentRoute: typeof AdminNoticesRoute
+    }
+    '/_admin/newsletters/': {
+      id: '/_admin/newsletters/'
+      path: '/newsletters'
+      fullPath: '/newsletters'
+      preLoaderRoute: typeof AdminNewslettersIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_admin/notices/new': {
       id: '/_admin/notices/new'
@@ -253,12 +272,14 @@ interface AdminRouteChildren {
   AdminMembersRoute: typeof AdminMembersRoute
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminNewslettersIndexRoute: typeof AdminNewslettersIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminMembersRoute: AdminMembersRoute,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
+  AdminNewslettersIndexRoute: AdminNewslettersIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
