@@ -5,7 +5,7 @@ import { queries } from '@/apis/queries';
 
 export const useMemoFilters = () => {
   const { newsletterId: newsletterIdParams } = useSearch({
-    from: '/_bombom/memo',
+    from: '/_bombom/_main/memo',
   });
   const [page, setPage] = useState(0);
 

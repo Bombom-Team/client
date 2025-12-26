@@ -14,7 +14,7 @@ import EmptyLetterCard from '@/pages/today/components/EmptyLetterCard/EmptyLette
 import type { Device } from '@/hooks/useDevice';
 import BookmarkIcon from '#/assets/svg/bookmark-inactive.svg';
 
-export const Route = createFileRoute('/_bombom/bookmark')({
+export const Route = createFileRoute('/_bombom/_main/bookmark')({
   head: () => ({
     meta: [
       {
@@ -36,7 +36,7 @@ export const Route = createFileRoute('/_bombom/bookmark')({
 
 function BookmarkPage() {
   const newsletterIdParam = useSearch({
-    from: '/_bombom/bookmark',
+    from: '/_bombom/_main/bookmark',
     select: (state) => state.newsletterId,
   });
   const { data: articles, isLoading } = useQuery(

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import ReadingKingLeaderboard from '../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
+import ReadingKingLeaderboard from '../../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import ChallengeCard from '@/pages/challenge/components/ChallengeCard';
@@ -17,7 +17,7 @@ interface BombomIndexSearch {
   tab?: NewsletterTab;
 }
 
-export const Route = createFileRoute('/_bombom/')({
+export const Route = createFileRoute('/_bombom/_main/')({
   head: () => ({
     meta: [
       {

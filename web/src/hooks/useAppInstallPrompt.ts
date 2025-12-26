@@ -10,15 +10,16 @@ export function useAppInstallPrompt() {
   const modalRef = useRef<HTMLDivElement>(null);
   const [dismissedUntil, setDismissedUntil] = useLocalStorageState<number>(
     APP_INSTALL_DISMISSED_KEY,
+    0,
   );
-  const [showModal, setShowModal] = useState(false);
+  const [isShowModal, setIsShowModal] = useState(false);
 
   useEffect(() => {
     const device = getDeviceInWebApp();
     if (isWebView() || !device) return;
     if (dismissedUntil && Date.now() < dismissedUntil) return;
 
-    setShowModal(true);
+    setIsShowModal(true);
   }, [dismissedUntil]);
 
   const handleInstallClick = () => {
@@ -27,18 +28,18 @@ export function useAppInstallPrompt() {
 
   const handleLaterClick = () => {
     setDismissedUntil(Date.now() + DISMISS_DURATION);
-    setShowModal(false);
+    setIsShowModal(false);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false);
+    setIsShowModal(false);
   };
 
   return {
-    showModal,
+    modalRef,
+    isShowModal,
     handleInstallClick,
     handleLaterClick,
     handleCloseModal,
-    modalRef,
   };
 }

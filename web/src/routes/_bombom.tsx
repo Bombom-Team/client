@@ -1,8 +1,7 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
-import PageLayout from '@/components/PageLayout/PageLayout';
-import { useAppInstallPrompt } from '@/hooks/useAppInstallPrompt';
+import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
 import { useWebViewNotificationActive } from '@/libs/webview/useWebViewNotificationActive';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 import { LANDING_VISITED_KEY } from '@/pages/landing/constants/localStorage';
@@ -39,27 +38,13 @@ export const Route = createFileRoute('/_bombom')({
 });
 
 function RouteComponent() {
-  const {
-    showModal,
-    handleInstallClick,
-    handleLaterClick,
-    handleCloseModal,
-    modalRef,
-  } = useAppInstallPrompt();
-
   useWebViewRegisterToken();
   useWebViewNotificationActive();
 
   return (
-    <PageLayout>
+    <BomBomPageLayout>
       <Outlet />
-      <AppInstallPromptModal
-        modalRef={modalRef}
-        isOpen={showModal}
-        closeModal={handleCloseModal}
-        onInstallClick={handleInstallClick}
-        onLaterClick={handleLaterClick}
-      />
-    </PageLayout>
+      <AppInstallPromptModal />
+    </BomBomPageLayout>
   );
 }

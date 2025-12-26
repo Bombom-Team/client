@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
 import { useRouter } from '@tanstack/react-router';
-import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
+import type { ReactNode } from 'react';
 
-interface PreviousHeaderProps {
-  onSubscribeClick: () => void;
+interface MobileDetailHeaderProps {
+  left?: ReactNode;
+  right?: ReactNode;
 }
 
-const PreviousHeader = ({ onSubscribeClick }: PreviousHeaderProps) => {
+const MobileDetailHeader = ({ left, right }: MobileDetailHeaderProps) => {
   const router = useRouter();
 
   const handleBackClick = () => {
@@ -16,15 +17,21 @@ const PreviousHeader = ({ onSubscribeClick }: PreviousHeaderProps) => {
 
   return (
     <Container>
-      <BackButton type="button" onClick={handleBackClick} aria-label="뒤로가기">
-        <StyledChevronIcon direction="left" />
-      </BackButton>
-      <Button onClick={onSubscribeClick}>구독하기</Button>
+      {left ?? (
+        <BackButton
+          type="button"
+          onClick={handleBackClick}
+          aria-label="뒤로가기"
+        >
+          <StyledChevronIcon direction="left" />
+        </BackButton>
+      )}
+      {right}
     </Container>
   );
 };
 
-export default PreviousHeader;
+export default MobileDetailHeader;
 
 const Container = styled.header`
   position: fixed;
