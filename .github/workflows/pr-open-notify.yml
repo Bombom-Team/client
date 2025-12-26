@@ -46,7 +46,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const mapping = JSON.parse(fs.readFileSync('.github/notify_ids.json', 'utf8'));
+            const mapping = JSON.parse(fs.readFileSync('.github/notify_ids.jsonc', 'utf8'));
             const members = Object.keys(mapping);
             const frontends = members.slice(0, 3);
 
