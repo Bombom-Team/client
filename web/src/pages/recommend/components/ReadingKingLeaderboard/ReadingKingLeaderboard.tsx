@@ -13,6 +13,8 @@ import { useCountdown } from '@/hooks/useCountdown';
 import { chunk } from '@/utils/array';
 import { padTimeDigit } from '@/utils/time';
 
+const COUNTDOWN_UPDATE_INTERVAL_MS = 1000 * 60 * 10;
+
 const ReadingKingLeaderboard = () => {
   const [rankExplainOpened, setRankExplainOpened] = useState(false);
 
@@ -25,7 +27,9 @@ const ReadingKingLeaderboard = () => {
   const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
 
   const { leftTime } = useCountdown({
-    targetTime: monthlyReadingRank?.nextRefreshAt ?? new Date().toISOString(),
+    targetTime:
+      monthlyReadingRank?.nextRefreshAt ??
+      new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
     completeDelay: 1000,
     onComplete: () => {
       refetch();
