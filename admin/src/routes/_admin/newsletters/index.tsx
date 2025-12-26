@@ -236,12 +236,18 @@ const SearchInput = styled.input`
 `;
 
 const CategorySelect = styled.select`
+  appearance: none;
   padding: ${({ theme }) => theme.spacing.md};
+  padding-right: 48px; /* Extra space for arrow */
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   background-color: white;
   min-width: 150px;
   font-size: ${({ theme }) => theme.fontSize.base};
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
 
   &:focus {
     outline: none;
@@ -250,12 +256,18 @@ const CategorySelect = styled.select`
 `;
 
 const FilterSelect = styled.select`
+  appearance: none;
   padding: ${({ theme }) => theme.spacing.md};
+  padding-right: 48px; /* Extra space for arrow */
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   background-color: white;
-  min-width: 150px;
+  min-width: 180px;
   font-size: ${({ theme }) => theme.fontSize.base};
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
 
   &:focus {
     outline: none;
@@ -346,17 +358,23 @@ const Name = styled.h3`
 
 const MetaInfo = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xs};
   margin-top: 4px;
+  align-items: flex-start;
 `;
 
 const IssueCycleBadge = styled.span`
   color: ${({ theme }) => theme.colors.gray700};
   background-color: ${({ theme }) => theme.colors.gray100};
-  padding: 2px 6px;
+  padding: 4px 8px;
   border-radius: 4px;
   font-size: 11px;
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  line-height: 1.3;
+  word-break: keep-all;
+  white-space: pre-wrap;
+  text-align: left;
 `;
 
 const SubscriptionCount = styled.span`
