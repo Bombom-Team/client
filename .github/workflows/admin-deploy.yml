@@ -89,10 +89,10 @@ jobs:
         uses: ./.github/actions/discord-notify
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_DEPLOY }}
-          content: ${{ github.ref_name == 'main' && '🚀 **Admin 운영 서버에 새로운 버전이 배포되었습니다!**' || '🧪 **Admin 개발 서버에 새로운 버전이 배포되었습니다!**' }}
-          title: "🔗 Admin 사이트 바로가기"
+          content: '🚀 **Admin 운영 서버에 새로운 버전이 배포되었습니다!**'
+          title: '🔗 Admin 사이트 바로가기'
           url: ${{ secrets.ADMIN_WEB_URL }}
-          color: ${{ github.ref_name == 'main' && '3066993' || '3447003' }}
+          color: '3066993'
           fields: |
             [
               { "name": "배포자", "value": "${{ github.actor }}" },
