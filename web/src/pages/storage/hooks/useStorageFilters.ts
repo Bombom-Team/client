@@ -1,14 +1,14 @@
 import { useSearch } from '@tanstack/react-router';
 import { useCallback, useState } from 'react';
 import { ARTICLE_SIZE } from '../constants/article';
-import type { GetArticlesWithSearchParams } from '@/apis/articles';
+import type { GetArticlesWithSearchParams } from '@/apis/articles/articles.api';
 
 export const useStorageFilters = () => {
   const {
     sort: sortParam,
     search: searchParam,
     newsletterId: newsletterIdParams,
-  } = useSearch({ from: '/_bombom/storage' });
+  } = useSearch({ from: '/_bombom/_main/storage' });
   const [page, setPage] = useState(1);
 
   const baseQueryParams: GetArticlesWithSearchParams = {

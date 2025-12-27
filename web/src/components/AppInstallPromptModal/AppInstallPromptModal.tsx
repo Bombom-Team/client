@@ -1,29 +1,23 @@
 import styled from '@emotion/styled';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
-import type { Ref } from 'react';
+import { useAppInstallPrompt } from '@/hooks/useAppInstallPrompt';
 import logo from '#/assets/avif/logo.avif';
 
-interface AppInstallPromptModalProps {
-  modalRef: Ref<HTMLDivElement | null>;
-  isOpen: boolean;
-  closeModal: () => void;
-  onInstallClick: () => void;
-  onLaterClick: () => void;
-}
+const AppInstallPromptModal = () => {
+  const {
+    modalRef,
+    isShowModal,
+    handleInstallClick,
+    handleLaterClick,
+    handleCloseModal,
+  } = useAppInstallPrompt();
 
-const AppInstallPromptModal = ({
-  modalRef,
-  isOpen,
-  closeModal,
-  onInstallClick,
-  onLaterClick,
-}: AppInstallPromptModalProps) => {
   return (
     <Modal
       modalRef={modalRef}
-      isOpen={isOpen}
-      closeModal={closeModal}
+      isOpen={isShowModal}
+      closeModal={handleCloseModal}
       position="bottom"
       showCloseButton={false}
       showBackdrop={true}
@@ -39,10 +33,10 @@ const AppInstallPromptModal = ({
           </TextWrapper>
         </ContentWrapper>
         <ButtonSection>
-          <InstallAppButton onClick={onInstallClick}>
+          <InstallAppButton onClick={handleInstallClick}>
             편리한 앱으로 보기
           </InstallAppButton>
-          <UseMobileWebButton onClick={onLaterClick} variant="outlined">
+          <UseMobileWebButton onClick={handleLaterClick} variant="outlined">
             모바일 웹으로 볼래요
           </UseMobileWebButton>
         </ButtonSection>

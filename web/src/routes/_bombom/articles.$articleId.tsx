@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
-import DetailPageHeader from '@/components/Header/DetailPageHeader';
+import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import Spacing from '@/components/Spacing/Spacing';
 import { useDevice } from '@/hooks/useDevice';
@@ -16,6 +16,8 @@ import TodayUnreadArticlesSection from '@/pages/detail/components/TodayUnreadArt
 import useArticleAsReadMutation from '@/pages/detail/hooks/useArticleAsReadMutation';
 import { useArticleBookmark } from '@/pages/detail/hooks/useArticleBookmark';
 import type { Device } from '@/hooks/useDevice';
+import BookmarkActiveIcon from '#/assets/svg/bookmark-active.svg';
+import BookmarkInactiveIcon from '#/assets/svg/bookmark-inactive.svg';
 
 const ARTICLE_MAX_WIDTH = 700;
 
@@ -65,9 +67,16 @@ function ArticleDetailPage() {
   return (
     <>
       {device !== 'pc' && (
-        <DetailPageHeader
-          bookmarked={isBookmarked}
-          onBookmarkClick={toggleBookmark}
+        <MobileDetailHeader
+          right={
+            <BookmarkButton type="button" onClick={toggleBookmark}>
+              <BookmarkIcon
+                as={isBookmarked ? BookmarkActiveIcon : BookmarkInactiveIcon}
+                width={28}
+                height={28}
+              />
+            </BookmarkButton>
+          }
         />
       )}
 
@@ -163,4 +172,28 @@ const Divider = styled.div`
 const ContentDescription = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.body2};
+`;
+
+const BookmarkButton = styled.button`
+  margin-left: auto;
+  padding: 8px;
+
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  background-color: ${({ theme }) => theme.colors.white};
+
+  & > svg {
+    transition: transform 0.2s ease;
+  }
+
+  &:hover > svg {
+    transform: scale(1.1);
+  }
+`;
+
+const BookmarkIcon = styled.svg`
+  color: ${({ theme }) => theme.colors.primary};
 `;

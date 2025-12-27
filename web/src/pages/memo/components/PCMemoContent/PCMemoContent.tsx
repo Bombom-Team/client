@@ -6,7 +6,7 @@ import Pagination from '@/components/Pagination/Pagination';
 import Skeleton from '@/components/Skeleton/Skeleton';
 import ReadOnlyMemoCard from '@/pages/detail/components/MemoCard/ReadOnlyMemoCard';
 import EmptyLetterCard from '@/pages/today/components/EmptyLetterCard/EmptyLetterCard';
-import type { GetHighlightsParams } from '@/apis/highlight';
+import type { GetHighlightsParams } from '@/apis/highlight/highlight.api';
 
 interface PCMemoContentProps {
   baseQueryParams: GetHighlightsParams;

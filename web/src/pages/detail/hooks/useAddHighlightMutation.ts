@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addHighlightToDOM } from '../utils/highlight';
-import { postHighlight } from '@/apis/highlight';
+import { postHighlight } from '@/apis/highlight/highlight.api';
 import { queries } from '@/apis/queries';
 import type { Highlight } from '../types/highlight';
-import type { PostHighlightParams } from '@/apis/highlight';
+import type { PostHighlightParams } from '@/apis/highlight/highlight.api';
 
 export const useAddHighlightMutation = () => {
   const queryClient = useQueryClient();

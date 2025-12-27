@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRef } from 'react';
-import { putNotificationSettings } from '@/apis/notification';
+import { putNotificationSettings } from '@/apis/notification/notification.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';

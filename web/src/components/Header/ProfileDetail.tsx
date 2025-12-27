@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
 import { toast } from '../Toast/utils/toastActions';
-import { postLogout } from '@/apis/auth';
+import { postLogout } from '@/apis/auth/auth.api';
 import { useDevice } from '@/hooks/useDevice';
 import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { copyToClipboard } from '@/utils/copy';

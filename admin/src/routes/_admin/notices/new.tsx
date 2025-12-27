@@ -1,22 +1,27 @@
 import styled from '@emotion/styled';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { createNotice } from '@/apis/notices/notices.api';
+import { noticesQueries } from '@/apis/notices/notices.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { useNotices } from '@/contexts/NoticeContext';
-import type { NoticeCategoryType } from '@/types/notice';
+import { NoticeDetailView } from '@/pages/notices/NoticeDetailView';
+import {
+  type NoticeCategoryType,
+  NOTICE_CATEGORY_LABELS,
+} from '@/types/notice';
 
 export const Route = createFileRoute('/_admin/notices/new')({
   component: NewNoticePage,
 });
 
 const NOTICE_CATEGORY_OPTIONS: { label: string; value: NoticeCategoryType }[] =
-  [
-    { label: '공지사항', value: 'NOTICE' },
-    { label: '이벤트', value: 'EVENT' },
-  ];
+  Object.entries(NOTICE_CATEGORY_LABELS).map(([value, label]) => ({
+    label,
+    value: value as NoticeCategoryType,
+  }));
 
 function NewNoticePage() {
   const navigate = useNavigate();
@@ -26,22 +31,30 @@ function NewNoticePage() {
   const [noticeCategory, setNoticeCategory] = useState(
     NOTICE_CATEGORY_OPTIONS[0]?.value ?? 'NOTICE',
   );
+  const [isPreview, setIsPreview] = useState(false);
+
+  const queryClient = useQueryClient();
   const { mutateAsync: createNoticeMutation, isPending } = useMutation({
     mutationFn: createNotice,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: noticesQueries.all });
+    },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleDisplayPreview = () => {
     if (!title.trim() || !content.trim()) {
       alert('제목과 내용을 모두 입력해주세요.');
       return;
     }
+    setIsPreview(true);
+  };
 
+  const handleRegister = async () => {
     try {
       await createNoticeMutation({ title, content, noticeCategory });
       addNotice(title, content, noticeCategory);
-      navigate({ to: '/notices' });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
     } catch (error) {
       let message = '공지사항 등록에 실패했습니다. 잠시 후 다시 시도해주세요.';
       if (error instanceof Error && error.message) {
@@ -53,19 +66,51 @@ function NewNoticePage() {
 
   const handleCancel = () => {
     if (!title.trim() && !content.trim()) {
-      navigate({ to: '/notices' });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
       return;
     }
 
     if (confirm('작성 중인 내용이 사라집니다. 취소하시겠습니까?')) {
-      navigate({ to: '/notices' });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
     }
   };
+
+  if (isPreview) {
+    return (
+      <Layout title="새 공지사항 미리보기">
+        <NoticeDetailView
+          notice={{
+            id: 0,
+            title,
+            content,
+            noticeCategory,
+            createdAt: new Date().toISOString(),
+          }}
+        >
+          <ButtonGroup>
+            <Button variant="secondary" onClick={() => setIsPreview(false)}>
+              수정 계속하기
+            </Button>
+            <Button onClick={handleRegister} disabled={isPending}>
+              {isPending ? '등록 중...' : '등록'}
+            </Button>
+          </ButtonGroup>
+        </NoticeDetailView>
+      </Layout>
+    );
+  }
 
   return (
     <Layout title="새 공지사항 작성">
       <Container>
-        <Form onSubmit={handleSubmit}>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleDisplayPreview();
+          }}
+        >
           <FormGroup>
             <Label htmlFor="category">카테고리</Label>
             <Select
@@ -108,9 +153,7 @@ function NewNoticePage() {
             <Button type="button" variant="secondary" onClick={handleCancel}>
               취소
             </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? '등록 중...' : '등록'}
-            </Button>
+            <Button type="submit">등록</Button>
           </ButtonGroup>
         </Form>
       </Container>

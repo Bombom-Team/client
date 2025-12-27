@@ -17,13 +17,13 @@ import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticl
 import { useStorageFilters } from '@/pages/storage/hooks/useStorageFilters';
 import useWarningVisibleMutation from '@/pages/storage/hooks/useWarningVisibleMutation';
 import { isValidKeyword } from '@/pages/storage/utils/isValidKeyword';
-import type { GetArticlesStatisticsNewslettersResponse } from '@/apis/articles';
+import type { GetArticlesStatisticsNewslettersResponse } from '@/apis/articles/articles.api';
 import type { Sort } from '@/pages/storage/components/ArticleListControls/ArticleListControls.types';
 import StorageIcon from '#/assets/svg/storage.svg';
 
 const MIN_WARNING_LIMIT = 450;
 
-export const Route = createFileRoute('/_bombom/storage')({
+export const Route = createFileRoute('/_bombom/_main/storage')({
   head: () => ({
     meta: [
       {
@@ -63,7 +63,7 @@ function Storage() {
   );
 
   const searchParam = useSearch({
-    from: '/_bombom/storage',
+    from: '/_bombom/_main/storage',
     select: (state) => state.search,
   });
   const keywordIsValid = isValidKeyword(searchParam);

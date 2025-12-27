@@ -1,15 +1,19 @@
 import styled from '@emotion/styled';
-import { Link } from '@tanstack/react-router';
-import { FiEdit, FiEye, FiTrash2 } from 'react-icons/fi';
-import { useNotices } from '@/contexts/NoticeContext';
-import type { Notice } from '@/types/notice';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import { noticesQueries } from '@/apis/notices/notices.query';
+import { type Notice, NOTICE_CATEGORY_LABELS } from '@/types/notice';
 
 export function NoticeList({ notices }: { notices: Notice[] }) {
-  const { deleteNotice } = useNotices();
-
-  const handleEdit = (noticeId: number) => {
-    alert(`공지사항 ID ${noticeId}를 수정합니다. (수정 기능은 아직 미구현)`);
-  };
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { mutate: deleteNotice } = useMutation({
+    ...noticesQueries.mutation.delete(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: noticesQueries.all });
+    },
+  });
 
   const handleDelete = (noticeId: number) => {
     if (confirm('정말 삭제하시겠습니까?')) {
@@ -28,35 +32,48 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
   return (
     <Container>
       {notices.map((notice) => (
-        <NoticeItem key={notice.id}>
+        <NoticeItem
+          key={notice.id}
+          onClick={() =>
+            navigate({
+              to: '/notices/$noticeId',
+              params: { noticeId: notice.id.toString() },
+            })
+          }
+        >
           <NoticeHeader>
-            <div>
-              <Link
-                to="/notices/$noticeId"
-                params={{ noticeId: notice.id.toString() }}
-              >
-                <NoticeTitle>{notice.title}</NoticeTitle>
-              </Link>
-              <NoticeMeta>
-                <span>{notice.author}</span>
-                <span>•</span>
-                <span>{notice.createdAt}</span>
-                <span>•</span>
-                <ViewCount>
-                  <FiEye />
-                  <span>{notice.views}</span>
-                </ViewCount>
-              </NoticeMeta>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <CategoryBadge category={notice.noticeCategory}>
+                {NOTICE_CATEGORY_LABELS[notice.noticeCategory] ??
+                  notice.noticeCategory}
+              </CategoryBadge>
+              <NoticeTitle>{notice.title}</NoticeTitle>
             </div>
             <NoticeActions>
-              <IconButton onClick={() => handleEdit(notice.id)}>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate({
+                    to: '/notices/$noticeId/edit',
+                    params: { noticeId: notice.id.toString() },
+                  });
+                }}
+              >
                 <FiEdit size={18} />
               </IconButton>
-              <IconButton onClick={() => handleDelete(notice.id)}>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(notice.id);
+                }}
+              >
                 <FiTrash2 size={18} />
               </IconButton>
             </NoticeActions>
           </NoticeHeader>
+          <NoticeMeta>
+            <DateText>{notice.createdAt}</DateText>
+          </NoticeMeta>
         </NoticeItem>
       ))}
     </Container>
@@ -92,19 +109,11 @@ const NoticeHeader = styled.div`
 `;
 
 const NoticeTitle = styled.h4`
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  margin-bottom: 0;
 
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   font-size: ${({ theme }) => theme.fontSize.lg};
-`;
-
-const NoticeMeta = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
-
-  color: ${({ theme }) => theme.colors.gray500};
-  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const NoticeActions = styled.div`
@@ -127,15 +136,30 @@ const IconButton = styled.button`
   }
 `;
 
-const ViewCount = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
-  align-items: center;
-`;
-
 const EmptyState = styled.div`
   padding: ${({ theme }) => theme.spacing.xxl};
 
   color: ${({ theme }) => theme.colors.gray500};
   text-align: center;
+`;
+
+const NoticeMeta = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.md};
+  margin-top: ${({ theme }) => theme.spacing.sm};
+`;
+
+const CategoryBadge = styled.span<{ category: string }>`
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+`;
+
+const DateText = styled.span`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;

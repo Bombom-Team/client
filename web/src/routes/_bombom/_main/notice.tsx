@@ -11,7 +11,7 @@ import EmptyNoticeCard from '@/pages/notice/components/EmptyNoticeCard';
 import type { Device } from '@/hooks/useDevice';
 import MenuIcon from '#/assets/svg/menu.svg';
 
-export const Route = createFileRoute('/_bombom/notice')({
+export const Route = createFileRoute('/_bombom/_main/notice')({
   head: () => ({
     meta: [
       {

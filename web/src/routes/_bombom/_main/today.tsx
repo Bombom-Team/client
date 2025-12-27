@@ -3,9 +3,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo } from 'react';
-import ArticleCardList from '../../pages/today/components/ArticleCardList/ArticleCardList';
-import ReadingStatusCard from '../../pages/today/components/ReadingStatusCard/ReadingStatusCard';
-import { getPet } from '@/apis/pet';
+import { getPet } from '@/apis/pet/pet.api';
 import { queries } from '@/apis/queries';
 import PetCard from '@/components/PetCard/PetCard';
 import PetCardSkeleton from '@/components/PetCard/PetCardSkeleton';
@@ -16,7 +14,9 @@ import {
   GUIDE_MAILS,
 } from '@/pages/guide-detail/constants/guideMail';
 import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticlesMutation';
+import ArticleCardList from '@/pages/today/components/ArticleCardList/ArticleCardList';
 import ArticleCardListSkeleton from '@/pages/today/components/ArticleCardList/ArticleCardListSkeleton';
+import ReadingStatusCard from '@/pages/today/components/ReadingStatusCard/ReadingStatusCard';
 import { formatDate } from '@/utils/date';
 import { createStorage } from '@/utils/localStorage';
 import type { Device } from '@/hooks/useDevice';
@@ -24,7 +24,7 @@ import type { LocalGuideMail } from '@/types/guide';
 import type { CSSObject, Theme } from '@emotion/react';
 import HomeIcon from '#/assets/svg/home.svg';
 
-export const Route = createFileRoute('/_bombom/today')({
+export const Route = createFileRoute('/_bombom/_main/today')({
   head: () => ({
     meta: [
       {

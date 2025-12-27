@@ -5,7 +5,7 @@ import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback'
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import NewsletterUnsubscribeModal from '@/pages/MyPage/NewsletterUnsubscribeModal';
-import type { GetMySubscriptionsResponse } from '@/apis/members';
+import type { GetMySubscriptionsResponse } from '@/apis/members/members.api';
 import type { Device } from '@/hooks/useDevice';
 
 interface SubscribedNewslettersSectionProps {

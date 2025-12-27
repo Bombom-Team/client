@@ -2,7 +2,7 @@ import { logger } from '@bombom/shared/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { addWebViewMessageListener, sendMessageToRN } from './webview.utils';
-import { postAppleLogin, postGoogleLogin } from '@/apis/auth';
+import { postAppleLogin, postGoogleLogin } from '@/apis/auth/auth.api';
 import { isWebView } from '@/utils/device';
 import type { RNToWebMessage } from '@bombom/shared/webview';
 

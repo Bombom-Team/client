@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import ReadingKingLeaderboard from '../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
+import ReadingKingLeaderboard from '../../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
+import ChallengeCard from '@/pages/challenge/components/ChallengeCard';
 import NewsletterHero from '@/pages/recommend/components/NewsletterHero/NewsletterHero';
 import NoticeAnnounceBar from '@/pages/recommend/components/NoticeAnnounceBar/NoticeAnnounceBar';
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
@@ -16,7 +17,7 @@ interface BombomIndexSearch {
   tab?: NewsletterTab;
 }
 
-export const Route = createFileRoute('/_bombom/')({
+export const Route = createFileRoute('/_bombom/_main/')({
   head: () => ({
     meta: [
       {
@@ -43,9 +44,19 @@ function Index() {
   return (
     <Container device={device}>
       {firstNotice && <NoticeAnnounceBar notice={firstNotice} />}
+
       <MainContent device={device}>
         <MainSection device={device}>
           <NewsletterHero />
+          <ChallengeCard
+            title="한달 뉴스레터 읽기 챌린지"
+            status="COMING_SOON"
+            day={{
+              start: new Date('2026-01-05'),
+              end: new Date('2026-02-04'),
+            }}
+            applicantCount={0}
+          />
           <TrendySection />
         </MainSection>
         <SideSection device={device}>
@@ -71,7 +82,7 @@ const Container = styled.div<{ device: Device }>`
 
 const MainContent = styled.div<{ device: Device }>`
   display: flex;
-  gap: 24px;
+  gap: 16px;
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
 `;
 
