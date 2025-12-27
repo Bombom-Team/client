@@ -1,0 +1,100 @@
+name: CI/CD - Admin Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: deploy-admin-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack & Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.12.1 --activate
+
+      - name: Setup pnpm store
+        run: pnpm config set store-dir $GITHUB_WORKSPACE/.pnpm-store
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.pnpm-store
+          key: bombom-pnpm-store
+
+      - name: Install dependencies
+        run: pnpm install --filter admin... --frozen-lockfile --prefer-offline
+
+      - name: Build
+        env:
+          VITE_API_BASE_URL: ${{ vars.ADMIN_API_BASE_URL }}
+        run: pnpm run admin:build
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-dist
+          path: admin/dist
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: prod
+
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: admin-dist
+          path: admin/dist
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to S3
+        run: |
+          echo "Uploading to bucket: ${{ secrets.ADMIN_S3_BUCKET }}"
+          aws s3 sync admin/dist s3://${{ secrets.ADMIN_S3_BUCKET }}/build-origin --delete
+
+      - name: CloudFront Invalidation
+        run: |
+          echo "Invalidating CF: ${{ secrets.ADMIN_CLOUDFRONT_DISTRIBUTION_ID }}"
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.ADMIN_CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+  notify:
+    runs-on: ubuntu-latest
+    needs: deploy
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Discord 알림 전송
+      - name: Send Post-Deploy Notification
+        uses: ./.github/actions/discord-notify
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_DEPLOY }}
+          content: ${{ github.ref_name == 'main' && '🚀 **Admin 운영 서버에 새로운 버전이 배포되었습니다!**' || '🧪 **Admin 개발 서버에 새로운 버전이 배포되었습니다!**' }}
+          title: "🔗 Admin 사이트 바로가기"
+          url: ${{ secrets.ADMIN_WEB_URL }}
+          color: ${{ github.ref_name == 'main' && '3066993' || '3447003' }}
+          fields: |
+            [
+              { "name": "배포자", "value": "${{ github.actor }}" },
+              { "name": "배포 시간", "value": "${{ github.event.head_commit.timestamp }}" }
+            ]
