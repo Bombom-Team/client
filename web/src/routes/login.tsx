@@ -10,6 +10,10 @@ export const Route = createFileRoute('/login')({
   head: () => ({
     meta: [
       {
+        name: 'robots',
+        content: 'noindex, follow',
+      },
+      {
         title: '봄봄 | 로그인',
       },
     ],
