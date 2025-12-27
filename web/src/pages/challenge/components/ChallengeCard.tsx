@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import Button from '@/components/Button/Button';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { getDday } from '@/utils/date';
 import { openExternalLink } from '@/utils/externalLink';
 
 type ChallengeStatus = 'COMING_SOON' | 'OPEN';
@@ -23,7 +24,7 @@ const ChallengeCard = ({
   tag,
   status,
 }: ChallengeCardProps) => {
-  const dday = day.start.getDate() - new Date().getDate();
+  const dday = getDday(day.start);
 
   const handleDetailClick = () => {
     trackEvent({
