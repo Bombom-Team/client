@@ -2,12 +2,9 @@ import { useEffect, useCallback } from 'react';
 import * as Notifications from 'expo-notifications';
 import messaging from '@react-native-firebase/messaging';
 import {
-  checkNotificationPermission,
   createAndroidChannel,
   getFCMToken,
-  hasTokenRegistered,
   requestNotificationPermission,
-  setTokenRegistered,
 } from '@/utils/notification';
 import { useWebView } from '@/contexts/WebViewContext';
 import { getDeviceUUID } from '@/utils/device';
@@ -37,7 +34,6 @@ const useNotification = () => {
           token,
         });
 
-        await setTokenRegistered();
         console.log('FCM 토큰이 성공적으로 등록되었습니다.');
         return true;
       }
@@ -67,24 +63,10 @@ const useNotification = () => {
     }
   }, [sendMessageToWeb]);
 
-  const alreadyLoggedInRegister = async (memberId?: number) => {
+  const alreadyLoggedInRegister = async (memberId: number) => {
     try {
-      if (!memberId) {
-        console.log('memberId가 없어 권한 요청을 건너뜁니다.');
-        return;
-      }
-
-      const tokenRegistered = await hasTokenRegistered();
-      const isGranted = await checkNotificationPermission();
-      if (isGranted && tokenRegistered) {
-        console.log('알림 권한 및 토큰 등록이 이미 완료되었습니다.');
-        return;
-      }
-
-      if (!isGranted) {
-        const granted = await requestNotificationPermission();
-        if (!granted) return;
-      }
+      const granted = await requestNotificationPermission();
+      if (!granted) return;
 
       const isRegisterSucceed = await registerFCMToken(memberId);
       if (isRegisterSucceed) {
