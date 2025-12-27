@@ -95,3 +95,11 @@ export const getFCMToken = async () => {
     console.error('FCM 토큰을 가져오는데 실패했습니다.', error);
   }
 };
+
+export const deleteFCMToken = async () => {
+  try {
+    await messaging().deleteToken();
+  } catch (error) {
+    console.error('FCM 토큰을 무효화하는데 실패했습니다.', error);
+  }
+};
