@@ -1,20 +1,22 @@
 import styled from '@emotion/styled';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useSuspenseQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { createNotice } from '@/apis/notices/notices.api';
 import { noticesQueries } from '@/apis/notices/notices.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
-import { useNotices } from '@/contexts/NoticeContext';
 import { NoticeDetailView } from '@/pages/notices/NoticeDetailView';
 import {
   type NoticeCategoryType,
   NOTICE_CATEGORY_LABELS,
 } from '@/types/notice';
 
-export const Route = createFileRoute('/_admin/notices/new')({
-  component: NewNoticePage,
+export const Route = createFileRoute('/_admin/notices/$noticeId/edit')({
+  component: NoticeEditPage,
 });
 
 const NOTICE_CATEGORY_OPTIONS: { label: string; value: NoticeCategoryType }[] =
@@ -23,21 +25,48 @@ const NOTICE_CATEGORY_OPTIONS: { label: string; value: NoticeCategoryType }[] =
     value: value as NoticeCategoryType,
   }));
 
-function NewNoticePage() {
+function NoticeEditPage() {
+  const { noticeId } = Route.useParams();
+  const id = parseInt(noticeId);
+
+  // Load existing data
+  const { data: notice } = useSuspenseQuery(noticesQueries.detail(id));
+
+  if (!notice) return null;
+
+  return <NoticeEditForm notice={notice} id={id} />;
+}
+
+function NoticeEditForm({
+  notice,
+  id,
+}: {
+  notice: {
+    title: string;
+    content?: string;
+    noticeCategory: NoticeCategoryType;
+    createdAt: string;
+  };
+  id: number;
+}) {
   const navigate = useNavigate();
-  const { createNotice: addNotice } = useNotices();
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [noticeCategory, setNoticeCategory] = useState(
-    NOTICE_CATEGORY_OPTIONS[0]?.value ?? 'NOTICE',
+  const queryClient = useQueryClient();
+
+  const [title, setTitle] = useState(notice.title);
+  const [content, setContent] = useState(notice.content ?? '');
+  const [noticeCategory, setNoticeCategory] = useState<NoticeCategoryType>(
+    notice.noticeCategory,
   );
+
   const [isPreview, setIsPreview] = useState(false);
 
-  const queryClient = useQueryClient();
-  const { mutateAsync: createNoticeMutation, isPending } = useMutation({
-    mutationFn: createNotice,
+  const { mutateAsync: updateNoticeMutation, isPending } = useMutation({
+    ...noticesQueries.mutation.update(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: noticesQueries.all });
+      queryClient.invalidateQueries({
+        queryKey: noticesQueries.detail(id).queryKey,
+      });
     },
   });
 
@@ -49,14 +78,18 @@ function NewNoticePage() {
     setIsPreview(true);
   };
 
-  const handleRegister = async () => {
+  const handleUpdate = async () => {
     try {
-      await createNoticeMutation({ title, content, noticeCategory });
-      addNotice(title, content, noticeCategory);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
+      await updateNoticeMutation({
+        noticeId: id,
+        payload: { title, content, noticeCategory },
+      });
+      navigate({
+        to: '/notices/$noticeId',
+        params: { noticeId: id.toString() },
+      });
     } catch (error) {
-      let message = '공지사항 등록에 실패했습니다. 잠시 후 다시 시도해주세요.';
+      let message = '공지사항 수정에 실패했습니다.';
       if (error instanceof Error && error.message) {
         message += `\n${error.message}`;
       }
@@ -65,36 +98,30 @@ function NewNoticePage() {
   };
 
   const handleCancel = () => {
-    if (!title.trim() && !content.trim()) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
-      return;
-    }
-
-    if (confirm('작성 중인 내용이 사라집니다. 취소하시겠습니까?')) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      navigate({ to: '/notices', search: { page: 0, size: 10 } } as any);
-    }
+    navigate({
+      to: '/notices/$noticeId',
+      params: { noticeId: id.toString() },
+    });
   };
 
   if (isPreview) {
     return (
-      <Layout title="새 공지사항 미리보기">
+      <Layout title="공지사항 수정 미리보기">
         <NoticeDetailView
           notice={{
-            id: 0,
+            id,
             title,
             content,
             noticeCategory,
-            createdAt: new Date().toISOString(),
+            createdAt: notice.createdAt, // Keep original date or show 'Now'? Keeping original seems safer for edit
           }}
         >
           <ButtonGroup>
             <Button variant="secondary" onClick={() => setIsPreview(false)}>
               수정 계속하기
             </Button>
-            <Button onClick={handleRegister} disabled={isPending}>
-              {isPending ? '등록 중...' : '등록'}
+            <Button onClick={handleUpdate} disabled={isPending}>
+              {isPending ? '게시 중...' : '게시'}
             </Button>
           </ButtonGroup>
         </NoticeDetailView>
@@ -103,7 +130,7 @@ function NewNoticePage() {
   }
 
   return (
-    <Layout title="새 공지사항 작성">
+    <Layout title="공지사항 수정">
       <Container>
         <Form
           onSubmit={(e) => {
@@ -153,7 +180,7 @@ function NewNoticePage() {
             <Button type="button" variant="secondary" onClick={handleCancel}>
               취소
             </Button>
-            <Button type="submit">등록</Button>
+            <Button type="submit">수정 완료</Button>
           </ButtonGroup>
         </Form>
       </Container>
