@@ -9,7 +9,7 @@ export const Route = createFileRoute('/maintenance')({
         content: 'noindex, nofollow',
       },
       {
-        title: '봄봄 | 회원가입',
+        title: '봄봄 | 점검중',
       },
     ],
   }),
