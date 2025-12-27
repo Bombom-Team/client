@@ -27,14 +27,15 @@ const ContentArea = styled.main`
 interface LayoutProps {
   children: ReactNode;
   title: string;
+  rightAction?: ReactNode;
 }
 
-export const Layout = ({ children, title }: LayoutProps) => {
+export const Layout = ({ children, title, rightAction }: LayoutProps) => {
   return (
     <LayoutContainer>
       <Sidebar />
       <MainContent>
-        <Header title={title} />
+        <Header title={title} rightAction={rightAction} />
         <ContentArea>{children}</ContentArea>
       </MainContent>
     </LayoutContainer>

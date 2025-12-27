@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
-import type { ButtonHTMLAttributes } from 'react';
+import React, { type ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
   size?: 'sm' | 'md' | 'lg';
+  as?: React.ElementType;
 }
 
 const StyledButton = styled.button<ButtonProps>`
@@ -23,11 +24,17 @@ const StyledButton = styled.button<ButtonProps>`
   background-color: ${({ variant, theme }) => {
     if (variant === 'secondary') return theme.colors.gray200;
     if (variant === 'danger') return theme.colors.error;
+    if (variant === 'outline') return 'transparent';
     return theme.colors.primary;
   }};
   color: ${({ variant, theme }) => {
     if (variant === 'secondary') return theme.colors.gray700;
+    if (variant === 'outline') return theme.colors.error;
     return theme.colors.white;
+  }};
+  border: ${({ variant, theme }) => {
+    if (variant === 'outline') return `1px solid ${theme.colors.error}`;
+    return 'none';
   }};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
   font-size: ${({ size, theme }) => {
@@ -48,6 +55,7 @@ const StyledButton = styled.button<ButtonProps>`
     background-color: ${({ variant, theme }) => {
       if (variant === 'secondary') return theme.colors.gray300;
       if (variant === 'danger') return '#DC2626';
+      if (variant === 'outline') return theme.colors.gray50;
       return theme.colors.primaryHover;
     }};
   }

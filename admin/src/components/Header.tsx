@@ -1,20 +1,25 @@
 import styled from '@emotion/styled';
 import { FiUser } from 'react-icons/fi';
+import type { ReactNode } from 'react';
 
 interface HeaderProps {
   title: string;
+  rightAction?: ReactNode;
 }
 
-export const Header = ({ title }: HeaderProps) => {
+export const Header = ({ title, rightAction }: HeaderProps) => {
   return (
     <HeaderContainer>
       <PageTitle>{title}</PageTitle>
-      <UserInfo>
-        <UserName>관리자</UserName>
-        <UserAvatar>
-          <FiUser />
-        </UserAvatar>
-      </UserInfo>
+      <RightSection>
+        {rightAction && <ActionWrapper>{rightAction}</ActionWrapper>}
+        <UserInfo>
+          <UserName>관리자</UserName>
+          <UserAvatar>
+            <FiUser />
+          </UserAvatar>
+        </UserInfo>
+      </RightSection>
     </HeaderContainer>
   );
 };
@@ -35,6 +40,17 @@ const PageTitle = styled.h2`
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   font-size: ${({ theme }) => theme.fontSize.xl};
+`;
+
+const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xl};
+`;
+
+const ActionWrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const UserInfo = styled.div`
