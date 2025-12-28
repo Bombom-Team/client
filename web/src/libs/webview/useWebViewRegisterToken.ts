@@ -7,7 +7,7 @@ export const useWebViewRegisterToken = () => {
   const { userProfile } = useAuth();
 
   useEffect(() => {
-    if (!isWebView() || !userProfile) return;
+    if (!isWebView() || !userProfile?.id) return;
 
     sendMessageToRN({
       type: 'REGISTER_FCM_TOKEN_LOGGED_IN',
@@ -15,5 +15,5 @@ export const useWebViewRegisterToken = () => {
         memberId: userProfile.id,
       },
     });
-  }, [userProfile]);
+  }, [userProfile?.id]);
 };
