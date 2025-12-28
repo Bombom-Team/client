@@ -3,11 +3,16 @@ import * as Notifications from 'expo-notifications';
 import messaging from '@react-native-firebase/messaging';
 import {
   createAndroidChannel,
+  deleteFCMToken,
   getFCMToken,
   requestNotificationPermission,
 } from '@/utils/notification';
 import { useWebView } from '@/contexts/WebViewContext';
-import { getDeviceUUID } from '@/utils/device';
+import {
+  getDeviceUUID,
+  getLastRegisteredMemberId,
+  setLastRegisteredMemberId,
+} from '@/utils/device';
 import { putFCMToken } from '@/apis/notification';
 
 Notifications.setNotificationHandler({
@@ -65,6 +70,12 @@ const useNotification = () => {
 
   const alreadyLoggedInRegister = async (memberId: number) => {
     try {
+      const lastRegisteredMemberId = await getLastRegisteredMemberId();
+      if (!lastRegisteredMemberId || memberId !== lastRegisteredMemberId) {
+        await setLastRegisteredMemberId(memberId);
+        await deleteFCMToken();
+      }
+
       const granted = await requestNotificationPermission();
       if (!granted) return;
 

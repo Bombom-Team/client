@@ -3,6 +3,7 @@ import uuid from 'react-native-uuid';
 import type { RNToWebMessage } from '@bombom/shared/webview';
 
 const DEVICE_UUID_KEY = 'deviceUUID';
+const LAST_REGISTERED_MEMBER_ID_KEY = 'lastRegisteredMemberId';
 
 export const getDeviceUUID = async () => {
   try {
@@ -33,5 +34,27 @@ export const sendDeviceInfoToWeb = async (
     }
   } catch (error) {
     console.error('디바이스 정보 전송 실패:', error);
+  }
+};
+
+export const getLastRegisteredMemberId = async () => {
+  try {
+    const memberId = await SecureStore.getItemAsync(
+      LAST_REGISTERED_MEMBER_ID_KEY,
+    );
+    return memberId ? Number(memberId) : null;
+  } catch (error) {
+    console.error('저장된 memberId를 가져오는데 실패했습니다.', error);
+  }
+};
+
+export const setLastRegisteredMemberId = async (memberId: number) => {
+  try {
+    await SecureStore.setItemAsync(
+      LAST_REGISTERED_MEMBER_ID_KEY,
+      String(memberId),
+    );
+  } catch (error) {
+    console.error('memberId를 저장하는데 실패했습니다.', error);
   }
 };
