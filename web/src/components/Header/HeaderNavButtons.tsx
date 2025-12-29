@@ -5,6 +5,7 @@ import type { Nav } from '@/types/nav';
 import CompassIcon from '#/assets/svg/compass.svg';
 import HomeIcon from '#/assets/svg/home.svg';
 import StorageIcon from '#/assets/svg/storage.svg';
+import ChallengeIcon from '#/assets/svg/trophy.svg';
 
 interface HeaderNavButtonsProps {
   activeNav: Nav;
@@ -39,6 +40,19 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
           color={activeNav === 'storage' ? 'white' : 'black'}
         />
         <p>뉴스레터 보관함</p>
+      </NavButton>
+      <NavButton
+        active={activeNav === 'challenges'}
+        device={device}
+        to="/challenges"
+        className="nav-link"
+      >
+        <ChallengeIcon
+          width={24}
+          height={24}
+          color={activeNav === 'challenges' ? 'white' : 'black'}
+        />
+        <p>챌린지</p>
       </NavButton>
       <NavButton
         active={activeNav === 'recommend'}
