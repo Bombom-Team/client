@@ -5,11 +5,9 @@ import {
   Title,
   TitleIcon,
   TitleWrapper,
-  CountdownWrapper,
 } from './ReadingKingLeaderboard';
 import { RANKING } from './ReadingKingLeaderboard.constants';
 import ArrowIcon from '@/components/icons/ArrowIcon';
-import Skeleton from '@/components/Skeleton/Skeleton';
 
 const ReadingKingLeaderboardSkeleton = () => {
   return (
@@ -20,9 +18,6 @@ const ReadingKingLeaderboardSkeleton = () => {
             <ArrowIcon width={16} height={16} direction="upRight" />
           </TitleIcon>
           <Title>이달의 독서왕</Title>
-          <CountdownWrapper>
-            <Skeleton width={36} height={16} />
-          </CountdownWrapper>
         </TitleWrapper>
 
         <LeaderboardList>
