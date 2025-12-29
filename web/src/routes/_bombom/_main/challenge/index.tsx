@@ -1,6 +1,8 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import ChallengeCard from '@/pages/challenge/components/ChallengeCard';
 import TrophyIcon from '#/assets/svg/trophy.svg';
@@ -16,53 +18,9 @@ export const Route = createFileRoute('/_bombom/_main/challenge/')({
   component: RouteComponent,
 });
 
-const challengeData = [
-  {
-    id: 1,
-    title: '한달 뉴스레터 읽기 챌린지',
-    startDate: new Date('2026-01-05'),
-    endDate: new Date('2026-02-04'),
-    participantCount: 0,
-    status: 'BEFORE_START' as const,
-    detail: {
-      isJoined: false,
-      progress: 0,
-      grade: 'GOLD' as const,
-      isSuccess: false,
-    },
-  },
-  {
-    id: 2,
-    title: '일주일 연속 읽기 챌린지',
-    startDate: new Date('2025-12-30'),
-    endDate: new Date('2026-01-06'),
-    participantCount: 0,
-    status: 'BEFORE_START' as const,
-    detail: {
-      isJoined: false,
-      progress: 0,
-      grade: 'GOLD' as const,
-      isSuccess: false,
-    },
-  },
-  {
-    id: 3,
-    title: '3개월 장기 독서 챌린지',
-    startDate: new Date('2026-02-01'),
-    endDate: new Date('2026-05-01'),
-    participantCount: 0,
-    status: 'BEFORE_START' as const,
-    detail: {
-      isJoined: false,
-      progress: 0,
-      grade: 'GOLD' as const,
-      isSuccess: false,
-    },
-  },
-];
-
 function RouteComponent() {
   const device = useDevice();
+  const { data: challenges } = useQuery(queries.challenges());
 
   const isMobile = device === 'mobile';
 
@@ -79,7 +37,7 @@ function RouteComponent() {
 
       <ContentWrapper>
         <ChallengeGrid isMobile={isMobile}>
-          {challengeData.map((challenge) => (
+          {challenges?.map((challenge) => (
             <ChallengeCard key={challenge.id} {...challenge} />
           ))}
         </ChallengeGrid>
