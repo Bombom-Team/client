@@ -1,88 +1,86 @@
+import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { createFileRoute } from '@tanstack/react-router';
+import {
+  createFileRoute,
+  Outlet,
+  useNavigate,
+  useRouterState,
+} from '@tanstack/react-router';
+import Tab from '@/components/Tab/Tab';
+import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
+import type { CSSObject, Theme } from '@emotion/react';
+import TrophyIcon from '#/assets/svg/trophy.svg';
+
+const CHALLENGE_TABS = [
+  { id: 'daily', label: '데일리 가이드', path: 'daily' },
+  { id: 'dashboard', label: '진행 현황판', path: 'dashboard' },
+  { id: 'comments', label: '한 줄 코멘트', path: 'comments' },
+] as const;
 
 export const Route = createFileRoute('/_bombom/_main/challenge/$challengeId')({
+  head: () => ({
+    meta: [
+      {
+        title: '봄봄 | 챌린지 상세',
+      },
+    ],
+  }),
   component: ChallengeDetail,
 });
 
 function ChallengeDetail() {
   const { challengeId } = Route.useParams();
   const device = useDevice();
+  const navigate = useNavigate();
+  const routerState = useRouterState();
 
-  // TODO: API를 통해 챌린지 상세 정보 가져오기
-  const challengeData = {
-    id: challengeId,
-    title: '한달 뉴스레터 읽기 챌린지',
-    description:
-      '다른 사람들과 함께 한 달 동안 꾸준히 읽기를 실천해보세요! 매일 뉴스레터를 읽고 한줄평을 남기면서 건강한 독서 습관을 만들어갈 수 있습니다.',
-    startDate: '2026-01-05',
-    endDate: '2026-02-04',
-    applicantCount: 0,
-    status: 'COMING_SOON',
+  // 현재 활성화된 탭 확인
+  const currentPath = routerState.location.pathname;
+  const activeTab =
+    CHALLENGE_TABS.find((tab) => currentPath.endsWith(`/${tab.path}`))?.id ||
+    'daily';
+
+  const handleTabSelect = (tabPath: string) => {
+    navigate({
+      to: `/challenge/$challengeId/${tabPath}`,
+      params: { challengeId },
+    });
   };
 
   return (
     <Container device={device}>
-      <Content device={device}>
-        <Header>
-          <TitleSection>
-            <Title>{challengeData.title}</Title>
-            {challengeData.status === 'COMING_SOON' && (
-              <StatusBadge>Coming Soon</StatusBadge>
-            )}
-          </TitleSection>
-          <MetaInfo>
-            <MetaItem>
-              <MetaLabel>기간</MetaLabel>
-              <MetaValue>
-                {challengeData.startDate} ~ {challengeData.endDate}
-              </MetaValue>
-            </MetaItem>
-            <MetaItem>
-              <MetaLabel>신청자</MetaLabel>
-              <MetaValue>{challengeData.applicantCount}명</MetaValue>
-            </MetaItem>
-          </MetaInfo>
-        </Header>
+      {device !== 'mobile' && (
+        <TitleWrapper>
+          <TitleIconBox>
+            <TrophyIcon width={20} height={20} color={theme.colors.white} />
+          </TitleIconBox>
+          <Title>챌린지</Title>
+        </TitleWrapper>
+      )}
 
-        <Description>{challengeData.description}</Description>
+      <ContentWrapper device={device}>
+        <TabsWrapper device={device}>
+          <Tabs direction={device === 'mobile' ? 'horizontal' : 'vertical'}>
+            {CHALLENGE_TABS.map((tab) => (
+              <Tab
+                key={tab.id}
+                value={tab.id}
+                label={tab.label}
+                onTabSelect={() => handleTabSelect(tab.path)}
+                selected={activeTab === tab.id}
+                aria-controls={`panel-${tab.id}`}
+                textAlign="start"
+              />
+            ))}
+          </Tabs>
+        </TabsWrapper>
 
-        <InfoSection>
-          <InfoTitle>챌린지 참여 방법</InfoTitle>
-          <InfoList>
-            <InfoListItem>매일 뉴스레터를 읽고 한줄평을 남깁니다.</InfoListItem>
-            <InfoListItem>
-              다른 참여자들의 한줄평을 보며 서로 동기부여를 받습니다.
-            </InfoListItem>
-            <InfoListItem>
-              챌린지 기간 동안 꾸준히 읽기를 실천하여 습관을 만듭니다.
-            </InfoListItem>
-          </InfoList>
-        </InfoSection>
-
-        <InfoSection>
-          <InfoTitle>혜택</InfoTitle>
-          <InfoList>
-            <InfoListItem>
-              다른 참여자들과 함께 성장하는 즐거움을 느낄 수 있습니다.
-            </InfoListItem>
-            <InfoListItem>
-              독서 습관을 형성하여 지속적인 자기계발이 가능합니다.
-            </InfoListItem>
-            <InfoListItem>
-              리더보드를 통해 자신의 성장을 확인할 수 있습니다.
-            </InfoListItem>
-          </InfoList>
-        </InfoSection>
-
-        <ApplyButton disabled={challengeData.status === 'COMING_SOON'}>
-          {challengeData.status === 'COMING_SOON'
-            ? '준비 중입니다'
-            : '챌린지 신청하기'}
-        </ApplyButton>
-      </Content>
+        <TabPanel device={device}>
+          <Outlet />
+        </TabPanel>
+      </ContentWrapper>
     </Container>
   );
 }
@@ -100,138 +98,95 @@ const Container = styled.div<{ device: Device }>`
   box-sizing: border-box;
 `;
 
-const Content = styled.div<{ device: Device }>`
-  width: 100%;
-  max-width: ${({ device }) => (device === 'mobile' ? '100%' : '800px')};
-  padding: ${({ device }) => (device === 'mobile' ? '24px' : '40px')};
-  border: 1px solid ${({ theme }) => theme.colors.dividers};
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 5%);
-
-  display: flex;
-  gap: 32px;
-  flex-direction: column;
-
-  background-color: ${({ theme }) => theme.colors.white};
-
-  box-sizing: border-box;
-`;
-
-const Header = styled.div`
-  display: flex;
-  gap: 24px;
-  flex-direction: column;
-`;
-
-const TitleSection = styled.div`
-  display: flex;
-  gap: 12px;
-  align-items: center;
-`;
-
-const Title = styled.h1`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading2};
-`;
-
-const StatusBadge = styled.span`
-  padding: 8px 16px;
-  border-radius: 8px;
-
-  background-color: ${({ theme }) => theme.colors.backgroundHover};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body3};
-  font-weight: 600;
-`;
-
-const MetaInfo = styled.div`
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-`;
-
-const MetaItem = styled.div`
+const TitleWrapper = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
+  justify-content: center;
 `;
 
-const MetaLabel = styled.span`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
-`;
-
-const MetaValue = styled.span`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
-  font-weight: 600;
-`;
-
-const Description = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
-  line-height: 1.6;
-`;
-
-const InfoSection = styled.div`
-  display: flex;
-  gap: 16px;
-  flex-direction: column;
-`;
-
-const InfoTitle = styled.h2`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
-`;
-
-const InfoList = styled.ul`
-  margin: 0;
-  padding-left: 24px;
+const TitleIconBox = styled.div`
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
 
   display: flex;
-  gap: 12px;
-  flex-direction: column;
-
-  list-style-type: disc;
-`;
-
-const InfoListItem = styled.li`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
-  line-height: 1.6;
-`;
-
-const ApplyButton = styled.button`
-  padding: 16px 32px;
-  border: none;
-  border-radius: 12px;
-
-  align-self: center;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body1};
-  font-weight: 600;
+`;
 
-  cursor: pointer;
-  transition: all 0.2s ease;
+const Title = styled.h1`
+  font: ${({ theme }) => theme.fonts.heading3};
+`;
 
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.backgroundHover};
-    color: ${({ theme }) => theme.colors.textSecondary};
+const ContentWrapper = styled.div<{ device: Device }>`
+  width: 100%;
 
-    cursor: not-allowed;
-  }
+  display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
+  flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
+  align-items: flex-start;
+  align-self: stretch;
+`;
 
-  &:hover:not(:disabled) {
-    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+const TabsWrapper = styled.div<{ device: Device }>`
+  width: ${({ device }) => (device === 'mobile' ? '100%' : '280px')};
 
-    background-color: ${({ theme }) => theme.colors.primaryDark};
+  display: flex;
+  flex-direction: column;
 
-    transform: translateY(-2px);
-  }
+  box-sizing: border-box;
 
-  &:active:not(:disabled) {
-    transform: translateY(0);
+  order: 0;
+
+  ${({ device, theme }) => tabsWrapperStyles[device](theme)}
+`;
+
+const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
+  pc: (theme) => ({
+    flexShrink: 0,
+    border: `1px solid ${theme.colors.stroke}`,
+    borderRadius: '12px',
+    padding: '16px',
+  }),
+  tablet: (theme) => ({
+    flexShrink: 0,
+    border: `1px solid ${theme.colors.stroke}`,
+    borderRadius: '12px',
+    padding: '16px',
+  }),
+  mobile: () => ({
+    gap: '8px',
+    overflowX: 'auto',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+    scrollbarWidth: 'none',
+  }),
+};
+
+const TabPanel = styled.div<{ device: Device }>`
+  width: 100%;
+  min-width: 0;
+
+  flex: 1;
+
+  animation: fadein 0.2s ease-in-out;
+
+  order: 1;
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 `;
