@@ -4,7 +4,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import ReadingKingLeaderboard from '../../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
-import ChallengeCard from '@/pages/challenge/components/ChallengeCard';
+import ChallengeCard from '@/pages/challenge/index/ChallengeCard';
 import NewsletterHero from '@/pages/recommend/components/NewsletterHero/NewsletterHero';
 import NoticeAnnounceBar from '@/pages/recommend/components/NoticeAnnounceBar/NoticeAnnounceBar';
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';

@@ -2,7 +2,7 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
-import ChallengeCard from '@/pages/challenge/components/ChallengeCard';
+import ChallengeCard from '@/pages/challenge/index/ChallengeCard';
 import TrophyIcon from '#/assets/svg/trophy.svg';
 
 export const Route = createFileRoute('/_bombom/_main/challenge/')({
