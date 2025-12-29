@@ -12,6 +12,7 @@ const fonts = {
   body1: `400 16px/24px ${fontFamily}`,
   body2: `400 14px/22px ${fontFamily}`,
   body3: `400 12px/20px ${fontFamily}`,
+  body4: `400 10px/18px ${fontFamily}`,
   caption: `400 12px/18px ${fontFamily}`,
 };
 

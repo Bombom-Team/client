@@ -14,7 +14,6 @@ import { Route as MaintenanceRouteImport } from './routes/maintenance';
 import { Route as LoginRouteImport } from './routes/login';
 import { Route as LandingRouteImport } from './routes/landing';
 import { Route as BombomRouteImport } from './routes/_bombom';
-import { Route as BombomChallengesRouteImport } from './routes/_bombom/challenges';
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
 import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
 import { Route as BombomArticlesArticleIdRouteImport } from './routes/_bombom/articles.$articleId';
@@ -24,6 +23,7 @@ import { Route as BombomMainNoticeRouteImport } from './routes/_bombom/_main/not
 import { Route as BombomMainMyRouteImport } from './routes/_bombom/_main/my';
 import { Route as BombomMainMemoRouteImport } from './routes/_bombom/_main/memo';
 import { Route as BombomMainGuideRouteImport } from './routes/_bombom/_main/guide';
+import { Route as BombomMainChallengeRouteImport } from './routes/_bombom/_main/challenge';
 import { Route as BombomMainBookmarkRouteImport } from './routes/_bombom/_main/bookmark';
 import { Route as BombomArticlesPreviousArticleIdRouteImport } from './routes/_bombom/articles.previous.$articleId';
 import { Route as BombomArticlesGuideGuideIdRouteImport } from './routes/_bombom/articles.guide.$guideId';
@@ -51,11 +51,6 @@ const LandingRoute = LandingRouteImport.update({
 const BombomRoute = BombomRouteImport.update({
   id: '/_bombom',
   getParentRoute: () => rootRouteImport,
-} as any);
-const BombomChallengesRoute = BombomChallengesRouteImport.update({
-  id: '/challenges',
-  path: '/challenges',
-  getParentRoute: () => BombomRoute,
 } as any);
 const BombomMainRoute = BombomMainRouteImport.update({
   id: '/_main',
@@ -101,6 +96,11 @@ const BombomMainGuideRoute = BombomMainGuideRouteImport.update({
   path: '/guide',
   getParentRoute: () => BombomMainRoute,
 } as any);
+const BombomMainChallengeRoute = BombomMainChallengeRouteImport.update({
+  id: '/challenge',
+  path: '/challenge',
+  getParentRoute: () => BombomMainRoute,
+} as any);
 const BombomMainBookmarkRoute = BombomMainBookmarkRouteImport.update({
   id: '/bookmark',
   path: '/bookmark',
@@ -124,8 +124,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
-  '/challenges': typeof BombomChallengesRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
+  '/challenge': typeof BombomMainChallengeRoute;
   '/guide': typeof BombomMainGuideRoute;
   '/memo': typeof BombomMainMemoRoute;
   '/my': typeof BombomMainMyRoute;
@@ -142,8 +142,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
-  '/challenges': typeof BombomChallengesRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
+  '/challenge': typeof BombomMainChallengeRoute;
   '/guide': typeof BombomMainGuideRoute;
   '/memo': typeof BombomMainMemoRoute;
   '/my': typeof BombomMainMyRoute;
@@ -163,8 +163,8 @@ export interface FileRoutesById {
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
-  '/_bombom/challenges': typeof BombomChallengesRoute;
   '/_bombom/_main/bookmark': typeof BombomMainBookmarkRoute;
+  '/_bombom/_main/challenge': typeof BombomMainChallengeRoute;
   '/_bombom/_main/guide': typeof BombomMainGuideRoute;
   '/_bombom/_main/memo': typeof BombomMainMemoRoute;
   '/_bombom/_main/my': typeof BombomMainMyRoute;
@@ -183,8 +183,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/maintenance'
     | '/signup'
-    | '/challenges'
     | '/bookmark'
+    | '/challenge'
     | '/guide'
     | '/memo'
     | '/my'
@@ -201,8 +201,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/maintenance'
     | '/signup'
-    | '/challenges'
     | '/bookmark'
+    | '/challenge'
     | '/guide'
     | '/memo'
     | '/my'
@@ -221,8 +221,8 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/signup'
     | '/_bombom/_main'
-    | '/_bombom/challenges'
     | '/_bombom/_main/bookmark'
+    | '/_bombom/_main/challenge'
     | '/_bombom/_main/guide'
     | '/_bombom/_main/memo'
     | '/_bombom/_main/my'
@@ -279,13 +279,6 @@ declare module '@tanstack/react-router' {
       fullPath: '';
       preLoaderRoute: typeof BombomRouteImport;
       parentRoute: typeof rootRouteImport;
-    };
-    '/_bombom/challenges': {
-      id: '/_bombom/challenges';
-      path: '/challenges';
-      fullPath: '/challenges';
-      preLoaderRoute: typeof BombomChallengesRouteImport;
-      parentRoute: typeof BombomRoute;
     };
     '/_bombom/_main': {
       id: '/_bombom/_main';
@@ -350,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BombomMainGuideRouteImport;
       parentRoute: typeof BombomMainRoute;
     };
+    '/_bombom/_main/challenge': {
+      id: '/_bombom/_main/challenge';
+      path: '/challenge';
+      fullPath: '/challenge';
+      preLoaderRoute: typeof BombomMainChallengeRouteImport;
+      parentRoute: typeof BombomMainRoute;
+    };
     '/_bombom/_main/bookmark': {
       id: '/_bombom/_main/bookmark';
       path: '/bookmark';
@@ -376,6 +376,7 @@ declare module '@tanstack/react-router' {
 
 interface BombomMainRouteChildren {
   BombomMainBookmarkRoute: typeof BombomMainBookmarkRoute;
+  BombomMainChallengeRoute: typeof BombomMainChallengeRoute;
   BombomMainGuideRoute: typeof BombomMainGuideRoute;
   BombomMainMemoRoute: typeof BombomMainMemoRoute;
   BombomMainMyRoute: typeof BombomMainMyRoute;
@@ -387,6 +388,7 @@ interface BombomMainRouteChildren {
 
 const BombomMainRouteChildren: BombomMainRouteChildren = {
   BombomMainBookmarkRoute: BombomMainBookmarkRoute,
+  BombomMainChallengeRoute: BombomMainChallengeRoute,
   BombomMainGuideRoute: BombomMainGuideRoute,
   BombomMainMemoRoute: BombomMainMemoRoute,
   BombomMainMyRoute: BombomMainMyRoute,
@@ -402,7 +404,6 @@ const BombomMainRouteWithChildren = BombomMainRoute._addFileChildren(
 
 interface BombomRouteChildren {
   BombomMainRoute: typeof BombomMainRouteWithChildren;
-  BombomChallengesRoute: typeof BombomChallengesRoute;
   BombomArticlesArticleIdRoute: typeof BombomArticlesArticleIdRoute;
   BombomArticlesGuideGuideIdRoute: typeof BombomArticlesGuideGuideIdRoute;
   BombomArticlesPreviousArticleIdRoute: typeof BombomArticlesPreviousArticleIdRoute;
@@ -410,7 +411,6 @@ interface BombomRouteChildren {
 
 const BombomRouteChildren: BombomRouteChildren = {
   BombomMainRoute: BombomMainRouteWithChildren,
-  BombomChallengesRoute: BombomChallengesRoute,
   BombomArticlesArticleIdRoute: BombomArticlesArticleIdRoute,
   BombomArticlesGuideGuideIdRoute: BombomArticlesGuideGuideIdRoute,
   BombomArticlesPreviousArticleIdRoute: BombomArticlesPreviousArticleIdRoute,

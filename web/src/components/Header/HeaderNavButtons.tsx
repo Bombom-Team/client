@@ -13,11 +13,13 @@ interface HeaderNavButtonsProps {
 }
 
 const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
+  const isPC = device === 'pc';
+
   return (
     <>
       <NavButton
         active={activeNav === 'today'}
-        device={device}
+        isPC={isPC}
         to="/today"
         className="nav-link"
       >
@@ -30,7 +32,7 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
       </NavButton>
       <NavButton
         active={activeNav === 'storage'}
-        device={device}
+        isPC={isPC}
         to="/storage"
         className="nav-link"
       >
@@ -42,21 +44,21 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
         <p>뉴스레터 보관함</p>
       </NavButton>
       <NavButton
-        active={activeNav === 'challenges'}
-        device={device}
-        to="/challenges"
+        active={activeNav === 'challenge'}
+        isPC={isPC}
+        to="/challenge"
         className="nav-link"
       >
         <ChallengeIcon
           width={24}
           height={24}
-          color={activeNav === 'challenges' ? 'white' : 'black'}
+          color={activeNav === 'challenge' ? 'white' : 'black'}
         />
         <p>챌린지</p>
       </NavButton>
       <NavButton
         active={activeNav === 'recommend'}
-        device={device}
+        isPC={isPC}
         to="/"
         className="nav-link"
       >
@@ -74,22 +76,24 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
 export default HeaderNavButtons;
 
 const NavButton = styled(Link, {
-  shouldForwardProp: (prop) => prop !== 'active' && prop !== 'device',
-})<{ active?: boolean; device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '4px 12px' : '10px 12px')};
+  shouldForwardProp: (prop) => prop !== 'active' && prop !== 'isPC',
+})<{ active?: boolean; isPC: boolean }>`
+  height: 100%;
+  padding: ${({ isPC }) => (isPC ? '10px 12px' : '4px 12px')};
   border-radius: 12px;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '0px' : '4px')};
-  flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
+  gap: ${({ isPC }) => (isPC ? '4px' : '0')};
+  flex: ${({ isPC }) => !isPC && '1'};
+  flex-direction: ${({ isPC }) => (isPC ? 'row' : 'column')};
   align-items: center;
+  justify-content: center;
 
   background: ${({ active, theme }) =>
     active ? theme.colors.primary : 'transparent'};
   color: ${({ active, theme }) =>
     active ? theme.colors.white : theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ isPC, theme }) => (isPC ? theme.fonts.body2 : theme.fonts.body4)};
 
   text-shadow: ${({ active }) =>
     active ? 'none' : '0 1px 2px rgba(0, 0, 0, 0.1)'};
