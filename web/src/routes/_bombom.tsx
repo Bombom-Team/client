@@ -3,7 +3,7 @@ import { queries } from '@/apis/queries';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
 import { useWebViewNotificationActive } from '@/libs/webview/useWebViewNotificationActive';
-import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
+import { useWebViewSendMemberId } from '@/libs/webview/useWebViewSendMemberId';
 import { LANDING_VISITED_KEY } from '@/pages/landing/constants/localStorage';
 
 let isFirstVisit = true;
@@ -38,7 +38,7 @@ export const Route = createFileRoute('/_bombom')({
 });
 
 function RouteComponent() {
-  useWebViewRegisterToken();
+  useWebViewSendMemberId();
   useWebViewNotificationActive();
 
   return (

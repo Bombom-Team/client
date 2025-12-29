@@ -26,8 +26,7 @@ export const MainScreen = () => {
   const webViewLoadEndCleanupRef = useRef<() => void>(null);
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
-  const { onNotification, registerFCMToken, alreadyLoggedInRegister } =
-    useNotification();
+  const { onNotification, updateMemberId } = useNotification();
 
   const handleWebViewLoadEnd = () => {
     console.log('WebView 로드 완료');
@@ -80,15 +79,9 @@ export const MainScreen = () => {
           sendDeviceInfoToWeb();
           break;
 
-        case 'REGISTER_FCM_TOKEN':
+        case 'MEMBER_ID':
           if (message.payload.memberId) {
-            registerFCMToken(message.payload.memberId);
-          }
-          break;
-
-        case 'REGISTER_FCM_TOKEN_LOGGED_IN':
-          if (message.payload.memberId) {
-            alreadyLoggedInRegister(message.payload.memberId);
+            updateMemberId(message.payload.memberId);
           }
           break;
 

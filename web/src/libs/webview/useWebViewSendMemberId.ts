@@ -3,14 +3,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { isWebView } from '@/utils/device';
 
-export const useWebViewRegisterToken = () => {
+export const useWebViewSendMemberId = () => {
   const { userProfile } = useAuth();
 
   useEffect(() => {
     if (!isWebView() || !userProfile?.id) return;
 
     sendMessageToRN({
-      type: 'REGISTER_FCM_TOKEN_LOGGED_IN',
+      type: 'MEMBER_ID',
       payload: {
         memberId: userProfile.id,
       },
