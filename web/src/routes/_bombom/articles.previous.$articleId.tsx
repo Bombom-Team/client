@@ -5,13 +5,13 @@ import { createFileRoute, useRouterState } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
+import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
-import PreviousHeader from '@/pages/previous-newsletter/components/PreviousHeader/PreviousHeader';
 import { openSubscribeLink } from '@/pages/recommend/components/NewsletterDetail/NewsletterDetail.utils';
 import { cutHtmlByTextRatio } from '@/utils/element';
 
@@ -75,66 +75,66 @@ function RouteComponent() {
   };
 
   return (
-    <>
+    <Container>
       {device !== 'pc' && (
-        <PreviousHeader onSubscribeClick={handleSubscribeClick} />
+        <MobileDetailHeader
+          right={<Button onClick={handleSubscribeClick}>구독하기</Button>}
+        />
       )}
 
-      <Container>
-        <ArticleHeader
-          title={article.title}
-          newsletterCategory={article.newsletter.category}
-          newsletterName={article.newsletter.name}
-          arrivedDateTime={new Date(article.arrivedDateTime)}
-          expectedReadTime={article.expectedReadTime}
-        />
-        <Divider />
+      <ArticleHeader
+        title={article.title}
+        newsletterCategory={article.newsletter.category}
+        newsletterName={article.newsletter.name}
+        arrivedDateTime={new Date(article.arrivedDateTime)}
+        expectedReadTime={article.expectedReadTime}
+      />
+      <Divider />
 
-        <Content
-          showGradient={shouldShowSubscribePrompt}
-          dangerouslySetInnerHTML={{
-            __html: processContent(article.newsletter.name, bodyContent),
-          }}
-        />
+      <Content
+        showGradient={shouldShowSubscribePrompt}
+        dangerouslySetInnerHTML={{
+          __html: processContent(article.newsletter.name, bodyContent),
+        }}
+      />
 
-        {shouldShowSubscribePrompt && (
-          <SubscribePrompt>
-            <SubscribePromptText>
-              뉴스레터가 마음에 드셨다면, 구독으로 계속 만나보세요!
-            </SubscribePromptText>
-            <SubscribePromptButton
-              onClick={handleSubscribeClick}
-              disabled={!isLoggedIn || (isLoggedIn && article.isSubscribed)}
-            >
-              {getSubscribeButtonText()}
-            </SubscribePromptButton>
-          </SubscribePrompt>
-        )}
+      {shouldShowSubscribePrompt && (
+        <SubscribePrompt>
+          <SubscribePromptText>
+            뉴스레터가 마음에 드셨다면, 구독으로 계속 만나보세요!
+          </SubscribePromptText>
+          <SubscribePromptButton
+            onClick={handleSubscribeClick}
+            disabled={!isLoggedIn || (isLoggedIn && article.isSubscribed)}
+          >
+            {getSubscribeButtonText()}
+          </SubscribePromptButton>
+        </SubscribePrompt>
+      )}
 
-        <Divider />
+      <Divider />
 
-        {device === 'pc' && (
-          <ActionButtonWrapper>
-            <SubscribeButton
-              type="button"
-              onClick={handleSubscribeClick}
-              disabled={!isLoggedIn || (isLoggedIn && article.isSubscribed)}
-            >
-              구독
-            </SubscribeButton>
+      {device === 'pc' && (
+        <ActionButtonWrapper>
+          <SubscribeButton
+            type="button"
+            onClick={handleSubscribeClick}
+            disabled={!isLoggedIn || (isLoggedIn && article.isSubscribed)}
+          >
+            구독
+          </SubscribeButton>
 
-            <ActionButton type="button" onClick={handleScrollUp}>
-              <ChevronIcon
-                direction="up"
-                width={28}
-                height={28}
-                color={theme.colors.icons}
-              />
-            </ActionButton>
-          </ActionButtonWrapper>
-        )}
-      </Container>
-    </>
+          <ActionButton type="button" onClick={handleScrollUp}>
+            <ChevronIcon
+              direction="up"
+              width={28}
+              height={28}
+              color={theme.colors.icons}
+            />
+          </ActionButton>
+        </ActionButtonWrapper>
+      )}
+    </Container>
   );
 }
 

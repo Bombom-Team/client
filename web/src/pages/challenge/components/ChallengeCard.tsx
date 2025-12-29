@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import Button from '@/components/Button/Button';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { getDday } from '@/utils/date';
 import { openExternalLink } from '@/utils/externalLink';
 
 type ChallengeStatus = 'COMING_SOON' | 'OPEN';
@@ -14,6 +15,7 @@ interface ChallengeCardProps {
   };
   tag?: string;
   status: ChallengeStatus;
+  onClick?: () => void;
 }
 
 const ChallengeCard = ({
@@ -22,22 +24,28 @@ const ChallengeCard = ({
   day,
   tag,
   status,
+  onClick,
 }: ChallengeCardProps) => {
-  const dday = day.start.getDate() - new Date().getDate();
+  const dday = getDday(day.start);
 
-  const handleDetailClick = () => {
+  const handleCardClick = () => {
     trackEvent({
       category: 'Challenge',
       action: '카드 클릭',
       label: title,
     });
-    openExternalLink(
-      'https://maroon-geranium-880.notion.site/2d103dcf205680dfa045d47385af3df9?source=copy_link',
-    );
+
+    if (onClick) {
+      onClick();
+    } else {
+      openExternalLink(
+        'https://maroon-geranium-880.notion.site/2d103dcf205680dfa045d47385af3df9?source=copy_link',
+      );
+    }
   };
 
   return (
-    <Container>
+    <Container onClick={handleCardClick}>
       <Header>
         <TitleSection>
           <Title>{title}</Title>
@@ -53,14 +61,10 @@ const ChallengeCard = ({
 
       <Footer>
         {status === 'COMING_SOON' && (
-          <ComingSoonBadge disabled onClick={() => {}}>
-            Coming Soon
-          </ComingSoonBadge>
+          <ComingSoonBadge disabled>Coming Soon</ComingSoonBadge>
         )}
 
-        <DetailButton variant="transparent" onClick={handleDetailClick}>
-          자세히 보기 →
-        </DetailButton>
+        <DetailButton variant="transparent">자세히 보기 →</DetailButton>
       </Footer>
     </Container>
   );
@@ -71,6 +75,7 @@ export default ChallengeCard;
 const Container = styled.div`
   width: 100%;
   height: 172px;
+  min-width: 320px;
   max-width: 440px;
   padding: 20px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
@@ -81,6 +86,20 @@ const Container = styled.div`
   justify-content: space-between;
 
   background-color: ${({ theme }) => theme.colors.white};
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary};
+    box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
+
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 `;
 
 const Header = styled.div`

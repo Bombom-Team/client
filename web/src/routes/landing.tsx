@@ -16,6 +16,10 @@ export const Route = createFileRoute('/landing')({
   head: () => ({
     meta: [
       {
+        name: 'robots',
+        content: 'noindex, follow',
+      },
+      {
         title: '봄봄 | 뉴스레터로 시작하는 새로운 읽기 습관',
       },
     ],
