@@ -192,15 +192,17 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.lg};
+  flex-direction: column;
 `;
 
 // New SearchSection to mimic the white box look
 const SearchSection = styled.div`
-  background: white;
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  background: white;
+
   /* box-shadow: ${({ theme }) => theme.shadows.sm}; */
 `;
 
@@ -210,16 +212,18 @@ const TopAction = styled.div`
 `;
 
 const SearchForm = styled.form`
+  width: 100%;
+
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
   align-items: center;
-  width: 100%;
 `;
 
 const SearchInputWrapper = styled.div`
-  flex: 1;
   position: relative;
+
   display: flex;
+  flex: 1;
   align-items: center;
 `;
 
@@ -229,6 +233,7 @@ const SearchInput = styled.input`
   padding-right: 40px;
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
+
   font-size: ${({ theme }) => theme.fontSize.base};
 
   &:focus {
@@ -238,18 +243,20 @@ const SearchInput = styled.input`
 `;
 
 const CategorySelect = styled.select`
-  appearance: none;
+  min-width: 150px;
   padding: ${({ theme }) => theme.spacing.md};
   padding-right: 48px; /* Extra space for arrow */
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
+
   background-color: white;
-  min-width: 150px;
-  font-size: ${({ theme }) => theme.fontSize.base};
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 12px center;
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
+  font-size: ${({ theme }) => theme.fontSize.base};
+
+  appearance: none;
 
   &:focus {
     outline: none;
@@ -258,18 +265,20 @@ const CategorySelect = styled.select`
 `;
 
 const FilterSelect = styled.select`
-  appearance: none;
+  min-width: 180px;
   padding: ${({ theme }) => theme.spacing.md};
   padding-right: 48px; /* Extra space for arrow */
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
+
   background-color: white;
-  min-width: 180px;
-  font-size: ${({ theme }) => theme.fontSize.base};
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 12px center;
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
+  font-size: ${({ theme }) => theme.fontSize.base};
+
+  appearance: none;
 
   &:focus {
     outline: none;
@@ -279,38 +288,42 @@ const FilterSelect = styled.select`
 
 const NewsletterList = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: ${({ theme }) => theme.spacing.lg};
 
-  @media (max-width: 1440px) {
+  grid-template-columns: repeat(4, 1fr);
+
+  @media (width <= 1440px) {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  @media (max-width: 1024px) {
+  @media (width <= 1024px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 640px) {
+  @media (width <= 640px) {
     grid-template-columns: 1fr;
   }
 `;
 
 const NewsletterCard = styled(Link)`
-  background: white;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
   padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+
   display: flex;
-  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.sm};
-  text-decoration: none;
+  flex-direction: column;
+
+  background: white;
   color: inherit;
+
+  text-decoration: none;
   transition:
     transform 0.2s,
     box-shadow 0.2s;
 
   &:hover {
-    transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.shadows.md};
+    transform: translateY(-2px);
   }
 `;
 
@@ -323,73 +336,86 @@ const Thumbnail = styled.img`
   width: 60px;
   height: 60px;
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  object-fit: cover;
-  background-color: #f3f4f6;
+
   flex-shrink: 0;
+
+  background-color: #f3f4f6;
+
+  object-fit: cover;
 `;
 
 const Info = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
   min-width: 0;
+
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  flex-direction: column;
 `;
 
 const Category = styled.span`
-  background-color: #ffedd5;
-  color: #ea580c;
-  font-size: 10px;
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
   padding: 3px 8px;
   border-radius: 4px;
+
   display: inline-block;
   align-self: flex-start;
+
+  background-color: #ffedd5;
+  color: #ea580c;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: 10px;
 `;
 
 const Name = styled.h3`
-  font-size: ${({ theme }) => theme.fontSize.base};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.gray900};
+  overflow: hidden;
   margin: 0;
+
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.base};
   line-height: 1.4;
   white-space: nowrap;
-  overflow: hidden;
+
   text-overflow: ellipsis;
 `;
 
 const MetaInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xs};
   margin-top: 4px;
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-direction: column;
   align-items: flex-start;
 `;
 
 const IssueCycleBadge = styled.span`
-  color: ${({ theme }) => theme.colors.gray700};
-  background-color: ${({ theme }) => theme.colors.gray100};
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: 11px;
+
+  background-color: ${({ theme }) => theme.colors.gray100};
+  color: ${({ theme }) => theme.colors.gray700};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: 11px;
   line-height: 1.3;
-  word-break: keep-all;
-  white-space: pre-wrap;
   text-align: left;
+  white-space: pre-wrap;
+
+  word-break: keep-all;
 `;
 
 const SubscriptionCount = styled.span`
-  font-size: ${({ theme }) => theme.fontSize.xs};
-  color: ${({ theme }) => theme.colors.gray500};
   display: flex;
   align-items: center;
+
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const EmptyState = styled.div`
   padding: 4rem;
-  text-align: center;
-  color: ${({ theme }) => theme.colors.gray500};
-  background: white;
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  background: white;
+  color: ${({ theme }) => theme.colors.gray500};
+  text-align: center;
 `;

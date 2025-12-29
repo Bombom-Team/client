@@ -1,14 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { useCreateNewsletter } from '@/apis/newsletters/newsletters.query';
-import { Button } from '@/components/Button';
-import { Layout } from '@/components/Layout';
-import {
-  NEWSLETTER_CATEGORY_LABELS,
-  type NewsletterCategoryType,
-  PREVIOUS_STRATEGY_LABELS,
-} from '@/types/newsletter';
 import {
   Container,
   Divider,
@@ -22,10 +14,27 @@ import {
   Select,
   TextArea,
 } from './NewsletterFormStyles';
+import { useCreateNewsletter } from '@/apis/newsletters/newsletters.query';
+import { Button } from '@/components/Button';
+import { Layout } from '@/components/Layout';
+import {
+  NEWSLETTER_CATEGORY_LABELS,
+  type NewsletterCategoryType,
+  PREVIOUS_STRATEGY_LABELS,
+} from '@/types/newsletter';
 
 export const Route = createFileRoute('/_admin/newsletters/new')({
   component: NewsletterCreatePage,
 });
+
+const DEFAULT_SEARCH = {
+  sort: 'POPULAR',
+  page: 0,
+  size: 10,
+  keyword: '',
+  category: '',
+  previousStrategy: '',
+};
 
 function NewsletterCreatePage() {
   const navigate = useNavigate();
@@ -76,7 +85,10 @@ function NewsletterCreatePage() {
         onSuccess: () => {
           alert('뉴스레터가 성공적으로 등록되었습니다.');
           void queryClient.invalidateQueries({ queryKey: ['newsletters'] });
-          void navigate({ to: '/newsletters' });
+          void navigate({
+            to: '/newsletters',
+            search: DEFAULT_SEARCH,
+          });
         },
         onError: (error) => {
           alert(`등록 실패: ${error.message}`);
@@ -289,7 +301,10 @@ function NewsletterCreatePage() {
               type="button"
               variant="secondary"
               onClick={() => {
-                void navigate({ to: '/newsletters' });
+                void navigate({
+                  to: '/newsletters',
+                  search: DEFAULT_SEARCH,
+                });
               }}
             >
               취소
