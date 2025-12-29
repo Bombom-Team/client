@@ -1,4 +1,3 @@
-import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -10,21 +9,37 @@ import { queries } from '@/apis/queries';
 import { Carousel } from '@/components/Carousel/Carousel';
 import ArrowIcon from '@/components/icons/ArrowIcon';
 import Tooltip from '@/components/Tooltip/Tooltip';
+import { useCountdown } from '@/hooks/useCountdown';
 import { chunk } from '@/utils/array';
-import ReadingKingHelpIcon from '#/assets/svg/help.svg';
+import { padTimeDigit } from '@/utils/time';
+
+const COUNTDOWN_UPDATE_INTERVAL_MS = 1000 * 60 * 10;
 
 const ReadingKingLeaderboard = () => {
   const [rankExplainOpened, setRankExplainOpened] = useState(false);
 
-  const { data: monthlyReadingRank, isLoading } = useQuery(
-    queries.monthlyReadingRank({ limit: RANKING.maxRank }),
-  );
+  const {
+    data: monthlyReadingRank,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery(queries.monthlyReadingRank({ limit: RANKING.maxRank }));
   const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
+
+  const { leftTime } = useCountdown({
+    targetTime:
+      monthlyReadingRank?.nextRefreshAt ??
+      new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
+    completeDelay: 1000,
+    onComplete: () => {
+      refetch();
+    },
+  });
 
   const openRankExplain = () => setRankExplainOpened(true);
   const closeRankExplain = () => setRankExplainOpened(false);
 
-  const monthlyReadingRankContent = monthlyReadingRank ?? [];
+  const monthlyReadingRankContent = monthlyReadingRank?.data ?? [];
   const haveNoContent = !isLoading && monthlyReadingRankContent.length === 0;
 
   if (!isLoading && haveNoContent) return null;
@@ -37,30 +52,20 @@ const ReadingKingLeaderboard = () => {
           <ArrowIcon width={16} height={16} direction="upRight" />
         </TitleIcon>
         <Title>이달의 독서왕</Title>
-        <TooltipButton
-          type="button"
-          aria-label="이달의 독서왕 랭킹 안내"
-          aria-expanded={rankExplainOpened}
-          aria-describedby="rank-explain-tooltip"
-          onMouseEnter={openRankExplain}
-          onMouseLeave={closeRankExplain}
-          onFocus={openRankExplain}
-          onBlur={closeRankExplain}
-        >
-          <ReadingKingHelpIcon
-            width={20}
-            height={20}
-            fill={theme.colors.primary}
-          />
-        </TooltipButton>
-
-        <Tooltip
-          id="rank-explain-tooltip"
-          opened={rankExplainOpened}
-          position="right"
-        >
-          순위는 10분마다 갱신됩니다.
-        </Tooltip>
+        <CountdownWrapper>
+          <Countdown
+            onMouseEnter={openRankExplain}
+            onMouseLeave={closeRankExplain}
+            onFocus={openRankExplain}
+            onBlur={closeRankExplain}
+          >
+            {`${padTimeDigit(leftTime.minutes)}:${padTimeDigit(leftTime.seconds)}`}
+            <Tooltip opened={rankExplainOpened} position="bottom">
+              순위는 10분마다 갱신됩니다.
+            </Tooltip>
+          </Countdown>
+          {isFetching && <CountdownLoadingDots />}
+        </CountdownWrapper>
       </TitleWrapper>
 
       <Carousel.Root loop>
@@ -145,10 +150,65 @@ export const Title = styled.h3`
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-export const TooltipButton = styled.button`
+export const CountdownWrapper = styled.div`
   display: flex;
+  gap: 8px;
   align-items: center;
   justify-content: center;
+`;
+
+const Countdown = styled.div`
+  position: relative;
+  width: 36px;
+
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.body2};
+
+  cursor: help;
+`;
+
+const CountdownLoadingDots = styled.div`
+  --dot-gradient: no-repeat
+    radial-gradient(
+      circle closest-side,
+      ${({ theme }) => theme.colors.primaryDark} 70%,
+      #0000
+    );
+
+  width: 36px;
+
+  background:
+    var(--dot-gradient) 0% 50%,
+    var(--dot-gradient) 50% 50%,
+    var(--dot-gradient) 100% 50%;
+  background-size: calc(100% / 3) 100%;
+
+  animation: l7 1s infinite linear;
+
+  aspect-ratio: 4;
+
+  @keyframes l7 {
+    33% {
+      background-size:
+        calc(100% / 3) 0%,
+        calc(100% / 3) 100%,
+        calc(100% / 3) 100%;
+    }
+
+    50% {
+      background-size:
+        calc(100% / 3) 100%,
+        calc(100% / 3) 0%,
+        calc(100% / 3) 100%;
+    }
+
+    66% {
+      background-size:
+        calc(100% / 3) 100%,
+        calc(100% / 3) 100%,
+        calc(100% / 3) 0%;
+    }
+  }
 `;
 
 export const LeaderboardList = styled.div`
