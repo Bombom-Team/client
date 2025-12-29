@@ -4,8 +4,8 @@ export const CHALLENGES: Challenge[] = [
   {
     id: 1,
     title: '한달 뉴스레터 읽기 챌린지',
-    startDate: new Date('2026-01-05T00:00:00'),
-    endDate: new Date('2026-02-04T00:00:00'),
+    startDate: new Date('2026-01-05'),
+    endDate: new Date('2026-02-04'),
     participantCount: 0,
     status: 'BEFORE_START',
     detail: {
@@ -18,12 +18,12 @@ export const CHALLENGES: Challenge[] = [
   {
     id: 2,
     title: '일주일 연속 읽기 챌린지',
-    startDate: new Date('2025-12-30T00:00:00'),
-    endDate: new Date('2026-01-06T00:00:00'),
+    startDate: new Date('2025-12-30'),
+    endDate: new Date('2026-01-06'),
     participantCount: 0,
     status: 'BEFORE_START',
     detail: {
-      isJoined: false,
+      isJoined: true,
       progress: 0,
       grade: 'GOLD',
       isSuccess: false,
@@ -32,13 +32,13 @@ export const CHALLENGES: Challenge[] = [
   {
     id: 3,
     title: '3개월 장기 독서 챌린지',
-    startDate: new Date('2026-02-01T00:00:00'),
-    endDate: new Date('2026-05-01T00:00:00'),
-    participantCount: 0,
-    status: 'BEFORE_START',
+    startDate: new Date('2026-02-01'),
+    endDate: new Date('2026-05-01'),
+    participantCount: 20,
+    status: 'ONGOING',
     detail: {
       isJoined: false,
-      progress: 0,
+      progress: 20,
       grade: 'GOLD',
       isSuccess: false,
     },

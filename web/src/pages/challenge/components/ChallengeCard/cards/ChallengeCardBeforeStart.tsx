@@ -8,11 +8,12 @@ import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../../ChallengeCard';
 
 const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
+  const { participantCount, startDate, title } = props;
   const handleCardClick = () => {
     trackEvent({
       category: 'Challenge',
       action: '카드 클릭',
-      label: props.title,
+      label: title,
     });
 
     openExternalLink(
@@ -22,11 +23,15 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
 
   return (
     <CardContainer onClick={handleCardClick}>
-      <CardHeader {...props} />
+      <CardHeader
+        title={title}
+        startDate={startDate}
+        applicantCount={participantCount}
+      />
 
       <CardFooter>
         {props.detail.isJoined ? (
-          <ApplyButton>신청취소</ApplyButton>
+          <ApplyButton variant="outlined">신청취소</ApplyButton>
         ) : (
           <ApplyButton>신청하기</ApplyButton>
         )}

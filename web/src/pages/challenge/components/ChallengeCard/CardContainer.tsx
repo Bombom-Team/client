@@ -29,8 +29,9 @@ const Container = styled.div`
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.primary};
     box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
+
+    border-color: ${({ theme }) => theme.colors.primary};
 
     transform: translateY(-2px);
   }
