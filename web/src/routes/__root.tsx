@@ -9,6 +9,7 @@ import {
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import Toast from '@/components/Toast/Toast';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { useChannelTalk } from '@/hooks/useChannelTalk';
 import usePageTracking from '@/libs/googleAnalytics/usePageTracking';
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
 import { useWebViewRouting } from '@/libs/webview/useWebViewRouting';
@@ -24,6 +25,7 @@ const RootComponent = () => {
   usePageTracking();
   useWebViewAuth();
   useWebViewRouting();
+  useChannelTalk();
 
   return (
     <>

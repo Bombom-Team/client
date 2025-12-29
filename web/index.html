@@ -5,7 +5,7 @@
 
     <meta
       name="viewport"
-      content="initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;"
+      content="initial-scale=1;maximum-scale=1;minimum-scale=1;user-scalable=no;"
     />
     <title>봄봄</title>
     <meta
@@ -14,38 +14,74 @@
     />
     <meta name="keywords" content="봄봄, 뉴스레터, 아티클, 트렌드, 정보" />
     <meta name="author" content="봄봄팀" />
+    <meta name="robots" content="index, follow" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta name="theme-color" content="#FF9966" />
-    <link rel="icon" type="image/png" href="/public/assets/png/logo.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="canonical" href="https://www.bombom.news" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="봄봄" />
     <meta
       property="og:description"
       content="봄봄 - 뉴스레터, 아티클, 트렌드 정보를 한 곳에!"
     />
-    <meta property="og:image" content="/public/assets/png/logo.png" />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
+    <meta property="og:image" content="/assets/png/og-image.png" />
     <meta property="og:image:alt" content="봄봄 로고" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:url" content="https://www.bombom.news" />
     <meta property="og:site_name" content="봄봄" />
     <meta property="og:locale" content="ko_KR" />
 
-    <!-- Twitter -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="봄봄" />
     <meta
       name="twitter:description"
       content="봄봄 - 뉴스레터, 아티클, 트렌드 정보를 한 곳에!"
     />
-    <meta name="twitter:image" content="/public/assets/png/logo.png" />
+    <meta name="twitter:image" content="/assets/png/og-image.png" />
     <meta name="twitter:image:alt" content="봄봄 로고" />
+
+    <!-- Naver Site Verification -->
     <meta
       name="naver-site-verification"
       content="972790f41cbb91a92f444d39677fa993b3f6accc"
     />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.bombom.news/#website",
+            "url": "https://www.bombom.news",
+            "name": "봄봄",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://www.bombom.news/search?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": ["봄봄 소개", "로그인"],
+            "url": [
+              "https://www.bombom.news/landing",
+              "https://www.bombom.news/login"
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

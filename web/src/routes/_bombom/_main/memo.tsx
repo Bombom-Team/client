@@ -9,7 +9,7 @@ import NewsletterFilterSkeleton from '@/pages/storage/components/NewsletterFilte
 import QuickMenu from '@/pages/storage/components/QuickMenu/QuickMenu';
 import MemoIcon from '#/assets/svg/memo.svg';
 
-export const Route = createFileRoute('/_bombom/memo')({
+export const Route = createFileRoute('/_bombom/_main/memo')({
   head: () => ({
     meta: [
       {

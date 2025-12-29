@@ -13,7 +13,7 @@ import type { Device } from '@/hooks/useDevice';
 import type { LocalGuideMail } from '@/types/guide';
 import HelpIcon from '#/assets/svg/help.svg';
 
-export const Route = createFileRoute('/_bombom/guide')({
+export const Route = createFileRoute('/_bombom/_main/guide')({
   head: () => ({
     meta: [
       {
