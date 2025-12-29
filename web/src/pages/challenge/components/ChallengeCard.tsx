@@ -72,6 +72,7 @@ export default ChallengeCard;
 const Container = styled.div`
   width: 100%;
   height: 172px;
+  min-width: 320px;
   max-width: 440px;
   padding: 20px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
