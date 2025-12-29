@@ -36,7 +36,6 @@ function ChallengeDetail() {
   const navigate = useNavigate();
   const routerState = useRouterState();
 
-  // 현재 활성화된 탭 확인
   const currentPath = routerState.location.pathname;
   const activeTab =
     CHALLENGE_TABS.find((tab) => currentPath.endsWith(`/${tab.path}`))?.id ||
