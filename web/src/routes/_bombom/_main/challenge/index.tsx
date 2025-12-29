@@ -1,6 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import ChallengeCard from '@/pages/challenge/components/ChallengeCard';
 import TrophyIcon from '#/assets/svg/trophy.svg';
@@ -20,39 +20,49 @@ const challengeData = [
   {
     id: 1,
     title: '한달 뉴스레터 읽기 챌린지',
-    status: 'COMING_SOON' as const,
-    day: {
-      start: new Date('2026-01-05'),
-      end: new Date('2026-02-04'),
+    startDate: new Date('2026-01-05'),
+    endDate: new Date('2026-02-04'),
+    participantCount: 0,
+    status: 'BEFORE_START' as const,
+    detail: {
+      isJoined: false,
+      progress: 0,
+      grade: 'GOLD' as const,
+      isSuccess: false,
     },
-    applicantCount: 0,
   },
   {
     id: 2,
     title: '일주일 연속 읽기 챌린지',
-    status: 'OPEN' as const,
-    day: {
-      start: new Date('2025-12-30'),
-      end: new Date('2026-01-06'),
+    startDate: new Date('2025-12-30'),
+    endDate: new Date('2026-01-06'),
+    participantCount: 0,
+    status: 'BEFORE_START' as const,
+    detail: {
+      isJoined: false,
+      progress: 0,
+      grade: 'GOLD' as const,
+      isSuccess: false,
     },
-    applicantCount: 15,
-    tag: '인기',
   },
   {
     id: 3,
     title: '3개월 장기 독서 챌린지',
-    status: 'COMING_SOON' as const,
-    day: {
-      start: new Date('2026-02-01'),
-      end: new Date('2026-05-01'),
+    startDate: new Date('2026-02-01'),
+    endDate: new Date('2026-05-01'),
+    participantCount: 0,
+    status: 'BEFORE_START' as const,
+    detail: {
+      isJoined: false,
+      progress: 0,
+      grade: 'GOLD' as const,
+      isSuccess: false,
     },
-    applicantCount: 0,
   },
 ];
 
 function RouteComponent() {
   const device = useDevice();
-  const navigate = useNavigate();
 
   const isMobile = device === 'mobile';
 
@@ -70,15 +80,7 @@ function RouteComponent() {
       <ContentWrapper>
         <ChallengeGrid isMobile={isMobile}>
           {challengeData.map((challenge) => (
-            <ChallengeCard
-              key={challenge.id}
-              title={challenge.title}
-              status={challenge.status}
-              day={challenge.day}
-              applicantCount={challenge.applicantCount}
-              tag={challenge.tag}
-              onClick={() => navigate({ to: `/challenge/${challenge.id}` })}
-            />
+            <ChallengeCard key={challenge.id} {...challenge} />
           ))}
         </ChallengeGrid>
       </ContentWrapper>
