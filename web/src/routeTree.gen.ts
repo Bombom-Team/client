@@ -14,7 +14,6 @@ import { Route as MaintenanceRouteImport } from './routes/maintenance';
 import { Route as LoginRouteImport } from './routes/login';
 import { Route as LandingRouteImport } from './routes/landing';
 import { Route as BombomRouteImport } from './routes/_bombom';
-import { Route as BombomChallengesRouteImport } from './routes/_bombom/challenges';
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
 import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
 import { Route as BombomArticlesArticleIdRouteImport } from './routes/_bombom/articles.$articleId';
@@ -58,11 +57,6 @@ const LandingRoute = LandingRouteImport.update({
 const BombomRoute = BombomRouteImport.update({
   id: '/_bombom',
   getParentRoute: () => rootRouteImport,
-} as any);
-const BombomChallengesRoute = BombomChallengesRouteImport.update({
-  id: '/challenges',
-  path: '/challenges',
-  getParentRoute: () => BombomRoute,
 } as any);
 const BombomMainRoute = BombomMainRouteImport.update({
   id: '/_main',
@@ -172,7 +166,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
-  '/challenges': typeof BombomChallengesRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/challenge': typeof BombomMainChallengeRouteWithChildren;
   '/guide': typeof BombomMainGuideRoute;
@@ -197,7 +190,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
-  '/challenges': typeof BombomChallengesRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/guide': typeof BombomMainGuideRoute;
   '/memo': typeof BombomMainMemoRoute;
@@ -223,7 +215,6 @@ export interface FileRoutesById {
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
-  '/_bombom/challenges': typeof BombomChallengesRoute;
   '/_bombom/_main/bookmark': typeof BombomMainBookmarkRoute;
   '/_bombom/_main/challenge': typeof BombomMainChallengeRouteWithChildren;
   '/_bombom/_main/guide': typeof BombomMainGuideRoute;
@@ -250,7 +241,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/maintenance'
     | '/signup'
-    | '/challenges'
     | '/bookmark'
     | '/challenge'
     | '/guide'
@@ -275,7 +265,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/maintenance'
     | '/signup'
-    | '/challenges'
     | '/bookmark'
     | '/guide'
     | '/memo'
@@ -300,7 +289,6 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/signup'
     | '/_bombom/_main'
-    | '/_bombom/challenges'
     | '/_bombom/_main/bookmark'
     | '/_bombom/_main/challenge'
     | '/_bombom/_main/guide'
@@ -365,13 +353,6 @@ declare module '@tanstack/react-router' {
       fullPath: '';
       preLoaderRoute: typeof BombomRouteImport;
       parentRoute: typeof rootRouteImport;
-    };
-    '/_bombom/challenges': {
-      id: '/_bombom/challenges';
-      path: '/challenges';
-      fullPath: '/challenges';
-      preLoaderRoute: typeof BombomChallengesRouteImport;
-      parentRoute: typeof BombomRoute;
     };
     '/_bombom/_main': {
       id: '/_bombom/_main';
@@ -577,7 +558,6 @@ const BombomMainRouteWithChildren = BombomMainRoute._addFileChildren(
 
 interface BombomRouteChildren {
   BombomMainRoute: typeof BombomMainRouteWithChildren;
-  BombomChallengesRoute: typeof BombomChallengesRoute;
   BombomArticlesArticleIdRoute: typeof BombomArticlesArticleIdRoute;
   BombomArticlesGuideGuideIdRoute: typeof BombomArticlesGuideGuideIdRoute;
   BombomArticlesPreviousArticleIdRoute: typeof BombomArticlesPreviousArticleIdRoute;
@@ -585,7 +565,6 @@ interface BombomRouteChildren {
 
 const BombomRouteChildren: BombomRouteChildren = {
   BombomMainRoute: BombomMainRouteWithChildren,
-  BombomChallengesRoute: BombomChallengesRoute,
   BombomArticlesArticleIdRoute: BombomArticlesArticleIdRoute,
   BombomArticlesGuideGuideIdRoute: BombomArticlesGuideGuideIdRoute,
   BombomArticlesPreviousArticleIdRoute: BombomArticlesPreviousArticleIdRoute,
