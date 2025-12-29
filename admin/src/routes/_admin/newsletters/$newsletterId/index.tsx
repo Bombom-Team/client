@@ -1,14 +1,12 @@
 import styled from '@emotion/styled';
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import {
   createFileRoute,
-  useNavigate,
   useParams,
   Link,
 } from '@tanstack/react-router';
 import {
   newslettersQueries,
-  useDeleteNewsletter,
 } from '@/apis/newsletters/newsletters.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
@@ -23,28 +21,11 @@ export const Route = createFileRoute('/_admin/newsletters/$newsletterId/')({
 
 function NewsletterDetailView() {
   const { newsletterId } = useParams({ from: Route.id });
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+
   const { data: newsletter } = useSuspenseQuery(
     newslettersQueries.detail(Number(newsletterId)),
   );
-  const { mutate: deleteNewsletter } = useDeleteNewsletter();
 
-  const handleDelete = () => {
-    if (confirm('정말로 삭제하시겠습니까?')) {
-      deleteNewsletter(Number(newsletterId), {
-        onSuccess: () => {
-          alert('삭제되었습니다.');
-          void queryClient.invalidateQueries({ queryKey: ['newsletters'] });
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          void navigate({ to: '/newsletters' } as any);
-        },
-        onError: (error) => {
-          alert(`삭제 실패: ${error.message}`);
-        },
-      });
-    }
-  };
 
   if (!newsletter) return null;
 
@@ -165,9 +146,7 @@ function NewsletterDetailView() {
           >
             <Button as="span">수정 하기</Button>
           </Link>
-          <Button variant="outline" size="sm" onClick={handleDelete}>
-            삭제
-          </Button>
+
         </Footer>
       </Container>
     </Layout>

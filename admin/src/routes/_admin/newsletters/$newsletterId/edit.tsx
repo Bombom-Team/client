@@ -4,18 +4,7 @@ import {
   useNavigate,
   useParams,
 } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
-import {
-  newslettersQueries,
-  useUpdateNewsletter,
-} from '@/apis/newsletters/newsletters.query';
-import { Button } from '@/components/Button';
-import { Layout } from '@/components/Layout';
-import {
-  NEWSLETTER_CATEGORY_LABELS,
-  type NewsletterCategoryType,
-  PREVIOUS_STRATEGY_LABELS,
-} from '@/types/newsletter';
+import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
 import {
   Container,
   Divider,
@@ -28,8 +17,18 @@ import {
   SectionTitle,
   Select,
   TextArea,
-} from './NewsletterFormStyles';
-import type { ChangeEvent, FormEvent } from 'react';
+} from '../NewsletterFormStyles';
+import {
+  newslettersQueries,
+  useUpdateNewsletter,
+} from '@/apis/newsletters/newsletters.query';
+import { Button } from '@/components/Button';
+import { Layout } from '@/components/Layout';
+import {
+  NEWSLETTER_CATEGORY_LABELS,
+  type NewsletterCategoryType,
+  PREVIOUS_STRATEGY_LABELS,
+} from '@/types/newsletter';
 
 export const Route = createFileRoute('/_admin/newsletters/$newsletterId/edit')({
   component: NewsletterEditPage,
