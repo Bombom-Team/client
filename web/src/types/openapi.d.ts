@@ -976,14 +976,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['NoticeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -995,9 +995,9 @@ export interface components {
       sort?: components['schemas']['SortObject'];
       /** Format: int32 */
       pageSize?: number;
-      paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
+      paged?: boolean;
       unpaged?: boolean;
     };
     SortObject: {
@@ -1031,8 +1031,6 @@ export interface components {
       isVisible: boolean;
     };
     SubscribedNewsletterResponse: {
-      /** Format: int64 */
-      subscriptionId: number;
       /** Format: int64 */
       newsletterId: number;
       name: string;
@@ -1089,15 +1087,6 @@ export interface components {
       /** Format: int32 */
       monthlyReadCount: number;
     };
-    MonthlyReadingRankingResponse: {
-      /** Format: date-time */
-      rankingUpdatedAt: string;
-      /** Format: date-time */
-      nextRefreshAt: string;
-      /** Format: date-time */
-      serverTime: string;
-      data: components['schemas']['MonthlyReadingRankResponse'][];
-    };
     MemberMonthlyReadingRankResponse: {
       /** Format: int64 */
       rank: number;
@@ -1152,14 +1141,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1217,14 +1206,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1277,14 +1266,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2307,7 +2296,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['MonthlyReadingRankingResponse'];
+          '*/*': components['schemas']['MonthlyReadingRankResponse'][];
         };
       };
       /** @description 잘못된 요청 값 (limit는 1 이상의 값이어야 함) */
