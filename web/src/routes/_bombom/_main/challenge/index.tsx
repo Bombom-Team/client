@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import ChallengeCard from '@/pages/challenge/components/ChallengeCard';
-import type { Device } from '@/hooks/useDevice';
 import TrophyIcon from '#/assets/svg/trophy.svg';
 
 export const Route = createFileRoute('/_bombom/_main/challenge/')({
@@ -55,9 +54,11 @@ function RouteComponent() {
   const device = useDevice();
   const navigate = useNavigate();
 
+  const isMobile = device === 'mobile';
+
   return (
-    <Container device={device}>
-      {device !== 'mobile' && (
+    <Container>
+      {!isMobile && (
         <TitleWrapper>
           <TitleIconBox>
             <TrophyIcon width={20} height={20} color={theme.colors.white} />
@@ -66,8 +67,8 @@ function RouteComponent() {
         </TitleWrapper>
       )}
 
-      <ContentWrapper device={device}>
-        <ChallengeGrid device={device}>
+      <ContentWrapper>
+        <ChallengeGrid isMobile={isMobile}>
           {challengeData.map((challenge) => (
             <ChallengeCard
               key={challenge.id}
@@ -85,7 +86,7 @@ function RouteComponent() {
   );
 }
 
-const Container = styled.div<{ device: Device }>`
+const Container = styled.div`
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
@@ -122,7 +123,7 @@ const Title = styled.h1`
   font: ${({ theme }) => theme.fonts.heading3};
 `;
 
-const ContentWrapper = styled.div<{ device: Device }>`
+const ContentWrapper = styled.div`
   width: 100%;
 
   display: flex;
@@ -133,12 +134,12 @@ const ContentWrapper = styled.div<{ device: Device }>`
   justify-content: center;
 `;
 
-const ChallengeGrid = styled.div<{ device: Device }>`
+const ChallengeGrid = styled.div<{ isMobile: boolean }>`
   width: 100%;
 
   display: grid;
-  gap: ${({ device }) => (device === 'mobile' ? '16px' : '24px')};
+  gap: ${({ isMobile }) => (isMobile ? '16px' : '24px')};
 
-  grid-template-columns: ${({ device }) =>
-    device === 'mobile' ? '1fr' : 'repeat(auto-fit, minmax(360px, 1fr))'};
+  grid-template-columns: ${({ isMobile }) =>
+    isMobile ? '1fr' : 'repeat(auto-fit, minmax(360px, 1fr))'};
 `;

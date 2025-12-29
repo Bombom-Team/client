@@ -50,7 +50,7 @@ function ChallengeDetail() {
   };
 
   return (
-    <Container device={device}>
+    <Container>
       {device !== 'mobile' && (
         <TitleWrapper>
           <TitleIconBox>
@@ -77,7 +77,7 @@ function ChallengeDetail() {
           </Tabs>
         </TabsWrapper>
 
-        <TabPanel device={device}>
+        <TabPanel>
           <Outlet />
         </TabPanel>
       </ContentWrapper>
@@ -85,7 +85,7 @@ function ChallengeDetail() {
   );
 }
 
-const Container = styled.div<{ device: Device }>`
+const Container = styled.div`
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
@@ -168,25 +168,9 @@ const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   }),
 };
 
-const TabPanel = styled.div<{ device: Device }>`
+const TabPanel = styled.div`
   width: 100%;
   min-width: 0;
 
   flex: 1;
-
-  animation: fadein 0.2s ease-in-out;
-
-  order: 1;
-
-  @keyframes fadein {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 `;

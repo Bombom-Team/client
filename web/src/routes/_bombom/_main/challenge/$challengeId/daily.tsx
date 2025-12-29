@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -9,7 +7,7 @@ export const Route = createFileRoute(
   head: () => ({
     meta: [
       {
-        title: '봄봄 | 챌린지 일일 기록',
+        title: '봄봄 | 챌린지 데일리 가이드',
       },
     ],
   }),
@@ -17,10 +15,8 @@ export const Route = createFileRoute(
 });
 
 function ChallengeDaily() {
-  const device = useDevice();
-
   return (
-    <Container device={device}>
+    <Container>
       <Content>
         <Title>일일 기록</Title>
         <Placeholder>
@@ -33,7 +29,7 @@ function ChallengeDaily() {
   );
 }
 
-const Container = styled.div<{ device: Device }>`
+const Container = styled.div`
   width: 100%;
 `;
 
