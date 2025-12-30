@@ -27,3 +27,16 @@ export const getChallenges = async () => {
     path: '/challenge',
   });
 };
+
+export type EligibilityReason = '로그인_안함' | '구독_안함';
+
+export interface ChallengeEligibilityResponse {
+  canApply: boolean;
+  reasons: EligibilityReason[];
+}
+
+export const getChallengeEligibility = async (challengeId: number) => {
+  return await fetcher.get<ChallengeEligibilityResponse>({
+    path: `/challenge/${challengeId}/eligibility`,
+  });
+};
