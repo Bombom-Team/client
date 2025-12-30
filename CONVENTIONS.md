@@ -93,6 +93,8 @@ Follow CONVENTIONS.md strictly when generating or editing code.
   → 각 항목을 완료할 때마다 해당 변경만 포함된 커밋을 만든다(커밋 메시지는 `feat|refactor|chore: 한글 설명` 형식을 따른다)
 - Push & Open PR  
   → 모든 항목을 마친 후 원격에 push하고, PR을 작성한다(템플릿 규칙과 제목 형식을 아래 Git Workflow를 따른다)
+- Workflow Commands AUTO-COMMIT & PUSH  
+  → `[WORKFLOW]` 지시를 받은 AI/CLI는 위 커밋/푸시 단계를 자동으로 수행해야 하며, 작업 종료 전 커밋 누락이나 push 미실행 상태를 허용하지 않는다
 
 ## Git Workflow
 
