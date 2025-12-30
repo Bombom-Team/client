@@ -1,6 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import Badge from '@/components/Badge/Badge';
+import { convertRelativeTime } from '@/utils/date';
 import MailIcon from '#/assets/svg/mail.svg';
 
 export interface CommentCardProps {
@@ -18,11 +19,13 @@ const CommentCard = ({
   createdAt,
   comment,
 }: CommentCardProps) => {
+  const relativeTime = convertRelativeTime(createdAt);
+
   return (
     <Container>
       <MetaWrapper>
         <MetaInfo>
-          {nickname} · {createdAt}
+          {nickname} · {relativeTime}
         </MetaInfo>
         <NewsletterBadge text={newsletterName} />
       </MetaWrapper>
