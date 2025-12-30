@@ -1,5 +1,10 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
+import { useDevice } from '@/hooks/useDevice';
+import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
+import mockChallengeData from '@/pages/challenge/dashboard/components/ChallengeDashboard/mockChallengeData.json';
+import MobileChallengeDashboard from '@/pages/challenge/dashboard/components/MobileChallengeDashboard/MobileChallengeDashboard';
+import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/dashboard',
@@ -11,19 +16,31 @@ export const Route = createFileRoute(
       },
     ],
   }),
-  component: ChallengeDashboard,
+  component: ChallengeDashboardRoute,
 });
 
-function ChallengeDashboard() {
+const nickName = '메이토';
+
+function ChallengeDashboardRoute() {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
   return (
     <Container>
       <Content>
-        <Title>대시보드</Title>
-        <Placeholder>
-          챌린지 대시보드 내용이 여기에 표시됩니다.
-          <br />
-          전체 진행 상황과 통계, 리더보드 등을 확인할 수 있습니다.
-        </Placeholder>
+        <UserChallengeInfo />
+        <InfoWrapper>
+          <AchievementAverage>
+            팀 평균 달성률 : {mockChallengeData.teamSummary.achievementAverage}%
+          </AchievementAverage>
+        </InfoWrapper>
+        {isMobile ? (
+          <MobileChallengeDashboard
+            nickName={nickName}
+            data={mockChallengeData}
+          />
+        ) : (
+          <ChallengeDashboard nickName={nickName} data={mockChallengeData} />
+        )}
       </Content>
     </Container>
   );
@@ -35,7 +52,7 @@ const Container = styled.div`
 
 const Content = styled.div`
   width: 100%;
-  padding: 32px;
+  padding: 16px;
   border: 1px solid ${({ theme }) => theme.colors.dividers};
   border-radius: 16px;
 
@@ -48,13 +65,10 @@ const Content = styled.div`
   box-sizing: border-box;
 `;
 
-const Title = styled.h2`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading3};
+const InfoWrapper = styled.div`
+  padding: 0 10px;
 `;
 
-const Placeholder = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
-  line-height: 1.6;
+const AchievementAverage = styled.p`
+  font: ${({ theme }) => theme.fonts.heading6};
 `;
