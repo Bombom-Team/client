@@ -5,7 +5,6 @@ import type { Nav } from '@/types/nav';
 const navMap: Record<string, Nav> = {
   '/today': 'today',
   '/storage': 'storage',
-  '/challenge': 'challenge',
   '/': 'recommend',
 };
 

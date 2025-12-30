@@ -20,7 +20,7 @@ function RouteComponent() {
       <Outlet />
       {!isPC && (
         <BottomNavWrapper>
-          <HeaderNavButtons activeNav={activeNav} device={device} />
+          <HeaderNavButtons activeNav={activeNav} device="mobile" />
         </BottomNavWrapper>
       )}
     </>
