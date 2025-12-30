@@ -75,13 +75,28 @@ Follow CONVENTIONS.md strictly when generating or editing code.
 - Comments SHOULD be concise  
   → 이해가 어려운 로직에만 짧은 설명을 남기고 자체 설명형 코드를 선호한다
 
+## Workflow Process
+
+- Receive Request & List Tasks  
+  → 작업 요청을 받으면 필요한 하위 작업을 항목별로 리스트업하고, 각 항목은 독립적으로 수행 가능한 단위로 분리한다
+- Share & Confirm Plan  
+  → 정리한 작업 리스트를 사용자에게 공유해 컨펌을 받은 뒤에만 구현을 진행한다
+- Implement Per Item  
+  → 승인된 리스트를 순서대로 개발/테스트하며, 다른 항목에 영향이 없도록 범위를 관리한다
+- Commit Per Item  
+  → 각 항목을 완료할 때마다 해당 변경만 포함된 커밋을 만든다(커밋 메시지는 `feat|refactor|chore: 한글 설명` 형식을 따른다)
+- Push & Open PR  
+  → 모든 항목을 마친 후 원격에 push하고, PR을 작성한다(템플릿 규칙과 제목 형식을 아래 Git Workflow를 따른다)
+
 ## Git Workflow
 
-- Branch Naming FOLLOWS `{type}/{issue_key}`  
-  → 예) `feat/BOM-5`
-- Commits FOLLOW `type: subject`  
-  → 예) `feat: add notice API`
-- PR Titles USE `[FE][issue] type:subject`  
-  → CLAUDE.md에 정의된 형식을 따른다
+- Branch Naming FOLLOWS `{issue_key}{issue_task_name}`  
+  → 예) `BOM-5{특정 기능 개발}`
+- Commits USE `type: 한글설명`  
+  → `type`은 `feat`, `refactor`, `fix`, `test`, `chore`만 사용하며 나머지 메시지는 한글로 작성한다 (예: `feat: 챌린지 완료 카드 추가`)
+- PR Titles START WITH `[issue] type:subject`  
+  → 브랜치명에 포함된 이슈 키를 `[BOM-199]` 형식으로 앞에 붙이고, 이후 `feat|fix` 등 이슈 유형과 브랜치 내용을 기입한다 (예: `[BOM-199] feat: BOM-793-챌린지-종류별-신청-카드-제작`)
+- PR Template REVIEW POINTS USE CHECKBOXES  
+  → `.github/pull_request_template.md`의 Review Point 섹션에 구현한 작업 리스트를 체크박스로 정리해 리뷰 범위를 명확히 한다
 - Avoid Rewriting Others' Work  
   → 예상치 못한 변경을 발견하면 되돌리지 말고 사용자와 상의한다
