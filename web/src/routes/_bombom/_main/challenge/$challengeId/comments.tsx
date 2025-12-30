@@ -126,6 +126,7 @@ const Container = styled.section`
 const ContentWrapper = styled.div`
   width: 100%;
   padding: 24px;
+  border-top: 2px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
   gap: 44px;
