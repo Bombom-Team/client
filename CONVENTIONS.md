@@ -43,6 +43,8 @@ Follow CONVENTIONS.md strictly when generating or editing code.
 
 - HTTP Client MUST be shared fetcher  
   → API 호출은 `@bombom/shared/apis`의 `fetcher`를 사용하고 요청/응답 타입을 명시한다
+- API Specs REFER TO openapi.d.ts  
+  → API 명세가 필요할 땐 각 워크스페이스의 `src/types/openapi.d.ts`를 참조해 최신 스펙과 타입을 확인한다
 - Params MUST mirror backend features  
   → 서버 지원 파라미터(예: pagination, name 검색)를 query key와 함께 동일하게 전달한다
 - Interfaces LIVE near API  
@@ -79,6 +81,8 @@ Follow CONVENTIONS.md strictly when generating or editing code.
 
 ## Workflow Process
 
+- User Command `[WORKFLOW]` TRIGGERS process  
+  → 사용자가 CLI 명령이나 지시문 앞에 `[WORKFLOW]` prefix를 붙이면 아래 프로세스를 반드시 실행해 기능 개발을 진행한다
 - Receive Request & List Tasks  
   → 작업 요청을 받으면 필요한 하위 작업을 항목별로 리스트업하고, 각 항목은 독립적으로 수행 가능한 단위로 분리한다
 - Share & Confirm Plan  
