@@ -1,13 +1,7 @@
 import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import {
-  createFileRoute,
-  useParams,
-  Link,
-} from '@tanstack/react-router';
-import {
-  newslettersQueries,
-} from '@/apis/newsletters/newsletters.query';
+import { createFileRoute, useParams, Link } from '@tanstack/react-router';
+import { newslettersQueries } from '@/apis/newsletters/newsletters.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import {
@@ -25,7 +19,6 @@ function NewsletterDetailView() {
   const { data: newsletter } = useSuspenseQuery(
     newslettersQueries.detail(Number(newsletterId)),
   );
-
 
   if (!newsletter) return null;
 
@@ -114,7 +107,7 @@ function NewsletterDetailView() {
             <Value>
               {
                 PREVIOUS_STRATEGY_LABELS[
-                newsletter.previousStrategy as PreviousStrategyType
+                  newsletter.previousStrategy as PreviousStrategyType
                 ]
               }
             </Value>
@@ -146,7 +139,6 @@ function NewsletterDetailView() {
           >
             <Button as="span">수정 하기</Button>
           </Link>
-
         </Footer>
       </Container>
     </Layout>
@@ -154,14 +146,16 @@ function NewsletterDetailView() {
 }
 
 const Container = styled.div`
-  background: white;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  padding: ${({ theme }) => theme.spacing.xl};
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xl};
   max-width: 800px;
   margin: 0 auto;
+  padding: ${({ theme }) => theme.spacing.xl};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xl};
+  flex-direction: column;
+
+  background: white;
 `;
 
 const HeaderSection = styled.div`
@@ -172,107 +166,118 @@ const HeaderSection = styled.div`
 const Thumbnail = styled.img`
   width: 100px;
   height: 100px;
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  object-fit: cover;
-  background-color: #f3f4f6;
-  flex-shrink: 0;
   border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  flex-shrink: 0;
+
+  background-color: #f3f4f6;
+
+  object-fit: cover;
 `;
 
 const HeaderInfo = styled.div`
   display: flex;
-  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.sm};
   flex: 1;
+  flex-direction: column;
 `;
 
 const Category = styled.span`
-  background-color: #ffedd5; // Light orange/peach
-  color: #ea580c; // Dark orange
-  font-size: 11px;
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
   padding: 2px 6px;
   border-radius: 4px;
+
   display: inline-block;
   align-self: flex-start;
+
+  background-color: #ffedd5;
+  color: #ea580c;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: 11px;
 `;
 
 const Title = styled.h1`
-  font-size: ${({ theme }) => theme.fontSize.xl};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.gray900};
   margin: 0;
+
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.xl};
 `;
 
 const Description = styled.p`
-  font-size: ${({ theme }) => theme.fontSize.sm};
-  color: ${({ theme }) => theme.colors.gray600};
-  line-height: 1.5;
   margin: 0;
+
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.5;
 `;
 
 const SectionTitle = styled.h2`
-  font-size: ${({ theme }) => theme.fontSize.sm};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  margin: 0 0 2px;
+
   color: ${({ theme }) => theme.colors.gray900};
-  margin: 0 0 2px 0;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const Divider = styled.hr`
+  margin: 0;
   border: none;
   border-top: 1px solid ${({ theme }) => theme.colors.gray100};
-  margin: 0;
 `;
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.xxl};
+
+  grid-template-columns: 1fr 1fr;
 `;
 
 const GridItem = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 2px;
+  flex-direction: column;
 `;
 
 const Label = styled.span`
-  font-size: ${({ theme }) => theme.fontSize.xs};
   color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const Value = styled.span`
-  font-size: ${({ theme }) => theme.fontSize.sm};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
   color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const LinkGrid = styled.div`
   display: grid;
+  gap: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.xxl};
+
   grid-template-columns: 1fr 1fr;
-  column-gap: ${({ theme }) => theme.spacing.xxl};
-  row-gap: ${({ theme }) => theme.spacing.lg};
 `;
 
 const LinkItem = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 2px;
+  flex-direction: column;
 `;
 
 const LinkLabel = styled.span`
-  font-size: ${({ theme }) => theme.fontSize.xs};
   color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const LinkValue = styled.a`
-  font-size: ${({ theme }) => theme.fontSize.sm};
-  color: #ea580c; // Orange link color
-  text-decoration: none;
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
   display: inline-flex;
-  align-items: center;
   gap: 4px;
+  align-items: center;
+
+  color: #ea580c;
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  text-decoration: none;
 
   &:hover {
     text-decoration: underline;
@@ -280,8 +285,9 @@ const LinkValue = styled.a`
 `;
 
 const Footer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: ${({ theme }) => theme.spacing.sm};
   margin-top: ${({ theme }) => theme.spacing.lg};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  justify-content: flex-end;
 `;
