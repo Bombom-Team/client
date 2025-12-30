@@ -26,39 +26,6 @@ export const getDday = (targetDate: Date): string => {
   return `+${Math.abs(diff)}`;
 };
 
-export const getWeek = (
-  targetDateString: string,
-  startDateString?: string,
-): number => {
-  const targetDate = new Date(targetDateString);
-  const startDate = startDateString
-    ? new Date(startDateString)
-    : new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
-
-  targetDate.setHours(0, 0, 0, 0);
-  startDate.setHours(0, 0, 0, 0);
-
-  if (targetDate < startDate) return 0;
-
-  const diffMs = targetDate.getTime() - startDate.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const week = Math.floor(diffDays / 7) + 1;
-  return week;
-};
-
-export const getDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-
-  return {
-    year,
-    month,
-    day,
-  };
-};
-
 export const getDatesInRange = (
   startDate: string,
   endDate: string,
