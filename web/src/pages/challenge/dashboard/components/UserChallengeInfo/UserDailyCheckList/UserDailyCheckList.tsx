@@ -4,27 +4,22 @@ import { useDevice } from '@/hooks/useDevice';
 type TodoType = 'READ' | 'COMMENT';
 type TodoStatus = 'COMPLETE' | 'INCOMPLETE';
 
-const mockData: { todayTodos: { todoType: TodoType; status: TodoStatus }[] } = {
-  todayTodos: [
-    {
-      todoType: 'READ',
-      status: 'COMPLETE',
-    },
-    {
-      todoType: 'COMMENT',
-      status: 'INCOMPLETE',
-    },
-  ],
-};
+interface DailyTodo {
+  todoType: TodoType;
+  status: TodoStatus;
+}
+interface UserDailyCheckListProps {
+  todayTodos: DailyTodo[];
+}
 
 const todoLabels: Record<TodoType, string> = {
   READ: '뉴스레터를 읽었나요?',
   COMMENT: '오늘의 코멘트를 작성했나요?',
 };
 
-const UserDailyCheckList = () => {
-  const totalCount = mockData.todayTodos.length;
-  const completedCount = mockData.todayTodos.filter(
+const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
+  const totalCount = todayTodos.length;
+  const completedCount = todayTodos.filter(
     (todo) => todo.status === 'COMPLETE',
   ).length;
 
@@ -40,7 +35,7 @@ const UserDailyCheckList = () => {
         </CountBadge>
       </Header>
       <List>
-        {mockData.todayTodos.map((todo) => (
+        {todayTodos.map((todo) => (
           <ListItem key={todo.todoType}>
             <StatusBox status={todo.status}>
               {todo.status === 'COMPLETE' ? '✓' : ''}
