@@ -17,6 +17,8 @@ Follow CONVENTIONS.md strictly when generating or editing code.
   → 설치/빌드는 루트에서 `pnpm install` 후 워크스페이스 필터링으로 실행한다
 - Admin Commands USE pnpm filter  
   → 예) `pnpm --filter admin dev`, `pnpm --filter admin build`, `pnpm --filter admin test`
+- Admin OpenAPI Types GENERATE via script  
+  → `pnpm admin:generate-openapi-types` 실행 전 `admin/.env`에 `VITE_OPEN_API_DOCS`를 설정하고, 최신 스펙으로 생성된 `src/types/openapi.d.ts`를 커밋한다
 - Web Commands USE pnpm filter  
   → 예) `pnpm --filter web dev` 등 해당 워크스페이스에서 실행한다
 
