@@ -54,7 +54,11 @@ const DateFilter = ({
                 <Tab
                   key={dateString}
                   value={dateString}
-                  label={isToday(date) ? '오늘' : `${date.getDate()}일`}
+                  label={
+                    isToday(date)
+                      ? '오늘'
+                      : `${date.getMonth() + 1}월 ${date.getDate()}일`
+                  }
                   selected={selectedDate === dateString}
                   onTabSelect={handleDateSelect}
                 />
