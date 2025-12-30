@@ -16,7 +16,8 @@
   2. Share plan and wait for confirmation
   3. Implement per item
   4. Commit per item
-  5. Push and open PR (target: dev)
+  5. 모든 구현과 커밋을 마친 후 push 전에 워크스페이스별 lint/type-check를 수행한다
+  6. Push and open PR (target: dev)
 
 ## Git Rules
 

@@ -89,6 +89,12 @@ Follow CONVENTIONS.md strictly when generating or editing code.
   → 정리한 작업 리스트를 사용자에게 공유해 컨펌을 받은 뒤에만 구현을 진행한다
 - Implement Per Item  
   → 승인된 리스트를 순서대로 개발/테스트하며, 다른 항목에 영향이 없도록 범위를 관리한다
+- Lint & Type-Check Before Push  
+  → 모든 기능 항목에 대한 커밋을 마친 뒤, push 직전에 작업한 워크스페이스별로 `pnpm --filter {workspace} lint`와 `pnpm --filter {workspace} type-check`를 각각 1회 실행한다  
+  → admin 전용 수정 시 `pnpm --filter admin lint`, `pnpm --filter admin type-check`를, web 전용 수정 시 `pnpm --filter web lint`, `pnpm --filter web type-check`를 실행한다  
+  → 두 워크스페이스를 모두 수정한 경우 각 워크스페이스 명령을 모두 수행한다  
+  → lint/type-check 과정에서 자동 수정이 생기면 해당 변경을 검토해 마지막 커밋에 포함하거나 별도 정리 커밋을 추가한다  
+  → [WORKFLOW] 작업 계획의 마지막 항목은 항상 `lint/type-check 및 정리`이며, 실제 작업에서도 push 직전까지 이 순서를 지킨다
 - Commit Per Item  
   → 각 항목을 완료할 때마다 해당 변경만 포함된 커밋을 만든다(커밋 메시지는 `feat|refactor|chore: 한글 설명` 형식을 따른다)
 - Push & Open PR  
