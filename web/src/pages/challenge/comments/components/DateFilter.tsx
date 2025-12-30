@@ -7,7 +7,7 @@ import Tabs from '@/components/Tabs/Tabs';
 import { isToday } from '@/utils/date';
 import CalendarIcon from '#/assets/svg/calendar.svg';
 
-interface DateTabsProps {
+interface DateFilterProps {
   weekDates: string[];
   selectedDate: string | null;
   currentWeek: number;
@@ -16,17 +16,17 @@ interface DateTabsProps {
   onDateSelect: (date: string) => void;
 }
 
-const DateTabs = ({
+const DateFilter = ({
   weekDates,
   selectedDate,
   currentWeek,
   totalWeeks,
   onWeekSelect,
   onDateSelect,
-}: DateTabsProps) => {
+}: DateFilterProps) => {
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const handleDateTabSelect = (tabValue: string) => {
+  const handleDateSelect = (tabValue: string) => {
     onDateSelect(tabValue);
   };
 
@@ -56,7 +56,7 @@ const DateTabs = ({
                   value={dateString}
                   label={isToday(date) ? '오늘' : `${date.getDate()}일`}
                   selected={selectedDate === dateString}
-                  onTabSelect={handleDateTabSelect}
+                  onTabSelect={handleDateSelect}
                 />
               );
             }),
@@ -93,7 +93,7 @@ const DateTabs = ({
   );
 };
 
-export default DateTabs;
+export default DateFilter;
 
 const ScrollContainer = styled.div`
   padding-bottom: 8px;
@@ -117,15 +117,6 @@ const StyledTabs = styled(Tabs)`
   width: max-content;
   min-width: 100%;
 `;
-
-// const StyledDateTab = styled(Tab)`
-//   padding: 4px 8px;
-//   border-radius: 16px;
-
-//   flex-shrink: 0;
-
-//   white-space: nowrap;
-// ` as typeof Tab;
 
 const WeekSelectorContainer = styled.div`
   border-radius: 16px;

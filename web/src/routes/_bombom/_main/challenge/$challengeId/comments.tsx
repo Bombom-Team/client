@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import Button from '@/components/Button/Button';
 import { challengeComments } from '@/mocks/datas/challengeComments';
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
-import DateTabs from '@/pages/challenge/comments/components/DateTabs';
+import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 import { getWeekDates } from '@/pages/challenge/comments/utils/weekDates';
 import { formatDate } from '@/utils/date';
 
@@ -64,7 +64,7 @@ function ChallengeComments() {
 
   return (
     <Container>
-      <DateTabs
+      <DateFilter
         weekDates={selectableWeeks[weekIndex] || []}
         selectedDate={currentDate}
         currentWeek={weekIndex + 1}
