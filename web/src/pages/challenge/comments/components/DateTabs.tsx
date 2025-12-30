@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import Button from '@/components/Button/Button';
+import Chip from '@/components/Chip/Chip';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import Tab from '@/components/Tab/Tab';
@@ -20,6 +20,7 @@ export interface WeekOption {
 interface DateTabsProps {
   dateTabs: DateTab[];
   weekOptions: WeekOption[];
+  currentWeek: WeekOption | null;
   value: string;
   onDateSelect: (value: string) => void;
   onWeekSelect: (weekOption: WeekOption) => void;
@@ -28,6 +29,7 @@ interface DateTabsProps {
 const DateTabs = ({
   dateTabs,
   weekOptions,
+  currentWeek,
   value,
   onDateSelect,
   onWeekSelect,
@@ -81,13 +83,12 @@ const DateTabs = ({
           <WeekSelectorTitle>주차 선택</WeekSelectorTitle>
           <WeekList>
             {weekOptions.map((week) => (
-              <WeekButton
+              <Chip
                 key={week.label}
-                variant="outlined"
-                onClick={() => handleWeekSelect(week)}
-              >
-                {week.label}
-              </WeekButton>
+                text={week.label}
+                selected={currentWeek?.startDate === week.startDate}
+                onSelect={() => handleWeekSelect(week)}
+              />
             ))}
           </WeekList>
         </WeekSelectorContainer>
@@ -150,9 +151,4 @@ const WeekList = styled.div`
   gap: 8px;
 
   grid-template-columns: repeat(3, 1fr);
-`;
-
-const WeekButton = styled(Button)`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
 `;
