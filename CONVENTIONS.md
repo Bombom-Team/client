@@ -106,5 +106,7 @@ Follow CONVENTIONS.md strictly when generating or editing code.
   → 브랜치명에 포함된 이슈 키를 `[BOM-199]` 형식으로 앞에 붙이고, 이후 `feat|fix` 등 이슈 유형과 브랜치 내용을 기입한다 (예: `[BOM-199] feat: BOM-793-챌린지-종류별-신청-카드-제작`)
 - PR Template REVIEW POINTS USE CHECKBOXES  
   → `.github/pull_request_template.md`의 Review Point 섹션에 구현한 작업 리스트를 체크박스로 정리해 리뷰 범위를 명확히 한다
+- PR Template MUST BE FOLLOWED  
+  → PR을 작성할 때는 항상 `.github/pull_request_template.md`를 열어 각 섹션(What/Why/How/Review Point)을 모두 채우고 템플릿을 임의로 생략하지 않는다
 - Avoid Rewriting Others' Work  
   → 예상치 못한 변경을 발견하면 되돌리지 말고 사용자와 상의한다
