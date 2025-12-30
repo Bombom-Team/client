@@ -4,44 +4,34 @@ import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
+import { isToday } from '@/utils/date';
 import CalendarIcon from '#/assets/svg/calendar.svg';
 
-export interface DateTab {
-  label: string;
-  value: string;
-}
-
-export interface WeekOption {
-  label: string;
-  startDate: string;
-  endDate: string;
-}
-
 interface DateTabsProps {
-  dateTabs: DateTab[];
-  weekOptions: WeekOption[];
-  currentWeek: WeekOption | null;
-  value: string;
-  onDateSelect: (value: string) => void;
-  onWeekSelect: (weekOption: WeekOption) => void;
+  weekDates: string[];
+  selectedDate: string | null;
+  currentWeek: number;
+  totalWeeks: number;
+  onWeekSelect: (week: number) => void;
+  onDateSelect: (date: string) => void;
 }
 
 const DateTabs = ({
-  dateTabs,
-  weekOptions,
+  weekDates,
+  selectedDate,
   currentWeek,
-  value,
-  onDateSelect,
+  totalWeeks,
   onWeekSelect,
+  onDateSelect,
 }: DateTabsProps) => {
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const handleDateSelect = (tabValue: string) => {
+  const handleDateTabSelect = (tabValue: string) => {
     onDateSelect(tabValue);
   };
 
-  const handleWeekSelect = (weekOption: WeekOption) => {
-    onWeekSelect(weekOption);
+  const handleWeekSelect = (week: number) => {
+    onWeekSelect(week);
     closeModal();
   };
 
@@ -50,7 +40,7 @@ const DateTabs = ({
       <ScrollContainer>
         <StyledTabs>
           {[
-            <StyledDateTab<string>
+            <Tab
               key="week-selector"
               value="week-selector"
               label="주차 선택"
@@ -58,15 +48,18 @@ const DateTabs = ({
               onTabSelect={openModal}
               StartComponent={<CalendarIcon width={20} height={20} />}
             />,
-            ...dateTabs.map((tab) => (
-              <StyledDateTab<string>
-                key={tab.value}
-                value={tab.value}
-                label={tab.label}
-                selected={tab.value === value}
-                onTabSelect={handleDateSelect}
-              />
-            )),
+            ...weekDates.map((dateString) => {
+              const date = new Date(dateString);
+              return (
+                <Tab
+                  key={dateString}
+                  value={dateString}
+                  label={isToday(date) ? '오늘' : `${date.getDate()}일`}
+                  selected={selectedDate === dateString}
+                  onTabSelect={handleDateTabSelect}
+                />
+              );
+            }),
           ]}
         </StyledTabs>
       </ScrollContainer>
@@ -82,14 +75,17 @@ const DateTabs = ({
         <WeekSelectorContainer>
           <WeekSelectorTitle>주차 선택</WeekSelectorTitle>
           <WeekList>
-            {weekOptions.map((week) => (
-              <Chip
-                key={week.label}
-                text={week.label}
-                selected={currentWeek?.startDate === week.startDate}
-                onSelect={() => handleWeekSelect(week)}
-              />
-            ))}
+            {Array.from({ length: totalWeeks }, (_, index) => {
+              const week = index + 1;
+              return (
+                <Chip
+                  key={week}
+                  text={`${week}주차`}
+                  selected={currentWeek === week}
+                  onSelect={() => handleWeekSelect(week)}
+                />
+              );
+            })}
           </WeekList>
         </WeekSelectorContainer>
       </Modal>
@@ -122,14 +118,14 @@ const StyledTabs = styled(Tabs)`
   min-width: 100%;
 `;
 
-const StyledDateTab = styled(Tab)`
-  padding: 4px 8px;
-  border-radius: 16px;
+// const StyledDateTab = styled(Tab)`
+//   padding: 4px 8px;
+//   border-radius: 16px;
 
-  flex-shrink: 0;
+//   flex-shrink: 0;
 
-  white-space: nowrap;
-` as typeof Tab;
+//   white-space: nowrap;
+// ` as typeof Tab;
 
 const WeekSelectorContainer = styled.div`
   border-radius: 16px;

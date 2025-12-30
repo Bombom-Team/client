@@ -59,6 +59,22 @@ export const getDate = (dateString: string) => {
   };
 };
 
+export const getDatesInRange = (
+  startDate: string,
+  endDate: string,
+): string[] => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const result = [];
+  while (start <= end) {
+    result.push(start.toISOString().slice(0, 10));
+    start.setDate(start.getDate() + 1);
+  }
+
+  return result;
+};
+
 export const convertRelativeTime = (dateString: string) => {
   const now = new Date();
   const targetDate = new Date(dateString);
