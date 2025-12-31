@@ -118,7 +118,7 @@ const request = async <TRequest, TResponse>({
       }
     }
 
-    throw new ApiError(response.status, '알 수 없는 Content-Type입니다.');
+    return undefined as TResponse;
   } catch (error) {
     logger.error(error);
     throw error;
