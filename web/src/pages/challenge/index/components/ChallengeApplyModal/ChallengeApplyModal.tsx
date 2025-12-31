@@ -31,22 +31,22 @@ const ChallengeApplyModal = ({
     return <ApplyConfirmModal closeModal={closeModal} onApply={onApply} />;
   }
 
-  const hasLoginIssue = eligibility.reasons.includes('NOT_LOGGED_IN');
+  const hasLoginIssue = eligibility.reason === 'NOT_LOGGED_IN';
   if (hasLoginIssue) {
     return <LoginRequiredModal closeModal={closeModal} />;
   }
 
-  const hasAlreadyStarted = eligibility.reasons.includes('ALREADY_STARTED');
+  const hasAlreadyStarted = eligibility.reason === 'ALREADY_STARTED';
   if (hasAlreadyStarted) {
     return <AlreadyStartedModal closeModal={closeModal} />;
   }
 
-  const hasAlreadyApplied = eligibility.reasons.includes('ALREADY_APPLIED');
+  const hasAlreadyApplied = eligibility.reason === 'ALREADY_APPLIED';
   if (hasAlreadyApplied) {
     return <AlreadyAppliedModal closeModal={closeModal} />;
   }
 
-  const hasSubscribeIssue = eligibility.reasons.includes('NOT_SUBSCRIBED');
+  const hasSubscribeIssue = eligibility.reason === 'NOT_SUBSCRIBED';
   if (hasSubscribeIssue) {
     return (
       <SubscribeRequiredModal
