@@ -32,14 +32,14 @@ const DateFilter = ({
     [totalWeeks, selectedWeekIndex],
   );
 
-  const selectDate = (tabValue: string) => {
-    onDateSelect(tabValue);
+  const selectDate = (dateString: string) => {
+    onDateSelect(dateString);
   };
 
-  const selectWeek = (index: number) => {
-    const firstDate = totalWeeks[index]?.[0];
-    if (firstDate) {
-      onDateSelect(firstDate);
+  const selectWeek = (weekIndex: number) => {
+    const defaultDate = totalWeeks[weekIndex]?.[0];
+    if (defaultDate) {
+      onDateSelect(defaultDate);
     }
     closeModal();
   };
