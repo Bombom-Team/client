@@ -29,17 +29,17 @@ export const challengeHandlers = [
     } else if (challengeId === '2') {
       response = {
         canApply: false,
-        reasons: ['로그인_안함'],
+        reasons: ['NOT_LOGGED_IN'],
       };
     } else if (challengeId === '3') {
       response = {
         canApply: false,
-        reasons: ['구독_안함'],
+        reasons: ['NOT_SUBSCRIBED'],
       };
     } else {
       response = {
         canApply: false,
-        reasons: ['로그인_안함', '구독_안함'],
+        reasons: ['NOT_LOGGED_IN', 'NOT_SUBSCRIBED'],
       };
     }
 

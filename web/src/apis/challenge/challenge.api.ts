@@ -28,7 +28,12 @@ export const getChallenges = async () => {
   });
 };
 
-export type EligibilityReason = '로그인_안함' | '구독_안함';
+export type EligibilityReason =
+  | 'NOT_LOGGED_IN'
+  | 'NOT_SUBSCRIBED'
+  | 'ALREADY_STARTED'
+  | 'ALREADY_APPLIED'
+  | 'ELIGIBLE';
 
 export interface ChallengeEligibilityResponse {
   canApply: boolean;
