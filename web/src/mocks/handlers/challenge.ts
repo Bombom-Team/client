@@ -17,6 +17,8 @@ export const challengeHandlers = [
     // challengeId가 1이면 신청 가능
     // challengeId가 2이면 로그인 필요
     // challengeId가 3이면 구독 필요
+    // challengeId가 4이면 이미 시작됨
+    // challengeId가 5이면 이미 신청함
     // 그 외에는 로그인과 구독 모두 필요
 
     let response: ChallengeEligibilityResponse;
@@ -35,6 +37,16 @@ export const challengeHandlers = [
       response = {
         canApply: false,
         reasons: ['NOT_SUBSCRIBED'],
+      };
+    } else if (challengeId === '4') {
+      response = {
+        canApply: false,
+        reasons: ['ALREADY_STARTED'],
+      };
+    } else if (challengeId === '5') {
+      response = {
+        canApply: false,
+        reasons: ['ALREADY_APPLIED'],
       };
     } else {
       response = {

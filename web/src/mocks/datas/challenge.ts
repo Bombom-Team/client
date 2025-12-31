@@ -80,6 +80,36 @@ export const CHALLENGES: Challenge[] = [
     startDate: new Date('2025-12-30'),
     endDate: new Date('2026-01-06'),
     participantCount: 0,
+    newsletters: [],
+    status: 'BEFORE_START',
+    detail: {
+      isJoined: false,
+      progress: 0,
+      grade: 'GOLD',
+      isSuccess: false,
+    },
+  },
+  {
+    id: 5,
+    title: '일주일 연속 읽기 챌린지55',
+    startDate: new Date('2025-12-30'),
+    endDate: new Date('2026-01-06'),
+    participantCount: 0,
+    newsletters: [],
+    status: 'BEFORE_START',
+    detail: {
+      isJoined: false,
+      progress: 0,
+      grade: 'GOLD',
+      isSuccess: false,
+    },
+  },
+  {
+    id: 6,
+    title: '일주일 연속 읽기 챌린지44',
+    startDate: new Date('2025-12-30'),
+    endDate: new Date('2026-01-06'),
+    participantCount: 0,
     newsletters: [
       {
         id: 5,
@@ -96,7 +126,7 @@ export const CHALLENGES: Challenge[] = [
     },
   },
   {
-    id: 5,
+    id: 7,
     title: '3개월 장기 독서 챌린지',
     startDate: new Date('2026-02-01'),
     endDate: new Date('2026-05-01'),

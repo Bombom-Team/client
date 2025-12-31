@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import AlreadyAppliedModal from './modals/AlreadyAppliedModal';
+import AlreadyStartedModal from './modals/AlreadyStartedModal';
 import ApplyConfirmModal from './modals/ApplyConfirmModal';
+import ErrorModal from './modals/ErrorModal';
 import LoginRequiredModal from './modals/LoginRequiredModal';
 import SubscribeRequiredModal from './modals/SubscribeRequiredModal';
 import { challengeQueries } from '@/apis/challenge/challenge.query';
@@ -33,6 +36,16 @@ const ChallengeApplyModal = ({
     return <LoginRequiredModal closeModal={closeModal} />;
   }
 
+  const hasAlreadyStarted = eligibility.reasons.includes('ALREADY_STARTED');
+  if (hasAlreadyStarted) {
+    return <AlreadyStartedModal closeModal={closeModal} />;
+  }
+
+  const hasAlreadyApplied = eligibility.reasons.includes('ALREADY_APPLIED');
+  if (hasAlreadyApplied) {
+    return <AlreadyAppliedModal closeModal={closeModal} />;
+  }
+
   const hasSubscribeIssue = eligibility.reasons.includes('NOT_SUBSCRIBED');
   if (hasSubscribeIssue) {
     return (
@@ -43,7 +56,7 @@ const ChallengeApplyModal = ({
     );
   }
 
-  return null;
+  return <ErrorModal closeModal={closeModal} />;
 };
 
 export default ChallengeApplyModal;
