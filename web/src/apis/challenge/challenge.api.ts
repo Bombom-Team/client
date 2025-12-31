@@ -52,3 +52,15 @@ export const getChallengeEligibility = async (challengeId: number) => {
     path: `/challenge/${challengeId}/eligibility`,
   });
 };
+
+export const applyChallengeApplication = async (challengeId: number) => {
+  return await fetcher.post({
+    path: `/challenge/${challengeId}/application`,
+  });
+};
+
+export const cancelChallengeApplication = async (challengeId: number) => {
+  return await fetcher.delete({
+    path: `/challenge/${challengeId}/application`,
+  });
+};

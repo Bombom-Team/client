@@ -45,4 +45,12 @@ export const challengeHandlers = [
 
     return HttpResponse.json(response);
   }),
+
+  http.post(`${baseURL}/challenge/:challengeId/application`, () => {
+    return HttpResponse.json({ success: true });
+  }),
+
+  http.delete(`${baseURL}/challenge/:challengeId/application`, () => {
+    return HttpResponse.json({ success: true });
+  }),
 ];

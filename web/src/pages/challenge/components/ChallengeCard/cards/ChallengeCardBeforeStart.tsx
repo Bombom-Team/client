@@ -8,6 +8,8 @@ import { challengeQueries } from '@/apis/challenge/challenge.query';
 import Button from '@/components/Button/Button';
 import useModal from '@/components/Modal/useModal';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import useChallengeApplyMutation from '@/pages/challenge/hooks/useChallengeApplyMutation';
+import useChallengeCancelMutation from '@/pages/challenge/hooks/useChallengeCancelMutation';
 import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../../ChallengeCard';
 
@@ -18,6 +20,13 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
   const { data: eligibility, isLoading } = useQuery({
     ...challengeQueries.eligibility(id),
     enabled: isOpen,
+  });
+
+  const { mutate: applyChallenge } = useChallengeApplyMutation({
+    challengeId: id,
+  });
+  const { mutate: cancelMutation } = useChallengeCancelMutation({
+    challengeId: id,
   });
 
   const handleCardClick = () => {
@@ -45,23 +54,11 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
 
   const handleCancelClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    // TODO: 신청 취소 API 호출
-    console.log('챌린지 신청 취소:', id);
+    cancelMutation();
 
     trackEvent({
       category: 'Challenge',
       action: '신청취소 버튼 클릭',
-      label: title,
-    });
-  };
-
-  const handleApply = () => {
-    // TODO: 신청 API 호출
-    console.log('챌린지 신청:', id);
-
-    trackEvent({
-      category: 'Challenge',
-      action: '챌린지 신청 완료',
       label: title,
     });
   };
@@ -92,7 +89,7 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
         closeModal={closeModal}
         eligibility={eligibility || null}
         isLoading={isLoading}
-        onApply={handleApply}
+        onApply={applyChallenge}
         newsletters={newsletters}
       />
     </>
