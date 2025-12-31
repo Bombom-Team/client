@@ -35,7 +35,7 @@ export const getDatesInRange = (
 
   const result = [];
   while (start <= end) {
-    result.push(start.toISOString().slice(0, 10));
+    result.push(formatDate(start, '-'));
     start.setDate(start.getDate() + 1);
   }
 
