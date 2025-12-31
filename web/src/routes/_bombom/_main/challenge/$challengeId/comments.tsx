@@ -5,7 +5,8 @@ import Button from '@/components/Button/Button';
 import { challengeComments } from '@/mocks/datas/challengeComments';
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
-import { getWeekDates } from '@/pages/challenge/comments/utils/weekDates';
+import { findWeekIndex } from '@/pages/challenge/comments/utils/findWeekIndex';
+import { getWeekDates } from '@/pages/challenge/comments/utils/getWeekDates';
 import { formatDate } from '@/utils/date';
 
 const CHALLENGE_PERIOD = {
@@ -29,33 +30,26 @@ export const Route = createFileRoute(
 
 function ChallengeComments() {
   const today = useMemo(() => formatDate(new Date(), '-'), []);
-  const lastSelectableDate = useMemo(
+  const latestSelectableDate = useMemo(
     () => (today < CHALLENGE_PERIOD.endDate ? today : CHALLENGE_PERIOD.endDate),
     [today],
   );
+  const [currentDate, setCurrentDate] = useState(latestSelectableDate);
   const selectableWeeks = useMemo(
-    () => getWeekDates(CHALLENGE_PERIOD.startDate, lastSelectableDate),
-    [lastSelectableDate],
+    () => getWeekDates(CHALLENGE_PERIOD.startDate, latestSelectableDate),
+    [latestSelectableDate],
   );
-  const selectableWeekCount = selectableWeeks.length;
-  const todayWeekIndex = useMemo(() => {
-    const weekIndex = selectableWeeks.findIndex((week) => week.includes(today));
-    if (weekIndex === -1) {
-      return Math.max(selectableWeekCount - 1, 0);
+
+  const weekIndex = useMemo(
+    () => findWeekIndex(selectableWeeks, currentDate),
+    [selectableWeeks, currentDate],
+  );
+
+  const selectWeek = (index: number) => {
+    const firstDate = selectableWeeks[index]?.[0];
+    if (firstDate) {
+      setCurrentDate(firstDate);
     }
-    return weekIndex;
-  }, [selectableWeeks, selectableWeekCount, today]);
-
-  const [weekIndex, setWeekIndex] = useState(todayWeekIndex);
-  const [currentDate, setCurrentDate] = useState<string>(lastSelectableDate);
-
-  const selectWeek = (week: number) => {
-    const clampedWeek = Math.min(
-      Math.max(week, 1),
-      Math.max(selectableWeekCount, 1),
-    );
-    setWeekIndex(clampedWeek - 1);
-    setCurrentDate(selectableWeeks[clampedWeek - 1]?.[0] || lastSelectableDate);
   };
 
   const selectDate = (date: string) => {
@@ -65,10 +59,10 @@ function ChallengeComments() {
   return (
     <Container>
       <DateFilter
-        weekDates={selectableWeeks[weekIndex] || []}
+        weekDates={selectableWeeks[weekIndex] ?? []}
         selectedDate={currentDate}
-        currentWeek={weekIndex + 1}
-        totalWeeks={selectableWeekCount}
+        weekIndex={weekIndex}
+        totalWeeks={selectableWeeks.length}
         onWeekSelect={selectWeek}
         onDateSelect={selectDate}
       />

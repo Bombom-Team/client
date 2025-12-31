@@ -10,16 +10,16 @@ import CalendarIcon from '#/assets/svg/calendar.svg';
 interface DateFilterProps {
   weekDates: string[];
   selectedDate: string | null;
-  currentWeek: number;
+  weekIndex: number;
   totalWeeks: number;
-  onWeekSelect: (week: number) => void;
+  onWeekSelect: (weekIndex: number) => void;
   onDateSelect: (date: string) => void;
 }
 
 const DateFilter = ({
   weekDates,
   selectedDate,
-  currentWeek,
+  weekIndex,
   totalWeeks,
   onWeekSelect,
   onDateSelect,
@@ -30,8 +30,8 @@ const DateFilter = ({
     onDateSelect(tabValue);
   };
 
-  const handleWeekSelect = (week: number) => {
-    onWeekSelect(week);
+  const handleWeekSelect = (index: number) => {
+    onWeekSelect(index);
     closeModal();
   };
 
@@ -80,13 +80,12 @@ const DateFilter = ({
           <WeekSelectorTitle>주차 선택</WeekSelectorTitle>
           <WeekList>
             {Array.from({ length: totalWeeks }, (_, index) => {
-              const week = index + 1;
               return (
                 <Chip
-                  key={week}
-                  text={`${week}주차`}
-                  selected={currentWeek === week}
-                  onSelect={() => handleWeekSelect(week)}
+                  key={index}
+                  text={`${index + 1}주차`}
+                  selected={weekIndex === index}
+                  onSelect={() => handleWeekSelect(index)}
                 />
               );
             })}
