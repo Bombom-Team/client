@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import Chip from '@/components/Chip/Chip';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
-import Tab from '@/components/Tab/Tab';
+import Tab, { type TabProps } from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import { findWeekIndex } from '@/pages/challenge/comments/utils/findWeekIndex';
@@ -49,29 +49,31 @@ const DateFilter = ({
   return (
     <>
       <Container>
-        <StyledTabs>
+        <StyledTabs device={device}>
           {[
-            <Tab
+            <WeekSelectorTab
               key="week-selector"
               value="week-selector"
               label="주차 선택"
               selected={false}
               onTabSelect={openModal}
               StartComponent={<CalendarIcon width={20} height={20} />}
+              device={device}
             />,
             ...selectedWeekDates.map((dateString) => {
               const date = new Date(dateString);
               return (
-                <Tab
+                <StyledTab
                   key={dateString}
                   value={dateString}
                   label={
                     isToday(date)
                       ? '오늘'
-                      : `${date.getMonth() + 1}월 ${date.getDate()}일`
+                      : `${date.getMonth() + 1}/${date.getDate()}`
                   }
                   selected={selectedDate === dateString}
                   onTabSelect={selectDate}
+                  device={device}
                 />
               );
             }),
@@ -129,9 +131,24 @@ const Container = styled.div`
   }
 `;
 
-const StyledTabs = styled(Tabs)`
-  width: max-content;
-  min-width: 100%;
+const StyledTabs = styled(Tabs)<{ device: Device }>`
+  display: flex;
+  gap: 6px;
+`;
+
+const DateTab = (props: TabProps<string>) => <Tab {...props} />;
+const StyledTab = styled(DateTab, {
+  shouldForwardProp: (prop) => prop !== 'device',
+})<{ device: Device }>`
+  padding: 2px;
+  border-radius: 6px;
+
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+`;
+
+const WeekSelectorTab = styled(StyledTab)`
+  gap: 2px;
 `;
 
 const WeekSelectorContainer = styled.div<{ device: Device }>`
