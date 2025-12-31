@@ -7,6 +7,18 @@ export const CHALLENGES: Challenge[] = [
     startDate: new Date('2026-01-05'),
     endDate: new Date('2026-02-04'),
     participantCount: 0,
+    newsletters: [
+      {
+        id: 1,
+        name: 'AI뉴스',
+        imageUrl: 'https://picsum.photos/200/200?random=1',
+      },
+      {
+        id: 2,
+        name: 'Tech Weekly',
+        imageUrl: 'https://picsum.photos/200/200?random=2',
+      },
+    ],
     status: 'BEFORE_START',
     detail: {
       isJoined: false,
@@ -21,6 +33,13 @@ export const CHALLENGES: Challenge[] = [
     startDate: new Date('2025-12-30'),
     endDate: new Date('2026-01-06'),
     participantCount: 0,
+    newsletters: [
+      {
+        id: 3,
+        name: 'Startup Insider',
+        imageUrl: 'https://picsum.photos/200/200?random=3',
+      },
+    ],
     status: 'BEFORE_START',
     detail: {
       isJoined: false,
@@ -35,6 +54,18 @@ export const CHALLENGES: Challenge[] = [
     startDate: new Date('2025-12-30'),
     endDate: new Date('2026-01-06'),
     participantCount: 0,
+    newsletters: [
+      {
+        id: 1,
+        name: 'AI뉴스',
+        imageUrl: 'https://picsum.photos/200/200?random=1',
+      },
+      {
+        id: 4,
+        name: 'Design Trends',
+        imageUrl: 'https://picsum.photos/200/200?random=4',
+      },
+    ],
     status: 'BEFORE_START',
     detail: {
       isJoined: false,
@@ -49,6 +80,13 @@ export const CHALLENGES: Challenge[] = [
     startDate: new Date('2025-12-30'),
     endDate: new Date('2026-01-06'),
     participantCount: 0,
+    newsletters: [
+      {
+        id: 5,
+        name: 'Finance Daily',
+        imageUrl: 'https://picsum.photos/200/200?random=5',
+      },
+    ],
     status: 'BEFORE_START',
     detail: {
       isJoined: true,
@@ -63,6 +101,7 @@ export const CHALLENGES: Challenge[] = [
     startDate: new Date('2026-02-01'),
     endDate: new Date('2026-05-01'),
     participantCount: 20,
+    newsletters: [],
     status: 'ONGOING',
     detail: {
       isJoined: false,

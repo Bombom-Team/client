@@ -3,6 +3,12 @@ import { fetcher } from '@bombom/shared/apis';
 export type ChallengeStatus = 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
 export type ChallengeGrade = 'GOLD' | 'SILVER' | 'BRONZE' | 'NONE' | 'FAIL';
 
+export interface ChallengeNewsletter {
+  id: number;
+  name: string;
+  imageUrl: string;
+}
+
 export interface ChallengeDetail {
   isJoined?: boolean;
   progress?: number;
@@ -16,6 +22,7 @@ export interface Challenge {
   startDate: Date;
   endDate: Date;
   participantCount: number;
+  newsletters: ChallengeNewsletter[];
   status: ChallengeStatus;
   detail: ChallengeDetail;
 }

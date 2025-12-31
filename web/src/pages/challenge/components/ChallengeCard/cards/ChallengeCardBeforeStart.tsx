@@ -12,7 +12,7 @@ import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../../ChallengeCard';
 
 const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
-  const { participantCount, startDate, title, id } = props;
+  const { newsletters, participantCount, startDate, title, id } = props;
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const { data: eligibility, isLoading } = useQuery({
@@ -93,6 +93,7 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
         eligibility={eligibility || null}
         isLoading={isLoading}
         onApply={handleApply}
+        newsletters={newsletters}
       />
     </>
   );
