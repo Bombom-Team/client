@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import Button from '@/components/Button/Button';
+import { useDevice, type Device } from '@/hooks/useDevice';
 import { challengeComments } from '@/mocks/datas/challengeComments';
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
@@ -9,7 +10,7 @@ import { getWeekDates } from '@/pages/challenge/comments/utils/getWeekDates';
 import { formatDate } from '@/utils/date';
 
 const CHALLENGE_PERIOD = {
-  startDate: '2025-12-05',
+  startDate: '2025-11-05',
   endDate: '2026-02-02',
   totalDays: 31,
 };
@@ -28,6 +29,7 @@ export const Route = createFileRoute(
 });
 
 function ChallengeComments() {
+  const device = useDevice();
   const today = useMemo(() => formatDate(new Date(), '-'), []);
   const latestSelectableDate = useMemo(
     () => (today < CHALLENGE_PERIOD.endDate ? today : CHALLENGE_PERIOD.endDate),
@@ -47,36 +49,36 @@ function ChallengeComments() {
         onDateSelect={setCurrentDate}
       />
 
-      <ContentWrapper>
+      <ContentWrapper device={device}>
         {currentDate === today && (
           <AddCommentBox>
-            <AddCommentTitle>
+            <AddCommentTitle device={device}>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
             </AddCommentTitle>
-            <AddCommentButton>코멘트 작성하기</AddCommentButton>
+            <AddCommentButton device={device}>코멘트 작성하기</AddCommentButton>
           </AddCommentBox>
         )}
 
-        <CommentSection>
+        <CommentSection device={device}>
           <Comments>
-            <CommentTitle>내 코멘트</CommentTitle>
+            <CommentTitle device={device}>내 코멘트</CommentTitle>
             {challengeComments.length > 0 && (
-              <CardList>
+              <CardList device={device}>
                 <CommentCard {...challengeComments[0]!} />
               </CardList>
             )}
           </Comments>
 
           <Comments>
-            <CommentTitle>전체 코멘트</CommentTitle>
+            <CommentTitle device={device}>전체 코멘트</CommentTitle>
             {challengeComments.length > 0 ? (
-              <CardList>
+              <CardList device={device}>
                 {challengeComments.map((comment, index) => (
                   <CommentCard key={`my-${index}`} {...comment} />
                 ))}
               </CardList>
             ) : (
-              <EmptyState>
+              <EmptyState device={device}>
                 아직 작성한 코멘트가 없어요. 가장 먼저 한 줄 평을 남겨보세요!
               </EmptyState>
             )}
@@ -97,16 +99,17 @@ const Container = styled.section`
   flex-direction: column;
 `;
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
-  padding: 24px;
+  padding: ${({ device }) => (device === 'mobile' ? '20px 0' : '24px')};
   border-top: 2px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
-  gap: 44px;
+  gap: ${({ device }) => (device === 'mobile' ? '32px' : '44px')};
   flex-direction: column;
 
-  background-color: ${({ theme }) => theme.colors.backgroundHover};
+  background-color: ${({ theme, device }) =>
+    device === 'mobile' ? 'none' : theme.colors.backgroundHover};
 `;
 
 const AddCommentBox = styled.article`
@@ -117,35 +120,38 @@ const AddCommentBox = styled.article`
   flex-direction: column;
 `;
 
-const AddCommentTitle = styled.h3`
+const AddCommentTitle = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
 `;
 
-const AddCommentButton = styled(Button)`
+const AddCommentButton = styled(Button)<{ device: Device }>`
   width: 100%;
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
 `;
 
-const CardList = styled.div`
+const CardList = styled.div<{ device: Device }>`
   display: flex;
-  gap: 12px;
+  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
   flex-direction: column;
 `;
 
-const EmptyState = styled.div`
-  padding: 32px;
+const EmptyState = styled.div<{ device: Device }>`
+  padding: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
   border-radius: 12px;
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
   text-align: center;
 `;
 
-const CommentSection = styled.article`
+const CommentSection = styled.article<{ device: Device }>`
   display: flex;
-  gap: 28px;
+  gap: ${({ device }) => (device === 'mobile' ? '20px' : '28px')};
   flex-direction: column;
 `;
 
@@ -155,7 +161,8 @@ const Comments = styled.div`
   flex-direction: column;
 `;
 
-const CommentTitle = styled.h3`
+const CommentTitle = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
 `;

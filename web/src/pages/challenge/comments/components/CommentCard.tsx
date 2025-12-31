@@ -1,6 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import Badge from '@/components/Badge/Badge';
+import { useDevice, type Device } from '@/hooks/useDevice';
 import { convertRelativeTime } from '@/utils/date';
 import MailIcon from '#/assets/svg/mail.svg';
 
@@ -19,35 +20,36 @@ const CommentCard = ({
   createdAt,
   comment,
 }: CommentCardProps) => {
+  const device = useDevice();
   const relativeTime = convertRelativeTime(createdAt);
 
   return (
-    <Container>
+    <Container device={device}>
       <MetaWrapper>
-        <MetaInfo>
+        <MetaInfo device={device}>
           {nickname} · {relativeTime}
         </MetaInfo>
-        <NewsletterBadge text={newsletterName} />
+        <NewsletterBadge device={device} text={newsletterName} />
       </MetaWrapper>
       <TitleWrapper>
         <MailIcon width={16} height={16} color={theme.colors.textSecondary} />
-        <ArticleTitle>{articleTitle}</ArticleTitle>
+        <ArticleTitle device={device}>{articleTitle}</ArticleTitle>
       </TitleWrapper>
-      <Comment>{comment}</Comment>
+      <Comment device={device}>{comment}</Comment>
     </Container>
   );
 };
 
 export default CommentCard;
 
-const Container = styled.article`
+const Container = styled.article<{ device: Device }>`
   width: 100%;
-  padding: 20px;
+  padding: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
   border-radius: 12px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
   display: flex;
-  gap: 8px;
+  gap: ${({ device }) => (device === 'mobile' ? '6px' : '8px')};
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -59,17 +61,19 @@ const MetaWrapper = styled.div`
   align-items: center;
 `;
 
-const NewsletterBadge = styled(Badge)`
+const NewsletterBadge = styled(Badge)<{ device: Device }>`
   padding: 2px 6px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
-const MetaInfo = styled.span`
+const MetaInfo = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
 const TitleWrapper = styled.div`
@@ -78,12 +82,14 @@ const TitleWrapper = styled.div`
   align-items: center;
 `;
 
-const ArticleTitle = styled.p`
+const ArticleTitle = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
-const Comment = styled.p`
+const Comment = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
 `;

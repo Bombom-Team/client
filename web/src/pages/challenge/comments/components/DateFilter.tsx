@@ -5,6 +5,7 @@ import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
+import { useDevice, type Device } from '@/hooks/useDevice';
 import { findWeekIndex } from '@/pages/challenge/comments/utils/findWeekIndex';
 import { isToday } from '@/utils/date';
 import CalendarIcon from '#/assets/svg/calendar.svg';
@@ -20,6 +21,7 @@ const DateFilter = ({
   selectedDate,
   onDateSelect,
 }: DateFilterProps) => {
+  const device = useDevice();
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const selectedWeekIndex = useMemo(
@@ -46,7 +48,7 @@ const DateFilter = ({
 
   return (
     <>
-      <ScrollContainer>
+      <Container>
         <StyledTabs>
           {[
             <Tab
@@ -75,26 +77,26 @@ const DateFilter = ({
             }),
           ]}
         </StyledTabs>
-      </ScrollContainer>
+      </Container>
 
       <Modal
         isOpen={isOpen}
         closeModal={closeModal}
         modalRef={modalRef}
-        position="center"
-        showCloseButton={true}
-        showBackdrop={true}
+        position={device === 'mobile' ? 'center' : 'center'}
+        showCloseButton={false}
       >
-        <WeekSelectorContainer>
-          <WeekSelectorTitle>주차 선택</WeekSelectorTitle>
-          <WeekList>
+        <WeekSelectorContainer device={device}>
+          <WeekSelectorTitle device={device}>주차 선택</WeekSelectorTitle>
+          <WeekList device={device}>
             {Array.from({ length: totalWeeks.length }, (_, index) => {
               return (
-                <Chip
+                <StyledChip
                   key={index}
                   text={`${index + 1}주차`}
                   selected={selectedWeekIndex === index}
                   onSelect={() => selectWeek(index)}
+                  device={device}
                 />
               );
             })}
@@ -107,8 +109,10 @@ const DateFilter = ({
 
 export default DateFilter;
 
-const ScrollContainer = styled.div`
+const Container = styled.div`
+  width: 100%;
   padding-bottom: 8px;
+
   overflow-x: auto;
 
   &::-webkit-scrollbar {
@@ -130,24 +134,39 @@ const StyledTabs = styled(Tabs)`
   min-width: 100%;
 `;
 
-const WeekSelectorContainer = styled.div`
-  border-radius: 16px;
+const WeekSelectorContainer = styled.div<{ device: Device }>`
+  width: ${({ device }) => (device === 'mobile' ? 'min(90vw, 320px)' : '100%')};
 
   display: flex;
-  gap: 16px;
+  gap: ${({ device }) => (device === 'mobile' ? '12px' : '16px')};
   flex-direction: column;
 
-  background-color: ${({ theme }) => theme.colors.white};
+  overflow-x: hidden;
 `;
 
-const WeekSelectorTitle = styled.h3`
+const WeekSelectorTitle = styled.h3<{ device: Device }>`
+  align-self: ${({ device }) =>
+    device === 'mobile' ? 'center' : 'flex-start'};
+
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
 `;
 
-const WeekList = styled.div`
+const WeekList = styled.div<{ device: Device }>`
   display: grid;
-  gap: 8px;
+  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  justify-content: center;
 
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, max-content);
+
+  @media (width <= 320px) {
+    grid-template-columns: repeat(3, max-content);
+  }
+`;
+
+const StyledChip = styled(Chip)<{ device: Device }>`
+  padding: ${({ device }) => (device === 'mobile' ? '8px 12px' : '12px 16px')};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
 `;
