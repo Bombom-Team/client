@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import {
   NEWSLETTER_PREVIOUS_STRATEGY_LABELS,
   type NewsletterDetail,
+  type NewsletterPreviousStrategy,
 } from '@/types/newsletter';
 
 interface NewsletterDetailViewProps {
@@ -33,7 +34,9 @@ const NewsletterDetailView = ({
     {
       label: '지난호 전략',
       value: newsletter.previousStrategy
-        ? NEWSLETTER_PREVIOUS_STRATEGY_LABELS[newsletter.previousStrategy]
+        ? NEWSLETTER_PREVIOUS_STRATEGY_LABELS[
+            newsletter.previousStrategy as NewsletterPreviousStrategy
+          ]
         : undefined,
     },
     { label: '지난호 고정 노출 수', value: newsletter.previousFixedCount },
@@ -44,9 +47,7 @@ const NewsletterDetailView = ({
     },
   ];
 
-  const renderValue = (
-    value: string | number | boolean | null | undefined,
-  ) => {
+  const renderValue = (value: string | number | boolean | null | undefined) => {
     if (value === undefined || value === null || value === '') {
       return '-';
     }

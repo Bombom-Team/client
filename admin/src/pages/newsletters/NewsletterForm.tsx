@@ -44,18 +44,20 @@ const NewsletterForm = ({
 }: NewsletterFormProps) => {
   const [values, setValues] = useState<NewsletterFormValues>(initialValues);
 
-  const requiredFields: Array<{ key: keyof NewsletterFormValues; label: string }> =
-    [
-      { key: 'name', label: '뉴스레터 이름' },
-      { key: 'description', label: '설명' },
-      { key: 'imageUrl', label: '이미지 URL' },
-      { key: 'email', label: '이메일' },
-      { key: 'category', label: '카테고리' },
-      { key: 'mainPageUrl', label: '메인 페이지' },
-      { key: 'subscribeUrl', label: '구독 URL' },
-      { key: 'issueCycle', label: '발행 주기' },
-      { key: 'sender', label: '발신자' },
-    ];
+  const requiredFields: Array<{
+    key: keyof NewsletterFormValues;
+    label: string;
+  }> = [
+    { key: 'name', label: '뉴스레터 이름' },
+    { key: 'description', label: '설명' },
+    { key: 'imageUrl', label: '이미지 URL' },
+    { key: 'email', label: '이메일' },
+    { key: 'category', label: '카테고리' },
+    { key: 'mainPageUrl', label: '메인 페이지' },
+    { key: 'subscribeUrl', label: '구독 URL' },
+    { key: 'issueCycle', label: '발행 주기' },
+    { key: 'sender', label: '발신자' },
+  ];
 
   const validateRequiredFields = () => {
     const missingField = requiredFields.find((field) => {
@@ -200,7 +202,10 @@ const NewsletterForm = ({
             type="text"
             value={values.subscribeMethod}
             onChange={(event) =>
-              setValues((prev) => ({ ...prev, subscribeMethod: event.target.value }))
+              setValues((prev) => ({
+                ...prev,
+                subscribeMethod: event.target.value,
+              }))
             }
           />
         </FieldGroup>

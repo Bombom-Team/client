@@ -12,10 +12,6 @@ import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import NewsletterDetailView from '@/pages/newsletters/NewsletterDetailView';
 
-export const Route = createFileRoute('/_admin/newsletters/$newsletterId/')({
-  component: NewsletterDetailPage,
-});
-
 const NewsletterDetailPage = () => {
   return (
     <Layout title="뉴스레터 상세">
@@ -33,10 +29,14 @@ const NewsletterDetailContent = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const id = Number(newsletterId);
+  const listSearch = {
+    keyword: '',
+    category: '',
+    previousStrategy: '',
+    sort: 'LATEST',
+  };
 
-  const { data: newsletter } = useSuspenseQuery(
-    newslettersQueries.detail(id),
-  );
+  const { data: newsletter } = useSuspenseQuery(newslettersQueries.detail(id));
 
   const { mutate: deleteNewsletter, isPending } = useMutation({
     ...newslettersQueries.mutation.delete(),
@@ -47,7 +47,7 @@ const NewsletterDetailContent = () => {
   });
 
   const goToList = () => {
-    navigate({ to: '/newsletters' });
+    navigate({ to: '/newsletters', search: listSearch });
   };
 
   const handleEdit = () => {
@@ -88,6 +88,10 @@ const NewsletterDetailContent = () => {
     </NewsletterDetailView>
   );
 };
+
+export const Route = createFileRoute('/_admin/newsletters/$newsletterId/')({
+  component: NewsletterDetailPage,
+});
 
 const Container = styled.div`
   max-width: 900px;

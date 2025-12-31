@@ -1,11 +1,11 @@
 import { fetcher } from '@bombom/shared/apis';
-import type { operations } from '@/types/openapi';
 import type {
   CreateNewsletterRequest,
   NewsletterDetail,
   NewsletterSummary,
   UpdateNewsletterRequest,
 } from '@/types/newsletter';
+import type { operations } from '@/types/openapi';
 
 export type GetNewslettersParams =
   operations['getNewsletters']['parameters']['query'];

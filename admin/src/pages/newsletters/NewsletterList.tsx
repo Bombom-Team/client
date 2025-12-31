@@ -6,6 +6,7 @@ import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { newslettersQueries } from '@/apis/newsletters/newsletters.query';
 import {
   NEWSLETTER_PREVIOUS_STRATEGY_LABELS,
+  type NewsletterPreviousStrategy,
   type NewsletterSummary,
 } from '@/types/newsletter';
 
@@ -64,14 +65,16 @@ const NewsletterList = ({ newsletters }: NewsletterListProps) => {
         {newsletters.map((newsletter, index) => {
           const newsletterId = newsletter.id;
           const previousStrategyLabel = newsletter.previousStrategy
-            ? NEWSLETTER_PREVIOUS_STRATEGY_LABELS[newsletter.previousStrategy]
+            ? NEWSLETTER_PREVIOUS_STRATEGY_LABELS[
+                newsletter.previousStrategy as NewsletterPreviousStrategy
+              ]
             : '-';
-          const isDeleting =
-            isPending && newsletterId === deletingNewsletterId;
-
+          const isDeleting = isPending && newsletterId === deletingNewsletterId;
           return (
             <BodyRow
-              key={newsletterId ?? `${newsletter.name ?? 'newsletter'}-${index}`}
+              key={
+                newsletterId ?? `${newsletter.name ?? 'newsletter'}-${index}`
+              }
               onClick={() => {
                 if (!newsletterId) return;
                 navigate({

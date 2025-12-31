@@ -27,17 +27,6 @@ type NewslettersSearch = {
   sort: string;
 };
 
-export const Route = createFileRoute('/_admin/newsletters/')({
-  component: NewslettersPage,
-  validateSearch: (search: Record<string, unknown>): NewslettersSearch => ({
-    keyword: typeof search.keyword === 'string' ? search.keyword : '',
-    category: typeof search.category === 'string' ? search.category : '',
-    previousStrategy:
-      typeof search.previousStrategy === 'string' ? search.previousStrategy : '',
-    sort: typeof search.sort === 'string' ? search.sort : 'LATEST',
-  }),
-});
-
 const NewslettersPage = () => {
   const search = useSearch({ from: Route.id });
 
@@ -95,12 +84,13 @@ const NewslettersContent = ({ search }: { search: NewslettersSearch }) => {
   const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     navigate({
+      to: '/newsletters',
       search: {
         keyword: keyword.trim(),
         category: category.trim(),
         previousStrategy,
         sort,
-      },
+      } as NewslettersSearch,
     });
   };
 
@@ -166,7 +156,8 @@ const NewslettersContent = ({ search }: { search: NewslettersSearch }) => {
           </FilterGroup>
           <FilterActions>
             <Button type="submit">
-              <FiSearch />검색
+              <FiSearch />
+              검색
             </Button>
           </FilterActions>
         </FilterRow>
@@ -176,6 +167,19 @@ const NewslettersContent = ({ search }: { search: NewslettersSearch }) => {
     </Container>
   );
 };
+
+export const Route = createFileRoute('/_admin/newsletters/')({
+  component: NewslettersPage,
+  validateSearch: (search: Record<string, unknown>): NewslettersSearch => ({
+    keyword: typeof search.keyword === 'string' ? search.keyword : '',
+    category: typeof search.category === 'string' ? search.category : '',
+    previousStrategy:
+      typeof search.previousStrategy === 'string'
+        ? search.previousStrategy
+        : '',
+    sort: typeof search.sort === 'string' ? search.sort : 'LATEST',
+  }),
+});
 
 const Container = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};

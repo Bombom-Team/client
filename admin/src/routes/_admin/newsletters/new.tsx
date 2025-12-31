@@ -9,13 +9,15 @@ import NewsletterForm, {
 } from '@/pages/newsletters/NewsletterForm';
 import type { CreateNewsletterRequest } from '@/types/newsletter';
 
-export const Route = createFileRoute('/_admin/newsletters/new')({
-  component: NewsletterCreatePage,
-});
-
 const NewsletterCreatePage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const listSearch = {
+    keyword: '',
+    category: '',
+    previousStrategy: '',
+    sort: 'LATEST',
+  };
   const { mutateAsync: createNewsletterMutation, isPending } = useMutation({
     mutationFn: createNewsletter,
     onSuccess: () => {
@@ -42,25 +44,26 @@ const NewsletterCreatePage = () => {
     previousExposureRatio: '',
   };
 
-  const buildPayload = (values: NewsletterFormValues): CreateNewsletterRequest =>
-    ({
-      name: values.name.trim(),
-      description: values.description.trim(),
-      imageUrl: values.imageUrl.trim(),
-      email: values.email.trim(),
-      category: values.category.trim(),
-      mainPageUrl: values.mainPageUrl.trim(),
-      subscribeUrl: values.subscribeUrl.trim(),
-      issueCycle: values.issueCycle.trim(),
-      sender: values.sender.trim(),
-      previousNewsletterUrl: values.previousNewsletterUrl.trim() || undefined,
-      subscribeMethod: values.subscribeMethod.trim() || undefined,
-    });
+  const buildPayload = (
+    values: NewsletterFormValues,
+  ): CreateNewsletterRequest => ({
+    name: values.name.trim(),
+    description: values.description.trim(),
+    imageUrl: values.imageUrl.trim(),
+    email: values.email.trim(),
+    category: values.category.trim(),
+    mainPageUrl: values.mainPageUrl.trim(),
+    subscribeUrl: values.subscribeUrl.trim(),
+    issueCycle: values.issueCycle.trim(),
+    sender: values.sender.trim(),
+    previousNewsletterUrl: values.previousNewsletterUrl.trim() || undefined,
+    subscribeMethod: values.subscribeMethod.trim() || undefined,
+  });
 
   const handleSubmit = async (values: NewsletterFormValues) => {
     try {
       await createNewsletterMutation(buildPayload(values));
-      navigate({ to: '/newsletters' });
+      navigate({ to: '/newsletters', search: listSearch });
     } catch (error) {
       let message = '뉴스레터 등록에 실패했습니다.';
       if (error instanceof Error && error.message) {
@@ -79,12 +82,16 @@ const NewsletterCreatePage = () => {
           submitLabel="등록"
           isSubmitting={isPending}
           onSubmit={handleSubmit}
-          onCancel={() => navigate({ to: '/newsletters' })}
+          onCancel={() => navigate({ to: '/newsletters', search: listSearch })}
         />
       </Container>
     </Layout>
   );
 };
+
+export const Route = createFileRoute('/_admin/newsletters/new')({
+  component: NewsletterCreatePage,
+});
 
 const Container = styled.div`
   max-width: 900px;

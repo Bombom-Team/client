@@ -10,23 +10,25 @@ import { Layout } from '@/components/Layout';
 import NewsletterForm, {
   type NewsletterFormValues,
 } from '@/pages/newsletters/NewsletterForm';
-import type { NewsletterDetail, UpdateNewsletterRequest } from '@/types/newsletter';
-
-export const Route = createFileRoute('/_admin/newsletters/$newsletterId/edit')({
-  component: NewsletterEditPage,
-});
+import type {
+  NewsletterDetail,
+  NewsletterPreviousStrategy,
+  UpdateNewsletterRequest,
+} from '@/types/newsletter';
 
 const NewsletterEditPage = () => {
   const { newsletterId } = Route.useParams();
   const id = Number(newsletterId);
-  const { data: newsletter } = useSuspenseQuery(
-    newslettersQueries.detail(id),
-  );
+  const { data: newsletter } = useSuspenseQuery(newslettersQueries.detail(id));
 
   if (!newsletter) return null;
 
   return <NewsletterEditForm newsletter={newsletter} newsletterId={id} />;
 };
+
+export const Route = createFileRoute('/_admin/newsletters/$newsletterId/edit')({
+  component: NewsletterEditPage,
+});
 
 const NewsletterEditForm = ({
   newsletter,
@@ -65,7 +67,9 @@ const NewsletterEditForm = ({
         : newsletter.previousAllowed
           ? 'true'
           : 'false',
-    previousStrategy: newsletter.previousStrategy ?? '',
+    previousStrategy: newsletter.previousStrategy
+      ? (newsletter.previousStrategy as NewsletterPreviousStrategy)
+      : '',
     previousFixedCount: newsletter.previousFixedCount?.toString() ?? '',
     previousRecentCount: newsletter.previousRecentCount?.toString() ?? '',
     previousExposureRatio: newsletter.previousExposureRatio?.toString() ?? '',
@@ -77,28 +81,29 @@ const NewsletterEditForm = ({
     return Number.isNaN(parsed) ? undefined : parsed;
   };
 
-  const buildPayload = (values: NewsletterFormValues): UpdateNewsletterRequest =>
-    ({
-      name: values.name.trim(),
-      description: values.description.trim(),
-      imageUrl: values.imageUrl.trim(),
-      email: values.email.trim(),
-      category: values.category.trim(),
-      mainPageUrl: values.mainPageUrl.trim(),
-      subscribeUrl: values.subscribeUrl.trim(),
-      issueCycle: values.issueCycle.trim(),
-      sender: values.sender.trim(),
-      previousNewsletterUrl: values.previousNewsletterUrl.trim() || undefined,
-      subscribeMethod: values.subscribeMethod.trim() || undefined,
-      previousAllowed:
-        values.previousAllowed === ''
-          ? undefined
-          : values.previousAllowed === 'true',
-      previousStrategy: values.previousStrategy || undefined,
-      previousFixedCount: parseOptionalNumber(values.previousFixedCount),
-      previousRecentCount: parseOptionalNumber(values.previousRecentCount),
-      previousExposureRatio: parseOptionalNumber(values.previousExposureRatio),
-    });
+  const buildPayload = (
+    values: NewsletterFormValues,
+  ): UpdateNewsletterRequest => ({
+    name: values.name.trim(),
+    description: values.description.trim(),
+    imageUrl: values.imageUrl.trim(),
+    email: values.email.trim(),
+    category: values.category.trim(),
+    mainPageUrl: values.mainPageUrl.trim(),
+    subscribeUrl: values.subscribeUrl.trim(),
+    issueCycle: values.issueCycle.trim(),
+    sender: values.sender.trim(),
+    previousNewsletterUrl: values.previousNewsletterUrl.trim() || undefined,
+    subscribeMethod: values.subscribeMethod.trim() || undefined,
+    previousAllowed:
+      values.previousAllowed === ''
+        ? undefined
+        : values.previousAllowed === 'true',
+    previousStrategy: values.previousStrategy || undefined,
+    previousFixedCount: parseOptionalNumber(values.previousFixedCount),
+    previousRecentCount: parseOptionalNumber(values.previousRecentCount),
+    previousExposureRatio: parseOptionalNumber(values.previousExposureRatio),
+  });
 
   const handleSubmit = async (values: NewsletterFormValues) => {
     try {
