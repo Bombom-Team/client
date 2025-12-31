@@ -5,7 +5,6 @@ import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { ChallengeCardProps } from '../../ChallengeCard';
-import type { MouseEventHandler } from 'react';
 
 const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
@@ -25,11 +24,6 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
     });
   };
 
-  const handleDetailClick: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.preventDefault();
-    moveToDetail();
-  };
-
   return (
     <CardContainer onClick={moveToDetail}>
       <CardHeader
@@ -38,7 +32,7 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
         applicantCount={participantCount}
       />
 
-      <CardFooter onDetailClick={handleDetailClick}>
+      <CardFooter>
         <ChallengeProgress>{detail.progress}% 달성 중</ChallengeProgress>
       </CardFooter>
     </CardContainer>
