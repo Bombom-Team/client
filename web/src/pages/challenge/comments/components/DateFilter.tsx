@@ -1,37 +1,46 @@
 import styled from '@emotion/styled';
+import { useMemo } from 'react';
 import Chip from '@/components/Chip/Chip';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
+import { findWeekIndex } from '@/pages/challenge/comments/utils/findWeekIndex';
 import { isToday } from '@/utils/date';
 import CalendarIcon from '#/assets/svg/calendar.svg';
 
 interface DateFilterProps {
-  weekDates: string[];
-  selectedDate: string | null;
-  weekIndex: number;
-  totalWeeks: number;
-  onWeekSelect: (weekIndex: number) => void;
+  totalWeeks: string[][];
+  selectedDate: string;
   onDateSelect: (date: string) => void;
 }
 
 const DateFilter = ({
-  weekDates,
-  selectedDate,
-  weekIndex,
   totalWeeks,
-  onWeekSelect,
+  selectedDate,
   onDateSelect,
 }: DateFilterProps) => {
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const handleDateSelect = (tabValue: string) => {
+  const selectedWeekIndex = useMemo(
+    () => findWeekIndex(totalWeeks, selectedDate),
+    [totalWeeks, selectedDate],
+  );
+
+  const selectedWeekDates = useMemo(
+    () => totalWeeks[selectedWeekIndex] ?? [],
+    [totalWeeks, selectedWeekIndex],
+  );
+
+  const selectDate = (tabValue: string) => {
     onDateSelect(tabValue);
   };
 
-  const handleWeekSelect = (index: number) => {
-    onWeekSelect(index);
+  const selectWeek = (index: number) => {
+    const firstDate = totalWeeks[index]?.[0];
+    if (firstDate) {
+      onDateSelect(firstDate);
+    }
     closeModal();
   };
 
@@ -48,7 +57,7 @@ const DateFilter = ({
               onTabSelect={openModal}
               StartComponent={<CalendarIcon width={20} height={20} />}
             />,
-            ...weekDates.map((dateString) => {
+            ...selectedWeekDates.map((dateString) => {
               const date = new Date(dateString);
               return (
                 <Tab
@@ -60,7 +69,7 @@ const DateFilter = ({
                       : `${date.getMonth() + 1}월 ${date.getDate()}일`
                   }
                   selected={selectedDate === dateString}
-                  onTabSelect={handleDateSelect}
+                  onTabSelect={selectDate}
                 />
               );
             }),
@@ -79,13 +88,13 @@ const DateFilter = ({
         <WeekSelectorContainer>
           <WeekSelectorTitle>주차 선택</WeekSelectorTitle>
           <WeekList>
-            {Array.from({ length: totalWeeks }, (_, index) => {
+            {Array.from({ length: totalWeeks.length }, (_, index) => {
               return (
                 <Chip
                   key={index}
                   text={`${index + 1}주차`}
-                  selected={weekIndex === index}
-                  onSelect={() => handleWeekSelect(index)}
+                  selected={selectedWeekIndex === index}
+                  onSelect={() => selectWeek(index)}
                 />
               );
             })}

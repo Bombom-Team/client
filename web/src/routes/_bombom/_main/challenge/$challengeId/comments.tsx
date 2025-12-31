@@ -5,7 +5,6 @@ import Button from '@/components/Button/Button';
 import { challengeComments } from '@/mocks/datas/challengeComments';
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
-import { findWeekIndex } from '@/pages/challenge/comments/utils/findWeekIndex';
 import { getWeekDates } from '@/pages/challenge/comments/utils/getWeekDates';
 import { formatDate } from '@/utils/date';
 
@@ -40,31 +39,12 @@ function ChallengeComments() {
     [latestSelectableDate],
   );
 
-  const weekIndex = useMemo(
-    () => findWeekIndex(selectableWeeks, currentDate),
-    [selectableWeeks, currentDate],
-  );
-
-  const selectWeek = (index: number) => {
-    const firstDate = selectableWeeks[index]?.[0];
-    if (firstDate) {
-      setCurrentDate(firstDate);
-    }
-  };
-
-  const selectDate = (date: string) => {
-    setCurrentDate(date);
-  };
-
   return (
     <Container>
       <DateFilter
-        weekDates={selectableWeeks[weekIndex] ?? []}
+        totalWeeks={selectableWeeks}
         selectedDate={currentDate}
-        weekIndex={weekIndex}
-        totalWeeks={selectableWeeks.length}
-        onWeekSelect={selectWeek}
-        onDateSelect={selectDate}
+        onDateSelect={setCurrentDate}
       />
 
       <ContentWrapper>
