@@ -133,18 +133,18 @@ const Container = styled.div`
 
 const StyledTabs = styled(Tabs)<{ device: Device }>`
   display: flex;
-  gap: 6px;
+  gap: ${({ device }) => (device === 'mobile' ? '6px' : '12px')};
 `;
 
 const DateTab = (props: TabProps<string>) => <Tab {...props} />;
 const StyledTab = styled(DateTab, {
   shouldForwardProp: (prop) => prop !== 'device',
 })<{ device: Device }>`
-  padding: 2px;
-  border-radius: 6px;
+  padding: ${({ device }) => (device === 'mobile' ? '2px' : '8px 12px')};
+  border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
 
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
 `;
 
 const WeekSelectorTab = styled(StyledTab)`
@@ -155,7 +155,7 @@ const WeekSelectorContainer = styled.div<{ device: Device }>`
   max-width: ${({ device }) => (device === 'mobile' ? '80vw' : '100%')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '12px' : '16px')};
+  gap: ${({ device }) => (device === 'mobile' ? '12px' : '18px')};
   flex-direction: column;
 `;
 
