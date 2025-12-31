@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
-import ChallengeCard from '@/pages/challenge/components/ChallengeCard';
+import ChallengeCard from '@/pages/challenge/index/components/ChallengeCard/ChallengeCard';
 import TrophyIcon from '#/assets/svg/trophy.svg';
 
 export const Route = createFileRoute('/_bombom/_main/challenge/')({

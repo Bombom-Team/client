@@ -19,7 +19,7 @@ const useChallengeApplyMutation = ({
         queryKey: challengeQueries.challenges().queryKey,
       });
 
-      toast.success('챌린지 신청애 성공했습니다.');
+      toast.success('챌린지 신청에 성공했습니다.');
     },
   });
 };

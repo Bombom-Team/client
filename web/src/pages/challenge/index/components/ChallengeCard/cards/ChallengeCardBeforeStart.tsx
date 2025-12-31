@@ -9,10 +9,10 @@ import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import useChallengeApplyMutation from '@/pages/challenge/hooks/useChallengeApplyMutation';
-import useChallengeCancelMutation from '@/pages/challenge/hooks/useChallengeCancelMutation';
+import useChallengeApplyMutation from '@/pages/challenge/index/hooks/useChallengeApplyMutation';
+import useChallengeCancelMutation from '@/pages/challenge/index/hooks/useChallengeCancelMutation';
 import { openExternalLink } from '@/utils/externalLink';
-import type { ChallengeCardProps } from '../../ChallengeCard';
+import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
   const { newsletters, participantCount, startDate, title, id } = props;

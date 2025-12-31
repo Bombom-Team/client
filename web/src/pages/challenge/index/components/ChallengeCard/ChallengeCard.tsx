@@ -1,5 +1,5 @@
-import ChallengeCardBeforeStart from './ChallengeCard/cards/ChallengeCardBeforeStart';
-import ChallengeCardOngoing from './ChallengeCard/cards/ChallengeCardOngoing';
+import ChallengeCardBeforeStart from './cards/ChallengeCardBeforeStart';
+import ChallengeCardOngoing from './cards/ChallengeCardOngoing';
 import type { Challenge } from '@/apis/challenge/challenge.api';
 
 export type ChallengeCardProps = Challenge;

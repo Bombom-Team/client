@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
-import ChallengeCard from '@/pages/challenge/components/ChallengeCard';
+import ChallengeCard from '@/pages/challenge/index/components/ChallengeCard/ChallengeCard';
 
 const ChallengeSection = () => {
   const { data: challenges } = useQuery(queries.challenges());

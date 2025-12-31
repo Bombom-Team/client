@@ -4,7 +4,7 @@ import CardContainer from '../CardContainer';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import type { ChallengeCardProps } from '../../ChallengeCard';
+import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
