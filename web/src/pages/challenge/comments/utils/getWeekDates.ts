@@ -3,8 +3,13 @@ import { getDatesInRange } from '@/utils/date';
 export const getWeekDates = (startDate: string, endDate: string) => {
   const dateList = getDatesInRange(startDate, endDate);
 
-  return dateList.reduce((weeks: string[][], currentDate: string, index) => {
-    if (index % 7 === 0) {
+  const weekdays = dateList.filter((date) => {
+    const day = new Date(date).getDay();
+    return day !== 0 && day !== 6;
+  });
+
+  return weekdays.reduce((weeks: string[][], currentDate: string, index) => {
+    if (index % 5 === 0) {
       weeks.push([]);
     }
 
