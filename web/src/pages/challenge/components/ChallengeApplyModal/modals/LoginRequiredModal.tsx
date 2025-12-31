@@ -32,7 +32,7 @@ const LoginRequiredModal = ({ closeModal }: LoginRequiredModalProps) => {
 
       <ModalButtonGroup>
         <ModalButton isMobile={isMobile} onClick={handleLoginClick}>
-          로그인하고 계속하기
+          로그인하러 가기
         </ModalButton>
         <ModalButton
           variant="outlined"
