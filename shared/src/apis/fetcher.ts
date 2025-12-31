@@ -62,7 +62,7 @@ const request = async <TRequest, TResponse>({
   query = {},
   body,
   headers,
-}: RequestOptions<TRequest>): Promise<TResponse | undefined> => {
+}: RequestOptions<TRequest>): Promise<TResponse> => {
   try {
     const url = new URL(ENV.baseUrl + path);
     const stringifiedQuery: Record<string, string> = Object.fromEntries(
@@ -114,11 +114,11 @@ const request = async <TRequest, TResponse>({
       try {
         return await response.json();
       } catch {
-        return undefined;
+        throw new ApiError(response.status, 'JSON 파싱에 실패했습니다.');
       }
     }
 
-    return undefined;
+    throw new ApiError(response.status, '알 수 없는 Content-Type입니다.');
   } catch (error) {
     logger.error(error);
     throw error;

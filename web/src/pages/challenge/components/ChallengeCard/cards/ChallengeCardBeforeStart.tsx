@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { Suspense } from 'react';
 import ChallengeApplyModal from '../../ChallengeApplyModal/ChallengeApplyModal';
+import LoadingModal from '../../ChallengeApplyModal/modals/LoadingModal';
 import CardContainer from '../CardContainer';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
-import { challengeQueries } from '@/apis/challenge/challenge.query';
 import Button from '@/components/Button/Button';
+import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import useChallengeApplyMutation from '@/pages/challenge/hooks/useChallengeApplyMutation';
@@ -16,11 +17,6 @@ import type { ChallengeCardProps } from '../../ChallengeCard';
 const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
   const { newsletters, participantCount, startDate, title, id } = props;
   const { modalRef, openModal, closeModal, isOpen } = useModal();
-
-  const { data: eligibility, isLoading } = useQuery({
-    ...challengeQueries.eligibility(id),
-    enabled: isOpen,
-  });
 
   const { mutate: applyChallenge } = useChallengeApplyMutation({
     challengeId: id,
@@ -83,15 +79,21 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
         </CardFooter>
       </CardContainer>
 
-      <ChallengeApplyModal
+      <Modal
         modalRef={modalRef}
         isOpen={isOpen}
         closeModal={closeModal}
-        eligibility={eligibility || null}
-        isLoading={isLoading}
-        onApply={applyChallenge}
-        newsletters={newsletters}
-      />
+        showCloseButton={false}
+      >
+        <Suspense fallback={<LoadingModal />}>
+          <ChallengeApplyModal
+            challengeId={id}
+            closeModal={closeModal}
+            onApply={applyChallenge}
+            newsletters={newsletters}
+          />
+        </Suspense>
+      </Modal>
     </>
   );
 };
