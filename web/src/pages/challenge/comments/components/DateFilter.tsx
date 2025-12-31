@@ -135,13 +135,11 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const WeekSelectorContainer = styled.div<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? 'min(90vw, 320px)' : '100%')};
+  max-width: ${({ device }) => (device === 'mobile' ? '80vw' : '100%')};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '12px' : '16px')};
   flex-direction: column;
-
-  overflow-x: hidden;
 `;
 
 const WeekSelectorTitle = styled.h3<{ device: Device }>`
@@ -154,6 +152,8 @@ const WeekSelectorTitle = styled.h3<{ device: Device }>`
 `;
 
 const WeekList = styled.div<{ device: Device }>`
+  width: 100%;
+
   display: grid;
   gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
   justify-content: center;
