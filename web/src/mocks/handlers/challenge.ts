@@ -26,32 +26,32 @@ export const challengeHandlers = [
     if (challengeId === '1') {
       response = {
         canApply: true,
-        reasons: [],
+        reason: 'ELIGIBLE',
       };
     } else if (challengeId === '2') {
       response = {
         canApply: false,
-        reasons: ['NOT_LOGGED_IN'],
+        reason: 'NOT_LOGGED_IN',
       };
     } else if (challengeId === '3') {
       response = {
         canApply: false,
-        reasons: ['NOT_SUBSCRIBED'],
+        reason: 'NOT_SUBSCRIBED',
       };
     } else if (challengeId === '4') {
       response = {
         canApply: false,
-        reasons: ['ALREADY_STARTED'],
+        reason: 'ALREADY_STARTED',
       };
     } else if (challengeId === '5') {
       response = {
         canApply: false,
-        reasons: ['ALREADY_APPLIED'],
+        reason: 'ALREADY_APPLIED',
       };
     } else {
       response = {
-        canApply: false,
-        reasons: ['NOT_LOGGED_IN', 'NOT_SUBSCRIBED'],
+        canApply: true,
+        reason: 'ELIGIBLE',
       };
     }
 

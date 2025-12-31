@@ -31,7 +31,7 @@ export type GetChallengesResponse = Challenge[];
 
 export const getChallenges = async () => {
   return await fetcher.get<GetChallengesResponse>({
-    path: '/challenge',
+    path: '/challenges',
   });
 };
 
@@ -44,23 +44,23 @@ export type EligibilityReason =
 
 export interface ChallengeEligibilityResponse {
   canApply: boolean;
-  reasons: EligibilityReason[];
+  reason: EligibilityReason;
 }
 
 export const getChallengeEligibility = async (challengeId: number) => {
   return await fetcher.get<ChallengeEligibilityResponse>({
-    path: `/challenge/${challengeId}/eligibility`,
+    path: `/challenges/${challengeId}/eligibility`,
   });
 };
 
 export const applyChallengeApplication = async (challengeId: number) => {
   return await fetcher.post({
-    path: `/challenge/${challengeId}/application`,
+    path: `/challenges/${challengeId}/application`,
   });
 };
 
 export const cancelChallengeApplication = async (challengeId: number) => {
   return await fetcher.delete({
-    path: `/challenge/${challengeId}/application`,
+    path: `/challenges/${challengeId}/application`,
   });
 };
