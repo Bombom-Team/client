@@ -1,14 +1,13 @@
+import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useMemo } from 'react';
 import { findWeekIndex } from '../utils/date';
-import Chip from '@/components/Chip/Chip';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
+import Button from '@/components/Button/Button';
+import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tab, { type TabProps } from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import { isToday } from '@/utils/date';
-import CalendarIcon from '#/assets/svg/calendar.svg';
 
 interface DateFilterProps {
   totalWeeks: string[][];
@@ -22,7 +21,6 @@ const DateFilter = ({
   onDateSelect,
 }: DateFilterProps) => {
   const device = useDevice();
-  const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const selectedWeekIndex = useMemo(
     () => findWeekIndex(totalWeeks, selectedDate),
@@ -34,156 +32,141 @@ const DateFilter = ({
     [totalWeeks, selectedWeekIndex],
   );
 
+  const canGoPrev = selectedWeekIndex > 0;
+  const canGoNext = selectedWeekIndex < totalWeeks.length - 1;
+
   const selectDate = (dateString: string) => {
     onDateSelect(dateString);
   };
 
-  const selectWeek = (weekIndex: number) => {
-    const defaultDate = totalWeeks[weekIndex]?.[0];
-    if (defaultDate) {
-      onDateSelect(defaultDate);
+  const goToPrevWeek = () => {
+    if (canGoPrev) {
+      const prevWeekDate = totalWeeks[selectedWeekIndex - 1]?.[0];
+      if (prevWeekDate) {
+        onDateSelect(prevWeekDate);
+      }
     }
-    closeModal();
+  };
+
+  const goToNextWeek = () => {
+    if (canGoNext) {
+      const nextWeekDate = totalWeeks[selectedWeekIndex + 1]?.[0];
+      if (nextWeekDate) {
+        onDateSelect(nextWeekDate);
+      }
+    }
   };
 
   return (
-    <>
-      <Container>
-        <StyledTabs device={device}>
-          {[
-            <WeekSelectorTab
-              key="week-selector"
-              value="week-selector"
-              label="주차 선택"
-              selected={false}
-              onTabSelect={openModal}
-              StartComponent={<CalendarIcon width={20} height={20} />}
-              device={device}
-            />,
-            ...selectedWeekDates.map((dateString) => {
-              const date = new Date(dateString);
-              return (
-                <StyledTab
-                  key={dateString}
-                  value={dateString}
-                  label={
-                    isToday(date)
-                      ? '오늘'
-                      : `${date.getMonth() + 1}/${date.getDate()}`
-                  }
-                  selected={selectedDate === dateString}
-                  onTabSelect={selectDate}
-                  device={device}
-                />
-              );
-            }),
-          ]}
-        </StyledTabs>
-      </Container>
-
-      <Modal
-        isOpen={isOpen}
-        closeModal={closeModal}
-        modalRef={modalRef}
-        position={device === 'mobile' ? 'center' : 'center'}
-        showCloseButton={false}
+    <Container device={device}>
+      <NavButton
+        variant="transparent"
+        onClick={goToPrevWeek}
+        disabled={!canGoPrev}
+        device={device}
       >
-        <WeekSelectorContainer device={device}>
-          <WeekSelectorTitle device={device}>주차 선택</WeekSelectorTitle>
-          <WeekList device={device}>
-            {Array.from({ length: totalWeeks.length }, (_, index) => {
-              return (
-                <StyledChip
-                  key={index}
-                  text={`${index + 1}주차`}
-                  selected={selectedWeekIndex === index}
-                  onSelect={() => selectWeek(index)}
-                  device={device}
-                />
-              );
-            })}
-          </WeekList>
-        </WeekSelectorContainer>
-      </Modal>
-    </>
+        <ChevronIcon
+          direction="left"
+          width={device === 'mobile' ? 20 : 36}
+          height={device === 'mobile' ? 20 : 36}
+          fill={canGoPrev ? theme.colors.primary : theme.colors.disabledText}
+        />
+      </NavButton>
+
+      <DateTabsWrapper>
+        <StyledTabs device={device}>
+          {selectedWeekDates.map((dateString) => {
+            const date = new Date(dateString);
+            return (
+              <StyledTab
+                key={dateString}
+                value={dateString}
+                label={
+                  isToday(date)
+                    ? '오늘'
+                    : `${date.getMonth() + 1}/${date.getDate()}`
+                }
+                selected={selectedDate === dateString}
+                onTabSelect={selectDate}
+                device={device}
+              />
+            );
+          })}
+        </StyledTabs>
+      </DateTabsWrapper>
+
+      <NavButton
+        variant="transparent"
+        onClick={goToNextWeek}
+        disabled={!canGoNext}
+        device={device}
+      >
+        <ChevronIcon
+          direction="right"
+          width={device === 'mobile' ? 20 : 36}
+          height={device === 'mobile' ? 20 : 36}
+          fill={canGoNext ? theme.colors.primary : theme.colors.disabledText}
+        />
+      </NavButton>
+    </Container>
   );
 };
 
 export default DateFilter;
 
-const Container = styled.div`
+const Container = styled.div<{ device: Device }>`
   width: 100%;
-  padding-bottom: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const NavButton = styled(Button)<{ device: Device }>`
+  padding: ${({ device }) => (device === 'mobile' ? '6px' : '8px')};
+
+  color: ${({ theme }) => theme.colors.primary};
+
+  transition: opacity 0.2s;
+
+  &:disabled {
+    background-color: transparent;
+  }
+
+  &:hover {
+    background-color: transparent;
+    opacity: 0.6;
+  }
+`;
+
+const DateTabsWrapper = styled.div`
+  border-right: 2px solid ${({ theme }) => theme.colors.disabledBackground};
+  border-left: 2px solid ${({ theme }) => theme.colors.disabledBackground};
+
+  flex: 1;
+
+  text-align: center;
 
   overflow-x: auto;
+  scrollbar-width: none;
 
   &::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 2px;
-    background: ${({ theme }) => theme.colors.stroke};
+    display: none;
   }
 `;
 
 const StyledTabs = styled(Tabs)<{ device: Device }>`
-  display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '6px' : '12px')};
+  display: inline-flex;
+  gap: ${({ device }) => (device === 'pc' ? '24px' : '4px')};
 `;
 
 const DateTab = (props: TabProps<string>) => <Tab {...props} />;
 const StyledTab = styled(DateTab, {
   shouldForwardProp: (prop) => prop !== 'device',
 })<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '2px' : '8px 12px')};
-  border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
+  padding: ${({ device }) => (device === 'mobile' ? '4px 8px' : '8px 12px')};
+  border-radius: ${({ device }) => (device === 'mobile' ? '8px' : '24px')};
 
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
-`;
-
-const WeekSelectorTab = styled(StyledTab)`
-  gap: 2px;
-`;
-
-const WeekSelectorContainer = styled.div<{ device: Device }>`
-  max-width: ${({ device }) => (device === 'mobile' ? '80vw' : '100%')};
-
-  display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '12px' : '18px')};
-  flex-direction: column;
-`;
-
-const WeekSelectorTitle = styled.h3<{ device: Device }>`
-  align-self: ${({ device }) =>
-    device === 'mobile' ? 'center' : 'flex-start'};
-
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
-`;
-
-const WeekList = styled.div<{ device: Device }>`
-  width: 100%;
-
-  display: grid;
-  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
-  justify-content: center;
-
-  grid-template-columns: repeat(4, max-content);
-
-  @media (width <= 320px) {
-    grid-template-columns: repeat(3, max-content);
-  }
-`;
-
-const StyledChip = styled(Chip)<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '8px 12px' : '12px 16px')};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
 `;

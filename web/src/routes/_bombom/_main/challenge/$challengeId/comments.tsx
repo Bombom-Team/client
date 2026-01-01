@@ -96,7 +96,10 @@ const Container = styled.section`
   min-height: 100vh;
 
   display: flex;
+  gap: 12px;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
