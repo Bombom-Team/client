@@ -26,6 +26,14 @@ export const articleHighlights: ArticleWithHighlights[] = [
         id: '2',
         highlightedText: '데이터를 축적하고 분석하는 것이 성장의 핵심이다',
       },
+      {
+        id: '3',
+        highlightedText: '데이터를 축적하고 분석하는 것이 성장의 핵심이다',
+      },
+      {
+        id: '4',
+        highlightedText: '데이터를 축적하고 분석하는 것이 성장의 핵심이다',
+      },
     ],
   },
   {
@@ -67,5 +75,11 @@ export const articleHighlights: ArticleWithHighlights[] = [
         memo: '완벽함보다는 실행력이 중요하다는 말이 인상깊었다. 실무에 바로 적용해봐야겠다.',
       },
     ],
+  },
+  {
+    id: 'article5',
+    newsletterName: '까탈로그',
+    articleTitle: '요즘 트렌드',
+    highlights: [],
   },
 ];
