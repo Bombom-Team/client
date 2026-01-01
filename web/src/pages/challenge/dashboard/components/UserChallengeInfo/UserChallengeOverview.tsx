@@ -1,15 +1,7 @@
 import styled from '@emotion/styled';
 import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
-
-interface ChallengeData {
-  name: string;
-  generation: string;
-  startDate: string;
-  endDate: string;
-  totalDays: number;
-  requiredDates: number;
-}
+import type { ChallengeInfoResponse } from '@/apis/challenge/challenge.api';
 
 interface UserProcessData {
   nickname: string;
@@ -18,19 +10,19 @@ interface UserProcessData {
 }
 
 interface UserChallengeOverviewProps {
-  challengeData: ChallengeData;
+  challengeInfo: ChallengeInfoResponse;
   userProcessData: UserProcessData;
 }
 
 const UserChallengeOverview = ({
-  challengeData,
+  challengeInfo,
   userProcessData,
 }: UserChallengeOverviewProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
   const isPC = device === 'pc';
 
-  const { name, generation, startDate, endDate, totalDays } = challengeData;
+  const { name, generation, startDate, endDate, totalDays } = challengeInfo;
 
   const { nickname, completedDays } = userProcessData;
 

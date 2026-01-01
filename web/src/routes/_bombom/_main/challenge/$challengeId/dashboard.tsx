@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
-import { createFileRoute } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { createFileRoute, useParams } from '@tanstack/react-router';
+import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
 import mockChallengeData from '@/pages/challenge/dashboard/components/ChallengeDashboard/mockChallengeData.json';
@@ -24,14 +26,28 @@ const nickName = '메이토';
 function ChallengeDashboardRoute() {
   const device = useDevice();
   const isMobile = device === 'mobile';
+
+  const { challengeId } = useParams({
+    from: '/_bombom/_main/challenge/$challengeId/dashboard',
+  });
+
+  const { data: challengeInfo } = useQuery(
+    queries.challengesInfo(Number(challengeId)),
+  );
+
   return (
     <Container>
       <Content>
-        <UserChallengeInfo />
+        {challengeInfo && <UserChallengeInfo challengeInfo={challengeInfo} />}
         <InfoWrapper>
           <AchievementAverage>
             팀 평균 달성률 : {mockChallengeData.teamSummary.achievementAverage}%
           </AchievementAverage>
+          <WarningMessage>
+            ⚠️ 챌린지 기간의 80%(
+            {challengeInfo?.requiredDays}일) 이상을 완수해야 챌린지 보상을 받을
+            수 있습니다
+          </WarningMessage>
         </InfoWrapper>
         {isMobile ? (
           <MobileChallengeDashboard
@@ -67,8 +83,16 @@ const Content = styled.div`
 
 const InfoWrapper = styled.div`
   padding: 0 10px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const AchievementAverage = styled.p`
   font: ${({ theme }) => theme.fonts.heading6};
+`;
+
+const WarningMessage = styled.p`
+  font: ${({ theme }) => theme.fonts.body2};
 `;
