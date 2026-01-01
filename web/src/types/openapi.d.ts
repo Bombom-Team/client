@@ -108,6 +108,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/challenges/{id}/application': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 챌린지 신청
+     * @description 특정 챌린지에 신청합니다.
+     */
+    post: operations['applyChallenge'];
+    /**
+     * 챌린지 취소
+     * @description 신청한 챌린지를 취소합니다.
+     */
+    delete: operations['cancelChallenge'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/bookmarks/articles/{articleId}': {
     parameters: {
       query?: never;
@@ -576,6 +600,86 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/challenges': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 전체 목록 조회
+     * @description 진행중이거나 예정된 챌린지 전체 목록을 조회합니다. 로그인 시 참여 여부 및 상세 정보가 함께 반환됩니다.
+     */
+    get: operations['getChallenges'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 상세 조회
+     * @description 특정 챌린지 상세 조회를 합니다.
+     */
+    get: operations['getChallengeInfo'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{id}/eligibility': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 신청 가능 여부 조회
+     * @description 특정 챌린지에 대한 신청 가능 여부를 조회합니다.
+     */
+    get: operations['checkEligibility'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{challengeId}/comments': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 팀 댓글 조회
+     * @description 특정 챌린지에 참여 중인 사용자의 팀 댓글을 기간(start~end)으로 필터링해 페이징 조회합니다. (예: ?page=0&size=20&sort=createdAt,desc)
+     */
+    get: operations['getChallengeComments'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/bookmarks': {
     parameters: {
       query?: never;
@@ -976,14 +1080,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['NoticeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1152,14 +1256,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1189,6 +1293,102 @@ export interface components {
       /** @description 뉴스레터 별 하이라이트 개수 통계 */
       newsletters: components['schemas']['HighlightCountPerNewsletterResponse'][];
     };
+    ChallengeDetailResponse: {
+      /** @description 참여 여부 */
+      isJoined: boolean;
+      /**
+       * Format: int32
+       * @description 진행률(%)
+       */
+      progress: number;
+      /** @enum {string} */
+      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'COMPLETE' | 'FAIL';
+      isSuccess?: boolean;
+    };
+    ChallengeNewsletterResponse: {
+      /** Format: int64 */
+      id: number;
+      name: string;
+      imageUrl: string;
+    };
+    ChallengeResponse: {
+      /** Format: int64 */
+      id: number;
+      title: string;
+      /** Format: int32 */
+      generation: number;
+      /** Format: date */
+      startDate: string;
+      /** Format: date */
+      endDate: string;
+      /**
+       * Format: int64
+       * @description 참가자 수
+       */
+      participantCount: number;
+      newsletters: components['schemas']['ChallengeNewsletterResponse'][];
+      /** @enum {string} */
+      status: 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
+      detail?: components['schemas']['ChallengeDetailResponse'];
+    };
+    ChallengeInfoResponse: {
+      name: string;
+      /** Format: date */
+      startDate: string;
+      /** Format: date */
+      endDate: string;
+      /** Format: int32 */
+      generation: number;
+      /** Format: int32 */
+      totalDays: number;
+      /** Format: int32 */
+      requiredDays: number;
+    };
+    ChallengeEligibilityResponse: {
+      /** @description 신청 가능 여부 */
+      canApply: boolean;
+      /** @enum {string} */
+      reason:
+        | 'NOT_LOGGED_IN'
+        | 'ALREADY_STARTED'
+        | 'ALREADY_APPLIED'
+        | 'NOT_SUBSCRIBED'
+        | 'ELIGIBLE';
+    };
+    ChallengeCommentOptionsRequest: {
+      /** Format: date */
+      start: string;
+      /** Format: date */
+      end: string;
+    };
+    ChallengeCommentResponse: {
+      nickname?: string;
+      newsletterName: string;
+      isSubscribed: boolean;
+      articleTitle: string;
+      quotation?: string;
+      comment: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    PageChallengeCommentResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['ChallengeCommentResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
     BookmarkResponse: {
       /** Format: int64 */
       id: number;
@@ -1217,14 +1417,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1277,14 +1477,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1600,6 +1800,88 @@ export interface operations {
         content?: never;
       };
       /** @description 아티클을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  applyChallenge: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 신청 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 (이미 시작된 챌린지, 중복 신청, 구독하지 않은 뉴스레터 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  cancelChallenge: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 취소 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 (이미 시작된 챌린지) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 또는 신청 내역을 찾을 수 없음 */
       404: {
         headers: {
           [name: string]: unknown;
@@ -2429,6 +2711,147 @@ export interface operations {
       };
       /** @description 인증 실패 (로그인 필요) */
       401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getChallenges: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeResponse'][];
+        };
+      };
+    };
+  };
+  getChallengeInfo: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 상세 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeInfoResponse'];
+        };
+      };
+      /** @description 잘못된 요청 (유효하지 않은 ID) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  checkEligibility: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 신청 가능 여부 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeEligibilityResponse'];
+        };
+      };
+      /** @description 잘못된 요청 (유효하지 않은 ID) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getChallengeComments: {
+    parameters: {
+      query: {
+        /** @description 필터링 관련 요청 */
+        request: components['schemas']['ChallengeCommentOptionsRequest'];
+        /** @description 페이징 및 정렬 (예: ?page=0&size=20&sort=createdAt,desc) */
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 팀 댓글 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageChallengeCommentResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 팀 또는 챌린지 접근 권한 없음 */
+      403: {
         headers: {
           [name: string]: unknown;
         };
