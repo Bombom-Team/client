@@ -1,42 +1,42 @@
 import styled from '@emotion/styled';
 import { useMemo, useState } from 'react';
+import CommentConfirmModalContent from './CommentConfirmModalContent';
 import CommentWriter from './CommentWriter';
 import NewsletterSelector from './NewsletterSelector';
 import QuotationSelector from './QuotationSelector';
 import Button from '@/components/Button/Button';
+import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import { articleHighlights } from '@/mocks/datas/highlights';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
 
 interface AddCommentModalContentProps {
-  closeModal: () => void;
+  closeCommentModal: () => void;
 }
 
 const MIN_COMMENT_LENGTH = 20;
 
 const AddCommentModalContent = ({
-  closeModal,
+  closeCommentModal,
 }: AddCommentModalContentProps) => {
   const [selectedArticleId, setSelectedArticleId] = useState('');
   const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(
     null,
   );
   const [comment, setComment] = useState('');
+  const {
+    modalRef,
+    openModal: openConfirmModal,
+    closeModal: closeConfirmModal,
+    isOpen,
+  } = useModal();
   const device = useDevice();
 
   const selectedArticle = useMemo(
     () => articleHighlights.find((article) => article.id === selectedArticleId),
     [selectedArticleId],
   );
-
-  const handleSubmit = () => {
-    if (comment.length >= MIN_COMMENT_LENGTH && selectedArticleId) {
-      closeModal();
-      setComment('');
-      setSelectedArticleId('');
-      setSelectedQuotationId(null);
-    }
-  };
 
   const selectQuotation = (id: string, text: string) => {
     setSelectedQuotationId(id);
@@ -47,53 +47,81 @@ const AddCommentModalContent = ({
     setSelectedQuotationId(null);
   };
 
+  const handleAddCommentClick = () => {
+    if (comment.length >= MIN_COMMENT_LENGTH && selectedArticleId) {
+      openConfirmModal();
+    }
+  };
+
+  const confirmComment = () => {
+    closeCommentModal();
+    setComment('');
+    setSelectedArticleId('');
+    setSelectedQuotationId(null);
+  };
+
   return (
-    <Container isMobile={device === 'mobile'}>
-      <NewsletterSelector
-        selectedArticleId={selectedArticleId}
-        onArticleSelect={setSelectedArticleId}
-        articles={articleHighlights}
-      />
-
-      {selectedArticle && (
-        <QuotationSelector
-          highlights={selectedArticle.highlights}
-          selectedQuotationId={selectedQuotationId}
-          onQuotationSelect={selectQuotation}
-          onRemoveQuotation={removeQuotation}
+    <>
+      <Container isMobile={device === 'mobile'}>
+        <NewsletterSelector
+          selectedArticleId={selectedArticleId}
+          onArticleSelect={setSelectedArticleId}
+          articles={articleHighlights}
         />
-      )}
 
-      <CommentWriter
-        comment={comment}
-        onCommentChange={setComment}
-        minLength={MIN_COMMENT_LENGTH}
-      />
+        {selectedArticle && (
+          <QuotationSelector
+            highlights={selectedArticle.highlights}
+            selectedQuotationId={selectedQuotationId}
+            onQuotationSelect={selectQuotation}
+            onRemoveQuotation={removeQuotation}
+          />
+        )}
 
-      <TipSection isMobile={device === 'mobile'}>
-        <TipTitleWrapper>
-          <SparklesIcon width={14} height={14} />
-          <TipTitle isMobile={device === 'mobile'}>팁</TipTitle>
-        </TipTitleWrapper>
-        <TipList isMobile={device === 'mobile'}>
-          <TipItem>• 하이라이트를 클릭하면 인용구로 삽입됩니다.</TipItem>
-          <TipItem>
-            • 20자 이상의 메모를 코멘트로 바로 사용할 수 있어요.
-          </TipItem>
-          <TipItem>
-            • 한 줄이면 충분해요. 완벽한 리뷰보다 솔직한 감상이 좋아요!
-          </TipItem>
-        </TipList>
-      </TipSection>
+        <CommentWriter
+          comment={comment}
+          onCommentChange={setComment}
+          minLength={MIN_COMMENT_LENGTH}
+        />
 
-      <SubmitButton
-        isMobile={device === 'mobile'}
-        onClick={handleSubmit}
-        disabled={comment.length < MIN_COMMENT_LENGTH || !selectedArticleId}
+        <TipSection isMobile={device === 'mobile'}>
+          <TipTitleWrapper>
+            <SparklesIcon width={14} height={14} />
+            <TipTitle isMobile={device === 'mobile'}>팁</TipTitle>
+          </TipTitleWrapper>
+          <TipList isMobile={device === 'mobile'}>
+            <TipItem>• 하이라이트를 클릭하면 인용구로 삽입됩니다.</TipItem>
+            <TipItem>
+              • 20자 이상의 메모를 코멘트로 바로 사용할 수 있어요.
+            </TipItem>
+            <TipItem>
+              • 한 줄이면 충분해요. 완벽한 리뷰보다 솔직한 감상이 좋아요!
+            </TipItem>
+          </TipList>
+        </TipSection>
+
+        <AddCommentButton
+          isMobile={device === 'mobile'}
+          onClick={handleAddCommentClick}
+          disabled={comment.length < MIN_COMMENT_LENGTH || !selectedArticleId}
+        >
+          등록하기
+        </AddCommentButton>
+      </Container>
+
+      <Modal
+        modalRef={modalRef}
+        isOpen={isOpen}
+        closeModal={closeConfirmModal}
+        position="center"
+        showCloseButton={false}
       >
-        등록하기
-      </SubmitButton>
-    </Container>
+        <CommentConfirmModalContent
+          closeModal={closeConfirmModal}
+          onConfirm={confirmComment}
+        />
+      </Modal>
+    </>
   );
 };
 
@@ -142,7 +170,7 @@ const TipList = styled.ul<{ isMobile: boolean }>`
 
 const TipItem = styled.li``;
 
-const SubmitButton = styled(Button)<{ isMobile: boolean }>`
+const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
   width: 100%;
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
