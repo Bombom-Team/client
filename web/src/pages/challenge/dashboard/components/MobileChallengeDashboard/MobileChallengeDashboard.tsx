@@ -1,4 +1,8 @@
 import styled from '@emotion/styled';
+import {
+  type ChallengeDashboardData,
+  useChallengeDashboardData,
+} from '@/pages/challenge/dashboard/hooks/useChallengeDashboardData';
 import { formatDate } from '@/utils/date';
 
 type DailyStatus = 'COMPLETE' | 'SHIELD';
@@ -15,77 +19,16 @@ const getStatusIcon = (status?: DailyStatus) => {
   return '';
 };
 
-const isSuccessStatus = (status?: DailyStatus) =>
-  status === 'COMPLETE' || status === 'SHIELD';
-
-interface ChallengeDashboardData {
-  challenge: {
-    startDate: string;
-    endDate: string;
-    totalDays?: number;
-  };
-  teamSummary?: {
-    achievementAverage: number;
-  };
-  members: {
-    memberId: number;
-    nickname: string;
-    is_survived: boolean;
-    dailyProgress: {
-      date: string;
-      status: string;
-    }[];
-  }[];
-}
-
 interface ChallengeDashboardProps {
   nickName?: string;
   data: ChallengeDashboardData;
 }
 
-const normalizeStatus = (status: string): DailyStatus | undefined =>
-  status === 'COMPLETE' || status === 'SHIELD' ? status : undefined;
-
 const MobileChallengeDashboard = ({
   nickName,
   data,
 }: ChallengeDashboardProps) => {
-  const { challenge, members } = data;
-  const startDate = new Date(challenge.startDate);
-  const endDate = new Date(challenge.endDate);
-  const dateRange: Date[] = [];
-
-  for (let current = new Date(startDate); current <= endDate; ) {
-    const day = current.getDay();
-    if (day !== 0 && day !== 6) {
-      dateRange.push(new Date(current));
-    }
-    current.setDate(current.getDate() + 1);
-  }
-
-  const memberRows = members.map((member) => {
-    const progressMap = new Map(
-      member.dailyProgress.map((progress) => [
-        progress.date,
-        normalizeStatus(progress.status),
-      ]),
-    );
-    const completedCount = dateRange.filter((date) => {
-      const dateKey = formatDate(date, '-');
-      const status = progressMap.get(dateKey);
-      return isSuccessStatus(status);
-    }).length;
-    const achievementRate =
-      dateRange.length === 0 ? 0 : (completedCount / dateRange.length) * 100;
-
-    return {
-      member,
-      progressMap,
-      completedCount,
-      achievementRate,
-      isFailed: achievementRate < 80,
-    };
-  });
+  const { dateRange, memberRows } = useChallengeDashboardData(data);
 
   return (
     <Container>
