@@ -19,6 +19,7 @@ export interface ChallengeDetail {
 export interface Challenge {
   id: number;
   title: string;
+  generation: number;
   startDate: Date;
   endDate: Date;
   participantCount: number;

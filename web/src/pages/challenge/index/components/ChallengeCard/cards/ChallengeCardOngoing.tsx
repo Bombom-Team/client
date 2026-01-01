@@ -9,7 +9,7 @@ import type { ChallengeCardProps } from '../ChallengeCard';
 const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
 
-  const { detail, id, participantCount, startDate, title } = props;
+  const { detail, id, participantCount, generation, startDate, title } = props;
 
   const moveToDetail = () => {
     trackEvent({
@@ -29,6 +29,7 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
       <CardHeader
         title={title}
         startDate={startDate}
+        tag={`${generation}기`}
         applicantCount={participantCount}
       />
 
