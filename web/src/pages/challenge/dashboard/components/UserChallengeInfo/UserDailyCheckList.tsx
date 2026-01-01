@@ -112,7 +112,7 @@ const StatusBox = styled.div<{ status: TodoStatus }>`
     $status === 'COMPLETE' ? theme.colors.success : theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
   font-weight: 700;
-  font-size: 12px;
+  font-size: ${({ theme }) => theme.fonts.caption};
   line-height: 1;
 `;
 
