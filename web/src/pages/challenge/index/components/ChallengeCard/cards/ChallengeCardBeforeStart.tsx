@@ -15,7 +15,8 @@ import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
-  const { newsletters, participantCount, startDate, title, id } = props;
+  const { newsletters, participantCount, generation, startDate, title, id } =
+    props;
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const { mutate: applyChallenge } = useChallengeApplyMutation({
@@ -65,6 +66,7 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
         <CardHeader
           title={title}
           startDate={startDate}
+          tag={`${generation}기`}
           applicantCount={participantCount}
         />
 
