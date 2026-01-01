@@ -1,6 +1,5 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useMemo } from 'react';
 import { findWeekIndex, groupingWeeks } from '../utils/date';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
@@ -22,16 +21,8 @@ const DateFilter = ({
 }: DateFilterProps) => {
   const device = useDevice();
   const totalWeeks = groupingWeeks(weekdays);
-
-  const selectedWeekIndex = useMemo(
-    () => findWeekIndex(totalWeeks, selectedDate),
-    [totalWeeks, selectedDate],
-  );
-
-  const selectedWeekDates = useMemo(
-    () => totalWeeks[selectedWeekIndex] ?? [],
-    [totalWeeks, selectedWeekIndex],
-  );
+  const selectedWeekIndex = findWeekIndex(totalWeeks, selectedDate);
+  const selectedWeekDates = totalWeeks[selectedWeekIndex] ?? [];
 
   const displayDates =
     device === 'mobile'

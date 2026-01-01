@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Button from '@/components/Button/Button';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import { challengeComments } from '@/mocks/datas/challengeComments';
@@ -30,15 +30,14 @@ export const Route = createFileRoute(
 
 function ChallengeComments() {
   const device = useDevice();
-  const today = useMemo(() => formatDate(new Date(), '-'), []);
-  const latestSelectableDate = useMemo(
-    () => (today < CHALLENGE_PERIOD.endDate ? today : CHALLENGE_PERIOD.endDate),
-    [today],
-  );
+  const today = formatDate(new Date(), '-');
+  const latestSelectableDate =
+    today < CHALLENGE_PERIOD.endDate ? today : CHALLENGE_PERIOD.endDate;
+
   const [currentDate, setCurrentDate] = useState(latestSelectableDate);
-  const totalDates = useMemo(
-    () => getDatesInRange(CHALLENGE_PERIOD.startDate, latestSelectableDate),
-    [latestSelectableDate],
+  const totalDates = getDatesInRange(
+    CHALLENGE_PERIOD.startDate,
+    latestSelectableDate,
   );
 
   return (
