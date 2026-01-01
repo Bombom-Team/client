@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import UserChallengeOverview from './UserChallengeOverview/UserChallengeOverview';
-import UserDailyCheckList from './UserDailyCheckList/UserDailyCheckList';
+import UserChallengeOverview from './UserChallengeOverview';
+import UserDailyCheckList from './UserDailyCheckList';
 import { useDevice } from '@/hooks/useDevice';
 
 type TodoType = 'READ' | 'COMMENT';
