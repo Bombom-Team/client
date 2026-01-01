@@ -105,7 +105,6 @@ const ChallengePeriod = styled.span<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.disabledText};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.heading6};
-  white-space: nowrap;
 `;
 
 const UserChallengeSummary = styled.div<{ isMobile: boolean }>`
