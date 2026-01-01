@@ -25,7 +25,7 @@ const CardHeader = ({
 
       <Meta>
         {applicantCount && applicantCount > 0 ? (
-          <Applicant>참여자 {applicantCount}명</Applicant>
+          <Applicant>신청자 {applicantCount}명</Applicant>
         ) : null}
         <DDay>D{dday}</DDay>
       </Meta>
