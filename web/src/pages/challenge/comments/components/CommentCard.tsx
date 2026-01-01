@@ -1,8 +1,8 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import { convertRelativeTime } from '@/utils/date';
 import MailIcon from '#/assets/svg/mail.svg';
 
 export interface CommentCardProps {
