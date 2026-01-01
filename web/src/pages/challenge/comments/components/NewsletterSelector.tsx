@@ -35,7 +35,7 @@ const NewsletterSelector = ({
         onSelectOption={onArticleSelect}
         placeholder="아티클을 선택하세요"
         width="100%"
-        fontSize={isMobile ? theme.fonts.body3 : theme.fonts.body2}
+        fontSize={isMobile ? theme.fonts.body2 : theme.fonts.body1}
       />
     </Container>
   );

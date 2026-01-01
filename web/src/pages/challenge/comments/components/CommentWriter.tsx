@@ -55,7 +55,7 @@ const TextArea = styled.textarea<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
 
   resize: vertical;
 
