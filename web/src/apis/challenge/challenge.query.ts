@@ -1,5 +1,9 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getChallenges, getChallengeEligibility } from './challenge.api';
+import {
+  getChallenges,
+  getChallengeEligibility,
+  getChallengeInfo,
+} from './challenge.api';
 
 export const challengeQueries = {
   challenges: () =>
@@ -12,5 +16,10 @@ export const challengeQueries = {
       queryKey: ['challenge', challengeId, 'eligibility'],
       queryFn: () => getChallengeEligibility(challengeId),
       enabled: !!challengeId,
+    }),
+  challengesInfo: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenge', challengeId, 'info'],
+      queryFn: () => getChallengeInfo(challengeId),
     }),
 };

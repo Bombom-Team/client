@@ -30,6 +30,15 @@ export interface Challenge {
 
 export type GetChallengesResponse = Challenge[];
 
+export interface ChallengeInfoResponse {
+  name: string;
+  startDate: string;
+  endDate: string;
+  generation: number;
+  totalDays: number;
+  requiredDays: number;
+}
+
 export const getChallenges = async () => {
   return await fetcher.get<GetChallengesResponse>({
     path: '/challenges',
@@ -63,5 +72,11 @@ export const applyChallengeApplication = async (challengeId: number) => {
 export const cancelChallengeApplication = async (challengeId: number) => {
   return await fetcher.delete({
     path: `/challenges/${challengeId}/application`,
+  });
+};
+
+export const getChallengeInfo = async (challengeId: number) => {
+  return await fetcher.get<ChallengeInfoResponse>({
+    path: `/challenges/${challengeId}`,
   });
 };
