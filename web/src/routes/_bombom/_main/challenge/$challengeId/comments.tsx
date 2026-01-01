@@ -6,8 +6,8 @@ import { useDevice, type Device } from '@/hooks/useDevice';
 import { challengeComments } from '@/mocks/datas/challengeComments';
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
-import { getWeekDates } from '@/pages/challenge/comments/utils/date';
-import { formatDate } from '@/utils/date';
+
+import { filterWeekdays, formatDate, getDatesInRange } from '@/utils/date';
 
 const CHALLENGE_PERIOD = {
   startDate: '2025-11-05',
@@ -36,15 +36,15 @@ function ChallengeComments() {
     [today],
   );
   const [currentDate, setCurrentDate] = useState(latestSelectableDate);
-  const selectableWeeks = useMemo(
-    () => getWeekDates(CHALLENGE_PERIOD.startDate, latestSelectableDate),
+  const totalDates = useMemo(
+    () => getDatesInRange(CHALLENGE_PERIOD.startDate, latestSelectableDate),
     [latestSelectableDate],
   );
 
   return (
     <Container>
       <DateFilter
-        totalWeeks={selectableWeeks}
+        weekdays={filterWeekdays(totalDates)}
         selectedDate={currentDate}
         onDateSelect={setCurrentDate}
       />

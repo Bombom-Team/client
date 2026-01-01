@@ -1,26 +1,27 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useMemo } from 'react';
-import { findWeekIndex } from '../utils/date';
+import { findWeekIndex, groupingWeeks } from '../utils/date';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tab, { type TabProps } from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import { isToday } from '@/utils/date';
+import { formatDate, isToday } from '@/utils/date';
 
 interface DateFilterProps {
-  totalWeeks: string[][];
+  weekdays: string[];
   selectedDate: string;
   onDateSelect: (date: string) => void;
 }
 
 const DateFilter = ({
-  totalWeeks,
+  weekdays,
   selectedDate,
   onDateSelect,
 }: DateFilterProps) => {
   const device = useDevice();
+  const totalWeeks = groupingWeeks(weekdays);
 
   const selectedWeekIndex = useMemo(
     () => findWeekIndex(totalWeeks, selectedDate),
@@ -31,6 +32,11 @@ const DateFilter = ({
     () => totalWeeks[selectedWeekIndex] ?? [],
     [totalWeeks, selectedWeekIndex],
   );
+
+  const displayDates =
+    device === 'mobile'
+      ? weekdays.filter((dateString) => !isToday(new Date(dateString)))
+      : selectedWeekDates;
 
   const canGoPrev = selectedWeekIndex > 0;
   const canGoNext = selectedWeekIndex < totalWeeks.length - 1;
@@ -59,23 +65,25 @@ const DateFilter = ({
 
   return (
     <Container device={device}>
-      <NavButton
-        variant="transparent"
-        onClick={goToPrevWeek}
-        disabled={!canGoPrev}
-        device={device}
-      >
-        <ChevronIcon
-          direction="left"
-          width={device === 'mobile' ? 20 : 36}
-          height={device === 'mobile' ? 20 : 36}
-          fill={canGoPrev ? theme.colors.primary : theme.colors.disabledText}
-        />
-      </NavButton>
+      {device !== 'mobile' && (
+        <NavButton
+          variant="transparent"
+          onClick={goToPrevWeek}
+          disabled={!canGoPrev}
+          device={device}
+        >
+          <ChevronIcon
+            direction="left"
+            width={36}
+            height={36}
+            fill={canGoPrev ? theme.colors.primary : theme.colors.disabledText}
+          />
+        </NavButton>
+      )}
 
-      <DateTabsWrapper>
+      <DateTabsWrapper device={device}>
         <StyledTabs device={device}>
-          {selectedWeekDates.map((dateString) => {
+          {displayDates.map((dateString) => {
             const date = new Date(dateString);
             return (
               <StyledTab
@@ -95,19 +103,33 @@ const DateFilter = ({
         </StyledTabs>
       </DateTabsWrapper>
 
-      <NavButton
-        variant="transparent"
-        onClick={goToNextWeek}
-        disabled={!canGoNext}
-        device={device}
-      >
-        <ChevronIcon
-          direction="right"
-          width={device === 'mobile' ? 20 : 36}
-          height={device === 'mobile' ? 20 : 36}
-          fill={canGoNext ? theme.colors.primary : theme.colors.disabledText}
-        />
-      </NavButton>
+      {device === 'mobile' && (
+        <TodayTabWrapper>
+          <StyledTab
+            value={formatDate(new Date(), '-')}
+            label="오늘"
+            selected={isToday(new Date(selectedDate))}
+            onTabSelect={selectDate}
+            device={device}
+          />
+        </TodayTabWrapper>
+      )}
+
+      {device !== 'mobile' && (
+        <NavButton
+          variant="transparent"
+          onClick={goToNextWeek}
+          disabled={!canGoNext}
+          device={device}
+        >
+          <ChevronIcon
+            direction="right"
+            width={36}
+            height={36}
+            fill={canGoNext ? theme.colors.primary : theme.colors.disabledText}
+          />
+        </NavButton>
+      )}
     </Container>
   );
 };
@@ -139,9 +161,15 @@ const NavButton = styled(Button)<{ device: Device }>`
   }
 `;
 
-const DateTabsWrapper = styled.div`
-  border-right: 2px solid ${({ theme }) => theme.colors.disabledBackground};
-  border-left: 2px solid ${({ theme }) => theme.colors.disabledBackground};
+const DateTabsWrapper = styled.div<{ device: Device }>`
+  border-right: ${({ device, theme }) =>
+    device === 'mobile'
+      ? 'none'
+      : `2px solid ${theme.colors.disabledBackground}`};
+  border-left: ${({ device, theme }) =>
+    device === 'mobile'
+      ? 'none'
+      : `2px solid ${theme.colors.disabledBackground}`};
 
   flex: 1;
 
@@ -158,6 +186,14 @@ const DateTabsWrapper = styled.div`
 const StyledTabs = styled(Tabs)<{ device: Device }>`
   display: inline-flex;
   gap: ${({ device }) => (device === 'pc' ? '24px' : '4px')};
+`;
+
+const TodayTabWrapper = styled.div`
+  padding-left: 8px;
+  border-left: 2px solid ${({ theme }) => theme.colors.disabledBackground};
+
+  display: flex;
+  align-items: center;
 `;
 
 const DateTab = (props: TabProps<string>) => <Tab {...props} />;

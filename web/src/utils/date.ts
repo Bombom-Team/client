@@ -41,3 +41,10 @@ export const getDatesInRange = (
 
   return result;
 };
+
+export const filterWeekdays = (dates: string[]) => {
+  return dates.filter((date) => {
+    const day = new Date(date).getDay();
+    return day !== 0 && day !== 6;
+  });
+};
