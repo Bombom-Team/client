@@ -640,6 +640,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/challenges/{id}/progress/me': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 내 사용자 진행도 조회
+     * @description 사용자의 챌린지 진행도(투두 완료 현황, 총일수, 완료일수)를 조회합니다.
+     */
+    get: operations['getMemberProgress'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/challenges/{id}/eligibility': {
     parameters: {
       query?: never;
@@ -1343,6 +1363,21 @@ export interface components {
       totalDays: number;
       /** Format: int32 */
       requiredDays: number;
+    };
+    MemberChallengeProgressResponse: {
+      nickname: string;
+      /** Format: int32 */
+      totalDays: number;
+      isSurvived: boolean;
+      /** Format: int32 */
+      completedDays: number;
+      todayTodos: components['schemas']['TodayTodoResponse'][];
+    };
+    TodayTodoResponse: {
+      /** @enum {string} */
+      challengeTodoType?: 'READ' | 'COMMENT';
+      /** @enum {string} */
+      challengeTodoStatus?: 'COMPLETE' | 'INCOMPLETE';
     };
     ChallengeEligibilityResponse: {
       /** @description 신청 가능 여부 */
@@ -2767,6 +2802,49 @@ export interface operations {
       };
       /** @description 챌린지를 찾을 수 없음 */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getMemberProgress: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 사용자 진행도 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MemberChallengeProgressResponse'];
+        };
+      };
+      /** @description 잘못된 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지/사용자를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 참가자에 대한 데이터 정합성 불일치 */
+      500: {
         headers: {
           [name: string]: unknown;
         };
