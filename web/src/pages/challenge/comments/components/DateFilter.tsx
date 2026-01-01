@@ -176,7 +176,7 @@ const DateTabsWrapper = styled.div<{ device: Device }>`
 
 const StyledTabs = styled(Tabs)<{ device: Device }>`
   display: inline-flex;
-  gap: ${({ device }) => (device === 'pc' ? '24px' : '4px')};
+  gap: ${({ device }) => (device === 'pc' ? '24px' : '8px')};
 `;
 
 const TodayTabWrapper = styled.div`
@@ -191,8 +191,9 @@ const DateTab = (props: TabProps<string>) => <Tab {...props} />;
 const StyledTab = styled(DateTab, {
   shouldForwardProp: (prop) => prop !== 'device',
 })<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '4px 8px' : '8px 12px')};
-  border-radius: ${({ device }) => (device === 'mobile' ? '8px' : '24px')};
+  min-width: ${({ device }) => (device === 'mobile' ? '52px' : 'fit-content')};
+  padding: ${({ device }) => (device === 'mobile' ? '8px' : '12px 16px')};
+  border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
 
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
