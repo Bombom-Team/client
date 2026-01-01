@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import CommentWriter from './CommentWriter';
 import NewsletterSelector from './NewsletterSelector';
 import QuotationSelector from './QuotationSelector';
@@ -23,11 +23,15 @@ const AddCommentModal = ({
   closeModal,
 }: AddCommentModalProps) => {
   const [selectedArticleId, setSelectedArticleId] = useState('');
+  const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(
+    null,
+  );
   const [comment, setComment] = useState('');
   const device = useDevice();
 
-  const selectedArticle = articleHighlights.find(
-    (article) => article.id === selectedArticleId,
+  const selectedArticle = useMemo(
+    () => articleHighlights.find((article) => article.id === selectedArticleId),
+    [selectedArticleId],
   );
 
   const handleSubmit = () => {
@@ -35,11 +39,17 @@ const AddCommentModal = ({
       closeModal();
       setComment('');
       setSelectedArticleId('');
+      setSelectedQuotationId(null);
     }
   };
 
-  const insertComment = (text: string) => {
+  const selectQuotation = (id: string, text: string) => {
+    setSelectedQuotationId(id);
     setComment(text);
+  };
+
+  const removeQuotation = () => {
+    setSelectedQuotationId(null);
   };
 
   const isSubmitDisabled =
@@ -63,7 +73,9 @@ const AddCommentModal = ({
         {selectedArticle && (
           <QuotationSelector
             highlights={selectedArticle.highlights}
-            onInsertComment={insertComment}
+            selectedQuotationId={selectedQuotationId}
+            onQuotationSelect={selectQuotation}
+            onRemoveQuotation={removeQuotation}
           />
         )}
 

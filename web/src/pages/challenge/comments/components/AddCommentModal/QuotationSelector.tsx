@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 
@@ -11,20 +10,22 @@ interface Highlight {
 
 interface HighlightSelectorProps {
   highlights: Highlight[];
-  onInsertComment: (text: string) => void;
+  selectedQuotationId: string | null;
+  onQuotationSelect: (id: string, text: string) => void;
+  onRemoveQuotation: () => void;
 }
 
 const QuotationSelector = ({
   highlights,
-  onInsertComment,
+  selectedQuotationId,
+  onQuotationSelect,
+  onRemoveQuotation,
 }: HighlightSelectorProps) => {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const device = useDevice();
   const isMobile = device === 'mobile';
 
   const handleInsertComment = (id: string, memo: string) => {
-    setSelectedId(id);
-    onInsertComment(memo);
+    onQuotationSelect(id, memo);
   };
 
   return (
@@ -37,7 +38,7 @@ const QuotationSelector = ({
         {highlights.length > 0 && (
           <RemoveQuotationButton
             variant="transparent"
-            onClick={() => setSelectedId(null)}
+            onClick={onRemoveQuotation}
             isMobile={isMobile}
           >
             인용 제거
@@ -59,7 +60,7 @@ const QuotationSelector = ({
                 handleInsertComment(highlight.id, highlight.memo ?? '')
               }
               isMobile={isMobile}
-              isSelected={selectedId === highlight.id}
+              isSelected={selectedQuotationId === highlight.id}
             >
               <Content isMobile={isMobile}>
                 &ldquo;{highlight.highlightedText}&rdquo;
