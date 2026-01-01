@@ -6,7 +6,7 @@ import { useDevice, type Device } from '@/hooks/useDevice';
 import { challengeComments } from '@/mocks/datas/challengeComments';
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
-import { getWeekDates } from '@/pages/challenge/comments/utils/getWeekDates';
+import { getWeekDates } from '@/pages/challenge/comments/utils/date';
 import { formatDate } from '@/utils/date';
 
 const CHALLENGE_PERIOD = {

@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
 import { useMemo } from 'react';
+import { findWeekIndex } from '../utils/date';
 import Chip from '@/components/Chip/Chip';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import Tab, { type TabProps } from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import { findWeekIndex } from '@/pages/challenge/comments/utils/findWeekIndex';
 import { isToday } from '@/utils/date';
 import CalendarIcon from '#/assets/svg/calendar.svg';
 
