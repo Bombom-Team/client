@@ -1,4 +1,5 @@
 import { fetcher } from '@bombom/shared/apis';
+import type { components, operations } from '@/types/openapi';
 
 export type ChallengeStatus = 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
 export type ChallengeGrade = 'GOLD' | 'SILVER' | 'BRONZE' | 'NONE' | 'FAIL';
@@ -63,5 +64,36 @@ export const applyChallengeApplication = async (challengeId: number) => {
 export const cancelChallengeApplication = async (challengeId: number) => {
   return await fetcher.delete({
     path: `/challenges/${challengeId}/application`,
+  });
+};
+
+export type GetChallengeCommentsParams =
+  operations['getChallengeComments']['parameters']['path'] &
+    components['schemas']['ChallengeCommentOptionsRequest'] &
+    components['schemas']['Pageable'];
+export type GetChallengeCommentsResponse =
+  components['schemas']['PageChallengeCommentResponse'];
+
+export const getChallengeComments = async ({
+  challengeId,
+  ...params
+}: GetChallengeCommentsParams) => {
+  return await fetcher.get<GetChallengeCommentsResponse>({
+    path: `/challenges/${challengeId}/comments`,
+    query: params,
+  });
+};
+
+export type GetChallengeCommentCandidateArticlesParams =
+  operations['getChallengeCommentCandidateArticles']['parameters']['query'];
+export type GetChallengeCommentCandidateArticlesResponse =
+  components['schemas']['ChallengeCommentCandidateArticleResponse'][];
+
+export const getChallengeCommentCandidateArticles = async (
+  params: GetChallengeCommentCandidateArticlesParams,
+) => {
+  return await fetcher.get<GetChallengeCommentCandidateArticlesResponse>({
+    path: '/challenges/comments/articles/candidates',
+    query: params,
   });
 };
