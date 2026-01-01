@@ -21,8 +21,6 @@ export const Route = createFileRoute(
   component: ChallengeDashboardRoute,
 });
 
-const nickName = '메이토';
-
 function ChallengeDashboardRoute() {
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -35,10 +33,19 @@ function ChallengeDashboardRoute() {
     queries.challengesInfo(Number(challengeId)),
   );
 
+  const { data: memberChallengeProgressInfo } = useQuery(
+    queries.memberProgress(Number(challengeId)),
+  );
+
   return (
     <Container>
       <Content>
-        {challengeInfo && <UserChallengeInfo challengeInfo={challengeInfo} />}
+        {challengeInfo && memberChallengeProgressInfo && (
+          <UserChallengeInfo
+            challengeInfo={challengeInfo}
+            memberChallengeProgressInfo={memberChallengeProgressInfo}
+          />
+        )}
         <InfoWrapper>
           <AchievementAverage>
             팀 평균 달성률 : {mockChallengeData.teamSummary.achievementAverage}%
@@ -51,11 +58,14 @@ function ChallengeDashboardRoute() {
         </InfoWrapper>
         {isMobile ? (
           <MobileChallengeDashboard
-            nickName={nickName}
+            nickName={memberChallengeProgressInfo?.nickname}
             data={mockChallengeData}
           />
         ) : (
-          <ChallengeDashboard nickName={nickName} data={mockChallengeData} />
+          <ChallengeDashboard
+            nickName={memberChallengeProgressInfo?.nickname}
+            data={mockChallengeData}
+          />
         )}
       </Content>
     </Container>

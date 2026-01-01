@@ -2,41 +2,20 @@ import styled from '@emotion/styled';
 import UserChallengeOverview from './UserChallengeOverview';
 import UserDailyCheckList from './UserDailyCheckList';
 import { useDevice } from '@/hooks/useDevice';
-import type { ChallengeInfoResponse } from '@/apis/challenge/challenge.api';
-
-type TodoType = 'READ' | 'COMMENT';
-type TodoStatus = 'COMPLETE' | 'INCOMPLETE';
-
-interface DailyTodo {
-  todoType: TodoType;
-  status: TodoStatus;
-}
-
-const todayTodos: DailyTodo[] = [
-  {
-    todoType: 'READ',
-    status: 'COMPLETE',
-  },
-  {
-    todoType: 'COMMENT',
-    status: 'INCOMPLETE',
-  },
-];
-
-// API 응답으로 변경 예장
-
-const userProcessMockData = {
-  nickname: '메이토',
-  totalDays: 24,
-  completedDays: 23,
-  todayTodos,
-};
+import type {
+  ChallengeInfoResponse,
+  MemberChallengeProgressResponse,
+} from '@/apis/challenge/challenge.api';
 
 interface UserChallengeInfoProps {
   challengeInfo: ChallengeInfoResponse;
+  memberChallengeProgressInfo: MemberChallengeProgressResponse;
 }
 
-const UserChallengeInfo = ({ challengeInfo }: UserChallengeInfoProps) => {
+const UserChallengeInfo = ({
+  challengeInfo,
+  memberChallengeProgressInfo,
+}: UserChallengeInfoProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
 
@@ -46,12 +25,14 @@ const UserChallengeInfo = ({ challengeInfo }: UserChallengeInfoProps) => {
         {challengeInfo && (
           <UserChallengeOverview
             challengeInfo={challengeInfo}
-            userProcessData={userProcessMockData}
+            memberChallengeProgressInfo={memberChallengeProgressInfo}
           />
         )}
       </OverviewArea>
       <ChecklistArea isMobile={isMobile}>
-        <UserDailyCheckList todayTodos={userProcessMockData.todayTodos} />
+        <UserDailyCheckList
+          todayTodos={memberChallengeProgressInfo.todayTodos}
+        />
       </ChecklistArea>
     </Container>
   );

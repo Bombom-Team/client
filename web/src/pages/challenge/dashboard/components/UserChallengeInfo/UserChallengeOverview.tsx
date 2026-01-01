@@ -1,22 +1,19 @@
 import styled from '@emotion/styled';
 import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
-import type { ChallengeInfoResponse } from '@/apis/challenge/challenge.api';
-
-interface UserProcessData {
-  nickname: string;
-  totalDays: number;
-  completedDays: number;
-}
+import type {
+  ChallengeInfoResponse,
+  MemberChallengeProgressResponse,
+} from '@/apis/challenge/challenge.api';
 
 interface UserChallengeOverviewProps {
   challengeInfo: ChallengeInfoResponse;
-  userProcessData: UserProcessData;
+  memberChallengeProgressInfo: MemberChallengeProgressResponse;
 }
 
 const UserChallengeOverview = ({
   challengeInfo,
-  userProcessData,
+  memberChallengeProgressInfo,
 }: UserChallengeOverviewProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -24,7 +21,7 @@ const UserChallengeOverview = ({
 
   const { name, generation, startDate, endDate, totalDays } = challengeInfo;
 
-  const { nickname, completedDays } = userProcessData;
+  const { nickname, completedDays } = memberChallengeProgressInfo;
 
   const completionRate = (completedDays / totalDays) * 100;
 
