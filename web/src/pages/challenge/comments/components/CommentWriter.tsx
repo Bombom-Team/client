@@ -1,29 +1,30 @@
 import styled from '@emotion/styled';
+import { useDevice } from '@/hooks/useDevice';
 
 interface CommentWriterProps {
-  isMobile: boolean;
   comment: string;
   onCommentChange: (value: string) => void;
   minLength: number;
 }
 
 const CommentWriter = ({
-  isMobile,
   comment,
   onCommentChange,
   minLength,
 }: CommentWriterProps) => {
+  const device = useDevice();
+
   return (
     <Container>
-      <Title isMobile={isMobile}>코멘트 작성</Title>
+      <Title isMobile={device === 'mobile'}>코멘트 작성</Title>
       <TextArea
-        isMobile={isMobile}
+        isMobile={device === 'mobile'}
         value={comment}
         onChange={(e) => onCommentChange(e.target.value)}
         placeholder="느낀 점, 감상평, 인상 깊었던 내용 등을 자유롭게 적어주세요."
       />
       <MinLengthMessage
-        isMobile={isMobile}
+        isMobile={device === 'mobile'}
         isError={comment.length > 0 && comment.length < minLength}
       >
         최소 {minLength}자 이상 입력해주세요 ({comment.length}/{minLength})

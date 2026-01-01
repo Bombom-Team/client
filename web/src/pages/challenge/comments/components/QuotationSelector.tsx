@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import Button from '@/components/Button/Button';
+import { useDevice } from '@/hooks/useDevice';
 
 interface Highlight {
   id: string;
@@ -10,16 +11,16 @@ interface Highlight {
 
 interface HighlightSelectorProps {
   highlights: Highlight[];
-  isMobile: boolean;
   onInsertComment: (text: string) => void;
 }
 
 const QuotationSelector = ({
   highlights,
-  isMobile,
   onInsertComment,
 }: HighlightSelectorProps) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const device = useDevice();
+  const isMobile = device === 'mobile';
 
   const handleInsertComment = (id: string, memo: string) => {
     setSelectedId(id);

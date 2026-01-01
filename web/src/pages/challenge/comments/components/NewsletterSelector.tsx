@@ -2,21 +2,22 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useMemo } from 'react';
 import Select from '@/components/Select/Select';
+import { useDevice } from '@/hooks/useDevice';
 import type { ArticleWithHighlights } from '@/mocks/datas/highlights';
 
 interface NewsletterSelectorProps {
-  isMobile: boolean;
   selectedArticleId: string;
   onArticleSelect: (articleId: string) => void;
   articles: ArticleWithHighlights[];
 }
 
 const NewsletterSelector = ({
-  isMobile,
   selectedArticleId,
   onArticleSelect,
   articles,
 }: NewsletterSelectorProps) => {
+  const device = useDevice();
+
   const options = useMemo(
     () =>
       articles.map((article) => ({
@@ -28,14 +29,14 @@ const NewsletterSelector = ({
 
   return (
     <Container>
-      <Title isMobile={isMobile}>읽은 아티클</Title>
+      <Title isMobile={device === 'mobile'}>읽은 아티클</Title>
       <Select
         options={options}
         selectedValue={selectedArticleId || null}
         onSelectOption={onArticleSelect}
         placeholder="아티클을 선택하세요"
         width="100%"
-        fontSize={isMobile ? theme.fonts.body2 : theme.fonts.body1}
+        fontSize={device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1}
       />
     </Container>
   );
