@@ -53,9 +53,6 @@ const UserChallengeOverview = ({
           {isPC && (
             <>
               <SummaryName isMobile={isMobile}>{nickname}</SummaryName>
-              <SummaryDescription isMobile={isMobile}>
-                {name} 챌린지 참여중
-              </SummaryDescription>
             </>
           )}
         </SummaryInfo>
@@ -141,13 +138,6 @@ const SummaryName = styled.div<{ isMobile: boolean }>`
     overflow: hidden;
     text-overflow: ellipsis;
   `}
-`;
-
-const SummaryDescription = styled.p<{ isMobile: boolean }>`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
-  ${({ isMobile }) => isMobile && 'display: none;'}
 `;
 
 const SummaryStats = styled.div<{ isMobile: boolean }>`
