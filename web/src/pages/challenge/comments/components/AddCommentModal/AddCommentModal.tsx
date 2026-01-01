@@ -52,9 +52,6 @@ const AddCommentModal = ({
     setSelectedQuotationId(null);
   };
 
-  const isSubmitDisabled =
-    comment.length < MIN_COMMENT_LENGTH || !selectedArticleId;
-
   return (
     <Modal
       modalRef={modalRef}
@@ -104,7 +101,7 @@ const AddCommentModal = ({
         <SubmitButton
           isMobile={device === 'mobile'}
           onClick={handleSubmit}
-          disabled={isSubmitDisabled}
+          disabled={comment.length < MIN_COMMENT_LENGTH || !selectedArticleId}
         >
           등록하기
         </SubmitButton>
