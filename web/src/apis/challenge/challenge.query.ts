@@ -3,6 +3,7 @@ import {
   getChallenges,
   getChallengeEligibility,
   getChallengeInfo,
+  getMemberChallengeProgress,
 } from './challenge.api';
 
 export const challengeQueries = {
@@ -21,5 +22,10 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenge', challengeId, 'info'],
       queryFn: () => getChallengeInfo(challengeId),
+    }),
+  memberProgress: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenge', challengeId, 'progress'],
+      queryFn: () => getMemberChallengeProgress(challengeId),
     }),
 };

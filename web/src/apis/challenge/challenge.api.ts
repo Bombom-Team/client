@@ -1,4 +1,5 @@
 import { fetcher } from '@bombom/shared/apis';
+import type { components } from '@/types/openapi';
 
 export type ChallengeStatus = 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
 export type ChallengeGrade = 'GOLD' | 'SILVER' | 'BRONZE' | 'NONE' | 'FAIL';
@@ -30,14 +31,8 @@ export interface Challenge {
 
 export type GetChallengesResponse = Challenge[];
 
-export interface ChallengeInfoResponse {
-  name: string;
-  startDate: string;
-  endDate: string;
-  generation: number;
-  totalDays: number;
-  requiredDays: number;
-}
+export type ChallengeInfoResponse =
+  components['schemas']['ChallengeInfoResponse'];
 
 export const getChallenges = async () => {
   return await fetcher.get<GetChallengesResponse>({
@@ -56,6 +51,11 @@ export interface ChallengeEligibilityResponse {
   canApply: boolean;
   reason: EligibilityReason;
 }
+
+export type TodayTodos = components['schemas']['TodayTodoResponse'][];
+
+export type MemberChallengeProgressResponse =
+  components['schemas']['MemberChallengeProgressResponse'];
 
 export const getChallengeEligibility = async (challengeId: number) => {
   return await fetcher.get<ChallengeEligibilityResponse>({
@@ -78,5 +78,11 @@ export const cancelChallengeApplication = async (challengeId: number) => {
 export const getChallengeInfo = async (challengeId: number) => {
   return await fetcher.get<ChallengeInfoResponse>({
     path: `/challenges/${challengeId}`,
+  });
+};
+
+export const getMemberChallengeProgress = async (challengeId: number) => {
+  return await fetcher.get<MemberChallengeProgressResponse>({
+    path: `/challenges/${challengeId}/progress/me`,
   });
 };
