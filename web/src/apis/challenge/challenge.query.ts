@@ -40,14 +40,14 @@ export const challengeQueries = {
     }),
   comments: (params: GetChallengeCommentsParams) =>
     queryOptions({
-      queryKey: ['challenge', params.challengeId, 'comments', params],
+      queryKey: ['challenges', params.challengeId, 'comments', params],
       queryFn: () => getChallengeComments(params),
     }),
   commentCandidateArticles: (
     params: GetChallengeCommentCandidateArticlesParams,
   ) =>
     queryOptions({
-      queryKey: ['challenge', 'comments', 'articles', 'candidates', params],
+      queryKey: ['challenges', 'comments', 'articles', 'candidates', params],
       queryFn: () => getChallengeCommentCandidateArticles(params),
     }),
 };
