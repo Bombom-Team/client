@@ -53,7 +53,7 @@ export const useChallengeDashboardData = (
         progressMap,
         completedCount,
         achievementRate,
-        isFailed: achievementRate < 80,
+        isSurvived: member.isSurvived,
       };
     });
 

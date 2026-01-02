@@ -3,19 +3,21 @@ import { useDevice } from '@/hooks/useDevice';
 import { useChallengeDashboardData } from '@/pages/challenge/dashboard/hooks/useChallengeDashboardData';
 import { formatDate } from '@/utils/date';
 import type { TeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
+import ShieldSvg from '#/assets/svg/shield.svg';
+import SproutSvg from '#/assets/svg/sprout.svg';
 
 type DailyStatus = 'COMPLETE' | 'SHIELD' | 'NONE';
 
 const getStatusIcon = (status?: DailyStatus) => {
   if (status === 'COMPLETE') {
-    return '🌱';
+    return <StatusIcon as={SproutSvg} aria-hidden />;
   }
 
   if (status === 'SHIELD') {
-    return '🛡️';
+    return <StatusIcon as={ShieldSvg} aria-hidden />;
   }
 
-  return '';
+  return null;
 };
 
 interface ChallengeDashboardProps {
@@ -54,7 +56,7 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                 member,
                 progressMap,
                 completedCount,
-                isFailed,
+                isSurvived,
                 achievementRate,
               }) => {
                 const isMine = !!nickName && member.nickname === nickName;
@@ -65,7 +67,7 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                     isMine={isMine}
                     isMobile={isMobile}
                   >
-                    <NameCell isFailed={isFailed} isMobile={isMobile}>
+                    <NameCell isSurvived={isSurvived} isMobile={isMobile}>
                       {member.nickname}
                     </NameCell>
                     {dateRange.map((date, index) => {
@@ -74,17 +76,17 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                       return (
                         <BodyCell
                           key={`${member.memberId}-${dateKey}`}
-                          isFailed={isFailed}
+                          isSurvived={isSurvived}
                           isWeekDivider={(index + 1) % 5 === 0}
                         >
                           {getStatusIcon(status)}
                         </BodyCell>
                       );
                     })}
-                    <SummaryCell isFailed={isFailed} isMobile={isMobile}>
+                    <SummaryCell isSurvived={isSurvived} isMobile={isMobile}>
                       {completedCount}
                     </SummaryCell>
-                    <RateCell isFailed={isFailed} isMobile={isMobile}>
+                    <RateCell isSurvived={isSurvived} isMobile={isMobile}>
                       {achievementRate.toFixed(1)}%
                     </RateCell>
                   </BodyRow>
@@ -227,7 +229,7 @@ const BodyRow = styled.tr<{ isMine: boolean; isMobile: boolean }>`
 `;
 
 const BodyCell = styled.td<{
-  isFailed: boolean;
+  isSurvived: boolean;
   isWeekDivider?: boolean;
 }>`
   padding: 4px;
@@ -237,12 +239,12 @@ const BodyCell = styled.td<{
       : `1px solid ${theme.colors.dividers}`};
   border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
 
-  background: ${({ theme, isFailed: isEliminated }) => {
-    if (isEliminated) return theme.colors.disabledBackground;
+  background: ${({ theme, isSurvived }) => {
+    if (!isSurvived) return theme.colors.disabledBackground;
     return theme.colors.white;
   }};
-  color: ${({ theme, isFailed: isEliminated }) =>
-    isEliminated ? theme.colors.disabledText : theme.colors.textPrimary};
+  color: ${({ theme, isSurvived }) =>
+    !isSurvived ? theme.colors.disabledText : theme.colors.textPrimary};
   font-size: ${({ theme }) => theme.fonts.body4};
   text-align: center;
 
@@ -290,4 +292,18 @@ const RateCell = styled(BodyCell)<{ isMobile: boolean }>`
     right: 0;
     z-index: 1;
   `}
+`;
+
+const StatusIcon = styled.span`
+  width: 20px;
+  height: 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  & > svg {
+    width: 14px;
+    height: 14px;
+  }
 `;

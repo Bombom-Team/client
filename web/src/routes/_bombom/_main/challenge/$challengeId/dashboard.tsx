@@ -5,6 +5,8 @@ import { queries } from '@/apis/queries';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 
+const REQUIRED_RATE = 80;
+
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/dashboard',
 )({
@@ -50,7 +52,7 @@ function ChallengeDashboardRoute() {
             {teamChallengeProgressInfo?.teamSummary.achievementAverage}%
           </AchievementAverage>
           <WarningMessage>
-            ⚠️ 챌린지 기간의 80%(
+            ⚠️ 챌린지 기간의 {REQUIRED_RATE}%(
             {challengeInfo?.requiredDays}일) 이상을 완수해야 챌린지 보상을 받을
             수 있습니다
           </WarningMessage>
