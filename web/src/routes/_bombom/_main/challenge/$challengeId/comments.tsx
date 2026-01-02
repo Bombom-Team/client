@@ -133,7 +133,7 @@ const UserChallengeInfoWrapper = styled.div<{ device: Device }>`
 const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
   padding: ${({ device }) => (device === 'mobile' ? '20px 0' : '24px')};
-  border-top: 2px solid ${({ theme }) => theme.colors.dividers};
+  border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '32px' : '44px')};
