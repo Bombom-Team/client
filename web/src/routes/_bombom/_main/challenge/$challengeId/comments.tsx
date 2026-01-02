@@ -10,6 +10,7 @@ import AddCommentModalContent from '@/pages/challenge/comments/components/AddCom
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 
+import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import { filterWeekdays, formatDate, getDatesInRange } from '@/utils/date';
 
 const CHALLENGE_PERIOD = {
@@ -48,6 +49,9 @@ function ChallengeComments() {
 
   return (
     <Container>
+      <UserChallengeInfoWrapper device={device}>
+        <UserChallengeInfo />
+      </UserChallengeInfoWrapper>
       <DateFilter
         weekdays={filterWeekdays(totalDates)}
         selectedDate={currentDate}
@@ -117,6 +121,13 @@ const Container = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+`;
+
+const UserChallengeInfoWrapper = styled.div<{ device: Device }>`
+  width: 100%;
+  padding: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  border-radius: 16px;
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
