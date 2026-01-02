@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import CommentConfirmModalContent from './CommentConfirmModalContent';
 import CommentWriter from './CommentWriter';
 import NewsletterSelector from './NewsletterSelector';
@@ -35,9 +35,8 @@ const AddCommentModalContent = ({
   } = useModal();
   const device = useDevice();
 
-  const selectedArticle = useMemo(
-    () => articleHighlights.find((article) => article.id === selectedArticleId),
-    [selectedArticleId],
+  const selectedArticle = articleHighlights.find(
+    (article) => article.id === selectedArticleId,
   );
 
   const selectQuotation = (id: string, text: string) => {

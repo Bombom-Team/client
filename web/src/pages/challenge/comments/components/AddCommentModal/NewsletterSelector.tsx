@@ -1,6 +1,5 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useMemo } from 'react';
 import Select from '@/components/Select/Select';
 import { useDevice } from '@/hooks/useDevice';
 import type { ArticleWithHighlights } from '@/mocks/datas/highlights';
@@ -18,14 +17,10 @@ const NewsletterSelector = ({
 }: NewsletterSelectorProps) => {
   const device = useDevice();
 
-  const options = useMemo(
-    () =>
-      articles.map((article) => ({
-        label: `${article.newsletterName} (${article.articleTitle})`,
-        value: article.id,
-      })),
-    [articles],
-  );
+  const options = articles.map((article) => ({
+    label: `${article.newsletterName} (${article.articleTitle})`,
+    value: article.id,
+  }));
 
   return (
     <Container>
