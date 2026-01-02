@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import CommentCard from './CommentCard';
 import { useDevice } from '@/hooks/useDevice';
-import type { components } from '@/types/openapi';
+import type { Comment } from '../types/comment';
 import type { PropsWithChildren } from 'react';
 
 interface AllCommentsSectionProps {
-  comments: components['schemas']['ChallengeCommentResponse'][];
+  comments: Comment[];
   isLoading: boolean;
 }
 
