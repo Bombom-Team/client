@@ -4,7 +4,6 @@ import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
-import mockChallengeData from '@/pages/challenge/dashboard/components/ChallengeDashboard/mockChallengeData.json';
 import MobileChallengeDashboard from '@/pages/challenge/dashboard/components/MobileChallengeDashboard/MobileChallengeDashboard';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 
@@ -37,6 +36,10 @@ function ChallengeDashboardRoute() {
     queries.memberProgress(Number(challengeId)),
   );
 
+  const { data: teamChallengeProgressInfo } = useQuery(
+    queries.teamProgress(Number(challengeId)),
+  );
+
   return (
     <Container>
       <Content>
@@ -48,7 +51,8 @@ function ChallengeDashboardRoute() {
         )}
         <InfoWrapper>
           <AchievementAverage>
-            팀 평균 달성률 : {mockChallengeData.teamSummary.achievementAverage}%
+            팀 평균 달성률 :{' '}
+            {teamChallengeProgressInfo?.teamSummary.achievementAverage}%
           </AchievementAverage>
           <WarningMessage>
             ⚠️ 챌린지 기간의 80%(
@@ -56,17 +60,18 @@ function ChallengeDashboardRoute() {
             수 있습니다
           </WarningMessage>
         </InfoWrapper>
-        {isMobile ? (
-          <MobileChallengeDashboard
-            nickName={memberChallengeProgressInfo?.nickname}
-            data={mockChallengeData}
-          />
-        ) : (
-          <ChallengeDashboard
-            nickName={memberChallengeProgressInfo?.nickname}
-            data={mockChallengeData}
-          />
-        )}
+        {teamChallengeProgressInfo &&
+          (isMobile ? (
+            <MobileChallengeDashboard
+              nickName={memberChallengeProgressInfo?.nickname}
+              data={teamChallengeProgressInfo}
+            />
+          ) : (
+            <ChallengeDashboard
+              nickName={memberChallengeProgressInfo?.nickname}
+              data={teamChallengeProgressInfo}
+            />
+          ))}
       </Content>
     </Container>
   );
