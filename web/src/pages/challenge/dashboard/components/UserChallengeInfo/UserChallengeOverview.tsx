@@ -21,7 +21,7 @@ const UserChallengeOverview = ({
 
   const { name, generation, startDate, endDate, totalDays } = challengeInfo;
 
-  const { nickname, completedDays } = memberChallengeProgressInfo;
+  const { nickname, completedDays, isSurvived } = memberChallengeProgressInfo;
 
   const completionRate = (completedDays / totalDays) * 100;
 
@@ -37,7 +37,12 @@ const UserChallengeOverview = ({
         </ChallengePeriod>
       </ChallengeHeader>
 
-      <UserChallengeSummary isMobile={isMobile}>
+      <UserChallengeSummary isMobile={isMobile} isFailed={!isSurvived}>
+        {!isSurvived && (
+          <FailedOverlay isMobile={isMobile}>
+            아쉽게도 이번 챌린지의 달성률에 도달하지 못했어요 🥲
+          </FailedOverlay>
+        )}
         <SummaryInfo>
           {isPC && (
             <>
@@ -45,7 +50,7 @@ const UserChallengeOverview = ({
             </>
           )}
         </SummaryInfo>
-        <SummaryStats isMobile={isMobile}>
+        <SummaryStats isMobile={isMobile} isFailed={!isSurvived}>
           <StatBlock>
             <StatValue isMobile={isMobile}>{completedDays}일</StatValue>
             <StatLabel isMobile={isMobile}>참여 중</StatLabel>
@@ -93,7 +98,12 @@ const ChallengePeriod = styled.span<{ isMobile: boolean }>`
     isMobile ? theme.fonts.body2 : theme.fonts.heading6};
 `;
 
-const UserChallengeSummary = styled.div<{ isMobile: boolean }>`
+const UserChallengeSummary = styled.div<{
+  isMobile: boolean;
+  isFailed: boolean;
+}>`
+  overflow: hidden;
+  position: relative;
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '16px' : '20px 24px')};
   border: 1px solid ${({ theme }) => theme.colors.primaryLight};
@@ -103,7 +113,8 @@ const UserChallengeSummary = styled.div<{ isMobile: boolean }>`
   align-items: center;
   justify-content: space-between;
 
-  background: ${({ theme }) => theme.colors.primaryInfo};
+  background: ${({ theme, isFailed }) =>
+    isFailed ? theme.colors.disabledBackground : theme.colors.primaryInfo};
 
   ${({ isMobile }) => isMobile && 'flex: 1;'}
 `;
@@ -129,12 +140,14 @@ const SummaryName = styled.div<{ isMobile: boolean }>`
   `}
 `;
 
-const SummaryStats = styled.div<{ isMobile: boolean }>`
+const SummaryStats = styled.div<{ isMobile: boolean; isFailed: boolean }>`
   min-width: 0;
 
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '0' : '6px')};
   align-items: center;
+
+  opacity: ${({ isFailed }) => (isFailed ? 0.4 : 1)};
 `;
 
 const StatBlock = styled.div`
@@ -171,4 +184,20 @@ const StatDivider = styled.div`
   height: 36px;
 
   background: ${({ theme }) => theme.colors.dividers};
+`;
+
+const FailedOverlay = styled.div<{ isMobile: boolean }>`
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgb(255 255 255 / 70%);
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
+
+  inset: 0;
+  pointer-events: none;
 `;
