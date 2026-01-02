@@ -1,58 +1,78 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
-import { useDevice, type Device } from '@/hooks/useDevice';
+import { useDevice } from '@/hooks/useDevice';
+import CheckIcon from '#/assets/svg/check-circle.svg';
 import MailIcon from '#/assets/svg/mail.svg';
 
-export interface CommentCardProps {
-  nickname: string;
-  newsletterName: string;
-  articleTitle: string;
-  createdAt: string;
-  comment: string;
-}
+type CommentCardProps = Comment;
+
+const DELETED_USER_NICKNAME = '탈퇴한 회원';
 
 const CommentCard = ({
   nickname,
   newsletterName,
+  isSubscribed,
   articleTitle,
-  createdAt,
   comment,
+  createdAt,
+  quotation,
 }: CommentCardProps) => {
   const device = useDevice();
+  const isMobile = device === 'mobile';
   const relativeTime = convertRelativeTime(createdAt);
 
   return (
-    <Container device={device}>
-      <MetaWrapper>
-        <MetaInfo device={device}>
-          {nickname} · {relativeTime}
-        </MetaInfo>
-        <NewsletterBadge device={device} text={newsletterName} />
-      </MetaWrapper>
-      <TitleWrapper>
-        <MailIcon width={16} height={16} color={theme.colors.textSecondary} />
-        <ArticleTitle device={device}>{articleTitle}</ArticleTitle>
-      </TitleWrapper>
-      <Comment device={device}>{comment}</Comment>
+    <Container isMobile={isMobile}>
+      <ArticleInfo>
+        <MetaWrapper>
+          <MetaInfo isMobile={isMobile}>
+            {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
+          </MetaInfo>
+          <NewsletterBadge
+            isMobile={isMobile}
+            text={newsletterName}
+            {...(isSubscribed && {
+              icon: (
+                <CheckIcon width={16} height={16} fill={theme.colors.primary} />
+              ),
+            })}
+          />
+        </MetaWrapper>
+        <TitleWrapper>
+          <MailIcon width={16} height={16} color={theme.colors.textSecondary} />
+          <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
+        </TitleWrapper>
+      </ArticleInfo>
+      <Content isMobile={isMobile}>
+        {quotation && <Quote isMobile={isMobile}>{quotation}</Quote>}
+        <Comment>{comment}</Comment>
+      </Content>
     </Container>
   );
 };
 
 export default CommentCard;
 
-const Container = styled.article<{ device: Device }>`
+const Container = styled.article<{ isMobile: boolean }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
+  padding: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
   border-radius: 12px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '6px' : '8px')};
+  gap: ${({ isMobile }) => (isMobile ? '8px' : '16px')};
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const ArticleInfo = styled.div`
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
 `;
 
 const MetaWrapper = styled.div`
@@ -61,19 +81,19 @@ const MetaWrapper = styled.div`
   align-items: center;
 `;
 
-const NewsletterBadge = styled(Badge)<{ device: Device }>`
+const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   padding: 2px 6px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
-const MetaInfo = styled.span<{ device: Device }>`
+const MetaInfo = styled.span<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
 const TitleWrapper = styled.div`
@@ -82,14 +102,35 @@ const TitleWrapper = styled.div`
   align-items: center;
 `;
 
-const ArticleTitle = styled.p<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
+const ArticleTitle = styled.p<{ isMobile: boolean }>`
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
-const Comment = styled.p<{ device: Device }>`
+const Content = styled.div<{ isMobile: boolean }>`
+  display: flex;
+  gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
+  flex-direction: column;
+`;
+
+const Quote = styled.div<{ isMobile: boolean }>`
+  overflow: hidden;
+  padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
+  border-left: 4px solid ${({ theme }) => theme.colors.primary};
+
+  display: -webkit-box;
+  flex: 1;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.body2};
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: ${({ isMobile }) => (isMobile ? 3 : 4)};
+  text-overflow: ellipsis;
+`;
+
+const Comment = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 `;
