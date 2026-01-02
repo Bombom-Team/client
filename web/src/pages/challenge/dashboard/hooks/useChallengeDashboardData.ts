@@ -2,12 +2,7 @@ import { useMemo } from 'react';
 import { formatDate } from '@/utils/date';
 import type { GetTeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
 
-type DailyStatus = 'COMPLETE' | 'SHIELD' | 'NONE';
-
-const normalizeStatus = (status: string): DailyStatus | undefined =>
-  status === 'COMPLETE' || status === 'SHIELD' ? status : undefined;
-
-const isSuccessStatus = (status?: DailyStatus) =>
+const isSuccessStatus = (status?: string) =>
   status === 'COMPLETE' || status === 'SHIELD';
 
 const buildDateRange = (startDate: Date, endDate: Date) => {
@@ -37,7 +32,7 @@ export const useChallengeDashboardData = (
       const progressMap = new Map(
         member.dailyProgresses.map((progress) => [
           progress.date,
-          normalizeStatus(progress.status),
+          isSuccessStatus(progress.status) ? progress.status : undefined,
         ]),
       );
       const completedCount = dateRange.filter((date) => {
