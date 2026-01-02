@@ -8,7 +8,7 @@ interface CommentWriterProps {
   onCommentChange: (value: string) => void;
   minLength: number;
   maxLength: number;
-  showError?: boolean;
+  showError: boolean;
 }
 
 const CommentWriter = ({
@@ -16,12 +16,10 @@ const CommentWriter = ({
   onCommentChange,
   minLength,
   maxLength,
-  showError = false,
+  showError,
 }: CommentWriterProps) => {
   const device = useDevice();
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  const isError = showError && comment.length < minLength;
+  const commentAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleCommentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -31,8 +29,8 @@ const CommentWriter = ({
   };
 
   useEffect(() => {
-    if (showError && textAreaRef.current) {
-      textAreaRef.current.focus();
+    if (showError && commentAreaRef.current) {
+      commentAreaRef.current.focus();
     }
   }, [showError]);
 
@@ -40,21 +38,21 @@ const CommentWriter = ({
     <Container>
       <Title isMobile={device === 'mobile'}>코멘트 작성</Title>
       <Comment
-        ref={textAreaRef}
+        ref={commentAreaRef}
         isMobile={device === 'mobile'}
         value={comment}
         onChange={handleCommentChange}
         placeholder="느낀 점, 감상평, 인상 깊었던 내용 등을 자유롭게 적어주세요."
         maxLength={maxLength}
-        isError={isError}
+        isError={showError}
       />
       <MessageWrapper>
-        <MinLengthMessage isMobile={device === 'mobile'} isError={isError}>
-          {isError
+        <MinLengthMessage isMobile={device === 'mobile'} isError={showError}>
+          {showError
             ? `최소 ${minLength}자 이상 입력해주세요`
             : `최소 ${minLength}자 이상`}
         </MinLengthMessage>
-        <CharacterCount isMobile={device === 'mobile'} isError={isError}>
+        <CharacterCount isMobile={device === 'mobile'} isError={showError}>
           {comment.length}/{maxLength}
         </CharacterCount>
       </MessageWrapper>

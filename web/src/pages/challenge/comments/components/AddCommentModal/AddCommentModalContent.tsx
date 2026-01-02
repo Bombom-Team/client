@@ -39,18 +39,18 @@ const AddCommentModalContent = ({
     (article) => article.id === selectedArticleId,
   );
 
+  const editComment = (value: string) => {
+    setShowCommentError(false);
+    setComment(value);
+  };
+
   const selectQuotation = (id: string, text: string) => {
     setSelectedQuotationId(id);
-    setComment(text);
+    editComment(text);
   };
 
   const removeQuotation = () => {
     setSelectedQuotationId(null);
-  };
-
-  const writeComment = (value: string) => {
-    setComment(value);
-    setShowCommentError(false);
   };
 
   const handleAddCommentClick = () => {
@@ -63,7 +63,7 @@ const AddCommentModalContent = ({
 
   const confirmComment = () => {
     closeCommentModal();
-    setComment('');
+    editComment('');
     setSelectedArticleId('');
     setSelectedQuotationId(null);
   };
@@ -88,7 +88,7 @@ const AddCommentModalContent = ({
 
         <CommentWriter
           comment={comment}
-          onCommentChange={(value) => writeComment(value)}
+          onCommentChange={(value) => editComment(value)}
           minLength={MIN_COMMENT_LENGTH}
           maxLength={MAX_COMMENT_LENGTH}
           showError={showCommentError}
