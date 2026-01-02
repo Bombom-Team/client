@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
-import {
-  type ChallengeDashboardData,
-  useChallengeDashboardData,
-} from '@/pages/challenge/dashboard/hooks/useChallengeDashboardData';
+import { useChallengeDashboardData } from '@/pages/challenge/dashboard/hooks/useChallengeDashboardData';
 import { formatDate } from '@/utils/date';
+import type { TeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
 
-type DailyStatus = 'COMPLETE' | 'SHIELD';
+type DailyStatus = 'COMPLETE' | 'SHIELD' | 'NONE';
 
 const getStatusIcon = (status?: DailyStatus) => {
   if (status === 'COMPLETE') {
@@ -21,7 +19,7 @@ const getStatusIcon = (status?: DailyStatus) => {
 
 interface ChallengeDashboardProps {
   nickName?: string;
-  data: ChallengeDashboardData;
+  data: TeamChallengeProgressResponse;
 }
 
 const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
@@ -102,7 +100,6 @@ const Container = styled.section`
 const TableWrapper = styled.div`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.colors.dividers};
-  border-radius: 12px;
 
   background: ${({ theme }) => theme.colors.white};
 
