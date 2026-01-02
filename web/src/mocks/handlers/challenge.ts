@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { CHALLENGES } from '../datas/challenge';
 import { ENV } from '@/apis/env';
-import type { ChallengeEligibilityResponse } from '@/apis/challenge/challenge.api';
+import type { GetChallengeEligibilityResponse } from '@/apis/challenge/challenge.api';
 
 const baseURL = ENV.baseUrl;
 
@@ -21,7 +21,7 @@ export const challengeHandlers = [
     // challengeId가 5이면 이미 신청함
     // 그 외에는 로그인과 구독 모두 필요
 
-    let response: ChallengeEligibilityResponse;
+    let response: GetChallengeEligibilityResponse;
 
     if (challengeId === '1') {
       response = {
