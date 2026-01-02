@@ -640,6 +640,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/challenges/{id}/progress/team': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 팀 진행도 조회
+     * @description 챌린지 참여 팀원들의 진행도 및 팀 요약 정보를 조회합니다.
+     */
+    get: operations['getTeamProgress'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/challenges/{id}/progress/me': {
     parameters: {
       query?: never;
@@ -692,6 +712,26 @@ export interface paths {
      * @description 특정 챌린지에 참여 중인 사용자의 팀 댓글을 기간(start~end)으로 필터링해 페이징 조회합니다. (예: ?page=0&size=20&sort=createdAt,desc)
      */
     get: operations['getChallengeComments'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/comments/articles/candidates': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 코멘트 후보 아티클 조회
+     * @description 지정한 날짜에 도착한 아티클들 중 읽은 아티클들을 조회합니다.
+     */
+    get: operations['getChallengeCommentCandidateArticles'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1364,6 +1404,36 @@ export interface components {
       /** Format: int32 */
       requiredDays: number;
     };
+    ChallengeSummaryResponse: {
+      /** Format: date */
+      startDate: string;
+      /** Format: date */
+      endDate: string;
+      /** Format: int32 */
+      totalDays: number;
+    };
+    DailyProgress: {
+      /** Format: date */
+      date: string;
+      /** @enum {string} */
+      status: 'COMPLETE' | 'SHIELD' | 'NONE';
+    };
+    MemberDailyResultResponse: {
+      /** Format: int64 */
+      memberId: number;
+      nickname: string;
+      isSurvived: boolean;
+      dailyProgresses: components['schemas']['DailyProgress'][];
+    };
+    TeamChallengeProgressResponse: {
+      challenge: components['schemas']['ChallengeSummaryResponse'];
+      teamSummary: components['schemas']['TeamSummaryResponse'];
+      members: components['schemas']['MemberDailyResultResponse'][];
+    };
+    TeamSummaryResponse: {
+      /** Format: int32 */
+      achievementAverage: number;
+    };
     MemberChallengeProgressResponse: {
       nickname: string;
       /** Format: int32 */
@@ -1423,6 +1493,12 @@ export interface components {
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
+    };
+    ChallengeCommentCandidateArticleResponse: {
+      /** Format: int64 */
+      articleId: number;
+      newsletterName: string;
+      articleTitle: string;
     };
     BookmarkResponse: {
       /** Format: int64 */
@@ -2809,6 +2885,42 @@ export interface operations {
       };
     };
   };
+  getTeamProgress: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 팀 진행도 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['TeamChallengeProgressResponse'];
+        };
+      };
+      /** @description 잘못된 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지/사용자를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   getMemberProgress: {
     parameters: {
       query?: never;
@@ -2930,6 +3042,36 @@ export interface operations {
       };
       /** @description 팀 또는 챌린지 접근 권한 없음 */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getChallengeCommentCandidateArticles: {
+    parameters: {
+      query: {
+        /** @description 대상 날짜 (예: 2025-12-31) */
+        date: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 코멘트 후보 아티클 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeCommentCandidateArticleResponse'][];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
         headers: {
           [name: string]: unknown;
         };
