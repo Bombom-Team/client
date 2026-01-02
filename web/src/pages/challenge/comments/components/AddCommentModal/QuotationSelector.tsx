@@ -157,10 +157,12 @@ const QuotationItem = styled(Button)<{
 }>`
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '8px' : '16px')};
-  border: ${({ theme, isSelected }) =>
-    isSelected
-      ? `2px solid ${theme.colors.primary}`
-      : `1px solid ${theme.colors.stroke}`};
+  outline: ${({ isSelected, theme }) =>
+    isSelected ? `2px solid ${theme.colors.primary}` : 'none'};
+  outline-offset: -2px;
+  border: 1px solid
+    ${({ theme, isSelected }) =>
+      isSelected ? theme.colors.primary : theme.colors.stroke};
   border-radius: 8px;
 
   display: flex;

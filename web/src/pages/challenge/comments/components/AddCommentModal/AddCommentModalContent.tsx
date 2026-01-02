@@ -53,8 +53,12 @@ const AddCommentModalContent = ({
   };
 
   const selectQuotation = (id: string, text: string) => {
-    setSelectedQuotationId(id);
-    editComment(text);
+    if (selectedQuotationId === id) {
+      setSelectedQuotationId(null);
+    } else {
+      setSelectedQuotationId(id);
+      editComment(text);
+    }
   };
 
   const removeQuotation = () => {
