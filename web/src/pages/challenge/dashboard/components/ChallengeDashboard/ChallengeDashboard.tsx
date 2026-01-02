@@ -232,7 +232,6 @@ const BodyCell = styled.td<{
   isSurvived: boolean;
   isWeekDivider?: boolean;
 }>`
-  padding: 4px;
   border-right: ${({ theme, isWeekDivider }) =>
     isWeekDivider
       ? `2px solid ${theme.colors.disabledText}`
@@ -294,16 +293,8 @@ const RateCell = styled(BodyCell)<{ isMobile: boolean }>`
   `}
 `;
 
-const StatusIcon = styled.span`
-  width: 20px;
-  height: 14px;
-
+const StatusIcon = styled.img`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  & > svg {
-    width: 14px;
-    height: 14px;
-  }
 `;
