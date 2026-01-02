@@ -7,6 +7,25 @@ import HomeIcon from '#/assets/svg/home.svg';
 import StorageIcon from '#/assets/svg/storage.svg';
 import ChallengeIcon from '#/assets/svg/trophy.svg';
 
+const NAV_LABEL = {
+  today: {
+    pc: '투데이 뉴스레터',
+    mobile: '투데이',
+  },
+  storage: {
+    pc: '뉴스레터 보관함',
+    mobile: '보관함',
+  },
+  challenge: {
+    pc: '챌린지',
+    mobile: '챌린지',
+  },
+  recommend: {
+    pc: '뉴스레터 추천',
+    mobile: '추천',
+  },
+} as const;
+
 interface HeaderNavButtonsProps {
   activeNav: Nav;
   device: Device;
@@ -28,7 +47,7 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
           height={24}
           color={activeNav === 'today' ? 'white' : 'black'}
         />
-        <p>오늘의 뉴스레터</p>
+        <p>{NAV_LABEL.today[isPC ? 'pc' : 'mobile']}</p>
       </NavButton>
       <NavButton
         active={activeNav === 'storage'}
@@ -41,7 +60,7 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
           height={24}
           color={activeNav === 'storage' ? 'white' : 'black'}
         />
-        <p>뉴스레터 보관함</p>
+        <p>{NAV_LABEL.storage[isPC ? 'pc' : 'mobile']}</p>
       </NavButton>
       <NavButton
         active={activeNav === 'challenge'}
@@ -54,7 +73,7 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
           height={24}
           color={activeNav === 'challenge' ? 'white' : 'black'}
         />
-        <p>챌린지</p>
+        <p>{NAV_LABEL.challenge[isPC ? 'pc' : 'mobile']}</p>
       </NavButton>
       <NavButton
         active={activeNav === 'recommend'}
@@ -67,7 +86,7 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
           height={24}
           color={activeNav === 'recommend' ? 'white' : 'black'}
         />
-        <p>뉴스레터 추천</p>
+        <p>{NAV_LABEL.recommend[isPC ? 'pc' : 'mobile']}</p>
       </NavButton>
     </>
   );
