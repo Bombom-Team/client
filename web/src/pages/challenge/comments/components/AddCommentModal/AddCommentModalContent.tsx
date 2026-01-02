@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import CommentConfirmModalContent from './CommentConfirmModalContent';
-import CommentWriter from './CommentWriter';
+import CommentEditor from './CommentEditor';
 import NewsletterSelector from './NewsletterSelector';
 import QuotationSelector from './QuotationSelector';
 import Button from '@/components/Button/Button';
@@ -108,7 +108,7 @@ const AddCommentModalContent = ({
           />
         )}
 
-        <CommentWriter
+        <CommentEditor
           comment={comment}
           onCommentChange={(value) => editComment(value)}
           minLength={MIN_COMMENT_LENGTH}

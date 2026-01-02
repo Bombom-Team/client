@@ -3,7 +3,7 @@ import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 import type { ChangeEvent } from 'react';
 
-interface CommentWriterProps {
+interface CommentEditorProps {
   comment: string;
   onCommentChange: (value: string) => void;
   minLength: number;
@@ -11,13 +11,13 @@ interface CommentWriterProps {
   showError: boolean;
 }
 
-const CommentWriter = ({
+const CommentEditor = ({
   comment,
   onCommentChange,
   minLength,
   maxLength,
   showError,
-}: CommentWriterProps) => {
+}: CommentEditorProps) => {
   const device = useDevice();
 
   const handleCommentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -52,7 +52,7 @@ const CommentWriter = ({
   );
 };
 
-export default CommentWriter;
+export default CommentEditor;
 
 const Container = styled.div`
   display: flex;
