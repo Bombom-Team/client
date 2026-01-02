@@ -1,38 +1,27 @@
 import styled from '@emotion/styled';
 import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
-
-interface ChallengeData {
-  name: string;
-  generation: string;
-  startDate: string;
-  endDate: string;
-  totalDays: number;
-  requiredDates: number;
-}
-
-interface UserProcessData {
-  nickname: string;
-  totalDays: number;
-  completedDays: number;
-}
+import type {
+  GetChallengeInfoResponse,
+  GetMemberChallengeProgressResponse,
+} from '@/apis/challenge/challenge.api';
 
 interface UserChallengeOverviewProps {
-  challengeData: ChallengeData;
-  userProcessData: UserProcessData;
+  challengeInfo: GetChallengeInfoResponse;
+  memberChallengeProgressInfo: GetMemberChallengeProgressResponse;
 }
 
 const UserChallengeOverview = ({
-  challengeData,
-  userProcessData,
+  challengeInfo,
+  memberChallengeProgressInfo,
 }: UserChallengeOverviewProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
   const isPC = device === 'pc';
 
-  const { name, generation, startDate, endDate, totalDays } = challengeData;
+  const { name, generation, startDate, endDate, totalDays } = challengeInfo;
 
-  const { nickname, completedDays } = userProcessData;
+  const { nickname, completedDays, isSurvived } = memberChallengeProgressInfo;
 
   const completionRate = (completedDays / totalDays) * 100;
 
@@ -48,7 +37,12 @@ const UserChallengeOverview = ({
         </ChallengePeriod>
       </ChallengeHeader>
 
-      <UserChallengeSummary isMobile={isMobile}>
+      <UserChallengeSummary isMobile={isMobile} isFailed={!isSurvived}>
+        {!isSurvived && (
+          <FailedOverlay isMobile={isMobile}>
+            아쉽게도 이번 챌린지의 달성률에 도달하지 못했어요 🥲
+          </FailedOverlay>
+        )}
         <SummaryInfo>
           {isPC && (
             <>
@@ -56,7 +50,7 @@ const UserChallengeOverview = ({
             </>
           )}
         </SummaryInfo>
-        <SummaryStats isMobile={isMobile}>
+        <SummaryStats isMobile={isMobile} isSurvived={isSurvived}>
           <StatBlock>
             <StatValue isMobile={isMobile}>{completedDays}일</StatValue>
             <StatLabel isMobile={isMobile}>참여 중</StatLabel>
@@ -80,7 +74,7 @@ const Container = styled.div<{ isMobile: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? 0 : '40px')};
+  gap: ${({ isMobile }) => (isMobile ? '16px' : '40px')};
   flex-direction: ${({ isMobile }) => (isMobile ? 'row' : 'column')};
 `;
 
@@ -104,7 +98,12 @@ const ChallengePeriod = styled.span<{ isMobile: boolean }>`
     isMobile ? theme.fonts.body2 : theme.fonts.heading6};
 `;
 
-const UserChallengeSummary = styled.div<{ isMobile: boolean }>`
+const UserChallengeSummary = styled.div<{
+  isMobile: boolean;
+  isFailed: boolean;
+}>`
+  overflow: hidden;
+  position: relative;
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '16px' : '20px 24px')};
   border: 1px solid ${({ theme }) => theme.colors.primaryLight};
@@ -114,9 +113,10 @@ const UserChallengeSummary = styled.div<{ isMobile: boolean }>`
   align-items: center;
   justify-content: space-between;
 
-  background: ${({ theme }) => theme.colors.primaryInfo};
+  background: ${({ theme, isFailed }) =>
+    isFailed ? theme.colors.disabledBackground : theme.colors.primaryInfo};
 
-  ${({ isMobile }) => isMobile && 'flex: 1;'}
+  ${({ isMobile }) => !isMobile && 'flex: 1;'}
 `;
 
 const SummaryInfo = styled.div`
@@ -140,12 +140,14 @@ const SummaryName = styled.div<{ isMobile: boolean }>`
   `}
 `;
 
-const SummaryStats = styled.div<{ isMobile: boolean }>`
+const SummaryStats = styled.div<{ isMobile: boolean; isSurvived: boolean }>`
   min-width: 0;
 
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '0' : '6px')};
   align-items: center;
+
+  opacity: ${({ isSurvived }) => (!isSurvived ? 0.4 : 1)};
 `;
 
 const StatBlock = styled.div`
@@ -182,4 +184,20 @@ const StatDivider = styled.div`
   height: 36px;
 
   background: ${({ theme }) => theme.colors.dividers};
+`;
+
+const FailedOverlay = styled.div<{ isMobile: boolean }>`
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgb(255 255 255 / 70%);
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
+
+  inset: 0;
+  pointer-events: none;
 `;

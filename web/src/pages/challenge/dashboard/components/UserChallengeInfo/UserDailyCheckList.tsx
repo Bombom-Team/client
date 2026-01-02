@@ -1,26 +1,25 @@
 import styled from '@emotion/styled';
 import { useDevice } from '@/hooks/useDevice';
+import type { TodoStatus } from '../../types/todayTodos';
+import type { TodayTodos } from '@/apis/challenge/challenge.api';
 
-type TodoType = 'READ' | 'COMMENT';
-type TodoStatus = 'COMPLETE' | 'INCOMPLETE';
-
-interface DailyTodo {
-  todoType: TodoType;
-  status: TodoStatus;
-}
 interface UserDailyCheckListProps {
-  todayTodos: DailyTodo[];
+  todayTodos: TodayTodos;
 }
 
-const todoLabels: Record<TodoType, string> = {
+const todoLabels = {
   READ: '뉴스레터를 읽었나요?',
   COMMENT: '오늘의 코멘트를 작성했나요?',
 };
 
 const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
-  const totalCount = todayTodos.length;
-  const completedCount = todayTodos.filter(
-    (todo) => todo.status === 'COMPLETE',
+  const visibleTodos = todayTodos.filter(
+    (todo) => todo.challengeTodoType && todo.challengeTodoStatus,
+  );
+
+  const totalCount = visibleTodos.length;
+  const completedCount = visibleTodos.filter(
+    (todo) => todo.challengeTodoStatus === 'COMPLETE',
   ).length;
 
   const device = useDevice();
@@ -35,14 +34,20 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
         </CountBadge>
       </Header>
       <List>
-        {todayTodos.map((todo) => (
-          <ListItem key={todo.todoType}>
-            <StatusBox status={todo.status}>
-              {todo.status === 'COMPLETE' ? '✓' : ''}
-            </StatusBox>
-            <TodoText>{todoLabels[todo.todoType]}</TodoText>
-          </ListItem>
-        ))}
+        {visibleTodos.map((todo, index) => {
+          if (!todo.challengeTodoType || !todo.challengeTodoStatus) {
+            return null;
+          }
+
+          return (
+            <ListItem key={`${todo.challengeTodoType}-${index}`}>
+              <StatusBox status={todo.challengeTodoStatus}>
+                {todo.challengeTodoStatus === 'COMPLETE' ? '✓' : ''}
+              </StatusBox>
+              <TodoText>{todoLabels[todo.challengeTodoType]}</TodoText>
+            </ListItem>
+          );
+        })}
       </List>
     </Container>
   );
@@ -100,8 +105,8 @@ const StatusBox = styled.div<{ status: TodoStatus }>`
   width: 18px;
   height: 18px;
   border: 1px solid
-    ${({ theme, status: $status }) =>
-      $status === 'COMPLETE' ? theme.colors.success : theme.colors.stroke};
+    ${({ theme, status }) =>
+      status === 'COMPLETE' ? theme.colors.success : theme.colors.stroke};
   border-radius: 4px;
 
   display: inline-flex;
