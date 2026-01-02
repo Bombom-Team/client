@@ -182,14 +182,20 @@ const QuotationItem = styled(Button)<{
 `;
 
 const Quote = styled.div<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '6px 12px')};
+  overflow: hidden;
+  padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
   border-left: 4px solid ${({ theme }) => theme.colors.primary};
 
+  display: -webkit-box;
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: ${({ isMobile }) => (isMobile ? 3 : 4)};
+  text-overflow: ellipsis;
 `;
 
 const Memo = styled.div<{ isMobile: boolean }>`
