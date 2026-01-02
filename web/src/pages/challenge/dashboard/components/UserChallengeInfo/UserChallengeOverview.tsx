@@ -50,7 +50,7 @@ const UserChallengeOverview = ({
             </>
           )}
         </SummaryInfo>
-        <SummaryStats isMobile={isMobile} isFailed={!isSurvived}>
+        <SummaryStats isMobile={isMobile} isSurvived={isSurvived}>
           <StatBlock>
             <StatValue isMobile={isMobile}>{completedDays}일</StatValue>
             <StatLabel isMobile={isMobile}>참여 중</StatLabel>
@@ -140,14 +140,14 @@ const SummaryName = styled.div<{ isMobile: boolean }>`
   `}
 `;
 
-const SummaryStats = styled.div<{ isMobile: boolean; isFailed: boolean }>`
+const SummaryStats = styled.div<{ isMobile: boolean; isSurvived: boolean }>`
   min-width: 0;
 
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '0' : '6px')};
   align-items: center;
 
-  opacity: ${({ isFailed }) => (isFailed ? 0.4 : 1)};
+  opacity: ${({ isSurvived }) => (!isSurvived ? 0.4 : 1)};
 `;
 
 const StatBlock = styled.div`
