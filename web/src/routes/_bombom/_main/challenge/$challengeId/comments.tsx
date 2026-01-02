@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
-import { createFileRoute } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { createFileRoute, useParams } from '@tanstack/react-router';
 import { useState } from 'react';
+import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
@@ -9,7 +11,6 @@ import { challengeComments } from '@/mocks/datas/challengeComments';
 import AddCommentModalContent from '@/pages/challenge/comments/components/AddCommentModal/AddCommentModalContent';
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
-
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import { filterWeekdays, formatDate, getDatesInRange } from '@/utils/date';
 
@@ -42,6 +43,18 @@ function ChallengeComments() {
   const { modalRef, openModal, closeModal, isOpen } = useModal();
   const device = useDevice();
 
+  const { challengeId } = useParams({
+    from: '/_bombom/_main/challenge/$challengeId/dashboard',
+  });
+
+  const { data: challengeInfo } = useQuery(
+    queries.challengesInfo(Number(challengeId)),
+  );
+
+  const { data: memberChallengeProgressInfo } = useQuery(
+    queries.memberProgress(Number(challengeId)),
+  );
+
   const totalDates = getDatesInRange(
     CHALLENGE_PERIOD.startDate,
     latestSelectableDate,
@@ -49,9 +62,14 @@ function ChallengeComments() {
 
   return (
     <Container>
-      <UserChallengeInfoWrapper device={device}>
-        <UserChallengeInfo />
-      </UserChallengeInfoWrapper>
+      {challengeInfo && memberChallengeProgressInfo && (
+        <UserChallengeInfoWrapper device={device}>
+          <UserChallengeInfo
+            challengeInfo={challengeInfo}
+            memberChallengeProgressInfo={memberChallengeProgressInfo}
+          />
+        </UserChallengeInfoWrapper>
+      )}
       <DateFilter
         weekdays={filterWeekdays(totalDates)}
         selectedDate={currentDate}
