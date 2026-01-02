@@ -3,18 +3,18 @@ import { useDevice } from '@/hooks/useDevice';
 import { useChallengeDashboardData } from '@/pages/challenge/dashboard/hooks/useChallengeDashboardData';
 import { formatDate } from '@/utils/date';
 import type { GetTeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
-import ShieldSvg from '#/assets/svg/shield.svg';
-import SproutSvg from '#/assets/svg/sprout.svg';
+import ShieldIcon from '#/assets/svg/shield.svg';
+import SproutIcon from '#/assets/svg/sprout.svg';
 
 type DailyStatus = 'COMPLETE' | 'SHIELD' | 'NONE';
 
 const getStatusIcon = (status?: DailyStatus) => {
   if (status === 'COMPLETE') {
-    return <StatusIcon as={SproutSvg} aria-hidden />;
+    return <StatusIcon as={SproutIcon} aria-hidden />;
   }
 
   if (status === 'SHIELD') {
-    return <StatusIcon as={ShieldSvg} aria-hidden />;
+    return <StatusIcon as={ShieldIcon} aria-hidden />;
   }
 
   return null;
@@ -149,27 +149,27 @@ const HeaderCell = styled.th<{ isWeekDivider?: boolean; isMobile: boolean }>`
   text-align: center;
   white-space: nowrap;
 
-  ${({ isMobile }) =>
+  ${({ isMobile, theme }) =>
     isMobile
       ? `
     &:first-of-type {
       position: sticky;
       left: 0;
-      z-index: 2;
+      z-index: ${theme.zIndex.content};
       width: var(--name-col-width);
     }
 
     &:nth-last-of-type(2) {
       position: sticky;
       right: var(--rate-col-width);
-      z-index: 2;
+      z-index: ${theme.zIndex.content};
       width: var(--summary-col-width);
     }
 
     &:last-of-type {
       position: sticky;
       right: 0;
-      z-index: 2;
+      z-index: ${theme.zIndex.content};
       width: var(--rate-col-width);
       border-right: none;
     }
@@ -258,12 +258,12 @@ const NameCell = styled(BodyCell)<{ isMobile: boolean }>`
 
   font: ${({ theme }) => theme.fonts.body2};
 
-  ${({ isMobile }) =>
+  ${({ isMobile, theme }) =>
     isMobile &&
     `
     position: sticky;
     left: 0;
-    z-index: 1;
+    z-index: ${theme.zIndex.content};
   `}
 `;
 
@@ -271,12 +271,12 @@ const SummaryCell = styled(BodyCell)<{ isMobile: boolean }>`
   width: var(--summary-col-width);
   font: ${({ theme }) => theme.fonts.caption};
 
-  ${({ isMobile }) =>
+  ${({ isMobile, theme }) =>
     isMobile &&
     `
     position: sticky;
     right: var(--rate-col-width);
-    z-index: 1;
+    z-index: ${theme.zIndex.content};
   `}
 `;
 
@@ -284,12 +284,12 @@ const RateCell = styled(BodyCell)<{ isMobile: boolean }>`
   width: var(--rate-col-width);
   font: ${({ theme }) => theme.fonts.caption};
 
-  ${({ isMobile }) =>
+  ${({ isMobile, theme }) =>
     isMobile &&
     `
     position: sticky;
     right: 0;
-    z-index: 1;
+    z-index: ${theme.zIndex.content};
   `}
 `;
 
