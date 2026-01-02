@@ -37,6 +37,7 @@ const AddCommentModalContent = ({
     isOpen,
   } = useModal();
   const device = useDevice();
+  const isMobile = device === 'mobile';
 
   const selectedArticle = articleHighlights.find(
     (article) => article.id === selectedArticleId,
@@ -91,7 +92,7 @@ const AddCommentModalContent = ({
 
   return (
     <>
-      <Container isMobile={device === 'mobile'}>
+      <Container isMobile={isMobile}>
         <NewsletterSelector
           selectedArticleId={selectedArticleId}
           onArticleSelect={selectArticle}
@@ -116,12 +117,12 @@ const AddCommentModalContent = ({
           showError={showCommentError}
         />
 
-        <TipSection isMobile={device === 'mobile'}>
+        <TipSection isMobile={isMobile}>
           <TipTitleWrapper>
             <SparklesIcon width={12} height={12} />
-            <TipTitle isMobile={device === 'mobile'}>팁</TipTitle>
+            <TipTitle isMobile={isMobile}>팁</TipTitle>
           </TipTitleWrapper>
-          <TipList isMobile={device === 'mobile'}>
+          <TipList isMobile={isMobile}>
             <TipItem>• 하이라이트를 클릭하면 인용구로 삽입됩니다.</TipItem>
             <TipItem>
               • 20자 이상의 메모를 코멘트로 바로 사용할 수 있어요.
@@ -132,10 +133,7 @@ const AddCommentModalContent = ({
           </TipList>
         </TipSection>
 
-        <AddCommentButton
-          isMobile={device === 'mobile'}
-          onClick={handleAddCommentClick}
-        >
+        <AddCommentButton isMobile={isMobile} onClick={handleAddCommentClick}>
           등록하기
         </AddCommentButton>
       </Container>
