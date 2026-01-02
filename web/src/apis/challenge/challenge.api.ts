@@ -31,9 +31,6 @@ export interface Challenge {
 
 export type GetChallengesResponse = Challenge[];
 
-export type ChallengeInfoResponse =
-  components['schemas']['ChallengeInfoResponse'];
-
 export const getChallenges = async () => {
   return await fetcher.get<GetChallengesResponse>({
     path: '/challenges',
@@ -47,21 +44,13 @@ export type EligibilityReason =
   | 'ALREADY_APPLIED'
   | 'ELIGIBLE';
 
-export interface ChallengeEligibilityResponse {
+export interface GetChallengesEligibilityResponse {
   canApply: boolean;
   reason: EligibilityReason;
 }
 
-export type TodayTodos = components['schemas']['TodayTodoResponse'][];
-
-export type MemberChallengeProgressResponse =
-  components['schemas']['MemberChallengeProgressResponse'];
-
-export type TeamChallengeProgressResponse =
-  components['schemas']['TeamChallengeProgressResponse'];
-
 export const getChallengeEligibility = async (challengeId: number) => {
-  return await fetcher.get<ChallengeEligibilityResponse>({
+  return await fetcher.get<GetChallengesEligibilityResponse>({
     path: `/challenges/${challengeId}/eligibility`,
   });
 };
@@ -78,20 +67,31 @@ export const cancelChallengeApplication = async (challengeId: number) => {
   });
 };
 
+export type GetChallengeInfoResponse =
+  components['schemas']['ChallengeInfoResponse'];
+
 export const getChallengeInfo = async (challengeId: number) => {
-  return await fetcher.get<ChallengeInfoResponse>({
+  return await fetcher.get<GetChallengeInfoResponse>({
     path: `/challenges/${challengeId}`,
   });
 };
 
+export type TodayTodos = components['schemas']['TodayTodoResponse'][];
+
+export type GetMemberChallengeProgressResponse =
+  components['schemas']['MemberChallengeProgressResponse'];
+
 export const getMemberChallengeProgress = async (challengeId: number) => {
-  return await fetcher.get<MemberChallengeProgressResponse>({
+  return await fetcher.get<GetMemberChallengeProgressResponse>({
     path: `/challenges/${challengeId}/progress/me`,
   });
 };
 
+export type GetTeamChallengeProgressResponse =
+  components['schemas']['TeamChallengeProgressResponse'];
+
 export const getTeamChallengeProgress = async (challengeId: number) => {
-  return await fetcher.get<TeamChallengeProgressResponse>({
+  return await fetcher.get<GetTeamChallengeProgressResponse>({
     path: `/challenges/${challengeId}/progress/team`,
   });
 };

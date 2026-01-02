@@ -2,13 +2,13 @@ import styled from '@emotion/styled';
 import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
 import type {
-  ChallengeInfoResponse,
-  MemberChallengeProgressResponse,
+  GetChallengeInfoResponse,
+  GetMemberChallengeProgressResponse,
 } from '@/apis/challenge/challenge.api';
 
 interface UserChallengeOverviewProps {
-  challengeInfo: ChallengeInfoResponse;
-  memberChallengeProgressInfo: MemberChallengeProgressResponse;
+  challengeInfo: GetChallengeInfoResponse;
+  memberChallengeProgressInfo: GetMemberChallengeProgressResponse;
 }
 
 const UserChallengeOverview = ({

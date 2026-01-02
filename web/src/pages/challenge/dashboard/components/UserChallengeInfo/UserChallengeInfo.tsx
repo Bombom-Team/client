@@ -3,13 +3,13 @@ import UserChallengeOverview from './UserChallengeOverview';
 import UserDailyCheckList from './UserDailyCheckList';
 import { useDevice } from '@/hooks/useDevice';
 import type {
-  ChallengeInfoResponse,
-  MemberChallengeProgressResponse,
+  GetChallengeInfoResponse,
+  GetMemberChallengeProgressResponse,
 } from '@/apis/challenge/challenge.api';
 
 interface UserChallengeInfoProps {
-  challengeInfo: ChallengeInfoResponse;
-  memberChallengeProgressInfo: MemberChallengeProgressResponse;
+  challengeInfo: GetChallengeInfoResponse;
+  memberChallengeProgressInfo: GetMemberChallengeProgressResponse;
 }
 
 const UserChallengeInfo = ({

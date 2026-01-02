@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { formatDate } from '@/utils/date';
-import type { TeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
+import type { GetTeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
 
 type DailyStatus = 'COMPLETE' | 'SHIELD' | 'NONE';
 
@@ -25,7 +25,7 @@ const buildDateRange = (startDate: Date, endDate: Date) => {
 };
 
 export const useChallengeDashboardData = (
-  data: TeamChallengeProgressResponse,
+  data: GetTeamChallengeProgressResponse,
 ) =>
   useMemo(() => {
     const { challenge, members } = data;

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useDevice } from '@/hooks/useDevice';
 import { useChallengeDashboardData } from '@/pages/challenge/dashboard/hooks/useChallengeDashboardData';
 import { formatDate } from '@/utils/date';
-import type { TeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
+import type { GetTeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
 import ShieldSvg from '#/assets/svg/shield.svg';
 import SproutSvg from '#/assets/svg/sprout.svg';
 
@@ -22,7 +22,7 @@ const getStatusIcon = (status?: DailyStatus) => {
 
 interface ChallengeDashboardProps {
   nickName?: string;
-  data: TeamChallengeProgressResponse;
+  data: GetTeamChallengeProgressResponse;
 }
 
 const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
