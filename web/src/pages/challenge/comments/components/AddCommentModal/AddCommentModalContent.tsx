@@ -16,6 +16,7 @@ interface AddCommentModalContentProps {
 }
 
 const MIN_COMMENT_LENGTH = 20;
+const MAX_COMMENT_LENGTH = 255;
 
 const AddCommentModalContent = ({
   closeCommentModal,
@@ -25,6 +26,7 @@ const AddCommentModalContent = ({
     null,
   );
   const [comment, setComment] = useState('');
+  const [showCommentError, setShowCommentError] = useState(false);
   const {
     modalRef,
     openModal: openConfirmModal,
@@ -47,9 +49,16 @@ const AddCommentModalContent = ({
     setSelectedQuotationId(null);
   };
 
+  const writeComment = (value: string) => {
+    setComment(value);
+    setShowCommentError(false);
+  };
+
   const handleAddCommentClick = () => {
     if (comment.length >= MIN_COMMENT_LENGTH && selectedArticleId) {
       openConfirmModal();
+    } else {
+      setShowCommentError(true);
     }
   };
 
@@ -80,8 +89,10 @@ const AddCommentModalContent = ({
 
         <CommentWriter
           comment={comment}
-          onCommentChange={setComment}
+          onCommentChange={(value) => writeComment(value)}
           minLength={MIN_COMMENT_LENGTH}
+          maxLength={MAX_COMMENT_LENGTH}
+          showError={showCommentError}
         />
 
         <TipSection isMobile={device === 'mobile'}>
@@ -103,7 +114,6 @@ const AddCommentModalContent = ({
         <AddCommentButton
           isMobile={device === 'mobile'}
           onClick={handleAddCommentClick}
-          disabled={comment.length < MIN_COMMENT_LENGTH || !selectedArticleId}
         >
           등록하기
         </AddCommentButton>
