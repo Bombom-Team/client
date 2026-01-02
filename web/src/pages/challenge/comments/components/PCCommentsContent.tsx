@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import AllCommentsSection from './AllCommentsSection';
 import CommentCard from './CommentCard';
 import { queries } from '@/apis/queries';
 import Pagination from '@/components/Pagination/Pagination';
@@ -13,12 +14,12 @@ interface PCCommentsContentProps {
   resetPage: () => void;
 }
 
-export default function PCCommentsContent({
+const PCCommentsContent = ({
   baseQueryParams,
   onPageChange,
   page,
   resetPage,
-}: PCCommentsContentProps) {
+}: PCCommentsContentProps) => {
   const queryParams = {
     ...baseQueryParams,
     page: (baseQueryParams.page ?? 1) - 1,
@@ -42,37 +43,20 @@ export default function PCCommentsContent({
         )}
       </Comments>
 
-      <Comments>
-        <CommentTitle>전체 코멘트</CommentTitle>
-        {isLoading ? (
-          <EmptyState>로딩 중...</EmptyState>
-        ) : commentList.length > 0 ? (
-          <>
-            <CardList>
-              {commentList.map((comment, index) => (
-                <CommentCard
-                  key={`comment-${comment.createdAt}-${index}`}
-                  {...comment}
-                />
-              ))}
-            </CardList>
-            <Pagination
-              currentPage={page}
-              totalPages={comments?.totalPages ?? 1}
-              onPageChange={onPageChange}
-            />
-          </>
-        ) : (
-          <EmptyState>
-            아직 작성한 코멘트가 없어요. 가장 먼저 한 줄 평을 남겨보세요!
-          </EmptyState>
-        )}
-      </Comments>
+      <AllCommentsSection comments={commentList} isLoading={isLoading}>
+        <Pagination
+          currentPage={page}
+          totalPages={comments?.totalPages ?? 1}
+          onPageChange={onPageChange}
+        />
+      </AllCommentsSection>
     </Container>
   );
-}
+};
 
-const Container = styled.article`
+export default PCCommentsContent;
+
+const Container = styled.section`
   display: flex;
   gap: 28px;
   flex-direction: column;
@@ -93,14 +77,4 @@ const CardList = styled.div`
   display: flex;
   gap: 12px;
   flex-direction: column;
-`;
-
-const EmptyState = styled.div`
-  padding: 32px;
-  border-radius: 12px;
-
-  background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
-  text-align: center;
 `;
