@@ -132,7 +132,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
 `;
 
 const TabsWrapper = styled.div<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '100%' : '280px')};
+  width: ${({ device }) => (device === 'mobile' ? '100%' : '220px')};
 
   display: flex;
   flex-direction: column;

@@ -4,21 +4,28 @@ import { getDday } from '@/utils/date';
 interface CardHeaderProps {
   title: string;
   applicantCount?: number;
+  tag: string;
   startDate: Date;
 }
 
-const CardHeader = ({ title, applicantCount, startDate }: CardHeaderProps) => {
+const CardHeader = ({
+  title,
+  applicantCount,
+  tag,
+  startDate,
+}: CardHeaderProps) => {
   const dday = getDday(startDate);
 
   return (
     <Header>
       <TitleSection>
         <Title>{title}</Title>
+        {tag && <Tag>{tag}</Tag>}
       </TitleSection>
 
       <Meta>
         {applicantCount && applicantCount > 0 ? (
-          <Applicant>참여자 {applicantCount}명</Applicant>
+          <Applicant>신청자 {applicantCount}명</Applicant>
         ) : null}
         <DDay>D{dday}</DDay>
       </Meta>
@@ -44,6 +51,18 @@ const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
   font-weight: 700;
+`;
+
+const Tag = styled.span`
+  padding: 4px 10px;
+  border-radius: 999px;
+
+  align-self: flex-start;
+
+  background-color: ${({ theme }) => `${theme.colors.primaryLight}40`};
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.body3};
+  font-weight: 600;
 `;
 
 const Meta = styled.div`
