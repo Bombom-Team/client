@@ -11,11 +11,11 @@ export const getChallenges = async () => {
   });
 };
 
-export type ChallengeEligibilityResponse =
+export type GetChallengeEligibilityResponse =
   components['schemas']['ChallengeEligibilityResponse'];
 
 export const getChallengeEligibility = async (challengeId: number) => {
-  return await fetcher.get<ChallengeEligibilityResponse>({
+  return await fetcher.get<GetChallengeEligibilityResponse>({
     path: `/challenges/${challengeId}/eligibility`,
   });
 };
