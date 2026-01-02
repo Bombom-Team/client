@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import {
   getChallenges,
   getChallengeEligibility,
@@ -42,6 +42,27 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', params.challengeId, 'comments', params],
       queryFn: () => getChallengeComments(params),
+    }),
+  infiniteComments: (params: GetChallengeCommentsParams) =>
+    infiniteQueryOptions({
+      queryKey: [
+        'challenge',
+        params.challengeId,
+        'comments',
+        'infinite',
+        params,
+      ],
+      queryFn: ({ pageParam = 0 }) =>
+        getChallengeComments({
+          ...params,
+          page: pageParam,
+        }),
+      getNextPageParam: (lastPage) => {
+        if (!lastPage || lastPage.last) return undefined;
+
+        return (lastPage.number ?? 0) + 1;
+      },
+      initialPageParam: 0,
     }),
   commentCandidateArticles: (
     params: GetChallengeCommentCandidateArticlesParams,
