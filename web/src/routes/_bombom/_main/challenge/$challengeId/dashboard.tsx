@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
-import { createFileRoute } from '@tanstack/react-router';
-import { useDevice } from '@/hooks/useDevice';
+import { useQuery } from '@tanstack/react-query';
+import { createFileRoute, useParams } from '@tanstack/react-router';
+import { queries } from '@/apis/queries';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
-import mockChallengeData from '@/pages/challenge/dashboard/components/ChallengeDashboard/mockChallengeData.json';
-import MobileChallengeDashboard from '@/pages/challenge/dashboard/components/MobileChallengeDashboard/MobileChallengeDashboard';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
+
+const REQUIRED_RATE = 80;
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/dashboard',
@@ -19,27 +20,48 @@ export const Route = createFileRoute(
   component: ChallengeDashboardRoute,
 });
 
-const nickName = '메이토';
-
 function ChallengeDashboardRoute() {
-  const device = useDevice();
-  const isMobile = device === 'mobile';
+  const { challengeId } = useParams({
+    from: '/_bombom/_main/challenge/$challengeId/dashboard',
+  });
+
+  const { data: challengeInfo } = useQuery(
+    queries.challengesInfo(Number(challengeId)),
+  );
+
+  const { data: memberChallengeProgressInfo } = useQuery(
+    queries.memberProgress(Number(challengeId)),
+  );
+
+  const { data: teamChallengeProgressInfo } = useQuery(
+    queries.teamProgress(Number(challengeId)),
+  );
+
   return (
     <Container>
       <Content>
-        <UserChallengeInfo />
+        {challengeInfo && memberChallengeProgressInfo && (
+          <UserChallengeInfo
+            challengeInfo={challengeInfo}
+            memberChallengeProgressInfo={memberChallengeProgressInfo}
+          />
+        )}
         <InfoWrapper>
           <AchievementAverage>
-            팀 평균 달성률 : {mockChallengeData.teamSummary.achievementAverage}%
+            팀 평균 달성률 :{' '}
+            {teamChallengeProgressInfo?.teamSummary.achievementAverage}%
           </AchievementAverage>
+          <WarningMessage>
+            ⚠️ 챌린지 기간의 {REQUIRED_RATE}%(
+            {challengeInfo?.requiredDays}일) 이상을 완수해야 챌린지 보상을 받을
+            수 있습니다
+          </WarningMessage>
         </InfoWrapper>
-        {isMobile ? (
-          <MobileChallengeDashboard
-            nickName={nickName}
-            data={mockChallengeData}
+        {teamChallengeProgressInfo && (
+          <ChallengeDashboard
+            nickName={memberChallengeProgressInfo?.nickname}
+            data={teamChallengeProgressInfo}
           />
-        ) : (
-          <ChallengeDashboard nickName={nickName} data={mockChallengeData} />
         )}
       </Content>
     </Container>
@@ -67,8 +89,16 @@ const Content = styled.div`
 
 const InfoWrapper = styled.div`
   padding: 0 10px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const AchievementAverage = styled.p`
   font: ${({ theme }) => theme.fonts.heading6};
+`;
+
+const WarningMessage = styled.p`
+  font: ${({ theme }) => theme.fonts.body2};
 `;
