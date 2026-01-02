@@ -16,7 +16,7 @@ interface AddCommentModalContentProps {
 }
 
 const MIN_COMMENT_LENGTH = 20;
-const MAX_COMMENT_LENGTH = 255;
+const MAX_COMMENT_LENGTH = 250;
 
 const AddCommentModalContent = ({
   closeCommentModal,
