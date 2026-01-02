@@ -10,28 +10,28 @@ import {
 export const challengeQueries = {
   challenges: () =>
     queryOptions({
-      queryKey: ['challenge', 'list'],
+      queryKey: ['challenges', 'list'],
       queryFn: getChallenges,
     }),
   eligibility: (challengeId: number) =>
     queryOptions({
-      queryKey: ['challenge', challengeId, 'eligibility'],
+      queryKey: ['challenges', challengeId, 'eligibility'],
       queryFn: () => getChallengeEligibility(challengeId),
       enabled: !!challengeId,
     }),
   challengesInfo: (challengeId: number) =>
     queryOptions({
-      queryKey: ['challenge', challengeId, 'info'],
+      queryKey: ['challenges', challengeId, 'info'],
       queryFn: () => getChallengeInfo(challengeId),
     }),
   memberProgress: (challengeId: number) =>
     queryOptions({
-      queryKey: ['challenge', challengeId, 'progress', 'me'],
+      queryKey: ['challenges', challengeId, 'progress', 'me'],
       queryFn: () => getMemberChallengeProgress(challengeId),
     }),
   teamProgress: (challengeId: number) =>
     queryOptions({
-      queryKey: ['challenge', challengeId, 'progress', 'team'],
+      queryKey: ['challenges', challengeId, 'progress', 'team'],
       queryFn: () => getTeamChallengeProgress(challengeId),
     }),
 };
