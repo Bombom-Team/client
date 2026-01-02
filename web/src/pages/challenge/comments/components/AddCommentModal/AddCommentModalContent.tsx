@@ -21,11 +21,14 @@ const MAX_COMMENT_LENGTH = 255;
 const AddCommentModalContent = ({
   closeCommentModal,
 }: AddCommentModalContentProps) => {
-  const [selectedArticleId, setSelectedArticleId] = useState('');
+  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(
+    null,
+  );
   const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(
     null,
   );
   const [comment, setComment] = useState('');
+  const [showArticleError, setShowArticleError] = useState(false);
   const [showCommentError, setShowCommentError] = useState(false);
   const {
     modalRef,
@@ -38,6 +41,11 @@ const AddCommentModalContent = ({
   const selectedArticle = articleHighlights.find(
     (article) => article.id === selectedArticleId,
   );
+
+  const selectArticle = (articleId: string) => {
+    setShowArticleError(false);
+    setSelectedArticleId(articleId);
+  };
 
   const editComment = (value: string) => {
     setShowCommentError(false);
@@ -54,18 +62,27 @@ const AddCommentModalContent = ({
   };
 
   const handleAddCommentClick = () => {
-    if (comment.length >= MIN_COMMENT_LENGTH && selectedArticleId) {
+    const isCommentValid = comment.length >= MIN_COMMENT_LENGTH;
+    const isArticleValid = selectedArticleId !== null;
+
+    if (isCommentValid && isArticleValid) {
       openConfirmModal();
     } else {
-      setShowCommentError(true);
+      if (!isArticleValid) {
+        setShowArticleError(true);
+      }
+      if (!isCommentValid) {
+        setShowCommentError(true);
+      }
     }
   };
 
   const confirmComment = () => {
     closeCommentModal();
     editComment('');
-    setSelectedArticleId('');
+    setSelectedArticleId(null);
     setSelectedQuotationId(null);
+    setShowArticleError(false);
   };
 
   return (
@@ -73,8 +90,9 @@ const AddCommentModalContent = ({
       <Container isMobile={device === 'mobile'}>
         <NewsletterSelector
           selectedArticleId={selectedArticleId}
-          onArticleSelect={setSelectedArticleId}
+          onArticleSelect={selectArticle}
           articles={articleHighlights}
+          showError={showArticleError}
         />
 
         {selectedArticle && (
