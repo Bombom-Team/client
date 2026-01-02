@@ -6,11 +6,11 @@ import type { ChallengeEligibilityResponse } from '@/apis/challenge/challenge.ap
 const baseURL = ENV.baseUrl;
 
 export const challengeHandlers = [
-  http.get(`${baseURL}/challenge`, () => {
+  http.get(`${baseURL}/challenges`, () => {
     return HttpResponse.json(CHALLENGES);
   }),
 
-  http.get(`${baseURL}/challenge/:challengeId/eligibility`, ({ params }) => {
+  http.get(`${baseURL}/challenges/:challengeId/eligibility`, ({ params }) => {
     const { challengeId } = params;
 
     // 테스트를 위한 다양한 케이스
@@ -58,11 +58,11 @@ export const challengeHandlers = [
     return HttpResponse.json(response);
   }),
 
-  http.post(`${baseURL}/challenge/:challengeId/application`, () => {
+  http.post(`${baseURL}/challenges/:challengeId/application`, () => {
     return HttpResponse.json({ success: true });
   }),
 
-  http.delete(`${baseURL}/challenge/:challengeId/application`, () => {
+  http.delete(`${baseURL}/challenges/:challengeId/application`, () => {
     return HttpResponse.json({ success: true });
   }),
 ];

@@ -7,7 +7,7 @@ export const CHALLENGES: Challenge[] = [
     generation: 1,
     startDate: new Date('2026-01-05'),
     endDate: new Date('2026-02-04'),
-    participantCount: 0,
+    participantCount: 12,
     newsletters: [
       {
         id: 1,
