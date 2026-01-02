@@ -76,7 +76,7 @@ const Title = styled.h3<{ isMobile: boolean }>`
 
 const Comment = styled.textarea<{ isMobile: boolean; isError: boolean }>`
   min-height: ${({ isMobile }) => (isMobile ? '80px' : '120px')};
-  padding: ${({ isMobile }) => (isMobile ? '8px' : '16px')};
+  padding: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
   border: 1px solid
     ${({ theme, isError }) =>
       isError ? theme.colors.error : theme.colors.stroke};

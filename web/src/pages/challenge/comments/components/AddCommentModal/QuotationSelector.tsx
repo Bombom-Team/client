@@ -46,11 +46,7 @@ const QuotationSelector = ({
         )}
       </Header>
 
-      {highlights.length === 0 ? (
-        <EmptyState isMobile={isMobile}>
-          저장된 하이라이트/메모가 없어요.
-        </EmptyState>
-      ) : (
+      {highlights.length > 0 ? (
         <QuotationList isMobile={isMobile}>
           {highlights.map((highlight) => (
             <QuotationItem
@@ -69,6 +65,10 @@ const QuotationSelector = ({
             </QuotationItem>
           ))}
         </QuotationList>
+      ) : (
+        <EmptyState isMobile={isMobile}>
+          저장된 하이라이트/메모가 없어요.
+        </EmptyState>
       )}
     </Container>
   );
@@ -78,7 +78,7 @@ export default QuotationSelector;
 
 const Container = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
+  gap: 8px;
   flex-direction: column;
 `;
 
@@ -131,6 +131,11 @@ const QuotationList = styled.div<{ isMobile: boolean }>`
   flex-direction: column;
 
   overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const EmptyState = styled.div<{ isMobile: boolean }>`

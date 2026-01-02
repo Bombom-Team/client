@@ -114,7 +114,7 @@ const AddCommentModalContent = ({
 
         <TipSection isMobile={device === 'mobile'}>
           <TipTitleWrapper>
-            <SparklesIcon width={14} height={14} />
+            <SparklesIcon width={12} height={12} />
             <TipTitle isMobile={device === 'mobile'}>팁</TipTitle>
           </TipTitleWrapper>
           <TipList isMobile={device === 'mobile'}>
@@ -163,7 +163,7 @@ const Container = styled.div<{ isMobile: boolean }>`
 `;
 
 const TipSection = styled.div<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => (isMobile ? '12px' : '16px')};
+  padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '8px 12px')};
   border-radius: 8px;
 
   display: flex;
@@ -181,7 +181,7 @@ const TipTitleWrapper = styled.div`
 const TipTitle = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
   font-weight: 600;
 `;
 
@@ -192,7 +192,7 @@ const TipList = styled.ul<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body2};
+    isMobile ? theme.fonts.body4 : theme.fonts.body3};
 `;
 
 const TipItem = styled.li``;
