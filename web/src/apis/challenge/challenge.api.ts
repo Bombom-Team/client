@@ -1,4 +1,5 @@
 import { fetcher } from '@bombom/shared/apis';
+import type { components } from '@/types/openapi';
 
 export type ChallengeStatus = 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
 export type ChallengeGrade = 'GOLD' | 'SILVER' | 'BRONZE' | 'NONE' | 'FAIL';
@@ -43,13 +44,13 @@ export type EligibilityReason =
   | 'ALREADY_APPLIED'
   | 'ELIGIBLE';
 
-export interface ChallengeEligibilityResponse {
+export interface GetChallengesEligibilityResponse {
   canApply: boolean;
   reason: EligibilityReason;
 }
 
 export const getChallengeEligibility = async (challengeId: number) => {
-  return await fetcher.get<ChallengeEligibilityResponse>({
+  return await fetcher.get<GetChallengesEligibilityResponse>({
     path: `/challenges/${challengeId}/eligibility`,
   });
 };
@@ -63,5 +64,34 @@ export const applyChallengeApplication = async (challengeId: number) => {
 export const cancelChallengeApplication = async (challengeId: number) => {
   return await fetcher.delete({
     path: `/challenges/${challengeId}/application`,
+  });
+};
+
+export type GetChallengeInfoResponse =
+  components['schemas']['ChallengeInfoResponse'];
+
+export const getChallengeInfo = async (challengeId: number) => {
+  return await fetcher.get<GetChallengeInfoResponse>({
+    path: `/challenges/${challengeId}`,
+  });
+};
+
+export type TodayTodos = components['schemas']['TodayTodoResponse'][];
+
+export type GetMemberChallengeProgressResponse =
+  components['schemas']['MemberChallengeProgressResponse'];
+
+export const getMemberChallengeProgress = async (challengeId: number) => {
+  return await fetcher.get<GetMemberChallengeProgressResponse>({
+    path: `/challenges/${challengeId}/progress/me`,
+  });
+};
+
+export type GetTeamChallengeProgressResponse =
+  components['schemas']['TeamChallengeProgressResponse'];
+
+export const getTeamChallengeProgress = async (challengeId: number) => {
+  return await fetcher.get<GetTeamChallengeProgressResponse>({
+    path: `/challenges/${challengeId}/progress/team`,
   });
 };

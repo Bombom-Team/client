@@ -6,7 +6,6 @@
     "strict": true,
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
-    "resolveJsonModule": true,
     "esModuleInterop": true,
     "jsxImportSource": "@emotion/react",
     "jsx": "react-jsx",

@@ -1,32 +1,8 @@
 import { useMemo } from 'react';
 import { formatDate } from '@/utils/date';
+import type { GetTeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
 
-type DailyStatus = 'COMPLETE' | 'SHIELD';
-
-export interface ChallengeDashboardData {
-  challenge: {
-    startDate: string;
-    endDate: string;
-    totalDays?: number;
-  };
-  teamSummary?: {
-    achievementAverage: number;
-  };
-  members: {
-    memberId: number;
-    nickname: string;
-    is_survived: boolean;
-    dailyProgress: {
-      date: string;
-      status: string;
-    }[];
-  }[];
-}
-
-const normalizeStatus = (status: string): DailyStatus | undefined =>
-  status === 'COMPLETE' || status === 'SHIELD' ? status : undefined;
-
-const isSuccessStatus = (status?: DailyStatus) =>
+const isSuccessStatus = (status?: string) =>
   status === 'COMPLETE' || status === 'SHIELD';
 
 const buildDateRange = (startDate: Date, endDate: Date) => {
@@ -43,7 +19,9 @@ const buildDateRange = (startDate: Date, endDate: Date) => {
   return dateRange;
 };
 
-export const useChallengeDashboardData = (data: ChallengeDashboardData) =>
+export const useChallengeDashboardData = (
+  data: GetTeamChallengeProgressResponse,
+) =>
   useMemo(() => {
     const { challenge, members } = data;
     const startDate = new Date(challenge.startDate);
@@ -52,9 +30,9 @@ export const useChallengeDashboardData = (data: ChallengeDashboardData) =>
 
     const memberRows = members.map((member) => {
       const progressMap = new Map(
-        member.dailyProgress.map((progress) => [
+        member.dailyProgresses.map((progress) => [
           progress.date,
-          normalizeStatus(progress.status),
+          isSuccessStatus(progress.status) ? progress.status : undefined,
         ]),
       );
       const completedCount = dateRange.filter((date) => {
@@ -70,7 +48,7 @@ export const useChallengeDashboardData = (data: ChallengeDashboardData) =>
         progressMap,
         completedCount,
         achievementRate,
-        isFailed: achievementRate < 80,
+        isSurvived: member.isSurvived,
       };
     });
 
