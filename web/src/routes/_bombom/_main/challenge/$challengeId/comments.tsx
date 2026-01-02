@@ -2,8 +2,11 @@ import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import Button from '@/components/Button/Button';
+import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import { challengeComments } from '@/mocks/datas/challengeComments';
+import AddCommentModalContent from '@/pages/challenge/comments/components/AddCommentModal/AddCommentModalContent';
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 
@@ -29,12 +32,15 @@ export const Route = createFileRoute(
 });
 
 function ChallengeComments() {
-  const device = useDevice();
   const today = formatDate(new Date(), '-');
   const latestSelectableDate =
     today < CHALLENGE_PERIOD.endDate ? today : CHALLENGE_PERIOD.endDate;
 
   const [currentDate, setCurrentDate] = useState(latestSelectableDate);
+
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
+  const device = useDevice();
+
   const totalDates = getDatesInRange(
     CHALLENGE_PERIOD.startDate,
     latestSelectableDate,
@@ -54,7 +60,9 @@ function ChallengeComments() {
             <AddCommentTitle device={device}>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
             </AddCommentTitle>
-            <AddCommentButton device={device}>코멘트 작성하기</AddCommentButton>
+            <AddCommentButton device={device} onClick={openModal}>
+              코멘트 작성하기
+            </AddCommentButton>
           </AddCommentBox>
         )}
 
@@ -78,12 +86,22 @@ function ChallengeComments() {
               </CardList>
             ) : (
               <EmptyState device={device}>
-                아직 작성한 코멘트가 없어요. 가장 먼저 한 줄 평을 남겨보세요!
+                아직 작성한 코멘트가 없어요. 가장 먼저 남겨보세요!
               </EmptyState>
             )}
           </Comments>
         </CommentSection>
       </ContentWrapper>
+
+      <Modal
+        modalRef={modalRef}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        position={device === 'mobile' ? 'bottom' : 'center'}
+        showCloseButton={false}
+      >
+        <AddCommentModalContent closeCommentModal={closeModal} />
+      </Modal>
     </Container>
   );
 }
