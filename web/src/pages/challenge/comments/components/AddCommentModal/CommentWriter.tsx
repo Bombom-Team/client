@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useEffect, useRef } from 'react';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 import type { ChangeEvent } from 'react';
@@ -20,7 +19,6 @@ const CommentWriter = ({
   showError,
 }: CommentWriterProps) => {
   const device = useDevice();
-  const commentAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleCommentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -29,17 +27,10 @@ const CommentWriter = ({
     }
   };
 
-  useEffect(() => {
-    if (showError && commentAreaRef.current) {
-      commentAreaRef.current.focus();
-    }
-  }, [showError]);
-
   return (
     <Container>
       <Title device={device}>코멘트 작성</Title>
       <Comment
-        ref={commentAreaRef}
         device={device}
         value={comment}
         onChange={handleCommentChange}
