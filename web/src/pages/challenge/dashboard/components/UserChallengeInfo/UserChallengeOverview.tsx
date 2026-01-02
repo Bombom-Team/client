@@ -74,7 +74,7 @@ const Container = styled.div<{ isMobile: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? 0 : '40px')};
+  gap: ${({ isMobile }) => (isMobile ? '16px' : '40px')};
   flex-direction: ${({ isMobile }) => (isMobile ? 'row' : 'column')};
 `;
 
@@ -116,7 +116,7 @@ const UserChallengeSummary = styled.div<{
   background: ${({ theme, isFailed }) =>
     isFailed ? theme.colors.disabledBackground : theme.colors.primaryInfo};
 
-  ${({ isMobile }) => isMobile && 'flex: 1;'}
+  ${({ isMobile }) => !isMobile && 'flex: 1;'}
 `;
 
 const SummaryInfo = styled.div`
