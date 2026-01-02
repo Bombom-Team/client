@@ -57,6 +57,9 @@ export type TodayTodos = components['schemas']['TodayTodoResponse'][];
 export type MemberChallengeProgressResponse =
   components['schemas']['MemberChallengeProgressResponse'];
 
+export type TeamChallengeProgressResponse =
+  components['schemas']['TeamChallengeProgressResponse'];
+
 export const getChallengeEligibility = async (challengeId: number) => {
   return await fetcher.get<ChallengeEligibilityResponse>({
     path: `/challenges/${challengeId}/eligibility`,
@@ -84,5 +87,11 @@ export const getChallengeInfo = async (challengeId: number) => {
 export const getMemberChallengeProgress = async (challengeId: number) => {
   return await fetcher.get<MemberChallengeProgressResponse>({
     path: `/challenges/${challengeId}/progress/me`,
+  });
+};
+
+export const getTeamChallengeProgress = async (challengeId: number) => {
+  return await fetcher.get<TeamChallengeProgressResponse>({
+    path: `/challenges/${challengeId}/progress/team`,
   });
 };
