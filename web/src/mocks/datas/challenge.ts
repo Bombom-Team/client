@@ -5,8 +5,8 @@ export const CHALLENGES: Challenge[] = [
     id: 1,
     title: '한달 뉴스레터 읽기 챌린지',
     generation: 1,
-    startDate: new Date('2026-01-05'),
-    endDate: new Date('2026-02-04'),
+    startDate: '2026-01-05',
+    endDate: '2026-02-04',
     participantCount: 12,
     newsletters: [
       {
@@ -32,8 +32,8 @@ export const CHALLENGES: Challenge[] = [
     id: 2,
     title: '일주일 연속 읽기 챌린지',
     generation: 1,
-    startDate: new Date('2025-12-30'),
-    endDate: new Date('2026-01-06'),
+    startDate: '2025-12-30',
+    endDate: '2026-01-06',
     participantCount: 0,
     newsletters: [
       {
@@ -54,8 +54,8 @@ export const CHALLENGES: Challenge[] = [
     id: 3,
     title: '일주일 연속 읽기 챌린지33',
     generation: 1,
-    startDate: new Date('2025-12-30'),
-    endDate: new Date('2026-01-06'),
+    startDate: '2025-12-30',
+    endDate: '2026-01-06',
     participantCount: 0,
     newsletters: [
       {
@@ -81,8 +81,8 @@ export const CHALLENGES: Challenge[] = [
     id: 4,
     title: '일주일 연속 읽기 챌린지44',
     generation: 1,
-    startDate: new Date('2025-12-30'),
-    endDate: new Date('2026-01-06'),
+    startDate: '2025-12-30',
+    endDate: '2026-01-06',
     participantCount: 0,
     newsletters: [],
     status: 'BEFORE_START',
@@ -97,8 +97,8 @@ export const CHALLENGES: Challenge[] = [
     id: 5,
     title: '일주일 연속 읽기 챌린지55',
     generation: 1,
-    startDate: new Date('2025-12-30'),
-    endDate: new Date('2026-01-06'),
+    startDate: '2025-12-30',
+    endDate: '2026-01-06',
     participantCount: 0,
     newsletters: [],
     status: 'BEFORE_START',
@@ -113,8 +113,8 @@ export const CHALLENGES: Challenge[] = [
     id: 6,
     title: '일주일 연속 읽기 챌린지44',
     generation: 1,
-    startDate: new Date('2025-12-30'),
-    endDate: new Date('2026-01-06'),
+    startDate: '2025-12-30',
+    endDate: '2026-01-06',
     participantCount: 0,
     newsletters: [
       {
@@ -135,8 +135,8 @@ export const CHALLENGES: Challenge[] = [
     id: 7,
     title: '3개월 장기 독서 챌린지',
     generation: 1,
-    startDate: new Date('2026-02-01'),
-    endDate: new Date('2026-05-01'),
+    startDate: '2026-02-01',
+    endDate: '2026-05-01',
     participantCount: 20,
     newsletters: [],
     status: 'ONGOING',

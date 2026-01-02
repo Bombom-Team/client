@@ -5,7 +5,7 @@ interface CardHeaderProps {
   title: string;
   applicantCount?: number;
   tag: string;
-  startDate: Date;
+  startDate: string;
 }
 
 const CardHeader = ({

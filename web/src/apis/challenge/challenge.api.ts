@@ -1,32 +1,7 @@
 import { fetcher } from '@bombom/shared/apis';
+import type { components } from '@/types/openapi';
 
-export type ChallengeStatus = 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
-export type ChallengeGrade = 'GOLD' | 'SILVER' | 'BRONZE' | 'NONE' | 'FAIL';
-
-export interface ChallengeNewsletter {
-  id: number;
-  name: string;
-  imageUrl: string;
-}
-
-export interface ChallengeDetail {
-  isJoined?: boolean;
-  progress?: number;
-  grade?: ChallengeGrade;
-  isSuccess?: boolean;
-}
-
-export interface Challenge {
-  id: number;
-  title: string;
-  generation: number;
-  startDate: Date;
-  endDate: Date;
-  participantCount: number;
-  newsletters: ChallengeNewsletter[];
-  status: ChallengeStatus;
-  detail: ChallengeDetail;
-}
+export type Challenge = components['schemas']['ChallengeResponse'];
 
 export type GetChallengesResponse = Challenge[];
 
@@ -36,17 +11,8 @@ export const getChallenges = async () => {
   });
 };
 
-export type EligibilityReason =
-  | 'NOT_LOGGED_IN'
-  | 'NOT_SUBSCRIBED'
-  | 'ALREADY_STARTED'
-  | 'ALREADY_APPLIED'
-  | 'ELIGIBLE';
-
-export interface ChallengeEligibilityResponse {
-  canApply: boolean;
-  reason: EligibilityReason;
-}
+export type ChallengeEligibilityResponse =
+  components['schemas']['ChallengeEligibilityResponse'];
 
 export const getChallengeEligibility = async (challengeId: number) => {
   return await fetcher.get<ChallengeEligibilityResponse>({

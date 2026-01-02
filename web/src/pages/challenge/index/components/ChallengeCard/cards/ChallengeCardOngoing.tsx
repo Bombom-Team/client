@@ -34,7 +34,7 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
       />
 
       <CardFooter>
-        <ChallengeProgress>{detail.progress}% 달성 중</ChallengeProgress>
+        <ChallengeProgress>{detail?.progress}% 달성 중</ChallengeProgress>
       </CardFooter>
     </CardContainer>
   );
@@ -44,5 +44,5 @@ export default ChallengeCardOngoing;
 
 const ChallengeProgress = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading6};
 `;
