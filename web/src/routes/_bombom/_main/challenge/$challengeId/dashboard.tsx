@@ -2,9 +2,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
-import { useDevice } from '@/hooks/useDevice';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
-import MobileChallengeDashboard from '@/pages/challenge/dashboard/components/MobileChallengeDashboard/MobileChallengeDashboard';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 
 export const Route = createFileRoute(
@@ -21,9 +19,6 @@ export const Route = createFileRoute(
 });
 
 function ChallengeDashboardRoute() {
-  const device = useDevice();
-  const isMobile = device === 'mobile';
-
   const { challengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/dashboard',
   });
@@ -60,18 +55,12 @@ function ChallengeDashboardRoute() {
             수 있습니다
           </WarningMessage>
         </InfoWrapper>
-        {teamChallengeProgressInfo &&
-          (isMobile ? (
-            <MobileChallengeDashboard
-              nickName={memberChallengeProgressInfo?.nickname}
-              data={teamChallengeProgressInfo}
-            />
-          ) : (
-            <ChallengeDashboard
-              nickName={memberChallengeProgressInfo?.nickname}
-              data={teamChallengeProgressInfo}
-            />
-          ))}
+        {teamChallengeProgressInfo && (
+          <ChallengeDashboard
+            nickName={memberChallengeProgressInfo?.nickname}
+            data={teamChallengeProgressInfo}
+          />
+        )}
       </Content>
     </Container>
   );
