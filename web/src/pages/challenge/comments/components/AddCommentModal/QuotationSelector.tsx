@@ -62,9 +62,7 @@ const QuotationSelector = ({
               isMobile={isMobile}
               isSelected={selectedQuotationId === highlight.id}
             >
-              <Content isMobile={isMobile}>
-                &ldquo;{highlight.highlightedText}&rdquo;
-              </Content>
+              <Quote isMobile={isMobile}>{highlight.highlightedText}</Quote>
               {highlight.memo && (
                 <Memo isMobile={isMobile}>{highlight.memo}</Memo>
               )}
@@ -176,22 +174,19 @@ const QuotationItem = styled(Button)<{
   }
 `;
 
-const Content = styled.div<{ isMobile: boolean }>`
+const Quote = styled.div<{ isMobile: boolean }>`
+  padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '6px 12px')};
+  border-left: 4px solid ${({ theme }) => theme.colors.primary};
+
   flex: 1;
 
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
-  font-weight: 600;
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
 const Memo = styled.div<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '12px 16px')};
-  border-radius: 4px;
-  box-shadow: 2px 2px 4px rgb(0 0 0 / 10%);
-
-  background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
 `;
