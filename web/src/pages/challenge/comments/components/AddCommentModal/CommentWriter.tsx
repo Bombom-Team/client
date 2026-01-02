@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useEffect, useRef } from 'react';
 import { useDevice } from '@/hooks/useDevice';
+import type { Device } from '@/hooks/useDevice';
 import type { ChangeEvent } from 'react';
 
 interface CommentWriterProps {
@@ -36,10 +37,10 @@ const CommentWriter = ({
 
   return (
     <Container>
-      <Title isMobile={device === 'mobile'}>코멘트 작성</Title>
+      <Title device={device}>코멘트 작성</Title>
       <Comment
         ref={commentAreaRef}
-        isMobile={device === 'mobile'}
+        device={device}
         value={comment}
         onChange={handleCommentChange}
         placeholder="느낀 점, 감상평, 인상 깊었던 내용 등을 자유롭게 적어주세요."
@@ -47,12 +48,12 @@ const CommentWriter = ({
         isError={showError}
       />
       <MessageWrapper>
-        <MinLengthMessage isMobile={device === 'mobile'} isError={showError}>
+        <MinLengthMessage device={device} isError={showError}>
           {showError
             ? `최소 ${minLength}자 이상 입력해주세요`
             : `최소 ${minLength}자 이상`}
         </MinLengthMessage>
-        <CharacterCount isMobile={device === 'mobile'} isError={showError}>
+        <CharacterCount device={device} isError={showError}>
           {comment.length}/{maxLength}
         </CharacterCount>
       </MessageWrapper>
@@ -68,15 +69,15 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Title = styled.h3<{ isMobile: boolean }>`
+const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
 `;
 
-const Comment = styled.textarea<{ isMobile: boolean; isError: boolean }>`
-  min-height: ${({ isMobile }) => (isMobile ? '80px' : '120px')};
-  padding: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
+const Comment = styled.textarea<{ device: Device; isError: boolean }>`
+  min-height: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
+  padding: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
   border: 1px solid
     ${({ theme, isError }) =>
       isError ? theme.colors.error : theme.colors.stroke};
@@ -84,8 +85,8 @@ const Comment = styled.textarea<{ isMobile: boolean; isError: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
 
   resize: vertical;
 
@@ -107,18 +108,18 @@ const MessageWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const MinLengthMessage = styled.p<{ isMobile: boolean; isError: boolean }>`
+const MinLengthMessage = styled.p<{ device: Device; isError: boolean }>`
   color: ${({ theme, isError }) =>
     isError ? theme.colors.error : theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body3};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
 `;
 
-const CharacterCount = styled.p<{ isMobile: boolean; isError: boolean }>`
+const CharacterCount = styled.p<{ device: Device; isError: boolean }>`
   margin-left: auto;
 
   color: ${({ theme, isError }) =>
     isError ? theme.colors.error : theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body3};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
 `;
