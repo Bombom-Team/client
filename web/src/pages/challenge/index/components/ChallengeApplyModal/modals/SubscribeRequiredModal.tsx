@@ -2,12 +2,12 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import { ModalDescription, ModalTitle } from '../ChallengeApplyModal';
 import { useDevice } from '@/hooks/useDevice';
-import type { ChallengeNewsletter } from '@/apis/challenge/challenge.api';
+import type { Challenge } from '@/apis/challenge/challenge.api';
 import ArrowRightIcon from '#/assets/svg/arrow-right.svg';
 
 interface SubscribeRequiredModalProps {
   closeModal: () => void;
-  newsletters: ChallengeNewsletter[];
+  newsletters: Challenge['newsletters'];
 }
 
 const SubscribeRequiredModal = ({

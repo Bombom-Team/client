@@ -65,7 +65,9 @@ const AddCommentModalContent = ({
   };
 
   const editComment = (value: string) => {
-    setShowCommentError(false);
+    if (value.length >= 20) {
+      setShowCommentError(false);
+    }
     setComment(value);
   };
 

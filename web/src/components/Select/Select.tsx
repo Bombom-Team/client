@@ -10,8 +10,9 @@ interface SelectProps<T extends string | number> extends ComponentProps<'div'> {
   options: SelectOption<T>[];
   selectedValue: T | null;
   onSelectOption: (optionValue: T) => void;
-  width?: number;
+  width?: number | string;
   placeholder?: string;
+  fontSize?: string;
 }
 
 function Select<T extends string | number>({
@@ -20,6 +21,7 @@ function Select<T extends string | number>({
   onSelectOption,
   width = 132,
   placeholder = '',
+  fontSize,
   ...props
 }: SelectProps<T>) {
   const [open, setOpen] = useState(false);
@@ -38,7 +40,7 @@ function Select<T extends string | number>({
   return (
     <Container ref={selectRef} width={width} {...props}>
       <SelectToggle onClick={toggle}>
-        <SelectText selected={selectedValue !== null}>
+        <SelectText selected={selectedValue !== null} fontSize={fontSize}>
           {selectedLabel ?? placeholder}
         </SelectText>
         {open ? (
@@ -55,6 +57,7 @@ function Select<T extends string | number>({
               onClick={() => onOptionSelected(option.value)}
               selected={option.value === selectedValue}
               role="option"
+              fontSize={fontSize}
             >
               {option.label}
             </SelectMenuItem>
@@ -65,9 +68,9 @@ function Select<T extends string | number>({
   );
 }
 
-const Container = styled.div<{ width: number }>`
+const Container = styled.div<{ width: number | string }>`
   position: relative;
-  width: ${({ width }) => `${width}px`};
+  width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
   height: 36px;
 `;
 
@@ -87,14 +90,14 @@ const SelectToggle = styled.div`
   user-select: none;
 `;
 
-const SelectText = styled.p<{ selected: boolean }>`
+const SelectText = styled.p<{ selected: boolean; fontSize?: string }>`
   overflow: hidden;
 
   flex: 1;
 
   color: ${({ theme, selected }) =>
     selected ? theme.colors.textPrimary : theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme, fontSize }) => fontSize || theme.fonts.caption};
   white-space: nowrap;
 
   text-overflow: ellipsis;
@@ -132,14 +135,14 @@ const SelectMenuWrapper = styled.ul`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const SelectMenuItem = styled.li<{ selected: boolean }>`
+const SelectMenuItem = styled.li<{ selected: boolean; fontSize?: string }>`
   width: 100%;
   padding: 6px 8px;
   border-radius: 6px;
 
   background-color: ${({ theme, selected }) =>
     selected ? theme.colors.primaryLight : theme.colors.white};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme, fontSize }) => fontSize || theme.fonts.caption};
 
   cursor: pointer;
 

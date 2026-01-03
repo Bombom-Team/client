@@ -3,15 +3,15 @@ import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 
 interface Quotation {
-  id: number;
+  id: string;
   text: string;
   memo?: string;
 }
 
 interface QuotationSelectorProps {
   quotations: Quotation[];
-  selectedQuotationId: number | null;
-  onQuotationSelect: (id: number, text: string) => void;
+  selectedQuotationId: string | null;
+  onQuotationSelect: (id: string, text: string) => void;
   onRemoveQuotation: () => void;
 }
 
@@ -24,10 +24,6 @@ const QuotationSelector = ({
   const device = useDevice();
   const isMobile = device === 'mobile';
 
-  const handleInsertComment = (id: number, memo: string) => {
-    onQuotationSelect(id, memo);
-  };
-
   return (
     <Container isMobile={isMobile}>
       <Header isMobile={isMobile}>
@@ -35,7 +31,7 @@ const QuotationSelector = ({
           <Title isMobile={isMobile}>내 하이라이트/메모</Title>
           <HelpText isMobile={isMobile}>클릭하여 인용하기 (선택)</HelpText>
         </TitleBox>
-        {quotations.length > 0 && (
+        {selectedQuotationId && (
           <RemoveQuotationButton
             variant="transparent"
             onClick={onRemoveQuotation}
@@ -53,10 +49,10 @@ const QuotationSelector = ({
               key={quotation.id}
               variant="outlined"
               onClick={() =>
-                handleInsertComment(quotation.id, quotation.memo ?? '')
+                onQuotationSelect(quotation.id, quotation.memo ?? '')
               }
               isMobile={isMobile}
-              isSelected={selectedQuotationId === quotation.id}
+              selected={selectedQuotationId === quotation.id}
             >
               <Quote isMobile={isMobile}>{quotation.text}</Quote>
               {quotation.memo && (
@@ -153,16 +149,16 @@ const EmptyState = styled.div<{ isMobile: boolean }>`
 
 const QuotationItem = styled(Button)<{
   isMobile: boolean;
-  isSelected: boolean;
+  selected: boolean;
 }>`
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '8px' : '16px')};
-  outline: ${({ isSelected, theme }) =>
-    isSelected ? `2px solid ${theme.colors.primary}` : 'none'};
+  outline: ${({ selected, theme }) =>
+    selected ? `2px solid ${theme.colors.primary}` : 'none'};
   outline-offset: -2px;
   border: 1px solid
-    ${({ theme, isSelected }) =>
-      isSelected ? theme.colors.primary : theme.colors.stroke};
+    ${({ theme, selected }) =>
+      selected ? theme.colors.primary : theme.colors.stroke};
   border-radius: 8px;
 
   display: flex;
@@ -170,21 +166,20 @@ const QuotationItem = styled(Button)<{
   flex-direction: column;
   align-items: flex-start;
 
-  background-color: ${({ theme }) => theme.colors.backgroundHover};
   text-align: left;
 
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: ${({ theme, isSelected }) =>
-      isSelected ? theme.colors.primaryInfo : theme.colors.stroke};
+    background-color: ${({ theme, selected }) =>
+      selected ? theme.colors.primaryInfo : theme.colors.disabledBackground};
   }
 `;
 
 const Quote = styled.div<{ isMobile: boolean }>`
   overflow: hidden;
   padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
-  border-left: 4px solid ${({ theme }) => theme.colors.primary};
+  border-left: 4px solid ${({ theme }) => theme.colors.stroke};
 
   display: -webkit-box;
   flex: 1;

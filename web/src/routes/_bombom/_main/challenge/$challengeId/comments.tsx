@@ -2,16 +2,15 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { useState } from 'react';
+import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import { useModal } from '@/hooks/useModal';
 import { challengeComments } from '@/mocks/datas/challengeComments';
-import { queries } from '@/queries/queries';
-import AddCommentModalContent from '@/pages/challenge/comments/components/AddCommentModal/AddCommentModalContent';
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
-
+import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import { filterWeekdays, formatDate, getDatesInRange } from '@/utils/date';
 
 const CHALLENGE_PERIOD = {
@@ -66,6 +65,14 @@ function ChallengeComments() {
 
   return (
     <Container>
+      {challengeInfo && memberChallengeProgressInfo && (
+        <UserChallengeInfoWrapper device={device}>
+          <UserChallengeInfo
+            challengeInfo={challengeInfo}
+            memberChallengeProgressInfo={memberChallengeProgressInfo}
+          />
+        </UserChallengeInfoWrapper>
+      )}
       <DateFilter
         weekdays={filterWeekdays(totalDates)}
         selectedDate={currentDate}
@@ -110,7 +117,7 @@ function ChallengeComments() {
               </CardList>
             ) : (
               <EmptyState device={device}>
-                아직 작성한 코멘트가 없어요. 가장 먼저 한 줄 평을 남겨보세요!
+                아직 작성한 코멘트가 없어요. 가장 먼저 남겨보세요!
               </EmptyState>
             )}
           </Comments>
@@ -148,10 +155,17 @@ const Container = styled.section`
   justify-content: center;
 `;
 
+const UserChallengeInfoWrapper = styled.div<{ device: Device }>`
+  width: 100%;
+  padding: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  border-radius: 16px;
+`;
+
 const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
   padding: ${({ device }) => (device === 'mobile' ? '20px 0' : '24px')};
-  border-top: 2px solid ${({ theme }) => theme.colors.dividers};
+  border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '32px' : '44px')};
