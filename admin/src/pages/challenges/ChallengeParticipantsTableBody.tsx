@@ -2,6 +2,7 @@ import { ApiError } from '@bombom/shared/apis';
 import styled from '@emotion/styled';
 import {
   useMutation,
+  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
@@ -16,6 +17,7 @@ interface ChallengeParticipantsTableBodyProps {
   challengeTeamId?: number;
   hasTeam?: boolean;
   onDataLoaded?: (totalElements: number, totalPages: number) => void;
+  editable?: boolean;
 }
 
 export const ChallengeParticipantsTableBody = ({
@@ -25,8 +27,10 @@ export const ChallengeParticipantsTableBody = ({
   challengeTeamId,
   hasTeam,
   onDataLoaded,
+  editable = false,
 }: ChallengeParticipantsTableBodyProps) => {
   const queryClient = useQueryClient();
+  const isEditable = editable;
   const [editingParticipantId, setEditingParticipantId] = useState<
     number | null
   >(null);
@@ -40,9 +44,11 @@ export const ChallengeParticipantsTableBody = ({
       hasTeam,
     }),
   );
-  const { data: teams } = useSuspenseQuery(
-    challengesQueries.teams(challengeId),
-  );
+
+  const { data: teams } = useQuery({
+    ...challengesQueries.teams(challengeId),
+    enabled: isEditable,
+  });
 
   const { mutate: updateTeam, isPending: isUpdating } = useMutation({
     ...challengesQueries.mutation.updateParticipantTeam(),
@@ -69,6 +75,10 @@ export const ChallengeParticipantsTableBody = ({
   }, [data, onDataLoaded]);
 
   const handleRowClick = (participantId: number, teamId: number | null) => {
+    if (!isEditable) {
+      return;
+    }
+
     setEditingParticipantId(participantId);
     setTeamInput(teamId?.toString() ?? '');
   };
@@ -79,6 +89,10 @@ export const ChallengeParticipantsTableBody = ({
   };
 
   const handleSave = (participantId: number) => {
+    if (!isEditable) {
+      return;
+    }
+
     if (!teams?.length) {
       alert('배정 가능한 팀이 없습니다.');
       return;
@@ -98,11 +112,13 @@ export const ChallengeParticipantsTableBody = ({
     });
   };
 
+  const columnCount = isEditable ? 5 : 4;
+
   if (data?.content.length === 0) {
     return (
       <Tbody>
         <Tr>
-          <Td colSpan={5}>
+          <Td colSpan={columnCount}>
             <EmptyState>참여자 목록이 없습니다.</EmptyState>
           </Td>
         </Tr>
@@ -116,16 +132,21 @@ export const ChallengeParticipantsTableBody = ({
         <Tr
           key={participant.participantId}
           isEditing={editingParticipantId === participant.participantId}
-          onClick={() =>
-            handleRowClick(
-              participant.participantId,
-              participant.challengeTeamId,
-            )
+          isEditable={isEditable}
+          onClick={
+            isEditable
+              ? () =>
+                  handleRowClick(
+                    participant.participantId,
+                    participant.challengeTeamId,
+                  )
+              : undefined
           }
         >
           <Td>{participant.nickname}</Td>
           <Td>
-            {editingParticipantId === participant.participantId ? (
+            {isEditable &&
+            editingParticipantId === participant.participantId ? (
               <TeamSelect
                 value={teamInput}
                 onClick={(event) => event.stopPropagation()}
@@ -134,11 +155,17 @@ export const ChallengeParticipantsTableBody = ({
                 <option value="" disabled>
                   팀 선택
                 </option>
-                {teams?.map((team) => (
-                  <option key={team.id} value={team.id.toString()}>
-                    {team.id} (진행률 {team.progress}%)
+                {teams?.length ? (
+                  teams.map((team) => (
+                    <option key={team.id} value={team.id.toString()}>
+                      {team.id} (진행률 {team.progress}%)
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>
+                    생성된 팀 없음
                   </option>
-                ))}
+                )}
               </TeamSelect>
             ) : (
               (participant.challengeTeamId ?? '-')
@@ -146,40 +173,46 @@ export const ChallengeParticipantsTableBody = ({
           </Td>
           <Td>{participant.completedDays}</Td>
           <Td>{participant.isSurvived ? '생존' : '탈락'}</Td>
-          <Td>
-            {editingParticipantId === participant.participantId ? (
-              <ActionGroup onClick={(event) => event.stopPropagation()}>
-                <Button
-                  size="sm"
-                  onClick={() => handleSave(participant.participantId)}
-                  disabled={isUpdating || !teams?.length}
-                >
-                  저장
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={handleCancel}
-                  disabled={isUpdating}
-                >
-                  취소
-                </Button>
-              </ActionGroup>
-            ) : (
-              <ActionHint>행을 클릭해 변경</ActionHint>
-            )}
-          </Td>
+          {isEditable && (
+            <Td>
+              {editingParticipantId === participant.participantId ? (
+                <ActionGroup onClick={(event) => event.stopPropagation()}>
+                  <Button
+                    size="sm"
+                    onClick={() => handleSave(participant.participantId)}
+                    disabled={isUpdating || !teams?.length}
+                  >
+                    저장
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={handleCancel}
+                    disabled={isUpdating}
+                  >
+                    취소
+                  </Button>
+                </ActionGroup>
+              ) : (
+                <ActionHint>행을 클릭해 변경</ActionHint>
+              )}
+            </Td>
+          )}
         </Tr>
       ))}
     </Tbody>
   );
 };
 
-export const ChallengeParticipantsTableBodyLoading = () => {
+export const ChallengeParticipantsTableBodyLoading = ({
+  colSpan = 4,
+}: {
+  colSpan?: number;
+}) => {
   return (
     <Tbody>
       <Tr>
-        <Td colSpan={5}>
+        <Td colSpan={colSpan}>
           <EmptyState>참여자 목록을 불러오는 중...</EmptyState>
         </Td>
       </Tr>
@@ -187,11 +220,15 @@ export const ChallengeParticipantsTableBodyLoading = () => {
   );
 };
 
-export const ChallengeParticipantsTableBodyError = () => {
+export const ChallengeParticipantsTableBodyError = ({
+  colSpan = 4,
+}: {
+  colSpan?: number;
+}) => {
   return (
     <Tbody>
       <Tr>
-        <Td colSpan={5}>
+        <Td colSpan={colSpan}>
           <ErrorMessage>참여자 목록을 불러오는데 실패했습니다.</ErrorMessage>
         </Td>
       </Tr>
@@ -201,8 +238,8 @@ export const ChallengeParticipantsTableBodyError = () => {
 
 const Tbody = styled.tbody``;
 
-const Tr = styled.tr<{ isEditing?: boolean }>`
-  cursor: pointer;
+const Tr = styled.tr<{ isEditing?: boolean; isEditable?: boolean }>`
+  cursor: ${({ isEditable }) => (isEditable ? 'pointer' : 'default')};
 
   &:hover {
     background-color: ${({ theme, isEditing }) =>
