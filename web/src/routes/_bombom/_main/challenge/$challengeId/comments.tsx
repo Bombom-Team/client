@@ -48,12 +48,15 @@ function ChallengeComments() {
     queries.challengeCommentCandidateArticles({ date: today }),
   );
 
-  const latestSelectableDate =
-    !challengeInfo?.endDate || today <= challengeInfo?.endDate
-      ? today
-      : challengeInfo?.endDate;
+  if (!challengeInfo) return null;
 
-  const [currentDate, setCurrentDate] = useState(latestSelectableDate);
+  const totalDates = getDatesInRange(challengeInfo?.startDate, today);
+
+  const displayDates = filterWeekdays(totalDates);
+
+  const [currentDate, setCurrentDate] = useState(
+    displayDates[displayDates.length - 1] ?? today,
+  );
 
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -64,13 +67,6 @@ function ChallengeComments() {
     challengeId: Number(challengeId),
     currentDate,
   });
-
-  if (!challengeInfo) return null;
-
-  const totalDates = getDatesInRange(
-    challengeInfo?.startDate,
-    latestSelectableDate,
-  );
 
   const isFirstDay = currentDate === challengeInfo.startDate;
 
@@ -86,7 +82,7 @@ function ChallengeComments() {
       )}
       <FilterWrapper isMobile={isMobile}>
         <DateFilter
-          weekdays={filterWeekdays(totalDates)}
+          dates={displayDates}
           selectedDate={currentDate}
           onDateSelect={setCurrentDate}
         />

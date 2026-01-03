@@ -9,24 +9,20 @@ import { useDevice, type Device } from '@/hooks/useDevice';
 import { formatDate, isToday } from '@/utils/date';
 
 interface DateFilterProps {
-  weekdays: string[];
+  dates: string[];
   selectedDate: string;
   onDateSelect: (date: string) => void;
 }
 
-const DateFilter = ({
-  weekdays,
-  selectedDate,
-  onDateSelect,
-}: DateFilterProps) => {
+const DateFilter = ({ dates, selectedDate, onDateSelect }: DateFilterProps) => {
   const device = useDevice();
-  const totalWeeks = groupingWeeks(weekdays);
+  const totalWeeks = groupingWeeks(dates);
   const selectedWeekIndex = findWeekIndex(totalWeeks, selectedDate);
   const selectedWeekDates = totalWeeks[selectedWeekIndex] ?? [];
 
   const displayDates =
     device === 'mobile'
-      ? weekdays.filter((dateString) => !isToday(new Date(dateString)))
+      ? dates.filter((dateString) => !isToday(new Date(dateString)))
       : selectedWeekDates;
 
   const canGoPrev = selectedWeekIndex > 0;
