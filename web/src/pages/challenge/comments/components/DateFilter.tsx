@@ -6,7 +6,7 @@ import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tab, { type TabProps } from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import { formatDate, isToday } from '@/utils/date';
+import { isToday } from '@/utils/date';
 
 interface DateFilterProps {
   dates: string[];
@@ -18,12 +18,17 @@ const DateFilter = ({ dates, selectedDate, onDateSelect }: DateFilterProps) => {
   const device = useDevice();
   const totalWeeks = groupingWeeks(dates);
   const selectedWeekIndex = findWeekIndex(totalWeeks, selectedDate);
-  const selectedWeekDates = totalWeeks[selectedWeekIndex] ?? [];
+  const selectedWeek = totalWeeks[selectedWeekIndex] ?? [];
+
+  const latestDate = dates[dates.length - 1];
+  const isLatestDateToday = latestDate ? isToday(new Date(latestDate)) : false;
 
   const displayDates =
     device === 'mobile'
-      ? dates.filter((dateString) => !isToday(new Date(dateString)))
-      : selectedWeekDates;
+      ? isLatestDateToday
+        ? dates.slice(0, -1)
+        : dates
+      : selectedWeek;
 
   const canGoPrev = selectedWeekIndex > 0;
   const canGoNext = selectedWeekIndex < totalWeeks.length - 1;
@@ -90,12 +95,12 @@ const DateFilter = ({ dates, selectedDate, onDateSelect }: DateFilterProps) => {
         </StyledTabs>
       </DateTabsWrapper>
 
-      {device === 'mobile' && (
+      {device === 'mobile' && isLatestDateToday && latestDate && (
         <TodayTabWrapper>
           <StyledTab
-            value={formatDate(new Date(), '-')}
+            value={latestDate}
             label="오늘"
-            selected={isToday(new Date(selectedDate))}
+            selected={selectedDate === latestDate}
             onTabSelect={selectDate}
             device={device}
           />
