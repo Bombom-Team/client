@@ -20,7 +20,7 @@ interface DailyGuide {
 const MOCK_CHALLENGE_DAILY_GUIDE: DailyGuide = {
   dayIndex: 2,
   type: 'COMMENT',
-  imageUrl: 'https://picsum.photos/800/400?random=2',
+  imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
   notice: '이미지를 확인하고 가이드에 따라 답변을 작성해주세요.',
 };
 
@@ -149,10 +149,6 @@ const DayBadge = styled.div`
 
 const GuideImage = styled.img`
   width: 100%;
-  max-height: 400px;
-  border-radius: 8px;
-
-  object-fit: cover;
 `;
 
 const NoticeBox = styled.div`
