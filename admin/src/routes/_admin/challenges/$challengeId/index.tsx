@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -40,6 +44,8 @@ function ChallengeDetailContent() {
   const [hasTeamFilter, setHasTeamFilter] = useState<'ALL' | 'YES' | 'NO'>(
     'ALL',
   );
+  const [maxTeamSizeInput, setMaxTeamSizeInput] = useState('15');
+  const queryClient = useQueryClient();
 
   const id = Number(challengeId);
 
@@ -93,6 +99,40 @@ function ChallengeDetailContent() {
     setParticipantsPage(0);
   };
 
+  const maxTeamSize = useMemo(() => {
+    const trimmed = maxTeamSizeInput.trim();
+    const parsed = Number(trimmed);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }, [maxTeamSizeInput]);
+
+  const { mutate: assignTeams, isPending: isAssigningTeams } = useMutation({
+    ...challengesQueries.mutation.assignTeams(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['challenges', 'participants', id],
+      });
+      alert('팀 자동 배정이 완료되었습니다.');
+    },
+    onError: () => {
+      alert('팀 자동 배정에 실패했습니다.');
+    },
+  });
+
+  const handleAssignTeams = () => {
+    if (maxTeamSize <= 0) {
+      alert('팀 최대 인원은 1명 이상 입력해주세요.');
+      return;
+    }
+
+    if (
+      confirm(
+        '이미 팀이 배정된 경우 기존 배정이 초기화되고 재배정됩니다. 진행할까요?',
+      )
+    ) {
+      assignTeams({ challengeId: id, maxTeamSize });
+    }
+  };
+
   if (!challenge) {
     return (
       <Container>
@@ -107,6 +147,26 @@ function ChallengeDetailContent() {
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
           <Filters>
+            <FilterGroup>
+              <FilterLabel htmlFor="challenge-max-team-size">
+                팀 최대 인원
+              </FilterLabel>
+              <FilterInput
+                id="challenge-max-team-size"
+                type="number"
+                min="1"
+                placeholder="15"
+                value={maxTeamSizeInput}
+                onChange={(event) => setMaxTeamSizeInput(event.target.value)}
+              />
+              <AssignButton
+                type="button"
+                onClick={handleAssignTeams}
+                disabled={isAssigningTeams}
+              >
+                {isAssigningTeams ? '배정 중...' : '팀 자동 배정'}
+              </AssignButton>
+            </FilterGroup>
             <FilterGroup>
               <FilterLabel htmlFor="challenge-team-id">팀 ID</FilterLabel>
               <FilterInput
@@ -260,6 +320,29 @@ const FilterSelect = styled.select`
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const AssignButton = styled.button`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border: 1px solid transparent;
+
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.gray300};
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: ${({ theme }) => theme.colors.primaryHover};
   }
 `;
 

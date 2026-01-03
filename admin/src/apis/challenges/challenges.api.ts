@@ -54,3 +54,18 @@ export const getChallengeParticipants = async ({
     query,
   });
 };
+
+export type AssignChallengeTeamsParams = {
+  challengeId: number;
+  maxTeamSize: number;
+};
+
+export const assignChallengeTeams = async ({
+  challengeId,
+  maxTeamSize,
+}: AssignChallengeTeamsParams) => {
+  return fetcher.post<{ maxTeamSize: number }, void>({
+    path: `/challenges/${challengeId}/teams/assignment`,
+    body: { maxTeamSize },
+  });
+};

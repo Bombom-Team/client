@@ -3,8 +3,10 @@ import {
   getChallengeDetail,
   getChallengeParticipants,
   getChallenges,
+  assignChallengeTeams,
 } from './challenges.api';
 import type {
+  AssignChallengeTeamsParams,
   GetChallengeParticipantsParams,
   GetChallengesParams,
 } from './challenges.api';
@@ -40,4 +42,10 @@ export const challengesQueries = {
       staleTime: CHALLENGES_STALE_TIME,
       gcTime: CHALLENGES_GC_TIME,
     }),
+  mutation: {
+    assignTeams: () => ({
+      mutationFn: (params: AssignChallengeTeamsParams) =>
+        assignChallengeTeams(params),
+    }),
+  },
 };
