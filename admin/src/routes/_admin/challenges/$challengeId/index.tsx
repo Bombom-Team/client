@@ -46,6 +46,7 @@ function ChallengeDetailContent() {
   const id = Number(challengeId);
 
   const { data: challenge } = useSuspenseQuery(challengesQueries.detail(id));
+  const { data: teams } = useSuspenseQuery(challengesQueries.teams(id));
 
   const challengeTeamId = useMemo(() => {
     const trimmed = teamIdInput.trim();
@@ -124,13 +125,18 @@ function ChallengeDetailContent() {
         <Filters>
           <FilterGroup>
             <FilterLabel htmlFor="challenge-team-id">팀 ID</FilterLabel>
-            <FilterInput
+            <FilterSelect
               id="challenge-team-id"
-              type="number"
-              placeholder="팀 ID"
               value={teamIdInput}
               onChange={(event) => handleTeamIdChange(event.target.value)}
-            />
+            >
+              <option value="">전체</option>
+              {teams?.map((team) => (
+                <option key={team.id} value={team.id.toString()}>
+                  {team.id}
+                </option>
+              ))}
+            </FilterSelect>
           </FilterGroup>
           <FilterGroup>
             <FilterLabel htmlFor="challenge-has-team">팀 매칭</FilterLabel>
@@ -254,20 +260,6 @@ const FilterGroup = styled.div`
 const FilterLabel = styled.label`
   color: ${({ theme }) => theme.colors.gray600};
   font-size: ${({ theme }) => theme.fontSize.sm};
-`;
-
-const FilterInput = styled.input`
-  max-width: 140px;
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
-  border: 1px solid ${({ theme }) => theme.colors.gray300};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-
-  font-size: ${({ theme }) => theme.fontSize.sm};
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
 `;
 
 const FilterSelect = styled.select`
