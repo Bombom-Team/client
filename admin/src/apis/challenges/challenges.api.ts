@@ -13,7 +13,7 @@ export type GetChallengesResponse = PageableResponse<Challenge>;
 
 export const getChallenges = async (params: GetChallengesParams = {}) => {
   return fetcher.get<GetChallengesResponse>({
-    path: '/challenges',
+    path: '/admin/api/v1/challenges',
     query: params,
   });
 };
