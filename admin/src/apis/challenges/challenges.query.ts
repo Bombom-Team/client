@@ -1,6 +1,13 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { getChallengeDetail, getChallenges } from './challenges.api';
-import type { GetChallengesParams } from './challenges.api';
+import {
+  getChallengeDetail,
+  getChallengeParticipants,
+  getChallenges,
+} from './challenges.api';
+import type {
+  GetChallengeParticipantsParams,
+  GetChallengesParams,
+} from './challenges.api';
 
 const CHALLENGES_STALE_TIME = 1000 * 60; // 1 minute
 const CHALLENGES_GC_TIME = 1000 * 60 * 5; // 5 minutes
@@ -21,6 +28,15 @@ export const challengesQueries = {
     queryOptions({
       queryKey: ['challenges', 'detail', challengeId] as const,
       queryFn: () => getChallengeDetail(challengeId),
+      staleTime: CHALLENGES_STALE_TIME,
+      gcTime: CHALLENGES_GC_TIME,
+    }),
+
+  participants: (challengeId: number, params: GetChallengeParticipantsParams) =>
+    queryOptions({
+      queryKey: ['challenges', 'participants', challengeId, params] as const,
+      queryFn: () => getChallengeParticipants({ challengeId, params }),
+      placeholderData: keepPreviousData,
       staleTime: CHALLENGES_STALE_TIME,
       gcTime: CHALLENGES_GC_TIME,
     }),
