@@ -24,10 +24,6 @@ const QuotationSelector = ({
   const device = useDevice();
   const isMobile = device === 'mobile';
 
-  const handleInsertComment = (id: string, memo: string) => {
-    onQuotationSelect(id, memo);
-  };
-
   return (
     <Container isMobile={isMobile}>
       <Header isMobile={isMobile}>
@@ -53,7 +49,7 @@ const QuotationSelector = ({
               key={quotation.id}
               variant="outlined"
               onClick={() =>
-                handleInsertComment(quotation.id, quotation.memo ?? '')
+                onQuotationSelect(quotation.id, quotation.memo ?? '')
               }
               isMobile={isMobile}
               isSelected={selectedQuotationId === quotation.id}
