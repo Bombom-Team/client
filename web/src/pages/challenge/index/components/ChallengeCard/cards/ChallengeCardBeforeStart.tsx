@@ -71,7 +71,7 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
         />
 
         <CardFooter>
-          {props.detail.isJoined ? (
+          {props.detail?.isJoined ? (
             <ApplyButton variant="outlined" onClick={handleCancelClick}>
               신청취소
             </ApplyButton>

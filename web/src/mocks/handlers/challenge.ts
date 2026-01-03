@@ -3,18 +3,18 @@ import { CHALLENGES } from '../datas/challenge';
 import { CHALLENGE_COMMENTS } from '../datas/challengeComments';
 import { ENV } from '@/apis/env';
 import type {
-  GetChallengesEligibilityResponse,
+  GetChallengeEligibilityResponse,
   GetChallengeCommentsResponse,
 } from '@/apis/challenge/challenge.api';
 
 const baseURL = ENV.baseUrl;
 
 export const challengeHandlers = [
-  http.get(`${baseURL}/challenge`, () => {
+  http.get(`${baseURL}/challenges`, () => {
     return HttpResponse.json(CHALLENGES);
   }),
 
-  http.get(`${baseURL}/challenge/:challengeId/eligibility`, ({ params }) => {
+  http.get(`${baseURL}/challenges/:challengeId/eligibility`, ({ params }) => {
     const { challengeId } = params;
 
     // 테스트를 위한 다양한 케이스
@@ -25,7 +25,7 @@ export const challengeHandlers = [
     // challengeId가 5이면 이미 신청함
     // 그 외에는 로그인과 구독 모두 필요
 
-    let response: GetChallengesEligibilityResponse;
+    let response: GetChallengeEligibilityResponse;
 
     if (challengeId === '1') {
       response = {
@@ -62,11 +62,11 @@ export const challengeHandlers = [
     return HttpResponse.json(response);
   }),
 
-  http.post(`${baseURL}/challenge/:challengeId/application`, () => {
+  http.post(`${baseURL}/challenges/:challengeId/application`, () => {
     return HttpResponse.json({ success: true });
   }),
 
-  http.delete(`${baseURL}/challenge/:challengeId/application`, () => {
+  http.delete(`${baseURL}/challenges/:challengeId/application`, () => {
     return HttpResponse.json({ success: true });
   }),
 

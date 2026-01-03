@@ -1,13 +1,19 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { useState } from 'react';
+import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
+import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
+import AddCommentModalContent from '@/pages/challenge/comments/components/AddCommentModal/AddCommentModalContent';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 import MobileCommentsContent from '@/pages/challenge/comments/components/MobileCommentsContent';
 import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsContent';
 import { useCommentsFilters } from '@/pages/challenge/comments/hooks/useCommentsFilters';
 
+import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import { filterWeekdays, formatDate, getDatesInRange } from '@/utils/date';
 
 const CHALLENGE_PERIOD = {
@@ -39,9 +45,19 @@ function ChallengeComments() {
   const device = useDevice();
   const isMobile = device === 'mobile';
 
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
+
   const { challengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/comments',
   });
+
+  const { data: challengeInfo } = useQuery(
+    queries.challengesInfo(Number(challengeId)),
+  );
+
+  const { data: memberChallengeProgressInfo } = useQuery(
+    queries.memberProgress(Number(challengeId)),
+  );
 
   const { baseQueryParams, handlePageChange, page, resetPage } =
     useCommentsFilters({
@@ -56,6 +72,14 @@ function ChallengeComments() {
 
   return (
     <Container>
+      {challengeInfo && memberChallengeProgressInfo && (
+        <UserChallengeInfoWrapper>
+          <UserChallengeInfo
+            challengeInfo={challengeInfo}
+            memberChallengeProgressInfo={memberChallengeProgressInfo}
+          />
+        </UserChallengeInfoWrapper>
+      )}
       <FilterWrapper isMobile={isMobile}>
         <DateFilter
           weekdays={filterWeekdays(totalDates)}
@@ -70,7 +94,7 @@ function ChallengeComments() {
             <AddCommentTitle isMobile={isMobile}>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
             </AddCommentTitle>
-            <AddCommentButton isMobile={isMobile}>
+            <AddCommentButton isMobile={isMobile} onClick={openModal}>
               코멘트 작성하기
             </AddCommentButton>
           </AddCommentBox>
@@ -90,6 +114,16 @@ function ChallengeComments() {
           />
         )}
       </ContentWrapper>
+
+      <Modal
+        modalRef={modalRef}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        position={device === 'mobile' ? 'bottom' : 'center'}
+        showCloseButton={false}
+      >
+        <AddCommentModalContent closeCommentModal={closeModal} />
+      </Modal>
     </Container>
   );
 }
@@ -103,6 +137,13 @@ const Container = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+`;
+
+const UserChallengeInfoWrapper = styled.div`
+  width: 100%;
+  padding: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  border-radius: 16px;
 `;
 
 const FilterWrapper = styled.div<{ isMobile: boolean }>`
@@ -121,6 +162,7 @@ const FilterWrapper = styled.div<{ isMobile: boolean }>`
 const ContentWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '20px 0' : '24px')};
+  border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '32px' : '44px')};
