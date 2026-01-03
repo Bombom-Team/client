@@ -10,12 +10,12 @@ import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
-import { useHighlights } from '@/pages/detail/hooks/useHighlights';
-import { formatDate } from '@/utils/date';
+import type { GetChallengeCommentCandidateArticlesResponse } from '@/apis/challenge/challenge.api';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
 
 interface AddCommentModalContentProps {
   closeCommentModal: () => void;
+  candidateArticles: GetChallengeCommentCandidateArticlesResponse;
 }
 
 const MIN_COMMENT_LENGTH = 20;
@@ -23,11 +23,12 @@ const MAX_COMMENT_LENGTH = 250;
 
 const AddCommentModalContent = ({
   closeCommentModal,
+  candidateArticles,
 }: AddCommentModalContentProps) => {
   const [selectedArticleId, setSelectedArticleId] = useState<number | null>(
     null,
   );
-  const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(
+  const [selectedQuotationId, setSelectedQuotationId] = useState<number | null>(
     null,
   );
   const [comment, setComment] = useState('');
@@ -42,20 +43,17 @@ const AddCommentModalContent = ({
   const device = useDevice();
   const isMobile = device === 'mobile';
 
-  const today = formatDate(new Date(), '-');
-
-  const { data: candidateArticles } = useQuery(
-    queries.challengeCommentCandidateArticles({ date: today }),
-  );
-  const { highlights } = useHighlights({
-    articleId: selectedArticleId,
+  const { data: highlights } = useQuery({
+    ...queries.highlights({ articleId: selectedArticleId! }),
+    enabled: selectedArticleId !== null,
   });
 
-  const quotations = highlights.map(({ id, text, memo }) => ({
-    id,
-    text,
-    memo,
-  }));
+  const quotations =
+    highlights?.content?.map(({ id, text, memo }) => ({
+      id,
+      text,
+      memo,
+    })) ?? [];
 
   const selectedArticle = candidateArticles.find(
     (article) => article.articleId === selectedArticleId,
@@ -71,7 +69,7 @@ const AddCommentModalContent = ({
     setComment(value);
   };
 
-  const selectQuotation = (id: string, text: string) => {
+  const selectQuotation = (id: number, text: string) => {
     if (selectedQuotationId === id) {
       setSelectedQuotationId(null);
     } else {

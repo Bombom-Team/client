@@ -1,9 +1,14 @@
 import styled from '@emotion/styled';
-import { createFileRoute } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { createFileRoute, useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import Button from '@/components/Button/Button';
+import Modal from '@/components/Modal/Modal';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import { useModal } from '@/hooks/useModal';
 import { challengeComments } from '@/mocks/datas/challengeComments';
+import { queries } from '@/queries/queries';
+import AddCommentModalContent from '@/pages/challenge/comments/components/AddCommentModal/AddCommentModalContent';
 import CommentCard from '@/pages/challenge/comments/components/CommentCard';
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 
@@ -35,6 +40,25 @@ function ChallengeComments() {
     today < CHALLENGE_PERIOD.endDate ? today : CHALLENGE_PERIOD.endDate;
 
   const [currentDate, setCurrentDate] = useState(latestSelectableDate);
+
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
+
+  const { challengeId } = useParams({
+    from: '/_bombom/_main/challenge/$challengeId/comments',
+  });
+
+  const { data: challengeInfo } = useQuery(
+    queries.challengesInfo(Number(challengeId)),
+  );
+
+  const { data: memberChallengeProgressInfo } = useQuery(
+    queries.memberProgress(Number(challengeId)),
+  );
+
+  const { data: candidateArticles } = useQuery(
+    queries.challengeCommentCandidateArticles({ date: today }),
+  );
+
   const totalDates = getDatesInRange(
     CHALLENGE_PERIOD.startDate,
     latestSelectableDate,
@@ -54,7 +78,15 @@ function ChallengeComments() {
             <AddCommentTitle device={device}>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
             </AddCommentTitle>
-            <AddCommentButton device={device}>코멘트 작성하기</AddCommentButton>
+            <AddCommentButton
+              device={device}
+              onClick={openModal}
+              disabled={!candidateArticles}
+            >
+              {candidateArticles
+                ? '코멘트 작성하기'
+                : '오늘 읽은 뉴스레터가 없어요'}
+            </AddCommentButton>
           </AddCommentBox>
         )}
 
@@ -84,6 +116,21 @@ function ChallengeComments() {
           </Comments>
         </CommentSection>
       </ContentWrapper>
+
+      {candidateArticles && (
+        <Modal
+          modalRef={modalRef}
+          isOpen={isOpen}
+          closeModal={closeModal}
+          position={device === 'mobile' ? 'bottom' : 'center'}
+          showCloseButton={false}
+        >
+          <AddCommentModalContent
+            closeCommentModal={closeModal}
+            candidateArticles={candidateArticles}
+          />
+        </Modal>
+      )}
     </Container>
   );
 }
