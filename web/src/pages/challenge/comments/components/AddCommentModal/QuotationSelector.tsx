@@ -170,21 +170,20 @@ const QuotationItem = styled(Button)<{
   flex-direction: column;
   align-items: flex-start;
 
-  background-color: ${({ theme }) => theme.colors.backgroundHover};
   text-align: left;
 
   transition: all 0.2s ease-in-out;
 
   &:hover {
     background-color: ${({ theme, isSelected }) =>
-      isSelected ? theme.colors.primaryInfo : theme.colors.stroke};
+      isSelected ? theme.colors.primaryInfo : theme.colors.disabledBackground};
   }
 `;
 
 const Quote = styled.div<{ isMobile: boolean }>`
   overflow: hidden;
   padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
-  border-left: 4px solid ${({ theme }) => theme.colors.primary};
+  border-left: 4px solid ${({ theme }) => theme.colors.stroke};
 
   display: -webkit-box;
   flex: 1;
