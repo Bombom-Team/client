@@ -1,5 +1,5 @@
 export interface ChallengeParticipant {
-  memberId: number;
+  participantId: number;
   nickname: string;
   challengeTeamId: number | null;
   completedDays: number;
