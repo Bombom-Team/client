@@ -44,7 +44,7 @@ function ChallengeComments() {
   const device = useDevice();
 
   const { challengeId } = useParams({
-    from: '/_bombom/_main/challenge/$challengeId/dashboard',
+    from: '/_bombom/_main/challenge/$challengeId/comments',
   });
 
   const { data: challengeInfo } = useQuery(
