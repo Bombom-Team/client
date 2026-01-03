@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import AllCommentsSection from './AllCommentsSection';
-import CommentCard from './CommentCard';
 import { queries } from '@/apis/queries';
 import type { GetChallengeCommentsParams } from '@/apis/challenge/challenge.api';
 
@@ -51,15 +50,6 @@ const MobileCommentsContent = ({
 
   return (
     <Container>
-      <Comments>
-        <CommentTitle>내 코멘트</CommentTitle>
-        {commentList.length > 0 && (
-          <CardList>
-            <CommentCard {...commentList[0]!} />
-          </CardList>
-        )}
-      </Comments>
-
       <AllCommentsSection comments={commentList} isLoading={isLoading}>
         <LoadMoreTrigger ref={loadMoreRef} />
         {isFetchingNextPage && <LoadingMessage>로딩 중...</LoadingMessage>}
@@ -73,23 +63,6 @@ export default MobileCommentsContent;
 const Container = styled.section`
   display: flex;
   gap: 20px;
-  flex-direction: column;
-`;
-
-const Comments = styled.div`
-  display: flex;
-  gap: 12px;
-  flex-direction: column;
-`;
-
-const CommentTitle = styled.h3`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
-`;
-
-const CardList = styled.div`
-  display: flex;
-  gap: 8px;
   flex-direction: column;
 `;
 
