@@ -10,12 +10,12 @@ import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
-import type { GetChallengeCommentCandidateArticlesResponse } from '@/apis/challenge/challenge.api';
+import type { CandidateArticles } from '../../types/comment';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
 
 interface AddCommentModalContentProps {
   closeCommentModal: () => void;
-  candidateArticles: GetChallengeCommentCandidateArticlesResponse;
+  candidateArticles: CandidateArticles;
 }
 
 const MIN_COMMENT_LENGTH = 20;

@@ -2,13 +2,13 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import Select from '@/components/Select/Select';
 import { useDevice } from '@/hooks/useDevice';
-import type { GetChallengeCommentCandidateArticlesResponse } from '@/apis/challenge/challenge.api';
+import type { CandidateArticles } from '../../types/comment';
 import type { Device } from '@/hooks/useDevice';
 
 interface NewsletterSelectorProps {
   selectedArticleId: number | null;
   onArticleSelect: (articleId: number) => void;
-  articles: GetChallengeCommentCandidateArticlesResponse;
+  articles: CandidateArticles;
   showError: boolean;
 }
 
