@@ -69,3 +69,32 @@ export const assignChallengeTeams = async ({
     body: { maxTeamSize },
   });
 };
+
+export type UpdateParticipantTeamParams = {
+  challengeId: number;
+  participantId: number;
+  challengeTeamId: number;
+};
+
+export const updateParticipantTeam = async ({
+  challengeId,
+  participantId,
+  challengeTeamId,
+}: UpdateParticipantTeamParams) => {
+  return fetcher.patch<{ challengeTeamId: number }, void>({
+    path: `/challenges/${challengeId}/participants/${participantId}/team`,
+    body: { challengeTeamId },
+  });
+};
+
+export interface ChallengeTeam {
+  id: number;
+  challengeId: number;
+  progress: number;
+}
+
+export const getChallengeTeams = async (challengeId: number) => {
+  return fetcher.get<ChallengeTeam[]>({
+    path: `/challenges/${challengeId}/teams`,
+  });
+};

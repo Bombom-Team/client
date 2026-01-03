@@ -206,9 +206,10 @@ function ChallengeDetailContent() {
         <Table>
           <colgroup>
             <col style={{ width: '24%' }} />
-            <col style={{ width: '26%' }} />
-            <col style={{ width: '25%' }} />
-            <col style={{ width: '25%' }} />
+            <col style={{ width: '22%' }} />
+            <col style={{ width: '18%' }} />
+            <col style={{ width: '18%' }} />
+            <col style={{ width: '18%' }} />
           </colgroup>
           <Thead>
             <Tr>
@@ -216,6 +217,7 @@ function ChallengeDetailContent() {
               <Th>팀 ID</Th>
               <Th>완료 일수</Th>
               <Th>상태</Th>
+              <Th>관리</Th>
             </Tr>
           </Thead>
           <ErrorBoundary fallback={<ChallengeParticipantsTableBodyError />}>
@@ -393,7 +395,8 @@ const Th = styled.th`
 
   &:nth-of-type(2),
   &:nth-of-type(3),
-  &:nth-of-type(4) {
+  &:nth-of-type(4),
+  &:nth-of-type(5) {
     text-align: center;
   }
 `;
