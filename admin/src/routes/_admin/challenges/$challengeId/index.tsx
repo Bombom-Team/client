@@ -146,67 +146,72 @@ function ChallengeDetailContent() {
       <ParticipantsSection>
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
-          <Filters>
-            <FilterGroup>
-              <FilterLabel htmlFor="challenge-max-team-size">
-                팀 최대 인원
-              </FilterLabel>
-              <FilterInput
-                id="challenge-max-team-size"
-                type="number"
-                min="1"
-                placeholder="15"
-                value={maxTeamSizeInput}
-                onChange={(event) => setMaxTeamSizeInput(event.target.value)}
-              />
-              <AssignButton
-                type="button"
-                onClick={handleAssignTeams}
-                disabled={isAssigningTeams}
-              >
-                {isAssigningTeams ? '배정 중...' : '팀 자동 배정'}
-              </AssignButton>
-            </FilterGroup>
-            <FilterGroup>
-              <FilterLabel htmlFor="challenge-team-id">팀 ID</FilterLabel>
-              <FilterInput
-                id="challenge-team-id"
-                type="number"
-                placeholder="팀 ID"
-                value={teamIdInput}
-                onChange={(event) => handleTeamIdChange(event.target.value)}
-              />
-            </FilterGroup>
-            <FilterGroup>
-              <FilterLabel htmlFor="challenge-has-team">팀 매칭</FilterLabel>
-              <FilterSelect
-                id="challenge-has-team"
-                value={hasTeamFilter}
-                onChange={(event) =>
-                  handleHasTeamChange(
-                    event.target.value as 'ALL' | 'YES' | 'NO',
-                  )
-                }
-              >
-                <option value="ALL">전체</option>
-                <option value="YES">매칭됨</option>
-                <option value="NO">미매칭</option>
-              </FilterSelect>
-            </FilterGroup>
-          </Filters>
+          <Controls>
+            <ControlsRow>
+              <ControlsLabel>팀 자동 배정</ControlsLabel>
+              <FilterGroup>
+                <FilterLabel htmlFor="challenge-max-team-size">
+                  팀 최대 인원
+                </FilterLabel>
+                <FilterInput
+                  id="challenge-max-team-size"
+                  type="number"
+                  min="1"
+                  placeholder="15"
+                  value={maxTeamSizeInput}
+                  onChange={(event) => setMaxTeamSizeInput(event.target.value)}
+                />
+                <AssignButton
+                  type="button"
+                  onClick={handleAssignTeams}
+                  disabled={isAssigningTeams}
+                >
+                  {isAssigningTeams ? '배정 중...' : '팀 자동 배정'}
+                </AssignButton>
+              </FilterGroup>
+            </ControlsRow>
+            <ControlsDivider />
+            <ControlsRow>
+              <ControlsLabel>목록 필터</ControlsLabel>
+              <FilterGroup>
+                <FilterLabel htmlFor="challenge-team-id">팀 ID</FilterLabel>
+                <FilterInput
+                  id="challenge-team-id"
+                  type="number"
+                  placeholder="팀 ID"
+                  value={teamIdInput}
+                  onChange={(event) => handleTeamIdChange(event.target.value)}
+                />
+              </FilterGroup>
+              <FilterGroup>
+                <FilterLabel htmlFor="challenge-has-team">팀 매칭</FilterLabel>
+                <FilterSelect
+                  id="challenge-has-team"
+                  value={hasTeamFilter}
+                  onChange={(event) =>
+                    handleHasTeamChange(
+                      event.target.value as 'ALL' | 'YES' | 'NO',
+                    )
+                  }
+                >
+                  <option value="ALL">전체</option>
+                  <option value="YES">매칭됨</option>
+                  <option value="NO">미매칭</option>
+                </FilterSelect>
+              </FilterGroup>
+            </ControlsRow>
+          </Controls>
         </ParticipantsHeader>
 
         <Table>
           <colgroup>
-            <col style={{ width: '12%' }} />
-            <col style={{ width: '28%' }} />
-            <col style={{ width: '16%' }} />
-            <col style={{ width: '16%' }} />
-            <col style={{ width: '12%' }} />
+            <col style={{ width: '24%' }} />
+            <col style={{ width: '26%' }} />
+            <col style={{ width: '25%' }} />
+            <col style={{ width: '25%' }} />
           </colgroup>
           <Thead>
             <Tr>
-              <Th>참여자 ID</Th>
               <Th>닉네임</Th>
               <Th>팀 ID</Th>
               <Th>완료 일수</Th>
@@ -275,11 +280,32 @@ const ParticipantsTitle = styled.h3`
   font-size: ${({ theme }) => theme.fontSize.xl};
 `;
 
-const Filters = styled.div`
+const Controls = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: flex-end;
+`;
+
+const ControlsRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
+  justify-content: flex-end;
+`;
+
+const ControlsLabel = styled.span`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+`;
+
+const ControlsDivider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${({ theme }) => theme.colors.gray200};
 `;
 
 const FilterGroup = styled.div`
@@ -365,9 +391,9 @@ const Th = styled.th`
   font-size: ${({ theme }) => theme.fontSize.sm};
   text-align: left;
 
+  &:nth-of-type(2),
   &:nth-of-type(3),
-  &:nth-of-type(4),
-  &:nth-of-type(5) {
+  &:nth-of-type(4) {
     text-align: center;
   }
 `;
