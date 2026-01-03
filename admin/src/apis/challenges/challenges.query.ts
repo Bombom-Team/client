@@ -4,11 +4,14 @@ import {
   getChallengeParticipants,
   getChallenges,
   assignChallengeTeams,
+  updateParticipantTeam,
+  getChallengeTeams,
 } from './challenges.api';
 import type {
   AssignChallengeTeamsParams,
   GetChallengeParticipantsParams,
   GetChallengesParams,
+  UpdateParticipantTeamParams,
 } from './challenges.api';
 
 const CHALLENGES_STALE_TIME = 1000 * 60; // 1 minute
@@ -42,10 +45,21 @@ export const challengesQueries = {
       staleTime: CHALLENGES_STALE_TIME,
       gcTime: CHALLENGES_GC_TIME,
     }),
+  teams: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', 'teams', challengeId] as const,
+      queryFn: () => getChallengeTeams(challengeId),
+      staleTime: CHALLENGES_STALE_TIME,
+      gcTime: CHALLENGES_GC_TIME,
+    }),
   mutation: {
     assignTeams: () => ({
       mutationFn: (params: AssignChallengeTeamsParams) =>
         assignChallengeTeams(params),
+    }),
+    updateParticipantTeam: () => ({
+      mutationFn: (params: UpdateParticipantTeamParams) =>
+        updateParticipantTeam(params),
     }),
   },
 };
