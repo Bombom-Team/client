@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
+import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import CommentConfirmModalContent from './CommentConfirmModalContent';
 import CommentEditor from './CommentEditor';
 import NewsletterSelector from './NewsletterSelector';
 import QuotationSelector from './QuotationSelector';
+import useAddChallengeCommentMutation from '../../hooks/useAddChallengeCommentMutation';
 import useQuotations from '../../hooks/useQuotations';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
@@ -42,7 +44,14 @@ const AddCommentModalContent = ({
   const device = useDevice();
   const isMobile = device === 'mobile';
 
+  const { challengeId } = useParams({
+    from: '/_bombom/_main/challenge/$challengeId/comments',
+  });
+
   const quotations = useQuotations({ articleId: selectedArticleId });
+  const { mutate: addChallengeComment } = useAddChallengeCommentMutation({
+    challengeId: Number(challengeId),
+  });
 
   const selectedArticle = candidateArticles.find(
     (article) => article.articleId === selectedArticleId,
@@ -89,12 +98,28 @@ const AddCommentModalContent = ({
     }
   };
 
-  const confirmComment = () => {
-    closeCommentModal();
+  const resetForm = () => {
     editComment('');
     setSelectedArticleId(null);
     setSelectedQuotationId(null);
     setShowArticleError(false);
+  };
+
+  const confirmComment = () => {
+    if (!selectedArticleId) return;
+
+    const selectedQuotation = selectedQuotationId
+      ? quotations.find((quotation) => quotation.id === selectedQuotationId)
+      : null;
+
+    addChallengeComment({
+      articleId: selectedArticleId,
+      comment,
+      quotation: selectedQuotation?.text,
+    });
+
+    closeCommentModal();
+    resetForm();
   };
 
   return (
