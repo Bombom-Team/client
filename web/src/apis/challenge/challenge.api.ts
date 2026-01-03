@@ -112,3 +112,17 @@ export const getChallengeComments = async ({
     query: params,
   });
 };
+
+export type GetChallengeCommentCandidateArticlesParams =
+  operations['getChallengeCommentCandidateArticles']['parameters']['query'];
+export type GetChallengeCommentCandidateArticlesResponse =
+  components['schemas']['ChallengeCommentCandidateArticleResponse'][];
+
+export const getChallengeCommentCandidateArticles = async (
+  params: GetChallengeCommentCandidateArticlesParams,
+) => {
+  return await fetcher.get<GetChallengeCommentCandidateArticlesResponse>({
+    path: '/challenges/comments/articles/candidates',
+    query: params,
+  });
+};
