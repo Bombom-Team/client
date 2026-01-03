@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { challengesQueries } from '@/apis/challenges/challenges.query';
 import type { ChallengeStatus } from '@/types/challenge';
@@ -17,6 +18,7 @@ export function ChallengesTableBody({
   status,
   onDataLoaded,
 }: ChallengesTableBodyProps) {
+  const navigate = useNavigate();
   const { data } = useSuspenseQuery(
     challengesQueries.list({
       page: currentPage,
@@ -46,7 +48,15 @@ export function ChallengesTableBody({
   return (
     <Tbody>
       {data?.content.map((challenge) => (
-        <Tr key={challenge.id}>
+        <Tr
+          key={challenge.id}
+          onClick={() =>
+            navigate({
+              to: '/challenges/$challengeId',
+              params: { challengeId: challenge.id.toString() },
+            })
+          }
+        >
           <Td>{challenge.id}</Td>
           <Td>{challenge.name}</Td>
           <Td>{challenge.generation}기</Td>
@@ -85,6 +95,8 @@ ChallengesTableBody.Error = function ChallengesTableBodyError() {
 const Tbody = styled.tbody``;
 
 const Tr = styled.tr`
+  cursor: pointer;
+
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray50};
   }
