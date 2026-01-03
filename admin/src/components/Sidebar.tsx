@@ -20,6 +20,13 @@ export const Sidebar = () => {
           <FiUsers />
           <span>멤버 관리</span>
         </NavItem>
+        <NavItem
+          to="/challenges"
+          isActive={currentPath.startsWith('/challenges')}
+        >
+          <FiFlag />
+          <span>챌린지</span>
+        </NavItem>
         <NavItem to="/notices" isActive={currentPath.startsWith('/notices')}>
           <FiBell />
           <span>공지사항</span>
