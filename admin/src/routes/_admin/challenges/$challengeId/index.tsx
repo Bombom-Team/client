@@ -6,13 +6,13 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { challengesQueries } from '@/apis/challenges/challenges.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
+import Pagination from '@/components/Pagination';
 import { ChallengeDetailView } from '@/pages/challenges/ChallengeDetailView';
 import {
   ChallengeParticipantsTableBody,
   ChallengeParticipantsTableBodyError,
   ChallengeParticipantsTableBodyLoading,
 } from '@/pages/challenges/ChallengeParticipantsTableBody';
-import Pagination from '@/components/Pagination';
 
 const PARTICIPANTS_PAGE_SIZE = 10;
 
@@ -138,7 +138,9 @@ function ChallengeDetailContent() {
                 id="challenge-has-team"
                 value={hasTeamFilter}
                 onChange={(event) =>
-                  handleHasTeamChange(event.target.value as 'ALL' | 'YES' | 'NO')
+                  handleHasTeamChange(
+                    event.target.value as 'ALL' | 'YES' | 'NO',
+                  )
                 }
               >
                 <option value="ALL">전체</option>
