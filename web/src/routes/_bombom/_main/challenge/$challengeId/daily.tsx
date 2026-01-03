@@ -4,6 +4,7 @@ import { createFileRoute, useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
+import { useDevice } from '@/hooks/useDevice';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 
 const MAX_LENGTH = 1000;
@@ -14,14 +15,14 @@ interface DailyGuide {
   dayIndex: number;
   type: DailyGuideType;
   imageUrl: string;
-  notice: string;
+  notice?: string;
 }
 
 const MOCK_CHALLENGE_DAILY_GUIDE: DailyGuide = {
   dayIndex: 2,
   type: 'COMMENT',
   imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
-  notice: '이미지를 확인하고 가이드에 따라 답변을 작성해주세요.',
+  notice: '데일리 가이드에 따라 답변을 작성해주세요.',
 };
 
 export const Route = createFileRoute(
@@ -41,6 +42,7 @@ function ChallengeDaily() {
   const { challengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
+  const device = useDevice();
   const { data: challengeInfo } = useQuery(
     queries.challengesInfo(Number(challengeId)),
   );
@@ -50,6 +52,7 @@ function ChallengeDaily() {
   const [comment, setComment] = useState('');
 
   const guide = MOCK_CHALLENGE_DAILY_GUIDE;
+  const isMobile = device === 'mobile';
 
   const handleSubmit = () => {
     if (!comment.trim()) return;
@@ -71,8 +74,8 @@ function ChallengeDaily() {
         <GuideImage src={guide.imageUrl} alt={`Day ${guide.dayIndex} guide`} />
         {guide.notice && (
           <NoticeBox>
-            <NoticeIcon>💡</NoticeIcon>
-            <NoticeText>{guide.notice}</NoticeText>
+            <NoticeIcon isMobile={isMobile}>💡</NoticeIcon>
+            <NoticeText isMobile={isMobile}>{guide.notice}</NoticeText>
           </NoticeBox>
         )}
 
@@ -86,6 +89,7 @@ function ChallengeDaily() {
             </CommentLabelWrapper>
             <CommentInputWrapper>
               <CommentTextarea
+                isMobile={isMobile}
                 placeholder="데일리 가이드의 질문에 대한 답변을 입력해주세요."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
@@ -118,13 +122,10 @@ const Container = styled.div`
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
-
-  box-sizing: border-box;
 `;
 
 const GuideCard = styled.div`
   width: 100%;
-  padding: 24px;
   border-radius: 12px;
 
   display: flex;
@@ -132,8 +133,6 @@ const GuideCard = styled.div`
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
-
-  box-sizing: border-box;
 `;
 
 const DayBadge = styled.div`
@@ -149,6 +148,9 @@ const DayBadge = styled.div`
 
 const GuideImage = styled.img`
   width: 100%;
+  max-height: 400px;
+
+  object-fit: contain;
 `;
 
 const NoticeBox = styled.div`
@@ -162,21 +164,18 @@ const NoticeBox = styled.div`
   align-items: flex-start;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
-
-  box-sizing: border-box;
 `;
 
-const NoticeIcon = styled.span`
+const NoticeIcon = styled.span<{ isMobile: boolean }>`
   flex-shrink: 0;
-
-  font-size: 20px;
-  line-height: 1.4;
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
 `;
 
-const NoticeText = styled.p`
+const NoticeText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
-  line-height: 1.6;
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
 `;
 
 const CommentSection = styled.div`
@@ -196,8 +195,7 @@ const CommentLabelWrapper = styled.div`
 
 const CommentLabel = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.heading6};
 `;
 
 const CharCount = styled.span`
@@ -212,7 +210,7 @@ const CommentInputWrapper = styled.div`
   flex-direction: column;
 `;
 
-const CommentTextarea = styled.textarea`
+const CommentTextarea = styled.textarea<{ isMobile: boolean }>`
   width: 100%;
   height: 120px;
   padding: 12px 16px;
@@ -220,10 +218,8 @@ const CommentTextarea = styled.textarea`
   border-radius: 8px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
-  line-height: 1.6;
-
-  box-sizing: border-box;
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
 
   resize: none;
 
