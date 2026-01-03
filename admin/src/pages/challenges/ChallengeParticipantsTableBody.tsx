@@ -74,11 +74,7 @@ export const ChallengeParticipantsTableBody = ({
     }
   }, [data, onDataLoaded]);
 
-  const handleRowClick = (participantId: number, teamId: number | null) => {
-    if (!isEditable) {
-      return;
-    }
-
+  const handleEditClick = (participantId: number, teamId: number | null) => {
     setEditingParticipantId(participantId);
     setTeamInput(teamId?.toString() ?? '');
   };
@@ -102,6 +98,22 @@ export const ChallengeParticipantsTableBody = ({
     const parsed = Number(trimmed);
     if (!trimmed || Number.isNaN(parsed) || parsed <= 0) {
       alert('유효한 팀 ID를 입력해주세요.');
+      return;
+    }
+
+    const previousTeamId = data?.content.find(
+      (participant) => participant.participantId === participantId,
+    )?.challengeTeamId;
+    const previousLabel =
+      previousTeamId !== null && previousTeamId !== undefined
+        ? previousTeamId.toString()
+        : '미배정';
+
+    if (
+      !confirm(
+        `팀을 변경할까요? 기존: ${previousLabel} → 변경: ${parsed.toString()}`,
+      )
+    ) {
       return;
     }
 
@@ -132,16 +144,6 @@ export const ChallengeParticipantsTableBody = ({
         <Tr
           key={participant.participantId}
           isEditing={editingParticipantId === participant.participantId}
-          isEditable={isEditable}
-          onClick={
-            isEditable
-              ? () =>
-                  handleRowClick(
-                    participant.participantId,
-                    participant.challengeTeamId,
-                  )
-              : undefined
-          }
         >
           <Td>{participant.nickname}</Td>
           <Td>
@@ -194,7 +196,18 @@ export const ChallengeParticipantsTableBody = ({
                   </Button>
                 </ActionGroup>
               ) : (
-                <ActionHint>행을 클릭해 변경</ActionHint>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() =>
+                    handleEditClick(
+                      participant.participantId,
+                      participant.challengeTeamId,
+                    )
+                  }
+                >
+                  팀 수정
+                </Button>
               )}
             </Td>
           )}
@@ -238,9 +251,7 @@ export const ChallengeParticipantsTableBodyError = ({
 
 const Tbody = styled.tbody``;
 
-const Tr = styled.tr<{ isEditing?: boolean; isEditable?: boolean }>`
-  cursor: ${({ isEditable }) => (isEditable ? 'pointer' : 'default')};
-
+const Tr = styled.tr<{ isEditing?: boolean }>`
   &:hover {
     background-color: ${({ theme, isEditing }) =>
       isEditing ? theme.colors.gray100 : theme.colors.gray50};
@@ -284,11 +295,6 @@ const ActionGroup = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
   justify-content: center;
-`;
-
-const ActionHint = styled.span`
-  color: ${({ theme }) => theme.colors.gray400};
-  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const EmptyState = styled.div`

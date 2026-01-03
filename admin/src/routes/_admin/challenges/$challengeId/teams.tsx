@@ -194,7 +194,17 @@ function ChallengeTeamsContent() {
   return (
     <Container>
       <Header>
-        <Title>{challenge?.name ?? '팀 관리'}</Title>
+        <TitleGroup>
+          <Title>{challenge?.name ?? '팀 관리'}</Title>
+          {challenge && (
+            <MetaText>
+              <GenerationBadge>{challenge.generation}기</GenerationBadge>
+              <span>
+                {challenge.startDate} ~ {challenge.endDate}
+              </span>
+            </MetaText>
+          )}
+        </TitleGroup>
         <Button variant="secondary" onClick={handleGoToDetail}>
           챌린지 상세
         </Button>
@@ -226,7 +236,8 @@ function ChallengeTeamsContent() {
         </SectionHeader>
         <Notice>
           입력한 개수만큼 팀이 자동으로 생성됩니다. 팀 자동 배정을 이미
-          실행했다면 보통 추가 생성은 필요하지 않습니다.
+          실행했다면 보통 추가 생성은 필요하지 않습니다. 팀 삭제 시 해당 팀에
+          소속된 참여자의 팀은 미배정 상태가 됩니다.
         </Notice>
         <ActionRow>
           <Label htmlFor="create-team-count">생성 개수</Label>
@@ -399,6 +410,33 @@ const Title = styled.h2`
   font-size: ${({ theme }) => theme.fontSize['2xl']};
 `;
 
+const TitleGroup = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
+`;
+
+const MetaText = styled.span`
+  display: inline-flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const GenerationBadge = styled.span`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  line-height: 1;
+`;
+
 const Section = styled.section`
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
@@ -439,17 +477,18 @@ const ActionRow = styled.div`
 `;
 
 const Label = styled.label`
-  color: ${({ theme }) => theme.colors.gray600};
-  font-size: ${({ theme }) => theme.fontSize.sm};
+  color: ${({ theme }) => theme.colors.gray900};
+  font-size: ${({ theme }) => theme.fontSize.base};
 `;
 
 const Input = styled.input`
   max-width: 160px;
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
   font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.4;
 
   &:focus {
     outline: none;
