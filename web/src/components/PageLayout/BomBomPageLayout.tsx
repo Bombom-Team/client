@@ -48,7 +48,7 @@ const Container = styled.div<{ isPC: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
 
-  overflow-x: hidden;
+  overflow-x: clip;
 
   scrollbar-gutter: stable;
 `;

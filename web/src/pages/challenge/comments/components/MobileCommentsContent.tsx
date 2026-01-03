@@ -95,7 +95,6 @@ const CardList = styled.div`
 
 const LoadMoreTrigger = styled.div`
   width: 100%;
-  height: 20px;
 `;
 
 const LoadingMessage = styled.div`

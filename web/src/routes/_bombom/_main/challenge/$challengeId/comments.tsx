@@ -56,11 +56,13 @@ function ChallengeComments() {
 
   return (
     <Container>
-      <DateFilter
-        weekdays={filterWeekdays(totalDates)}
-        selectedDate={currentDate}
-        onDateSelect={setCurrentDate}
-      />
+      <FilterWrapper isMobile={isMobile}>
+        <DateFilter
+          weekdays={filterWeekdays(totalDates)}
+          selectedDate={currentDate}
+          onDateSelect={setCurrentDate}
+        />
+      </FilterWrapper>
 
       <ContentWrapper isMobile={isMobile}>
         {currentDate === today && (
@@ -96,19 +98,29 @@ export default ChallengeComments;
 
 const Container = styled.section`
   width: 100%;
-  min-height: 100vh;
 
   display: flex;
-  gap: 12px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
+const FilterWrapper = styled.div<{ isMobile: boolean }>`
+  position: ${({ isMobile }) => (isMobile ? 'sticky' : 'static')};
+  top: ${({ isMobile, theme }) =>
+    isMobile
+      ? `calc(${theme.heights.headerMobile} + env(safe-area-inset-top))`
+      : 'auto'};
+  width: 100%;
+  padding: ${({ isMobile }) => (isMobile ? '12px 0' : '16px')};
+  border-bottom: 2px solid ${({ theme }) => theme.colors.dividers};
+
+  background-color: ${({ theme }) => theme.colors.white};
+`;
+
 const ContentWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '20px 0' : '24px')};
-  border-top: 2px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '32px' : '44px')};
