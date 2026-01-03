@@ -16,12 +16,6 @@ import { useCommentsFilters } from '@/pages/challenge/comments/hooks/useComments
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import { filterWeekdays, formatDate, getDatesInRange } from '@/utils/date';
 
-const CHALLENGE_PERIOD = {
-  startDate: '2025-11-05',
-  endDate: '2026-02-02',
-  totalDays: 31,
-};
-
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/comments',
 )({
@@ -36,17 +30,6 @@ export const Route = createFileRoute(
 });
 
 function ChallengeComments() {
-  const today = formatDate(new Date(), '-');
-  const latestSelectableDate =
-    today < CHALLENGE_PERIOD.endDate ? today : CHALLENGE_PERIOD.endDate;
-
-  const [currentDate, setCurrentDate] = useState(latestSelectableDate);
-
-  const device = useDevice();
-  const isMobile = device === 'mobile';
-
-  const { modalRef, openModal, closeModal, isOpen } = useModal();
-
   const { challengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/comments',
   });
@@ -59,14 +42,29 @@ function ChallengeComments() {
     queries.memberProgress(Number(challengeId)),
   );
 
+  const today = formatDate(new Date(), '-');
+  const latestSelectableDate =
+    !challengeInfo?.endDate || today <= challengeInfo?.endDate
+      ? today
+      : challengeInfo?.endDate;
+
+  const [currentDate, setCurrentDate] = useState(latestSelectableDate);
+
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
+
   const { baseQueryParams, handlePageChange, page, resetPage } =
     useCommentsFilters({
       challengeId: Number(challengeId),
       currentDate,
     });
 
+  if (!challengeInfo) return null;
+
   const totalDates = getDatesInRange(
-    CHALLENGE_PERIOD.startDate,
+    challengeInfo?.startDate,
     latestSelectableDate,
   );
 
