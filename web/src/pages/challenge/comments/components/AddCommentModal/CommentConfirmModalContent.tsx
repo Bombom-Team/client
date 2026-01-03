@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
-import type { MouseEvent, TouchEvent } from 'react';
 
 interface CommentConfirmModalContentProps {
   closeModal: () => void;
@@ -15,14 +14,8 @@ const CommentConfirmModalContent = ({
   const device = useDevice();
   const isMobile = device === 'mobile';
 
-  const handleConfirmComment = (e: MouseEvent | TouchEvent) => {
-    e.stopPropagation();
+  const handleConfirmComment = () => {
     onConfirm();
-    closeModal();
-  };
-
-  const handleCancelComment = (e: MouseEvent | TouchEvent) => {
-    e.stopPropagation();
     closeModal();
   };
 
@@ -38,7 +31,7 @@ const CommentConfirmModalContent = ({
         </ModalButton>
         <ModalButton
           variant="outlined"
-          onClick={handleCancelComment}
+          onClick={closeModal}
           isMobile={isMobile}
         >
           취소
