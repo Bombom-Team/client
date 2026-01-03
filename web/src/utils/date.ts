@@ -11,7 +11,7 @@ export const isToday = (date: Date): boolean => {
   return formatDate(date) === formatDate(today);
 };
 
-export const getDday = (targetDate: Date): string => {
+export const getDday = (targetDate: string): string => {
   const today = new Date();
   const target = new Date(targetDate);
 
