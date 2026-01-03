@@ -35,7 +35,7 @@ const QuotationSelector = ({
           <Title isMobile={isMobile}>내 하이라이트/메모</Title>
           <HelpText isMobile={isMobile}>클릭하여 인용하기 (선택)</HelpText>
         </TitleBox>
-        {quotations.length > 0 && (
+        {selectedQuotationId && (
           <RemoveQuotationButton
             variant="transparent"
             onClick={onRemoveQuotation}
