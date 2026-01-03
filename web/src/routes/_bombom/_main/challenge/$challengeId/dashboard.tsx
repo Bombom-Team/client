@@ -1,9 +1,11 @@
+import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
+import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const REQUIRED_RATE = 80;
 
@@ -52,9 +54,9 @@ function ChallengeDashboardRoute() {
             {teamChallengeProgressInfo?.teamSummary.achievementAverage}%
           </AchievementAverage>
           <WarningMessage>
-            ⚠️ 챌린지 기간의 {REQUIRED_RATE}%(
-            {challengeInfo?.requiredDays}일) 이상을 완수해야 챌린지 보상을 받을
-            수 있습니다
+            🚨 챌린지 기간의 {REQUIRED_RATE}%(
+            {challengeInfo?.requiredDays}일) 미만 달성 시 챌린지 탈락
+            처리됩니다.
           </WarningMessage>
         </InfoWrapper>
         {teamChallengeProgressInfo && (
@@ -63,6 +65,11 @@ function ChallengeDashboardRoute() {
             data={teamChallengeProgressInfo}
           />
         )}
+        <NoticeMessage>
+          <InfoIcon width={12} height={12} fill={theme.colors.primary} />
+          공휴일이나 뉴스레터의 임시 휴재 등으로 인해 챌린지 인증 상태에 대한
+          문의가 필요하신 경우 채널톡으로 문의 부탁드립니다.
+        </NoticeMessage>
       </Content>
     </Container>
   );
@@ -100,5 +107,13 @@ const AchievementAverage = styled.p`
 `;
 
 const WarningMessage = styled.p`
+  font: ${({ theme }) => theme.fonts.body2};
+`;
+
+const NoticeMessage = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+
   font: ${({ theme }) => theme.fonts.body2};
 `;
