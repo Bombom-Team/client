@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Link, useRouterState } from '@tanstack/react-router';
-import { FiBell, FiHome, FiMail, FiUsers } from 'react-icons/fi';
+import { FiBell, FiFlag, FiHome, FiMail, FiUsers } from 'react-icons/fi';
 
 export const Sidebar = () => {
   const router = useRouterState();
