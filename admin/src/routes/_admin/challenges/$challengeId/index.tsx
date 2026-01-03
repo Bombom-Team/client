@@ -147,6 +147,13 @@ function ChallengeDetailContent() {
         </ParticipantsHeader>
 
         <Table>
+          <colgroup>
+            <col style={{ width: '12%' }} />
+            <col style={{ width: '28%' }} />
+            <col style={{ width: '16%' }} />
+            <col style={{ width: '16%' }} />
+            <col style={{ width: '12%' }} />
+          </colgroup>
           <Thead>
             <Tr>
               <Th>회원 ID</Th>
@@ -269,6 +276,7 @@ const FilterSelect = styled.select`
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 `;
 
 const Thead = styled.thead`
@@ -283,6 +291,12 @@ const Th = styled.th`
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   font-size: ${({ theme }) => theme.fontSize.sm};
   text-align: left;
+
+  &:nth-of-type(3),
+  &:nth-of-type(4),
+  &:nth-of-type(5) {
+    text-align: center;
+  }
 `;
 
 const Tr = styled.tr`
