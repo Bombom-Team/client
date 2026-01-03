@@ -6,9 +6,7 @@ import {
   getMemberChallengeProgress,
   getTeamChallengeProgress,
   getChallengeComments,
-  getChallengeCommentCandidateArticles,
   type GetChallengeCommentsParams,
-  type GetChallengeCommentCandidateArticlesParams,
 } from './challenge.api';
 
 export const challengeQueries = {
@@ -63,12 +61,5 @@ export const challengeQueries = {
         return (lastPage.number ?? 0) + 1;
       },
       initialPageParam: 0,
-    }),
-  commentCandidateArticles: (
-    params: GetChallengeCommentCandidateArticlesParams,
-  ) =>
-    queryOptions({
-      queryKey: ['challenges', 'comments', 'articles', 'candidates', params],
-      queryFn: () => getChallengeCommentCandidateArticles(params),
     }),
 };
