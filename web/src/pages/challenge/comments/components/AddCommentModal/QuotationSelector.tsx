@@ -52,7 +52,7 @@ const QuotationSelector = ({
                 onQuotationSelect(quotation.id, quotation.memo ?? '')
               }
               isMobile={isMobile}
-              isSelected={selectedQuotationId === quotation.id}
+              selected={selectedQuotationId === quotation.id}
             >
               <Quote isMobile={isMobile}>{quotation.text}</Quote>
               {quotation.memo && (
@@ -149,16 +149,16 @@ const EmptyState = styled.div<{ isMobile: boolean }>`
 
 const QuotationItem = styled(Button)<{
   isMobile: boolean;
-  isSelected: boolean;
+  selected: boolean;
 }>`
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '8px' : '16px')};
-  outline: ${({ isSelected, theme }) =>
-    isSelected ? `2px solid ${theme.colors.primary}` : 'none'};
+  outline: ${({ selected, theme }) =>
+    selected ? `2px solid ${theme.colors.primary}` : 'none'};
   outline-offset: -2px;
   border: 1px solid
-    ${({ theme, isSelected }) =>
-      isSelected ? theme.colors.primary : theme.colors.stroke};
+    ${({ theme, selected }) =>
+      selected ? theme.colors.primary : theme.colors.stroke};
   border-radius: 8px;
 
   display: flex;
@@ -171,8 +171,8 @@ const QuotationItem = styled(Button)<{
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: ${({ theme, isSelected }) =>
-      isSelected ? theme.colors.primaryInfo : theme.colors.disabledBackground};
+    background-color: ${({ theme, selected }) =>
+      selected ? theme.colors.primaryInfo : theme.colors.disabledBackground};
   }
 `;
 
