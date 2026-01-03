@@ -102,7 +102,7 @@ const AddCommentModalContent = ({
 
         {selectedArticle && (
           <QuotationSelector
-            highlights={selectedArticle.highlights}
+            quotations={selectedArticle.highlights}
             selectedQuotationId={selectedQuotationId}
             onQuotationSelect={selectQuotation}
             onRemoveQuotation={removeQuotation}

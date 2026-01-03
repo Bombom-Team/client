@@ -2,25 +2,25 @@ import styled from '@emotion/styled';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 
-interface Highlight {
+interface Quotation {
   id: string;
-  highlightedText: string;
+  text: string;
   memo?: string;
 }
 
-interface HighlightSelectorProps {
-  highlights: Highlight[];
+interface QuotationSelectorProps {
+  quotations: Quotation[];
   selectedQuotationId: string | null;
   onQuotationSelect: (id: string, text: string) => void;
   onRemoveQuotation: () => void;
 }
 
 const QuotationSelector = ({
-  highlights,
+  quotations,
   selectedQuotationId,
   onQuotationSelect,
   onRemoveQuotation,
-}: HighlightSelectorProps) => {
+}: QuotationSelectorProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
 
@@ -35,7 +35,7 @@ const QuotationSelector = ({
           <Title isMobile={isMobile}>내 하이라이트/메모</Title>
           <HelpText isMobile={isMobile}>클릭하여 인용하기 (선택)</HelpText>
         </TitleBox>
-        {highlights.length > 0 && (
+        {quotations.length > 0 && (
           <RemoveQuotationButton
             variant="transparent"
             onClick={onRemoveQuotation}
@@ -46,21 +46,21 @@ const QuotationSelector = ({
         )}
       </Header>
 
-      {highlights.length > 0 ? (
+      {quotations.length > 0 ? (
         <QuotationList isMobile={isMobile}>
-          {highlights.map((highlight) => (
+          {quotations.map((quotation) => (
             <QuotationItem
-              key={highlight.id}
+              key={quotation.id}
               variant="outlined"
               onClick={() =>
-                handleInsertComment(highlight.id, highlight.memo ?? '')
+                handleInsertComment(quotation.id, quotation.memo ?? '')
               }
               isMobile={isMobile}
-              isSelected={selectedQuotationId === highlight.id}
+              isSelected={selectedQuotationId === quotation.id}
             >
-              <Quote isMobile={isMobile}>{highlight.highlightedText}</Quote>
-              {highlight.memo && (
-                <Memo isMobile={isMobile}>{highlight.memo}</Memo>
+              <Quote isMobile={isMobile}>{quotation.text}</Quote>
+              {quotation.memo && (
+                <Memo isMobile={isMobile}>{quotation.memo}</Memo>
               )}
             </QuotationItem>
           ))}
