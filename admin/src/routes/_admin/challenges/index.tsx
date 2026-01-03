@@ -9,8 +9,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Layout } from '@/components/Layout';
 import Pagination from '@/components/Pagination';
 import { ChallengesTableBody } from '@/pages/challenges/ChallengesTableBody';
-import type { ChallengeStatus } from '@/types/challenge';
-import { CHALLENGE_STATUS_LABELS } from '@/types/challenge';
+import { CHALLENGE_STATUS_LABELS, type ChallengeStatus } from '@/types/challenge';
 
 const STATUS_OPTIONS = ['BEFORE_START', 'ONGOING', 'COMPLETED'] as const;
 
