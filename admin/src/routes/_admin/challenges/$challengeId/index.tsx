@@ -146,7 +146,7 @@ function ChallengeDetailContent() {
           </colgroup>
           <Thead>
             <Tr>
-              <Th>회원 ID</Th>
+              <Th>참여자 ID</Th>
               <Th>닉네임</Th>
               <Th>팀 ID</Th>
               <Th>완료 일수</Th>

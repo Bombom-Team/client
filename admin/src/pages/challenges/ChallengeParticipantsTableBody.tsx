@@ -50,8 +50,8 @@ export const ChallengeParticipantsTableBody = ({
   return (
     <Tbody>
       {data?.content.map((participant) => (
-        <Tr key={participant.memberId}>
-          <Td>{participant.memberId}</Td>
+        <Tr key={participant.participantId}>
+          <Td>{participant.participantId}</Td>
           <Td>{participant.nickname}</Td>
           <Td>{participant.challengeTeamId ?? '-'}</Td>
           <Td>{participant.completedDays}</Td>
