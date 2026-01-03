@@ -100,6 +100,13 @@ const Td = styled.td`
 
   color: ${({ theme }) => theme.colors.gray700};
   font-size: ${({ theme }) => theme.fontSize.sm};
+  text-align: left;
+
+  &:nth-of-type(3),
+  &:nth-of-type(4),
+  &:nth-of-type(5) {
+    text-align: center;
+  }
 `;
 
 const EmptyState = styled.div`

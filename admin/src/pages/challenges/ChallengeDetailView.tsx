@@ -13,8 +13,10 @@ export function ChallengeDetailView({
   return (
     <Container>
       <Header>
-        <Title>{challenge.name}</Title>
-        <GenerationBadge>{challenge.generation}기</GenerationBadge>
+        <TitleGroup>
+          <Title>{challenge.name}</Title>
+          <GenerationBadge>{challenge.generation}기</GenerationBadge>
+        </TitleGroup>
       </Header>
 
       <InfoGrid>
@@ -47,13 +49,17 @@ const Header = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
 
   display: flex;
+  align-items: center;
+`;
+
+const TitleGroup = styled.div`
+  display: inline-flex;
   flex-wrap: wrap;
-  gap: ${({ theme }) => theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.sm};
   align-items: center;
 `;
 
 const Title = styled.h2`
-  flex: 1;
   margin: 0;
 
   color: ${({ theme }) => theme.colors.gray900};
