@@ -1,3 +1,16 @@
+interface Highlight {
+  id: string;
+  text: string;
+  memo?: string;
+}
+
+export interface ArticleHighlights {
+  id: string;
+  newsletterName: string;
+  articleTitle: string;
+  highlights: Highlight[];
+}
+
 export const articleHighlights = [
   {
     id: 'article1',

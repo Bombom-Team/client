@@ -3,12 +3,12 @@ import styled from '@emotion/styled';
 import Select from '@/components/Select/Select';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
-import type { ArticleWithHighlights } from '@/mocks/datas/highlights';
+import type { ArticleHighlights } from '@/mocks/datas/highlights';
 
 interface NewsletterSelectorProps {
   selectedArticleId: string | null;
   onArticleSelect: (articleId: string) => void;
-  articles: ArticleWithHighlights[];
+  articles: ArticleHighlights[];
   showError: boolean;
 }
 
