@@ -25,7 +25,7 @@ export const Route = createFileRoute('/_admin/challenges/$challengeId/teams')({
 
 function ChallengeTeamsPage() {
   return (
-    <Layout title="팀 관리">
+    <Layout title="챌린지 팀 관리">
       <ErrorBoundary fallback={<div>에러가 발생했습니다.</div>}>
         <Suspense fallback={<div>로딩 중...</div>}>
           <ChallengeTeamsContent />
