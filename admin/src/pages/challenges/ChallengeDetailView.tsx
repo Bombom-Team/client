@@ -14,21 +14,15 @@ export function ChallengeDetailView({
     <Container>
       <Header>
         <Title>{challenge.name}</Title>
-        <Badge>{challenge.generation}기</Badge>
+        <GenerationBadge>{challenge.generation}기</GenerationBadge>
       </Header>
 
       <InfoGrid>
         <InfoRow>
-          <InfoLabel>챌린지 ID</InfoLabel>
-          <InfoValue>{challenge.id}</InfoValue>
-        </InfoRow>
-        <InfoRow>
-          <InfoLabel>시작일</InfoLabel>
-          <InfoValue>{challenge.startDate}</InfoValue>
-        </InfoRow>
-        <InfoRow>
-          <InfoLabel>종료일</InfoLabel>
-          <InfoValue>{challenge.endDate}</InfoValue>
+          <InfoLabel>기간</InfoLabel>
+          <InfoValue>
+            {challenge.startDate} ~ {challenge.endDate}
+          </InfoValue>
         </InfoRow>
       </InfoGrid>
 
@@ -67,12 +61,12 @@ const Title = styled.h2`
   font-size: ${({ theme }) => theme.fontSize['2xl']};
 `;
 
-const Badge = styled.span`
+const GenerationBadge = styled.span`
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.borderRadius.full};
 
-  background-color: ${({ theme }) => theme.colors.gray100};
-  color: ${({ theme }) => theme.colors.gray700};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSize.sm};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
 `;
@@ -80,7 +74,7 @@ const Badge = styled.span`
 const InfoGrid = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.lg};
 `;
 
 const InfoRow = styled.div`
@@ -90,7 +84,7 @@ const InfoRow = styled.div`
 `;
 
 const InfoLabel = styled.span`
-  min-width: 80px;
+  min-width: 64px;
 
   color: ${({ theme }) => theme.colors.gray600};
   font-size: ${({ theme }) => theme.fontSize.sm};

@@ -113,9 +113,6 @@ function ChallengeDetailContent() {
 
   return (
     <ChallengeDetailView challenge={challenge}>
-      <ButtonGroup>
-        <Button onClick={goToList}>목록</Button>
-      </ButtonGroup>
       <ParticipantsSection>
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
@@ -195,15 +192,6 @@ const Container = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.sm};
 
   background-color: ${({ theme }) => theme.colors.white};
-`;
-
-const ButtonGroup = styled.div`
-  padding-top: ${({ theme }) => theme.spacing.lg};
-  border-top: 1px solid ${({ theme }) => theme.colors.gray200};
-
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
-  justify-content: flex-end;
 `;
 
 const ParticipantsSection = styled.section`
