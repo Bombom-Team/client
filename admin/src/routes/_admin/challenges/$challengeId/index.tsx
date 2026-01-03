@@ -112,13 +112,11 @@ function ChallengeDetailContent() {
   }
 
   return (
-    <>
-      <ChallengeDetailView challenge={challenge}>
-        <ButtonGroup>
-          <Button onClick={goToList}>목록</Button>
-        </ButtonGroup>
-      </ChallengeDetailView>
-      <ParticipantsContainer>
+    <ChallengeDetailView challenge={challenge}>
+      <ButtonGroup>
+        <Button onClick={goToList}>목록</Button>
+      </ButtonGroup>
+      <ParticipantsSection>
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
           <Filters>
@@ -184,8 +182,8 @@ function ChallengeDetailContent() {
             countUnitLabel="명"
           />
         )}
-      </ParticipantsContainer>
-    </>
+      </ParticipantsSection>
+    </ChallengeDetailView>
   );
 }
 
@@ -208,13 +206,10 @@ const ButtonGroup = styled.div`
   justify-content: flex-end;
 `;
 
-const ParticipantsContainer = styled.div`
+const ParticipantsSection = styled.section`
   margin-top: ${({ theme }) => theme.spacing.xl};
-  padding: ${({ theme }) => theme.spacing.lg};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
-
-  background-color: ${({ theme }) => theme.colors.white};
+  padding-top: ${({ theme }) => theme.spacing.xl};
+  border-top: 1px solid ${({ theme }) => theme.colors.gray200};
 `;
 
 const ParticipantsHeader = styled.div`
