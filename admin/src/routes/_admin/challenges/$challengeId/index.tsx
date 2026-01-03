@@ -30,9 +30,7 @@ function ChallengeDetailContent() {
 
   const id = Number(challengeId);
 
-  const { data: challenge } = useSuspenseQuery(
-    challengesQueries.detail(id),
-  );
+  const { data: challenge } = useSuspenseQuery(challengesQueries.detail(id));
 
   const goToList = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
