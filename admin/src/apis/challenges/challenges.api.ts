@@ -98,3 +98,32 @@ export const getChallengeTeams = async (challengeId: number) => {
     path: `/challenges/${challengeId}/teams`,
   });
 };
+
+export type CreateChallengeTeamsParams = {
+  challengeId: number;
+  count: number;
+};
+
+export const createChallengeTeams = async ({
+  challengeId,
+  count,
+}: CreateChallengeTeamsParams) => {
+  return fetcher.post<{ count: number }, void>({
+    path: `/challenges/${challengeId}/teams`,
+    body: { count },
+  });
+};
+
+export type DeleteChallengeTeamParams = {
+  challengeId: number;
+  teamId: number;
+};
+
+export const deleteChallengeTeam = async ({
+  challengeId,
+  teamId,
+}: DeleteChallengeTeamParams) => {
+  return fetcher.delete({
+    path: `/challenges/${challengeId}/teams/${teamId}`,
+  });
+};

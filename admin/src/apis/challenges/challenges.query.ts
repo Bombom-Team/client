@@ -6,9 +6,13 @@ import {
   assignChallengeTeams,
   updateParticipantTeam,
   getChallengeTeams,
+  createChallengeTeams,
+  deleteChallengeTeam,
 } from './challenges.api';
 import type {
   AssignChallengeTeamsParams,
+  CreateChallengeTeamsParams,
+  DeleteChallengeTeamParams,
   GetChallengeParticipantsParams,
   GetChallengesParams,
   UpdateParticipantTeamParams,
@@ -60,6 +64,14 @@ export const challengesQueries = {
     updateParticipantTeam: () => ({
       mutationFn: (params: UpdateParticipantTeamParams) =>
         updateParticipantTeam(params),
+    }),
+    createTeams: () => ({
+      mutationFn: (params: CreateChallengeTeamsParams) =>
+        createChallengeTeams(params),
+    }),
+    deleteTeam: () => ({
+      mutationFn: (params: DeleteChallengeTeamParams) =>
+        deleteChallengeTeam(params),
     }),
   },
 };

@@ -1,13 +1,10 @@
 import styled from '@emotion/styled';
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { challengesQueries } from '@/apis/challenges/challenges.query';
+import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import Pagination from '@/components/Pagination';
 import { ChallengeDetailView } from '@/pages/challenges/ChallengeDetailView';
@@ -37,6 +34,7 @@ function ChallengeDetailPage() {
 
 function ChallengeDetailContent() {
   const { challengeId } = Route.useParams();
+  const navigate = useNavigate();
   const [participantsPage, setParticipantsPage] = useState(0);
   const [participantsTotal, setParticipantsTotal] = useState(0);
   const [participantsTotalPages, setParticipantsTotalPages] = useState(0);
@@ -44,8 +42,6 @@ function ChallengeDetailContent() {
   const [hasTeamFilter, setHasTeamFilter] = useState<'ALL' | 'YES' | 'NO'>(
     'ALL',
   );
-  const [maxTeamSizeInput, setMaxTeamSizeInput] = useState('15');
-  const queryClient = useQueryClient();
 
   const id = Number(challengeId);
 
@@ -99,38 +95,11 @@ function ChallengeDetailContent() {
     setParticipantsPage(0);
   };
 
-  const maxTeamSize = useMemo(() => {
-    const trimmed = maxTeamSizeInput.trim();
-    const parsed = Number(trimmed);
-    return Number.isNaN(parsed) ? 0 : parsed;
-  }, [maxTeamSizeInput]);
-
-  const { mutate: assignTeams, isPending: isAssigningTeams } = useMutation({
-    ...challengesQueries.mutation.assignTeams(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['challenges', 'participants', id],
-      });
-      alert('팀 자동 배정이 완료되었습니다.');
-    },
-    onError: () => {
-      alert('팀 자동 배정에 실패했습니다.');
-    },
-  });
-
-  const handleAssignTeams = () => {
-    if (maxTeamSize <= 0) {
-      alert('팀 최대 인원은 1명 이상 입력해주세요.');
-      return;
-    }
-
-    if (
-      confirm(
-        '이미 팀이 배정된 경우 기존 배정이 초기화되고 재배정됩니다. 진행할까요?',
-      )
-    ) {
-      assignTeams({ challengeId: id, maxTeamSize });
-    }
+  const handleManageTeams = () => {
+    navigate({
+      to: '/challenges/$challengeId/teams',
+      params: { challengeId },
+    });
   };
 
   if (!challenge) {
@@ -146,70 +115,45 @@ function ChallengeDetailContent() {
       <ParticipantsSection>
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
-          <Controls>
-            <ControlsRow>
-              <ControlsLabel>팀 자동 배정</ControlsLabel>
-              <FilterGroup>
-                <FilterLabel htmlFor="challenge-max-team-size">
-                  팀 최대 인원
-                </FilterLabel>
-                <FilterInput
-                  id="challenge-max-team-size"
-                  type="number"
-                  min="1"
-                  placeholder="15"
-                  value={maxTeamSizeInput}
-                  onChange={(event) => setMaxTeamSizeInput(event.target.value)}
-                />
-                <AssignButton
-                  type="button"
-                  onClick={handleAssignTeams}
-                  disabled={isAssigningTeams}
-                >
-                  {isAssigningTeams ? '배정 중...' : '팀 자동 배정'}
-                </AssignButton>
-              </FilterGroup>
-            </ControlsRow>
-            <ControlsDivider />
-            <ControlsRow>
-              <ControlsLabel>목록 필터</ControlsLabel>
-              <FilterGroup>
-                <FilterLabel htmlFor="challenge-team-id">팀 ID</FilterLabel>
-                <FilterInput
-                  id="challenge-team-id"
-                  type="number"
-                  placeholder="팀 ID"
-                  value={teamIdInput}
-                  onChange={(event) => handleTeamIdChange(event.target.value)}
-                />
-              </FilterGroup>
-              <FilterGroup>
-                <FilterLabel htmlFor="challenge-has-team">팀 매칭</FilterLabel>
-                <FilterSelect
-                  id="challenge-has-team"
-                  value={hasTeamFilter}
-                  onChange={(event) =>
-                    handleHasTeamChange(
-                      event.target.value as 'ALL' | 'YES' | 'NO',
-                    )
-                  }
-                >
-                  <option value="ALL">전체</option>
-                  <option value="YES">매칭됨</option>
-                  <option value="NO">미매칭</option>
-                </FilterSelect>
-              </FilterGroup>
-            </ControlsRow>
-          </Controls>
+          <ParticipantsActions>
+            <Button variant="secondary" onClick={handleManageTeams}>
+              팀 관리
+            </Button>
+          </ParticipantsActions>
         </ParticipantsHeader>
+        <Filters>
+          <FilterGroup>
+            <FilterLabel htmlFor="challenge-team-id">팀 ID</FilterLabel>
+            <FilterInput
+              id="challenge-team-id"
+              type="number"
+              placeholder="팀 ID"
+              value={teamIdInput}
+              onChange={(event) => handleTeamIdChange(event.target.value)}
+            />
+          </FilterGroup>
+          <FilterGroup>
+            <FilterLabel htmlFor="challenge-has-team">팀 매칭</FilterLabel>
+            <FilterSelect
+              id="challenge-has-team"
+              value={hasTeamFilter}
+              onChange={(event) =>
+                handleHasTeamChange(event.target.value as 'ALL' | 'YES' | 'NO')
+              }
+            >
+              <option value="ALL">전체</option>
+              <option value="YES">매칭됨</option>
+              <option value="NO">미매칭</option>
+            </FilterSelect>
+          </FilterGroup>
+        </Filters>
 
         <Table>
           <colgroup>
+            <col style={{ width: '28%' }} />
             <col style={{ width: '24%' }} />
-            <col style={{ width: '22%' }} />
-            <col style={{ width: '18%' }} />
-            <col style={{ width: '18%' }} />
-            <col style={{ width: '18%' }} />
+            <col style={{ width: '24%' }} />
+            <col style={{ width: '24%' }} />
           </colgroup>
           <Thead>
             <Tr>
@@ -217,11 +161,14 @@ function ChallengeDetailContent() {
               <Th>팀 ID</Th>
               <Th>완료 일수</Th>
               <Th>상태</Th>
-              <Th>관리</Th>
             </Tr>
           </Thead>
-          <ErrorBoundary fallback={<ChallengeParticipantsTableBodyError />}>
-            <Suspense fallback={<ChallengeParticipantsTableBodyLoading />}>
+          <ErrorBoundary
+            fallback={<ChallengeParticipantsTableBodyError colSpan={4} />}
+          >
+            <Suspense
+              fallback={<ChallengeParticipantsTableBodyLoading colSpan={4} />}
+            >
               <ChallengeParticipantsTableBody
                 challengeId={id}
                 currentPage={participantsPage}
@@ -229,6 +176,7 @@ function ChallengeDetailContent() {
                 challengeTeamId={challengeTeamId}
                 hasTeam={hasTeam}
                 onDataLoaded={handleParticipantsDataLoaded}
+                editable={false}
               />
             </Suspense>
           </ErrorBoundary>
@@ -282,32 +230,19 @@ const ParticipantsTitle = styled.h3`
   font-size: ${({ theme }) => theme.fontSize.xl};
 `;
 
-const Controls = styled.div`
+const ParticipantsActions = styled.div`
   display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.sm};
-  align-items: flex-end;
+  align-items: center;
 `;
 
-const ControlsRow = styled.div`
+const Filters = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.md};
   display: flex;
   flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
   justify-content: flex-end;
-`;
-
-const ControlsLabel = styled.span`
-  color: ${({ theme }) => theme.colors.gray500};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
-`;
-
-const ControlsDivider = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: ${({ theme }) => theme.colors.gray200};
 `;
 
 const FilterGroup = styled.div`
@@ -350,30 +285,6 @@ const FilterSelect = styled.select`
     border-color: ${({ theme }) => theme.colors.primary};
   }
 `;
-
-const AssignButton = styled.button`
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  border: 1px solid transparent;
-
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
-
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.gray300};
-    cursor: not-allowed;
-  }
-
-  &:hover:not(:disabled) {
-    background-color: ${({ theme }) => theme.colors.primaryHover};
-  }
-`;
-
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -395,8 +306,7 @@ const Th = styled.th`
 
   &:nth-of-type(2),
   &:nth-of-type(3),
-  &:nth-of-type(4),
-  &:nth-of-type(5) {
+  &:nth-of-type(4) {
     text-align: center;
   }
 `;
