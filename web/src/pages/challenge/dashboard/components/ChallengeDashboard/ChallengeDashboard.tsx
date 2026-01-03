@@ -60,6 +60,10 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                 achievementRate,
               }) => {
                 const isMine = !!nickName && member.nickname === nickName;
+                const displayName =
+                  member.nickname.length > 3
+                    ? `${member.nickname.slice(0, 3)}...`
+                    : member.nickname;
 
                 return (
                   <BodyRow
@@ -68,7 +72,10 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                     isMobile={isMobile}
                   >
                     <NameCell isSurvived={isSurvived} isMobile={isMobile}>
-                      {member.nickname}
+                      <NameContent>
+                        <NameText>{displayName}</NameText>
+                        {!isSurvived && <FailBadge>🚫</FailBadge>}
+                      </NameContent>
                     </NameCell>
                     {dateRange.map((date, index) => {
                       const dateKey = formatDate(date, '-');
@@ -87,7 +94,7 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                       {completedCount}
                     </SummaryCell>
                     <RateCell isSurvived={isSurvived} isMobile={isMobile}>
-                      {achievementRate.toFixed(1)}%
+                      {isSurvived ? `${achievementRate.toFixed(1)}%` : '탈락'}
                     </RateCell>
                   </BodyRow>
                 );
@@ -243,7 +250,7 @@ const BodyCell = styled.td<{
     return theme.colors.white;
   }};
   color: ${({ theme, isSurvived }) =>
-    !isSurvived ? theme.colors.disabledText : theme.colors.textPrimary};
+    !isSurvived ? theme.colors.primary : theme.colors.textPrimary};
   font-size: ${({ theme }) => theme.fonts.body4};
   text-align: center;
 
@@ -265,6 +272,25 @@ const NameCell = styled(BodyCell)<{ isMobile: boolean }>`
     left: 0;
     z-index: ${theme.zIndex.content};
   `}
+`;
+
+const NameContent = styled.div`
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
+`;
+
+const NameText = styled.span`
+  line-height: 1.2;
+`;
+
+const FailBadge = styled.span`
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.caption};
+  white-space: nowrap;
 `;
 
 const SummaryCell = styled(BodyCell)<{ isMobile: boolean }>`
