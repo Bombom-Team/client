@@ -91,3 +91,16 @@ export const getChallengeCommentCandidateArticles = async (
     query: params,
   });
 };
+
+export type PostChallengeCommentParams =
+  components['schemas']['ChallengeCommentRequest'];
+
+export const postChallengeComment = async (
+  challengeId: number,
+  params: PostChallengeCommentParams,
+) => {
+  return await fetcher.post<PostChallengeCommentParams, never>({
+    path: `/challenges/${challengeId}/comments`,
+    body: params,
+  });
+};
