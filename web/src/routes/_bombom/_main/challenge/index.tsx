@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
-import ChallengeCard from '@/pages/challenge/index/components/ChallengeCard/ChallengeCard';
+import ChallengeListSection from '@/pages/challenge/index/components/ChallengeListSection';
 import TrophyIcon from '#/assets/svg/trophy.svg';
 
 export const Route = createFileRoute('/_bombom/_main/challenge/')({
@@ -24,6 +24,19 @@ function RouteComponent() {
 
   const isMobile = device === 'mobile';
 
+  const joinedChallenges = challenges?.filter(
+    (challenge) =>
+      (challenge.detail?.isJoined && challenge.status === 'BEFORE_START') ||
+      challenge.status === 'ONGOING',
+  );
+  const availableChallenges = challenges?.filter(
+    (challenge) =>
+      !challenge.detail?.isJoined && challenge.status === 'BEFORE_START',
+  );
+  const completedChallenges = challenges?.filter(
+    (challenge) => challenge.status === 'COMPLETED',
+  );
+
   return (
     <Container>
       {!isMobile && (
@@ -36,11 +49,18 @@ function RouteComponent() {
       )}
 
       <ContentWrapper>
-        <ChallengeGrid isMobile={isMobile}>
-          {challenges?.map((challenge) => (
-            <ChallengeCard key={challenge.id} {...challenge} />
-          ))}
-        </ChallengeGrid>
+        <ChallengeListSection
+          title="도전 중인 챌린지"
+          challenges={joinedChallenges}
+        />
+        <ChallengeListSection
+          title="새롭게 도전할 챌린지"
+          challenges={availableChallenges}
+        />
+        <ChallengeListSection
+          title="완료한 챌린지"
+          challenges={completedChallenges}
+        />
       </ContentWrapper>
     </Container>
   );
@@ -92,14 +112,4 @@ const ContentWrapper = styled.div`
   align-items: center;
   align-self: stretch;
   justify-content: center;
-`;
-
-const ChallengeGrid = styled.div<{ isMobile: boolean }>`
-  width: 100%;
-
-  display: grid;
-  gap: ${({ isMobile }) => (isMobile ? '16px' : '24px')};
-
-  grid-template-columns: ${({ isMobile }) =>
-    isMobile ? '1fr' : 'repeat(auto-fit, minmax(360px, 1fr))'};
 `;
