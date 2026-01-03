@@ -1,11 +1,10 @@
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import CommentConfirmModalContent from './CommentConfirmModalContent';
 import CommentEditor from './CommentEditor';
 import NewsletterSelector from './NewsletterSelector';
 import QuotationSelector from './QuotationSelector';
-import { queries } from '@/apis/queries';
+import useQuotations from '../../hooks/useQuotations';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
@@ -43,17 +42,7 @@ const AddCommentModalContent = ({
   const device = useDevice();
   const isMobile = device === 'mobile';
 
-  const { data: highlights } = useQuery({
-    ...queries.highlights({ articleId: selectedArticleId! }),
-    enabled: selectedArticleId !== null,
-  });
-
-  const quotations =
-    highlights?.content?.map(({ id, text, memo }) => ({
-      id,
-      text,
-      memo,
-    })) ?? [];
+  const quotations = useQuotations({ articleId: selectedArticleId });
 
   const selectedArticle = candidateArticles.find(
     (article) => article.articleId === selectedArticleId,
