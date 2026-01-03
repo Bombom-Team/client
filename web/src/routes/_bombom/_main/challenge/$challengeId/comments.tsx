@@ -193,6 +193,11 @@ const AddCommentButton = styled(Button)<{ device: Device }>`
   width: 100%;
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.stroke};
+    color: ${({ theme }) => theme.colors.textSecondary};
+  }
 `;
 
 const CardList = styled.div<{ device: Device }>`
