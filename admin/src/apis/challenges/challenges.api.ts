@@ -17,3 +17,9 @@ export const getChallenges = async (params: GetChallengesParams = {}) => {
     query: params,
   });
 };
+
+export const getChallengeDetail = async (challengeId: number) => {
+  return fetcher.get<Challenge>({
+    path: `/challenges/${challengeId}`,
+  });
+};
