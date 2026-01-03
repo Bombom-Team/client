@@ -204,6 +204,7 @@ function ChallengeTeamsContent() {
         <SectionHeader>
           <SectionTitle>팀 자동 배정</SectionTitle>
         </SectionHeader>
+        <Notice>팀이 자동으로 생성되며 참여자는 랜덤으로 배정됩니다.</Notice>
         <ActionRow>
           <Label htmlFor="max-team-size">팀 최대 인원</Label>
           <Input
@@ -223,6 +224,10 @@ function ChallengeTeamsContent() {
         <SectionHeader>
           <SectionTitle>팀 생성/삭제</SectionTitle>
         </SectionHeader>
+        <Notice>
+          입력한 개수만큼 팀이 자동으로 생성됩니다. 팀 자동 배정을 이미
+          실행했다면 보통 추가 생성은 필요하지 않습니다.
+        </Notice>
         <ActionRow>
           <Label htmlFor="create-team-count">생성 개수</Label>
           <Input
@@ -289,13 +294,18 @@ function ChallengeTeamsContent() {
         <Filters>
           <FilterGroup>
             <FilterLabel htmlFor="participant-team-id">팀 ID</FilterLabel>
-            <Input
+            <FilterSelect
               id="participant-team-id"
-              type="number"
-              placeholder="팀 ID"
               value={teamIdInput}
               onChange={(event) => handleTeamIdChange(event.target.value)}
-            />
+            >
+              <option value="">전체</option>
+              {teams?.map((team) => (
+                <option key={team.id} value={team.id.toString()}>
+                  {team.id}
+                </option>
+              ))}
+            </FilterSelect>
           </FilterGroup>
           <FilterGroup>
             <FilterLabel htmlFor="participant-has-team">팀 매칭</FilterLabel>
@@ -411,6 +421,14 @@ const SectionTitle = styled.h3`
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   font-size: ${({ theme }) => theme.fontSize.lg};
+`;
+
+const Notice = styled.p`
+  margin: 0 0 ${({ theme }) => theme.spacing.md};
+
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.6;
 `;
 
 const ActionRow = styled.div`
