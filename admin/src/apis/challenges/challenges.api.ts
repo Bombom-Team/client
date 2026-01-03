@@ -46,9 +46,7 @@ export const getChallengeParticipants = async ({
   const query = {
     ...params,
     hasTeam:
-      typeof params.hasTeam === 'boolean'
-        ? String(params.hasTeam)
-        : undefined,
+      typeof params.hasTeam === 'boolean' ? String(params.hasTeam) : undefined,
   };
 
   return fetcher.get<GetChallengeParticipantsResponse>({
