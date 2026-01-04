@@ -10,11 +10,11 @@ type DailyStatus = 'COMPLETE' | 'SHIELD' | 'NONE';
 
 const getStatusIcon = (status?: DailyStatus) => {
   if (status === 'COMPLETE') {
-    return <StatusIcon as={SproutIcon} aria-hidden />;
+    return <SproutIcon width={20} height={14} aria-hidden />;
   }
 
   if (status === 'SHIELD') {
-    return <StatusIcon as={ShieldIcon} aria-hidden />;
+    return <ShieldIcon aria-hidden />;
   }
 
   return null;
@@ -327,10 +327,4 @@ const RateCell = styled(BodyCell)<{ isMobile: boolean }>`
     right: 0;
     z-index: ${theme.zIndex.content};
   `}
-`;
-
-const StatusIcon = styled.img`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 `;
