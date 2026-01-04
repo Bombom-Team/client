@@ -21,11 +21,11 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
   // const completedCount = visibleTodos.filter(
   //   (todo) => todo.challengeTodoStatus === 'COMPLETE',
   // ).length;
-  const completedCount = Math.min(
+  const completedCount =
     visibleTodos.filter((todo) => todo.challengeTodoStatus === 'COMPLETE')
-      .length,
-    1,
-  );
+      .length === 2
+      ? 1
+      : 0;
 
   const device = useDevice();
   const isMobile = device === 'mobile';
