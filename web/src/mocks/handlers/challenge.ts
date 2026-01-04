@@ -70,7 +70,7 @@ export const challengeHandlers = [
   }),
 
   http.get(
-    `${baseURL}/challenges/:challengeId/daily-guide/today`,
+    `${baseURL}/challenges/:challengeId/daily-guides/today`,
     ({ params }) => {
       const { challengeId } = params;
 
@@ -115,14 +115,14 @@ export const challengeHandlers = [
         },
       };
 
-      const dailyGuide = dailyGuides[challengeId as string] || dailyGuides['3'];
+      const dailyGuide = dailyGuides[challengeId as string] || dailyGuides['2'];
 
       return HttpResponse.json(dailyGuide);
     },
   ),
 
   http.post(
-    `${baseURL}/challenges/:challengeId/daily-guide/today/comment`,
+    `${baseURL}/challenges/:challengeId/daily-guides/:dayIndex/my-comment`,
     async () => {
       return HttpResponse.json({ success: true });
     },

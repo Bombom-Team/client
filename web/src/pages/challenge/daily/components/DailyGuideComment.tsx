@@ -9,11 +9,13 @@ const MAX_LENGTH = 1000;
 
 interface DailyGuideCommentProps {
   challengeId: number;
+  dayIndex: number;
   myComment: MyComment;
 }
 
 const DailyGuideComment = ({
   challengeId,
+  dayIndex,
   myComment,
 }: DailyGuideCommentProps) => {
   const [comment, setComment] = useState('');
@@ -22,7 +24,8 @@ const DailyGuideComment = ({
   const isMobile = device === 'mobile';
 
   const { mutate: submitComment } = useSubmitDailyGuideCommentMutation({
-    challengeId: Number(challengeId),
+    challengeId,
+    dayIndex,
   });
 
   const handleSubmitComment = () => {

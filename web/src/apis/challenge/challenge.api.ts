@@ -80,20 +80,21 @@ export interface DailyGuide {
 
 export const getTodayDailyGuide = async (challengeId: number) => {
   return await fetcher.get<DailyGuide>({
-    path: `/challenges/${challengeId}/daily-guide/today`,
+    path: `/challenges/${challengeId}/daily-guides/today`,
   });
 };
 
-type SubmitDailyGuideCommentRequest = {
-  comment: string;
+type SubmitDailyGuideCommentParams = {
+  content: string;
 };
 
 export const postDailyGuideComment = async (
   challengeId: number,
-  request: SubmitDailyGuideCommentRequest,
+  dayIndex: number,
+  params: SubmitDailyGuideCommentParams,
 ) => {
-  return await fetcher.post<SubmitDailyGuideCommentRequest, never>({
-    path: `/challenges/${challengeId}/daily-guide/today/comment`,
-    body: request,
+  return await fetcher.post<SubmitDailyGuideCommentParams, never>({
+    path: `/challenges/${challengeId}/daily-guides/${dayIndex}/my-comment`,
+    body: params,
   });
 };

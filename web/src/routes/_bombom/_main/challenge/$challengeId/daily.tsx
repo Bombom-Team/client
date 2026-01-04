@@ -64,6 +64,7 @@ function ChallengeDaily() {
         {dailyGuide.type === 'COMMENT' && dailyGuide.commentEnabled && (
           <DailyGuideComment
             challengeId={Number(challengeId)}
+            dayIndex={dailyGuide.dayIndex}
             myComment={dailyGuide.myComment}
           />
         )}

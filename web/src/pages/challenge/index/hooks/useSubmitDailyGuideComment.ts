@@ -5,16 +5,18 @@ import { toast } from '@/components/Toast/utils/toastActions';
 
 interface UseSubmitDailyGuideCommentMuataionProps {
   challengeId: number;
+  dayIndex: number;
 }
 
 export const useSubmitDailyGuideCommentMutation = ({
   challengeId,
+  dayIndex,
 }: UseSubmitDailyGuideCommentMuataionProps) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (comment: string) =>
-      postDailyGuideComment(challengeId, { comment }),
+    mutationFn: (content: string) =>
+      postDailyGuideComment(challengeId, dayIndex, { content }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queries.todayDailyGuide(challengeId).queryKey,
