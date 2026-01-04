@@ -60,10 +60,6 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                 achievementRate,
               }) => {
                 const isMine = !!nickName && member.nickname === nickName;
-                const displayName =
-                  member.nickname.length > 3
-                    ? `${member.nickname.slice(0, 3)}...`
-                    : member.nickname;
 
                 return (
                   <BodyRow
@@ -73,7 +69,9 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                   >
                     <NameCell isSurvived={isSurvived} isMobile={isMobile}>
                       <NameContent>
-                        <NameText>{displayName}</NameText>
+                        <NameText title={member.nickname}>
+                          {member.nickname}
+                        </NameText>
                         {!isSurvived && <FailBadge>🚫</FailBadge>}
                       </NameContent>
                     </NameCell>
@@ -94,7 +92,9 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                       {completedCount}
                     </SummaryCell>
                     <RateCell isSurvived={isSurvived} isMobile={isMobile}>
-                      {isSurvived ? `${achievementRate.toFixed(1)}%` : '탈락'}
+                      {isSurvived
+                        ? `${achievementRate.toFixed(1)}%`
+                        : '🚫 탈락'}
                     </RateCell>
                   </BodyRow>
                 );
@@ -275,7 +275,9 @@ const NameCell = styled(BodyCell)<{ isMobile: boolean }>`
 `;
 
 const NameContent = styled.div`
-  display: inline-flex;
+  width: 100%;
+
+  display: flex;
   gap: 4px;
   align-items: center;
   justify-content: center;
@@ -284,10 +286,18 @@ const NameContent = styled.div`
 `;
 
 const NameText = styled.span`
+  overflow: hidden;
+  min-width: 0;
+
   line-height: 1.2;
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
 `;
 
 const FailBadge = styled.span`
+  flex-shrink: 0;
+
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.caption};
   white-space: nowrap;
