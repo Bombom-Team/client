@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import useModal from '@/components/Modal/useModal';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
+import { openExternalLink } from '@/utils/externalLink';
 
 const CHALLENGE_GUIDE_DISMISSED_KEY = 'challenge-guide-modal-dismissed';
 
@@ -25,14 +26,10 @@ export function useChallengeGuideModal({
     closeModal();
   };
 
-  const handleCloseModal = () => {
-    closeModal();
-  };
-
   const handleGoToIntro = () => {
-    // TODO: 소개 페이지 라우팅 구현
-    window.open('/challenge/intro', '_blank');
-    closeModal();
+    openExternalLink(
+      'https://maroon-geranium-880.notion.site/2d103dcf205680dfa045d47385af3df9?source=copy_link',
+    );
   };
 
   const handleToggleAgreement = () => {
@@ -48,10 +45,10 @@ export function useChallengeGuideModal({
   return {
     modalRef,
     isOpen,
+    closeModal,
     isAgreed,
     handleConfirm,
     handleGoToIntro,
-    handleCloseModal,
     handleToggleAgreement,
   };
 }

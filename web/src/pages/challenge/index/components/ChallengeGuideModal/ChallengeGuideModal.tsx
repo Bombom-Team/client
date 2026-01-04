@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import Modal from '@/components/Modal/Modal';
+import { useDevice } from '@/hooks/useDevice';
 import { useChallengeGuideModal } from '@/pages/challenge/index/hooks/useChallengeGuideModal';
 
 interface ChallengeGuideModalProps {
@@ -9,13 +10,16 @@ interface ChallengeGuideModalProps {
 }
 
 const ChallengeGuideModal = ({ challengeId }: ChallengeGuideModalProps) => {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+
   const {
     modalRef,
     isOpen,
+    closeModal,
     isAgreed,
     handleConfirm,
     handleGoToIntro,
-    handleCloseModal,
     handleToggleAgreement,
   } = useChallengeGuideModal({ challengeId });
 
@@ -23,13 +27,13 @@ const ChallengeGuideModal = ({ challengeId }: ChallengeGuideModalProps) => {
     <Modal
       modalRef={modalRef}
       isOpen={isOpen}
-      closeModal={handleCloseModal}
-      position="center"
+      closeModal={closeModal}
+      position={isMobile ? 'bottom' : 'center'}
       showCloseButton={false}
     >
       <Container>
         <Header>
-          <Title>챌린지 시작 전 확인해주세요!</Title>
+          <Title>시작 전 확인해주세요!</Title>
         </Header>
 
         <GuideList>
@@ -74,7 +78,7 @@ const ChallengeGuideModal = ({ challengeId }: ChallengeGuideModalProps) => {
                 checked={isAgreed}
                 onChange={handleToggleAgreement}
               />
-              <AgreementLabel htmlFor="challenge-agreement">
+              <AgreementLabel htmlFor="challenge-agreement" isMobile={isMobile}>
                 위 내용을 모두 확인했고, 참여 기준에 동의합니다
               </AgreementLabel>
             </CheckboxWrapper>
@@ -177,9 +181,10 @@ const CheckboxWrapper = styled.div`
   align-items: center;
 `;
 
-const AgreementLabel = styled.label`
+const AgreementLabel = styled.label<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 
   cursor: pointer;
 `;
