@@ -41,36 +41,33 @@ function ChallengeDashboardRoute() {
 
   return (
     <Container>
-      <Content>
-        {challengeInfo && memberChallengeProgressInfo && (
-          <UserChallengeInfo
-            challengeInfo={challengeInfo}
-            memberChallengeProgressInfo={memberChallengeProgressInfo}
-          />
-        )}
-        <InfoWrapper>
-          <AchievementAverage>
-            팀 평균 달성률 :{' '}
-            {teamChallengeProgressInfo?.teamSummary.achievementAverage}%
-          </AchievementAverage>
-          <WarningMessage>
-            🚨 챌린지 기간의 {REQUIRED_RATE}%(
-            {challengeInfo?.requiredDays}일) 미만 달성 시 챌린지 탈락
-            처리됩니다.
-          </WarningMessage>
-        </InfoWrapper>
-        {teamChallengeProgressInfo && (
-          <ChallengeDashboard
-            nickName={memberChallengeProgressInfo?.nickname}
-            data={teamChallengeProgressInfo}
-          />
-        )}
-        <NoticeMessage>
-          <InfoIcon width={12} height={12} fill={theme.colors.primary} />
-          공휴일이나 뉴스레터의 임시 휴재 등으로 인해 챌린지 인증 상태에 대한
-          문의가 필요하신 경우 채널톡으로 문의 부탁드립니다.
-        </NoticeMessage>
-      </Content>
+      {challengeInfo && memberChallengeProgressInfo && (
+        <UserChallengeInfo
+          challengeInfo={challengeInfo}
+          memberChallengeProgressInfo={memberChallengeProgressInfo}
+        />
+      )}
+      <InfoWrapper>
+        <AchievementAverage>
+          팀 평균 달성률 :{' '}
+          {teamChallengeProgressInfo?.teamSummary.achievementAverage}%
+        </AchievementAverage>
+        <WarningMessage>
+          🚨 챌린지 기간의 {REQUIRED_RATE}%(
+          {challengeInfo?.requiredDays}일) 미만 달성 시 챌린지 탈락 처리됩니다.
+        </WarningMessage>
+      </InfoWrapper>
+      {teamChallengeProgressInfo && (
+        <ChallengeDashboard
+          nickName={memberChallengeProgressInfo?.nickname}
+          data={teamChallengeProgressInfo}
+        />
+      )}
+      <NoticeMessage>
+        <InfoIcon width={12} height={12} fill={theme.colors.primary} />
+        공휴일이나 뉴스레터의 임시 휴재 등으로 인해 챌린지 인증 상태에 대한
+        문의가 필요하신 경우 채널톡으로 문의 부탁드립니다.
+      </NoticeMessage>
     </Container>
   );
 }
