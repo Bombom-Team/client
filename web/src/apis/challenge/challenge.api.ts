@@ -75,3 +75,17 @@ export const getTodayDailyGuide = async (challengeId: number) => {
     path: `/challenges/${challengeId}/daily-guide/today`,
   });
 };
+
+type SubmitDailyGuideCommentRequest = {
+  comment: string;
+};
+
+export const postDailyGuideComment = async (
+  challengeId: number,
+  request: SubmitDailyGuideCommentRequest,
+) => {
+  return await fetcher.post<SubmitDailyGuideCommentRequest, never>({
+    path: `/challenges/${challengeId}/daily-guide/today/comment`,
+    body: request,
+  });
+};

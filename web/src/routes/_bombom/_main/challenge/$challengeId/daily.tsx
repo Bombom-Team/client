@@ -6,6 +6,7 @@ import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
+import { useSubmitDailyGuideCommentMutation } from '@/pages/challenge/index/hooks/useSubmitDailyGuideComment';
 
 const MAX_LENGTH = 1000;
 
@@ -40,11 +41,13 @@ function ChallengeDaily() {
 
   const isMobile = device === 'mobile';
 
+  const { mutate: submitComment } = useSubmitDailyGuideCommentMutation({
+    challengeId: Number(challengeId),
+  });
+
   const handleSubmit = () => {
     if (!comment.trim()) return;
-    // TODO: API 호출로 코멘트 제출
-    console.log('코멘트 제출:', comment);
-    setComment('');
+    submitComment(comment);
   };
 
   if (!dailyGuide) {

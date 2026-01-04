@@ -2,8 +2,8 @@ import { http, HttpResponse } from 'msw';
 import { CHALLENGES } from '../datas/challenge';
 import { ENV } from '@/apis/env';
 import type {
-  GetChallengeEligibilityResponse,
   DailyGuide,
+  GetChallengeEligibilityResponse,
 } from '@/apis/challenge/challenge.api';
 
 const baseURL = ENV.baseUrl;
@@ -90,10 +90,16 @@ export const challengeHandlers = [
         },
       };
 
-      const dailyGuide =
-        dailyGuides[challengeId as string] || dailyGuides['2'];
+      const dailyGuide = dailyGuides[challengeId as string] || dailyGuides['2'];
 
       return HttpResponse.json(dailyGuide);
+    },
+  ),
+
+  http.post(
+    `${baseURL}/challenges/:challengeId/daily-guide/today/comment`,
+    async () => {
+      return HttpResponse.json({ success: true });
     },
   ),
 ];
