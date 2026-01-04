@@ -10,11 +10,11 @@ type DailyStatus = 'COMPLETE' | 'SHIELD' | 'NONE';
 
 const getStatusIcon = (status?: DailyStatus) => {
   if (status === 'COMPLETE') {
-    return <StatusIcon as={SproutIcon} aria-hidden />;
+    return <SproutIcon width={20} height={14} aria-hidden />;
   }
 
   if (status === 'SHIELD') {
-    return <StatusIcon as={ShieldIcon} aria-hidden />;
+    return <ShieldIcon aria-hidden />;
   }
 
   return null;
@@ -68,7 +68,12 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                     isMobile={isMobile}
                   >
                     <NameCell isSurvived={isSurvived} isMobile={isMobile}>
-                      {member.nickname}
+                      <NameContent>
+                        <NameText title={member.nickname}>
+                          {member.nickname}
+                        </NameText>
+                        {!isSurvived && <FailBadge>🚫</FailBadge>}
+                      </NameContent>
                     </NameCell>
                     {dateRange.map((date, index) => {
                       const dateKey = formatDate(date, '-');
@@ -87,7 +92,7 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                       {completedCount}
                     </SummaryCell>
                     <RateCell isSurvived={isSurvived} isMobile={isMobile}>
-                      {achievementRate.toFixed(1)}%
+                      {isSurvived ? `${achievementRate.toFixed(1)}%` : '탈락'}
                     </RateCell>
                   </BodyRow>
                 );
@@ -267,6 +272,35 @@ const NameCell = styled(BodyCell)<{ isMobile: boolean }>`
   `}
 `;
 
+const NameContent = styled.div`
+  width: 100%;
+
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
+`;
+
+const NameText = styled.span`
+  overflow: hidden;
+  min-width: 0;
+
+  line-height: 1.2;
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+`;
+
+const FailBadge = styled.span`
+  flex-shrink: 0;
+
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.caption};
+  white-space: nowrap;
+`;
+
 const SummaryCell = styled(BodyCell)<{ isMobile: boolean }>`
   width: var(--summary-col-width);
   font: ${({ theme }) => theme.fonts.caption};
@@ -291,10 +325,4 @@ const RateCell = styled(BodyCell)<{ isMobile: boolean }>`
     right: 0;
     z-index: ${theme.zIndex.content};
   `}
-`;
-
-const StatusIcon = styled.img`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 `;

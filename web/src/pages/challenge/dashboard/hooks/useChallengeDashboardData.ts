@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { formatDate } from '@/utils/date';
 import type { GetTeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
 
 const isSuccessStatus = (status?: string) =>
@@ -27,6 +26,7 @@ export const useChallengeDashboardData = (
     const startDate = new Date(challenge.startDate);
     const endDate = new Date(challenge.endDate);
     const dateRange = buildDateRange(startDate, endDate);
+    const { totalDays } = challenge;
 
     const memberRows = members.map((member) => {
       const progressMap = new Map(
@@ -35,13 +35,11 @@ export const useChallengeDashboardData = (
           isSuccessStatus(progress.status) ? progress.status : undefined,
         ]),
       );
-      const completedCount = dateRange.filter((date) => {
-        const dateKey = formatDate(date, '-');
-        const status = progressMap.get(dateKey);
-        return isSuccessStatus(status);
-      }).length;
+      const completedCount = member.dailyProgresses.filter((progress) =>
+        isSuccessStatus(progress.status),
+      ).length;
       const achievementRate =
-        dateRange.length === 0 ? 0 : (completedCount / dateRange.length) * 100;
+        totalDays === 0 ? 0 : (completedCount / totalDays) * 100;
 
       return {
         member,
