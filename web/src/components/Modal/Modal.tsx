@@ -31,7 +31,7 @@ const Modal = ({
 
   return (
     <>
-      {showBackdrop && <Backdrop onClick={closeModal} />}
+      {showBackdrop && <Backdrop />}
       <Container
         role="dialog"
         aria-modal="true"

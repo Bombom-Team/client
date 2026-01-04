@@ -4,6 +4,7 @@ import { createFileRoute, Outlet } from '@tanstack/react-router';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
+import ChallengeGuideModal from '@/pages/challenge/index/components/ChallengeGuideModal/ChallengeGuideModal';
 import { useChallengeDetailTabs } from '@/pages/challenge/index/hooks/useChallengeDetailTabs';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
@@ -29,38 +30,41 @@ function ChallengeDetail() {
   });
 
   return (
-    <Container>
-      {device !== 'mobile' && (
-        <TitleWrapper>
-          <TitleIconBox>
-            <TrophyIcon width={20} height={20} color={theme.colors.white} />
-          </TitleIconBox>
-          <Title>챌린지</Title>
-        </TitleWrapper>
-      )}
+    <>
+      <Container>
+        {device !== 'mobile' && (
+          <TitleWrapper>
+            <TitleIconBox>
+              <TrophyIcon width={20} height={20} color={theme.colors.white} />
+            </TitleIconBox>
+            <Title>챌린지</Title>
+          </TitleWrapper>
+        )}
 
-      <ContentWrapper device={device}>
-        <TabsWrapper device={device}>
-          <Tabs direction={device === 'mobile' ? 'horizontal' : 'vertical'}>
-            {tabs.map((tab) => (
-              <Tab
-                key={tab.id}
-                value={tab.id}
-                label={tab.label}
-                onTabSelect={() => goToTab(tab.path)}
-                selected={activeTabId === tab.id}
-                aria-controls={`panel-${tab.id}`}
-                textAlign="start"
-              />
-            ))}
-          </Tabs>
-        </TabsWrapper>
+        <ContentWrapper device={device}>
+          <TabsWrapper device={device}>
+            <Tabs direction={device === 'mobile' ? 'horizontal' : 'vertical'}>
+              {tabs.map((tab) => (
+                <Tab
+                  key={tab.id}
+                  value={tab.id}
+                  label={tab.label}
+                  onTabSelect={() => goToTab(tab.path)}
+                  selected={activeTabId === tab.id}
+                  aria-controls={`panel-${tab.id}`}
+                  textAlign="start"
+                />
+              ))}
+            </Tabs>
+          </TabsWrapper>
 
-        <TabPanel>
-          <Outlet />
-        </TabPanel>
-      </ContentWrapper>
-    </Container>
+          <TabPanel>
+            <Outlet />
+          </TabPanel>
+        </ContentWrapper>
+      </Container>
+      <ChallengeGuideModal challengeId={Number(challengeId)} />
+    </>
   );
 }
 
