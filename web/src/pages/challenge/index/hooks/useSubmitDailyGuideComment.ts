@@ -21,6 +21,9 @@ export const useSubmitDailyGuideCommentMutation = ({
       queryClient.invalidateQueries({
         queryKey: queries.todayDailyGuide(challengeId).queryKey,
       });
+      queryClient.invalidateQueries({
+        queryKey: queries.memberProgress(challengeId).queryKey,
+      });
     },
     onError: () => {
       toast.error('답변 제출에 실패했습니다. 다시 시도해주세요.');
