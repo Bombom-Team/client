@@ -84,16 +84,16 @@ export const getTodayDailyGuide = async (challengeId: number) => {
   });
 };
 
-type SubmitDailyGuideCommentParams = {
+type PostDailyGuideCommentParams = {
   content: string;
 };
 
 export const postDailyGuideComment = async (
   challengeId: number,
   dayIndex: number,
-  params: SubmitDailyGuideCommentParams,
+  params: PostDailyGuideCommentParams,
 ) => {
-  return await fetcher.post<SubmitDailyGuideCommentParams, never>({
+  return await fetcher.post<PostDailyGuideCommentParams, never>({
     path: `/challenges/${challengeId}/daily-guides/${dayIndex}/my-comment`,
     body: params,
   });

@@ -3,7 +3,7 @@ import { postDailyGuideComment } from '@/apis/challenge/challenge.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 
-interface UseSubmitDailyGuideCommentMuataionProps {
+interface UseSubmitDailyGuideCommentMutationProps {
   challengeId: number;
   dayIndex: number;
 }
@@ -11,7 +11,7 @@ interface UseSubmitDailyGuideCommentMuataionProps {
 export const useSubmitDailyGuideCommentMutation = ({
   challengeId,
   dayIndex,
-}: UseSubmitDailyGuideCommentMuataionProps) => {
+}: UseSubmitDailyGuideCommentMutationProps) => {
   const queryClient = useQueryClient();
 
   return useMutation({
