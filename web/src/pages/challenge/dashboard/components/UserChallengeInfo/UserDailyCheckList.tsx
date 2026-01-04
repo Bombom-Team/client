@@ -17,10 +17,15 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
     (todo) => todo.challengeTodoType && todo.challengeTodoStatus,
   );
 
-  const totalCount = visibleTodos.length;
-  const completedCount = visibleTodos.filter(
-    (todo) => todo.challengeTodoStatus === 'COMPLETE',
-  ).length;
+  // const totalCount = visibleTodos.length;
+  // const completedCount = visibleTodos.filter(
+  //   (todo) => todo.challengeTodoStatus === 'COMPLETE',
+  // ).length;
+  const completedCount = Math.min(
+    visibleTodos.filter((todo) => todo.challengeTodoStatus === 'COMPLETE')
+      .length,
+    1,
+  );
 
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -29,9 +34,7 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
     <Container isMobile={isMobile}>
       <Header>
         <Title>오늘의 체크 리스트</Title>
-        <CountBadge>
-          {completedCount}/{totalCount}
-        </CountBadge>
+        <CountBadge>{completedCount}/1</CountBadge>
       </Header>
       <List>
         {/* {visibleTodos.map((todo, index) => {
@@ -49,8 +52,8 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
           );
         })} */}
         <ListItem>
-          <StatusBox status={todayTodos[0]?.challengeTodoStatus}>
-            {todayTodos[0]?.challengeTodoStatus === 'COMPLETE' ? '✓' : ''}
+          <StatusBox status={completedCount === 1 ? 'COMPLETE' : 'INCOMPLETE'}>
+            {completedCount === 1 ? '✓' : ''}
           </StatusBox>
           <TodoText>챌린지 참여 각오를 작성했나요?</TodoText>
         </ListItem>
