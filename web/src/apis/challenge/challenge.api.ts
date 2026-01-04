@@ -104,3 +104,41 @@ export const postChallengeComment = async (
     body: params,
   });
 };
+
+export type DailyGuideType = 'READ' | 'COMMENT';
+
+export interface MyComment {
+  exists: boolean;
+  content: string | null;
+  createdAt: string | null;
+}
+
+export interface DailyGuide {
+  dayIndex: number;
+  type: DailyGuideType;
+  imageUrl: string;
+  notice?: string;
+  commentEnabled: boolean;
+  myComment: MyComment;
+}
+
+export const getTodayDailyGuide = async (challengeId: number) => {
+  return await fetcher.get<DailyGuide>({
+    path: `/challenges/${challengeId}/daily-guides/today`,
+  });
+};
+
+type PostDailyGuideCommentParams = {
+  content: string;
+};
+
+export const postDailyGuideComment = async (
+  challengeId: number,
+  dayIndex: number,
+  params: PostDailyGuideCommentParams,
+) => {
+  return await fetcher.post<PostDailyGuideCommentParams, never>({
+    path: `/challenges/${challengeId}/daily-guides/${dayIndex}/my-comment`,
+    body: params,
+  });
+};

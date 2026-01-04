@@ -5,10 +5,13 @@ import {
   getChallengeInfo,
   getMemberChallengeProgress,
   getTeamChallengeProgress,
-  getChallengeComments,
   getChallengeCommentCandidateArticles,
-  type GetChallengeCommentsParams,
-  type GetChallengeCommentCandidateArticlesParams,
+  getChallengeComments,
+  getTodayDailyGuide,
+} from './challenge.api';
+import type {
+  GetChallengeCommentCandidateArticlesParams,
+  GetChallengeCommentsParams,
 } from './challenge.api';
 
 export const challengeQueries = {
@@ -70,5 +73,10 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', 'comments', 'articles', 'candidates', params],
       queryFn: () => getChallengeCommentCandidateArticles(params),
+    }),
+  todayDailyGuide: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', challengeId, 'daily-guide', 'today'],
+      queryFn: () => getTodayDailyGuide(challengeId),
     }),
 };
