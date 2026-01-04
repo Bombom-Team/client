@@ -250,7 +250,7 @@ const BodyCell = styled.td<{
     return theme.colors.white;
   }};
   color: ${({ theme, isSurvived }) =>
-    !isSurvived ? theme.colors.primary : theme.colors.textPrimary};
+    !isSurvived ? theme.colors.disabledText : theme.colors.textPrimary};
   font-size: ${({ theme }) => theme.fonts.body4};
   text-align: center;
 
