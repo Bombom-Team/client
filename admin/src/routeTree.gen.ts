@@ -14,16 +14,21 @@ import { Route as R403RouteImport } from './routes/403'
 import { Route as AdminIndexRouteImport } from './routes/_admin/index'
 import { Route as AdminNoticesRouteImport } from './routes/_admin/notices'
 import { Route as AdminMembersRouteImport } from './routes/_admin/members'
+import { Route as AdminChallengesRouteImport } from './routes/_admin/challenges'
 import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/index'
 import { Route as AdminNewslettersIndexRouteImport } from './routes/_admin/newsletters/index'
+import { Route as AdminChallengesIndexRouteImport } from './routes/_admin/challenges/index'
 import { Route as AdminNoticesNewRouteImport } from './routes/_admin/notices/new'
 import { Route as AdminNoticesNoticeIdRouteImport } from './routes/_admin/notices/$noticeId'
 import { Route as AdminNewslettersNewRouteImport } from './routes/_admin/newsletters/new'
 import { Route as AdminNewslettersNewsletterIdRouteImport } from './routes/_admin/newsletters/$newsletterId'
+import { Route as AdminChallengesChallengeIdRouteImport } from './routes/_admin/challenges/$challengeId'
 import { Route as AdminNoticesNoticeIdIndexRouteImport } from './routes/_admin/notices/$noticeId/index'
 import { Route as AdminNewslettersNewsletterIdIndexRouteImport } from './routes/_admin/newsletters/$newsletterId/index'
+import { Route as AdminChallengesChallengeIdIndexRouteImport } from './routes/_admin/challenges/$challengeId/index'
 import { Route as AdminNoticesNoticeIdEditRouteImport } from './routes/_admin/notices/$noticeId/edit'
 import { Route as AdminNewslettersNewsletterIdEditRouteImport } from './routes/_admin/newsletters/$newsletterId/edit'
+import { Route as AdminChallengesChallengeIdTeamsRouteImport } from './routes/_admin/challenges/$challengeId/teams'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/_admin',
@@ -49,6 +54,11 @@ const AdminMembersRoute = AdminMembersRouteImport.update({
   path: '/members',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminChallengesRoute = AdminChallengesRouteImport.update({
+  id: '/challenges',
+  path: '/challenges',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminNoticesIndexRoute = AdminNoticesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -58,6 +68,11 @@ const AdminNewslettersIndexRoute = AdminNewslettersIndexRouteImport.update({
   id: '/newsletters/',
   path: '/newsletters/',
   getParentRoute: () => AdminRoute,
+} as any)
+const AdminChallengesIndexRoute = AdminChallengesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminChallengesRoute,
 } as any)
 const AdminNoticesNewRoute = AdminNoticesNewRouteImport.update({
   id: '/new',
@@ -80,6 +95,12 @@ const AdminNewslettersNewsletterIdRoute =
     path: '/newsletters/$newsletterId',
     getParentRoute: () => AdminRoute,
   } as any)
+const AdminChallengesChallengeIdRoute =
+  AdminChallengesChallengeIdRouteImport.update({
+    id: '/$challengeId',
+    path: '/$challengeId',
+    getParentRoute: () => AdminChallengesRoute,
+  } as any)
 const AdminNoticesNoticeIdIndexRoute =
   AdminNoticesNoticeIdIndexRouteImport.update({
     id: '/',
@@ -91,6 +112,12 @@ const AdminNewslettersNewsletterIdIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AdminNewslettersNewsletterIdRoute,
+  } as any)
+const AdminChallengesChallengeIdIndexRoute =
+  AdminChallengesChallengeIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminChallengesChallengeIdRoute,
   } as any)
 const AdminNoticesNoticeIdEditRoute =
   AdminNoticesNoticeIdEditRouteImport.update({
@@ -104,20 +131,31 @@ const AdminNewslettersNewsletterIdEditRoute =
     path: '/edit',
     getParentRoute: () => AdminNewslettersNewsletterIdRoute,
   } as any)
+const AdminChallengesChallengeIdTeamsRoute =
+  AdminChallengesChallengeIdTeamsRouteImport.update({
+    id: '/teams',
+    path: '/teams',
+    getParentRoute: () => AdminChallengesChallengeIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/403': typeof R403Route
+  '/challenges': typeof AdminChallengesRouteWithChildren
   '/members': typeof AdminMembersRoute
   '/notices': typeof AdminNoticesRouteWithChildren
   '/': typeof AdminIndexRoute
+  '/challenges/$challengeId': typeof AdminChallengesChallengeIdRouteWithChildren
   '/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRouteWithChildren
   '/newsletters/new': typeof AdminNewslettersNewRoute
   '/notices/$noticeId': typeof AdminNoticesNoticeIdRouteWithChildren
   '/notices/new': typeof AdminNoticesNewRoute
+  '/challenges/': typeof AdminChallengesIndexRoute
   '/newsletters': typeof AdminNewslettersIndexRoute
   '/notices/': typeof AdminNoticesIndexRoute
+  '/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute
   '/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute
   '/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
+  '/challenges/$challengeId/': typeof AdminChallengesChallengeIdIndexRoute
   '/newsletters/$newsletterId/': typeof AdminNewslettersNewsletterIdIndexRoute
   '/notices/$noticeId/': typeof AdminNoticesNoticeIdIndexRoute
 }
@@ -127,10 +165,13 @@ export interface FileRoutesByTo {
   '/': typeof AdminIndexRoute
   '/newsletters/new': typeof AdminNewslettersNewRoute
   '/notices/new': typeof AdminNoticesNewRoute
+  '/challenges': typeof AdminChallengesIndexRoute
   '/newsletters': typeof AdminNewslettersIndexRoute
   '/notices': typeof AdminNoticesIndexRoute
+  '/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute
   '/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute
   '/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
+  '/challenges/$challengeId': typeof AdminChallengesChallengeIdIndexRoute
   '/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdIndexRoute
   '/notices/$noticeId': typeof AdminNoticesNoticeIdIndexRoute
 }
@@ -138,17 +179,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/403': typeof R403Route
   '/_admin': typeof AdminRouteWithChildren
+  '/_admin/challenges': typeof AdminChallengesRouteWithChildren
   '/_admin/members': typeof AdminMembersRoute
   '/_admin/notices': typeof AdminNoticesRouteWithChildren
   '/_admin/': typeof AdminIndexRoute
+  '/_admin/challenges/$challengeId': typeof AdminChallengesChallengeIdRouteWithChildren
   '/_admin/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRouteWithChildren
   '/_admin/newsletters/new': typeof AdminNewslettersNewRoute
   '/_admin/notices/$noticeId': typeof AdminNoticesNoticeIdRouteWithChildren
   '/_admin/notices/new': typeof AdminNoticesNewRoute
+  '/_admin/challenges/': typeof AdminChallengesIndexRoute
   '/_admin/newsletters/': typeof AdminNewslettersIndexRoute
   '/_admin/notices/': typeof AdminNoticesIndexRoute
+  '/_admin/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute
   '/_admin/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute
   '/_admin/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
+  '/_admin/challenges/$challengeId/': typeof AdminChallengesChallengeIdIndexRoute
   '/_admin/newsletters/$newsletterId/': typeof AdminNewslettersNewsletterIdIndexRoute
   '/_admin/notices/$noticeId/': typeof AdminNoticesNoticeIdIndexRoute
 }
@@ -156,17 +202,22 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/403'
+    | '/challenges'
     | '/members'
     | '/notices'
     | '/'
+    | '/challenges/$challengeId'
     | '/newsletters/$newsletterId'
     | '/newsletters/new'
     | '/notices/$noticeId'
     | '/notices/new'
+    | '/challenges/'
     | '/newsletters'
     | '/notices/'
+    | '/challenges/$challengeId/teams'
     | '/newsletters/$newsletterId/edit'
     | '/notices/$noticeId/edit'
+    | '/challenges/$challengeId/'
     | '/newsletters/$newsletterId/'
     | '/notices/$noticeId/'
   fileRoutesByTo: FileRoutesByTo
@@ -176,27 +227,35 @@ export interface FileRouteTypes {
     | '/'
     | '/newsletters/new'
     | '/notices/new'
+    | '/challenges'
     | '/newsletters'
     | '/notices'
+    | '/challenges/$challengeId/teams'
     | '/newsletters/$newsletterId/edit'
     | '/notices/$noticeId/edit'
+    | '/challenges/$challengeId'
     | '/newsletters/$newsletterId'
     | '/notices/$noticeId'
   id:
     | '__root__'
     | '/403'
     | '/_admin'
+    | '/_admin/challenges'
     | '/_admin/members'
     | '/_admin/notices'
     | '/_admin/'
+    | '/_admin/challenges/$challengeId'
     | '/_admin/newsletters/$newsletterId'
     | '/_admin/newsletters/new'
     | '/_admin/notices/$noticeId'
     | '/_admin/notices/new'
+    | '/_admin/challenges/'
     | '/_admin/newsletters/'
     | '/_admin/notices/'
+    | '/_admin/challenges/$challengeId/teams'
     | '/_admin/newsletters/$newsletterId/edit'
     | '/_admin/notices/$noticeId/edit'
+    | '/_admin/challenges/$challengeId/'
     | '/_admin/newsletters/$newsletterId/'
     | '/_admin/notices/$noticeId/'
   fileRoutesById: FileRoutesById
@@ -243,6 +302,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMembersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/challenges': {
+      id: '/_admin/challenges'
+      path: '/challenges'
+      fullPath: '/challenges'
+      preLoaderRoute: typeof AdminChallengesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_admin/notices/': {
       id: '/_admin/notices/'
       path: '/'
@@ -256,6 +322,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/newsletters'
       preLoaderRoute: typeof AdminNewslettersIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/_admin/challenges/': {
+      id: '/_admin/challenges/'
+      path: '/'
+      fullPath: '/challenges/'
+      preLoaderRoute: typeof AdminChallengesIndexRouteImport
+      parentRoute: typeof AdminChallengesRoute
     }
     '/_admin/notices/new': {
       id: '/_admin/notices/new'
@@ -285,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewslettersNewsletterIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/challenges/$challengeId': {
+      id: '/_admin/challenges/$challengeId'
+      path: '/$challengeId'
+      fullPath: '/challenges/$challengeId'
+      preLoaderRoute: typeof AdminChallengesChallengeIdRouteImport
+      parentRoute: typeof AdminChallengesRoute
+    }
     '/_admin/notices/$noticeId/': {
       id: '/_admin/notices/$noticeId/'
       path: '/'
@@ -298,6 +378,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/newsletters/$newsletterId/'
       preLoaderRoute: typeof AdminNewslettersNewsletterIdIndexRouteImport
       parentRoute: typeof AdminNewslettersNewsletterIdRoute
+    }
+    '/_admin/challenges/$challengeId/': {
+      id: '/_admin/challenges/$challengeId/'
+      path: '/'
+      fullPath: '/challenges/$challengeId/'
+      preLoaderRoute: typeof AdminChallengesChallengeIdIndexRouteImport
+      parentRoute: typeof AdminChallengesChallengeIdRoute
     }
     '/_admin/notices/$noticeId/edit': {
       id: '/_admin/notices/$noticeId/edit'
@@ -313,8 +400,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewslettersNewsletterIdEditRouteImport
       parentRoute: typeof AdminNewslettersNewsletterIdRoute
     }
+    '/_admin/challenges/$challengeId/teams': {
+      id: '/_admin/challenges/$challengeId/teams'
+      path: '/teams'
+      fullPath: '/challenges/$challengeId/teams'
+      preLoaderRoute: typeof AdminChallengesChallengeIdTeamsRouteImport
+      parentRoute: typeof AdminChallengesChallengeIdRoute
+    }
   }
 }
+
+interface AdminChallengesChallengeIdRouteChildren {
+  AdminChallengesChallengeIdTeamsRoute: typeof AdminChallengesChallengeIdTeamsRoute
+  AdminChallengesChallengeIdIndexRoute: typeof AdminChallengesChallengeIdIndexRoute
+}
+
+const AdminChallengesChallengeIdRouteChildren: AdminChallengesChallengeIdRouteChildren =
+  {
+    AdminChallengesChallengeIdTeamsRoute: AdminChallengesChallengeIdTeamsRoute,
+    AdminChallengesChallengeIdIndexRoute: AdminChallengesChallengeIdIndexRoute,
+  }
+
+const AdminChallengesChallengeIdRouteWithChildren =
+  AdminChallengesChallengeIdRoute._addFileChildren(
+    AdminChallengesChallengeIdRouteChildren,
+  )
+
+interface AdminChallengesRouteChildren {
+  AdminChallengesChallengeIdRoute: typeof AdminChallengesChallengeIdRouteWithChildren
+  AdminChallengesIndexRoute: typeof AdminChallengesIndexRoute
+}
+
+const AdminChallengesRouteChildren: AdminChallengesRouteChildren = {
+  AdminChallengesChallengeIdRoute: AdminChallengesChallengeIdRouteWithChildren,
+  AdminChallengesIndexRoute: AdminChallengesIndexRoute,
+}
+
+const AdminChallengesRouteWithChildren = AdminChallengesRoute._addFileChildren(
+  AdminChallengesRouteChildren,
+)
 
 interface AdminNoticesNoticeIdRouteChildren {
   AdminNoticesNoticeIdEditRoute: typeof AdminNoticesNoticeIdEditRoute
@@ -364,6 +488,7 @@ const AdminNewslettersNewsletterIdRouteWithChildren =
   )
 
 interface AdminRouteChildren {
+  AdminChallengesRoute: typeof AdminChallengesRouteWithChildren
   AdminMembersRoute: typeof AdminMembersRoute
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
@@ -373,6 +498,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminChallengesRoute: AdminChallengesRouteWithChildren,
   AdminMembersRoute: AdminMembersRoute,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
