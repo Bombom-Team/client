@@ -77,12 +77,8 @@ function ChallengeDashboardRoute() {
 
 const Container = styled.div`
   width: 100%;
-`;
-
-const Content = styled.div`
-  width: 100%;
   padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 16px;
 
   display: flex;
