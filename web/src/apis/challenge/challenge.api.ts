@@ -60,3 +60,41 @@ export const getTeamChallengeProgress = async (challengeId: number) => {
     path: `/challenges/${challengeId}/progress/team`,
   });
 };
+
+export type DailyGuideType = 'READ' | 'COMMENT';
+
+export interface MyComment {
+  exists: boolean;
+  content: string | null;
+  createdAt: string | null;
+}
+
+export interface DailyGuide {
+  dayIndex: number;
+  type: DailyGuideType;
+  imageUrl: string;
+  notice?: string;
+  commentEnabled: boolean;
+  myComment: MyComment;
+}
+
+export const getTodayDailyGuide = async (challengeId: number) => {
+  return await fetcher.get<DailyGuide>({
+    path: `/challenges/${challengeId}/daily-guides/today`,
+  });
+};
+
+type SubmitDailyGuideCommentParams = {
+  content: string;
+};
+
+export const postDailyGuideComment = async (
+  challengeId: number,
+  dayIndex: number,
+  params: SubmitDailyGuideCommentParams,
+) => {
+  return await fetcher.post<SubmitDailyGuideCommentParams, never>({
+    path: `/challenges/${challengeId}/daily-guides/${dayIndex}/my-comment`,
+    body: params,
+  });
+};

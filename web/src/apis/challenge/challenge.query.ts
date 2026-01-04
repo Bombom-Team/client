@@ -5,6 +5,7 @@ import {
   getChallengeInfo,
   getMemberChallengeProgress,
   getTeamChallengeProgress,
+  getTodayDailyGuide,
 } from './challenge.api';
 
 export const challengeQueries = {
@@ -33,5 +34,10 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', challengeId, 'progress', 'team'],
       queryFn: () => getTeamChallengeProgress(challengeId),
+    }),
+  todayDailyGuide: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', challengeId, 'daily-guide', 'today'],
+      queryFn: () => getTodayDailyGuide(challengeId),
     }),
 };
