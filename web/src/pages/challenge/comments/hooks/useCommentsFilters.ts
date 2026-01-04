@@ -22,7 +22,7 @@ export const useCommentsFilters = ({
     size: COMMENTS_SIZE,
   };
 
-  const handlePageChange = useCallback((value: number) => {
+  const changePage = useCallback((value: number) => {
     setPage(value);
   }, []);
 
@@ -32,7 +32,7 @@ export const useCommentsFilters = ({
 
   return {
     baseQueryParams,
-    handlePageChange,
+    changePage,
     resetPage,
     page,
   };

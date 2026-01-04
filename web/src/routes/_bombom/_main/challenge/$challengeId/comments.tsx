@@ -55,11 +55,10 @@ function ChallengeComments() {
 
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const { baseQueryParams, handlePageChange, page, resetPage } =
-    useCommentsFilters({
-      challengeId: Number(challengeId),
-      currentDate,
-    });
+  const { baseQueryParams, changePage, page, resetPage } = useCommentsFilters({
+    challengeId: Number(challengeId),
+    currentDate,
+  });
 
   if (!challengeInfo) return null;
 
@@ -106,7 +105,7 @@ function ChallengeComments() {
         ) : (
           <PCCommentsContent
             baseQueryParams={baseQueryParams}
-            onPageChange={handlePageChange}
+            onPageChange={changePage}
             page={page}
             resetPage={resetPage}
           />
