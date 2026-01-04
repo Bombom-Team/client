@@ -44,7 +44,7 @@ function ChallengeComments() {
 
   const today = formatDate(new Date(), '-');
 
-  const { data: candidateArticles } = useQuery(
+  const { data: candidateArticles = [] } = useQuery(
     queries.challengeCommentCandidateArticles({ date: today }),
   );
 
@@ -99,9 +99,9 @@ function ChallengeComments() {
             <AddCommentButton
               isMobile={isMobile}
               onClick={openModal}
-              disabled={!candidateArticles}
+              disabled={candidateArticles.length === 0}
             >
-              {candidateArticles
+              {candidateArticles.length > 0
                 ? '코멘트 작성하기'
                 : '오늘 읽은 뉴스레터가 없어요'}
             </AddCommentButton>
@@ -123,7 +123,7 @@ function ChallengeComments() {
         )}
       </ContentWrapper>
 
-      {candidateArticles && (
+      {candidateArticles.length > 0 && (
         <Modal
           modalRef={modalRef}
           isOpen={isOpen}
