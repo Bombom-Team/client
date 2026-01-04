@@ -98,7 +98,8 @@ const InfoWrapper = styled.div`
   padding: 0 10px;
 
   display: flex;
-  flex-direction: row;
+  flex-flow: row;
+  flex-wrap: wrap;
   justify-content: space-between;
 `;
 
