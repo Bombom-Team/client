@@ -63,11 +63,19 @@ export const getTeamChallengeProgress = async (challengeId: number) => {
 
 export type DailyGuideType = 'READ' | 'COMMENT';
 
+export interface MyComment {
+  exists: boolean;
+  content: string | null;
+  createdAt: string | null;
+}
+
 export interface DailyGuide {
   dayIndex: number;
   type: DailyGuideType;
   imageUrl: string;
   notice?: string;
+  commentEnabled: boolean;
+  myComment: MyComment;
 }
 
 export const getTodayDailyGuide = async (challengeId: number) => {

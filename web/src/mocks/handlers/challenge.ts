@@ -81,16 +81,41 @@ export const challengeHandlers = [
           type: 'READ',
           imageUrl: 'https://picsum.photos/800/400?random=1',
           notice: '첫 날입니다! 가볍게 시작해볼까요?',
+          commentEnabled: false,
+          myComment: {
+            exists: false,
+            content: null,
+            createdAt: null,
+          },
         },
         '2': {
           dayIndex: 2,
           type: 'COMMENT',
           imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
           notice: '데일리 가이드에 따라 답변을 작성해주세요.',
+          commentEnabled: true,
+          myComment: {
+            exists: false,
+            content: null,
+            createdAt: null,
+          },
+        },
+        '3': {
+          dayIndex: 3,
+          type: 'COMMENT',
+          imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
+          notice: '데일리 가이드에 따라 답변을 작성해주세요.',
+          commentEnabled: true,
+          myComment: {
+            exists: true,
+            content:
+              '오늘 읽은 내용이 정말 유익했습니다. 특히 새로운 관점을 얻을 수 있어서 좋았어요!',
+            createdAt: '2026-01-04T10:30:00Z',
+          },
         },
       };
 
-      const dailyGuide = dailyGuides[challengeId as string] || dailyGuides['2'];
+      const dailyGuide = dailyGuides[challengeId as string] || dailyGuides['3'];
 
       return HttpResponse.json(dailyGuide);
     },

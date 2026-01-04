@@ -61,8 +61,11 @@ function ChallengeDaily() {
           </NoticeBox>
         )}
 
-        {dailyGuide.type === 'COMMENT' && (
-          <DailyGuideComment challengeId={Number(challengeId)} />
+        {dailyGuide.type === 'COMMENT' && dailyGuide.commentEnabled && (
+          <DailyGuideComment
+            challengeId={Number(challengeId)}
+            myComment={dailyGuide.myComment}
+          />
         )}
       </GuideCard>
     </Container>
