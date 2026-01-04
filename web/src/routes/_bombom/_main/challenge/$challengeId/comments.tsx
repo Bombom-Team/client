@@ -34,6 +34,7 @@ export const Route = createFileRoute(
 });
 
 function ChallengeComments() {
+  const device = useDevice();
   const today = formatDate(new Date(), '-');
   const latestSelectableDate =
     today < CHALLENGE_PERIOD.endDate ? today : CHALLENGE_PERIOD.endDate;
@@ -41,7 +42,6 @@ function ChallengeComments() {
   const [currentDate, setCurrentDate] = useState(latestSelectableDate);
 
   const { modalRef, openModal, closeModal, isOpen } = useModal();
-  const device = useDevice();
 
   const { challengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/comments',
@@ -53,6 +53,10 @@ function ChallengeComments() {
 
   const { data: memberChallengeProgressInfo } = useQuery(
     queries.memberProgress(Number(challengeId)),
+  );
+
+  const { data: candidateArticles } = useQuery(
+    queries.challengeCommentCandidateArticles({ date: today }),
   );
 
   const totalDates = getDatesInRange(
@@ -82,8 +86,14 @@ function ChallengeComments() {
             <AddCommentTitle device={device}>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
             </AddCommentTitle>
-            <AddCommentButton device={device} onClick={openModal}>
-              코멘트 작성하기
+            <AddCommentButton
+              device={device}
+              onClick={openModal}
+              disabled={!candidateArticles}
+            >
+              {candidateArticles
+                ? '코멘트 작성하기'
+                : '오늘 읽은 뉴스레터가 없어요'}
             </AddCommentButton>
           </AddCommentBox>
         )}
@@ -115,15 +125,20 @@ function ChallengeComments() {
         </CommentSection>
       </ContentWrapper>
 
-      <Modal
-        modalRef={modalRef}
-        isOpen={isOpen}
-        closeModal={closeModal}
-        position={device === 'mobile' ? 'bottom' : 'center'}
-        showCloseButton={false}
-      >
-        <AddCommentModalContent closeCommentModal={closeModal} />
-      </Modal>
+      {candidateArticles && (
+        <Modal
+          modalRef={modalRef}
+          isOpen={isOpen}
+          closeModal={closeModal}
+          position={device === 'mobile' ? 'bottom' : 'center'}
+          showCloseButton={false}
+        >
+          <AddCommentModalContent
+            closeCommentModal={closeModal}
+            candidateArticles={candidateArticles}
+          />
+        </Modal>
+      )}
     </Container>
   );
 }
@@ -179,6 +194,11 @@ const AddCommentButton = styled(Button)<{ device: Device }>`
   width: 100%;
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.stroke};
+    color: ${({ theme }) => theme.colors.textSecondary};
+  }
 `;
 
 const CardList = styled.div<{ device: Device }>`

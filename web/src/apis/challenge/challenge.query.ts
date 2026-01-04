@@ -5,6 +5,8 @@ import {
   getChallengeInfo,
   getMemberChallengeProgress,
   getTeamChallengeProgress,
+  getChallengeCommentCandidateArticles,
+  type GetChallengeCommentCandidateArticlesParams,
 } from './challenge.api';
 
 export const challengeQueries = {
@@ -33,5 +35,12 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', challengeId, 'progress', 'team'],
       queryFn: () => getTeamChallengeProgress(challengeId),
+    }),
+  challengeCommentCandidateArticles: (
+    params: GetChallengeCommentCandidateArticlesParams,
+  ) =>
+    queryOptions({
+      queryKey: ['challenges', 'comments', 'articles', 'candidates', params],
+      queryFn: () => getChallengeCommentCandidateArticles(params),
     }),
 };

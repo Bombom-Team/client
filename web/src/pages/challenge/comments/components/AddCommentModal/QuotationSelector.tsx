@@ -3,15 +3,15 @@ import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 
 interface Quotation {
-  id: string;
+  id: number;
   text: string;
   memo?: string;
 }
 
 interface QuotationSelectorProps {
   quotations: Quotation[];
-  selectedQuotationId: string | null;
-  onQuotationSelect: (id: string, text: string) => void;
+  selectedQuotationId: number | null;
+  onQuotationSelect: (id: number, text: string) => void;
   onRemoveQuotation: () => void;
 }
 
