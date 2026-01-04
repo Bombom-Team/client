@@ -6,24 +6,6 @@ import { useDevice } from '@/hooks/useDevice';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 
-const MAX_LENGTH = 1000;
-
-type DailyGuideType = 'READ' | 'COMMENT';
-
-interface DailyGuide {
-  dayIndex: number;
-  type: DailyGuideType;
-  imageUrl: string;
-  notice?: string;
-}
-
-const MOCK_CHALLENGE_DAILY_GUIDE: DailyGuide = {
-  dayIndex: 2,
-  type: 'COMMENT',
-  imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
-  notice: '데일리 가이드에 따라 답변을 작성해주세요.',
-};
-
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
 )({
