@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useModal from '@/components/Modal/useModal';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
 
@@ -15,7 +15,10 @@ export function useChallengeGuideModal({
     `${CHALLENGE_GUIDE_DISMISSED_KEY}-${challengeId}`,
     false,
   );
-  const { modalRef, isOpen, openModal, closeModal } = useModal();
+  const { modalRef, isOpen, openModal, closeModal } = useModal({
+    closeOnBackdropClick: false,
+  });
+  const [isAgreed, setIsAgreed] = useState(false);
 
   const handleConfirm = () => {
     setIsDismissed(true);
@@ -32,6 +35,10 @@ export function useChallengeGuideModal({
     closeModal();
   };
 
+  const handleToggleAgreement = () => {
+    setIsAgreed((prev) => !prev);
+  };
+
   useEffect(() => {
     if (isDismissed) return;
 
@@ -41,8 +48,10 @@ export function useChallengeGuideModal({
   return {
     modalRef,
     isOpen,
+    isAgreed,
     handleConfirm,
     handleGoToIntro,
     handleCloseModal,
+    handleToggleAgreement,
   };
 }

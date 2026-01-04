@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import Button from '@/components/Button/Button';
+import Checkbox from '@/components/Checkbox/Checkbox';
 import Modal from '@/components/Modal/Modal';
 import { useChallengeGuideModal } from '@/pages/challenge/index/hooks/useChallengeGuideModal';
 
@@ -8,8 +9,15 @@ interface ChallengeGuideModalProps {
 }
 
 const ChallengeGuideModal = ({ challengeId }: ChallengeGuideModalProps) => {
-  const { modalRef, isOpen, handleConfirm, handleGoToIntro, handleCloseModal } =
-    useChallengeGuideModal({ challengeId });
+  const {
+    modalRef,
+    isOpen,
+    isAgreed,
+    handleConfirm,
+    handleGoToIntro,
+    handleCloseModal,
+    handleToggleAgreement,
+  } = useChallengeGuideModal({ challengeId });
 
   return (
     <Modal
@@ -17,12 +25,10 @@ const ChallengeGuideModal = ({ challengeId }: ChallengeGuideModalProps) => {
       isOpen={isOpen}
       closeModal={handleCloseModal}
       position="center"
-      showCloseButton={true}
-      showBackdrop={true}
+      showCloseButton={false}
     >
       <Container>
         <Header>
-          <TrophyIcon>🏆</TrophyIcon>
           <Title>챌린지 시작 전 확인해주세요!</Title>
         </Header>
 
@@ -61,7 +67,23 @@ const ChallengeGuideModal = ({ challengeId }: ChallengeGuideModalProps) => {
         </GuideList>
 
         <ButtonSection>
-          <StartButton variant="filled" onClick={handleConfirm}>
+          <AgreementSection>
+            <CheckboxWrapper>
+              <Checkbox
+                id="challenge-agreement"
+                checked={isAgreed}
+                onChange={handleToggleAgreement}
+              />
+              <AgreementLabel htmlFor="challenge-agreement">
+                위 내용을 모두 확인했고, 참여 기준에 동의합니다
+              </AgreementLabel>
+            </CheckboxWrapper>
+          </AgreementSection>
+          <StartButton
+            variant="filled"
+            onClick={handleConfirm}
+            disabled={!isAgreed}
+          >
             시작하기
           </StartButton>
           <IntroButton variant="outlined" onClick={handleGoToIntro}>
@@ -92,10 +114,6 @@ const Header = styled.div`
   gap: 12px;
   flex-direction: column;
   align-items: center;
-`;
-
-const TrophyIcon = styled.div`
-  font-size: 48px;
 `;
 
 const Title = styled.h2`
@@ -145,6 +163,25 @@ const GuideDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body2};
   line-height: 1.5;
+`;
+
+const AgreementSection = styled.div`
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+`;
+
+const CheckboxWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+const AgreementLabel = styled.label`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body2};
+
+  cursor: pointer;
 `;
 
 const ButtonSection = styled.div`
