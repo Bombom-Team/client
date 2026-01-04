@@ -1,5 +1,29 @@
 import styled from '@emotion/styled';
-import { createFileRoute } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { createFileRoute, useParams } from '@tanstack/react-router';
+import { useState } from 'react';
+import { queries } from '@/apis/queries';
+import Button from '@/components/Button/Button';
+import { useDevice } from '@/hooks/useDevice';
+import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
+
+const MAX_LENGTH = 1000;
+
+type DailyGuideType = 'READ' | 'COMMENT';
+
+interface DailyGuide {
+  dayIndex: number;
+  type: DailyGuideType;
+  imageUrl: string;
+  notice?: string;
+}
+
+const MOCK_CHALLENGE_DAILY_GUIDE: DailyGuide = {
+  dayIndex: 2,
+  type: 'COMMENT',
+  imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
+  notice: '데일리 가이드에 따라 답변을 작성해주세요.',
+};
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -15,28 +39,82 @@ export const Route = createFileRoute(
 });
 
 function ChallengeDaily() {
+  const { challengeId } = useParams({
+    from: '/_bombom/_main/challenge/$challengeId/daily',
+  });
+  const device = useDevice();
+  const { data: challengeInfo } = useQuery(
+    queries.challengesInfo(Number(challengeId)),
+  );
+  const { data: memberChallengeProgressInfo } = useQuery(
+    queries.memberProgress(Number(challengeId)),
+  );
+  const [comment, setComment] = useState('');
+
+  const guide = MOCK_CHALLENGE_DAILY_GUIDE;
+  const isMobile = device === 'mobile';
+
+  const handleSubmit = () => {
+    if (!comment.trim()) return;
+    // TODO: API 호출로 코멘트 제출
+    console.log('코멘트 제출:', comment);
+    setComment('');
+  };
+
   return (
     <Container>
-      <Content>
-        <Title>일일 기록</Title>
-        <Placeholder>
-          챌린지 일일 기록 내용이 여기에 표시됩니다.
-          <br />
-          매일의 독서 기록과 진행 상황을 확인할 수 있습니다.
-        </Placeholder>
-      </Content>
+      {challengeInfo && memberChallengeProgressInfo && (
+        <UserChallengeInfo
+          challengeInfo={challengeInfo}
+          memberChallengeProgressInfo={memberChallengeProgressInfo}
+        />
+      )}
+      <GuideCard>
+        <DayBadge>Day {guide.dayIndex}</DayBadge>
+        <GuideImage src={guide.imageUrl} alt={`Day ${guide.dayIndex} guide`} />
+        {guide.notice && (
+          <NoticeBox>
+            <NoticeIcon isMobile={isMobile}>💡</NoticeIcon>
+            <NoticeText isMobile={isMobile}>{guide.notice}</NoticeText>
+          </NoticeBox>
+        )}
+
+        {guide.type === 'COMMENT' && (
+          <CommentSection>
+            <CommentLabelWrapper>
+              <CommentLabel>답변 작성</CommentLabel>
+              <CharCount>
+                {comment.length} / {MAX_LENGTH}
+              </CharCount>
+            </CommentLabelWrapper>
+            <CommentInputWrapper>
+              <CommentTextarea
+                isMobile={isMobile}
+                placeholder="데일리 가이드의 질문에 대한 답변을 입력해주세요."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                maxLength={MAX_LENGTH}
+                rows={4}
+              />
+            </CommentInputWrapper>
+            <SubmitButton
+              variant="filled"
+              onClick={handleSubmit}
+              disabled={!comment.trim()}
+            >
+              제출하기
+            </SubmitButton>
+          </CommentSection>
+        )}
+      </GuideCard>
     </Container>
   );
 }
 
 const Container = styled.div`
   width: 100%;
-`;
-
-const Content = styled.div`
-  width: 100%;
-  padding: 32px;
-  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  padding: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 16px;
 
   display: flex;
@@ -44,17 +122,122 @@ const Content = styled.div`
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
-
-  box-sizing: border-box;
 `;
 
-const Title = styled.h2`
+const GuideCard = styled.div`
+  width: 100%;
+  border-radius: 12px;
+
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const DayBadge = styled.div`
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 8px;
+
+  background-color: ${({ theme }) => theme.colors.primaryLight};
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.body2};
+  font-weight: 600;
+`;
+
+const GuideImage = styled.img`
+  width: 100%;
+  max-height: 400px;
+
+  object-fit: contain;
+`;
+
+const NoticeBox = styled.div`
+  width: 100%;
+  padding: 12px 16px;
+  border-left: 4px solid ${({ theme }) => theme.colors.primary};
+  border-radius: 8px;
+
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
+`;
+
+const NoticeIcon = styled.span<{ isMobile: boolean }>`
+  flex-shrink: 0;
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+`;
+
+const NoticeText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
 `;
 
-const Placeholder = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
-  line-height: 1.6;
+const CommentSection = styled.div`
+  width: 100%;
+  padding-top: 8px;
+
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+`;
+
+const CommentLabelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const CommentLabel = styled.label`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.heading6};
+`;
+
+const CharCount = styled.span`
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.body3};
+`;
+
+const CommentInputWrapper = styled.div`
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+`;
+
+const CommentTextarea = styled.textarea<{ isMobile: boolean }>`
+  width: 100%;
+  height: 120px;
+  padding: 12px 16px;
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
+  border-radius: 8px;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+
+  resize: none;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.textTertiary};
+  }
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const SubmitButton = styled(Button)`
+  padding: 12px 24px;
+  border-radius: 8px;
+
+  align-self: flex-end;
+
+  font: ${({ theme }) => theme.fonts.body2};
 `;

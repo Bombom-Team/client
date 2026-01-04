@@ -50,5 +50,5 @@ const ChallengeGrid = styled.div<{ isMobile: boolean }>`
   gap: ${({ isMobile }) => (isMobile ? '16px' : '24px')};
 
   grid-template-columns: ${({ isMobile }) =>
-    isMobile ? '1fr' : 'repeat(auto-fit, minmax(360px, 1fr))'};
+    isMobile ? '1fr' : 'repeat(auto-fill, minmax(360px, 1fr))'};
 `;
