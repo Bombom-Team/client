@@ -43,6 +43,11 @@ function ChallengeComments() {
   );
 
   const today = formatDate(new Date(), '-');
+
+  const { data: candidateArticles = [] } = useQuery(
+    queries.challengeCommentCandidateArticles({ date: today }),
+  );
+
   const latestSelectableDate =
     !challengeInfo?.endDate || today <= challengeInfo?.endDate
       ? today
@@ -91,8 +96,14 @@ function ChallengeComments() {
             <AddCommentTitle isMobile={isMobile}>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
             </AddCommentTitle>
-            <AddCommentButton isMobile={isMobile} onClick={openModal}>
-              코멘트 작성하기
+            <AddCommentButton
+              isMobile={isMobile}
+              onClick={openModal}
+              disabled={candidateArticles.length === 0}
+            >
+              {candidateArticles.length > 0
+                ? '코멘트 작성하기'
+                : '오늘 읽은 뉴스레터가 없어요'}
             </AddCommentButton>
           </AddCommentBox>
         )}
@@ -112,15 +123,20 @@ function ChallengeComments() {
         )}
       </ContentWrapper>
 
-      <Modal
-        modalRef={modalRef}
-        isOpen={isOpen}
-        closeModal={closeModal}
-        position={device === 'mobile' ? 'bottom' : 'center'}
-        showCloseButton={false}
-      >
-        <AddCommentModalContent closeCommentModal={closeModal} />
-      </Modal>
+      {candidateArticles.length > 0 && (
+        <Modal
+          modalRef={modalRef}
+          isOpen={isOpen}
+          closeModal={closeModal}
+          position={device === 'mobile' ? 'bottom' : 'center'}
+          showCloseButton={false}
+        >
+          <AddCommentModalContent
+            closeCommentModal={closeModal}
+            candidateArticles={candidateArticles}
+          />
+        </Modal>
+      )}
     </Container>
   );
 }
@@ -187,4 +203,9 @@ const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
   width: 100%;
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.stroke};
+    color: ${({ theme }) => theme.colors.textSecondary};
+  }
 `;

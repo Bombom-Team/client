@@ -2,13 +2,13 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import Select from '@/components/Select/Select';
 import { useDevice } from '@/hooks/useDevice';
+import type { CandidateArticles } from '../../types/comment';
 import type { Device } from '@/hooks/useDevice';
-import type { ArticleHighlights } from '@/mocks/datas/highlights';
 
 interface NewsletterSelectorProps {
-  selectedArticleId: string | null;
-  onArticleSelect: (articleId: string) => void;
-  articles: ArticleHighlights[];
+  selectedArticleId: number | null;
+  onArticleSelect: (articleId: number) => void;
+  articles: CandidateArticles;
   showError: boolean;
 }
 
@@ -22,7 +22,7 @@ const NewsletterSelector = ({
 
   const options = articles.map((article) => ({
     label: `${article.newsletterName} (${article.articleTitle})`,
-    value: article.id,
+    value: article.articleId,
   }));
 
   return (

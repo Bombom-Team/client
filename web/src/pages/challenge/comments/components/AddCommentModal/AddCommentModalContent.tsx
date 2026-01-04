@@ -1,18 +1,22 @@
 import styled from '@emotion/styled';
+import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import CommentConfirmModalContent from './CommentConfirmModalContent';
 import CommentEditor from './CommentEditor';
 import NewsletterSelector from './NewsletterSelector';
 import QuotationSelector from './QuotationSelector';
+import useAddChallengeCommentMutation from '../../hooks/useAddChallengeCommentMutation';
+import useQuotations from '../../hooks/useQuotations';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
-import { articleHighlights } from '@/mocks/datas/highlights';
+import type { CandidateArticles } from '../../types/comment';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
 
 interface AddCommentModalContentProps {
   closeCommentModal: () => void;
+  candidateArticles: CandidateArticles;
 }
 
 const MIN_COMMENT_LENGTH = 20;
@@ -20,11 +24,12 @@ const MAX_COMMENT_LENGTH = 250;
 
 const AddCommentModalContent = ({
   closeCommentModal,
+  candidateArticles,
 }: AddCommentModalContentProps) => {
-  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(
+  const [selectedArticleId, setSelectedArticleId] = useState<number | null>(
     null,
   );
-  const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(
+  const [selectedQuotationId, setSelectedQuotationId] = useState<number | null>(
     null,
   );
   const [comment, setComment] = useState('');
@@ -39,23 +44,28 @@ const AddCommentModalContent = ({
   const device = useDevice();
   const isMobile = device === 'mobile';
 
-  const selectedArticle = articleHighlights.find(
-    (article) => article.id === selectedArticleId,
-  );
+  const { challengeId } = useParams({
+    from: '/_bombom/_main/challenge/$challengeId/comments',
+  });
 
-  const selectArticle = (articleId: string) => {
+  const quotations = useQuotations({ articleId: selectedArticleId });
+  const { mutate: addChallengeComment } = useAddChallengeCommentMutation({
+    challengeId: Number(challengeId),
+  });
+
+  const selectArticle = (articleId: number) => {
     setShowArticleError(false);
     setSelectedArticleId(articleId);
   };
 
   const editComment = (value: string) => {
-    if (value.length >= 20) {
+    if (value.length >= MIN_COMMENT_LENGTH) {
       setShowCommentError(false);
     }
     setComment(value);
   };
 
-  const selectQuotation = (id: string, text: string) => {
+  const selectQuotation = (id: number, text: string) => {
     if (selectedQuotationId === id) {
       setSelectedQuotationId(null);
     } else {
@@ -84,12 +94,28 @@ const AddCommentModalContent = ({
     }
   };
 
-  const confirmComment = () => {
-    closeCommentModal();
+  const resetForm = () => {
     editComment('');
     setSelectedArticleId(null);
     setSelectedQuotationId(null);
     setShowArticleError(false);
+  };
+
+  const confirmComment = () => {
+    if (!selectedArticleId) return;
+
+    const selectedQuotation = selectedQuotationId
+      ? quotations.find((quotation) => quotation.id === selectedQuotationId)
+      : null;
+
+    addChallengeComment({
+      articleId: selectedArticleId,
+      comment,
+      quotation: selectedQuotation?.text,
+    });
+
+    closeCommentModal();
+    resetForm();
   };
 
   return (
@@ -98,13 +124,13 @@ const AddCommentModalContent = ({
         <NewsletterSelector
           selectedArticleId={selectedArticleId}
           onArticleSelect={selectArticle}
-          articles={articleHighlights}
+          articles={candidateArticles}
           showError={showArticleError}
         />
 
-        {selectedArticle && (
+        {selectedArticleId && (
           <QuotationSelector
-            quotations={selectedArticle.highlights}
+            quotations={quotations}
             selectedQuotationId={selectedQuotationId}
             onQuotationSelect={selectQuotation}
             onRemoveQuotation={removeQuotation}
