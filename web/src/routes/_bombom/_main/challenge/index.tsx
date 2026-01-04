@@ -37,6 +37,8 @@ function RouteComponent() {
     (challenge) => challenge.status === 'COMPLETED',
   );
 
+  const hasChallenges = challenges && challenges.length > 0;
+
   return (
     <Container>
       {!isMobile && (
@@ -48,20 +50,29 @@ function RouteComponent() {
         </TitleWrapper>
       )}
 
-      <ContentWrapper>
-        <ChallengeListSection
-          title="도전 중인 챌린지"
-          challenges={joinedChallenges}
-        />
-        <ChallengeListSection
-          title="새롭게 도전할 챌린지"
-          challenges={availableChallenges}
-        />
-        <ChallengeListSection
-          title="완료한 챌린지"
-          challenges={completedChallenges}
-        />
-      </ContentWrapper>
+      {!hasChallenges ? (
+        <EmptyStateWrapper>
+          <EmptyStateTitle>현재 진행중인 챌린지가 없네요</EmptyStateTitle>
+          <EmptyStateDescription>
+            곧 새로운 챌린지가 시작될 예정이에요
+          </EmptyStateDescription>
+        </EmptyStateWrapper>
+      ) : (
+        <ContentWrapper>
+          <ChallengeListSection
+            title="도전 중인 챌린지"
+            challenges={joinedChallenges}
+          />
+          <ChallengeListSection
+            title="새롭게 도전할 챌린지"
+            challenges={availableChallenges}
+          />
+          <ChallengeListSection
+            title="완료한 챌린지"
+            challenges={completedChallenges}
+          />
+        </ContentWrapper>
+      )}
     </Container>
   );
 }
@@ -112,4 +123,31 @@ const ContentWrapper = styled.div`
   align-items: center;
   align-self: stretch;
   justify-content: center;
+`;
+
+const EmptyStateWrapper = styled.div`
+  width: 100%;
+  min-height: 400px;
+
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const EmptyStateTitle = styled.h2`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.heading4};
+  text-align: center;
+`;
+
+const EmptyStateDescription = styled.p`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.body1};
+  text-align: center;
 `;
