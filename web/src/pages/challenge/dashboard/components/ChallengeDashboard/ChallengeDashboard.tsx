@@ -92,9 +92,7 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
                       {completedCount}
                     </SummaryCell>
                     <RateCell isSurvived={isSurvived} isMobile={isMobile}>
-                      {isSurvived
-                        ? `${achievementRate.toFixed(1)}%`
-                        : '🚫 탈락'}
+                      {isSurvived ? `${achievementRate.toFixed(1)}%` : '탈락'}
                     </RateCell>
                   </BodyRow>
                 );
