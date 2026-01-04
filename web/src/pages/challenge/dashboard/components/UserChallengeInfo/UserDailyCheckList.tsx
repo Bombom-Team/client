@@ -7,10 +7,10 @@ interface UserDailyCheckListProps {
   todayTodos: TodayTodos;
 }
 
-const todoLabels = {
-  READ: '뉴스레터를 읽었나요?',
-  COMMENT: '오늘의 코멘트를 작성했나요?',
-};
+// const todoLabels = {
+//   READ: '뉴스레터를 읽었나요?',
+//   COMMENT: '오늘의 코멘트를 작성했나요?',
+// };
 
 const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
   const visibleTodos = todayTodos.filter(
@@ -34,7 +34,7 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
         </CountBadge>
       </Header>
       <List>
-        {visibleTodos.map((todo, index) => {
+        {/* {visibleTodos.map((todo, index) => {
           if (!todo.challengeTodoType || !todo.challengeTodoStatus) {
             return null;
           }
@@ -47,7 +47,13 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
               <TodoText>{todoLabels[todo.challengeTodoType]}</TodoText>
             </ListItem>
           );
-        })}
+        })} */}
+        <ListItem>
+          <StatusBox status={todayTodos[0]?.challengeTodoStatus}>
+            {todayTodos[0]?.challengeTodoStatus === 'COMPLETE' ? '✓' : ''}
+          </StatusBox>
+          <TodoText>챌린지 참여 각오를 작성했나요?</TodoText>
+        </ListItem>
       </List>
     </Container>
   );
