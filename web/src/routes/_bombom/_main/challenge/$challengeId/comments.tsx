@@ -72,6 +72,8 @@ function ChallengeComments() {
     latestSelectableDate,
   );
 
+  const isFirstDay = currentDate === challengeInfo.startDate;
+
   return (
     <Container>
       {challengeInfo && memberChallengeProgressInfo && (
@@ -99,16 +101,25 @@ function ChallengeComments() {
             <AddCommentButton
               isMobile={isMobile}
               onClick={openModal}
-              disabled={candidateArticles.length === 0}
+              disabled={isFirstDay || candidateArticles.length === 0}
             >
-              {candidateArticles.length > 0
-                ? '코멘트 작성하기'
-                : '오늘 읽은 뉴스레터가 없어요'}
+              {isFirstDay
+                ? '첫날에는 코멘트를 작성할 수 없어요'
+                : candidateArticles.length > 0
+                  ? '코멘트 작성하기'
+                  : '오늘 읽은 뉴스레터가 없어요'}
             </AddCommentButton>
           </AddCommentBox>
         )}
 
-        {isMobile ? (
+        {isFirstDay ? (
+          <FirstDaySection>
+            <FirstDayTitle isMobile={isMobile}>전체 코멘트</FirstDayTitle>
+            <FirstDayMessage isMobile={isMobile}>
+              첫날에는 코멘트를 작성하지 않아요!
+            </FirstDayMessage>
+          </FirstDaySection>
+        ) : isMobile ? (
           <MobileCommentsContent
             baseQueryParams={baseQueryParams}
             resetPage={resetPage}
@@ -208,4 +219,27 @@ const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
     background-color: ${({ theme }) => theme.colors.stroke};
     color: ${({ theme }) => theme.colors.textSecondary};
   }
+`;
+
+const FirstDaySection = styled.section`
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+`;
+
+const FirstDayTitle = styled.h3<{ isMobile: boolean }>`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading6};
+`;
+
+const FirstDayMessage = styled.div<{ isMobile: boolean }>`
+  padding: ${({ isMobile }) => (isMobile ? '24px' : '32px')};
+  border-radius: 12px;
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  text-align: center;
 `;

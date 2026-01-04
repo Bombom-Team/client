@@ -27,7 +27,7 @@ const AllCommentsSection = ({
         <EmptyState isMobile={isMobile}>로딩 중...</EmptyState>
       ) : isEmpty ? (
         <EmptyState isMobile={isMobile}>
-          아직 작성한 코멘트가 없어요. 가장 먼저 한 줄 평을 남겨보세요!
+          아직 작성한 코멘트가 없어요. 가장 먼저 한 줄 코멘트를 남겨보세요!
         </EmptyState>
       ) : (
         <>
