@@ -53,10 +53,6 @@ const AddCommentModalContent = ({
     challengeId: Number(challengeId),
   });
 
-  const selectedArticle = candidateArticles.find(
-    (article) => article.articleId === selectedArticleId,
-  );
-
   const selectArticle = (articleId: number) => {
     setShowArticleError(false);
     setSelectedArticleId(articleId);
@@ -132,7 +128,7 @@ const AddCommentModalContent = ({
           showError={showArticleError}
         />
 
-        {selectedArticle && (
+        {selectedArticleId && (
           <QuotationSelector
             quotations={quotations}
             selectedQuotationId={selectedQuotationId}
