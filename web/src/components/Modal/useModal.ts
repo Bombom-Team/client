@@ -7,12 +7,18 @@ import { compoundRefs } from '@/utils/element';
 
 interface UseModalOptions {
   scrollLock?: boolean;
+  closeOnBackdropClick?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
 }
 
 const useModal = (options: UseModalOptions = {}) => {
-  const { scrollLock = true, onOpen, onClose } = options;
+  const {
+    scrollLock = true,
+    closeOnBackdropClick = true,
+    onOpen,
+    onClose,
+  } = options;
   const onOpenRef = useRef(onOpen);
   const onCloseRef = useRef(onClose);
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +33,9 @@ const useModal = (options: UseModalOptions = {}) => {
     setIsOpen(false);
   }, []);
 
-  const clickOutsideRef = useClickOutsideRef<HTMLDivElement>(closeModal);
+  const clickOutsideRef = useClickOutsideRef<HTMLDivElement>(
+    closeOnBackdropClick ? closeModal : null,
+  );
   const focusTrapRef = useFocusTrap<HTMLDivElement>({
     isActive: isOpen,
   });
@@ -35,7 +43,7 @@ const useModal = (options: UseModalOptions = {}) => {
   const modalRef = compoundRefs<HTMLDivElement>(clickOutsideRef, focusTrapRef);
 
   useScrollLock({ scrollLock, isOpen });
-  useKeydownEscape(isOpen ? closeModal : null);
+  useKeydownEscape(isOpen && closeOnBackdropClick ? closeModal : null);
 
   useEffect(() => {
     onOpenRef.current = onOpen;
