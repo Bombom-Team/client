@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
-import ChallengeCard from '@/pages/challenge/index/components/ChallengeCard/ChallengeCard';
+import ChallengeListSection from '@/pages/challenge/index/components/ChallengeListSection';
 import TrophyIcon from '#/assets/svg/trophy.svg';
 
 export const Route = createFileRoute('/_bombom/_main/challenge/')({
@@ -24,6 +24,21 @@ function RouteComponent() {
 
   const isMobile = device === 'mobile';
 
+  const joinedChallenges = challenges?.filter(
+    (challenge) =>
+      (challenge.detail?.isJoined && challenge.status === 'BEFORE_START') ||
+      challenge.status === 'ONGOING',
+  );
+  const availableChallenges = challenges?.filter(
+    (challenge) =>
+      !challenge.detail?.isJoined && challenge.status === 'BEFORE_START',
+  );
+  const completedChallenges = challenges?.filter(
+    (challenge) => challenge.status === 'COMPLETED',
+  );
+
+  const hasChallenges = challenges && challenges.length > 0;
+
   return (
     <Container>
       {!isMobile && (
@@ -35,13 +50,29 @@ function RouteComponent() {
         </TitleWrapper>
       )}
 
-      <ContentWrapper>
-        <ChallengeGrid isMobile={isMobile}>
-          {challenges?.map((challenge) => (
-            <ChallengeCard key={challenge.id} {...challenge} />
-          ))}
-        </ChallengeGrid>
-      </ContentWrapper>
+      {!hasChallenges ? (
+        <EmptyStateWrapper>
+          <EmptyStateTitle>현재 진행중인 챌린지가 없네요</EmptyStateTitle>
+          <EmptyStateDescription>
+            곧 새로운 챌린지가 시작될 예정이에요
+          </EmptyStateDescription>
+        </EmptyStateWrapper>
+      ) : (
+        <ContentWrapper>
+          <ChallengeListSection
+            title="도전 중인 챌린지"
+            challenges={joinedChallenges}
+          />
+          <ChallengeListSection
+            title="새롭게 도전할 챌린지"
+            challenges={availableChallenges}
+          />
+          <ChallengeListSection
+            title="완료한 챌린지"
+            challenges={completedChallenges}
+          />
+        </ContentWrapper>
+      )}
     </Container>
   );
 }
@@ -94,12 +125,29 @@ const ContentWrapper = styled.div`
   justify-content: center;
 `;
 
-const ChallengeGrid = styled.div<{ isMobile: boolean }>`
+const EmptyStateWrapper = styled.div`
   width: 100%;
+  min-height: 400px;
 
-  display: grid;
-  gap: ${({ isMobile }) => (isMobile ? '16px' : '24px')};
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
 
-  grid-template-columns: ${({ isMobile }) =>
-    isMobile ? '1fr' : 'repeat(auto-fit, minmax(360px, 1fr))'};
+const EmptyStateTitle = styled.h2`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.heading4};
+  text-align: center;
+`;
+
+const EmptyStateDescription = styled.p`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.body1};
+  text-align: center;
 `;

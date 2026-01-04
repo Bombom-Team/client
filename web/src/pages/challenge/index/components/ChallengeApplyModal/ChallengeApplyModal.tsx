@@ -8,13 +8,13 @@ import LoginRequiredModal from './modals/LoginRequiredModal';
 import SubscribeRequiredModal from './modals/SubscribeRequiredModal';
 import { challengeQueries } from '@/apis/challenge/challenge.query';
 import Button from '@/components/Button/Button';
-import type { ChallengeNewsletter } from '@/apis/challenge/challenge.api';
+import type { Challenge } from '@/apis/challenge/challenge.api';
 
 interface ChallengeApplyModalProps {
   challengeId: number;
   closeModal: () => void;
   onApply: () => void;
-  newsletters: ChallengeNewsletter[];
+  newsletters: Challenge['newsletters'];
 }
 
 const ChallengeApplyModal = ({
