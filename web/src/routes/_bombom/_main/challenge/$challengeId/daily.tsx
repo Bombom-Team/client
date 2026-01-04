@@ -110,7 +110,7 @@ const DayBadge = styled.div`
 
 const GuideImage = styled.img`
   width: 100%;
-  max-height: 400px;
+  max-height: 600px;
 
   object-fit: contain;
 `;
