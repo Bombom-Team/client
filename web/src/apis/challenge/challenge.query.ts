@@ -46,7 +46,7 @@ export const challengeQueries = {
   infiniteComments: (params: GetChallengeCommentsParams) =>
     infiniteQueryOptions({
       queryKey: [
-        'challenge',
+        'challenges',
         params.challengeId,
         'comments',
         'infinite',
