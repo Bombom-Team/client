@@ -60,3 +60,18 @@ export const getTeamChallengeProgress = async (challengeId: number) => {
     path: `/challenges/${challengeId}/progress/team`,
   });
 };
+
+export type DailyGuideType = 'READ' | 'COMMENT';
+
+export interface DailyGuide {
+  dayIndex: number;
+  type: DailyGuideType;
+  imageUrl: string;
+  notice?: string;
+}
+
+export const getTodayDailyGuide = async (challengeId: number) => {
+  return await fetcher.get<DailyGuide>({
+    path: `/challenges/${challengeId}/daily-guide/today`,
+  });
+};

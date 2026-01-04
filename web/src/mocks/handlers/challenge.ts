@@ -1,7 +1,10 @@
 import { http, HttpResponse } from 'msw';
 import { CHALLENGES } from '../datas/challenge';
 import { ENV } from '@/apis/env';
-import type { GetChallengeEligibilityResponse } from '@/apis/challenge/challenge.api';
+import type {
+  GetChallengeEligibilityResponse,
+  DailyGuide,
+} from '@/apis/challenge/challenge.api';
 
 const baseURL = ENV.baseUrl;
 
@@ -65,4 +68,32 @@ export const challengeHandlers = [
   http.delete(`${baseURL}/challenges/:challengeId/application`, () => {
     return HttpResponse.json({ success: true });
   }),
+
+  http.get(
+    `${baseURL}/challenges/:challengeId/daily-guide/today`,
+    ({ params }) => {
+      const { challengeId } = params;
+
+      // challengeId에 따라 다른 타입의 데일리 가이드 반환
+      const dailyGuides: Record<string, DailyGuide> = {
+        '1': {
+          dayIndex: 1,
+          type: 'READ',
+          imageUrl: 'https://picsum.photos/800/400?random=1',
+          notice: '첫 날입니다! 가볍게 시작해볼까요?',
+        },
+        '2': {
+          dayIndex: 2,
+          type: 'COMMENT',
+          imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
+          notice: '데일리 가이드에 따라 답변을 작성해주세요.',
+        },
+      };
+
+      const dailyGuide =
+        dailyGuides[challengeId as string] || dailyGuides['2'];
+
+      return HttpResponse.json(dailyGuide);
+    },
+  ),
 ];

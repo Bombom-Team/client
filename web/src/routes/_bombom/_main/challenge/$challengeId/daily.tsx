@@ -9,22 +9,6 @@ import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChalle
 
 const MAX_LENGTH = 1000;
 
-type DailyGuideType = 'READ' | 'COMMENT';
-
-interface DailyGuide {
-  dayIndex: number;
-  type: DailyGuideType;
-  imageUrl: string;
-  notice?: string;
-}
-
-const MOCK_CHALLENGE_DAILY_GUIDE: DailyGuide = {
-  dayIndex: 2,
-  type: 'COMMENT',
-  imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
-  notice: '데일리 가이드에 따라 답변을 작성해주세요.',
-};
-
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
 )({
@@ -49,9 +33,11 @@ function ChallengeDaily() {
   const { data: memberChallengeProgressInfo } = useQuery(
     queries.memberProgress(Number(challengeId)),
   );
+  const { data: dailyGuide } = useQuery(
+    queries.todayDailyGuide(Number(challengeId)),
+  );
   const [comment, setComment] = useState('');
 
-  const guide = MOCK_CHALLENGE_DAILY_GUIDE;
   const isMobile = device === 'mobile';
 
   const handleSubmit = () => {
@@ -60,6 +46,10 @@ function ChallengeDaily() {
     console.log('코멘트 제출:', comment);
     setComment('');
   };
+
+  if (!dailyGuide) {
+    return null;
+  }
 
   return (
     <Container>
@@ -70,16 +60,19 @@ function ChallengeDaily() {
         />
       )}
       <GuideCard>
-        <DayBadge>Day {guide.dayIndex}</DayBadge>
-        <GuideImage src={guide.imageUrl} alt={`Day ${guide.dayIndex} guide`} />
-        {guide.notice && (
+        <DayBadge>Day {dailyGuide.dayIndex}</DayBadge>
+        <GuideImage
+          src={dailyGuide.imageUrl}
+          alt={`Day ${dailyGuide.dayIndex} guide`}
+        />
+        {dailyGuide.notice && (
           <NoticeBox>
             <NoticeIcon isMobile={isMobile}>💡</NoticeIcon>
-            <NoticeText isMobile={isMobile}>{guide.notice}</NoticeText>
+            <NoticeText isMobile={isMobile}>{dailyGuide.notice}</NoticeText>
           </NoticeBox>
         )}
 
-        {guide.type === 'COMMENT' && (
+        {dailyGuide.type === 'COMMENT' && (
           <CommentSection>
             <CommentLabelWrapper>
               <CommentLabel>답변 작성</CommentLabel>
