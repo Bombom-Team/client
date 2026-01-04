@@ -1,14 +1,10 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
-import { useState } from 'react';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
+import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
-import { useSubmitDailyGuideCommentMutation } from '@/pages/challenge/index/hooks/useSubmitDailyGuideComment';
-
-const MAX_LENGTH = 1000;
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -37,18 +33,8 @@ function ChallengeDaily() {
   const { data: dailyGuide } = useQuery(
     queries.todayDailyGuide(Number(challengeId)),
   );
-  const [comment, setComment] = useState('');
 
   const isMobile = device === 'mobile';
-
-  const { mutate: submitComment } = useSubmitDailyGuideCommentMutation({
-    challengeId: Number(challengeId),
-  });
-
-  const handleSubmit = () => {
-    if (!comment.trim()) return;
-    submitComment(comment);
-  };
 
   if (!dailyGuide) {
     return null;
@@ -76,31 +62,7 @@ function ChallengeDaily() {
         )}
 
         {dailyGuide.type === 'COMMENT' && (
-          <CommentSection>
-            <CommentLabelWrapper>
-              <CommentLabel>답변 작성</CommentLabel>
-              <CharCount>
-                {comment.length} / {MAX_LENGTH}
-              </CharCount>
-            </CommentLabelWrapper>
-            <CommentInputWrapper>
-              <CommentTextarea
-                isMobile={isMobile}
-                placeholder="데일리 가이드의 질문에 대한 답변을 입력해주세요."
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                maxLength={MAX_LENGTH}
-                rows={4}
-              />
-            </CommentInputWrapper>
-            <SubmitButton
-              variant="filled"
-              onClick={handleSubmit}
-              disabled={!comment.trim()}
-            >
-              제출하기
-            </SubmitButton>
-          </CommentSection>
+          <DailyGuideComment challengeId={Number(challengeId)} />
         )}
       </GuideCard>
     </Container>
@@ -172,68 +134,4 @@ const NoticeText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
-`;
-
-const CommentSection = styled.div`
-  width: 100%;
-  padding-top: 8px;
-
-  display: flex;
-  gap: 12px;
-  flex-direction: column;
-`;
-
-const CommentLabelWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const CommentLabel = styled.label`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
-`;
-
-const CharCount = styled.span`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
-`;
-
-const CommentInputWrapper = styled.div`
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-`;
-
-const CommentTextarea = styled.textarea<{ isMobile: boolean }>`
-  width: 100%;
-  height: 120px;
-  padding: 12px 16px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 8px;
-
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
-
-  resize: none;
-
-  &::placeholder {
-    color: ${({ theme }) => theme.colors.textTertiary};
-  }
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const SubmitButton = styled(Button)`
-  padding: 12px 24px;
-  border-radius: 8px;
-
-  align-self: flex-end;
-
-  font: ${({ theme }) => theme.fonts.body2};
 `;
