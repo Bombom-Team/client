@@ -117,7 +117,7 @@ const Content = styled.div<{ isMobile: boolean }>`
 const Quote = styled.div<{ isMobile: boolean }>`
   overflow: hidden;
   padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
-  border-left: 4px solid ${({ theme }) => theme.colors.primary};
+  border-left: 4px solid ${({ theme }) => theme.colors.stroke};
 
   display: -webkit-box;
   flex: 1;
