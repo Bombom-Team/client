@@ -61,6 +61,23 @@ export const getTeamChallengeProgress = async (challengeId: number) => {
   });
 };
 
+export type GetChallengeCommentsParams =
+  operations['getChallengeComments']['parameters']['path'] &
+    components['schemas']['ChallengeCommentOptionsRequest'] &
+    components['schemas']['Pageable'];
+export type GetChallengeCommentsResponse =
+  components['schemas']['PageChallengeCommentResponse'];
+
+export const getChallengeComments = async ({
+  challengeId,
+  ...params
+}: GetChallengeCommentsParams) => {
+  return await fetcher.get<GetChallengeCommentsResponse>({
+    path: `/challenges/${challengeId}/comments`,
+    query: params,
+  });
+};
+
 export type GetChallengeCommentCandidateArticlesParams =
   operations['getChallengeCommentCandidateArticles']['parameters']['query'];
 export type GetChallengeCommentCandidateArticlesResponse =

@@ -39,43 +39,37 @@ function ChallengeDashboardRoute() {
 
   return (
     <Container>
-      <Content>
-        {challengeInfo && memberChallengeProgressInfo && (
-          <UserChallengeInfo
-            challengeInfo={challengeInfo}
-            memberChallengeProgressInfo={memberChallengeProgressInfo}
-          />
-        )}
-        <InfoWrapper>
-          <AchievementAverage>
-            팀 평균 달성률 :{' '}
-            {teamChallengeProgressInfo?.teamSummary.achievementAverage}%
-          </AchievementAverage>
-          <WarningMessage>
-            ⚠️ 챌린지 기간의 {REQUIRED_RATE}%(
-            {challengeInfo?.requiredDays}일) 이상을 완수해야 챌린지 보상을 받을
-            수 있습니다
-          </WarningMessage>
-        </InfoWrapper>
-        {teamChallengeProgressInfo && (
-          <ChallengeDashboard
-            nickName={memberChallengeProgressInfo?.nickname}
-            data={teamChallengeProgressInfo}
-          />
-        )}
-      </Content>
+      {challengeInfo && memberChallengeProgressInfo && (
+        <UserChallengeInfo
+          challengeInfo={challengeInfo}
+          memberChallengeProgressInfo={memberChallengeProgressInfo}
+        />
+      )}
+      <InfoWrapper>
+        <AchievementAverage>
+          팀 평균 달성률 :{' '}
+          {teamChallengeProgressInfo?.teamSummary.achievementAverage}%
+        </AchievementAverage>
+        <WarningMessage>
+          ⚠️ 챌린지 기간의 {REQUIRED_RATE}%(
+          {challengeInfo?.requiredDays}일) 이상을 완수해야 챌린지 보상을 받을 수
+          있습니다
+        </WarningMessage>
+      </InfoWrapper>
+      {teamChallengeProgressInfo && (
+        <ChallengeDashboard
+          nickName={memberChallengeProgressInfo?.nickname}
+          data={teamChallengeProgressInfo}
+        />
+      )}
     </Container>
   );
 }
 
 const Container = styled.div`
   width: 100%;
-`;
-
-const Content = styled.div`
-  width: 100%;
   padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 16px;
 
   display: flex;

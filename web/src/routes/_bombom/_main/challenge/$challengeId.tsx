@@ -1,23 +1,13 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import {
-  createFileRoute,
-  Outlet,
-  useNavigate,
-  useRouterState,
-} from '@tanstack/react-router';
+import { createFileRoute, Outlet } from '@tanstack/react-router';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
+import { useChallengeDetailTabs } from '@/pages/challenge/index/hooks/useChallengeDetailTabs';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
 import TrophyIcon from '#/assets/svg/trophy.svg';
-
-const CHALLENGE_TABS = [
-  { id: 'daily', label: '데일리 가이드', path: 'daily' },
-  { id: 'dashboard', label: '진행 현황판', path: 'dashboard' },
-  { id: 'comments', label: '한 줄 코멘트', path: 'comments' },
-] as const;
 
 export const Route = createFileRoute('/_bombom/_main/challenge/$challengeId')({
   head: () => ({
@@ -33,20 +23,10 @@ export const Route = createFileRoute('/_bombom/_main/challenge/$challengeId')({
 function ChallengeDetail() {
   const { challengeId } = Route.useParams();
   const device = useDevice();
-  const navigate = useNavigate();
-  const routerState = useRouterState();
 
-  const currentPath = routerState.location.pathname;
-  const activeTab =
-    CHALLENGE_TABS.find((tab) => currentPath.endsWith(`/${tab.path}`))?.id ||
-    'daily';
-
-  const handleTabSelect = (tabPath: string) => {
-    navigate({
-      to: `/challenge/$challengeId/${tabPath}`,
-      params: { challengeId },
-    });
-  };
+  const { tabs, activeTabId, goToTab } = useChallengeDetailTabs({
+    challengeId,
+  });
 
   return (
     <Container>
@@ -62,13 +42,13 @@ function ChallengeDetail() {
       <ContentWrapper device={device}>
         <TabsWrapper device={device}>
           <Tabs direction={device === 'mobile' ? 'horizontal' : 'vertical'}>
-            {CHALLENGE_TABS.map((tab) => (
+            {tabs.map((tab) => (
               <Tab
                 key={tab.id}
                 value={tab.id}
                 label={tab.label}
-                onTabSelect={() => handleTabSelect(tab.path)}
-                selected={activeTab === tab.id}
+                onTabSelect={() => goToTab(tab.path)}
+                selected={activeTabId === tab.id}
                 aria-controls={`panel-${tab.id}`}
                 textAlign="start"
               />
