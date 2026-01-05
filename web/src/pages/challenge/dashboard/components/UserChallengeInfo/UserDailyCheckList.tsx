@@ -7,25 +7,20 @@ interface UserDailyCheckListProps {
   todayTodos: TodayTodos;
 }
 
-// const todoLabels = {
-//   READ: '뉴스레터를 읽었나요?',
-//   COMMENT: '오늘의 코멘트를 작성했나요?',
-// };
+const todoLabels = {
+  READ: '뉴스레터를 읽었나요?',
+  COMMENT: '오늘의 코멘트를 작성했나요?',
+};
 
 const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
   const visibleTodos = todayTodos.filter(
     (todo) => todo.challengeTodoType && todo.challengeTodoStatus,
   );
 
-  // const totalCount = visibleTodos.length;
-  // const completedCount = visibleTodos.filter(
-  //   (todo) => todo.challengeTodoStatus === 'COMPLETE',
-  // ).length;
-  const completedCount =
-    visibleTodos.filter((todo) => todo.challengeTodoStatus === 'COMPLETE')
-      .length === 2
-      ? 1
-      : 0;
+  const totalCount = visibleTodos.length;
+  const completedCount = visibleTodos.filter(
+    (todo) => todo.challengeTodoStatus === 'COMPLETE',
+  ).length;
 
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -34,10 +29,12 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
     <Container isMobile={isMobile}>
       <Header>
         <Title>오늘의 체크 리스트</Title>
-        <CountBadge>{completedCount}/1</CountBadge>
+        <CountBadge>
+          {completedCount}/{totalCount}
+        </CountBadge>
       </Header>
       <List>
-        {/* {visibleTodos.map((todo, index) => {
+        {visibleTodos.map((todo, index) => {
           if (!todo.challengeTodoType || !todo.challengeTodoStatus) {
             return null;
           }
@@ -50,13 +47,7 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
               <TodoText>{todoLabels[todo.challengeTodoType]}</TodoText>
             </ListItem>
           );
-        })} */}
-        <ListItem>
-          <StatusBox status={completedCount === 1 ? 'COMPLETE' : 'INCOMPLETE'}>
-            {completedCount === 1 ? '✓' : ''}
-          </StatusBox>
-          <TodoText>챌린지 참여 각오를 작성했나요?</TodoText>
-        </ListItem>
+        })}
       </List>
     </Container>
   );
