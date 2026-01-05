@@ -26,7 +26,7 @@ const ReadingKingLeaderboard = () => {
   } = useQuery(queries.monthlyReadingRank({ limit: RANKING.maxRank }));
   const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
 
-  const { leftTime } = useCountdown({
+  const { leftTime, isCompleting } = useCountdown({
     targetTime:
       monthlyReadingRank?.nextRefreshAt ??
       new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
