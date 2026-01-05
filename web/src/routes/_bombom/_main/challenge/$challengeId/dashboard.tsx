@@ -42,10 +42,12 @@ function ChallengeDashboardRoute() {
   return (
     <Container>
       {challengeInfo && memberChallengeProgressInfo && (
-        <UserChallengeInfo
-          challengeInfo={challengeInfo}
-          memberChallengeProgressInfo={memberChallengeProgressInfo}
-        />
+        <UserChallengeInfoWrapper>
+          <UserChallengeInfo
+            challengeInfo={challengeInfo}
+            memberChallengeProgressInfo={memberChallengeProgressInfo}
+          />
+        </UserChallengeInfoWrapper>
       )}
       <InfoWrapper>
         <AchievementAverage>
@@ -74,17 +76,17 @@ function ChallengeDashboardRoute() {
 
 const Container = styled.div`
   width: 100%;
-  padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 16px;
 
   display: flex;
   gap: 24px;
   flex-direction: column;
+`;
 
-  background-color: ${({ theme }) => theme.colors.white};
-
-  box-sizing: border-box;
+const UserChallengeInfoWrapper = styled.div`
+  width: 100%;
+  padding: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  border-radius: 16px;
 `;
 
 const InfoWrapper = styled.div`
