@@ -133,10 +133,10 @@ const ContentWrapper = styled.div<{ device: Device }>`
   align-items: flex-start;
   align-self: stretch;
 `;
-const UserChallengeInfoWrapper = styled.div`
+const UserChallengeInfoWrapper = styled.section`
   width: 100%;
   padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 16px;
 `;
 
