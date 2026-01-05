@@ -30,7 +30,7 @@ const ReadingKingLeaderboard = () => {
     targetTime:
       monthlyReadingRank?.nextRefreshAt ??
       new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
-    completeDelay: 1000,
+    completeDelay: 2000,
     onComplete: () => {
       refetch();
     },
@@ -64,7 +64,7 @@ const ReadingKingLeaderboard = () => {
               순위는 10분마다 갱신됩니다.
             </Tooltip>
           </Countdown>
-          {isFetching && <CountdownLoadingDots />}
+          {(isFetching || isCompleting) && <CountdownLoadingDots />}
         </CountdownWrapper>
       </TitleWrapper>
 
