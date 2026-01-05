@@ -12,8 +12,6 @@ import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 import MobileCommentsContent from '@/pages/challenge/comments/components/MobileCommentsContent';
 import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsContent';
 import { useCommentsFilters } from '@/pages/challenge/comments/hooks/useCommentsFilters';
-
-import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import { filterWeekdays, formatDate, getDatesInRange } from '@/utils/date';
 
 export const Route = createFileRoute(
@@ -36,10 +34,6 @@ function ChallengeComments() {
 
   const { data: challengeInfo } = useQuery(
     queries.challengesInfo(Number(challengeId)),
-  );
-
-  const { data: memberChallengeProgressInfo } = useQuery(
-    queries.memberProgress(Number(challengeId)),
   );
 
   const today = formatDate(new Date(), '-');
@@ -76,14 +70,6 @@ function ChallengeComments() {
 
   return (
     <Container>
-      {challengeInfo && memberChallengeProgressInfo && (
-        <UserChallengeInfoWrapper>
-          <UserChallengeInfo
-            challengeInfo={challengeInfo}
-            memberChallengeProgressInfo={memberChallengeProgressInfo}
-          />
-        </UserChallengeInfoWrapper>
-      )}
       <FilterWrapper isMobile={isMobile}>
         <DateFilter
           weekdays={filterWeekdays(totalDates)}
@@ -161,13 +147,6 @@ const Container = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-const UserChallengeInfoWrapper = styled.div`
-  width: 100%;
-  padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.dividers};
-  border-radius: 16px;
 `;
 
 const FilterWrapper = styled.div<{ isMobile: boolean }>`

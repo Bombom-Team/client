@@ -1,9 +1,12 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Outlet } from '@tanstack/react-router';
+import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
+import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import ChallengeGuideModal from '@/pages/challenge/index/components/ChallengeGuideModal/ChallengeGuideModal';
 import { useChallengeDetailTabs } from '@/pages/challenge/index/hooks/useChallengeDetailTabs';
 import type { Device } from '@/hooks/useDevice';
@@ -28,6 +31,14 @@ function ChallengeDetail() {
   const { tabs, activeTabId, goToTab } = useChallengeDetailTabs({
     challengeId,
   });
+
+  const { data: challengeInfo } = useQuery(
+    queries.challengesInfo(Number(challengeId)),
+  );
+
+  const { data: memberChallengeProgressInfo } = useQuery(
+    queries.memberProgress(Number(challengeId)),
+  );
 
   return (
     <>
@@ -59,6 +70,14 @@ function ChallengeDetail() {
           </TabsWrapper>
 
           <TabPanel>
+            {challengeInfo && memberChallengeProgressInfo && (
+              <UserChallengeInfoWrapper>
+                <UserChallengeInfo
+                  challengeInfo={challengeInfo}
+                  memberChallengeProgressInfo={memberChallengeProgressInfo}
+                />
+              </UserChallengeInfoWrapper>
+            )}
             <Outlet />
           </TabPanel>
         </ContentWrapper>
@@ -114,6 +133,12 @@ const ContentWrapper = styled.div<{ device: Device }>`
   align-items: flex-start;
   align-self: stretch;
 `;
+const UserChallengeInfoWrapper = styled.div`
+  width: 100%;
+  padding: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  border-radius: 16px;
+`;
 
 const TabsWrapper = styled.div<{ device: Device }>`
   width: ${({ device }) => (device === 'mobile' ? '100%' : '220px')};
@@ -155,5 +180,8 @@ const TabPanel = styled.div`
   width: 100%;
   min-width: 0;
 
+  display: flex;
+  gap: 16px;
   flex: 1;
+  flex-direction: column;
 `;
