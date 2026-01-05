@@ -8,7 +8,7 @@ interface UserDailyCheckListProps {
 }
 
 const todoLabels = {
-  READ: '뉴스레터를 읽었나요?',
+  READ: '오늘 도착한 뉴스레터를 읽었나요?',
   COMMENT: '오늘의 코멘트를 작성했나요?',
 };
 
