@@ -47,11 +47,7 @@ function ChallengeComments() {
   const { data: candidateArticles = [] } = useQuery(
     queries.challengeCommentCandidateArticles({ date: today }),
   );
-
-  if (!challengeInfo) return null;
-
-  const totalDates = getDatesInRange(challengeInfo?.startDate, today);
-
+  const totalDates = getDatesInRange(challengeInfo?.startDate ?? today, today);
   const displayDates = filterWeekdays(totalDates);
 
   const [currentDate, setCurrentDate] = useState(
@@ -68,7 +64,7 @@ function ChallengeComments() {
     currentDate,
   });
 
-  const isFirstDay = currentDate === challengeInfo.startDate;
+  const isFirstDay = currentDate === challengeInfo?.startDate;
 
   return (
     <Container>
