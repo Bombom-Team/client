@@ -3,7 +3,7 @@ name: CI/CD - Admin Deploy
 on:
   push:
     branches:
-      - main
+      - dev
 
 concurrency:
   group: deploy-admin-${{ github.ref_name }}
