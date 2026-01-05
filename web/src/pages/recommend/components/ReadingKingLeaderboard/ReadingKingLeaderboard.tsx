@@ -22,9 +22,11 @@ const ReadingKingLeaderboard = () => {
     data: monthlyReadingRank,
     isLoading,
     isFetching,
-    refetch,
+    refetch: refetchMonthlyReadingRank,
   } = useQuery(queries.monthlyReadingRank({ limit: RANKING.maxRank }));
-  const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
+  const { data: userRank, refetch: refetchMyMonthlyReadingRank } = useQuery(
+    queries.myMonthlyReadingRank(),
+  );
 
   const { leftTime, isCompleting } = useCountdown({
     targetTime:
@@ -32,7 +34,8 @@ const ReadingKingLeaderboard = () => {
       new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
     completeDelay: 2000,
     onComplete: () => {
-      refetch();
+      refetchMonthlyReadingRank();
+      refetchMyMonthlyReadingRank();
     },
   });
 
