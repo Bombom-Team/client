@@ -29,6 +29,7 @@ export const useCountdown = ({
     seconds: 0,
     totalSeconds: 0,
   });
+  const [isCompleting, setIsCompleting] = useState(false);
 
   const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const onCompleteRef = useRef(onComplete);
@@ -59,11 +60,16 @@ export const useCountdown = ({
     }
 
     if (completeDelay) {
+      setIsCompleting(true);
       const delayTimerId = setTimeout(() => {
         onCompleteRef.current?.();
+        setIsCompleting(false);
       }, completeDelay);
 
-      return () => clearTimeout(delayTimerId);
+      return () => {
+        clearTimeout(delayTimerId);
+        setIsCompleting(false);
+      };
     } else {
       onCompleteRef.current?.();
     }
@@ -82,5 +88,5 @@ export const useCountdown = ({
     };
   }, [updateLeftTime, targetTimeMs]);
 
-  return { leftTime };
+  return { leftTime, isCompleting };
 };
