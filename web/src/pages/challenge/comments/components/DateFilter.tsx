@@ -1,6 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useDateFilter } from '../hooks/useDateFilter';
+import { findWeekIndex, groupingWeeks } from '../utils/date';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tab, { type TabProps } from '@/components/Tab/Tab';
@@ -30,6 +31,11 @@ const DateFilter = ({
 
   const device = useDevice();
 
+  const totalWeeks = groupingWeeks(displayDates);
+  const selectedWeekIndex = findWeekIndex(totalWeeks, selectedDate);
+  const weekDates =
+    device !== 'mobile' ? (totalWeeks[selectedWeekIndex] ?? []) : displayDates;
+
   const todayTab = (
     <StyledTab
       key={today}
@@ -41,7 +47,7 @@ const DateFilter = ({
     />
   );
 
-  const dateTabs = displayDates.map((dateString) => {
+  const dateTabs = weekDates.map((dateString) => {
     const date = new Date(dateString);
     return (
       <StyledTab
@@ -77,7 +83,9 @@ const DateFilter = ({
 
       <DateTabsWrapper device={device}>
         <StyledTabs device={device}>
-          {device !== 'mobile' ? [...dateTabs, todayTab] : dateTabs}
+          {device !== 'mobile' && selectedWeekIndex === totalWeeks.length - 1
+            ? [...dateTabs, todayTab]
+            : dateTabs}
         </StyledTabs>
       </DateTabsWrapper>
 
