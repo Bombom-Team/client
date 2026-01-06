@@ -30,6 +30,31 @@ const DateFilter = ({
 
   const device = useDevice();
 
+  const todayTab = (
+    <StyledTab
+      key={today}
+      value={today}
+      label="오늘"
+      selected={selectedDate === today}
+      onTabSelect={onDateSelect}
+      device={device}
+    />
+  );
+
+  const dateTabs = displayDates.map((dateString) => {
+    const date = new Date(dateString);
+    return (
+      <StyledTab
+        key={dateString}
+        value={dateString}
+        label={`${date.getMonth() + 1}/${date.getDate()}`}
+        selected={selectedDate === dateString}
+        onTabSelect={onDateSelect}
+        device={device}
+      />
+    );
+  });
+
   return (
     <Container device={device}>
       {device !== 'mobile' && (
@@ -52,47 +77,11 @@ const DateFilter = ({
 
       <DateTabsWrapper device={device}>
         <StyledTabs device={device}>
-          {[
-            ...displayDates.map((dateString) => {
-              const date = new Date(dateString);
-              return (
-                <StyledTab
-                  key={dateString}
-                  value={dateString}
-                  label={`${date.getMonth() + 1}/${date.getDate()}`}
-                  selected={selectedDate === dateString}
-                  onTabSelect={onDateSelect}
-                  device={device}
-                />
-              );
-            }),
-            ...(device !== 'mobile'
-              ? [
-                  <StyledTab
-                    key={today}
-                    value={today}
-                    label="오늘"
-                    selected={selectedDate === today}
-                    onTabSelect={onDateSelect}
-                    device={device}
-                  />,
-                ]
-              : []),
-          ]}
+          {device !== 'mobile' ? [...dateTabs, todayTab] : dateTabs}
         </StyledTabs>
       </DateTabsWrapper>
 
-      {device === 'mobile' && (
-        <TodayTabWrapper>
-          <StyledTab
-            value={today}
-            label="오늘"
-            selected={selectedDate === today}
-            onTabSelect={onDateSelect}
-            device={device}
-          />
-        </TodayTabWrapper>
-      )}
+      {device === 'mobile' && <TodayTabWrapper>{todayTab}</TodayTabWrapper>}
 
       {device !== 'mobile' && (
         <NavButton
