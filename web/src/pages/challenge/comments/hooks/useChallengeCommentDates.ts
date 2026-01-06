@@ -1,18 +1,21 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { filterWeekdays, formatDate, getDatesInRange } from '@/utils/date';
 
 interface UseChallengeCommentDatesParams {
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export const useChallengeCommentDates = ({
   startDate,
   endDate,
 }: UseChallengeCommentDatesParams) => {
-  const today = formatDate(new Date(), '-');
-  const totalDates = getDatesInRange(startDate ?? today, endDate ?? today);
-  const challengeDates = filterWeekdays(totalDates);
+  const today = useMemo(() => formatDate(new Date(), '-'), []);
+
+  const challengeDates = useMemo(() => {
+    if (!startDate || !endDate) return [];
+    return filterWeekdays(getDatesInRange(startDate, endDate));
+  }, [endDate, startDate]);
 
   const isFirstDay = useCallback(
     (targetDate: string) => {
@@ -21,19 +24,9 @@ export const useChallengeCommentDates = ({
     [startDate],
   );
 
-  const isChallengeEnd = useCallback(
-    (targetDate: string) => {
-      if (!endDate) return false;
-      return targetDate > endDate;
-    },
-    [endDate],
-  );
-
   return {
     today,
-    totalDates,
     challengeDates,
     isFirstDay,
-    isChallengeEnd,
   };
 };
