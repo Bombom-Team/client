@@ -125,10 +125,10 @@ const TableWrapper = styled.div<{ isMobile: boolean }>`
 `;
 
 const Table = styled.table<{ isMobile: boolean }>`
-  --name-col-width: 64px;
+  --name-col-width: 78px;
   --date-col-width: ${({ isMobile }) => (isMobile ? '36px' : '28px')};
-  --summary-col-width: 36px;
-  --rate-col-width: 60px;
+  --summary-col-width: 28px;
+  --rate-col-width: 44px;
 
   width: 100%;
   min-width: ${({ isMobile }) => (isMobile ? '840px' : '720px')};
