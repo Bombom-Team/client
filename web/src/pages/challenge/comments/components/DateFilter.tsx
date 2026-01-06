@@ -1,6 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { findWeekIndex, groupingWeeks } from '../utils/date';
+import { useDateFilter } from '../hooks/useDateFilter';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tab, { type TabProps } from '@/components/Tab/Tab';
@@ -16,43 +16,19 @@ interface DateFilterProps {
 
 const DateFilter = ({ dates, selectedDate, onDateSelect }: DateFilterProps) => {
   const device = useDevice();
-  const totalWeeks = groupingWeeks(dates);
-  const selectedWeekIndex = findWeekIndex(totalWeeks, selectedDate);
-  const selectedWeek = totalWeeks[selectedWeekIndex] ?? [];
 
-  const latestDate = dates[dates.length - 1];
-  const isLatestDateToday = latestDate ? isToday(new Date(latestDate)) : false;
-
-  const displayDates =
-    device === 'mobile'
-      ? isLatestDateToday
-        ? dates.slice(0, -1)
-        : dates
-      : selectedWeek;
-
-  const canGoPrev = selectedWeekIndex > 0;
-  const canGoNext = selectedWeekIndex < totalWeeks.length - 1;
+  const {
+    displayDates,
+    canGoPrev,
+    canGoNext,
+    goToPrevWeek,
+    goToNextWeek,
+    latestDate,
+    isLatestDateToday,
+  } = useDateFilter({ dates, selectedDate, device, onDateSelect });
 
   const selectDate = (dateString: string) => {
     onDateSelect(dateString);
-  };
-
-  const goToPrevWeek = () => {
-    if (canGoPrev) {
-      const prevWeekDate = totalWeeks[selectedWeekIndex - 1]?.[0];
-      if (prevWeekDate) {
-        onDateSelect(prevWeekDate);
-      }
-    }
-  };
-
-  const goToNextWeek = () => {
-    if (canGoNext) {
-      const nextWeekDate = totalWeeks[selectedWeekIndex + 1]?.[0];
-      if (nextWeekDate) {
-        onDateSelect(nextWeekDate);
-      }
-    }
   };
 
   return (
