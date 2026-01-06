@@ -56,6 +56,7 @@ const AddCommentModalContent = ({
   const selectArticle = (articleId: number) => {
     setShowArticleError(false);
     setSelectedArticleId(articleId);
+    setSelectedQuotationId(null);
   };
 
   const editComment = (value: string) => {
