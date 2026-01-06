@@ -14,8 +14,6 @@ import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsC
 import { useChallengeCommentDates } from '@/pages/challenge/comments/hooks/useChallengeCommentDates';
 import { useCommentsFilters } from '@/pages/challenge/comments/hooks/useCommentsFilters';
 
-import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
-
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/comments',
 )({
@@ -36,10 +34,6 @@ function ChallengeComments() {
 
   const { data: challengeInfo } = useQuery(
     queries.challengesInfo(Number(challengeId)),
-  );
-
-  const { data: memberChallengeProgressInfo } = useQuery(
-    queries.memberProgress(Number(challengeId)),
   );
 
   const { today, challengeDates, isFirstDay, isChallengeDay } =
@@ -66,14 +60,6 @@ function ChallengeComments() {
 
   return (
     <Container>
-      {challengeInfo && memberChallengeProgressInfo && (
-        <UserChallengeInfoWrapper>
-          <UserChallengeInfo
-            challengeInfo={challengeInfo}
-            memberChallengeProgressInfo={memberChallengeProgressInfo}
-          />
-        </UserChallengeInfoWrapper>
-      )}
       <FilterWrapper isMobile={isMobile}>
         <DateFilter
           today={today}
@@ -154,13 +140,6 @@ const Container = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-const UserChallengeInfoWrapper = styled.div`
-  width: 100%;
-  padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.dividers};
-  border-radius: 16px;
 `;
 
 const FilterWrapper = styled.div<{ isMobile: boolean }>`

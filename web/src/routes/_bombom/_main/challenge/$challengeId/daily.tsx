@@ -4,7 +4,6 @@ import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
-import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -24,12 +23,7 @@ function ChallengeDaily() {
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
   const device = useDevice();
-  const { data: challengeInfo } = useQuery(
-    queries.challengesInfo(Number(challengeId)),
-  );
-  const { data: memberChallengeProgressInfo } = useQuery(
-    queries.memberProgress(Number(challengeId)),
-  );
+
   const { data: dailyGuide } = useQuery(
     queries.todayDailyGuide(Number(challengeId)),
   );
@@ -42,12 +36,6 @@ function ChallengeDaily() {
 
   return (
     <Container>
-      {challengeInfo && memberChallengeProgressInfo && (
-        <UserChallengeInfo
-          challengeInfo={challengeInfo}
-          memberChallengeProgressInfo={memberChallengeProgressInfo}
-        />
-      )}
       <GuideCard>
         <DayBadge>Day {dailyGuide.dayIndex}</DayBadge>
         <GuideImage
@@ -73,17 +61,12 @@ function ChallengeDaily() {
   );
 }
 
-const Container = styled.div`
+const Container = styled.section`
   width: 100%;
-  padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 16px;
 
   display: flex;
   gap: 24px;
   flex-direction: column;
-
-  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const GuideCard = styled.div`

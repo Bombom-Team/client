@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
-import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const REQUIRED_RATE = 80;
@@ -41,12 +40,6 @@ function ChallengeDashboardRoute() {
 
   return (
     <Container>
-      {challengeInfo && memberChallengeProgressInfo && (
-        <UserChallengeInfo
-          challengeInfo={challengeInfo}
-          memberChallengeProgressInfo={memberChallengeProgressInfo}
-        />
-      )}
       <InfoWrapper>
         <AchievementAverage>
           팀 평균 달성률 :{' '}
@@ -72,19 +65,12 @@ function ChallengeDashboardRoute() {
   );
 }
 
-const Container = styled.div`
+const Container = styled.section`
   width: 100%;
-  padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 16px;
 
   display: flex;
   gap: 24px;
   flex-direction: column;
-
-  background-color: ${({ theme }) => theme.colors.white};
-
-  box-sizing: border-box;
 `;
 
 const InfoWrapper = styled.div`
