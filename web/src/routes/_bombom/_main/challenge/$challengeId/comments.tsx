@@ -103,11 +103,11 @@ function ChallengeComments() {
           </AddCommentBox>
         )}
 
-        {isFirstDay(today) || !isChallengeDay(today) ? (
+        {isFirstDay(selectedDate) || !isChallengeDay(selectedDate) ? (
           <RestDayContent>
             <RestDayTitle isMobile={isMobile}>전체 코멘트</RestDayTitle>
             <RestDayMessage isMobile={isMobile}>
-              {isFirstDay(today)
+              {isFirstDay(selectedDate)
                 ? '첫날에는 코멘트를 작성하지 않아요!'
                 : '오늘은 휴식일이에요. 코멘트를 작성하지 않아요!'}
             </RestDayMessage>
