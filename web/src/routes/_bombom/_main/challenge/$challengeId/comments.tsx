@@ -11,10 +11,10 @@ import AddCommentModalContent from '@/pages/challenge/comments/components/AddCom
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 import MobileCommentsContent from '@/pages/challenge/comments/components/MobileCommentsContent';
 import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsContent';
+import { useChallengeCommentDates } from '@/pages/challenge/comments/hooks/useChallengeCommentDates';
 import { useCommentsFilters } from '@/pages/challenge/comments/hooks/useCommentsFilters';
 
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
-import { filterWeekdays, formatDate, getDatesInRange } from '@/utils/date';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/comments',
@@ -42,16 +42,15 @@ function ChallengeComments() {
     queries.memberProgress(Number(challengeId)),
   );
 
-  const today = formatDate(new Date(), '-');
+  const { today, challengeDates, isFirstDay } = useChallengeCommentDates({
+    startDate: challengeInfo?.startDate,
+    endDate: challengeInfo?.endDate,
+  });
+
+  const [selectedDate, setSelectedDate] = useState(today);
 
   const { data: candidateArticles = [] } = useQuery(
     queries.challengeCommentCandidateArticles({ date: today }),
-  );
-  const totalDates = getDatesInRange(challengeInfo?.startDate ?? today, today);
-  const displayDates = filterWeekdays(totalDates);
-
-  const [currentDate, setCurrentDate] = useState(
-    displayDates[displayDates.length - 1] ?? today,
   );
 
   const device = useDevice();
@@ -61,10 +60,8 @@ function ChallengeComments() {
 
   const { baseQueryParams, changePage, page, resetPage } = useCommentsFilters({
     challengeId: Number(challengeId),
-    currentDate,
+    selectedDate,
   });
-
-  const isFirstDay = currentDate === challengeInfo?.startDate;
 
   return (
     <Container>
@@ -78,14 +75,15 @@ function ChallengeComments() {
       )}
       <FilterWrapper isMobile={isMobile}>
         <DateFilter
-          dates={displayDates}
-          selectedDate={currentDate}
-          onDateSelect={setCurrentDate}
+          today={today}
+          dates={challengeDates}
+          selectedDate={selectedDate}
+          onDateSelect={setSelectedDate}
         />
       </FilterWrapper>
 
       <ContentWrapper isMobile={isMobile}>
-        {currentDate === today && (
+        {selectedDate === today && (
           <AddCommentBox>
             <AddCommentTitle isMobile={isMobile}>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
@@ -93,9 +91,9 @@ function ChallengeComments() {
             <AddCommentButton
               isMobile={isMobile}
               onClick={openModal}
-              disabled={isFirstDay || candidateArticles.length === 0}
+              disabled={isFirstDay(today) || candidateArticles.length === 0}
             >
-              {isFirstDay
+              {isFirstDay(today)
                 ? '첫날에는 코멘트를 작성할 수 없어요'
                 : candidateArticles.length > 0
                   ? '코멘트 작성하기'
@@ -104,7 +102,7 @@ function ChallengeComments() {
           </AddCommentBox>
         )}
 
-        {isFirstDay ? (
+        {isFirstDay(today) ? (
           <FirstDaySection>
             <FirstDayTitle isMobile={isMobile}>전체 코멘트</FirstDayTitle>
             <FirstDayMessage isMobile={isMobile}>

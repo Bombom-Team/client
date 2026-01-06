@@ -6,30 +6,29 @@ import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tab, { type TabProps } from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import { isToday } from '@/utils/date';
 
 interface DateFilterProps {
+  today: string;
   dates: string[];
   selectedDate: string;
   onDateSelect: (date: string) => void;
 }
 
-const DateFilter = ({ dates, selectedDate, onDateSelect }: DateFilterProps) => {
-  const device = useDevice();
-
+const DateFilter = ({
+  today,
+  dates,
+  selectedDate,
+  onDateSelect,
+}: DateFilterProps) => {
   const {
     displayDates,
-    canGoPrev,
-    canGoNext,
+    canGoPrevWeek,
+    canGoNextWeek,
     goToPrevWeek,
     goToNextWeek,
-    latestDate,
-    isLatestDateToday,
-  } = useDateFilter({ dates, selectedDate, device, onDateSelect });
+  } = useDateFilter({ today, dates, selectedDate, onDateSelect });
 
-  const selectDate = (dateString: string) => {
-    onDateSelect(dateString);
-  };
+  const device = useDevice();
 
   return (
     <Container device={device}>
@@ -37,47 +36,59 @@ const DateFilter = ({ dates, selectedDate, onDateSelect }: DateFilterProps) => {
         <NavButton
           variant="transparent"
           onClick={goToPrevWeek}
-          disabled={!canGoPrev}
+          disabled={!canGoPrevWeek}
           device={device}
         >
           <ChevronIcon
             direction="left"
             width={36}
             height={36}
-            fill={canGoPrev ? theme.colors.primary : theme.colors.disabledText}
+            fill={
+              canGoPrevWeek ? theme.colors.primary : theme.colors.disabledText
+            }
           />
         </NavButton>
       )}
 
       <DateTabsWrapper device={device}>
         <StyledTabs device={device}>
-          {displayDates.map((dateString) => {
-            const date = new Date(dateString);
-            return (
-              <StyledTab
-                key={dateString}
-                value={dateString}
-                label={
-                  isToday(date)
-                    ? '오늘'
-                    : `${date.getMonth() + 1}/${date.getDate()}`
-                }
-                selected={selectedDate === dateString}
-                onTabSelect={selectDate}
-                device={device}
-              />
-            );
-          })}
+          {[
+            ...displayDates.map((dateString) => {
+              const date = new Date(dateString);
+              return (
+                <StyledTab
+                  key={dateString}
+                  value={dateString}
+                  label={`${date.getMonth() + 1}/${date.getDate()}`}
+                  selected={selectedDate === dateString}
+                  onTabSelect={onDateSelect}
+                  device={device}
+                />
+              );
+            }),
+            ...(device !== 'mobile'
+              ? [
+                  <StyledTab
+                    key={today}
+                    value={today}
+                    label="오늘"
+                    selected={selectedDate === today}
+                    onTabSelect={onDateSelect}
+                    device={device}
+                  />,
+                ]
+              : []),
+          ]}
         </StyledTabs>
       </DateTabsWrapper>
 
-      {device === 'mobile' && isLatestDateToday && latestDate && (
+      {device === 'mobile' && (
         <TodayTabWrapper>
           <StyledTab
-            value={latestDate}
+            value={today}
             label="오늘"
-            selected={selectedDate === latestDate}
-            onTabSelect={selectDate}
+            selected={selectedDate === today}
+            onTabSelect={onDateSelect}
             device={device}
           />
         </TodayTabWrapper>
@@ -87,14 +98,16 @@ const DateFilter = ({ dates, selectedDate, onDateSelect }: DateFilterProps) => {
         <NavButton
           variant="transparent"
           onClick={goToNextWeek}
-          disabled={!canGoNext}
+          disabled={!canGoNextWeek}
           device={device}
         >
           <ChevronIcon
             direction="right"
             width={36}
             height={36}
-            fill={canGoNext ? theme.colors.primary : theme.colors.disabledText}
+            fill={
+              canGoNextWeek ? theme.colors.primary : theme.colors.disabledText
+            }
           />
         </NavButton>
       )}
