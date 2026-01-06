@@ -1,7 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useDateFilter } from '../hooks/useDateFilter';
-import { findWeekIndex, groupingWeeks } from '../utils/date';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tab, { type TabProps } from '@/components/Tab/Tab';
@@ -22,6 +21,8 @@ const DateFilter = ({
   onDateSelect,
 }: DateFilterProps) => {
   const {
+    totalWeeks,
+    selectedWeekIndex,
     displayDates,
     canGoPrevWeek,
     canGoNextWeek,
@@ -31,8 +32,6 @@ const DateFilter = ({
 
   const device = useDevice();
 
-  const totalWeeks = groupingWeeks(displayDates);
-  const selectedWeekIndex = findWeekIndex(totalWeeks, selectedDate);
   const weekDates =
     device !== 'mobile' ? (totalWeeks[selectedWeekIndex] ?? []) : displayDates;
 

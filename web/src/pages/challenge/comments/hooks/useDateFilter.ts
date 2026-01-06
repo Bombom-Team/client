@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { findWeekIndex, groupingWeeks } from '../utils/date';
 
 interface UseDateFilterParams {
@@ -14,13 +14,25 @@ export const useDateFilter = ({
   selectedDate,
   onDateSelect,
 }: UseDateFilterParams) => {
-  const totalWeeks = groupingWeeks(dates);
-  const selectedWeekIndex = findWeekIndex(totalWeeks, selectedDate);
+  const totalWeeks = useMemo(() => {
+    return groupingWeeks(dates);
+  }, [dates]);
 
-  const displayDates = dates.filter((date) => today > date);
+  const selectedWeekIndex = useMemo(() => {
+    return findWeekIndex(totalWeeks, selectedDate);
+  }, [selectedDate, totalWeeks]);
 
-  const canGoPrevWeek = selectedWeekIndex > 0;
-  const canGoNextWeek = selectedWeekIndex < totalWeeks.length - 1;
+  const displayDates = useMemo(() => {
+    return dates.filter((date) => today > date);
+  }, [dates, today]);
+
+  const canGoPrevWeek = useMemo(() => {
+    return selectedWeekIndex > 0;
+  }, [selectedWeekIndex]);
+
+  const canGoNextWeek = useMemo(() => {
+    return selectedWeekIndex < totalWeeks.length - 1;
+  }, [selectedWeekIndex, totalWeeks.length]);
 
   const goToPrevWeek = useCallback(() => {
     if (canGoPrevWeek) {
@@ -41,6 +53,8 @@ export const useDateFilter = ({
   }, [canGoNextWeek, onDateSelect, selectedWeekIndex, totalWeeks]);
 
   return {
+    totalWeeks,
+    selectedWeekIndex,
     displayDates,
     canGoPrevWeek,
     canGoNextWeek,
