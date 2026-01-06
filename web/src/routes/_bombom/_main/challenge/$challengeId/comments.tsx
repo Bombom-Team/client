@@ -42,10 +42,11 @@ function ChallengeComments() {
     queries.memberProgress(Number(challengeId)),
   );
 
-  const { today, challengeDates, isFirstDay } = useChallengeCommentDates({
-    startDate: challengeInfo?.startDate,
-    endDate: challengeInfo?.endDate,
-  });
+  const { today, challengeDates, isFirstDay, isChallengeDay } =
+    useChallengeCommentDates({
+      startDate: challengeInfo?.startDate,
+      endDate: challengeInfo?.endDate,
+    });
 
   const [selectedDate, setSelectedDate] = useState(today);
 
@@ -83,7 +84,7 @@ function ChallengeComments() {
       </FilterWrapper>
 
       <ContentWrapper isMobile={isMobile}>
-        {selectedDate === today && (
+        {selectedDate === today && isChallengeDay(selectedDate) && (
           <AddCommentBox>
             <AddCommentTitle isMobile={isMobile}>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.

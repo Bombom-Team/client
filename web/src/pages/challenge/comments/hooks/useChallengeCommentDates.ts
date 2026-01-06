@@ -24,9 +24,17 @@ export const useChallengeCommentDates = ({
     [startDate],
   );
 
+  const isChallengeDay = useCallback(
+    (targetDate: string) => {
+      return challengeDates.includes(targetDate);
+    },
+    [challengeDates],
+  );
+
   return {
     today,
     challengeDates,
     isFirstDay,
+    isChallengeDay,
   };
 };
