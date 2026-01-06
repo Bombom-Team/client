@@ -21,9 +21,9 @@ const DateFilter = ({
   onDateSelect,
 }: DateFilterProps) => {
   const {
-    totalWeeks,
-    selectedWeekIndex,
     displayDates,
+    displayWeeks,
+    selectedWeekIndex,
     canGoPrevWeek,
     canGoNextWeek,
     goToPrevWeek,
@@ -33,7 +33,9 @@ const DateFilter = ({
   const device = useDevice();
 
   const weekDates =
-    device !== 'mobile' ? (totalWeeks[selectedWeekIndex] ?? []) : displayDates;
+    device !== 'mobile'
+      ? (displayWeeks[selectedWeekIndex] ?? [])
+      : displayDates;
 
   const todayTab = (
     <StyledTab
@@ -82,7 +84,7 @@ const DateFilter = ({
 
       <DateTabsWrapper device={device}>
         <StyledTabs device={device}>
-          {device !== 'mobile' && selectedWeekIndex === totalWeeks.length - 1
+          {device !== 'mobile' && selectedWeekIndex === displayWeeks.length - 1
             ? [...dateTabs, todayTab]
             : dateTabs}
         </StyledTabs>

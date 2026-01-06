@@ -14,13 +14,13 @@ export const useDateFilter = ({
   selectedDate,
   onDateSelect,
 }: UseDateFilterParams) => {
-  const totalWeeks = useMemo(() => {
+  const displayWeeks = useMemo(() => {
     return groupingWeeks(dates);
   }, [dates]);
 
   const selectedWeekIndex = useMemo(() => {
-    return findWeekIndex(totalWeeks, selectedDate);
-  }, [selectedDate, totalWeeks]);
+    return findWeekIndex(displayWeeks, selectedDate);
+  }, [selectedDate, displayWeeks]);
 
   const displayDates = useMemo(() => {
     return dates.filter((date) => today > date);
@@ -31,31 +31,31 @@ export const useDateFilter = ({
   }, [selectedWeekIndex]);
 
   const canGoNextWeek = useMemo(() => {
-    return selectedWeekIndex < totalWeeks.length - 1;
-  }, [selectedWeekIndex, totalWeeks.length]);
+    return selectedWeekIndex < displayWeeks.length - 1;
+  }, [selectedWeekIndex, displayWeeks.length]);
 
   const goToPrevWeek = useCallback(() => {
     if (canGoPrevWeek) {
-      const prevWeekDate = totalWeeks[selectedWeekIndex - 1]?.[0];
+      const prevWeekDate = displayWeeks[selectedWeekIndex - 1]?.[0];
       if (prevWeekDate) {
         onDateSelect(prevWeekDate);
       }
     }
-  }, [canGoPrevWeek, onDateSelect, selectedWeekIndex, totalWeeks]);
+  }, [canGoPrevWeek, onDateSelect, selectedWeekIndex, displayWeeks]);
 
   const goToNextWeek = useCallback(() => {
     if (canGoNextWeek) {
-      const nextWeekDate = totalWeeks[selectedWeekIndex + 1]?.[0];
+      const nextWeekDate = displayWeeks[selectedWeekIndex + 1]?.[0];
       if (nextWeekDate) {
         onDateSelect(nextWeekDate);
       }
     }
-  }, [canGoNextWeek, onDateSelect, selectedWeekIndex, totalWeeks]);
+  }, [canGoNextWeek, onDateSelect, selectedWeekIndex, displayWeeks]);
 
   return {
-    totalWeeks,
-    selectedWeekIndex,
     displayDates,
+    displayWeeks,
+    selectedWeekIndex,
     canGoPrevWeek,
     canGoNextWeek,
     goToPrevWeek,
