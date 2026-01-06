@@ -103,13 +103,15 @@ function ChallengeComments() {
           </AddCommentBox>
         )}
 
-        {isFirstDay(today) ? (
-          <FirstDaySection>
-            <FirstDayTitle isMobile={isMobile}>전체 코멘트</FirstDayTitle>
-            <FirstDayMessage isMobile={isMobile}>
-              첫날에는 코멘트를 작성하지 않아요!
-            </FirstDayMessage>
-          </FirstDaySection>
+        {isFirstDay(today) || !isChallengeDay(today) ? (
+          <RestDayContent>
+            <RestDayTitle isMobile={isMobile}>전체 코멘트</RestDayTitle>
+            <RestDayMessage isMobile={isMobile}>
+              {isFirstDay(today)
+                ? '첫날에는 코멘트를 작성하지 않아요!'
+                : '오늘은 휴식일이에요. 코멘트를 작성하지 않아요!'}
+            </RestDayMessage>
+          </RestDayContent>
         ) : isMobile ? (
           <MobileCommentsContent
             baseQueryParams={baseQueryParams}
@@ -212,19 +214,19 @@ const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
   }
 `;
 
-const FirstDaySection = styled.section`
+const RestDayContent = styled.section`
   display: flex;
   gap: 12px;
   flex-direction: column;
 `;
 
-const FirstDayTitle = styled.h3<{ isMobile: boolean }>`
+const RestDayTitle = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body1 : theme.fonts.heading6};
 `;
 
-const FirstDayMessage = styled.div<{ isMobile: boolean }>`
+const RestDayMessage = styled.div<{ isMobile: boolean }>`
   padding: ${({ isMobile }) => (isMobile ? '24px' : '32px')};
   border-radius: 12px;
 
