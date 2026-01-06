@@ -14,17 +14,17 @@ export const useDateFilter = ({
   selectedDate,
   onDateSelect,
 }: UseDateFilterParams) => {
+  const displayDates = useMemo(() => {
+    return dates.filter((date) => today > date);
+  }, [dates, today]);
+
   const displayWeeks = useMemo(() => {
-    return groupingWeeks(dates);
-  }, [dates]);
+    return groupingWeeks(displayDates);
+  }, [displayDates]);
 
   const selectedWeekIndex = useMemo(() => {
     return findWeekIndex(displayWeeks, selectedDate);
   }, [selectedDate, displayWeeks]);
-
-  const displayDates = useMemo(() => {
-    return dates.filter((date) => today > date);
-  }, [dates, today]);
 
   const canGoPrevWeek = useMemo(() => {
     return selectedWeekIndex > 0;
