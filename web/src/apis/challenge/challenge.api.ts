@@ -92,6 +92,26 @@ export const getChallengeCommentCandidateArticles = async (
   });
 };
 
+export type GetChallengeArticleHighlightsParams =
+  operations['getChallengeArticleHighlights']['parameters']['path'] &
+    Omit<
+      operations['getChallengeArticleHighlights']['parameters']['query'],
+      'pageable'
+    > &
+    components['schemas']['Pageable'];
+export type GetChallengeArticleHighlightsResponse =
+  components['schemas']['PageChallengeCommentHighlightResponse'];
+
+export const getChallengeArticleHighlights = async ({
+  articleId,
+  ...params
+}: GetChallengeArticleHighlightsParams) => {
+  return await fetcher.get<GetChallengeArticleHighlightsResponse>({
+    path: `/challenges/comments/articles/${articleId}/highlights`,
+    query: params,
+  });
+};
+
 export type PostChallengeCommentParams =
   components['schemas']['ChallengeCommentRequest'];
 
