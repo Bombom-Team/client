@@ -1,6 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useRef, useState, useEffect } from 'react';
+import useExpandQuotation from '../hooks/useExpandQuotation';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
@@ -12,6 +12,10 @@ import MailIcon from '#/assets/svg/mail.svg';
 type CommentCardProps = Comment;
 
 const DELETED_USER_NICKNAME = '탈퇴한 회원';
+const MAX_QUOTATION_LINE = {
+  mobile: 3,
+  default: 4,
+};
 
 const CommentCard = ({
   nickname,
@@ -22,24 +26,17 @@ const CommentCard = ({
   createdAt,
   quotation,
 }: CommentCardProps) => {
-  const [expanded, setExpanded] = useState(false);
-  const [needExpansion, setNeedExpansion] = useState(false);
-  const quoteRef = useRef<HTMLDivElement>(null);
-
   const device = useDevice();
   const isMobile = device === 'mobile';
   const relativeTime = convertRelativeTime(createdAt);
 
-  useEffect(() => {
-    if (!quoteRef.current) return;
-
-    const element = quoteRef.current;
-    const lineClamp = isMobile ? 3 : 4;
-    const lineHeight = parseInt(getComputedStyle(element).lineHeight);
-    const maxHeight = lineHeight * lineClamp;
-
-    setNeedExpansion(element.scrollHeight > maxHeight);
-  }, [quotation, isMobile]);
+  const { expanded, needExpansion, quoteRef, toggleExpanded } =
+    useExpandQuotation({
+      quotation,
+      maxLines: isMobile
+        ? MAX_QUOTATION_LINE.mobile
+        : MAX_QUOTATION_LINE.default,
+    });
 
   return (
     <Container isMobile={isMobile}>
@@ -72,7 +69,7 @@ const CommentCard = ({
             {needExpansion && (
               <ControlExpandButton
                 variant="transparent"
-                onClick={() => setExpanded(!expanded)}
+                onClick={toggleExpanded}
               >
                 {expanded ? '접기' : '더보기'}
               </ControlExpandButton>
