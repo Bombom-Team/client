@@ -6,7 +6,7 @@ interface CardHeaderProps {
   applicantCount?: number;
   tag: string;
   startDate: string;
-  isEliminated: boolean;
+  isEliminated?: boolean;
 }
 
 const CardHeader = ({
@@ -14,7 +14,7 @@ const CardHeader = ({
   applicantCount,
   tag,
   startDate,
-  isEliminated,
+  isEliminated = false,
 }: CardHeaderProps) => {
   const dday = getDday(startDate);
 

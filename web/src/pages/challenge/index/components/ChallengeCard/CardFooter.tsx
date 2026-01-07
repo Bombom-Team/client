@@ -3,11 +3,11 @@ import Button from '@/components/Button/Button';
 import type { PropsWithChildren } from 'react';
 
 interface CardFooterProps {
-  isEliminated: boolean;
+  isEliminated?: boolean;
 }
 
 const CardFooter = ({
-  isEliminated,
+  isEliminated = false,
   children,
 }: PropsWithChildren<CardFooterProps>) => {
   return (

@@ -25,7 +25,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: false,
+      isSuccess: true,
     },
   },
   {
@@ -47,7 +47,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: false,
+      isSuccess: true,
     },
   },
   {
@@ -74,7 +74,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: false,
+      isSuccess: true,
     },
   },
   {
@@ -90,7 +90,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: false,
+      isSuccess: true,
     },
   },
   {
@@ -106,7 +106,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: false,
+      isSuccess: true,
     },
   },
   {
@@ -128,7 +128,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: true,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: false,
+      isSuccess: true,
     },
   },
   {
