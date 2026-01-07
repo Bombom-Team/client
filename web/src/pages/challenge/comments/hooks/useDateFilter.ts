@@ -1,5 +1,4 @@
-import { useCallback, useMemo } from 'react';
-import { findWeekIndex, groupingWeeks } from '../utils/date';
+import { useCallback, useMemo, useState } from 'react';
 
 interface UseDateFilterParams {
   today: string;
@@ -7,6 +6,8 @@ interface UseDateFilterParams {
   selectedDate: string;
   onDateSelect: (date: string) => void;
 }
+
+const DATES_PER_PAGE = 5;
 
 export const useDateFilter = ({
   today,
@@ -18,44 +19,58 @@ export const useDateFilter = ({
     return dates.filter((date) => today > date);
   }, [dates, today]);
 
-  const displayWeeks = useMemo(() => {
-    return groupingWeeks(displayDates);
-  }, [displayDates]);
+  const selectedDateIndex = useMemo(() => {
+    const index = displayDates.indexOf(selectedDate);
+    return index === -1 ? Math.max(displayDates.length - 1, 0) : index;
+  }, [displayDates, selectedDate]);
 
-  const selectedWeekIndex = useMemo(() => {
-    return findWeekIndex(displayWeeks, selectedDate);
-  }, [selectedDate, displayWeeks]);
+  const [weekStartIndex, setWeekStartIndex] = useState(() => {
+    return Math.floor(selectedDateIndex / DATES_PER_PAGE) * DATES_PER_PAGE;
+  });
+
+  const weekEndIndex = useMemo(() => {
+    return Math.min(
+      weekStartIndex + DATES_PER_PAGE - 1,
+      displayDates.length - 1,
+    );
+  }, [weekStartIndex, displayDates.length]);
 
   const canGoPrevWeek = useMemo(() => {
-    return selectedWeekIndex > 0;
-  }, [selectedWeekIndex]);
+    return weekStartIndex > 0;
+  }, [weekStartIndex]);
 
   const canGoNextWeek = useMemo(() => {
-    return selectedWeekIndex < displayWeeks.length - 1;
-  }, [selectedWeekIndex, displayWeeks.length]);
+    return weekEndIndex < displayDates.length - 1;
+  }, [weekEndIndex, displayDates.length]);
 
   const goToPrevWeek = useCallback(() => {
     if (canGoPrevWeek) {
-      const prevWeekDate = displayWeeks[selectedWeekIndex - 1]?.[0];
+      const prevWeekStartIndex = Math.max(weekStartIndex - DATES_PER_PAGE, 0);
+      setWeekStartIndex(prevWeekStartIndex);
+
+      const prevWeekDate = displayDates[prevWeekStartIndex];
       if (prevWeekDate) {
         onDateSelect(prevWeekDate);
       }
     }
-  }, [canGoPrevWeek, onDateSelect, selectedWeekIndex, displayWeeks]);
+  }, [canGoPrevWeek, weekStartIndex, displayDates, onDateSelect]);
 
   const goToNextWeek = useCallback(() => {
     if (canGoNextWeek) {
-      const nextWeekDate = displayWeeks[selectedWeekIndex + 1]?.[0];
+      const nextWeekStartIndex = weekStartIndex + DATES_PER_PAGE;
+      setWeekStartIndex(nextWeekStartIndex);
+
+      const nextWeekDate = displayDates[nextWeekStartIndex];
       if (nextWeekDate) {
         onDateSelect(nextWeekDate);
       }
     }
-  }, [canGoNextWeek, onDateSelect, selectedWeekIndex, displayWeeks]);
+  }, [canGoNextWeek, weekStartIndex, displayDates, onDateSelect]);
 
   return {
     displayDates,
-    displayWeeks,
-    selectedWeekIndex,
+    weekStartIndex,
+    weekEndIndex,
     canGoPrevWeek,
     canGoNextWeek,
     goToPrevWeek,
