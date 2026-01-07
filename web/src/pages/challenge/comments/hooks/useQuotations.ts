@@ -8,14 +8,18 @@ interface UseQuotationsParams {
 
 const useQuotations = ({ articleId }: UseQuotationsParams) => {
   const { data: highlights } = useQuery({
-    ...queries.highlights({ articleId: articleId! }),
+    ...queries.challengeArticleHighlights({
+      articleId: articleId!,
+      page: 0,
+      size: 100,
+    }),
     enabled: articleId !== null,
   });
 
   const quotations = useMemo(() => {
     return (
-      highlights?.content?.map(({ id, text, memo }) => ({
-        id,
+      highlights?.content?.map(({ highlightId, text, memo }) => ({
+        id: highlightId,
         text,
         memo,
       })) ?? []
