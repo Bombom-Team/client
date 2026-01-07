@@ -5,13 +5,7 @@ const CardContainer = ({
   children,
   ...props
 }: PropsWithChildren<ComponentProps<'button'>>) => {
-  const { disabled = false } = props;
-
-  return (
-    <Container disabled={disabled} {...props}>
-      {children}
-    </Container>
-  );
+  return <Container {...props}>{children}</Container>;
 };
 
 export default CardContainer;
