@@ -61,6 +61,33 @@ export const getTeamChallengeProgress = async (challengeId: number) => {
   });
 };
 
+export interface ChallengeTeamSummary {
+  teamId: number;
+  displayOrder: number;
+  isMyTeam: boolean;
+}
+
+export interface GetChallengeTeamsResponse {
+  totalTeamCount: number;
+  myTeamId: number;
+  teams: ChallengeTeamSummary[];
+}
+
+export const getChallengeTeams = async (challengeId: number) => {
+  return await fetcher.get<GetChallengeTeamsResponse>({
+    path: `/challenges/${challengeId}/teams`,
+  });
+};
+
+export const getChallengeTeamProgress = async (
+  challengeId: number,
+  teamId: number,
+) => {
+  return await fetcher.get<GetTeamChallengeProgressResponse>({
+    path: `/challenges/${challengeId}/teams/${teamId}`,
+  });
+};
+
 export type GetChallengeCommentsParams =
   operations['getChallengeComments']['parameters']['path'] &
     components['schemas']['ChallengeCommentOptionsRequest'] &

@@ -4,6 +4,8 @@ import {
   getChallengeEligibility,
   getChallengeInfo,
   getMemberChallengeProgress,
+  getChallengeTeamProgress,
+  getChallengeTeams,
   getTeamChallengeProgress,
   getChallengeCommentCandidateArticles,
   getChallengeComments,
@@ -40,6 +42,18 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', challengeId, 'progress', 'team'],
       queryFn: () => getTeamChallengeProgress(challengeId),
+    }),
+  challengeTeams: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', challengeId, 'teams'],
+      queryFn: () => getChallengeTeams(challengeId),
+      enabled: !!challengeId,
+    }),
+  challengeTeamProgress: (challengeId: number, teamId: number) =>
+    queryOptions({
+      queryKey: ['challenges', challengeId, 'teams', teamId, 'progress'],
+      queryFn: () => getChallengeTeamProgress(challengeId, teamId),
+      enabled: !!challengeId && !!teamId,
     }),
   comments: (params: GetChallengeCommentsParams) =>
     queryOptions({
