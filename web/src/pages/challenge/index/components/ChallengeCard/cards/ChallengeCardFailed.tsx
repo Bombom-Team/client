@@ -17,8 +17,7 @@ const ChallengeCardFailed = (props: ChallengeCardProps) => {
         isEliminated={true}
       />
 
-      <CardFooter isEliminated={true}>
-        <div></div>
+      <CardFooter>
         <EliminatedDescription>
           참여율 80% 미만으로 탈락 처리되었습니다
         </EliminatedDescription>
