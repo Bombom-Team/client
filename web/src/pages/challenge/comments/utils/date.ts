@@ -15,3 +15,7 @@ export const convertRelativeTime = (dateString: string) => {
   if (diffDays < 7) return `${diffDays}일 전`;
   return formatDate(targetDate);
 };
+
+export const getDisplayDates = (dates: string[], today: string) => {
+  return dates.filter((date) => today >= date);
+};

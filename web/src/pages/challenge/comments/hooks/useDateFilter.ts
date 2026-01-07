@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { getDisplayDates } from '../utils/date';
 
 interface UseDateFilterParams {
   today: string;
@@ -16,7 +17,7 @@ export const useDateFilter = ({
   onDateSelect,
 }: UseDateFilterParams) => {
   const displayDates = useMemo(() => {
-    return dates.filter((date) => today > date);
+    return getDisplayDates(dates, today);
   }, [dates, today]);
 
   const selectedDateIndex = useMemo(() => {
