@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Children, type PropsWithChildren } from 'react';
 
 const CardFooter = ({ children }: PropsWithChildren) => {
-  const hasMultipleChildren = Children.count(children) > 0;
+  const hasMultipleChildren = Children.count(children) > 1;
 
   return <Footer hasMultipleChildren={hasMultipleChildren}>{children}</Footer>;
 };
