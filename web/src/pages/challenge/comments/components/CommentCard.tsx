@@ -1,8 +1,10 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import { useRef, useState, useEffect } from 'react';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
+import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 import CheckIcon from '#/assets/svg/check-circle.svg';
 import MailIcon from '#/assets/svg/mail.svg';
@@ -20,9 +22,24 @@ const CommentCard = ({
   createdAt,
   quotation,
 }: CommentCardProps) => {
+  const [expanded, setExpanded] = useState(false);
+  const [needExpansion, setNeedExpansion] = useState(false);
+  const quoteRef = useRef<HTMLDivElement>(null);
+
   const device = useDevice();
   const isMobile = device === 'mobile';
   const relativeTime = convertRelativeTime(createdAt);
+
+  useEffect(() => {
+    if (!quoteRef.current) return;
+
+    const element = quoteRef.current;
+    const lineClamp = isMobile ? 3 : 4;
+    const lineHeight = parseInt(getComputedStyle(element).lineHeight);
+    const maxHeight = lineHeight * lineClamp;
+
+    setNeedExpansion(element.scrollHeight > maxHeight);
+  }, [quotation, isMobile]);
 
   return (
     <Container isMobile={isMobile}>
@@ -47,7 +64,21 @@ const CommentCard = ({
         </TitleWrapper>
       </ArticleInfo>
       <Content isMobile={isMobile}>
-        {quotation && <Quote isMobile={isMobile}>{quotation}</Quote>}
+        {quotation && (
+          <QuoteBox>
+            <Quote ref={quoteRef} isMobile={isMobile} expanded={expanded}>
+              {quotation}
+            </Quote>
+            {needExpansion && (
+              <ControlExpandButton
+                variant="transparent"
+                onClick={() => setExpanded(!expanded)}
+              >
+                {expanded ? '접기' : '더보기'}
+              </ControlExpandButton>
+            )}
+          </QuoteBox>
+        )}
         <Comment>{comment}</Comment>
       </Content>
     </Container>
@@ -114,7 +145,13 @@ const Content = styled.div<{ isMobile: boolean }>`
   flex-direction: column;
 `;
 
-const Quote = styled.div<{ isMobile: boolean }>`
+const QuoteBox = styled.div`
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+`;
+
+const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   overflow: hidden;
   padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
   border-left: 4px solid ${({ theme }) => theme.colors.stroke};
@@ -126,8 +163,20 @@ const Quote = styled.div<{ isMobile: boolean }>`
   font: ${({ theme }) => theme.fonts.body2};
 
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${({ isMobile }) => (isMobile ? 3 : 4)};
+  -webkit-line-clamp: ${({ isMobile, expanded }) =>
+    expanded ? 'unset' : isMobile ? 3 : 4};
   text-overflow: ellipsis;
+`;
+
+const ControlExpandButton = styled(Button)`
+  padding: 0;
+
+  align-self: flex-end;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.body2};
+
+  text-decoration: underline;
 `;
 
 const Comment = styled.p`
