@@ -1,9 +1,9 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import DateTab from './DateTab';
 import { useDateFilter } from '../hooks/useDateFilter';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
-import Tab, { type TabProps } from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
 
@@ -37,31 +37,6 @@ const DateFilter = ({
       ? displayDates.slice(weekStartIndex, weekEndIndex + 1)
       : displayDates;
 
-  const todayTab = (
-    <StyledTab
-      key={today}
-      value={today}
-      label="오늘"
-      selected={selectedDate === today}
-      onTabSelect={onDateSelect}
-      device={device}
-    />
-  );
-
-  const dateTabs = weekDates.map((dateString) => {
-    const date = new Date(dateString);
-    return (
-      <StyledTab
-        key={dateString}
-        value={dateString}
-        label={`${date.getMonth() + 1}/${date.getDate()}`}
-        selected={selectedDate === dateString}
-        onTabSelect={onDateSelect}
-        device={device}
-      />
-    );
-  });
-
   return (
     <Container device={device}>
       {device !== 'mobile' && (
@@ -84,13 +59,26 @@ const DateFilter = ({
 
       <DateTabsWrapper device={device}>
         <StyledTabs device={device}>
-          {device !== 'mobile' && weekEndIndex === displayDates.length - 1
-            ? [...dateTabs, todayTab]
-            : dateTabs}
+          {weekDates.map((dateString) => (
+            <DateTab
+              key={dateString}
+              dateString={dateString}
+              selectedDate={selectedDate}
+              onDateSelect={onDateSelect}
+            />
+          ))}
         </StyledTabs>
       </DateTabsWrapper>
 
-      {device === 'mobile' && <TodayTabWrapper>{todayTab}</TodayTabWrapper>}
+      {device === 'mobile' && (
+        <TodayTabWrapper>
+          <DateTab
+            dateString={today}
+            selectedDate={selectedDate}
+            onDateSelect={onDateSelect}
+          />
+        </TodayTabWrapper>
+      )}
 
       {device !== 'mobile' && (
         <NavButton
@@ -173,16 +161,4 @@ const TodayTabWrapper = styled.div`
 
   display: flex;
   align-items: center;
-`;
-
-const DateTab = (props: TabProps<string>) => <Tab {...props} />;
-const StyledTab = styled(DateTab, {
-  shouldForwardProp: (prop) => prop !== 'device',
-})<{ device: Device }>`
-  min-width: ${({ device }) => (device === 'mobile' ? '52px' : 'fit-content')};
-  padding: ${({ device }) => (device === 'mobile' ? '8px' : '12px 16px')};
-  border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
-
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
 `;
