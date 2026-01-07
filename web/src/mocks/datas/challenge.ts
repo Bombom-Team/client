@@ -174,4 +174,70 @@ export const CHALLENGES: Challenge[] = [
       isSuccess: true,
     },
   },
+  {
+    id: 9,
+    title: '2주 뉴스레터 완독 챌린지',
+    generation: 1,
+    startDate: '2025-12-01',
+    endDate: '2025-12-15',
+    participantCount: 42,
+    newsletters: [
+      {
+        id: 2,
+        name: 'Tech Weekly',
+        imageUrl: 'https://picsum.photos/200/200?random=2',
+      },
+    ],
+    status: 'COMPLETED',
+    detail: {
+      isJoined: true,
+      progress: 95,
+      grade: 'GOLD',
+      isSuccess: true,
+    },
+  },
+  {
+    id: 10,
+    title: '매일 아침 뉴스 읽기',
+    generation: 2,
+    startDate: '2025-10-15',
+    endDate: '2025-11-15',
+    participantCount: 38,
+    newsletters: [
+      {
+        id: 3,
+        name: 'Startup Insider',
+        imageUrl: 'https://picsum.photos/200/200?random=3',
+      },
+    ],
+    status: 'COMPLETED',
+    detail: {
+      isJoined: true,
+      progress: 87,
+      grade: 'SILVER',
+      isSuccess: true,
+    },
+  },
+  {
+    id: 11,
+    title: '한 주 독서 습관 만들기',
+    generation: 1,
+    startDate: '2025-10-01',
+    endDate: '2025-10-07',
+    participantCount: 25,
+    newsletters: [
+      {
+        id: 4,
+        name: 'Design Trends',
+        imageUrl: 'https://picsum.photos/200/200?random=4',
+      },
+    ],
+    status: 'COMPLETED',
+    detail: {
+      isJoined: true,
+      progress: 82,
+      grade: 'BRONZE',
+      isSuccess: true,
+    },
+  },
 ];
