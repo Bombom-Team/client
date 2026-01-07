@@ -3,15 +3,15 @@ import type { GetChallengeCommentsParams } from '@/apis/challenge/challenge.api'
 
 const COMMENTS_SIZE = 6;
 
-interface UseCommentsFiltersProps {
+interface UseCommentsPaginationProps {
   challengeId: number;
   selectedDate: string;
 }
 
-export const useCommentsFilters = ({
+export const useCommentsPagination = ({
   challengeId,
   selectedDate,
-}: UseCommentsFiltersProps) => {
+}: UseCommentsPaginationProps) => {
   const [page, setPage] = useState(1);
 
   const baseQueryParams: GetChallengeCommentsParams = {

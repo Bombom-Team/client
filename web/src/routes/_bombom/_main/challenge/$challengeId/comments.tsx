@@ -12,7 +12,7 @@ import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 import MobileCommentsContent from '@/pages/challenge/comments/components/MobileCommentsContent';
 import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsContent';
 import { useChallengeCommentDates } from '@/pages/challenge/comments/hooks/useChallengeCommentDates';
-import { useCommentsFilters } from '@/pages/challenge/comments/hooks/useCommentsFilters';
+import { useCommentsPagination } from '@/pages/challenge/comments/hooks/useCommentsPagination';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/comments',
@@ -53,10 +53,11 @@ function ChallengeComments() {
 
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const { baseQueryParams, changePage, page, resetPage } = useCommentsFilters({
-    challengeId: Number(challengeId),
-    selectedDate,
-  });
+  const { baseQueryParams, changePage, page, resetPage } =
+    useCommentsPagination({
+      challengeId: Number(challengeId),
+      selectedDate,
+    });
 
   return (
     <Container>
