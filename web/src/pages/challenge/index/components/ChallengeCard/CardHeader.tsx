@@ -6,6 +6,7 @@ interface CardHeaderProps {
   applicantCount?: number;
   tag: string;
   startDate: string;
+  isEliminated: boolean;
 }
 
 const CardHeader = ({
@@ -13,13 +14,14 @@ const CardHeader = ({
   applicantCount,
   tag,
   startDate,
+  isEliminated,
 }: CardHeaderProps) => {
   const dday = getDday(startDate);
 
   return (
     <Header>
       <TitleSection>
-        <Title>{title}</Title>
+        <Title isEliminated={isEliminated}>{title}</Title>
         {tag && <Tag>{tag}</Tag>}
       </TitleSection>
 
@@ -27,7 +29,7 @@ const CardHeader = ({
         {applicantCount && applicantCount > 0 ? (
           <Applicant>신청자 {applicantCount}명</Applicant>
         ) : null}
-        <DDay>D{dday}</DDay>
+        <DDay isEliminated={isEliminated}>D{dday}</DDay>
       </Meta>
     </Header>
   );
@@ -47,10 +49,10 @@ const TitleSection = styled.div`
   flex-direction: column;
 `;
 
-const Title = styled.h3`
-  color: ${({ theme }) => theme.colors.textPrimary};
+const Title = styled.h3<{ isEliminated: boolean }>`
+  color: ${({ theme, isEliminated }) =>
+    isEliminated ? theme.colors.disabledText : theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
-  font-weight: 700;
 `;
 
 const Tag = styled.span`
@@ -76,8 +78,8 @@ const Applicant = styled.span`
   font: ${({ theme }) => theme.fonts.body3};
 `;
 
-const DDay = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+const DDay = styled.span<{ isEliminated: boolean }>`
+  color: ${({ theme, isEliminated }) =>
+    isEliminated ? theme.colors.disabledText : theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
-  font-weight: 600;
 `;

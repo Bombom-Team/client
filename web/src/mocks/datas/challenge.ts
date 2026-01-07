@@ -147,4 +147,31 @@ export const CHALLENGES: Challenge[] = [
       isSuccess: false,
     },
   },
+  {
+    id: 8,
+    title: '매일 아침 뉴스레터 읽기',
+    generation: 2,
+    startDate: '2026-01-06',
+    endDate: '2026-01-20',
+    participantCount: 35,
+    newsletters: [
+      {
+        id: 1,
+        name: 'AI뉴스',
+        imageUrl: 'https://picsum.photos/200/200?random=1',
+      },
+      {
+        id: 3,
+        name: 'Startup Insider',
+        imageUrl: 'https://picsum.photos/200/200?random=3',
+      },
+    ],
+    status: 'ONGOING',
+    detail: {
+      isJoined: true,
+      progress: 65,
+      grade: 'SILVER',
+      isSuccess: true,
+    },
+  },
 ];
