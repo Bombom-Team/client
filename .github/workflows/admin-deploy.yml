@@ -3,7 +3,13 @@ name: CI/CD - Admin Deploy
 on:
   push:
     branches:
-      - main
+      - dev
+    paths:
+      - 'admin/**'
+      - 'shared/**'
+      - '.github/workflows/admin-deploy.yml'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
 
 concurrency:
   group: deploy-admin-${{ github.ref_name }}
