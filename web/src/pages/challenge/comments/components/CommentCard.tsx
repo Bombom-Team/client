@@ -62,19 +62,22 @@ const CommentCard = ({
       </ArticleInfo>
       <Content isMobile={isMobile}>
         {quotation && (
-          <QuoteBox>
-            <Quote ref={quoteRef} isMobile={isMobile} expanded={expanded}>
-              {quotation}
-            </Quote>
-            {needExpansion && (
-              <ControlExpandButton
-                variant="transparent"
-                onClick={toggleExpanded}
-              >
-                {expanded ? '접기' : '더보기'}
-              </ControlExpandButton>
-            )}
-          </QuoteBox>
+          <Quote ref={quoteRef} isMobile={isMobile} expanded={expanded}>
+            {quotation}
+            {needExpansion &&
+              (!expanded ? (
+                <ExpandQuoteButton
+                  variant="transparent"
+                  onClick={toggleExpanded}
+                >
+                  더보기
+                </ExpandQuoteButton>
+              ) : (
+                <HideQuoteButton variant="transparent" onClick={toggleExpanded}>
+                  접기
+                </HideQuoteButton>
+              ))}
+          </Quote>
         )}
         <Comment>{comment}</Comment>
       </Content>
@@ -142,18 +145,13 @@ const Content = styled.div<{ isMobile: boolean }>`
   flex-direction: column;
 `;
 
-const QuoteBox = styled.div`
-  display: flex;
-  gap: 4px;
-  flex-direction: column;
-`;
-
 const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   overflow: hidden;
+  position: relative;
   padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
   border-left: 4px solid ${({ theme }) => theme.colors.stroke};
 
-  display: -webkit-box;
+  display: ${({ expanded }) => (expanded ? 'block' : '-webkit-box')};
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -165,15 +163,43 @@ const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   text-overflow: ellipsis;
 `;
 
-const ControlExpandButton = styled(Button)`
+const ExpandButton = styled(Button)`
   padding: 0;
 
-  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body2};
 
   text-decoration: underline;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const HideQuoteButton = styled(ExpandButton)`
+  margin-left: 8px;
+`;
+
+const ExpandQuoteButton = styled(ExpandButton)`
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  z-index: ${({ theme }) => theme.zIndex.elevated};
+  padding-left: 32px;
+
+  display: block;
+
+  background: ${({ theme }) =>
+    `linear-gradient(90deg, transparent 0%, ${theme.colors.white} 40%, ${theme.colors.white} 100%)`};
+  color: ${({ theme }) => theme.colors.textSecondary};
+
+  &:hover {
+    background: ${({ theme }) =>
+      `linear-gradient(90deg, transparent 0%, ${theme.colors.white} 40%, ${theme.colors.white} 100%)`};
+  }
 `;
 
 const Comment = styled.p`
