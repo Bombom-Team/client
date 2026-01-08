@@ -191,7 +191,7 @@ export const CHALLENGES: Challenge[] = [
     status: 'COMPLETED',
     detail: {
       isJoined: true,
-      progress: 95,
+      progress: 100,
       grade: 'GOLD',
       isSuccess: true,
     },
@@ -213,7 +213,7 @@ export const CHALLENGES: Challenge[] = [
     status: 'COMPLETED',
     detail: {
       isJoined: true,
-      progress: 87,
+      progress: 95,
       grade: 'SILVER',
       isSuccess: true,
     },

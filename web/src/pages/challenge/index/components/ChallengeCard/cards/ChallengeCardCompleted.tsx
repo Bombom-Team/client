@@ -9,25 +9,10 @@ import type { ChallengeCardProps } from '../ChallengeCard';
 
 type GradeType = 'GOLD' | 'SILVER' | 'BRONZE';
 
-const GRADE_CONFIG: Record<
-  GradeType,
-  { icon: string; backgroundColor: string; color: string }
-> = {
-  GOLD: {
-    icon: '🥇',
-    backgroundColor: '#FFF9E6',
-    color: '#D4A017',
-  },
-  SILVER: {
-    icon: '🥈',
-    backgroundColor: '#F5F5F5',
-    color: '#A8A9AD',
-  },
-  BRONZE: {
-    icon: '🥉',
-    backgroundColor: '#FFF5EB',
-    color: '#CD7F32',
-  },
+const GRADE_CONFIG: Record<GradeType, string> = {
+  GOLD: '/assets/avif/medal-gold.avif',
+  SILVER: '/assets/avif/medal-silver.avif',
+  BRONZE: '/assets/avif/medal-bronze.avif',
 };
 
 const ChallengeCardCompleted = (props: ChallengeCardProps) => {
@@ -54,57 +39,36 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
 
   return (
     <CardContainer onClick={moveToDetail}>
-      <CardWrapper>
-        {isSuccess && gradeConfig && (
-          <GradeBadgeTopRight
-            backgroundColor={gradeConfig.backgroundColor}
-            color={gradeConfig.color}
-          >
-            {gradeConfig.icon} {grade}
-          </GradeBadgeTopRight>
-        )}
+      {isSuccess && gradeConfig && (
+        <GradeBadgeTopRight>
+          <img src={GRADE_CONFIG[grade]} alt={`${grade} 메달`} width={48} />
+        </GradeBadgeTopRight>
+      )}
 
-        <CardHeader
-          title={title}
-          startDate={startDate}
-          tag={`${generation}기`}
-          applicantCount={0}
-        />
+      <CardHeader
+        title={title}
+        startDate={startDate}
+        tag={`${generation}기`}
+        applicantCount={0}
+      />
 
-        <CardFooter>
-          <CompletionInfo>
-            <CompletionText>{detail?.progress}% 달성 완료</CompletionText>
-          </CompletionInfo>
-          <CardDetailButton>자세히 보기 →</CardDetailButton>
-        </CardFooter>
-      </CardWrapper>
+      <CardFooter>
+        <CompletionInfo>
+          <CompletionText>{detail?.progress}% 달성 완료</CompletionText>
+        </CompletionInfo>
+        <CardDetailButton>자세히 보기 →</CardDetailButton>
+      </CardFooter>
     </CardContainer>
   );
 };
 
 export default ChallengeCardCompleted;
 
-const CardWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const GradeBadgeTopRight = styled.span<{
-  backgroundColor: string;
-  color: string;
-}>`
+const GradeBadgeTopRight = styled.span`
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 6px 12px;
-  border-radius: 0 14px 0 8px;
+  top: -6px;
+  right: 32px;
 
-  background-color: ${({ backgroundColor }) => backgroundColor};
   color: ${({ color }) => color};
   font: ${({ theme }) => theme.fonts.body3};
   font-weight: 600;
