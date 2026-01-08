@@ -74,155 +74,6 @@ export const Default: Story = {
   ),
 };
 
-export const Column: Story = {
-  args: {
-    direction: 'column',
-    gap: 12,
-  },
-  render: (args) => (
-    <Flex {...args}>
-      <Box>Item 1</Box>
-      <Box>Item 2</Box>
-      <Box>Item 3</Box>
-    </Flex>
-  ),
-};
-
-export const CenterAligned: Story = {
-  args: {
-    justify: 'center',
-    align: 'center',
-    gap: 16,
-  },
-  render: (args) => (
-    <Flex {...args} style={{ height: '200px', border: '1px solid #D7D7D7' }}>
-      <Box>Centered Item 1</Box>
-      <Box>Centered Item 2</Box>
-    </Flex>
-  ),
-};
-
-export const SpaceBetween: Story = {
-  args: {
-    justify: 'space-between',
-    align: 'center',
-  },
-  render: (args) => (
-    <Flex {...args} style={{ padding: '20px', border: '1px solid #D7D7D7' }}>
-      <Box>Left</Box>
-      <Box>Center</Box>
-      <Box>Right</Box>
-    </Flex>
-  ),
-};
-
-export const WithGap4px: Story = {
-  args: {
-    gap: 4,
-  },
-  render: (args) => (
-    <Flex {...args}>
-      <Box>4px</Box>
-      <Box>gap</Box>
-      <Box>spacing</Box>
-    </Flex>
-  ),
-};
-
-export const WithGap8px: Story = {
-  args: {
-    gap: 8,
-  },
-  render: (args) => (
-    <Flex {...args}>
-      <Box>8px</Box>
-      <Box>gap</Box>
-      <Box>spacing</Box>
-    </Flex>
-  ),
-};
-
-export const WithGap16px: Story = {
-  args: {
-    gap: 16,
-  },
-  render: (args) => (
-    <Flex {...args}>
-      <Box>16px</Box>
-      <Box>gap</Box>
-      <Box>spacing</Box>
-    </Flex>
-  ),
-};
-
-export const WithGap24px: Story = {
-  args: {
-    gap: 24,
-  },
-  render: (args) => (
-    <Flex {...args}>
-      <Box>24px</Box>
-      <Box>gap</Box>
-      <Box>spacing</Box>
-    </Flex>
-  ),
-};
-
-export const Wrapped: Story = {
-  args: {
-    wrap: 'wrap',
-    gap: 12,
-  },
-  render: (args) => (
-    <Flex {...args} style={{ maxWidth: '300px' }}>
-      <Box>Item 1</Box>
-      <Box>Item 2</Box>
-      <Box>Item 3</Box>
-      <Box>Item 4</Box>
-      <Box>Item 5</Box>
-      <Box>Item 6</Box>
-    </Flex>
-  ),
-};
-
-export const ColumnReverse: Story = {
-  args: {
-    direction: 'column-reverse',
-    gap: 8,
-  },
-  render: (args) => (
-    <Flex {...args}>
-      <Box>First (Bottom)</Box>
-      <Box>Second</Box>
-      <Box>Third (Top)</Box>
-    </Flex>
-  ),
-};
-
-export const ComplexLayout: Story = {
-  render: () => (
-    <Flex direction="column" gap={16}>
-      <Flex justify="space-between" align="center" gap={12}>
-        <Box>Header Left</Box>
-        <Box>Header Right</Box>
-      </Flex>
-      <Flex gap={12}>
-        <Box>Sidebar</Box>
-        <Flex direction="column" gap={8} style={{ flex: 1 }}>
-          <Box>Content 1</Box>
-          <Box>Content 2</Box>
-          <Box>Content 3</Box>
-        </Flex>
-      </Flex>
-      <Flex justify="center" gap={8}>
-        <Box>Footer Item 1</Box>
-        <Box>Footer Item 2</Box>
-        <Box>Footer Item 3</Box>
-      </Flex>
-    </Flex>
-  ),
-};
-
 export const AllJustifyOptions: Story = {
   render: () => (
     <Flex direction="column" gap={24}>
@@ -324,7 +175,11 @@ export const AllAlignOptions: Story = {
         <Flex
           align="flex-start"
           gap={8}
-          style={{ border: '1px solid #D7D7D7', padding: '12px', height: '120px' }}
+          style={{
+            border: '1px solid #D7D7D7',
+            padding: '12px',
+            height: '120px',
+          }}
         >
           <Box>1</Box>
           <Box>2</Box>
@@ -336,7 +191,11 @@ export const AllAlignOptions: Story = {
         <Flex
           align="center"
           gap={8}
-          style={{ border: '1px solid #D7D7D7', padding: '12px', height: '120px' }}
+          style={{
+            border: '1px solid #D7D7D7',
+            padding: '12px',
+            height: '120px',
+          }}
         >
           <Box>1</Box>
           <Box>2</Box>
@@ -350,7 +209,11 @@ export const AllAlignOptions: Story = {
         <Flex
           align="flex-end"
           gap={8}
-          style={{ border: '1px solid #D7D7D7', padding: '12px', height: '120px' }}
+          style={{
+            border: '1px solid #D7D7D7',
+            padding: '12px',
+            height: '120px',
+          }}
         >
           <Box>1</Box>
           <Box>2</Box>
@@ -358,11 +221,17 @@ export const AllAlignOptions: Story = {
         </Flex>
       </div>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>align: stretch</p>
+        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>
+          align: stretch
+        </p>
         <Flex
           align="stretch"
           gap={8}
-          style={{ border: '1px solid #D7D7D7', padding: '12px', height: '120px' }}
+          style={{
+            border: '1px solid #D7D7D7',
+            padding: '12px',
+            height: '120px',
+          }}
         >
           <Box>1</Box>
           <Box>2</Box>
