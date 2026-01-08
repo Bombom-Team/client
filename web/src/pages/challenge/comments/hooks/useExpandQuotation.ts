@@ -24,7 +24,14 @@ const useExpandQuotation = ({
     const lineHeight = parseFloat(getComputedStyle(quoteElement).lineHeight);
     const maxHeight = lineHeight * maxLines;
 
-    setNeedExpansion(quoteElement.scrollHeight > maxHeight);
+    const paddingTop = parseFloat(getComputedStyle(quoteElement).paddingTop);
+    const paddingBottom = parseFloat(
+      getComputedStyle(quoteElement).paddingBottom,
+    );
+
+    setNeedExpansion(
+      quoteElement.scrollHeight > maxHeight + paddingTop + paddingBottom,
+    );
   }, [quotation, maxLines]);
 
   return {
