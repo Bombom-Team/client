@@ -22,16 +22,13 @@ const useExpandQuotation = ({
 
     const quoteElement = quoteRef.current;
     const lineHeight = parseFloat(getComputedStyle(quoteElement).lineHeight);
-    const maxHeight = lineHeight * maxLines;
-
     const paddingTop = parseFloat(getComputedStyle(quoteElement).paddingTop);
     const paddingBottom = parseFloat(
       getComputedStyle(quoteElement).paddingBottom,
     );
 
-    setNeedExpansion(
-      quoteElement.scrollHeight > maxHeight + paddingTop + paddingBottom,
-    );
+    const maxHeight = lineHeight * maxLines + paddingTop + paddingBottom;
+    setNeedExpansion(quoteElement.scrollHeight > maxHeight);
   }, [quotation, maxLines]);
 
   return {
