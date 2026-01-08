@@ -160,7 +160,6 @@ const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ isMobile, expanded }) =>
     expanded ? 'unset' : isMobile ? 3 : 4};
-  text-overflow: ellipsis;
 `;
 
 const ExpandButton = styled(Button)`
