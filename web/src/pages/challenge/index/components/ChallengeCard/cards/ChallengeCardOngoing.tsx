@@ -1,9 +1,12 @@
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
+import { getDday } from '../../../utils/date';
 import CardContainer from '../CardContainer';
-import CardDetailButton from '../CardDetailButton';
+import { CardDetailButton, Tag } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
+import Flex from '@/components/Flex';
+import Text from '@/components/Text';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
@@ -11,6 +14,8 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
 
   const { detail, id, participantCount, generation, startDate, title } = props;
+
+  const dday = getDday(startDate);
 
   const moveToDetail = () => {
     trackEvent({
@@ -27,12 +32,25 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
 
   return (
     <CardContainer onClick={moveToDetail}>
-      <CardHeader
-        title={title}
-        startDate={startDate}
-        tag={`${generation}기`}
-        applicantCount={participantCount}
-      />
+      <CardHeader>
+        <Flex direction="column" gap={8}>
+          <Text as="h3" font="heading5" color="disabledText">
+            {title}
+          </Text>
+          <Tag>{generation}기</Tag>
+        </Flex>
+
+        <Flex align="flex-end" gap={12}>
+          {participantCount > 0 && (
+            <Text font="body3" color="textSecondary">
+              신청자 {participantCount}명
+            </Text>
+          )}
+          <Text font="body2" color="disabledText">
+            D{dday}
+          </Text>
+        </Flex>
+      </CardHeader>
 
       <CardFooter>
         <ChallengeProgress>{detail?.progress}% 달성 중</ChallengeProgress>

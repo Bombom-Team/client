@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import CardContainer from '../CardContainer';
-import CardDetailButton from '../CardDetailButton';
+import { CardDetailButton, Tag } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
+import Flex from '@/components/Flex';
+import Text from '@/components/Text';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
@@ -18,7 +20,7 @@ const GRADE_CONFIG: Record<GradeType, string> = {
 const ChallengeCardCompleted = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
 
-  const { detail, id, generation, startDate, title } = props;
+  const { detail, id, generation, title } = props;
 
   const isSuccess = detail?.isSuccess !== false;
   const grade = detail?.grade as GradeType;
@@ -39,18 +41,20 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
 
   return (
     <CardContainer onClick={moveToDetail}>
-      {isSuccess && gradeConfig && (
-        <GradeBadgeTopRight>
-          <img src={GRADE_CONFIG[grade]} alt={`${grade} 메달`} width={48} />
-        </GradeBadgeTopRight>
-      )}
+      <CardHeader>
+        <Flex direction="column" gap={8}>
+          <Text as="h3" font="heading5" color="textPrimary">
+            {title}
+          </Text>
+          <Tag>{generation}기</Tag>
+        </Flex>
 
-      <CardHeader
-        title={title}
-        startDate={startDate}
-        tag={`${generation}기`}
-        applicantCount={0}
-      />
+        {isSuccess && gradeConfig && (
+          <GradeBadgeTopRight>
+            <img src={GRADE_CONFIG[grade]} alt={`${grade} 메달`} width={48} />
+          </GradeBadgeTopRight>
+        )}
+      </CardHeader>
 
       <CardFooter>
         <CompletionInfo>
