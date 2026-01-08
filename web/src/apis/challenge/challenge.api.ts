@@ -156,9 +156,8 @@ export type GetDailyGuideCommentsParams = {
   size?: number;
   sort?: string;
 };
-export type GetDailyGuideCommentsResponse = PageableResponse<
-  DailyGuideCommentItem[]
->;
+export type GetDailyGuideCommentsResponse =
+  PageableResponse<DailyGuideCommentItem>;
 
 export const getDailyGuideComments = async ({
   challengeId,

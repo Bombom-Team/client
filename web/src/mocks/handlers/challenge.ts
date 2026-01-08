@@ -1,11 +1,13 @@
 import { http, HttpResponse } from 'msw';
 import { CHALLENGES } from '../datas/challenge';
 import { CHALLENGE_COMMENTS } from '../datas/challengeComments';
+import { DAILY_GUIDE_COMMENTS } from '../datas/dailyGuideComments';
 import { ENV } from '@/apis/env';
 import type {
   DailyGuide,
   GetChallengeCommentsResponse,
   GetChallengeEligibilityResponse,
+  GetDailyGuideCommentsResponse,
 } from '@/apis/challenge/challenge.api';
 
 const baseURL = ENV.baseUrl;
@@ -177,6 +179,52 @@ export const challengeHandlers = [
     `${baseURL}/challenges/:challengeId/daily-guides/:dayIndex/my-comment`,
     async () => {
       return HttpResponse.json({ success: true });
+    },
+  ),
+
+  http.get(
+    `${baseURL}/challenges/:challengeId/daily-guides/:dayIndex/comments`,
+    ({ request }) => {
+      const url = new URL(request.url);
+      const page = parseInt(url.searchParams.get('page') || '0', 10);
+      const size = parseInt(url.searchParams.get('size') || '20', 10);
+
+      const totalElements = DAILY_GUIDE_COMMENTS.length;
+      const totalPages = Math.ceil(totalElements / size);
+      const startIdx = page * size;
+      const endIdx = startIdx + size;
+      const content = DAILY_GUIDE_COMMENTS.slice(startIdx, endIdx);
+
+      const response: GetDailyGuideCommentsResponse = {
+        content,
+        pageable: {
+          pageNumber: page,
+          pageSize: size,
+          sort: {
+            empty: false,
+            sorted: true,
+            unsorted: false,
+          },
+          offset: startIdx,
+          paged: true,
+          unpaged: false,
+        },
+        totalElements,
+        totalPages,
+        last: page >= totalPages - 1,
+        size,
+        number: page,
+        sort: {
+          empty: false,
+          sorted: true,
+          unsorted: false,
+        },
+        numberOfElements: content.length,
+        first: page === 0,
+        empty: content.length === 0,
+      };
+
+      return HttpResponse.json(response);
     },
   ),
 ];
