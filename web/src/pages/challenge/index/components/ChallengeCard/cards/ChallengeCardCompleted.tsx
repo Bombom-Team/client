@@ -21,7 +21,6 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
 
   const { detail, id, generation, title } = props;
 
-  const isSuccess = detail?.isSuccess !== false;
   const grade = detail?.grade as GradeType;
   const gradeConfig = grade ? GRADE_CONFIG[grade] : null;
 
@@ -46,7 +45,7 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
           <Tag>{generation}기</Tag>
         </Flex>
 
-        {isSuccess && gradeConfig && (
+        {detail?.isSuccess && gradeConfig && (
           <GradeBadgeTopRight>
             <img src={GRADE_CONFIG[grade]} alt={`${grade} 메달`} width={48} />
           </GradeBadgeTopRight>
