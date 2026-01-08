@@ -1,4 +1,5 @@
 import { fetcher } from '@bombom/shared/apis';
+import type { PageableResponse } from '../types/PageableResponse';
 import type { components, operations } from '@/types/openapi';
 
 export type Challenge = components['schemas']['ChallengeResponse'];
@@ -140,5 +141,32 @@ export const postDailyGuideComment = async (
   return await fetcher.post<PostDailyGuideCommentParams, never>({
     path: `/challenges/${challengeId}/daily-guides/${dayIndex}/my-comment`,
     body: params,
+  });
+};
+
+export interface DailyGuideCommentItem {
+  nickname: string;
+  comment: string;
+  createdAt: string;
+}
+export type GetDailyGuideCommentsParams = {
+  challengeId: number;
+  dayIndex?: number;
+  page?: number;
+  size?: number;
+  sort?: string;
+};
+export type GetDailyGuideCommentsResponse = PageableResponse<
+  DailyGuideCommentItem[]
+>;
+
+export const getDailyGuideComments = async ({
+  challengeId,
+  dayIndex,
+  ...params
+}: GetDailyGuideCommentsParams) => {
+  return await fetcher.get<GetDailyGuideCommentsResponse>({
+    path: `/challenges/${challengeId}/daily-guides/${dayIndex}/comments`,
+    query: params,
   });
 };
