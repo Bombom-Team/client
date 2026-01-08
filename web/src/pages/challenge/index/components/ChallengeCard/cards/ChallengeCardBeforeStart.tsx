@@ -4,14 +4,13 @@ import { getDday } from '../../../utils/date';
 import ChallengeApplyModal from '../../ChallengeApplyModal/ChallengeApplyModal';
 import LoadingModal from '../../ChallengeApplyModal/modals/LoadingModal';
 import CardContainer from '../CardContainer';
-import { CardDetailButton, Tag } from '../CardElements';
+import { Applicant, CardDetailButton, DDay, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import Button from '@/components/Button/Button';
 import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
-import Text from '@/components/Text';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import useChallengeApplyMutation from '@/pages/challenge/index/hooks/useChallengeApplyMutation';
 import useChallengeCancelMutation from '@/pages/challenge/index/hooks/useChallengeCancelMutation';
@@ -71,21 +70,15 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
       <CardContainer onClick={handleCardClick}>
         <CardHeader>
           <Flex direction="column" gap={8}>
-            <Text as="h3" font="heading5" color="textPrimary">
-              {title}
-            </Text>
+            <Title>{title}</Title>
             <Tag>{generation}기</Tag>
           </Flex>
 
           <Flex align="flex-end" gap={12}>
             {participantCount > 0 && (
-              <Text font="body3" color="textSecondary">
-                신청자 {participantCount}명
-              </Text>
+              <Applicant>신청자 {participantCount}명</Applicant>
             )}
-            <Text font="body2" color="primary">
-              D{dday}
-            </Text>
+            <DDay>D{dday}</DDay>
           </Flex>
         </CardHeader>
 

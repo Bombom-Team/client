@@ -1,4 +1,10 @@
 import styled from '@emotion/styled';
+import Text from '@/components/Text';
+import type { ComponentProps } from 'react';
+
+export const Title = (props: ComponentProps<typeof Text>) => (
+  <Text as="h3" font="heading5" color="textPrimary" {...props} />
+);
 
 export const Tag = styled.span`
   padding: 4px 10px;
@@ -11,6 +17,14 @@ export const Tag = styled.span`
   font: ${({ theme }) => theme.fonts.body3};
   font-weight: 600;
 `;
+
+export const Applicant = (props: ComponentProps<typeof Text>) => (
+  <Text font="body3" color="textSecondary" {...props} />
+);
+
+export const DDay = (props: ComponentProps<typeof Text>) => (
+  <Text font="body2" color="primary" {...props} />
+);
 
 export const CardDetailButton = styled.button`
   border: none;

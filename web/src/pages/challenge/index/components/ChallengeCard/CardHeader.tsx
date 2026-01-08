@@ -1,14 +1,12 @@
-import styled from '@emotion/styled';
+import Flex from '@/components/Flex';
 import type { PropsWithChildren } from 'react';
 
 const CardHeader = ({ children }: PropsWithChildren) => {
-  return <Header>{children}</Header>;
+  return (
+    <Flex align="flex-start" justify="space-between">
+      {children}
+    </Flex>
+  );
 };
 
 export default CardHeader;
-
-const Header = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-`;

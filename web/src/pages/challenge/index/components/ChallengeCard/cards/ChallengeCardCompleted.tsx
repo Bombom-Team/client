@@ -1,11 +1,10 @@
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import CardContainer from '../CardContainer';
-import { CardDetailButton, Tag } from '../CardElements';
+import { CardDetailButton, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import Flex from '@/components/Flex';
-import Text from '@/components/Text';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
@@ -43,9 +42,7 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
     <CardContainer onClick={moveToDetail}>
       <CardHeader>
         <Flex direction="column" gap={8}>
-          <Text as="h3" font="heading5" color="textPrimary">
-            {title}
-          </Text>
+          <Title>{title}</Title>
           <Tag>{generation}기</Tag>
         </Flex>
 
