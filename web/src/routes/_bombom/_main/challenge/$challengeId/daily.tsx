@@ -1,15 +1,12 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
-import { useState } from 'react';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
 import useModal from '@/components/Modal/useModal';
-import Tooltip from '@/components/Tooltip/Tooltip';
 import { useDevice } from '@/hooks/useDevice';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
 import DailyGuideCommentsModal from '@/pages/challenge/daily/components/DailyGuideCommentsModal';
-import LockIcon from '#/assets/svg/lock.svg';
+import ViewAllCommentsButton from '@/pages/challenge/daily/components/ViewAllCommentsButton';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -25,8 +22,6 @@ export const Route = createFileRoute(
 });
 
 function ChallengeDaily() {
-  const [showTooltip, setShowTooltip] = useState(false);
-
   const { challengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
@@ -38,28 +33,6 @@ function ChallengeDaily() {
   );
 
   const isMobile = device === 'mobile';
-
-  const handleViewAllAnswersClick = () => {
-    if (dailyGuide?.myComment.exists) {
-      openModal();
-    }
-  };
-
-  const handleButtonMouseEnter = () => {
-    if (!dailyGuide?.myComment.exists) {
-      setShowTooltip(true);
-    }
-  };
-
-  const handleButtonMouseLeave = () => {
-    setShowTooltip(false);
-  };
-
-  const handleButtonTouch = () => {
-    if (!dailyGuide?.myComment.exists) {
-      setShowTooltip((prev) => !prev);
-    }
-  };
 
   if (!dailyGuide) {
     return null;
@@ -88,21 +61,10 @@ function ChallengeDaily() {
               myComment={dailyGuide.myComment}
             />
             <ButtonWrapper>
-              <ViewAllAnswersButton
-                variant="outlined"
-                onClick={handleViewAllAnswersClick}
-                onMouseEnter={handleButtonMouseEnter}
-                onMouseLeave={handleButtonMouseLeave}
-                onTouchStart={handleButtonTouch}
-              >
-                {!dailyGuide.myComment.exists && (
-                  <LockIcon width={16} height={16} />
-                )}
-                전체 답변 보기
-              </ViewAllAnswersButton>
-              <Tooltip opened={showTooltip} position="left">
-                답변을 제출해야 확인할 수 있어요!
-              </Tooltip>
+              <ViewAllCommentsButton
+                submittedMyComment={dailyGuide?.myComment.exists}
+                showAllComments={openModal}
+              />
             </ButtonWrapper>
             <DailyGuideCommentsModal
               challengeId={Number(challengeId)}
@@ -181,10 +143,6 @@ const NoticeText = styled.p<{ isMobile: boolean }>`
 `;
 
 const ButtonWrapper = styled.div`
-  position: relative;
+  display: flex;
   align-self: flex-end;
-`;
-
-const ViewAllAnswersButton = styled(Button)`
-  font: ${({ theme }) => theme.fonts.body3};
 `;
