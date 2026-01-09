@@ -2,8 +2,11 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
+import Button from '@/components/Button/Button';
+import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
+import DailyGuideCommentsModal from '@/pages/challenge/daily/components/DailyGuideCommentsModal';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -23,6 +26,7 @@ function ChallengeDaily() {
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
   const device = useDevice();
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const { data: dailyGuide } = useQuery(
     queries.todayDailyGuide(Number(challengeId)),
@@ -50,11 +54,23 @@ function ChallengeDaily() {
         )}
 
         {dailyGuide.type === 'COMMENT' && dailyGuide.commentEnabled && (
-          <DailyGuideComment
-            challengeId={Number(challengeId)}
-            dayIndex={dailyGuide.dayIndex}
-            myComment={dailyGuide.myComment}
-          />
+          <>
+            <DailyGuideComment
+              challengeId={Number(challengeId)}
+              dayIndex={dailyGuide.dayIndex}
+              myComment={dailyGuide.myComment}
+            />
+            <ViewAllAnswersButton variant="outlined" onClick={openModal}>
+              전체 답변 보기
+            </ViewAllAnswersButton>
+            <DailyGuideCommentsModal
+              challengeId={Number(challengeId)}
+              dayIndex={dailyGuide.dayIndex}
+              modalRef={modalRef}
+              isOpen={isOpen}
+              closeModal={closeModal}
+            />
+          </>
         )}
       </GuideCard>
     </Container>
@@ -121,4 +137,9 @@ const NoticeText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
+`;
+
+const ViewAllAnswersButton = styled(Button)`
+  align-self: flex-end;
+  font: ${({ theme }) => theme.fonts.body3};
 `;

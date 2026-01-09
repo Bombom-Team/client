@@ -83,7 +83,13 @@ export const challengeQueries = {
     }),
   dailyGuideComments: (params: GetDailyGuideCommentsParams) =>
     queryOptions({
-      queryKey: ['challenges', params.challengeId, 'daily-guide-comments'],
+      queryKey: [
+        'challenges',
+        params.challengeId,
+        'daily-guides',
+        params.dayIndex,
+        params,
+      ],
       queryFn: () => getDailyGuideComments(params),
     }),
 };

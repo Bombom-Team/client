@@ -169,7 +169,7 @@ export const challengeHandlers = [
         },
       };
 
-      const dailyGuide = dailyGuides[challengeId as string] || dailyGuides['2'];
+      const dailyGuide = dailyGuides[challengeId as string] || dailyGuides['3'];
 
       return HttpResponse.json(dailyGuide);
     },
