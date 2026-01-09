@@ -102,13 +102,13 @@ const ModalContent = styled.div<{ isMobile: boolean }>`
 const ModalHeader = styled.div`
   display: flex;
   gap: 8px;
-  align-items: baseline;
+  align-items: center;
 `;
 
 const ModalTitle = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
+    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
 `;
 
 const CountBadge = styled.span<{ isMobile: boolean }>`
