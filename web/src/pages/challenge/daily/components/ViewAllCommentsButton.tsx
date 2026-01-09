@@ -49,7 +49,7 @@ const ViewAllCommentsButton = ({
         {!submittedMyComment && <LockIcon width={16} height={16} />}
         전체 답변 보기
       </Button>
-      <Tooltip opened={showTooltip} position="left">
+      <Tooltip opened={showTooltip} position="top-left">
         답변을 제출해야 확인할 수 있어요!
       </Tooltip>
     </Container>
