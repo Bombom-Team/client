@@ -83,7 +83,8 @@ If any rule conflicts, THIS DOCUMENT WINS.
 
 ### Component Export & File Order Rules
 
-- React components MUST be exported using `export default`.
+- Components MUST be exported using `export default`.
+- Hooks and utility functions MUST be exported using `export const`.
 - Named exports for components are FORBIDDEN.
 - Component file structure MUST follow this exact order:
   1. Component declaration
@@ -98,6 +99,28 @@ If any rule conflicts, THIS DOCUMENT WINS.
 - The ONLY exception is compositional components:
   - Components that are tightly coupled and used only together MAY coexist in a single file.
 - Reusable or independently usable components MUST be split into separate files.
+
+---
+
+### Code Placement Rules (Components / Utils / Constants)
+
+- Components, utilities, and constants MUST be placed based on their reuse scope.
+
+- Component-level only:
+  - Utilities or constants used by a single component MUST be defined at the top of that file.
+
+- Page-level only:
+  - Components MUST be placed under `pages/{page}/components`.
+  - Utilities and constants MUST be placed under `pages/{page}/utils`.
+
+- Shared across multiple pages:
+  - Components MUST be placed under `src/components`.
+  - Utilities and constants MUST be placed under `src/utils`.
+
+- Shared across multiple workspaces:
+  - Code MUST be placed in the `shared` workspace.
+
+- If reuse scope is unclear, code MUST be placed at the page level first.
 
 ---
 
@@ -127,6 +150,29 @@ If any rule conflicts, THIS DOCUMENT WINS.
      - Move to the appropriate shared workspace or shared util directory.
 
 - Creating global utilities without clear reuse justification is FORBIDDEN.
+
+---
+
+### Event Handler Naming Rules
+
+- Functions passed as props to handle events MUST use the `on` prefix.
+  - Examples: `onClick`, `onClose`, `onSubmit`
+
+- Event handler functions defined inside a component MUST use the `handle` prefix.
+  - Examples: `handleClick`, `handleSubmit`, `handleModalClose`
+
+- The `on*` naming represents an external callback.
+- The `handle*` naming represents the internal event handler implementation.
+
+---
+
+### Type Naming Rules
+
+- Props types for React components MUST use the `Props` suffix.
+  - Example: `ChallengeCardProps`
+
+- Parameter types for functions and custom hooks MUST use the `Params` suffix.
+  - Example: `useFetchChallenge(params: FetchChallengeParams)`
 
 ---
 
@@ -164,6 +210,18 @@ If any rule conflicts, THIS DOCUMENT WINS.
 
 - Cache timing SHOULD be tuned based on data characteristics.
   → Avoid unnecessary refetching.
+
+### useEffect Dependency Rules
+
+- All values and functions referenced inside `useEffect` MUST be included in the dependency array.
+
+- If objects or arrays MUST be used as dependencies:
+  - A serialized value (e.g. `JSON.stringify`) MUST be used instead.
+
+```ts
+useEffect(() => {
+  // ...
+}, [JSON.stringify(filters)]);
 
 ---
 
@@ -263,3 +321,4 @@ If any rule conflicts, THIS DOCUMENT WINS.
 - NEVER end a task with failing lint/stylelint.
 - NEVER guess project-specific behavior.
 - NEVER invent code paths, APIs, or data contracts.
+```
