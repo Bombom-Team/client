@@ -167,6 +167,24 @@ If any rule conflicts, THIS DOCUMENT WINS.
 
 ---
 
+## TanStack Query Usage Rules
+
+### useQuery Rules
+
+- `useQuery` MUST use query options declared in query factories only.
+- Direct inline `useQuery({ ... })` declarations are FORBIDDEN.
+- All queries MUST be imported from `queries.*` modules.
+
+### useMutation Rules
+
+- `useMutation` MUST be declared inside a custom hook.
+- Direct usage of `useMutation` inside components is FORBIDDEN.
+- Mutation hooks MUST follow this naming convention:
+- `use{What}{Action}Mutation`
+- The suffix `Mutation` is REQUIRED.
+
+---
+
 ## Testing & Quality
 
 - Changes that affect behavior MUST include tests when risk is non-trivial.
