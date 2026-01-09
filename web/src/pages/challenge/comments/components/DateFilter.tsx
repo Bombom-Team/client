@@ -33,9 +33,9 @@ const DateFilter = ({
   const device = useDevice();
 
   const weekDates =
-    device !== 'mobile'
-      ? displayDates.slice(weekStartIndex, weekEndIndex + 1)
-      : displayDates;
+    device === 'mobile'
+      ? displayDates.filter((date) => date !== today)
+      : displayDates.slice(weekStartIndex, weekEndIndex + 1);
 
   return (
     <Container device={device}>
