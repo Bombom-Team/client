@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { getDisplayDates } from '../utils/date';
 
 interface UseDateFilterParams {
@@ -25,9 +25,9 @@ export const useDateFilter = ({
     return index === -1 ? Math.max(displayDates.length - 1, 0) : index;
   }, [displayDates, selectedDate]);
 
-  const [weekStartIndex, setWeekStartIndex] = useState(() => {
+  const weekStartIndex = useMemo(() => {
     return Math.floor(selectedDateIndex / DATES_PER_PAGE) * DATES_PER_PAGE;
-  });
+  }, [selectedDateIndex]);
 
   const weekEndIndex = useMemo(() => {
     return Math.min(
@@ -47,8 +47,6 @@ export const useDateFilter = ({
   const goToPrevWeek = useCallback(() => {
     if (canGoPrevWeek) {
       const prevWeekStartIndex = Math.max(weekStartIndex - DATES_PER_PAGE, 0);
-      setWeekStartIndex(prevWeekStartIndex);
-
       const prevWeekDate = displayDates[prevWeekStartIndex];
       if (prevWeekDate) {
         onDateSelect(prevWeekDate);
@@ -59,8 +57,6 @@ export const useDateFilter = ({
   const goToNextWeek = useCallback(() => {
     if (canGoNextWeek) {
       const nextWeekStartIndex = weekStartIndex + DATES_PER_PAGE;
-      setWeekStartIndex(nextWeekStartIndex);
-
       const nextWeekDate = displayDates[nextWeekStartIndex];
       if (nextWeekDate) {
         onDateSelect(nextWeekDate);

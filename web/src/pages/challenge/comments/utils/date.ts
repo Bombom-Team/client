@@ -17,5 +17,6 @@ export const convertRelativeTime = (dateString: string) => {
 };
 
 export const getDisplayDates = (dates: string[], today: string) => {
-  return dates.filter((date) => today >= date);
+  const latestChallengeDates = dates.filter((date) => today > date);
+  return [...latestChallengeDates, today];
 };
