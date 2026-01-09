@@ -1,324 +1,81 @@
 # CONVENTIONS.md
 
-This document defines the ABSOLUTE conventions for this repository.
-All contributors (human or AI) MUST follow these rules.
+This document defines the entry point for all conventions in this repository.
+
+All contributors (human or AI) MUST follow the appropriate rules
+defined in the documents referenced below.
 
 ---
 
-## Absolute Priority Rules
+## Rule Structure Overview
 
-Priority Order (Highest → Lowest):
+This repository separates conventions by responsibility.
 
-1. This CONVENTIONS.md
-2. Existing codebase patterns
-3. Tool defaults (eslint, prettier, framework conventions)
+### 1. Frontend Coding Standards (Human)
 
-If any rule conflicts, THIS DOCUMENT WINS.
+Frontend developers MUST follow the coding standards defined here:
 
----
+→ `docs/frontend-coding-standards.md`
 
-## Modification Scope Rules (Critical)
+This document defines:
 
-- Modify ONLY files explicitly mentioned by the user or REQUIRED by the approved task.
-- DO NOT refactor unrelated code.
-- DO NOT perform cosmetic changes unless explicitly requested.
-- DO NOT rename, reorder, or reformat code without functional necessity.
-- If the modification scope is unclear, STOP and ASK before editing.
+- How frontend code should be written
+- Component, hook, and utility conventions
+- Folder structure and naming rules
+- State management and data handling standards
 
----
+These rules are used during:
 
-## Generated Files (Absolute)
-
-- Files ending with `.gen.ts` MUST NOT be edited manually.
-- Generated files MUST be updated ONLY via their generating commands.
-- Any manual change to generated files is STRICTLY FORBIDDEN.
+- Code writing
+- Code review
+- Team discussion and onboarding
 
 ---
 
-## Repository Layout
+### 2. AI Behavior Rules (AI Agents)
 
-- Monorepo structure MUST stay consistent.
-  → pnpm 모노레포이며 `admin`, `web`, `shared` 워크스페이스를 기준으로 작업한다.
+AI agents (e.g. Claude, Codex, Cursor) MUST follow the rules defined here:
 
-- Shared workspace MUST host shared code.
-  → 공용 유틸, 타입, API 로직은 `shared` 워크스페이스에서 우선 관리한다.
+→ `docs/ai-rules.md`
 
-- Router files MUST follow TanStack Router conventions.
-  → `src/routes` 구조로부터 생성되는 `routeTree.gen.ts`는 직접 수정하지 않는다.
+This document defines:
 
----
+- Modification scope and boundaries
+- Generated file handling
+- Lint / stylelint auto-fix requirements
+- Task completion and failure conditions
 
-## Development Commands
+These rules exist to prevent:
 
-- All commands MUST be executed via pnpm.
-- Root-level installation/build MUST use `pnpm install`.
-
-- Workspace commands MUST use pnpm filter.
-  - Admin:
-    - `pnpm --filter admin dev`
-    - `pnpm --filter admin build`
-    - `pnpm --filter admin test`
-
-  - Web:
-    - `pnpm --filter web dev`
-    - `pnpm --filter web build`
-    - `pnpm --filter web test`
-
-- Admin OpenAPI types MUST be generated via script.
-  → Run `pnpm admin:generate-openapi-types`
-  → `admin/.env` MUST define `VITE_OPEN_API_DOCS`
-  → Generated `src/types/openapi.d.ts` MUST be committed.
+- Overreach
+- Guessing
+- Incomplete or unsafe changes
 
 ---
 
-## Coding Standards
+## Priority
 
-### Function Declaration Rules
+When rules conflict, the following priority applies:
 
-- Components, hooks, and utility functions MUST be declared using arrow functions.
-- Usage of `function` keyword is FORBIDDEN except for the following case:
-  - Route components declared inside the `routes` directory MAY use `function` declaration due to framework constraints.
-
----
-
-### Component Export & File Order Rules
-
-- Components MUST be exported using `export default`.
-- Hooks and utility functions MUST be exported using `export const`.
-- Named exports for components are FORBIDDEN.
-- Component file structure MUST follow this exact order:
-  1. Component declaration
-  2. `export default` statement
-  3. Emotion styled components
+1. This `CONVENTIONS.md`
+2. The referenced rule documents (`frontend-coding-standards.md`, `ai-rules.md`)
+3. Existing codebase patterns
+4. Tool defaults (eslint, prettier, framework conventions)
 
 ---
 
-### Component File Scope Rules
+## Applicability
 
-- Each component file MUST contain exactly one React component.
-- The ONLY exception is compositional components:
-  - Components that are tightly coupled and used only together MAY coexist in a single file.
-- Reusable or independently usable components MUST be split into separate files.
-
----
-
-### Code Placement Rules (Components / Utils / Constants)
-
-- Components, utilities, and constants MUST be placed based on their reuse scope.
-
-- Component-level only:
-  - Utilities or constants used by a single component MUST be defined at the top of that file.
-
-- Page-level only:
-  - Components MUST be placed under `pages/{page}/components`.
-  - Utilities and constants MUST be placed under `pages/{page}/utils`.
-
-- Shared across multiple pages:
-  - Components MUST be placed under `src/components`.
-  - Utilities and constants MUST be placed under `src/utils`.
-
-- Shared across multiple workspaces:
-  - Code MUST be placed in the `shared` workspace.
-
-- If reuse scope is unclear, code MUST be placed at the page level first.
+- Human contributors MUST follow **Frontend Coding Standards**.
+- AI contributors MUST follow **AI Behavior Rules**.
+- Any contributor modifying frontend code MUST ensure compliance
+  with `frontend-coding-standards.md`.
 
 ---
 
-### Styled Component Naming Rules
-
-- The outermost styled component wrapping a component MUST be named `Container`.
-- `Container` MUST be named exactly `Container`.
-  - Variants such as `PageContainer`, `RootContainer`, `MainContainer` are FORBIDDEN.
-
-- Child styled components MUST follow these rules:
-  - Medium-level layout wrappers: `~Wrapper`
-  - Smaller layout or atomic units: `~Box`
-
----
-
-### Utility & Constant Placement Rules
-
-- Utilities and constants MUST be placed as close as possible to their usage.
-- Placement rules (highest priority first):
-  1. Used only within a single file:
-     - Define at the top of the same file.
-
-  2. Used across multiple files within the same page:
-     - Create a `utils` directory inside the corresponding `pages` folder.
-
-  3. Shared across domains or workspaces:
-     - Move to the appropriate shared workspace or shared util directory.
-
-- Creating global utilities without clear reuse justification is FORBIDDEN.
-
----
-
-### Event Handler Naming Rules
-
-- Functions passed as props to handle events MUST use the `on` prefix.
-  - Examples: `onClick`, `onClose`, `onSubmit`
-
-- Event handler functions defined inside a component MUST use the `handle` prefix.
-  - Examples: `handleClick`, `handleSubmit`, `handleModalClose`
-
-- The `on*` naming represents an external callback.
-- The `handle*` naming represents the internal event handler implementation.
-
----
-
-### Type Naming Rules
-
-- Props types for React components MUST use the `Props` suffix.
-  - Example: `ChallengeCardProps`
-
-- Parameter types for functions and custom hooks MUST use the `Params` suffix.
-  - Example: `useFetchChallenge(params: FetchChallengeParams)`
-
----
-
-## API & Data Rules
-
-- HTTP client MUST use the shared fetcher.
-  → `@bombom/shared/apis/fetcher`
-
-- API specs MUST reference `openapi.d.ts`.
-  → Always verify request/response shapes against latest generated types.
-
-- Query parameters MUST mirror backend-supported features.
-  → Pagination, filters, search params MUST align exactly with backend contracts.
-
-- Request/response interfaces MUST live near the API implementation.
-  → `src/apis/*` scope
-
-- API files MUST be grouped by domain.
-  → `src/apis/{domain}/domain.api.ts`
-  → `src/apis/{domain}/domain.query.ts`
-
----
-
-## State & Side Effects
-
-- Server state MUST use TanStack Query.
-- Local state MUST be limited to UI concerns only.
-
-- Mutations MUST provide immediate user feedback.
-  → Loading disabled state
-  → Success / failure handling
-
-- Query factories MUST define reusable options.
-  → `queryKey`, `queryFn`, `staleTime`, `gcTime`
-
-- Cache timing SHOULD be tuned based on data characteristics.
-  → Avoid unnecessary refetching.
-
-### useEffect Dependency Rules
-
-- All values and functions referenced inside `useEffect` MUST be included in the dependency array.
-
-- If objects or arrays MUST be used as dependencies:
-  - A serialized value (e.g. `JSON.stringify`) MUST be used instead.
-
-```ts
-useEffect(() => {
-  // ...
-}, [JSON.stringify(filters)]);
-
----
-
-## TanStack Query Usage Rules
-
-### useQuery Rules
-
-- `useQuery` MUST use query options declared in query factories only.
-- Direct inline `useQuery({ ... })` declarations are FORBIDDEN.
-- All queries MUST be imported from `queries.*` modules.
-
-### useMutation Rules
-
-- `useMutation` MUST be declared inside a custom hook.
-- Direct usage of `useMutation` inside components is FORBIDDEN.
-- Mutation hooks MUST follow this naming convention:
-  - `use{What}{Action}Mutation`
-  - The suffix `Mutation` is REQUIRED.
-
----
-
-## Testing & Quality (Blocking)
-
-- ESLint and Stylelint MUST be auto-fixed before task completion.
-- Auto-fix MUST be executed using workspace scripts:
-  - `pnpm --filter {workspace} lint:fix`
-  - `pnpm --filter {workspace} stylelint:fix`
-
-- If auto-fix produces changes:
-  - Those changes MUST be reviewed.
-  - Those changes MUST be committed.
-
-- Lint and stylelint MUST pass with ZERO errors.
-- If lint or stylelint fails, the task MUST NOT be considered complete.
-- Ending a task with failing lint/stylelint is STRICTLY FORBIDDEN.
-
----
-
-## Documentation & Comments
-
-- Markdown documentation MUST stay updated when rules or workflows change.
-- Comments MUST be concise and intentional.
-  → Prefer self-explanatory code over verbose comments.
-
----
-
-## Workflow Process
-
-- `[WORKFLOW]` prefix TRIGGERS mandatory process execution.
-
-1. Receive request and list tasks
-2. Share task list and wait for confirmation
-3. Implement tasks sequentially
-4. Commit per task
-5. Run ESLint & Stylelint auto-fix
-6. Re-run lint and type-check
-7. Commit auto-fix changes (if any)
-8. Push and open PR
-
-- A task is considered COMPLETE only when:
-  - All approved features are implemented
-  - ESLint and Stylelint pass with ZERO errors
-
-- The FINAL task in any `[WORKFLOW]` plan MUST be:
-  → `lint/stylelint auto-fix 및 정리`
-
----
-
-## Git Workflow
-
-- Branch naming MUST follow `{issue_key}{issue_task_name}`
-  → 예: `BOM-5{특정 기능 개발}`
-
-- Commit messages MUST follow:
-  → `type: 한글 설명`
-  → Allowed types: `feat`, `fix`, `refactor`, `test`, `chore`
-
-- PR titles MUST follow:
-  → `[ISSUE] type: subject`
-  → 예: `[BOM-199] feat: 챌린지 종류별 신청 카드 제작`
-
-- PR template MUST be followed without omission.
-  → `.github/pull_request_template.md`
-
-- PR target branch MUST be `dev`.
-
-- DO NOT rewrite or revert others’ work without discussion.
-  → Unexpected changes MUST be reported and discussed first.
-
----
-
-## AI Failure Handling (Blocking)
-
-- If ESLint or Stylelint reports errors, STOP and fix them.
-- If auto-fix was not executed, the task MUST NOT end.
-- If auto-fix introduces changes, a commit is REQUIRED.
-- NEVER end a task with failing lint/stylelint.
-- NEVER guess project-specific behavior.
-- NEVER invent code paths, APIs, or data contracts.
-```
+## Notes
+
+- This file intentionally contains **no detailed rules**.
+- All detailed conventions MUST live in their respective documents.
+- Changes to conventions MUST be made in the target document,
+  not by expanding this file.
