@@ -73,25 +73,60 @@ If any rule conflicts, THIS DOCUMENT WINS.
 
 ## Coding Standards
 
-- Language stack IS TypeScript + React.
-- All UI MUST use functional components with strict typing.
+### Function Declaration Rules
 
-- Components and hooks MUST use arrow functions.
-- React components MUST be exported as `default`.
+- Components, hooks, and utility functions MUST be declared using arrow functions.
+- Usage of `function` keyword is FORBIDDEN except for the following case:
+  - Route components declared inside the `routes` directory MAY use `function` declaration due to framework constraints.
 
-- Styling MUST use Emotion Theme.
-  → Colors, typography, spacing MUST come from `theme`
-  → Spacing follows a 4px scale.
+---
 
-- Components MUST remain UI-only.
-  → Business logic belongs in hooks or services.
+### Component Export & File Order Rules
 
-- File naming rules:
-  - Components / pages: PascalCase
-  - Hooks / utils: camelCase
-  - Folder names: follow existing conventions (do not invent new casing)
+- React components MUST be exported using `export default`.
+- Named exports for components are FORBIDDEN.
+- Component file structure MUST follow this exact order:
+  1. Component declaration
+  2. `export default` statement
+  3. Emotion styled components
 
-- Styled components MUST be declared AFTER component definition or default export.
+---
+
+### Component File Scope Rules
+
+- Each component file MUST contain exactly one React component.
+- The ONLY exception is compositional components:
+  - Components that are tightly coupled and used only together MAY coexist in a single file.
+- Reusable or independently usable components MUST be split into separate files.
+
+---
+
+### Styled Component Naming Rules
+
+- The outermost styled component wrapping a component MUST be named `Container`.
+- `Container` MUST be named exactly `Container`.
+  - Variants such as `PageContainer`, `RootContainer`, `MainContainer` are FORBIDDEN.
+
+- Child styled components MUST follow these rules:
+  - Medium-level layout wrappers: `~Wrapper`
+  - Smaller layout or atomic units: `~Box`
+
+---
+
+### Utility & Constant Placement Rules
+
+- Utilities and constants MUST be placed as close as possible to their usage.
+- Placement rules (highest priority first):
+  1. Used only within a single file:
+     - Define at the top of the same file.
+
+  2. Used across multiple files within the same page:
+     - Create a `utils` directory inside the corresponding `pages` folder.
+
+  3. Shared across domains or workspaces:
+     - Move to the appropriate shared workspace or shared util directory.
+
+- Creating global utilities without clear reuse justification is FORBIDDEN.
 
 ---
 
@@ -137,7 +172,7 @@ If any rule conflicts, THIS DOCUMENT WINS.
 - Changes that affect behavior MUST include tests when risk is non-trivial.
   → Jest / Testing Library / Playwright
 
-- Lint and format MUST remain clean.
+- Lint and type-check MUST remain clean.
   → Run workspace-specific lint and type-check after significant changes.
 
 ---
