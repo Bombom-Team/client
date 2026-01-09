@@ -1,17 +1,25 @@
 import { ConfigContext, ExpoConfig } from 'expo/config';
 import { version } from './package.json';
 
+const APP_CONFIG = {
+  name: '봄봄',
+  slug: 'bombom',
+  color: '#FE5E04',
+  bundleIdentifier: 'com.antarctica.bombom',
+  icon: './app/assets/images/logo.png',
+};
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
-    name: '봄봄',
-    slug: 'bombom',
+    name: APP_CONFIG.name,
+    slug: APP_CONFIG.slug,
     version,
     runtimeVersion: {
       policy: 'appVersion',
     },
     orientation: 'portrait',
-    icon: './app/assets/images/logo.png',
+    icon: APP_CONFIG.icon,
     scheme: 'bombom',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
@@ -31,7 +39,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           NSAllowsArbitraryLoads: true,
         },
       },
-      bundleIdentifier: 'com.antarctica.bombom',
+      bundleIdentifier: APP_CONFIG.bundleIdentifier,
       config: {
         usesNonExemptEncryption: false, // 수출 규정 관련 문서 누락됨 메시지 해결
       },
@@ -39,26 +47,26 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       adaptiveIcon: {
         foregroundImage: './app/assets/images/logo-android.png',
-        backgroundColor: '#FE5E04',
+        backgroundColor: APP_CONFIG.color,
       },
       edgeToEdgeEnabled: true,
-      package: 'com.antarctica.bombom',
+      package: APP_CONFIG.bundleIdentifier,
       googleServicesFile: './google-services.json',
     },
     web: {
       bundler: 'metro',
       output: 'static',
-      favicon: './app/assets/images/logo.png',
+      favicon: APP_CONFIG.icon,
     },
     plugins: [
       'expo-router',
       [
         'expo-splash-screen',
         {
-          image: './app/assets/images/logo.png',
+          image: APP_CONFIG.icon,
           imageWidth: 200,
           resizeMode: 'contain',
-          backgroundColor: '#FE5E04',
+          backgroundColor: APP_CONFIG.color,
         },
       ],
       [
@@ -98,7 +106,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         'expo-notifications',
         {
           icon: './app/assets/images/logo-android.png',
-          color: '#FE5E04',
+          color: APP_CONFIG.color,
         },
       ],
       '@react-native-firebase/app',
