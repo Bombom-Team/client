@@ -180,18 +180,25 @@ If any rule conflicts, THIS DOCUMENT WINS.
 - `useMutation` MUST be declared inside a custom hook.
 - Direct usage of `useMutation` inside components is FORBIDDEN.
 - Mutation hooks MUST follow this naming convention:
-- `use{What}{Action}Mutation`
-- The suffix `Mutation` is REQUIRED.
+  - `use{What}{Action}Mutation`
+  - The suffix `Mutation` is REQUIRED.
 
 ---
 
-## Testing & Quality
+## Testing & Quality (Blocking)
 
-- Changes that affect behavior MUST include tests when risk is non-trivial.
-  → Jest / Testing Library / Playwright
+- ESLint and Stylelint MUST be auto-fixed before task completion.
+- Auto-fix MUST be executed using workspace scripts:
+  - `pnpm --filter {workspace} lint:fix`
+  - `pnpm --filter {workspace} stylelint:fix`
 
-- Lint and type-check MUST remain clean.
-  → Run workspace-specific lint and type-check after significant changes.
+- If auto-fix produces changes:
+  - Those changes MUST be reviewed.
+  - Those changes MUST be committed.
+
+- Lint and stylelint MUST pass with ZERO errors.
+- If lint or stylelint fails, the task MUST NOT be considered complete.
+- Ending a task with failing lint/stylelint is STRICTLY FORBIDDEN.
 
 ---
 
@@ -211,11 +218,17 @@ If any rule conflicts, THIS DOCUMENT WINS.
 2. Share task list and wait for confirmation
 3. Implement tasks sequentially
 4. Commit per task
-5. Run lint and type-check BEFORE push
-6. Push and open PR
+5. Run ESLint & Stylelint auto-fix
+6. Re-run lint and type-check
+7. Commit auto-fix changes (if any)
+8. Push and open PR
+
+- A task is considered COMPLETE only when:
+  - All approved features are implemented
+  - ESLint and Stylelint pass with ZERO errors
 
 - The FINAL task in any `[WORKFLOW]` plan MUST be:
-  → `lint/type-check 및 정리`
+  → `lint/stylelint auto-fix 및 정리`
 
 ---
 
@@ -242,8 +255,11 @@ If any rule conflicts, THIS DOCUMENT WINS.
 
 ---
 
-## AI Failure Handling
+## AI Failure Handling (Blocking)
 
-- If a rule is unclear or missing, STOP and ASK.
+- If ESLint or Stylelint reports errors, STOP and fix them.
+- If auto-fix was not executed, the task MUST NOT end.
+- If auto-fix introduces changes, a commit is REQUIRED.
+- NEVER end a task with failing lint/stylelint.
 - NEVER guess project-specific behavior.
 - NEVER invent code paths, APIs, or data contracts.
