@@ -26,7 +26,7 @@ const DailyGuideCommentsModal = ({
   const device = useDevice();
   const isMobile = device === 'mobile';
 
-  const { data, isLoading } = useQuery({
+  const { data: dailyGuideComments, isLoading } = useQuery({
     ...queries.dailyGuideComments({
       challengeId,
       dayIndex,
@@ -36,8 +36,8 @@ const DailyGuideCommentsModal = ({
     enabled: isOpen,
   });
 
-  const comments: DailyGuideCommentItem[] = data?.content ?? [];
-  const totalCount = data?.totalElements ?? 0;
+  const comments: DailyGuideCommentItem[] = dailyGuideComments?.content ?? [];
+  const totalCount = dailyGuideComments?.totalElements ?? 0;
   const hasComments = comments.length > 0;
 
   return (
