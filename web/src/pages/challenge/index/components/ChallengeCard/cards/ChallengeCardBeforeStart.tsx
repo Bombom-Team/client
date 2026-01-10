@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import ChallengeApplyModal from '../../ChallengeApplyModal/ChallengeApplyModal';
 import LoadingModal from '../../ChallengeApplyModal/modals/LoadingModal';
 import CardContainer from '../CardContainer';
+import CardDetailButton from '../CardDetailButton';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import Button from '@/components/Button/Button';
@@ -78,6 +79,7 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
           ) : (
             <ApplyButton onClick={handleApplyClick}>신청하기</ApplyButton>
           )}
+          <CardDetailButton>자세히 보기 →</CardDetailButton>
         </CardFooter>
       </CardContainer>
 
