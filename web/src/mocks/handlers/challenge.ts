@@ -7,7 +7,7 @@ import type {
   GetChallengeCommentsResponse,
   GetChallengeEligibilityResponse,
   GetChallengeTeamsResponse,
-  GetTeamChallengeProgressResponse,
+  GetChallengesTeamsProgressResponse,
 } from '@/apis/challenge/challenge.api';
 
 const baseURL = ENV.baseUrl;
@@ -18,17 +18,17 @@ const CHALLENGE_TEAMS_RESPONSE: GetChallengeTeamsResponse = {
   teams: [
     {
       teamId: 1,
-      displayOrder: 1,
+      teamNumber: 1,
       isMyTeam: false,
     },
     {
       teamId: 10,
-      displayOrder: 2,
+      teamNumber: 2,
       isMyTeam: true,
     },
     {
       teamId: 12,
-      displayOrder: 3,
+      teamNumber: 3,
       isMyTeam: false,
     },
   ],
@@ -56,7 +56,7 @@ const buildWeekdayDates = (startDate: string, endDate: string) => {
 const buildTeamProgressResponse = (
   challengeId: number,
   teamId: number,
-): GetTeamChallengeProgressResponse => {
+): GetChallengesTeamsProgressResponse => {
   const challenge = CHALLENGES.find((item) => item.id === challengeId);
   const startDate = challenge?.startDate ?? '2026-01-05';
   const endDate = challenge?.endDate ?? '2026-01-16';
@@ -65,19 +65,19 @@ const buildTeamProgressResponse = (
 
   const buildProgresses = (
     seed: number,
-  ): GetTeamChallengeProgressResponse['members'][number]['dailyProgresses'] =>
-    weekdayDates.flatMap<{ date: string; status: 'COMPLETE' | 'SHIELD' }>(
-      (date, index) => {
-        const value = (index + seed + teamId) % 5;
-        if (value === 0) {
-          return [{ date, status: 'SHIELD' as const }];
-        }
-        if (value <= 2) {
-          return [{ date, status: 'COMPLETE' as const }];
-        }
-        return [];
-      },
-    );
+  ): GetChallengesTeamsProgressResponse['members'][number]['dailyProgresses'] =>
+    weekdayDates.flatMap<
+      GetChallengesTeamsProgressResponse['members'][number]['dailyProgresses'][number]
+    >((date, index) => {
+      const value = (index + seed + teamId) % 5;
+      if (value === 0) {
+        return [{ date, status: 'SHIELD' }];
+      }
+      if (value <= 2) {
+        return [{ date, status: 'COMPLETE' }];
+      }
+      return [];
+    });
 
   return {
     challenge: {
