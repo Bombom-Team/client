@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import CardContainer from '../CardContainer';
+import CardDetailButton from '../CardDetailButton';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
@@ -35,6 +36,7 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
 
       <CardFooter>
         <ChallengeProgress>{detail?.progress}% 달성 중</ChallengeProgress>
+        <CardDetailButton>자세히 보기 →</CardDetailButton>
       </CardFooter>
     </CardContainer>
   );
