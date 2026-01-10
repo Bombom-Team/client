@@ -11,8 +11,8 @@ import AddCommentModalContent from '@/pages/challenge/comments/components/AddCom
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 import MobileCommentsContent from '@/pages/challenge/comments/components/MobileCommentsContent';
 import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsContent';
-import { useCommentsFilters } from '@/pages/challenge/comments/hooks/useCommentsFilters';
-import { filterWeekdays, formatDate, getDatesInRange } from '@/utils/date';
+import { useChallengeCommentDates } from '@/pages/challenge/comments/hooks/useChallengeCommentDates';
+import { useCommentsPagination } from '@/pages/challenge/comments/hooks/useCommentsPagination';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/comments',
@@ -36,50 +36,42 @@ function ChallengeComments() {
     queries.challengesInfo(Number(challengeId)),
   );
 
-  const today = formatDate(new Date(), '-');
+  const { today, challengeDates, isFirstDay, isChallengeDay } =
+    useChallengeCommentDates({
+      startDate: challengeInfo?.startDate,
+      endDate: challengeInfo?.endDate,
+    });
+
+  const [selectedDate, setSelectedDate] = useState(today);
 
   const { data: candidateArticles = [] } = useQuery(
     queries.challengeCommentCandidateArticles({ date: today }),
   );
-
-  const latestSelectableDate =
-    !challengeInfo?.endDate || today <= challengeInfo?.endDate
-      ? today
-      : challengeInfo?.endDate;
-
-  const [currentDate, setCurrentDate] = useState(latestSelectableDate);
 
   const device = useDevice();
   const isMobile = device === 'mobile';
 
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const { baseQueryParams, changePage, page, resetPage } = useCommentsFilters({
-    challengeId: Number(challengeId),
-    currentDate,
-  });
-
-  if (!challengeInfo) return null;
-
-  const totalDates = getDatesInRange(
-    challengeInfo?.startDate,
-    latestSelectableDate,
-  );
-
-  const isFirstDay = currentDate === challengeInfo.startDate;
+  const { baseQueryParams, changePage, page, resetPage } =
+    useCommentsPagination({
+      challengeId: Number(challengeId),
+      selectedDate,
+    });
 
   return (
     <Container>
       <FilterWrapper isMobile={isMobile}>
         <DateFilter
-          weekdays={filterWeekdays(totalDates)}
-          selectedDate={currentDate}
-          onDateSelect={setCurrentDate}
+          today={today}
+          dates={challengeDates}
+          selectedDate={selectedDate}
+          onDateSelect={setSelectedDate}
         />
       </FilterWrapper>
 
       <ContentWrapper isMobile={isMobile}>
-        {currentDate === today && (
+        {selectedDate === today && isChallengeDay(selectedDate) && (
           <AddCommentBox>
             <AddCommentTitle isMobile={isMobile}>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
@@ -87,9 +79,9 @@ function ChallengeComments() {
             <AddCommentButton
               isMobile={isMobile}
               onClick={openModal}
-              disabled={isFirstDay || candidateArticles.length === 0}
+              disabled={isFirstDay(today) || candidateArticles.length === 0}
             >
-              {isFirstDay
+              {isFirstDay(today)
                 ? '첫날에는 코멘트를 작성할 수 없어요'
                 : candidateArticles.length > 0
                   ? '코멘트 작성하기'
@@ -98,13 +90,15 @@ function ChallengeComments() {
           </AddCommentBox>
         )}
 
-        {isFirstDay ? (
-          <FirstDaySection>
-            <FirstDayTitle isMobile={isMobile}>전체 코멘트</FirstDayTitle>
-            <FirstDayMessage isMobile={isMobile}>
-              첫날에는 코멘트를 작성하지 않아요!
-            </FirstDayMessage>
-          </FirstDaySection>
+        {isFirstDay(selectedDate) || !isChallengeDay(selectedDate) ? (
+          <RestDayContent>
+            <RestDayTitle isMobile={isMobile}>전체 코멘트</RestDayTitle>
+            <RestDayMessage isMobile={isMobile}>
+              {isFirstDay(selectedDate)
+                ? '첫날에는 코멘트를 작성하지 않아요!'
+                : '오늘은 휴식일이에요. 코멘트를 작성하지 않아요!'}
+            </RestDayMessage>
+          </RestDayContent>
         ) : isMobile ? (
           <MobileCommentsContent
             baseQueryParams={baseQueryParams}
@@ -200,19 +194,19 @@ const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
   }
 `;
 
-const FirstDaySection = styled.section`
+const RestDayContent = styled.section`
   display: flex;
   gap: 12px;
   flex-direction: column;
 `;
 
-const FirstDayTitle = styled.h3<{ isMobile: boolean }>`
+const RestDayTitle = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body1 : theme.fonts.heading6};
 `;
 
-const FirstDayMessage = styled.div<{ isMobile: boolean }>`
+const RestDayMessage = styled.div<{ isMobile: boolean }>`
   padding: ${({ isMobile }) => (isMobile ? '24px' : '32px')};
   border-radius: 12px;
 
