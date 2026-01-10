@@ -25,18 +25,22 @@ function ChallengeDaily() {
   const { challengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
+
   const device = useDevice();
+  const isMobile = device === 'mobile';
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const { data: dailyGuide } = useQuery(
     queries.todayDailyGuide(Number(challengeId)),
   );
 
-  const isMobile = device === 'mobile';
-
   if (!dailyGuide) {
     return null;
   }
+
+  const commentSectionEnabled =
+    (dailyGuide.type === 'READ' || dailyGuide.type === 'SHARING') &&
+    dailyGuide.commentEnabled;
 
   return (
     <Container>
@@ -53,7 +57,7 @@ function ChallengeDaily() {
           </NoticeBox>
         )}
 
-        {dailyGuide.commentEnabled && (
+        {commentSectionEnabled && (
           <>
             <DailyGuideComment
               challengeId={Number(challengeId)}
