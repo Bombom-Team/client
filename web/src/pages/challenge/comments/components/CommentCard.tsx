@@ -158,8 +158,11 @@ const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   font: ${({ theme }) => theme.fonts.body2};
 
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${({ isMobile, expanded }) =>
-    expanded ? 'unset' : isMobile ? 3 : 4};
+  -webkit-line-clamp: ${({ isMobile, expanded }) => {
+    if (expanded) return 'unset';
+    if (isMobile) return MAX_QUOTATION_LINE.mobile;
+    return MAX_QUOTATION_LINE.default;
+  }};
 `;
 
 const ExpandButton = styled(Button)`
