@@ -1,8 +1,10 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import useExpandQuotation from '../hooks/useExpandQuotation';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
+import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 import CheckIcon from '#/assets/svg/check-circle.svg';
 import MailIcon from '#/assets/svg/mail.svg';
@@ -10,6 +12,10 @@ import MailIcon from '#/assets/svg/mail.svg';
 type CommentCardProps = Comment;
 
 const DELETED_USER_NICKNAME = '탈퇴한 회원';
+const MAX_QUOTATION_LINE = {
+  mobile: 3,
+  default: 4,
+};
 
 const CommentCard = ({
   nickname,
@@ -23,6 +29,14 @@ const CommentCard = ({
   const device = useDevice();
   const isMobile = device === 'mobile';
   const relativeTime = convertRelativeTime(createdAt);
+
+  const { expanded, needExpansion, quoteRef, toggleExpanded } =
+    useExpandQuotation({
+      quotation,
+      maxLines: isMobile
+        ? MAX_QUOTATION_LINE.mobile
+        : MAX_QUOTATION_LINE.default,
+    });
 
   return (
     <Container isMobile={isMobile}>
@@ -47,7 +61,24 @@ const CommentCard = ({
         </TitleWrapper>
       </ArticleInfo>
       <Content isMobile={isMobile}>
-        {quotation && <Quote isMobile={isMobile}>{quotation}</Quote>}
+        {quotation && (
+          <Quote ref={quoteRef} isMobile={isMobile} expanded={expanded}>
+            {quotation}
+            {needExpansion &&
+              (!expanded ? (
+                <ExpandQuoteButton
+                  variant="transparent"
+                  onClick={toggleExpanded}
+                >
+                  더보기
+                </ExpandQuoteButton>
+              ) : (
+                <HideQuoteButton variant="transparent" onClick={toggleExpanded}>
+                  접기
+                </HideQuoteButton>
+              ))}
+          </Quote>
+        )}
         <Comment>{comment}</Comment>
       </Content>
     </Container>
@@ -114,20 +145,63 @@ const Content = styled.div<{ isMobile: boolean }>`
   flex-direction: column;
 `;
 
-const Quote = styled.div<{ isMobile: boolean }>`
+const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   overflow: hidden;
+  position: relative;
   padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
   border-left: 4px solid ${({ theme }) => theme.colors.stroke};
 
-  display: -webkit-box;
+  display: ${({ expanded }) => (expanded ? 'block' : '-webkit-box')};
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body2};
 
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${({ isMobile }) => (isMobile ? 3 : 4)};
-  text-overflow: ellipsis;
+  -webkit-line-clamp: ${({ isMobile, expanded }) => {
+    if (expanded) return 'unset';
+    if (isMobile) return MAX_QUOTATION_LINE.mobile;
+    return MAX_QUOTATION_LINE.default;
+  }};
+`;
+
+const ExpandButton = styled(Button)`
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.body2};
+
+  text-decoration: underline;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const HideQuoteButton = styled(ExpandButton)`
+  margin-left: 8px;
+`;
+
+const ExpandQuoteButton = styled(ExpandButton)`
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  z-index: ${({ theme }) => theme.zIndex.elevated};
+  padding-left: 32px;
+
+  display: block;
+
+  background: ${({ theme }) =>
+    `linear-gradient(90deg, transparent 0%, ${theme.colors.white} 40%, ${theme.colors.white} 100%)`};
+  color: ${({ theme }) => theme.colors.textSecondary};
+
+  &:hover {
+    background: ${({ theme }) =>
+      `linear-gradient(90deg, transparent 0%, ${theme.colors.white} 40%, ${theme.colors.white} 100%)`};
+  }
 `;
 
 const Comment = styled.p`

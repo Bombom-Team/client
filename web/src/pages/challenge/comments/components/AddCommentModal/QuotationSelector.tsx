@@ -43,24 +43,29 @@ const QuotationSelector = ({
       </Header>
 
       {quotations.length > 0 ? (
-        <QuotationList isMobile={isMobile}>
-          {quotations.map((quotation) => (
-            <QuotationItem
-              key={quotation.highlightId}
-              variant="outlined"
-              onClick={() =>
-                onQuotationSelect(quotation.highlightId, quotation.memo ?? '')
-              }
-              isMobile={isMobile}
-              selected={selectedQuotationId === quotation.highlightId}
-            >
-              <Quote isMobile={isMobile}>{quotation.text}</Quote>
-              {quotation.memo && (
-                <Memo isMobile={isMobile}>{quotation.memo}</Memo>
-              )}
-            </QuotationItem>
-          ))}
-        </QuotationList>
+        <QuotationWrapper>
+          <QuotationList isMobile={isMobile}>
+            {quotations.map((quotation) => (
+              <QuotationItem
+                key={quotation.highlightId}
+                variant="outlined"
+                onClick={() =>
+                  onQuotationSelect(quotation.highlightId, quotation.memo ?? '')
+                }
+                isMobile={isMobile}
+                selected={selectedQuotationId === quotation.highlightId}
+              >
+                <Quote isMobile={isMobile}>{quotation.text}</Quote>
+                {quotation.memo && (
+                  <Memo isMobile={isMobile}>{quotation.memo}</Memo>
+                )}
+              </QuotationItem>
+            ))}
+          </QuotationList>
+          <NoticeText isMobile={isMobile}>
+            저작권 보호를 위해 인용구 일부가 생략될 수 있어요.
+          </NoticeText>
+        </QuotationWrapper>
       ) : (
         <EmptyState isMobile={isMobile}>
           저장된 하이라이트/메모가 없어요.
@@ -117,6 +122,13 @@ const RemoveQuotationButton = styled(Button)<{ isMobile: boolean }>`
     background-color: transparent;
     text-decoration: underline;
   }
+`;
+
+const QuotationWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
 const QuotationList = styled.div<{ isMobile: boolean }>`
@@ -197,4 +209,11 @@ const Memo = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
+`;
+
+const NoticeText = styled.div<{ isMobile: boolean }>`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body4 : theme.fonts.body3};
+  text-align: center;
 `;
