@@ -1,58 +1,41 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { findWeekIndex, groupingWeeks } from '../utils/date';
+import DateTab from './DateTab';
+import { useDateFilter } from '../hooks/useDateFilter';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
-import Tab, { type TabProps } from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import { formatDate, isToday } from '@/utils/date';
 
 interface DateFilterProps {
-  weekdays: string[];
+  today: string;
+  dates: string[];
   selectedDate: string;
   onDateSelect: (date: string) => void;
 }
 
 const DateFilter = ({
-  weekdays,
+  today,
+  dates,
   selectedDate,
   onDateSelect,
 }: DateFilterProps) => {
+  const {
+    displayDates,
+    weekStartIndex,
+    weekEndIndex,
+    canGoPrevWeek,
+    canGoNextWeek,
+    goToPrevWeek,
+    goToNextWeek,
+  } = useDateFilter({ today, dates, selectedDate, onDateSelect });
+
   const device = useDevice();
-  const totalWeeks = groupingWeeks(weekdays);
-  const selectedWeekIndex = findWeekIndex(totalWeeks, selectedDate);
-  const selectedWeekDates = totalWeeks[selectedWeekIndex] ?? [];
 
-  const displayDates =
+  const weekDates =
     device === 'mobile'
-      ? weekdays.filter((dateString) => !isToday(new Date(dateString)))
-      : selectedWeekDates;
-
-  const canGoPrev = selectedWeekIndex > 0;
-  const canGoNext = selectedWeekIndex < totalWeeks.length - 1;
-
-  const selectDate = (dateString: string) => {
-    onDateSelect(dateString);
-  };
-
-  const goToPrevWeek = () => {
-    if (canGoPrev) {
-      const prevWeekDate = totalWeeks[selectedWeekIndex - 1]?.[0];
-      if (prevWeekDate) {
-        onDateSelect(prevWeekDate);
-      }
-    }
-  };
-
-  const goToNextWeek = () => {
-    if (canGoNext) {
-      const nextWeekDate = totalWeeks[selectedWeekIndex + 1]?.[0];
-      if (nextWeekDate) {
-        onDateSelect(nextWeekDate);
-      }
-    }
-  };
+      ? displayDates.filter((date) => date !== today)
+      : displayDates.slice(weekStartIndex, weekEndIndex + 1);
 
   return (
     <Container device={device}>
@@ -60,48 +43,39 @@ const DateFilter = ({
         <NavButton
           variant="transparent"
           onClick={goToPrevWeek}
-          disabled={!canGoPrev}
+          disabled={!canGoPrevWeek}
           device={device}
         >
           <ChevronIcon
             direction="left"
             width={36}
             height={36}
-            fill={canGoPrev ? theme.colors.primary : theme.colors.disabledText}
+            fill={
+              canGoPrevWeek ? theme.colors.primary : theme.colors.disabledText
+            }
           />
         </NavButton>
       )}
 
       <DateTabsWrapper device={device}>
         <StyledTabs device={device}>
-          {displayDates.map((dateString) => {
-            const date = new Date(dateString);
-            return (
-              <StyledTab
-                key={dateString}
-                value={dateString}
-                label={
-                  isToday(date)
-                    ? '오늘'
-                    : `${date.getMonth() + 1}/${date.getDate()}`
-                }
-                selected={selectedDate === dateString}
-                onTabSelect={selectDate}
-                device={device}
-              />
-            );
-          })}
+          {weekDates.map((dateString) => (
+            <DateTab
+              key={dateString}
+              dateString={dateString}
+              selectedDate={selectedDate}
+              onDateSelect={onDateSelect}
+            />
+          ))}
         </StyledTabs>
       </DateTabsWrapper>
 
       {device === 'mobile' && (
         <TodayTabWrapper>
-          <StyledTab
-            value={formatDate(new Date(), '-')}
-            label="오늘"
-            selected={isToday(new Date(selectedDate))}
-            onTabSelect={selectDate}
-            device={device}
+          <DateTab
+            dateString={today}
+            selectedDate={selectedDate}
+            onDateSelect={onDateSelect}
           />
         </TodayTabWrapper>
       )}
@@ -110,14 +84,16 @@ const DateFilter = ({
         <NavButton
           variant="transparent"
           onClick={goToNextWeek}
-          disabled={!canGoNext}
+          disabled={!canGoNextWeek}
           device={device}
         >
           <ChevronIcon
             direction="right"
             width={36}
             height={36}
-            fill={canGoNext ? theme.colors.primary : theme.colors.disabledText}
+            fill={
+              canGoNextWeek ? theme.colors.primary : theme.colors.disabledText
+            }
           />
         </NavButton>
       )}
@@ -185,16 +161,4 @@ const TodayTabWrapper = styled.div`
 
   display: flex;
   align-items: center;
-`;
-
-const DateTab = (props: TabProps<string>) => <Tab {...props} />;
-const StyledTab = styled(DateTab, {
-  shouldForwardProp: (prop) => prop !== 'device',
-})<{ device: Device }>`
-  min-width: ${({ device }) => (device === 'mobile' ? '52px' : 'fit-content')};
-  padding: ${({ device }) => (device === 'mobile' ? '8px' : '12px 16px')};
-  border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
-
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
 `;
