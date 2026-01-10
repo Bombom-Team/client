@@ -6,18 +6,18 @@ import LockIcon from '#/assets/svg/lock.svg';
 
 interface ViewAllCommentsButtonProps {
   submittedMyComment: boolean;
-  showAllComments: () => void;
+  onViewAllComments: () => void;
 }
 
 const ViewAllCommentsButton = ({
   submittedMyComment,
-  showAllComments,
+  onViewAllComments,
 }: ViewAllCommentsButtonProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   const handleViewAllCommentsClick = () => {
     if (submittedMyComment) {
-      showAllComments();
+      onViewAllComments();
       return;
     }
 

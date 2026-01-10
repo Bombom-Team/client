@@ -63,7 +63,7 @@ function ChallengeDaily() {
             <ButtonWrapper>
               <ViewAllCommentsButton
                 submittedMyComment={dailyGuide?.myComment.exists}
-                showAllComments={openModal}
+                onViewAllComments={openModal}
               />
             </ButtonWrapper>
             <DailyGuideCommentsModal
