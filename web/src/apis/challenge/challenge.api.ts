@@ -94,10 +94,6 @@ export const getChallengeCommentCandidateArticles = async (
 
 export type GetChallengeArticleHighlightsParams =
   operations['getChallengeArticleHighlights']['parameters']['path'] &
-    Omit<
-      operations['getChallengeArticleHighlights']['parameters']['query'],
-      'pageable'
-    > &
     components['schemas']['Pageable'];
 export type GetChallengeArticleHighlightsResponse =
   components['schemas']['PageChallengeCommentHighlightResponse'];
