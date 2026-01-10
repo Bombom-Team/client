@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { ChallengeTeamSummary } from '@/apis/challenge/challenge.api';
+import type { TeamInfoResponse } from '../../dashboard/types/challengeTeamInfo';
 
 interface UseChallengeTeamProgressTabsProps {
-  teams?: ChallengeTeamSummary[];
+  teams?: TeamInfoResponse;
 }
 
 export const useChallengeTeamProgressTabs = ({
