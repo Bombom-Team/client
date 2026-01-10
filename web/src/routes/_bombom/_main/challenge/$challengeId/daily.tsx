@@ -39,7 +39,7 @@ function ChallengeDaily() {
   }
 
   const commentSectionEnabled =
-    (dailyGuide.type === 'READ' || dailyGuide.type === 'SHARING') &&
+    (dailyGuide.type === 'COMMENT' || dailyGuide.type === 'SHARING') &&
     dailyGuide.commentEnabled;
 
   return (
