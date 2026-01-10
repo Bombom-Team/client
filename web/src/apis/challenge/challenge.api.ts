@@ -52,39 +52,23 @@ export const getMemberChallengeProgress = async (challengeId: number) => {
   });
 };
 
-export type GetTeamChallengeProgressResponse =
-  components['schemas']['TeamChallengeProgressResponse'];
-
-export const getTeamChallengeProgress = async (challengeId: number) => {
-  return await fetcher.get<GetTeamChallengeProgressResponse>({
-    path: `/challenges/${challengeId}/progress/team`,
-  });
-};
-
-export interface ChallengeTeamSummary {
-  teamId: number;
-  displayOrder: number;
-  isMyTeam: boolean;
-}
-
-export interface GetChallengeTeamsResponse {
-  totalTeamCount: number;
-  myTeamId: number;
-  teams: ChallengeTeamSummary[];
-}
+export type GetChallengeTeamsResponse =
+  components['schemas']['ChallengeTeamListResponse'];
 
 export const getChallengeTeams = async (challengeId: number) => {
   return await fetcher.get<GetChallengeTeamsResponse>({
     path: `/challenges/${challengeId}/teams`,
   });
 };
+export type GetChallengesTeamsProgressResponse =
+  components['schemas']['TeamChallengeProgressResponse'];
 
-export const getChallengeTeamProgress = async (
+export const getChallengeTeamsProgress = async (
   challengeId: number,
   teamId: number,
 ) => {
-  return await fetcher.get<GetTeamChallengeProgressResponse>({
-    path: `/challenges/${challengeId}/teams/${teamId}`,
+  return await fetcher.get<GetChallengesTeamsProgressResponse>({
+    path: `/challenges/${challengeId}/progress/teams/${teamId}`,
   });
 };
 
