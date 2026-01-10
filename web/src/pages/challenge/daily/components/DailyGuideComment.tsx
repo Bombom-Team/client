@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { useSubmitDailyGuideCommentMutation } from '../../index/hooks/useSubmitDailyGuideComment';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
-import type { MyComment } from '@/apis/challenge/challenge.api';
+import type { components } from '@/types/openapi';
+
+type MyComment = components['schemas']['TodayDailyGuideResponse']['myComment'];
 
 const MAX_LENGTH = 1000;
 
