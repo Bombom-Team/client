@@ -1,6 +1,8 @@
-import type { GetChallengeCommentCandidateArticlesResponse } from '@/apis/challenge/challenge.api';
-import type { components } from '@/types/openapi';
+import type {
+  ChallengeCommentItem,
+  GetChallengeCommentCandidateArticlesResponse,
+} from '@/apis/challenge/challenge.api';
 
-export type Comment = components['schemas']['ChallengeCommentResponse'];
+export type Comment = ChallengeCommentItem;
 
 export type CandidateArticles = GetChallengeCommentCandidateArticlesResponse;
