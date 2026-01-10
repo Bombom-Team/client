@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 interface UseExpandQuotationParams {
   quotation: string | undefined;
@@ -17,7 +17,7 @@ const useExpandQuotation = ({
     setExpanded((prev) => !prev);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!quoteRef.current) return;
 
     const quoteElement = quoteRef.current;
