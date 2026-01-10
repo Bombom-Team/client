@@ -43,7 +43,6 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', challengeId, 'teams'],
       queryFn: () => getChallengeTeams(challengeId),
-      enabled: !!challengeId,
     }),
   challengeTeamsProgress: (challengeId: number, teamId: number) =>
     queryOptions({
