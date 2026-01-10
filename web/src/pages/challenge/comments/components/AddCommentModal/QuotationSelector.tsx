@@ -3,7 +3,7 @@ import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 
 interface Quotation {
-  id: number;
+  highlightId: number;
   text: string;
   memo?: string;
 }
@@ -46,13 +46,13 @@ const QuotationSelector = ({
         <QuotationList isMobile={isMobile}>
           {quotations.map((quotation) => (
             <QuotationItem
-              key={quotation.id}
+              key={quotation.highlightId}
               variant="outlined"
               onClick={() =>
-                onQuotationSelect(quotation.id, quotation.memo ?? '')
+                onQuotationSelect(quotation.highlightId, quotation.memo ?? '')
               }
               isMobile={isMobile}
-              selected={selectedQuotationId === quotation.id}
+              selected={selectedQuotationId === quotation.highlightId}
             >
               <Quote isMobile={isMobile}>{quotation.text}</Quote>
               {quotation.memo && (
