@@ -11,6 +11,7 @@ const CardContainer = ({
 export default CardContainer;
 
 const Container = styled.button`
+  position: relative;
   width: 100%;
   height: 172px;
   min-width: 320px;
