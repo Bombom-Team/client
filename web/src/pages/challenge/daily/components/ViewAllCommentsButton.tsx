@@ -18,23 +18,10 @@ const ViewAllCommentsButton = ({
   const handleViewAllCommentsClick = () => {
     if (submittedMyComment) {
       showAllComments();
+      return;
     }
-  };
 
-  const handleButtonMouseEnter = () => {
-    if (!submittedMyComment) {
-      setShowTooltip(true);
-    }
-  };
-
-  const handleButtonMouseLeave = () => {
-    setShowTooltip(false);
-  };
-
-  const handleButtonTouch = () => {
-    if (!submittedMyComment) {
-      setShowTooltip((prev) => !prev);
-    }
+    setShowTooltip(true);
   };
 
   return (
@@ -42,9 +29,8 @@ const ViewAllCommentsButton = ({
       <Button
         variant="outlined"
         onClick={handleViewAllCommentsClick}
-        onMouseEnter={handleButtonMouseEnter}
-        onMouseLeave={handleButtonMouseLeave}
-        onTouchStart={handleButtonTouch}
+        onMouseEnter={() => !submittedMyComment && setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
       >
         {!submittedMyComment && <LockIcon width={16} height={16} />}
         전체 답변 보기
