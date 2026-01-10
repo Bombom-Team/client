@@ -8,6 +8,7 @@ import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
 import { useChallengeTeamProgressTabs } from '@/pages/challenge/index/hooks/useChallengeTeamProgressTabs';
+import type { ChallengeTeamSummary } from '@/apis/challenge/challenge.api';
 import type { Theme } from '@emotion/react/macro';
 import type { CSSObject } from '@emotion/styled';
 import InfoIcon from '#/assets/svg/info-circle.svg';
@@ -44,8 +45,18 @@ function ChallengeDashboardRoute() {
     queries.challengeTeams(Number(challengeId)),
   );
 
-  const { tabs, activeTeamId, goToTab } = useChallengeTeamProgressTabs({
-    teams: challengeTeamsInfo?.teams,
+  const getTeamLabel = (team: ChallengeTeamSummary) =>
+    team.isMyTeam ? '우리팀' : `${team.displayOrder}팀`;
+
+  const teams = challengeTeamsInfo?.teams ?? [];
+
+  const tabs = teams.map((team) => ({
+    id: team.teamId,
+    label: getTeamLabel(team),
+  }));
+
+  const { activeTeamId, goToTab } = useChallengeTeamProgressTabs({
+    teams,
   });
 
   const { data: teamChallengeProgressInfo } = useQuery(

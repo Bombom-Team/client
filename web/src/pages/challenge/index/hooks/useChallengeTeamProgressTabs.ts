@@ -1,60 +1,31 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { ChallengeTeamSummary } from '@/apis/challenge/challenge.api';
 
 interface UseChallengeTeamProgressTabsProps {
   teams?: ChallengeTeamSummary[];
 }
 
-const getTeamLabel = (team: ChallengeTeamSummary) =>
-  team.isMyTeam ? '우리팀' : `${team.displayOrder}팀`;
-
 export const useChallengeTeamProgressTabs = ({
-  teams,
+  teams = [],
 }: UseChallengeTeamProgressTabsProps) => {
-  const sortedTeams = useMemo(() => {
-    if (!teams) return [];
-
-    return [...teams].sort((a, b) => a.displayOrder - b.displayOrder);
-  }, [teams]);
-
-  const tabs = useMemo(
-    () =>
-      sortedTeams.map((team) => ({
-        id: team.teamId,
-        label: getTeamLabel(team),
-      })),
-    [sortedTeams],
-  );
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
   const defaultTeamId = useMemo(() => {
     return (
-      sortedTeams.find((team) => team.isMyTeam)?.teamId ??
-      sortedTeams[0]?.teamId
+      teams.find((team) => team.isMyTeam)?.teamId ?? teams[0]?.teamId ?? null
     );
-  }, [sortedTeams]);
+  }, [teams]);
 
-  const [activeTeamId, setActiveTeamId] = useState<number | null>(
-    defaultTeamId ?? null,
-  );
-
-  useEffect(() => {
-    if (!sortedTeams.length || !defaultTeamId) return;
-
-    setActiveTeamId((prev) => {
-      if (prev && sortedTeams.some((team) => team.teamId === prev)) {
-        return prev;
-      }
-      return defaultTeamId;
-    });
-  }, [defaultTeamId, sortedTeams]);
+  const activeTeamId = useMemo(() => {
+    if (selectedTeamId && teams.some((t) => t.teamId === selectedTeamId)) {
+      return selectedTeamId;
+    }
+    return defaultTeamId;
+  }, [defaultTeamId, selectedTeamId, teams]);
 
   const goToTab = useCallback((teamId: number) => {
-    setActiveTeamId(teamId);
+    setSelectedTeamId(teamId);
   }, []);
 
-  return {
-    tabs,
-    activeTeamId,
-    goToTab,
-  };
+  return { activeTeamId, goToTab };
 };
