@@ -4,7 +4,9 @@ import { queries } from '@/apis/queries';
 import Modal from '@/components/Modal/Modal';
 import { useDevice } from '@/hooks/useDevice';
 import { convertRelativeTime } from '@/pages/challenge/comments/utils/date';
-import type { DailyGuideCommentItem } from '@/apis/challenge/challenge.api';
+import type { components } from '@/types/openapi';
+
+type DailyGuideCommentItem = components['schemas']['DailyGuideCommentResponse'];
 
 interface DailyGuideCommentsModalProps {
   challengeId: number;
@@ -29,7 +31,7 @@ const DailyGuideCommentsModal = ({
       challengeId,
       dayIndex,
       size: 50,
-      sort: 'createdAt,desc',
+      sort: ['createdAt,desc'],
     }),
     enabled: isOpen,
   });
