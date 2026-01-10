@@ -8,12 +8,15 @@ import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
 import { useChallengeTeamProgressTabs } from '@/pages/challenge/index/hooks/useChallengeTeamProgressTabs';
-import type { ChallengeTeamSummary } from '@/apis/challenge/challenge.api';
+import type { TeamInfoResponse } from '@/pages/challenge/dashboard/types/challengeTeamInfo';
 import type { Theme } from '@emotion/react/macro';
 import type { CSSObject } from '@emotion/styled';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const REQUIRED_RATE = 80;
+
+const getTeamLabel = (team: TeamInfoResponse[number]) =>
+  team.isMyTeam ? '우리팀' : `${team.teamNumber}팀`;
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/dashboard',
@@ -45,9 +48,6 @@ function ChallengeDashboardRoute() {
     queries.challengeTeams(Number(challengeId)),
   );
 
-  const getTeamLabel = (team: ChallengeTeamSummary) =>
-    team.isMyTeam ? '우리팀' : `${team.displayOrder}팀`;
-
   const teams = challengeTeamsInfo?.teams ?? [];
 
   const tabs = teams.map((team) => ({
@@ -59,9 +59,10 @@ function ChallengeDashboardRoute() {
     teams,
   });
 
-  const { data: teamChallengeProgressInfo } = useQuery(
-    queries.challengeTeamProgress(Number(challengeId), activeTeamId ?? 0),
-  );
+  const { data: teamChallengeProgressInfo } = useQuery({
+    ...queries.challengeTeamsProgress(Number(challengeId), activeTeamId ?? 0),
+    enabled: teams.length > 0,
+  });
 
   const device = useDevice();
 
@@ -72,7 +73,6 @@ function ChallengeDashboardRoute() {
           팀 평균 달성률 :{' '}
           {teamChallengeProgressInfo?.teamSummary.achievementAverage}%
         </AchievementAverage>
-        {/* 팀 선택 탭 UI */}
         <TabsWrapper device={device}>
           <Tabs direction={'horizontal'}>
             {tabs.map((tab) => (
