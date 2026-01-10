@@ -53,19 +53,21 @@ function ChallengeDaily() {
           </NoticeBox>
         )}
 
-        {dailyGuide.type === 'COMMENT' && dailyGuide.commentEnabled && (
+        {dailyGuide.commentEnabled && (
           <>
             <DailyGuideComment
               challengeId={Number(challengeId)}
               dayIndex={dailyGuide.dayIndex}
               myComment={dailyGuide.myComment}
             />
-            <ButtonWrapper>
-              <ViewAllCommentsButton
-                submittedMyComment={dailyGuide.myComment.exists}
-                onViewAllComments={openModal}
-              />
-            </ButtonWrapper>
+            {dailyGuide.type === 'SHARING' && (
+              <ButtonWrapper>
+                <ViewAllCommentsButton
+                  submittedMyComment={dailyGuide.myComment.exists}
+                  onViewAllComments={openModal}
+                />
+              </ButtonWrapper>
+            )}
             <DailyGuideCommentsModal
               challengeId={Number(challengeId)}
               dayIndex={dailyGuide.dayIndex}
