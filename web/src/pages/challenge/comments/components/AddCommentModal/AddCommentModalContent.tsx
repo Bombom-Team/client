@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import CommentConfirmModalContent from './CommentConfirmModalContent';
@@ -7,7 +8,7 @@ import NewsletterSelector from './NewsletterSelector';
 import QuotationSelector from './QuotationSelector';
 import { COMMENT_VALIDATION } from '../../constants/comment';
 import useAddChallengeCommentMutation from '../../hooks/useAddChallengeCommentMutation';
-import useQuotations from '../../hooks/useQuotations';
+import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
@@ -46,7 +47,17 @@ const AddCommentModalContent = ({
     from: '/_bombom/_main/challenge/$challengeId/comments',
   });
 
-  const quotations = useQuotations({ articleId: selectedArticleId });
+  const { data: highlights } = useQuery({
+    ...queries.challengeArticleHighlights({
+      articleId: selectedArticleId!,
+      page: 0,
+      size: 100,
+    }),
+    enabled: selectedArticleId !== null,
+  });
+
+  const quotations = highlights?.content ?? [];
+
   const { mutate: addChallengeComment } = useAddChallengeCommentMutation({
     challengeId: Number(challengeId),
   });
@@ -104,7 +115,9 @@ const AddCommentModalContent = ({
     if (!selectedArticleId) return;
 
     const selectedQuotation = selectedQuotationId
-      ? quotations.find((quotation) => quotation.id === selectedQuotationId)
+      ? quotations.find(
+          ({ highlightId }) => highlightId === selectedQuotationId,
+        )
       : null;
 
     addChallengeComment({
