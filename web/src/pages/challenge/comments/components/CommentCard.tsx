@@ -1,9 +1,12 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
+import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import CheckIcon from '#/assets/svg/check-circle.svg';
 import EditIcon from '#/assets/svg/edit.svg';
@@ -26,53 +29,82 @@ const CommentCard = ({
   const device = useDevice();
   const isMobile = device === 'mobile';
   const relativeTime = convertRelativeTime(createdAt);
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
+
+  const handleEditCommentClick = () => {
+    openModal();
+  };
+
+  const editPostedComment = () => {
+    // patch api 연결 필요
+    closeModal();
+  };
 
   return (
-    <Container isMobile={isMobile} isMyComment={isMyComment}>
-      <CommentHeader>
-        <ArticleInfo>
-          <MetaWrapper>
-            <MetaInfo isMobile={isMobile}>
-              {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
-            </MetaInfo>
-            <NewsletterBadge
-              isMobile={isMobile}
-              text={newsletterName}
-              {...(isSubscribed && {
-                icon: (
-                  <CheckIcon
-                    width={16}
-                    height={16}
-                    fill={theme.colors.primary}
-                  />
-                ),
-              })}
-            />
-          </MetaWrapper>
-          <TitleWrapper>
-            <MailIcon
-              width={16}
-              height={16}
-              color={theme.colors.textSecondary}
-            />
-            <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
-          </TitleWrapper>
-        </ArticleInfo>
-        {isMyComment && (
-          <EditButton variant="transparent">
-            <EditIcon
-              width={20}
-              height={20}
-              fill={theme.colors.textSecondary}
-            />
-          </EditButton>
-        )}
-      </CommentHeader>
-      <Content isMobile={isMobile}>
-        {quotation && <Quote isMobile={isMobile}>{quotation}</Quote>}
-        <Comment>{comment}</Comment>
-      </Content>
-    </Container>
+    <>
+      <Container isMobile={isMobile} isMyComment={isMyComment}>
+        <CommentHeader>
+          <ArticleInfo>
+            <MetaWrapper>
+              <MetaInfo isMobile={isMobile}>
+                {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
+              </MetaInfo>
+              <NewsletterBadge
+                isMobile={isMobile}
+                text={newsletterName}
+                {...(isSubscribed && {
+                  icon: (
+                    <CheckIcon
+                      width={16}
+                      height={16}
+                      fill={theme.colors.primary}
+                    />
+                  ),
+                })}
+              />
+            </MetaWrapper>
+            <TitleWrapper>
+              <MailIcon
+                width={16}
+                height={16}
+                color={theme.colors.textSecondary}
+              />
+              <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
+            </TitleWrapper>
+          </ArticleInfo>
+          {isMyComment && (
+            <EditButton variant="transparent" onClick={handleEditCommentClick}>
+              <EditIcon
+                width={20}
+                height={20}
+                fill={theme.colors.textSecondary}
+              />
+            </EditButton>
+          )}
+        </CommentHeader>
+        <Content isMobile={isMobile}>
+          {quotation && <Quote isMobile={isMobile}>{quotation}</Quote>}
+          <Comment>{comment}</Comment>
+        </Content>
+      </Container>
+
+      <Modal
+        modalRef={modalRef}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        position={isMobile ? 'bottom' : 'center'}
+        showCloseButton={false}
+      >
+        <EditCommentModalContent
+          closeModal={closeModal}
+          postedComment={comment}
+          articleTitle={articleTitle}
+          newsletterName={newsletterName}
+          quotation={quotation}
+          onEdit={editPostedComment}
+        />
+      </Modal>
+    </>
   );
 };
 
