@@ -2,6 +2,7 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import useExpandQuotation from '../hooks/useExpandQuotation';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
+import { MAX_QUOTATION_LINE } from '../constants/comment';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
@@ -16,10 +17,6 @@ import MailIcon from '#/assets/svg/mail.svg';
 type CommentCardProps = Comment;
 
 const DELETED_USER_NICKNAME = '탈퇴한 회원';
-const MAX_QUOTATION_LINE = {
-  mobile: 3,
-  default: 4,
-};
 
 const CommentCard = ({
   nickname,

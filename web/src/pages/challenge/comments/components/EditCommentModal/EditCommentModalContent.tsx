@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { COMMENT_VALIDATION } from '../../constants/comment';
+import {
+  COMMENT_VALIDATION,
+  MAX_QUOTATION_LINE,
+} from '../../constants/comment';
 import CommentEditor from '../AddCommentModal/CommentEditor';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
@@ -156,6 +159,7 @@ const Quote = styled.div<{ isMobile: boolean }>`
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
 
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${({ isMobile }) => (isMobile ? 3 : 4)};
+  -webkit-line-clamp: ${({ isMobile }) =>
+    isMobile ? MAX_QUOTATION_LINE.mobile : MAX_QUOTATION_LINE.default};
   text-overflow: ellipsis;
 `;
