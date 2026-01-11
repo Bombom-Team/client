@@ -5,6 +5,7 @@ import CommentConfirmModalContent from './CommentConfirmModalContent';
 import CommentEditor from './CommentEditor';
 import NewsletterSelector from './NewsletterSelector';
 import QuotationSelector from './QuotationSelector';
+import { COMMENT_VALIDATION } from '../../constants/comment';
 import useAddChallengeCommentMutation from '../../hooks/useAddChallengeCommentMutation';
 import useQuotations from '../../hooks/useQuotations';
 import Button from '@/components/Button/Button';
@@ -18,9 +19,6 @@ interface AddCommentModalContentProps {
   closeCommentModal: () => void;
   candidateArticles: CandidateArticles;
 }
-
-const MIN_COMMENT_LENGTH = 20;
-const MAX_COMMENT_LENGTH = 250;
 
 const AddCommentModalContent = ({
   closeCommentModal,
@@ -60,7 +58,7 @@ const AddCommentModalContent = ({
   };
 
   const editComment = (value: string) => {
-    if (value.length >= MIN_COMMENT_LENGTH) {
+    if (value.length >= COMMENT_VALIDATION.minLength) {
       setShowCommentError(false);
     }
     setComment(value);
@@ -80,7 +78,7 @@ const AddCommentModalContent = ({
   };
 
   const handleAddCommentClick = () => {
-    const isCommentValid = comment.length >= MIN_COMMENT_LENGTH;
+    const isCommentValid = comment.length >= COMMENT_VALIDATION.minLength;
     const isArticleValid = selectedArticleId !== null;
 
     if (isCommentValid && isArticleValid) {
@@ -141,8 +139,8 @@ const AddCommentModalContent = ({
         <CommentEditor
           comment={comment}
           onCommentChange={(value) => editComment(value)}
-          minLength={MIN_COMMENT_LENGTH}
-          maxLength={MAX_COMMENT_LENGTH}
+          minLength={COMMENT_VALIDATION.minLength}
+          maxLength={COMMENT_VALIDATION.maxLength}
           showError={showCommentError}
         />
 

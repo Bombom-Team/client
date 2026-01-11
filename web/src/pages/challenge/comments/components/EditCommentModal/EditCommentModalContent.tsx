@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { COMMENT_VALIDATION } from '../../constants/comment';
 import CommentEditor from '../AddCommentModal/CommentEditor';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
@@ -13,9 +14,6 @@ interface EditCommentModalContentProps {
   quotation?: string;
   onEdit: (newComment: string) => void;
 }
-
-const MIN_COMMENT_LENGTH = 20;
-const MAX_COMMENT_LENGTH = 250;
 
 const EditCommentModalContent = ({
   closeModal,
@@ -32,14 +30,14 @@ const EditCommentModalContent = ({
   const isMobile = device === 'mobile';
 
   const editComment = (value: string) => {
-    if (value.length >= MIN_COMMENT_LENGTH) {
+    if (value.length >= COMMENT_VALIDATION.minLength) {
       setShowCommentError(false);
     }
     setComment(value);
   };
 
   const handleEditCommentClick = () => {
-    if (comment.length < MIN_COMMENT_LENGTH) {
+    if (comment.length < COMMENT_VALIDATION.minLength) {
       setShowCommentError(true);
       return;
     }
@@ -68,8 +66,8 @@ const EditCommentModalContent = ({
       <CommentEditor
         comment={comment}
         onCommentChange={editComment}
-        minLength={MIN_COMMENT_LENGTH}
-        maxLength={MAX_COMMENT_LENGTH}
+        minLength={COMMENT_VALIDATION.minLength}
+        maxLength={COMMENT_VALIDATION.maxLength}
         showError={showCommentError}
       />
 
