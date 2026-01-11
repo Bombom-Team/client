@@ -81,9 +81,8 @@ export default CommentCard;
 const Container = styled.article<{ isMobile: boolean; isMyComment: boolean }>`
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
-  border: 1px solid
-    ${({ theme, isMyComment }) =>
-      isMyComment ? theme.colors.primary : 'transparent'};
+  border-bottom: ${({ theme, isMyComment }) =>
+    isMyComment ? `4px solid ${theme.colors.primaryLight}` : 'none'};
   border-radius: 12px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
