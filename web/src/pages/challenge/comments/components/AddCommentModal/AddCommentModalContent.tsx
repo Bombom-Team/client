@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
-import CommentConfirmModalContent from './CommentConfirmModalContent';
 import CommentEditor from './CommentEditor';
 import NewsletterSelector from './NewsletterSelector';
 import QuotationSelector from './QuotationSelector';
@@ -10,8 +9,6 @@ import { COMMENT_VALIDATION } from '../../constants/comment';
 import useAddChallengeCommentMutation from '../../hooks/useAddChallengeCommentMutation';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import type { CandidateArticles } from '../../types/comment';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
@@ -34,12 +31,7 @@ const AddCommentModalContent = ({
   const [comment, setComment] = useState('');
   const [showArticleError, setShowArticleError] = useState(false);
   const [showCommentError, setShowCommentError] = useState(false);
-  const {
-    modalRef,
-    openModal: openConfirmModal,
-    closeModal: closeConfirmModal,
-    isOpen,
-  } = useModal();
+
   const device = useDevice();
   const isMobile = device === 'mobile';
 
@@ -88,22 +80,6 @@ const AddCommentModalContent = ({
     setSelectedQuotationId(null);
   };
 
-  const handleAddCommentClick = () => {
-    const isCommentValid = comment.length >= COMMENT_VALIDATION.minLength;
-    const isArticleValid = selectedArticleId !== null;
-
-    if (isCommentValid && isArticleValid) {
-      openConfirmModal();
-    } else {
-      if (!isArticleValid) {
-        setShowArticleError(true);
-      }
-      if (!isCommentValid) {
-        setShowCommentError(true);
-      }
-    }
-  };
-
   const resetForm = () => {
     editComment('');
     setSelectedArticleId(null);
@@ -128,6 +104,22 @@ const AddCommentModalContent = ({
 
     closeCommentModal();
     resetForm();
+  };
+
+  const handleAddCommentClick = () => {
+    const isCommentValid = comment.length >= COMMENT_VALIDATION.minLength;
+    const isArticleValid = selectedArticleId !== null;
+
+    if (isCommentValid && isArticleValid) {
+      confirmComment();
+    } else {
+      if (!isArticleValid) {
+        setShowArticleError(true);
+      }
+      if (!isCommentValid) {
+        setShowCommentError(true);
+      }
+    }
   };
 
   return (
@@ -173,23 +165,19 @@ const AddCommentModalContent = ({
           </TipList>
         </TipSection>
 
-        <AddCommentButton isMobile={isMobile} onClick={handleAddCommentClick}>
-          등록하기
-        </AddCommentButton>
+        <ButtonWrapper>
+          <StyledButton onClick={handleAddCommentClick} isMobile={isMobile}>
+            등록하기
+          </StyledButton>
+          <StyledButton
+            variant="outlined"
+            onClick={closeCommentModal}
+            isMobile={isMobile}
+          >
+            취소
+          </StyledButton>
+        </ButtonWrapper>
       </Container>
-
-      <Modal
-        modalRef={modalRef}
-        isOpen={isOpen}
-        closeModal={closeConfirmModal}
-        position="center"
-        showCloseButton={false}
-      >
-        <CommentConfirmModalContent
-          closeModal={closeConfirmModal}
-          onConfirm={confirmComment}
-        />
-      </Modal>
     </>
   );
 };
@@ -239,8 +227,13 @@ const TipList = styled.ul<{ isMobile: boolean }>`
 
 const TipItem = styled.li``;
 
-const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
-  width: 100%;
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const StyledButton = styled(Button)<{ isMobile: boolean }>`
+  flex: 1;
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
 `;
