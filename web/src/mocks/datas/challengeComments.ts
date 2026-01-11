@@ -5,7 +5,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '테크 데일리',
     isSubscribed: true,
     articleTitle: '2026년 새해 기술 트렌드 전망',
-    createdAt: '2026-01-02T10:30:00.000Z',
+    createdAt: '2026-01-05T10:30:00.000Z',
     comment:
       '새해 첫 뉴스레터인데 내용이 알차네요. 올해 주목할 기술들이 정리가 잘 됐어요.',
     quotation:
@@ -18,9 +18,9 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '스타트업 인사이트',
     isSubscribed: true,
     articleTitle: '신년 창업 트렌드 분석',
-    createdAt: '2026-01-02T09:00:00.000Z',
+    createdAt: '2026-01-05T09:00:00.000Z',
     comment: '새해에 읽기 좋은 창업 관련 아티클이었습니다!',
-    isMyComment: false,
+    isMyComment: true,
   },
   {
     nickname: '박지민',
@@ -28,10 +28,10 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '경제 브리핑',
     isSubscribed: false,
     articleTitle: '2026 경제 전망 리포트',
-    createdAt: '2026-01-02T08:15:00.000Z',
+    createdAt: '2026-01-05T08:15:00.000Z',
     comment: '올해 경제 전망을 한눈에 볼 수 있어서 좋았어요.',
     quotation: '글로벌 경제는 2026년 완만한 회복세를 보일 것으로 예상됩니다.',
-    isMyComment: true,
+    isMyComment: false,
   },
   {
     nickname: '최민수',
@@ -39,7 +39,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '인베스트 뉴스',
     isSubscribed: true,
     articleTitle: '신년 투자 전략 가이드',
-    createdAt: '2026-01-02T07:30:00.000Z',
+    createdAt: '2026-01-05T07:30:00.000Z',
     comment: '새해 투자 계획 세우는 데 많은 도움이 됐습니다!',
     isMyComment: false,
   },
@@ -49,7 +49,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '마켓 워치',
     isSubscribed: true,
     articleTitle: '2026년 1월 시장 전망',
-    createdAt: '2026-01-02T06:00:00.000Z',
+    createdAt: '2026-01-05T06:00:00.000Z',
     comment: '시장 분석이 상세하고 이해하기 쉬웠어요.',
     isMyComment: false,
   },
@@ -59,7 +59,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '뉴스 브리핑',
     isSubscribed: true,
     articleTitle: '미국 주식시장 주간 리뷰',
-    createdAt: '2026-01-02T05:50:00.000Z',
+    createdAt: '2026-01-05T05:50:00.000Z',
     comment:
       '미국 시장 요약이 깔끔해서 오늘 투자 전략을 짜는 데 도움이 됐어요.',
     quotation:
@@ -72,7 +72,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '데일리 포커스',
     isSubscribed: true,
     articleTitle: 'AI 스타트업 투자 트렌드',
-    createdAt: '2026-01-02T05:40:00.000Z',
+    createdAt: '2026-01-05T05:40:00.000Z',
     comment: 'AI 산업 이슈를 정리해 주는 코너가 흥미롭고 이해하기 쉬웠습니다.',
     quotation:
       '2025년 AI 스타트업에 대한 벤처 투자가 30% 증가할 것으로 예상됩니다.',
@@ -84,7 +84,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '모닝브루',
     isSubscribed: false,
     articleTitle: '2025년 글로벌 경제 전망',
-    createdAt: '2026-01-02T05:30:00.000Z',
+    createdAt: '2026-01-05T05:30:00.000Z',
     comment:
       '모닝브루의 글로벌 뉴스 큐레이션이 훌륭해요. 세계 경제 흐름을 한눈에 파악할 수 있어요.',
     isMyComment: false,
@@ -95,7 +95,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '스타트업 스토리',
     isSubscribed: true,
     articleTitle: '실패를 두려워하지 않는 창업가의 자세',
-    createdAt: '2026-01-02T05:20:00.000Z',
+    createdAt: '2026-01-05T05:20:00.000Z',
     comment:
       '스타트업 창업가 인터뷰가 너무 좋았어요. 실패를 받아들이는 태도에 대한 이야기가 인상 깊었습니다.',
     quotation:
@@ -108,7 +108,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '뉴닉',
     isSubscribed: true,
     articleTitle: '이번 주 꼭 알아야 할 경제 뉴스',
-    createdAt: '2026-01-02T05:10:00.000Z',
+    createdAt: '2026-01-05T05:10:00.000Z',
     comment:
       '뉴닉의 간결한 설명이 너무 좋아요. 경제 뉴스를 이렇게 쉽게 이해할 수 있다니!',
     isMyComment: false,
@@ -119,7 +119,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '테크 인사이트',
     isSubscribed: false,
     articleTitle: '2025년 주목해야 할 AI 기술 트렌드',
-    createdAt: '2026-01-02T05:00:00.000Z',
+    createdAt: '2026-01-05T05:00:00.000Z',
     comment:
       '기술 트렌드를 쉽게 정리해줘서 이해가 잘 됐어요. 특히 AI 관련 내용이 흥미로웠습니다!',
     quotation:
@@ -132,7 +132,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '인베스트 노트',
     isSubscribed: true,
     articleTitle: '주간 시장 이슈 요약',
-    createdAt: '2026-01-02T04:50:00.000Z',
+    createdAt: '2026-01-05T04:50:00.000Z',
     comment:
       '시장 이슈 핵심만 요약해줘서 늦은 밤에도 부담 없이 읽을 수 있었어요.',
     isMyComment: false,
@@ -143,7 +143,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '마켓 인사이더',
     isSubscribed: true,
     articleTitle: '반도체 업계 최신 동향',
-    createdAt: '2026-01-02T04:40:00.000Z',
+    createdAt: '2026-01-05T04:40:00.000Z',
     comment: '반도체 산업의 흐름을 잘 파악할 수 있었어요.',
     quotation: '글로벌 반도체 시장은 2025년 5% 성장이 예상됩니다.',
     isMyComment: false,
@@ -154,7 +154,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '이코노미스트',
     isSubscribed: false,
     articleTitle: '부동산 시장 전망',
-    createdAt: '2026-01-02T04:30:00.000Z',
+    createdAt: '2026-01-05T04:30:00.000Z',
     comment: '부동산 시장 분석이 깊이 있어서 좋았습니다.',
     isMyComment: false,
   },
@@ -164,7 +164,7 @@ export const CHALLENGE_COMMENTS = [
     newsletterName: '스타트업 위클리',
     isSubscribed: true,
     articleTitle: '유망 스타트업 TOP 10',
-    createdAt: '2026-01-02T04:20:00.000Z',
+    createdAt: '2026-01-05T04:20:00.000Z',
     comment: '새로운 스타트업들의 비즈니스 모델이 흥미로웠어요!',
     quotation: 'AI 기반 헬스케어 스타트업이 주목받고 있습니다.',
     isMyComment: false,
