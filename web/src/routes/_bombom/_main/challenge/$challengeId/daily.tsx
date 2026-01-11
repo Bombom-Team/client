@@ -2,8 +2,11 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
+import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
+import DailyGuideCommentsModal from '@/pages/challenge/daily/components/DailyGuideCommentsModal';
+import ViewAllCommentsButton from '@/pages/challenge/daily/components/ViewAllCommentsButton';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -22,17 +25,22 @@ function ChallengeDaily() {
   const { challengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
+
   const device = useDevice();
+  const isMobile = device === 'mobile';
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const { data: dailyGuide } = useQuery(
     queries.todayDailyGuide(Number(challengeId)),
   );
 
-  const isMobile = device === 'mobile';
-
   if (!dailyGuide) {
     return null;
   }
+
+  const commentSectionEnabled =
+    (dailyGuide.type === 'COMMENT' || dailyGuide.type === 'SHARING') &&
+    dailyGuide.commentEnabled;
 
   return (
     <Container>
@@ -49,12 +57,29 @@ function ChallengeDaily() {
           </NoticeBox>
         )}
 
-        {dailyGuide.type === 'COMMENT' && dailyGuide.commentEnabled && (
-          <DailyGuideComment
-            challengeId={Number(challengeId)}
-            dayIndex={dailyGuide.dayIndex}
-            myComment={dailyGuide.myComment}
-          />
+        {commentSectionEnabled && (
+          <>
+            <DailyGuideComment
+              challengeId={Number(challengeId)}
+              dayIndex={dailyGuide.dayIndex}
+              myComment={dailyGuide.myComment}
+            />
+            {dailyGuide.type === 'SHARING' && (
+              <ButtonWrapper>
+                <ViewAllCommentsButton
+                  submittedMyComment={dailyGuide.myComment.exists}
+                  onViewAllComments={openModal}
+                />
+              </ButtonWrapper>
+            )}
+            <DailyGuideCommentsModal
+              challengeId={Number(challengeId)}
+              dayIndex={dailyGuide.dayIndex}
+              modalRef={modalRef}
+              isOpen={isOpen}
+              closeModal={closeModal}
+            />
+          </>
         )}
       </GuideCard>
     </Container>
@@ -121,4 +146,9 @@ const NoticeText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  align-self: flex-end;
 `;
