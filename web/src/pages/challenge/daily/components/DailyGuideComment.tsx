@@ -50,12 +50,10 @@ const DailyGuideComment = ({
           </SubmittedComment>
         </SubmittedCommentBox>
         {viewAllCommentsEnabled && (
-          <ButtonWrapper>
-            <ViewAllCommentsButton
-              submittedMyComment={myComment.exists}
-              onViewAllComments={onViewAllComments}
-            />
-          </ButtonWrapper>
+          <ViewAllCommentsButton
+            submittedMyComment={myComment.exists}
+            onViewAllComments={onViewAllComments}
+          />
         )}
       </CommentSection>
     );
@@ -63,12 +61,7 @@ const DailyGuideComment = ({
 
   return (
     <CommentSection>
-      <CommentLabelWrapper>
-        <CommentLabel isMobile={isMobile}>답변 작성</CommentLabel>
-        <CharCount>
-          {comment.length} / {MAX_LENGTH}
-        </CharCount>
-      </CommentLabelWrapper>
+      <CommentLabel isMobile={isMobile}>답변 작성</CommentLabel>
       <CommentInputWrapper>
         <CommentTextarea
           isMobile={isMobile}
@@ -78,22 +71,26 @@ const DailyGuideComment = ({
           maxLength={MAX_LENGTH}
           rows={4}
         />
+        <CommentInputFooter>
+          {viewAllCommentsEnabled && (
+            <ViewAllCommentsButton
+              submittedMyComment={myComment.exists}
+              onViewAllComments={onViewAllComments}
+            />
+          )}
+          <CharCount>
+            {comment.length} / {MAX_LENGTH}
+          </CharCount>
+        </CommentInputFooter>
       </CommentInputWrapper>
-      {viewAllCommentsEnabled && (
-        <ButtonWrapper>
-          <ViewAllCommentsButton
-            submittedMyComment={myComment.exists}
-            onViewAllComments={onViewAllComments}
-          />
-          <SubmitButton
-            variant="filled"
-            onClick={handleSubmitComment}
-            disabled={!comment.trim()}
-          >
-            제출하기
-          </SubmitButton>
-        </ButtonWrapper>
-      )}
+
+      <SubmitButton
+        variant="filled"
+        onClick={handleSubmitComment}
+        disabled={!comment.trim()}
+      >
+        제출하기
+      </SubmitButton>
     </CommentSection>
   );
 };
@@ -107,12 +104,6 @@ const CommentSection = styled.div`
   display: flex;
   gap: 12px;
   flex-direction: column;
-`;
-
-const CommentLabelWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 `;
 
 const CommentLabel = styled.label<{ isMobile: boolean }>`
@@ -130,6 +121,7 @@ const CommentInputWrapper = styled.div`
   width: 100%;
 
   display: flex;
+  gap: 8px;
   flex-direction: column;
 `;
 
@@ -156,7 +148,7 @@ const CommentTextarea = styled.textarea<{ isMobile: boolean }>`
   }
 `;
 
-const ButtonWrapper = styled.div`
+const CommentInputFooter = styled.div`
   display: flex;
   justify-content: space-between;
 `;
