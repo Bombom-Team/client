@@ -6,7 +6,6 @@ import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
 import DailyGuideCommentsModal from '@/pages/challenge/daily/components/DailyGuideCommentsModal';
-import ViewAllCommentsButton from '@/pages/challenge/daily/components/ViewAllCommentsButton';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -63,15 +62,9 @@ function ChallengeDaily() {
               challengeId={Number(challengeId)}
               dayIndex={dailyGuide.dayIndex}
               myComment={dailyGuide.myComment}
+              viewAllCommentsEnabled={dailyGuide.type === 'SHARING'}
+              onViewAllComments={openModal}
             />
-            {dailyGuide.type === 'SHARING' && (
-              <ButtonWrapper>
-                <ViewAllCommentsButton
-                  submittedMyComment={dailyGuide.myComment.exists}
-                  onViewAllComments={openModal}
-                />
-              </ButtonWrapper>
-            )}
             <DailyGuideCommentsModal
               challengeId={Number(challengeId)}
               dayIndex={dailyGuide.dayIndex}
@@ -146,9 +139,4 @@ const NoticeText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  align-self: flex-end;
 `;

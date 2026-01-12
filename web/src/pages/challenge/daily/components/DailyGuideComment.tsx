@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import ViewAllCommentsButton from './ViewAllCommentsButton';
 import { useSubmitDailyGuideCommentMutation } from '../../index/hooks/useSubmitDailyGuideComment';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
@@ -13,12 +14,16 @@ interface DailyGuideCommentProps {
   challengeId: number;
   dayIndex: number;
   myComment: MyComment;
+  viewAllCommentsEnabled: boolean;
+  onViewAllComments: () => void;
 }
 
 const DailyGuideComment = ({
   challengeId,
   dayIndex,
   myComment,
+  viewAllCommentsEnabled,
+  onViewAllComments,
 }: DailyGuideCommentProps) => {
   const [comment, setComment] = useState('');
 
@@ -44,6 +49,14 @@ const DailyGuideComment = ({
             {myComment.content}
           </SubmittedComment>
         </SubmittedCommentBox>
+        {viewAllCommentsEnabled && (
+          <ButtonWrapper>
+            <ViewAllCommentsButton
+              submittedMyComment={myComment.exists}
+              onViewAllComments={onViewAllComments}
+            />
+          </ButtonWrapper>
+        )}
       </CommentSection>
     );
   }
@@ -66,13 +79,21 @@ const DailyGuideComment = ({
           rows={4}
         />
       </CommentInputWrapper>
-      <SubmitButton
-        variant="filled"
-        onClick={handleSubmitComment}
-        disabled={!comment.trim()}
-      >
-        제출하기
-      </SubmitButton>
+      {viewAllCommentsEnabled && (
+        <ButtonWrapper>
+          <ViewAllCommentsButton
+            submittedMyComment={myComment.exists}
+            onViewAllComments={onViewAllComments}
+          />
+          <SubmitButton
+            variant="filled"
+            onClick={handleSubmitComment}
+            disabled={!comment.trim()}
+          >
+            제출하기
+          </SubmitButton>
+        </ButtonWrapper>
+      )}
     </CommentSection>
   );
 };
@@ -132,6 +153,11 @@ const CommentTextarea = styled.textarea<{ isMobile: boolean }>`
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary};
   }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const SubmitButton = styled(Button)`
