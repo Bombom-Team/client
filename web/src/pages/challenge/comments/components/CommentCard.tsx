@@ -33,10 +33,6 @@ const CommentCard = ({
   const relativeTime = convertRelativeTime(createdAt);
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const handleEditCommentClick = () => {
-    openModal();
-  };
-
   const editPostedComment = () => {
     // patch api 연결 필요
     closeModal();
@@ -83,7 +79,7 @@ const CommentCard = ({
             </TitleWrapper>
           </ArticleInfo>
           {isMyComment && (
-            <EditButton variant="transparent" onClick={handleEditCommentClick}>
+            <EditButton variant="transparent" onClick={openModal}>
               <EditIcon
                 width={20}
                 height={20}
