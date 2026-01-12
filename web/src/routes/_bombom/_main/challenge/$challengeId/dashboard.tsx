@@ -152,11 +152,6 @@ const TabsWrapper = styled.div<{ device: Device }>`
 
   display: flex;
   flex-direction: row;
-
-  box-sizing: border-box;
-
-  order: 0;
-
   ${({ device, theme }) => tabsWrapperStyles[device](theme)}
 `;
 
