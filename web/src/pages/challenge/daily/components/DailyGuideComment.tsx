@@ -64,7 +64,7 @@ const DailyGuideComment = ({
   return (
     <CommentSection>
       <CommentLabelWrapper>
-        <CommentLabel>답변 작성</CommentLabel>
+        <CommentLabel isMobile={isMobile}>답변 작성</CommentLabel>
         <CharCount>
           {comment.length} / {MAX_LENGTH}
         </CharCount>
@@ -115,9 +115,10 @@ const CommentLabelWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const CommentLabel = styled.label`
+const CommentLabel = styled.label<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
 `;
 
 const CharCount = styled.span`
