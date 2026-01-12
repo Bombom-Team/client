@@ -1,5 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import useCommentLike from '../hooks/useCommentLike';
 import useExpandQuotation from '../hooks/useExpandQuotation';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
@@ -7,6 +8,8 @@ import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 import CheckIcon from '#/assets/svg/check-circle.svg';
+import HeartFilledIcon from '#/assets/svg/heart-filled.svg';
+import HeartIcon from '#/assets/svg/heart.svg';
 import MailIcon from '#/assets/svg/mail.svg';
 
 type CommentCardProps = Comment;
@@ -38,28 +41,57 @@ const CommentCard = ({
         : MAX_QUOTATION_LINE.default,
     });
 
+  const { likeCount, liked, toggleLike } = useCommentLike({
+    initialCount: 0,
+    initialLiked: false,
+  });
+
   return (
     <Container isMobile={isMobile}>
-      <ArticleInfo>
-        <MetaWrapper>
-          <MetaInfo isMobile={isMobile}>
-            {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
-          </MetaInfo>
-          <NewsletterBadge
-            isMobile={isMobile}
-            text={newsletterName}
-            {...(isSubscribed && {
-              icon: (
-                <CheckIcon width={16} height={16} fill={theme.colors.primary} />
-              ),
-            })}
-          />
-        </MetaWrapper>
-        <TitleWrapper>
-          <MailIcon width={16} height={16} color={theme.colors.textSecondary} />
-          <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
-        </TitleWrapper>
-      </ArticleInfo>
+      <CommentHeader>
+        <ArticleInfo>
+          <MetaWrapper>
+            <MetaInfo isMobile={isMobile}>
+              {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
+            </MetaInfo>
+            <NewsletterBadge
+              isMobile={isMobile}
+              text={newsletterName}
+              {...(isSubscribed && {
+                icon: (
+                  <CheckIcon
+                    width={16}
+                    height={16}
+                    fill={theme.colors.primary}
+                  />
+                ),
+              })}
+            />
+          </MetaWrapper>
+          <TitleWrapper>
+            <MailIcon
+              width={16}
+              height={16}
+              color={theme.colors.textSecondary}
+            />
+            <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
+          </TitleWrapper>
+        </ArticleInfo>
+        <LikeButton
+          variant="transparent"
+          onClick={toggleLike}
+          isMobile={isMobile}
+        >
+          {liked ? (
+            <HeartFilledIcon fill={theme.colors.red} />
+          ) : (
+            <HeartIcon color={theme.colors.red} />
+          )}
+          <LikeCount liked={liked} isMobile={isMobile}>
+            {likeCount}
+          </LikeCount>
+        </LikeButton>
+      </CommentHeader>
       <Content isMobile={isMobile}>
         {quotation && (
           <Quote ref={quoteRef} isMobile={isMobile} expanded={expanded}>
@@ -100,10 +132,46 @@ const Container = styled.article<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
+const CommentHeader = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const ArticleInfo = styled.div`
   display: flex;
   gap: 4px;
   flex-direction: column;
+`;
+
+const LikeButton = styled(Button)<{ isMobile: boolean }>`
+  padding: 0;
+
+  display: flex;
+  gap: 0;
+  flex-direction: column;
+  align-items: center;
+
+  svg {
+    width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+    height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+  }
+
+  &:hover {
+    background: none;
+
+    svg {
+      color: ${({ theme }) => theme.colors.red};
+    }
+  }
+`;
+
+const LikeCount = styled.span<{ isMobile: boolean; liked: boolean }>`
+  color: ${({ theme, liked }) =>
+    liked ? theme.colors.red : theme.colors.textSecondary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
 const MetaWrapper = styled.div`
