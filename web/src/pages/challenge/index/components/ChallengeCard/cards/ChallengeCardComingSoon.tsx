@@ -1,5 +1,5 @@
 import CardContainer from '../CardContainer';
-import { Title, Tag, Applicant, DDay, CardDetailButton } from '../CardElements';
+import { CardDetailButton, DDay, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import Flex from '@/components/Flex';
@@ -9,7 +9,7 @@ import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
-  const { participantCount, generation, startDate, title } = props;
+  const { generation, startDate, title } = props;
 
   const handleCardClick = () => {
     trackEvent({
@@ -32,9 +32,6 @@ const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
         </Flex>
 
         <Flex align="flex-end" gap={12}>
-          {participantCount > 0 && (
-            <Applicant>신청자 {participantCount}명</Applicant>
-          )}
           <DDay startDate={startDate} />
         </Flex>
       </CardHeader>
