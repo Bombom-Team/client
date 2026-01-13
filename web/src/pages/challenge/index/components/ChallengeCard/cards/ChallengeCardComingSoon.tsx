@@ -1,5 +1,5 @@
 import CardContainer from '../CardContainer';
-import { CardDetailButton, DDay, Tag, Title } from '../CardElements';
+import { CardDetailButton, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import Flex from '@/components/Flex';
@@ -9,7 +9,7 @@ import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
-  const { generation, startDate, title } = props;
+  const { generation, title } = props;
 
   const handleCardClick = () => {
     trackEvent({
@@ -29,10 +29,6 @@ const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
         <Flex direction="column" gap={8}>
           <Title>{title}</Title>
           <Tag>{generation}기</Tag>
-        </Flex>
-
-        <Flex align="flex-end" gap={12}>
-          <DDay startDate={startDate} />
         </Flex>
       </CardHeader>
 
