@@ -2,7 +2,7 @@ import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { LEVEL, PET_LABEL, PET_WIDTH } from './PetCard.constants';
+import { LEVEL, PET_LABEL } from './PetCard.constants';
 import { heartAnimation, jumpAnimation } from './PetCard.keyframes';
 import Button from '../Button/Button';
 import ProgressBar from '../ProgressBar/ProgressBar';
@@ -13,11 +13,16 @@ import { calculateRate } from '@/utils/math';
 import type { GetPetResponse } from '@/apis/pet/pet.api';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
-import petLv1 from '#/assets/avif/pet-1-lv1.avif';
-import petLv2 from '#/assets/avif/pet-1-lv2.avif';
-import petLv3 from '#/assets/avif/pet-1-lv3.avif';
-import petLv4 from '#/assets/avif/pet-1-lv4.avif';
-import petLv5 from '#/assets/avif/pet-1-lv5.avif';
+import petLv1 from '#/assets/avif/pet-lv1.avif';
+import petLv10 from '#/assets/avif/pet-lv10.avif';
+import petLv2 from '#/assets/avif/pet-lv2.avif';
+import petLv3 from '#/assets/avif/pet-lv3.avif';
+import petLv4 from '#/assets/avif/pet-lv4.avif';
+import petLv5 from '#/assets/avif/pet-lv5.avif';
+import petLv6 from '#/assets/avif/pet-lv6.avif';
+import petLv7 from '#/assets/avif/pet-lv7.avif';
+import petLv8 from '#/assets/avif/pet-lv8.avif';
+import petLv9 from '#/assets/avif/pet-lv9.avif';
 import PetIcon from '#/assets/svg/pet.svg';
 
 const petImages: Record<number, string> = {
@@ -26,6 +31,11 @@ const petImages: Record<number, string> = {
   3: petLv3,
   4: petLv4,
   5: petLv5,
+  6: petLv6,
+  7: petLv7,
+  8: petLv8,
+  9: petLv9,
+  10: petLv10,
 };
 
 interface PetCardProps {
@@ -66,7 +76,6 @@ const PetCard = ({ pet }: PetCardProps) => {
         <PetImage
           src={petImages[level]}
           alt="pet"
-          width={PET_WIDTH[level]}
           height={120}
           isAnimating={isAnimating}
           onAnimationEnd={() => setIsAnimating(false)}
