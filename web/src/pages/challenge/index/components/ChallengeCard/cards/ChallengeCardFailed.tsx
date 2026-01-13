@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { getDday } from '../../../utils/date';
 import CardContainer from '../CardContainer';
 import { Applicant, DDay, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
@@ -9,8 +8,6 @@ import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardFailed = (props: ChallengeCardProps) => {
   const { participantCount, generation, startDate, title } = props;
-
-  const dday = getDday(startDate);
 
   return (
     <CardContainer disabled>
@@ -24,7 +21,7 @@ const ChallengeCardFailed = (props: ChallengeCardProps) => {
           {participantCount > 0 && (
             <Applicant>신청자 {participantCount}명</Applicant>
           )}
-          <DDay>D{dday}</DDay>
+          <DDay startDate={startDate} color="disabledText" />
         </Flex>
       </CardHeader>
 

@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import { getDday } from '../../../utils/date';
 import CardContainer from '../CardContainer';
 import { Applicant, CardDetailButton, DDay, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
@@ -13,8 +12,6 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
 
   const { detail, id, participantCount, generation, startDate, title } = props;
-
-  const dday = getDday(startDate);
 
   const moveToDetail = () => {
     trackEvent({
@@ -41,7 +38,7 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
           {participantCount > 0 && (
             <Applicant>신청자 {participantCount}명</Applicant>
           )}
-          <DDay>D{dday}</DDay>
+          <DDay startDate={startDate} />
         </Flex>
       </CardHeader>
 

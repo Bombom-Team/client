@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { getDday } from '../../utils/date';
 import Text from '@/components/Text';
 import type { ComponentProps } from 'react';
 
@@ -22,9 +23,19 @@ export const Applicant = (props: ComponentProps<typeof Text>) => (
   <Text font="body3" color="textSecondary" {...props} />
 );
 
-export const DDay = (props: ComponentProps<typeof Text>) => (
-  <Text font="body2" color="primary" {...props} />
-);
+interface DDayProps extends ComponentProps<typeof Text> {
+  startDate: string;
+}
+
+export const DDay = ({ startDate, ...props }: DDayProps) => {
+  const dday = getDday(startDate);
+
+  return (
+    <Text font="body2" color="primary" {...props}>
+      D{dday}
+    </Text>
+  );
+};
 
 export const CardDetailButton = styled.button`
   border: none;

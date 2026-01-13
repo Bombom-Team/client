@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { Suspense } from 'react';
-import { getDday } from '../../../utils/date';
 import ChallengeApplyModal from '../../ChallengeApplyModal/ChallengeApplyModal';
 import LoadingModal from '../../ChallengeApplyModal/modals/LoadingModal';
 import CardContainer from '../CardContainer';
@@ -28,8 +27,6 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
   const { mutate: cancelMutation } = useChallengeCancelMutation({
     challengeId: id,
   });
-
-  const dday = getDday(startDate);
 
   const handleCardClick = () => {
     trackEvent({
@@ -78,7 +75,7 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
             {participantCount > 0 && (
               <Applicant>신청자 {participantCount}명</Applicant>
             )}
-            <DDay>D{dday}</DDay>
+            <DDay startDate={startDate} />
           </Flex>
         </CardHeader>
 
