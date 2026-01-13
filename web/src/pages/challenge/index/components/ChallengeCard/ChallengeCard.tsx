@@ -1,4 +1,5 @@
 import ChallengeCardBeforeStart from './cards/ChallengeCardBeforeStart';
+import ChallengeCardCompleted from './cards/ChallengeCardCompleted';
 import ChallengeCardFailed from './cards/ChallengeCardFailed';
 import ChallengeCardOngoing from './cards/ChallengeCardOngoing';
 import type { Challenge } from '@/apis/challenge/challenge.api';
@@ -37,7 +38,7 @@ const ChallengeCard = (props: ChallengeCardProps) => {
     case 'ONGOING':
       return <ChallengeCardOngoing {...props} />;
     case 'COMPLETED':
-      return null;
+      return <ChallengeCardCompleted {...props} />;
   }
 };
 
