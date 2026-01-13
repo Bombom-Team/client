@@ -40,7 +40,7 @@ const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
       </CardHeader>
 
       <CardFooter>
-        <Text>Coming Soon</Text>
+        <Text font="heading6">Coming Soon</Text>
         <CardDetailButton>자세히 보기 →</CardDetailButton>
       </CardFooter>
     </CardContainer>
