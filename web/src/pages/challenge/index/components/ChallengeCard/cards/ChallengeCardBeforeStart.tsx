@@ -31,7 +31,7 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
   const handleCardClick = () => {
     trackEvent({
       category: 'Challenge',
-      action: '카드 클릭',
+      action: 'BEFORE_START 카드 클릭',
       label: title,
     });
 

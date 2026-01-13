@@ -1501,7 +1501,7 @@ export interface components {
       participantCount: number;
       newsletters: components['schemas']['ChallengeNewsletterResponse'][];
       /** @enum {string} */
-      status: 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
+      status: 'COMING_SOON' | 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
       detail?: components['schemas']['ChallengeDetailResponse'];
     };
     ChallengeInfoResponse: {

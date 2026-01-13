@@ -1,4 +1,5 @@
 import ChallengeCardBeforeStart from './cards/ChallengeCardBeforeStart';
+import ChallengeCardComingSoon from './cards/ChallengeCardComingSoon';
 import ChallengeCardCompleted from './cards/ChallengeCardCompleted';
 import ChallengeCardFailed from './cards/ChallengeCardFailed';
 import ChallengeCardOngoing from './cards/ChallengeCardOngoing';
@@ -6,7 +7,7 @@ import type { Challenge } from '@/apis/challenge/challenge.api';
 
 export type ChallengeCardProps = Challenge;
 
-type CardType = 'BEFORE_START' | 'ONGOING' | 'FAILED' | 'COMPLETED';
+type CardType = Challenge['status'] | 'FAILED';
 
 const getCardType = (challenge: Challenge): CardType => {
   const { status, detail } = challenge;
@@ -14,23 +15,16 @@ const getCardType = (challenge: Challenge): CardType => {
   if (detail?.isSuccess === false) {
     return 'FAILED';
   }
-  if (status === 'ONGOING') {
-    return 'ONGOING';
-  }
-  if (status === 'BEFORE_START') {
-    return 'BEFORE_START';
-  }
-  if (status === 'COMPLETED') {
-    return 'COMPLETED';
-  }
 
-  return 'BEFORE_START';
+  return status;
 };
 
 const ChallengeCard = (props: ChallengeCardProps) => {
   const cardType = getCardType(props);
 
   switch (cardType) {
+    case 'COMING_SOON':
+      return <ChallengeCardComingSoon {...props} />;
     case 'BEFORE_START':
       return <ChallengeCardBeforeStart {...props} />;
     case 'FAILED':
