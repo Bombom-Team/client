@@ -684,7 +684,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/challenges/{id}/progress/team': {
+  '/api/v1/challenges/{id}/teams': {
     parameters: {
       query?: never;
       header?: never;
@@ -692,10 +692,30 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * 챌린지 팀 진행도 조회
-     * @description 챌린지 참여 팀원들의 진행도 및 팀 요약 정보를 조회합니다.
+     * 챌린지 팀 목록 조회
+     * @description 챌린지에 참여한 모든 팀 목록을 조회합니다. 각 팀의 ID, 순서, 내 팀 여부 정보가 포함됩니다.
      */
-    get: operations['getTeamProgress'];
+    get: operations['getTeamList'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{id}/progress/teams/{teamId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 특정 팀 진행도 조회
+     * @description 특정 팀의 진행도 및 팀원들의 진행 상황을 조회합니다.
+     */
+    get: operations['getTeamProgressByTeamId'];
     put?: never;
     post?: never;
     delete?: never;
@@ -736,6 +756,26 @@ export interface paths {
      * @description 특정 챌린지에 대한 신청 가능 여부를 조회합니다.
      */
     get: operations['checkEligibility'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{challengeId}/daily-guides/{dayIndex}/comments': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 데일리 가이드 코멘트 목록 조회
+     * @description 특정 챌린지의 특정 일차 데일리 가이드에 작성된 코멘트 목록을 조회합니다.
+     */
+    get: operations['getDailyGuideComments'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1477,6 +1517,20 @@ export interface components {
       /** Format: int32 */
       requiredDays: number;
     };
+    ChallengeTeamListResponse: {
+      /** Format: int32 */
+      totalTeamCount: number;
+      /** Format: int64 */
+      myTeamId?: number;
+      teams: components['schemas']['TeamInfoResponse'][];
+    };
+    TeamInfoResponse: {
+      /** Format: int64 */
+      teamId: number;
+      /** Format: int32 */
+      teamNumber: number;
+      isMyTeam: boolean;
+    };
     ChallengeSummaryResponse: {
       /** Format: date */
       startDate: string;
@@ -1533,6 +1587,30 @@ export interface components {
         | 'NOT_SUBSCRIBED'
         | 'ELIGIBLE';
     };
+    DailyGuideCommentResponse: {
+      nickname: string;
+      comment: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    PageDailyGuideCommentResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['DailyGuideCommentResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
     MyCommentResponse: {
       exists: boolean;
       content?: string;
@@ -1543,7 +1621,7 @@ export interface components {
       /** Format: int32 */
       dayIndex: number;
       /** @enum {string} */
-      type: 'READ' | 'COMMENT';
+      type: 'READ' | 'COMMENT' | 'SHARING';
       imageUrl: string;
       notice?: string;
       commentEnabled: boolean;
@@ -3148,12 +3226,58 @@ export interface operations {
       };
     };
   };
-  getTeamProgress: {
+  getTeamList: {
     parameters: {
       query?: never;
       header?: never;
       path: {
         id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 팀 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeTeamListResponse'];
+        };
+      };
+      /** @description 잘못된 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getTeamProgressByTeamId: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        id: number;
+        /** @description 팀 ID */
+        teamId: number;
       };
       cookie?: never;
     };
@@ -3175,7 +3299,21 @@ export interface operations {
         };
         content?: never;
       };
-      /** @description 챌린지/사용자를 찾을 수 없음 */
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 (챌린지에 참가하지 않음) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지/팀을 찾을 수 없음 */
       404: {
         headers: {
           [name: string]: unknown;
@@ -3255,6 +3393,55 @@ export interface operations {
         content?: never;
       };
       /** @description 챌린지를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getDailyGuideComments: {
+    parameters: {
+      query: {
+        /** @description 페이징 관련 요청 (예: ?page=0&size=20&sort=createdAt,desc) */
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 일차 인덱스 (1부터 시작) */
+        dayIndex: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 코멘트 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageDailyGuideCommentResponse'];
+        };
+      };
+      /** @description 잘못된 요청 (유효하지 않은 ID) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 또는 데일리 가이드를 찾을 수 없음 */
       404: {
         headers: {
           [name: string]: unknown;

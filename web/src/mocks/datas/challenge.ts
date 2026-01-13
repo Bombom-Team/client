@@ -33,7 +33,7 @@ export const CHALLENGES: Challenge[] = [
     title: '일주일 연속 읽기 챌린지',
     generation: 1,
     startDate: '2025-12-30',
-    endDate: '2026-01-06',
+    endDate: '2026-01-29',
     participantCount: 0,
     newsletters: [
       {
@@ -55,7 +55,7 @@ export const CHALLENGES: Challenge[] = [
     title: '일주일 연속 읽기 챌린지33',
     generation: 1,
     startDate: '2025-12-30',
-    endDate: '2026-01-06',
+    endDate: '2026-01-29',
     participantCount: 0,
     newsletters: [
       {
@@ -82,7 +82,7 @@ export const CHALLENGES: Challenge[] = [
     title: '일주일 연속 읽기 챌린지44',
     generation: 1,
     startDate: '2025-12-30',
-    endDate: '2026-01-06',
+    endDate: '2026-01-29',
     participantCount: 0,
     newsletters: [],
     status: 'BEFORE_START',
@@ -98,7 +98,7 @@ export const CHALLENGES: Challenge[] = [
     title: '일주일 연속 읽기 챌린지55',
     generation: 1,
     startDate: '2025-12-30',
-    endDate: '2026-01-06',
+    endDate: '2026-01-29',
     participantCount: 0,
     newsletters: [],
     status: 'BEFORE_START',
@@ -114,7 +114,7 @@ export const CHALLENGES: Challenge[] = [
     title: '일주일 연속 읽기 챌린지44',
     generation: 1,
     startDate: '2025-12-30',
-    endDate: '2026-01-06',
+    endDate: '2026-01-29',
     participantCount: 0,
     newsletters: [
       {
@@ -136,7 +136,7 @@ export const CHALLENGES: Challenge[] = [
     title: '3개월 장기 독서 챌린지',
     generation: 1,
     startDate: '2026-02-01',
-    endDate: '2026-05-01',
+    endDate: '2026-03-03',
     participantCount: 20,
     newsletters: [],
     status: 'ONGOING',
