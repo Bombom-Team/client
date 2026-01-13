@@ -52,12 +52,23 @@ export const getMemberChallengeProgress = async (challengeId: number) => {
   });
 };
 
-export type GetTeamChallengeProgressResponse =
+export type GetChallengeTeamsResponse =
+  components['schemas']['ChallengeTeamListResponse'];
+
+export const getChallengeTeams = async (challengeId: number) => {
+  return await fetcher.get<GetChallengeTeamsResponse>({
+    path: `/challenges/${challengeId}/teams`,
+  });
+};
+export type GetChallengesTeamsProgressResponse =
   components['schemas']['TeamChallengeProgressResponse'];
 
-export const getTeamChallengeProgress = async (challengeId: number) => {
-  return await fetcher.get<GetTeamChallengeProgressResponse>({
-    path: `/challenges/${challengeId}/progress/team`,
+export const getChallengeTeamsProgress = async (
+  challengeId: number,
+  teamId: number,
+) => {
+  return await fetcher.get<GetChallengesTeamsProgressResponse>({
+    path: `/challenges/${challengeId}/progress/teams/${teamId}`,
   });
 };
 
@@ -88,6 +99,22 @@ export const getChallengeCommentCandidateArticles = async (
 ) => {
   return await fetcher.get<GetChallengeCommentCandidateArticlesResponse>({
     path: '/challenges/comments/articles/candidates',
+    query: params,
+  });
+};
+
+export type GetChallengeArticleHighlightsParams =
+  operations['getChallengeArticleHighlights']['parameters']['path'] &
+    components['schemas']['Pageable'];
+export type GetChallengeArticleHighlightsResponse =
+  components['schemas']['PageChallengeCommentHighlightResponse'];
+
+export const getChallengeArticleHighlights = async ({
+  articleId,
+  ...params
+}: GetChallengeArticleHighlightsParams) => {
+  return await fetcher.get<GetChallengeArticleHighlightsResponse>({
+    path: `/challenges/comments/articles/${articleId}/highlights`,
     query: params,
   });
 };

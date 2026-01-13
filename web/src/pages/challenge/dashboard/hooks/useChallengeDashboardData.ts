@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { GetTeamChallengeProgressResponse } from '@/apis/challenge/challenge.api';
+import type { GetChallengesTeamsProgressResponse } from '@/apis/challenge/challenge.api';
 
 const isSuccessStatus = (status?: string) =>
   status === 'COMPLETE' || status === 'SHIELD';
@@ -19,7 +19,7 @@ const buildDateRange = (startDate: Date, endDate: Date) => {
 };
 
 export const useChallengeDashboardData = (
-  data: GetTeamChallengeProgressResponse,
+  data: GetChallengesTeamsProgressResponse,
 ) =>
   useMemo(() => {
     const { challenge, members } = data;
