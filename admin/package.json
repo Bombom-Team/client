@@ -9,8 +9,10 @@
     "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
+    "stylelint:fix": "stylelint './src/**/*.tsx' --fix",
     "format": "prettier --write .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "generate-openapi-types": "dotenv -e .env -- bash -c 'openapi-typescript $VITE_OPEN_API_DOCS -o ./src/types/openapi.d.ts && prettier --write ./src/types/openapi.d.ts'"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^8.37.0",
     "@typescript-eslint/parser": "^8.36.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.32.0",
@@ -31,6 +34,7 @@
     "eslint-plugin-prettier": "^5.5.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "openapi-typescript": "^7.8.0",
     "typescript": "^5.8.3",
     "vite": "^6.0.11",
     "vite-tsconfig-paths": "^6.0.3"

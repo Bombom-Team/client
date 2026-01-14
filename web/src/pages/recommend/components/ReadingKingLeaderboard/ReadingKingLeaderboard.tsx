@@ -22,17 +22,20 @@ const ReadingKingLeaderboard = () => {
     data: monthlyReadingRank,
     isLoading,
     isFetching,
-    refetch,
+    refetch: refetchMonthlyReadingRank,
   } = useQuery(queries.monthlyReadingRank({ limit: RANKING.maxRank }));
-  const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
+  const { data: userRank, refetch: refetchMyMonthlyReadingRank } = useQuery(
+    queries.myMonthlyReadingRank(),
+  );
 
-  const { leftTime } = useCountdown({
+  const { leftTime, isCompleting } = useCountdown({
     targetTime:
       monthlyReadingRank?.nextRefreshAt ??
       new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
-    completeDelay: 1000,
+    completeDelay: 2000,
     onComplete: () => {
-      refetch();
+      refetchMonthlyReadingRank();
+      refetchMyMonthlyReadingRank();
     },
   });
 
@@ -64,7 +67,7 @@ const ReadingKingLeaderboard = () => {
               순위는 10분마다 갱신됩니다.
             </Tooltip>
           </Countdown>
-          {isFetching && <CountdownLoadingDots />}
+          {(isFetching || isCompleting) && <CountdownLoadingDots />}
         </CountdownWrapper>
       </TitleWrapper>
 

@@ -5,6 +5,14 @@ import type { Nav } from '@/types/nav';
 import CompassIcon from '#/assets/svg/compass.svg';
 import HomeIcon from '#/assets/svg/home.svg';
 import StorageIcon from '#/assets/svg/storage.svg';
+import ChallengeIcon from '#/assets/svg/trophy.svg';
+
+const NAV_LABEL = {
+  today: '투데이',
+  storage: '보관함',
+  challenge: '챌린지',
+  recommend: '추천',
+} as const;
 
 interface HeaderNavButtonsProps {
   activeNav: Nav;
@@ -12,11 +20,13 @@ interface HeaderNavButtonsProps {
 }
 
 const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
+  const isPC = device === 'pc';
+
   return (
     <>
       <NavButton
         active={activeNav === 'today'}
-        device={device}
+        isPC={isPC}
         to="/today"
         className="nav-link"
       >
@@ -25,11 +35,11 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
           height={24}
           color={activeNav === 'today' ? 'white' : 'black'}
         />
-        <p>오늘의 뉴스레터</p>
+        <p>{NAV_LABEL.today}</p>
       </NavButton>
       <NavButton
         active={activeNav === 'storage'}
-        device={device}
+        isPC={isPC}
         to="/storage"
         className="nav-link"
       >
@@ -38,11 +48,24 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
           height={24}
           color={activeNav === 'storage' ? 'white' : 'black'}
         />
-        <p>뉴스레터 보관함</p>
+        <p>{NAV_LABEL.storage}</p>
+      </NavButton>
+      <NavButton
+        active={activeNav === 'challenge'}
+        isPC={isPC}
+        to="/challenge"
+        className="nav-link"
+      >
+        <ChallengeIcon
+          width={24}
+          height={24}
+          color={activeNav === 'challenge' ? 'white' : 'black'}
+        />
+        <p>{NAV_LABEL.challenge}</p>
       </NavButton>
       <NavButton
         active={activeNav === 'recommend'}
-        device={device}
+        isPC={isPC}
         to="/"
         className="nav-link"
       >
@@ -51,7 +74,7 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
           height={24}
           color={activeNav === 'recommend' ? 'white' : 'black'}
         />
-        <p>뉴스레터 추천</p>
+        <p>{NAV_LABEL.recommend}</p>
       </NavButton>
     </>
   );
@@ -60,22 +83,24 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
 export default HeaderNavButtons;
 
 const NavButton = styled(Link, {
-  shouldForwardProp: (prop) => prop !== 'active' && prop !== 'device',
-})<{ active?: boolean; device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '4px 12px' : '10px 12px')};
+  shouldForwardProp: (prop) => prop !== 'active' && prop !== 'isPC',
+})<{ active?: boolean; isPC: boolean }>`
+  height: 100%;
+  padding: ${({ isPC }) => (isPC ? '10px 12px' : '4px 12px')};
   border-radius: 12px;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '0px' : '4px')};
-  flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
+  gap: ${({ isPC }) => (isPC ? '4px' : '0')};
+  flex: ${({ isPC }) => !isPC && '1'};
+  flex-direction: ${({ isPC }) => (isPC ? 'row' : 'column')};
   align-items: center;
+  justify-content: center;
 
   background: ${({ active, theme }) =>
     active ? theme.colors.primary : 'transparent'};
   color: ${({ active, theme }) =>
     active ? theme.colors.white : theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ isPC, theme }) => (isPC ? theme.fonts.body2 : theme.fonts.body4)};
 
   text-shadow: ${({ active }) =>
     active ? 'none' : '0 1px 2px rgba(0, 0, 0, 0.1)'};

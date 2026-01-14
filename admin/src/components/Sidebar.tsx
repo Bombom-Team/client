@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Link, useRouterState } from '@tanstack/react-router';
-import { FiBell, FiHome, FiUsers } from 'react-icons/fi';
+import { FiBell, FiFlag, FiHome, FiMail, FiUsers } from 'react-icons/fi';
 
 export const Sidebar = () => {
   const router = useRouterState();
@@ -20,9 +20,23 @@ export const Sidebar = () => {
           <FiUsers />
           <span>멤버 관리</span>
         </NavItem>
+        <NavItem
+          to="/challenges"
+          isActive={currentPath.startsWith('/challenges')}
+        >
+          <FiFlag />
+          <span>챌린지</span>
+        </NavItem>
         <NavItem to="/notices" isActive={currentPath.startsWith('/notices')}>
           <FiBell />
           <span>공지사항</span>
+        </NavItem>
+        <NavItem
+          to="/newsletters"
+          isActive={currentPath.startsWith('/newsletters')}
+        >
+          <FiMail />
+          <span>뉴스레터 관리</span>
         </NavItem>
       </Nav>
       <Footer>© 2025 BomBom. All rights reserved.</Footer>
