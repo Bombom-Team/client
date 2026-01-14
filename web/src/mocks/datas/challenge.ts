@@ -33,7 +33,7 @@ export const CHALLENGES: Challenge[] = [
     title: '일주일 연속 읽기 챌린지',
     generation: 1,
     startDate: '2025-12-30',
-    endDate: '2026-01-06',
+    endDate: '2026-01-29',
     participantCount: 0,
     newsletters: [
       {
@@ -55,7 +55,7 @@ export const CHALLENGES: Challenge[] = [
     title: '일주일 연속 읽기 챌린지33',
     generation: 1,
     startDate: '2025-12-30',
-    endDate: '2026-01-06',
+    endDate: '2026-01-29',
     participantCount: 0,
     newsletters: [
       {
@@ -82,7 +82,7 @@ export const CHALLENGES: Challenge[] = [
     title: '일주일 연속 읽기 챌린지44',
     generation: 1,
     startDate: '2025-12-30',
-    endDate: '2026-01-06',
+    endDate: '2026-01-29',
     participantCount: 0,
     newsletters: [],
     status: 'BEFORE_START',
@@ -98,7 +98,7 @@ export const CHALLENGES: Challenge[] = [
     title: '일주일 연속 읽기 챌린지55',
     generation: 1,
     startDate: '2025-12-30',
-    endDate: '2026-01-06',
+    endDate: '2026-01-29',
     participantCount: 0,
     newsletters: [],
     status: 'BEFORE_START',
@@ -114,7 +114,7 @@ export const CHALLENGES: Challenge[] = [
     title: '일주일 연속 읽기 챌린지44',
     generation: 1,
     startDate: '2025-12-30',
-    endDate: '2026-01-06',
+    endDate: '2026-01-29',
     participantCount: 0,
     newsletters: [
       {
@@ -136,7 +136,7 @@ export const CHALLENGES: Challenge[] = [
     title: '3개월 장기 독서 챌린지',
     generation: 1,
     startDate: '2026-02-01',
-    endDate: '2026-05-01',
+    endDate: '2026-03-03',
     participantCount: 20,
     newsletters: [],
     status: 'ONGOING',
@@ -171,6 +171,72 @@ export const CHALLENGES: Challenge[] = [
       isJoined: true,
       progress: 65,
       grade: 'SILVER',
+      isSuccess: true,
+    },
+  },
+  {
+    id: 9,
+    title: '2주 뉴스레터 완독 챌린지',
+    generation: 1,
+    startDate: '2025-12-01',
+    endDate: '2025-12-15',
+    participantCount: 42,
+    newsletters: [
+      {
+        id: 2,
+        name: 'Tech Weekly',
+        imageUrl: 'https://picsum.photos/200/200?random=2',
+      },
+    ],
+    status: 'COMPLETED',
+    detail: {
+      isJoined: true,
+      progress: 100,
+      grade: 'GOLD',
+      isSuccess: true,
+    },
+  },
+  {
+    id: 10,
+    title: '매일 아침 뉴스 읽기',
+    generation: 2,
+    startDate: '2025-10-15',
+    endDate: '2025-11-15',
+    participantCount: 38,
+    newsletters: [
+      {
+        id: 3,
+        name: 'Startup Insider',
+        imageUrl: 'https://picsum.photos/200/200?random=3',
+      },
+    ],
+    status: 'COMPLETED',
+    detail: {
+      isJoined: true,
+      progress: 95,
+      grade: 'SILVER',
+      isSuccess: true,
+    },
+  },
+  {
+    id: 11,
+    title: '한 주 독서 습관 만들기',
+    generation: 1,
+    startDate: '2025-10-01',
+    endDate: '2025-10-07',
+    participantCount: 25,
+    newsletters: [
+      {
+        id: 4,
+        name: 'Design Trends',
+        imageUrl: 'https://picsum.photos/200/200?random=4',
+      },
+    ],
+    status: 'COMPLETED',
+    detail: {
+      isJoined: true,
+      progress: 82,
+      grade: 'BRONZE',
       isSuccess: true,
     },
   },

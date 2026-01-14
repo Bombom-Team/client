@@ -8,9 +8,110 @@ import type {
   GetChallengeEligibilityResponse,
   GetDailyGuideCommentsResponse,
   GetTodayDailyGuideResponse,
+  GetChallengeTeamsResponse,
+  GetChallengesTeamsProgressResponse,
 } from '@/apis/challenge/challenge.api';
 
 const baseURL = ENV.baseUrl;
+
+const CHALLENGE_TEAMS_RESPONSE: GetChallengeTeamsResponse = {
+  totalTeamCount: 3,
+  myTeamId: 10,
+  teams: [
+    {
+      teamId: 1,
+      teamNumber: 1,
+      isMyTeam: false,
+    },
+    {
+      teamId: 10,
+      teamNumber: 2,
+      isMyTeam: true,
+    },
+    {
+      teamId: 12,
+      teamNumber: 3,
+      isMyTeam: false,
+    },
+  ],
+};
+
+const buildWeekdayDates = (startDate: string, endDate: string) => {
+  const dates: string[] = [];
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  for (let current = new Date(start); current <= end; ) {
+    const day = current.getDay();
+    if (day !== 0 && day !== 6) {
+      const dateString = current.toISOString().split('T')[0];
+      if (dateString) {
+        dates.push(dateString);
+      }
+    }
+    current.setDate(current.getDate() + 1);
+  }
+
+  return dates;
+};
+
+const buildTeamProgressResponse = (
+  challengeId: number,
+  teamId: number,
+): GetChallengesTeamsProgressResponse => {
+  const challenge = CHALLENGES.find((item) => item.id === challengeId);
+  const startDate = challenge?.startDate ?? '2026-01-05';
+  const endDate = challenge?.endDate ?? '2026-01-16';
+  const weekdayDates = buildWeekdayDates(startDate, endDate);
+  const totalDays = weekdayDates.length;
+
+  const buildProgresses = (
+    seed: number,
+  ): GetChallengesTeamsProgressResponse['members'][number]['dailyProgresses'] =>
+    weekdayDates.flatMap<
+      GetChallengesTeamsProgressResponse['members'][number]['dailyProgresses'][number]
+    >((date, index) => {
+      const value = (index + seed + teamId) % 5;
+      if (value === 0) {
+        return [{ date, status: 'SHIELD' }];
+      }
+      if (value <= 2) {
+        return [{ date, status: 'COMPLETE' }];
+      }
+      return [];
+    });
+
+  return {
+    challenge: {
+      startDate,
+      endDate,
+      totalDays,
+    },
+    teamSummary: {
+      achievementAverage: Math.min(100, 70 + (teamId % 3) * 10),
+    },
+    members: [
+      {
+        memberId: teamId * 100 + 1,
+        nickname: `멤버1`,
+        isSurvived: true,
+        dailyProgresses: buildProgresses(1),
+      },
+      {
+        memberId: teamId * 100 + 2,
+        nickname: `멤버2`,
+        isSurvived: teamId % 2 === 0,
+        dailyProgresses: buildProgresses(2),
+      },
+      {
+        memberId: teamId * 100 + 3,
+        nickname: `멤버3`,
+        isSurvived: true,
+        dailyProgresses: buildProgresses(3),
+      },
+    ],
+  };
+};
 
 export const challengeHandlers = [
   http.get(`${baseURL}/challenges`, () => {
@@ -121,6 +222,27 @@ export const challengeHandlers = [
     };
 
     return HttpResponse.json(response);
+  }),
+
+  http.get(`${baseURL}/challenges/:challengeId/teams`, () => {
+    return HttpResponse.json(CHALLENGE_TEAMS_RESPONSE);
+  }),
+
+  http.get(
+    `${baseURL}/challenges/:challengeId/progress/teams/:teamId`,
+    ({ params }) => {
+      const challengeId = Number(params.challengeId);
+      const teamId = Number(params.teamId);
+
+      return HttpResponse.json(buildTeamProgressResponse(challengeId, teamId));
+    },
+  ),
+
+  http.get(`${baseURL}/challenges/:challengeId/teams/:teamId`, ({ params }) => {
+    const challengeId = Number(params.challengeId);
+    const teamId = Number(params.teamId);
+
+    return HttpResponse.json(buildTeamProgressResponse(challengeId, teamId));
   }),
 
   http.get(

@@ -3,10 +3,11 @@ import { Suspense } from 'react';
 import ChallengeApplyModal from '../../ChallengeApplyModal/ChallengeApplyModal';
 import LoadingModal from '../../ChallengeApplyModal/modals/LoadingModal';
 import CardContainer from '../CardContainer';
-import CardDetailButton from '../CardDetailButton';
+import { Applicant, CardDetailButton, DDay, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import Button from '@/components/Button/Button';
+import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
@@ -30,7 +31,7 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
   const handleCardClick = () => {
     trackEvent({
       category: 'Challenge',
-      action: '카드 클릭',
+      action: 'BEFORE_START 카드 클릭',
       label: title,
     });
 
@@ -64,12 +65,19 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
   return (
     <>
       <CardContainer onClick={handleCardClick}>
-        <CardHeader
-          title={title}
-          startDate={startDate}
-          tag={`${generation}기`}
-          applicantCount={participantCount}
-        />
+        <CardHeader>
+          <Flex direction="column" gap={8}>
+            <Title>{title}</Title>
+            <Tag>{generation}기</Tag>
+          </Flex>
+
+          <Flex align="flex-end" gap={12}>
+            {participantCount > 0 && (
+              <Applicant>신청자 {participantCount}명</Applicant>
+            )}
+            <DDay startDate={startDate} />
+          </Flex>
+        </CardHeader>
 
         <CardFooter>
           {props.detail?.isJoined ? (

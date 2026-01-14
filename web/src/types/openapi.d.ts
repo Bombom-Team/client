@@ -684,7 +684,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/challenges/{id}/progress/team': {
+  '/api/v1/challenges/{id}/teams': {
     parameters: {
       query?: never;
       header?: never;
@@ -692,10 +692,30 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * 챌린지 팀 진행도 조회
-     * @description 챌린지 참여 팀원들의 진행도 및 팀 요약 정보를 조회합니다.
+     * 챌린지 팀 목록 조회
+     * @description 챌린지에 참여한 모든 팀 목록을 조회합니다. 각 팀의 ID, 순서, 내 팀 여부 정보가 포함됩니다.
      */
-    get: operations['getTeamProgress'];
+    get: operations['getTeamList'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{id}/progress/teams/{teamId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 특정 팀 진행도 조회
+     * @description 특정 팀의 진행도 및 팀원들의 진행 상황을 조회합니다.
+     */
+    get: operations['getTeamProgressByTeamId'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1481,7 +1501,7 @@ export interface components {
       participantCount: number;
       newsletters: components['schemas']['ChallengeNewsletterResponse'][];
       /** @enum {string} */
-      status: 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
+      status: 'COMING_SOON' | 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
       detail?: components['schemas']['ChallengeDetailResponse'];
     };
     ChallengeInfoResponse: {
@@ -1496,6 +1516,20 @@ export interface components {
       totalDays: number;
       /** Format: int32 */
       requiredDays: number;
+    };
+    ChallengeTeamListResponse: {
+      /** Format: int32 */
+      totalTeamCount: number;
+      /** Format: int64 */
+      myTeamId?: number;
+      teams: components['schemas']['TeamInfoResponse'][];
+    };
+    TeamInfoResponse: {
+      /** Format: int64 */
+      teamId: number;
+      /** Format: int32 */
+      teamNumber: number;
+      isMyTeam: boolean;
     };
     ChallengeSummaryResponse: {
       /** Format: date */
@@ -3192,12 +3226,58 @@ export interface operations {
       };
     };
   };
-  getTeamProgress: {
+  getTeamList: {
     parameters: {
       query?: never;
       header?: never;
       path: {
         id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 팀 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeTeamListResponse'];
+        };
+      };
+      /** @description 잘못된 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getTeamProgressByTeamId: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        id: number;
+        /** @description 팀 ID */
+        teamId: number;
       };
       cookie?: never;
     };
@@ -3219,7 +3299,21 @@ export interface operations {
         };
         content?: never;
       };
-      /** @description 챌린지/사용자를 찾을 수 없음 */
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 (챌린지에 참가하지 않음) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지/팀을 찾을 수 없음 */
       404: {
         headers: {
           [name: string]: unknown;
