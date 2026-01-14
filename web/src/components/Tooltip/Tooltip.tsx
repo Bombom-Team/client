@@ -5,7 +5,15 @@ import type { PropsWithChildren } from 'react';
 interface TooltipProps {
   id?: string;
   opened: boolean;
-  position?: 'top' | 'bottom' | 'left' | 'right';
+  position?:
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right';
 }
 
 const Tooltip = ({
@@ -83,5 +91,41 @@ const Container = styled.div<{ opened: boolean; position: string }>`
       left: 100%;
 
       transform: translate(8px, -50%);
+    `}
+
+  ${({ position }) =>
+    position === 'top-left' &&
+    css`
+      right: 0;
+      bottom: 100%;
+
+      transform: translate(0, -8px);
+    `}
+
+  ${({ position }) =>
+    position === 'top-right' &&
+    css`
+      bottom: 100%;
+      left: 0;
+
+      transform: translate(0, -8px);
+    `}
+
+  ${({ position }) =>
+    position === 'bottom-left' &&
+    css`
+      top: 100%;
+      right: 0;
+
+      transform: translate(0, 8px);
+    `}
+
+  ${({ position }) =>
+    position === 'bottom-right' &&
+    css`
+      top: 100%;
+      left: 0;
+
+      transform: translate(0, 8px);
     `}
 `;

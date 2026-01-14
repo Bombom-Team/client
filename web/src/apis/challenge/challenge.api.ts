@@ -132,32 +132,17 @@ export const postChallengeComment = async (
   });
 };
 
-export type DailyGuideType = 'READ' | 'COMMENT';
-
-export interface MyComment {
-  exists: boolean;
-  content: string | null;
-  createdAt: string | null;
-}
-
-export interface DailyGuide {
-  dayIndex: number;
-  type: DailyGuideType;
-  imageUrl: string;
-  notice?: string;
-  commentEnabled: boolean;
-  myComment: MyComment;
-}
+export type GetTodayDailyGuideResponse =
+  components['schemas']['TodayDailyGuideResponse'];
 
 export const getTodayDailyGuide = async (challengeId: number) => {
-  return await fetcher.get<DailyGuide>({
+  return await fetcher.get<GetTodayDailyGuideResponse>({
     path: `/challenges/${challengeId}/daily-guides/today`,
   });
 };
 
-type PostDailyGuideCommentParams = {
-  content: string;
-};
+export type PostDailyGuideCommentParams =
+  components['schemas']['DailyGuideCommentRequest'];
 
 export const postDailyGuideComment = async (
   challengeId: number,
@@ -167,5 +152,22 @@ export const postDailyGuideComment = async (
   return await fetcher.post<PostDailyGuideCommentParams, never>({
     path: `/challenges/${challengeId}/daily-guides/${dayIndex}/my-comment`,
     body: params,
+  });
+};
+
+export type GetDailyGuideCommentsParams =
+  operations['getDailyGuideComments']['parameters']['path'] &
+    components['schemas']['Pageable'];
+export type GetDailyGuideCommentsResponse =
+  components['schemas']['PageDailyGuideCommentResponse'];
+
+export const getDailyGuideComments = async ({
+  challengeId,
+  dayIndex,
+  ...params
+}: GetDailyGuideCommentsParams) => {
+  return await fetcher.get<GetDailyGuideCommentsResponse>({
+    path: `/challenges/${challengeId}/daily-guides/${dayIndex}/comments`,
+    query: params,
   });
 };
