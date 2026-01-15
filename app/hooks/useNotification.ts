@@ -124,7 +124,7 @@ const useNotification = () => {
       unsubscribeNotificationOpened();
       responseListener.remove();
     };
-  }, [coldStartNotificationOpen, sendMessageToWeb]);
+  }, [coldStartNotificationOpen, memberId, sendMessageToWeb]);
 
   // memberId가 있으면 자동으로 FCM 토큰 등록
   useEffect(() => {
