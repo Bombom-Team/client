@@ -197,11 +197,6 @@ const ArticleTitle = styled.p<{ isMobile: boolean }>`
 `;
 
 const EditButton = styled(Button)`
-  padding: 2px;
-  border-radius: 4px;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-
   &:hover {
     background: none;
 
