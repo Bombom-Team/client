@@ -107,7 +107,7 @@ const SectionWrapper = styled.div`
 `;
 
 const SectionTitle = styled.h3<{ isMobile: boolean }>`
-  color: ${({ theme }) => theme.colors.textTertiary};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
 `;
@@ -115,8 +115,8 @@ const SectionTitle = styled.h3<{ isMobile: boolean }>`
 const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   padding: 2px 6px;
 
-  background-color: ${({ theme }) => theme.colors.dividers};
-  color: ${({ theme }) => theme.colors.textTertiary};
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
+  color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
