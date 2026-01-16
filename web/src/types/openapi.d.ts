@@ -404,6 +404,26 @@ export interface paths {
     patch: operations['updateRead'];
     trace?: never;
   };
+  '/api/v1/challenges/{challengeId}/comments/{commentId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * 챌린지 코멘트 수정
+     * @description 챌린지 코멘트를 수정합니다.
+     */
+    patch: operations['updateChallengeComment'];
+    trace?: never;
+  };
   '/api/v1/articles/{id}/read': {
     parameters: {
       query?: never;
@@ -593,7 +613,7 @@ export interface paths {
     };
     /**
      * 내 프로필 간단 조회
-     * @description 로그인한 회원의 간단한 프로필 정보(id, email, nickname, profileImage)를 조회합니다.
+     * @description 로그인한 회원의 간단한 프로필 정보(id, email, nickname, profileImageUrl)를 조회합니다.
      */
     get: operations['getMemberProfile'];
     put?: never;
@@ -1232,6 +1252,9 @@ export interface components {
       color?: string;
       memo?: string;
     };
+    UpdateChallengeCommentRequest: {
+      comment: string;
+    };
     Pageable: {
       /** Format: int32 */
       page?: number;
@@ -1635,6 +1658,7 @@ export interface components {
     };
     ChallengeCommentResponse: {
       nickname?: string;
+      profileImageUrl?: string;
       newsletterName: string;
       isSubscribed: boolean;
       articleTitle: string;
@@ -1642,6 +1666,7 @@ export interface components {
       comment: string;
       /** Format: date-time */
       createdAt: string;
+      isMyComment: boolean;
     };
     PageChallengeCommentResponse: {
       /** Format: int64 */
@@ -2808,6 +2833,61 @@ export interface operations {
         content?: never;
       };
       /** @description 멤버의 읽기 정보가 없을 경우 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  updateChallengeComment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 챌린지 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateChallengeCommentRequest'];
+      };
+    };
+    responses: {
+      /** @description 챌린지 코멘트 수정 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트 수정 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트를 찾을 수 없음 */
       404: {
         headers: {
           [name: string]: unknown;
