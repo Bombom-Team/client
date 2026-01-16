@@ -76,8 +76,17 @@ export type GetChallengeCommentsParams =
   operations['getChallengeComments']['parameters']['path'] &
     components['schemas']['ChallengeCommentOptionsRequest'] &
     components['schemas']['Pageable'];
-export type GetChallengeCommentsResponse =
-  components['schemas']['PageChallengeCommentResponse'];
+export type ChallengeCommentItem =
+  components['schemas']['ChallengeCommentResponse'] & {
+    profileImage: string;
+    isMyComment: boolean;
+  };
+export type GetChallengeCommentsResponse = Omit<
+  components['schemas']['PageChallengeCommentResponse'],
+  'content'
+> & {
+  content?: ChallengeCommentItem[];
+};
 
 export const getChallengeComments = async ({
   challengeId,
