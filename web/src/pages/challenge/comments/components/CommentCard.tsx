@@ -2,12 +2,17 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import useCommentLike from '../hooks/useCommentLike';
 import useExpandQuotation from '../hooks/useExpandQuotation';
+import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
+import { MAX_QUOTATION_LINE } from '../constants/comment';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
+import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import CheckIcon from '#/assets/svg/check-circle.svg';
+import EditIcon from '#/assets/svg/edit.svg';
 import HeartFilledIcon from '#/assets/svg/heart-filled.svg';
 import HeartIcon from '#/assets/svg/heart.svg';
 import MailIcon from '#/assets/svg/mail.svg';
@@ -15,10 +20,6 @@ import MailIcon from '#/assets/svg/mail.svg';
 type CommentCardProps = Comment;
 
 const DELETED_USER_NICKNAME = '탈퇴한 회원';
-const MAX_QUOTATION_LINE = {
-  mobile: 3,
-  default: 4,
-};
 
 const CommentCard = ({
   nickname,
@@ -28,10 +29,17 @@ const CommentCard = ({
   comment,
   createdAt,
   quotation,
+  isMyComment,
 }: CommentCardProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
   const relativeTime = convertRelativeTime(createdAt);
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
+
+  const editPostedComment = () => {
+    // patch api 연결 필요
+    closeModal();
+  };
 
   const { expanded, needExpansion, quoteRef, toggleExpanded } =
     useExpandQuotation({
@@ -47,81 +55,114 @@ const CommentCard = ({
   });
 
   return (
-    <Container isMobile={isMobile}>
-      <CommentHeader>
-        <ArticleInfo>
-          <MetaWrapper>
-            <MetaInfo isMobile={isMobile}>
-              {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
-            </MetaInfo>
-            <NewsletterBadge
-              isMobile={isMobile}
-              text={newsletterName}
-              {...(isSubscribed && {
-                icon: (
-                  <CheckIcon
-                    width={16}
-                    height={16}
-                    fill={theme.colors.primary}
-                  />
-                ),
-              })}
-            />
-          </MetaWrapper>
-          <TitleWrapper>
-            <MailIcon
-              width={16}
-              height={16}
-              color={theme.colors.textSecondary}
-            />
-            <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
-          </TitleWrapper>
-        </ArticleInfo>
-        <LikeButton
-          variant="transparent"
-          onClick={toggleLike}
-          isMobile={isMobile}
-        >
-          {liked ? (
-            <HeartFilledIcon fill={theme.colors.red} />
-          ) : (
-            <HeartIcon color={theme.colors.red} />
+    <>
+      <Container isMobile={isMobile} isMyComment={isMyComment}>
+        <CommentHeader>
+          <ArticleInfo>
+            <MetaWrapper>
+              <MetaInfo isMobile={isMobile}>
+                {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
+              </MetaInfo>
+              <NewsletterBadge
+                isMobile={isMobile}
+                text={newsletterName}
+                {...(isSubscribed && {
+                  icon: (
+                    <CheckIcon
+                      width={16}
+                      height={16}
+                      fill={theme.colors.primary}
+                    />
+                  ),
+                })}
+              />
+            </MetaWrapper>
+            <TitleWrapper>
+              <MailIcon
+                width={16}
+                height={16}
+                color={theme.colors.textSecondary}
+              />
+              <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
+            </TitleWrapper>
+          </ArticleInfo>
+          {isMyComment && (
+            <EditButton variant="transparent" onClick={openModal}>
+              <EditIcon
+                width={20}
+                height={20}
+                fill={theme.colors.textSecondary}
+              />
+            </EditButton>
           )}
-          <LikeCount liked={liked} isMobile={isMobile}>
-            {likeCount}
-          </LikeCount>
-        </LikeButton>
-      </CommentHeader>
-      <Content isMobile={isMobile}>
-        {quotation && (
-          <Quote ref={quoteRef} isMobile={isMobile} expanded={expanded}>
-            {quotation}
-            {needExpansion &&
-              (!expanded ? (
-                <ExpandQuoteButton
-                  variant="transparent"
-                  onClick={toggleExpanded}
-                >
-                  더보기
-                </ExpandQuoteButton>
-              ) : (
-                <HideQuoteButton variant="transparent" onClick={toggleExpanded}>
-                  접기
-                </HideQuoteButton>
-              ))}
-          </Quote>
-        )}
-        <Comment>{comment}</Comment>
-      </Content>
-    </Container>
+          <LikeButton
+            variant="transparent"
+            onClick={toggleLike}
+            isMobile={isMobile}
+          >
+            {liked ? (
+              <HeartFilledIcon fill={theme.colors.red} />
+            ) : (
+              <HeartIcon color={theme.colors.red} />
+            )}
+            <LikeCount liked={liked} isMobile={isMobile}>
+              {likeCount}
+            </LikeCount>
+          </LikeButton>
+        </CommentHeader>
+        <Content isMobile={isMobile}>
+          {quotation && (
+            <Quote ref={quoteRef} isMobile={isMobile} expanded={expanded}>
+              {quotation}
+              {needExpansion &&
+                (!expanded ? (
+                  <ExpandQuoteButton
+                    variant="transparent"
+                    onClick={toggleExpanded}
+                  >
+                    더보기
+                  </ExpandQuoteButton>
+                ) : (
+                  <HideQuoteButton
+                    variant="transparent"
+                    onClick={toggleExpanded}
+                  >
+                    접기
+                  </HideQuoteButton>
+                ))}
+            </Quote>
+          )}
+          <Comment>{comment}</Comment>
+        </Content>
+      </Container>
+
+      <Modal
+        modalRef={modalRef}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        position={isMobile ? 'bottom' : 'center'}
+        showCloseButton={false}
+      >
+        <EditCommentModalContent
+          closeModal={closeModal}
+          postedComment={comment}
+          articleTitle={articleTitle}
+          newsletterName={newsletterName}
+          quotation={quotation}
+          onEdit={editPostedComment}
+        />
+      </Modal>
+    </>
   );
 };
 
 export default CommentCard;
 
-const Container = styled.article<{ isMobile: boolean }>`
+const Container = styled.article<{ isMobile: boolean; isMyComment: boolean }>`
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
+  border-bottom: ${({ theme, isMyComment }) =>
+    isMyComment ? `4px solid ${theme.colors.primaryLight}` : 'none'};
   border-radius: 12px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
@@ -205,6 +246,16 @@ const ArticleTitle = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
+`;
+
+const EditButton = styled(Button)`
+  &:hover {
+    background: none;
+
+    svg {
+      fill: ${({ theme }) => theme.colors.primary};
+    }
+  }
 `;
 
 const Content = styled.div<{ isMobile: boolean }>`

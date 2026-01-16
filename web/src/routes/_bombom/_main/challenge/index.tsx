@@ -29,9 +29,11 @@ function RouteComponent() {
       (challenge.detail?.isJoined && challenge.status === 'BEFORE_START') ||
       challenge.status === 'ONGOING',
   );
+
   const availableChallenges = challenges?.filter(
     (challenge) =>
-      !challenge.detail?.isJoined && challenge.status === 'BEFORE_START',
+      (!challenge.detail?.isJoined && challenge.status === 'BEFORE_START') ||
+      challenge.status === 'COMING_SOON',
   );
   const completedChallenges = challenges?.filter(
     (challenge) => challenge.status === 'COMPLETED',

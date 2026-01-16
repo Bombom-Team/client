@@ -1,9 +1,12 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import ViewAllCommentsButton from './ViewAllCommentsButton';
 import { useSubmitDailyGuideCommentMutation } from '../../index/hooks/useSubmitDailyGuideComment';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
-import type { MyComment } from '@/apis/challenge/challenge.api';
+import type { components } from '@/types/openapi';
+
+type MyComment = components['schemas']['TodayDailyGuideResponse']['myComment'];
 
 const MAX_LENGTH = 1000;
 
@@ -11,12 +14,16 @@ interface DailyGuideCommentProps {
   challengeId: number;
   dayIndex: number;
   myComment: MyComment;
+  viewAllCommentsEnabled: boolean;
+  onViewAllComments: () => void;
 }
 
 const DailyGuideComment = ({
   challengeId,
   dayIndex,
   myComment,
+  viewAllCommentsEnabled,
+  onViewAllComments,
 }: DailyGuideCommentProps) => {
   const [comment, setComment] = useState('');
 
@@ -42,18 +49,19 @@ const DailyGuideComment = ({
             {myComment.content}
           </SubmittedComment>
         </SubmittedCommentBox>
+        {viewAllCommentsEnabled && (
+          <ViewAllCommentsButton
+            submittedMyComment={myComment.exists}
+            onViewAllComments={onViewAllComments}
+          />
+        )}
       </CommentSection>
     );
   }
 
   return (
     <CommentSection>
-      <CommentLabelWrapper>
-        <CommentLabel>답변 작성</CommentLabel>
-        <CharCount>
-          {comment.length} / {MAX_LENGTH}
-        </CharCount>
-      </CommentLabelWrapper>
+      <CommentLabel isMobile={isMobile}>답변 작성</CommentLabel>
       <CommentInputWrapper>
         <CommentTextarea
           isMobile={isMobile}
@@ -63,7 +71,19 @@ const DailyGuideComment = ({
           maxLength={MAX_LENGTH}
           rows={4}
         />
+        <CommentInputFooter>
+          {viewAllCommentsEnabled && (
+            <ViewAllCommentsButton
+              submittedMyComment={myComment.exists}
+              onViewAllComments={onViewAllComments}
+            />
+          )}
+          <CharCount>
+            {comment.length} / {MAX_LENGTH}
+          </CharCount>
+        </CommentInputFooter>
       </CommentInputWrapper>
+
       <SubmitButton
         variant="filled"
         onClick={handleSubmitComment}
@@ -86,15 +106,10 @@ const CommentSection = styled.div`
   flex-direction: column;
 `;
 
-const CommentLabelWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const CommentLabel = styled.label`
+const CommentLabel = styled.label<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
 `;
 
 const CharCount = styled.span`
@@ -106,6 +121,7 @@ const CommentInputWrapper = styled.div`
   width: 100%;
 
   display: flex;
+  gap: 8px;
   flex-direction: column;
 `;
 
@@ -130,6 +146,11 @@ const CommentTextarea = styled.textarea<{ isMobile: boolean }>`
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary};
   }
+`;
+
+const CommentInputFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const SubmitButton = styled(Button)`

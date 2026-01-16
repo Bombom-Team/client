@@ -2,8 +2,10 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
+import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
+import DailyGuideCommentsModal from '@/pages/challenge/daily/components/DailyGuideCommentsModal';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -22,17 +24,22 @@ function ChallengeDaily() {
   const { challengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
+
   const device = useDevice();
+  const isMobile = device === 'mobile';
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const { data: dailyGuide } = useQuery(
     queries.todayDailyGuide(Number(challengeId)),
   );
 
-  const isMobile = device === 'mobile';
-
   if (!dailyGuide) {
     return null;
   }
+
+  const commentSectionEnabled =
+    (dailyGuide.type === 'COMMENT' || dailyGuide.type === 'SHARING') &&
+    dailyGuide.commentEnabled;
 
   return (
     <Container>
@@ -49,12 +56,23 @@ function ChallengeDaily() {
           </NoticeBox>
         )}
 
-        {dailyGuide.type === 'COMMENT' && dailyGuide.commentEnabled && (
-          <DailyGuideComment
-            challengeId={Number(challengeId)}
-            dayIndex={dailyGuide.dayIndex}
-            myComment={dailyGuide.myComment}
-          />
+        {commentSectionEnabled && (
+          <>
+            <DailyGuideComment
+              challengeId={Number(challengeId)}
+              dayIndex={dailyGuide.dayIndex}
+              myComment={dailyGuide.myComment}
+              viewAllCommentsEnabled={dailyGuide.type === 'SHARING'}
+              onViewAllComments={openModal}
+            />
+            <DailyGuideCommentsModal
+              challengeId={Number(challengeId)}
+              dayIndex={dailyGuide.dayIndex}
+              modalRef={modalRef}
+              isOpen={isOpen}
+              closeModal={closeModal}
+            />
+          </>
         )}
       </GuideCard>
     </Container>
