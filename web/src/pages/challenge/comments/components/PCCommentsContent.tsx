@@ -33,7 +33,11 @@ const PCCommentsContent = ({
 
   return (
     <Container>
-      <AllCommentsSection comments={commentList} isLoading={isLoading}>
+      <AllCommentsSection
+        comments={commentList}
+        isLoading={isLoading}
+        challengeId={baseQueryParams.challengeId}
+      >
         <Pagination
           currentPage={page}
           totalPages={comments?.totalPages ?? 1}

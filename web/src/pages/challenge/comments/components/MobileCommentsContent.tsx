@@ -50,7 +50,11 @@ const MobileCommentsContent = ({
 
   return (
     <Container>
-      <AllCommentsSection comments={commentList} isLoading={isLoading}>
+      <AllCommentsSection
+        comments={commentList}
+        isLoading={isLoading}
+        challengeId={baseQueryParams.challengeId}
+      >
         <LoadMoreTrigger ref={loadMoreRef} />
         {isFetchingNextPage && <LoadingMessage>로딩 중...</LoadingMessage>}
       </AllCommentsSection>
