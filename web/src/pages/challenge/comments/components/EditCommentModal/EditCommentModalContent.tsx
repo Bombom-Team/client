@@ -46,7 +46,6 @@ const EditCommentModalContent = ({
     }
 
     onEdit(comment);
-    closeModal();
   };
 
   return (
