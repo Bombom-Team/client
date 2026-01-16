@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import useExpandQuotation from '../hooks/useExpandQuotation';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
-import useUpdateChallengeCommentMutation from '../hooks/useUpdateChallengeCommentMutation';
+import { useUpdateChallengeCommentMutation } from '../hooks/useUpdateChallengeCommentMutation';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';

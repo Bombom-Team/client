@@ -7,7 +7,7 @@ interface UseUpdateChallengeCommentMutationParams {
   challengeId: number;
 }
 
-const useUpdateChallengeCommentMutation = ({
+export const useUpdateChallengeCommentMutation = ({
   challengeId,
 }: UseUpdateChallengeCommentMutationParams) => {
   const queryClient = useQueryClient();
@@ -26,5 +26,3 @@ const useUpdateChallengeCommentMutation = ({
     },
   });
 };
-
-export default useUpdateChallengeCommentMutation;
