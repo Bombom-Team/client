@@ -59,7 +59,7 @@ const CommentCard = ({
       <Container isMobile={isMobile} isMyComment={isMyComment}>
         <CommentHeader>
           <ArticleInfo>
-            <MetaWrapper>
+            <MetaWrapper isMobile={isMobile}>
               <MetaInfo isMobile={isMobile}>
                 {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
               </MetaInfo>
@@ -86,29 +86,31 @@ const CommentCard = ({
               <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
             </TitleWrapper>
           </ArticleInfo>
-          {isMyComment && (
-            <EditButton variant="transparent" onClick={openModal}>
-              <EditIcon
-                width={20}
-                height={20}
-                fill={theme.colors.textSecondary}
-              />
-            </EditButton>
-          )}
-          <LikeButton
-            variant="transparent"
-            onClick={toggleLike}
-            isMobile={isMobile}
-          >
-            {liked ? (
-              <HeartFilledIcon fill={theme.colors.red} />
-            ) : (
-              <HeartIcon color={theme.colors.red} />
+          <ButtonWrapper>
+            {isMyComment && (
+              <EditButton
+                variant="transparent"
+                onClick={openModal}
+                isMobile={isMobile}
+              >
+                <EditIcon fill={theme.colors.textSecondary} />
+              </EditButton>
             )}
-            <LikeCount liked={liked} isMobile={isMobile}>
-              {likeCount}
-            </LikeCount>
-          </LikeButton>
+            <LikeButton
+              variant="transparent"
+              onClick={toggleLike}
+              isMobile={isMobile}
+            >
+              {liked ? (
+                <HeartFilledIcon fill={theme.colors.red} />
+              ) : (
+                <HeartIcon color={theme.colors.red} />
+              )}
+              <LikeCount liked={liked} isMobile={isMobile}>
+                {likeCount}
+              </LikeCount>
+            </LikeButton>
+          </ButtonWrapper>
         </CommentHeader>
         <Content isMobile={isMobile}>
           {quotation && (
@@ -186,6 +188,12 @@ const ArticleInfo = styled.div`
   flex-direction: column;
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+`;
+
 const LikeButton = styled(Button)<{ isMobile: boolean }>`
   padding: 0;
 
@@ -215,9 +223,10 @@ const LikeCount = styled.span<{ isMobile: boolean; liked: boolean }>`
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
-const MetaWrapper = styled.div`
+const MetaWrapper = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: 8px;
+  gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
+  flex-wrap: wrap;
   align-items: center;
 `;
 
@@ -227,7 +236,7 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    isMobile ? theme.fonts.body4 : theme.fonts.body2};
 `;
 
 const MetaInfo = styled.span<{ isMobile: boolean }>`
@@ -248,7 +257,14 @@ const ArticleTitle = styled.p<{ isMobile: boolean }>`
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
-const EditButton = styled(Button)`
+const EditButton = styled(Button)<{ isMobile: boolean }>`
+  padding: 0;
+
+  svg {
+    width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+    height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+  }
+
   &:hover {
     background: none;
 
