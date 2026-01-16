@@ -44,7 +44,6 @@ const CommentCard = ({
 
   const editPostedComment = (newComment: string) => {
     updateChallengeComment({ challengeId, commentId, comment: newComment });
-    closeModal();
   };
 
   const { expanded, needExpansion, quoteRef, toggleExpanded } =
