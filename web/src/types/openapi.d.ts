@@ -1295,9 +1295,9 @@ export interface components {
       sort?: components['schemas']['SortObject'];
       /** Format: int32 */
       pageSize?: number;
-      paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
+      paged?: boolean;
       unpaged?: boolean;
     };
     SortObject: {
@@ -1657,6 +1657,8 @@ export interface components {
       end: string;
     };
     ChallengeCommentResponse: {
+      /** Format: int64 */
+      commentId: number;
       nickname?: string;
       profileImageUrl?: string;
       newsletterName: string;
