@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchChallengeComment } from '@/apis/challenge/challenge.api';
+import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 
 interface UseUpdateChallengeCommentMutationParams {
@@ -15,7 +16,7 @@ export const useUpdateChallengeCommentMutation = ({
     mutationFn: patchChallengeComment,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['challenges', challengeId, 'comments'],
+        queryKey: queries.comments.all(challengeId),
       });
       toast.success('코멘트가 수정되었습니다.');
     },

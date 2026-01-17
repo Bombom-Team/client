@@ -22,7 +22,7 @@ const MobileCommentsContent = ({
     hasNextPage,
     isFetchingNextPage,
     isLoading,
-  } = useInfiniteQuery(queries.infiniteComments(baseQueryParams));
+  } = useInfiniteQuery(queries.comments.infiniteList(baseQueryParams));
 
   const commentList =
     infiniteComments?.pages.flatMap((page) => page?.content || []) || [];

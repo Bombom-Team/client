@@ -24,7 +24,9 @@ const PCCommentsContent = ({
     page: (baseQueryParams.page ?? 1) - 1,
   };
 
-  const { data: comments, isLoading } = useQuery(queries.comments(queryParams));
+  const { data: comments, isLoading } = useQuery(
+    queries.comments.list(queryParams),
+  );
   const commentList = comments?.content || [];
 
   useEffect(() => {

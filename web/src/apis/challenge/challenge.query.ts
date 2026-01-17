@@ -51,32 +51,37 @@ export const challengeQueries = {
       queryKey: ['challenges', challengeId, 'teams', teamId, 'progress'],
       queryFn: () => getChallengeTeamsProgress(challengeId, teamId),
     }),
-  comments: (params: GetChallengeCommentsParams) =>
-    queryOptions({
-      queryKey: ['challenges', params.challengeId, 'comments', params],
-      queryFn: () => getChallengeComments(params),
-    }),
-  infiniteComments: (params: GetChallengeCommentsParams) =>
-    infiniteQueryOptions({
-      queryKey: [
-        'challenges',
-        params.challengeId,
-        'comments',
-        'infinite',
-        params,
-      ],
-      queryFn: ({ pageParam = 0 }) =>
-        getChallengeComments({
-          ...params,
-          page: pageParam,
-        }),
-      getNextPageParam: (lastPage) => {
-        if (!lastPage || lastPage.last) return undefined;
+  comments: {
+    all: (challengeId: number) =>
+      ['challenges', challengeId, 'comments'] as const,
+    list: (params: GetChallengeCommentsParams) =>
+      queryOptions({
+        queryKey: [
+          ...challengeQueries.comments.all(params.challengeId),
+          params,
+        ],
+        queryFn: () => getChallengeComments(params),
+      }),
+    infiniteList: (params: GetChallengeCommentsParams) =>
+      infiniteQueryOptions({
+        queryKey: [
+          ...challengeQueries.comments.all(params.challengeId),
+          'infinite',
+          params,
+        ],
+        queryFn: ({ pageParam = 0 }) =>
+          getChallengeComments({
+            ...params,
+            page: pageParam,
+          }),
+        getNextPageParam: (lastPage) => {
+          if (!lastPage || lastPage.last) return undefined;
 
-        return (lastPage.number ?? 0) + 1;
-      },
-      initialPageParam: 0,
-    }),
+          return (lastPage.number ?? 0) + 1;
+        },
+        initialPageParam: 0,
+      }),
+  },
   challengeCommentCandidateArticles: (
     params: GetChallengeCommentCandidateArticlesParams,
   ) =>
