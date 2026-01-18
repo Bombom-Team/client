@@ -38,9 +38,9 @@ const useCommentLike = ({
 
   const toggleLike = useCallback(() => {
     if (liked) {
-      addLike();
-    } else {
       deleteLike();
+    } else {
+      addLike();
     }
   }, [addLike, deleteLike, liked]);
 
