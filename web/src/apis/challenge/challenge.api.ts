@@ -80,6 +80,8 @@ export type ChallengeCommentItem =
   components['schemas']['ChallengeCommentResponse'] & {
     profileImage: string;
     isMyComment: boolean;
+    likeCount: number;
+    isLiked: boolean;
   };
 export type GetChallengeCommentsResponse = Omit<
   components['schemas']['PageChallengeCommentResponse'],

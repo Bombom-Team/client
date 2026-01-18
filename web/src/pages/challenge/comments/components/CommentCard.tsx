@@ -30,6 +30,8 @@ const CommentCard = ({
   createdAt,
   quotation,
   isMyComment,
+  likeCount,
+  isLiked,
 }: CommentCardProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -49,9 +51,8 @@ const CommentCard = ({
         : MAX_QUOTATION_LINE.default,
     });
 
-  const { likeCount, liked, toggleLike } = useCommentLike({
-    initialCount: 0,
-    initialLiked: false,
+  const { liked, toggleLike } = useCommentLike({
+    initialLiked: isLiked,
   });
 
   return (
