@@ -18,7 +18,7 @@ const useCommentLike = ({
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialCount);
 
-  const { mutate: addLike } = useAddCommentLikeMutation({
+  const { mutate: addCommentLike } = useAddCommentLikeMutation({
     challengeId,
     commentId,
     onAddSuccess: ({ likeCount: likeCountResult }) => {
@@ -27,7 +27,7 @@ const useCommentLike = ({
     },
   });
 
-  const { mutate: deleteLike } = useDeleteCommentLikeMutation({
+  const { mutate: deleteCommentLike } = useDeleteCommentLikeMutation({
     challengeId,
     commentId,
     onDeleteSuccess: ({ likeCount: likeCountResult }) => {
@@ -38,11 +38,11 @@ const useCommentLike = ({
 
   const toggleLike = useCallback(() => {
     if (liked) {
-      deleteLike();
+      deleteCommentLike();
     } else {
-      addLike();
+      addCommentLike();
     }
-  }, [addLike, deleteLike, liked]);
+  }, [addCommentLike, deleteCommentLike, liked]);
 
   return {
     liked,
