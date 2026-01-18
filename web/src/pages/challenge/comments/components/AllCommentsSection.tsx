@@ -34,9 +34,9 @@ const AllCommentsSection = ({
       ) : (
         <>
           <CardList isMobile={isMobile}>
-            {comments.map((comment, index) => (
+            {comments.map((comment) => (
               <CommentCard
-                key={`comment-${index}`}
+                key={comment.commentId}
                 {...comment}
                 challengeId={challengeId}
               />
