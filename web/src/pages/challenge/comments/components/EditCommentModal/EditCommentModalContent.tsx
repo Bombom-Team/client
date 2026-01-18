@@ -124,9 +124,8 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
 const ArticleTitleWrapper = styled.div`
   display: flex;
   gap: 4px;
-  align-items: center;
-
-  text-align: center;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 `;
 
 const ArticleTitle = styled.p<{ isMobile: boolean }>`

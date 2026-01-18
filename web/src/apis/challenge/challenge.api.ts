@@ -78,8 +78,6 @@ export type GetChallengeCommentsParams =
     components['schemas']['Pageable'];
 export type ChallengeCommentItem =
   components['schemas']['ChallengeCommentResponse'] & {
-    profileImage: string;
-    isMyComment: boolean;
     likeCount: number;
     isLiked: boolean;
   };
@@ -139,6 +137,21 @@ export const postChallengeComment = async (
 ) => {
   return await fetcher.post<PostChallengeCommentParams, never>({
     path: `/challenges/${challengeId}/comments`,
+    body: params,
+  });
+};
+
+export type PatchChallengeCommentParams =
+  operations['updateChallengeComment']['parameters']['path'] &
+    components['schemas']['UpdateChallengeCommentRequest'];
+
+export const patchChallengeComment = async ({
+  challengeId,
+  commentId,
+  ...params
+}: PatchChallengeCommentParams) => {
+  return await fetcher.patch({
+    path: `/challenges/${challengeId}/comments/${commentId}`,
     body: params,
   });
 };

@@ -7,12 +7,14 @@ import type { PropsWithChildren } from 'react';
 interface AllCommentsSectionProps {
   comments: Comment[];
   isLoading: boolean;
+  challengeId: number;
 }
 
 const AllCommentsSection = ({
   comments,
   isLoading,
   children,
+  challengeId,
 }: PropsWithChildren<AllCommentsSectionProps>) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -32,8 +34,12 @@ const AllCommentsSection = ({
       ) : (
         <>
           <CardList isMobile={isMobile}>
-            {comments.map((comment, index) => (
-              <CommentCard key={`comment-${index}`} {...comment} />
+            {comments.map((comment) => (
+              <CommentCard
+                key={comment.commentId}
+                {...comment}
+                challengeId={challengeId}
+              />
             ))}
           </CardList>
           {children}
