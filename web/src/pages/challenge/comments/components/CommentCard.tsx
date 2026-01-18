@@ -1,5 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import useCommentLike from '../hooks/useCommentLike';
 import useExpandQuotation from '../hooks/useExpandQuotation';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
@@ -13,6 +14,8 @@ import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import CheckIcon from '#/assets/svg/check-circle.svg';
 import EditIcon from '#/assets/svg/edit.svg';
+import HeartFilledIcon from '#/assets/svg/heart-filled.svg';
+import HeartIcon from '#/assets/svg/heart.svg';
 import MailIcon from '#/assets/svg/mail.svg';
 
 type CommentCardProps = Comment & {
@@ -32,6 +35,8 @@ const CommentCard = ({
   commentId,
   isMyComment,
   challengeId,
+  likeCount: initialCount,
+  isLiked: initialLiked,
 }: CommentCardProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -54,12 +59,19 @@ const CommentCard = ({
         : MAX_QUOTATION_LINE.default,
     });
 
+  const { liked, likeCount, toggleLike } = useCommentLike({
+    challengeId,
+    commentId,
+    initialLiked,
+    initialCount,
+  });
+
   return (
     <>
       <Container isMobile={isMobile} isMyComment={isMyComment}>
         <CommentHeader>
           <ArticleInfo>
-            <MetaWrapper>
+            <MetaWrapper isMobile={isMobile}>
               <MetaInfo isMobile={isMobile}>
                 {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
               </MetaInfo>
@@ -86,15 +98,31 @@ const CommentCard = ({
               <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
             </TitleWrapper>
           </ArticleInfo>
-          {isMyComment && (
-            <EditButton variant="transparent" onClick={openModal}>
-              <EditIcon
-                width={20}
-                height={20}
-                fill={theme.colors.textSecondary}
-              />
-            </EditButton>
-          )}
+          <ButtonWrapper>
+            {isMyComment && (
+              <EditButton
+                variant="transparent"
+                onClick={openModal}
+                isMobile={isMobile}
+              >
+                <EditIcon fill={theme.colors.textSecondary} />
+              </EditButton>
+            )}
+            <LikeButton
+              variant="transparent"
+              onClick={toggleLike}
+              isMobile={isMobile}
+            >
+              {liked ? (
+                <HeartFilledIcon fill={theme.colors.red} />
+              ) : (
+                <HeartIcon color={theme.colors.red} />
+              )}
+              <LikeCount liked={liked} isMobile={isMobile}>
+                {likeCount}
+              </LikeCount>
+            </LikeButton>
+          </ButtonWrapper>
         </CommentHeader>
         <Content isMobile={isMobile}>
           {quotation && (
@@ -161,7 +189,8 @@ const Container = styled.article<{ isMobile: boolean; isMyComment: boolean }>`
 
 const CommentHeader = styled.div`
   display: flex;
-  align-items: flex-start;
+  gap: 12px;
+  align-items: center;
   justify-content: space-between;
 `;
 
@@ -171,9 +200,45 @@ const ArticleInfo = styled.div`
   flex-direction: column;
 `;
 
-const MetaWrapper = styled.div`
+const ButtonWrapper = styled.div`
   display: flex;
   gap: 8px;
+  align-items: flex-start;
+`;
+
+const LikeButton = styled(Button)<{ isMobile: boolean }>`
+  padding: 0;
+
+  display: flex;
+  gap: 0;
+  flex-direction: column;
+  align-items: center;
+
+  svg {
+    width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+    height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+  }
+
+  &:hover {
+    background: none;
+
+    svg {
+      color: ${({ theme }) => theme.colors.red};
+    }
+  }
+`;
+
+const LikeCount = styled.span<{ isMobile: boolean; liked: boolean }>`
+  color: ${({ theme, liked }) =>
+    liked ? theme.colors.red : theme.colors.textSecondary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+`;
+
+const MetaWrapper = styled.div<{ isMobile: boolean }>`
+  display: flex;
+  gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
+  flex-wrap: wrap;
   align-items: center;
 `;
 
@@ -183,7 +248,7 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    isMobile ? theme.fonts.body4 : theme.fonts.body2};
 `;
 
 const MetaInfo = styled.span<{ isMobile: boolean }>`
@@ -204,7 +269,14 @@ const ArticleTitle = styled.p<{ isMobile: boolean }>`
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
-const EditButton = styled(Button)`
+const EditButton = styled(Button)<{ isMobile: boolean }>`
+  padding: 0;
+
+  svg {
+    width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+    height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+  }
+
   &:hover {
     background: none;
 

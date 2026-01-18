@@ -76,8 +76,17 @@ export type GetChallengeCommentsParams =
   operations['getChallengeComments']['parameters']['path'] &
     components['schemas']['ChallengeCommentOptionsRequest'] &
     components['schemas']['Pageable'];
-export type GetChallengeCommentsResponse =
-  components['schemas']['PageChallengeCommentResponse'];
+export type ChallengeCommentItem =
+  components['schemas']['ChallengeCommentResponse'] & {
+    likeCount: number;
+    isLiked: boolean;
+  };
+export type GetChallengeCommentsResponse = Omit<
+  components['schemas']['PageChallengeCommentResponse'],
+  'content'
+> & {
+  content?: ChallengeCommentItem[];
+};
 
 export const getChallengeComments = async ({
   challengeId,
@@ -144,6 +153,28 @@ export const patchChallengeComment = async ({
   return await fetcher.patch({
     path: `/challenges/${challengeId}/comments/${commentId}`,
     body: params,
+  });
+};
+
+export type ChallengeCommentLikeResponse = {
+  likeCount: number;
+};
+
+export const putChallengeCommentLike = async (
+  challengeId: number,
+  commentId: number,
+) => {
+  return await fetcher.put<never, ChallengeCommentLikeResponse>({
+    path: `/challenges/${challengeId}/comments/${commentId}/like`,
+  });
+};
+
+export const deleteChallengeCommentLike = async (
+  challengeId: number,
+  commentId: number,
+) => {
+  return await fetcher.delete<never, ChallengeCommentLikeResponse>({
+    path: `/challenges/${challengeId}/comments/${commentId}/like`,
   });
 };
 
