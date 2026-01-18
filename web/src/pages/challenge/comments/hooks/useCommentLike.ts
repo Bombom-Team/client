@@ -6,25 +6,34 @@ interface UseCommentLikeParams {
   challengeId: number;
   commentId: number;
   initialLiked: boolean;
+  initialCount: number;
 }
 
 const useCommentLike = ({
   challengeId,
   commentId,
   initialLiked,
+  initialCount,
 }: UseCommentLikeParams) => {
   const [liked, setLiked] = useState(initialLiked);
+  const [likeCount, setLikeCount] = useState(initialCount);
 
   const { mutate: addLike } = useAddCommentLikeMutation({
     challengeId,
     commentId,
-    onAddSuccess: () => setLiked(true),
+    onAddSuccess: ({ likeCount: likeCountResult }) => {
+      setLiked(true);
+      setLikeCount(likeCountResult);
+    },
   });
 
   const { mutate: deleteLike } = useDeleteCommentLikeMutation({
     challengeId,
     commentId,
-    onDeleteSuccess: () => setLiked(false),
+    onDeleteSuccess: ({ likeCount: likeCountResult }) => {
+      setLiked(false);
+      setLikeCount(likeCountResult);
+    },
   });
 
   const toggleLike = useCallback(() => {
@@ -37,6 +46,7 @@ const useCommentLike = ({
 
   return {
     liked,
+    likeCount,
     toggleLike,
   };
 };
