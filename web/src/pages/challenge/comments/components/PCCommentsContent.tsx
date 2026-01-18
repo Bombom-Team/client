@@ -24,7 +24,9 @@ const PCCommentsContent = ({
     page: (baseQueryParams.page ?? 1) - 1,
   };
 
-  const { data: comments, isLoading } = useQuery(queries.comments(queryParams));
+  const { data: comments, isLoading } = useQuery(
+    queries.comments.list(queryParams),
+  );
   const commentList = comments?.content || [];
 
   useEffect(() => {
@@ -33,7 +35,11 @@ const PCCommentsContent = ({
 
   return (
     <Container>
-      <AllCommentsSection comments={commentList} isLoading={isLoading}>
+      <AllCommentsSection
+        comments={commentList}
+        isLoading={isLoading}
+        challengeId={baseQueryParams.challengeId}
+      >
         <Pagination
           currentPage={page}
           totalPages={comments?.totalPages ?? 1}

@@ -22,7 +22,7 @@ const MobileCommentsContent = ({
     hasNextPage,
     isFetchingNextPage,
     isLoading,
-  } = useInfiniteQuery(queries.infiniteComments(baseQueryParams));
+  } = useInfiniteQuery(queries.comments.infiniteList(baseQueryParams));
 
   const commentList =
     infiniteComments?.pages.flatMap((page) => page?.content || []) || [];
@@ -50,7 +50,11 @@ const MobileCommentsContent = ({
 
   return (
     <Container>
-      <AllCommentsSection comments={commentList} isLoading={isLoading}>
+      <AllCommentsSection
+        comments={commentList}
+        isLoading={isLoading}
+        challengeId={baseQueryParams.challengeId}
+      >
         <LoadMoreTrigger ref={loadMoreRef} />
         {isFetchingNextPage && <LoadingMessage>로딩 중...</LoadingMessage>}
       </AllCommentsSection>

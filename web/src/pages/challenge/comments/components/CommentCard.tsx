@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import useExpandQuotation from '../hooks/useExpandQuotation';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
+import { useUpdateChallengeCommentMutation } from '../hooks/useUpdateChallengeCommentMutation';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
@@ -14,7 +15,9 @@ import CheckIcon from '#/assets/svg/check-circle.svg';
 import EditIcon from '#/assets/svg/edit.svg';
 import MailIcon from '#/assets/svg/mail.svg';
 
-type CommentCardProps = Comment;
+type CommentCardProps = Comment & {
+  challengeId: number;
+};
 
 const DELETED_USER_NICKNAME = '탈퇴한 회원';
 
@@ -26,16 +29,21 @@ const CommentCard = ({
   comment,
   createdAt,
   quotation,
+  commentId,
   isMyComment,
+  challengeId,
 }: CommentCardProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
   const relativeTime = convertRelativeTime(createdAt);
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const editPostedComment = () => {
-    // patch api 연결 필요
-    closeModal();
+  const { mutate: updateChallengeComment } = useUpdateChallengeCommentMutation({
+    challengeId,
+  });
+
+  const editPostedComment = (newComment: string) => {
+    updateChallengeComment({ challengeId, commentId, comment: newComment });
   };
 
   const { expanded, needExpansion, quoteRef, toggleExpanded } =
