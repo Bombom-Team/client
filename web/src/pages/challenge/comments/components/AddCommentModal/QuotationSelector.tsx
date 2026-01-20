@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { MAX_QUOTATION_LINE } from '../../constants/comment';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 
@@ -201,7 +202,8 @@ const Quote = styled.div<{ isMobile: boolean }>`
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${({ isMobile }) => (isMobile ? 3 : 4)};
+  -webkit-line-clamp: ${({ isMobile }) =>
+    isMobile ? MAX_QUOTATION_LINE.mobile : MAX_QUOTATION_LINE.default};
   text-overflow: ellipsis;
 `;
 
