@@ -132,6 +132,21 @@ export const postChallengeComment = async (
   });
 };
 
+export type PatchChallengeCommentParams =
+  operations['updateChallengeComment']['parameters']['path'] &
+    components['schemas']['UpdateChallengeCommentRequest'];
+
+export const patchChallengeComment = async ({
+  challengeId,
+  commentId,
+  ...params
+}: PatchChallengeCommentParams) => {
+  return await fetcher.patch({
+    path: `/challenges/${challengeId}/comments/${commentId}`,
+    body: params,
+  });
+};
+
 export type GetTodayDailyGuideResponse =
   components['schemas']['TodayDailyGuideResponse'];
 

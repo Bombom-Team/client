@@ -106,6 +106,10 @@ export default (env: Env, argv: Argv) => {
             to: 'assets',
           },
           {
+            from: 'public/favicon*',
+            to: '[name][ext]',
+          },
+          {
             from: 'public/prerendered',
             to: 'prerendered',
           },
