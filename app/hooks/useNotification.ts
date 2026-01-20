@@ -3,16 +3,11 @@ import * as Notifications from 'expo-notifications';
 import messaging from '@react-native-firebase/messaging';
 import {
   createAndroidChannel,
-  deleteFCMToken,
   getFCMToken,
   requestNotificationPermission,
 } from '@/utils/notification';
 import { useWebView } from '@/contexts/WebViewContext';
-import {
-  getDeviceUUID,
-  getLastRegisteredMemberId,
-  setLastRegisteredMemberId,
-} from '@/utils/device';
+import { getDeviceUUID } from '@/utils/device';
 import { putFCMToken } from '@/apis/notification';
 
 Notifications.setNotificationHandler({
@@ -132,13 +127,6 @@ const useNotification = () => {
 
     const registerToken = async () => {
       try {
-        const lastRegisteredMemberId = await getLastRegisteredMemberId();
-        if (!lastRegisteredMemberId || memberId !== lastRegisteredMemberId) {
-          console.log('새로운 계정 감지, 기존 토큰 무효화');
-          await setLastRegisteredMemberId(memberId);
-          await deleteFCMToken();
-        }
-
         const granted = await requestNotificationPermission();
         if (!granted) return;
 
