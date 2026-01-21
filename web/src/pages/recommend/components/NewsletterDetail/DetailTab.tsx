@@ -30,4 +30,5 @@ const Description = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ isMobile, theme }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  white-space: pre-line;
 `;
