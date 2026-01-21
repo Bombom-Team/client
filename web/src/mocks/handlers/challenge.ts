@@ -265,7 +265,7 @@ export const challengeHandlers = [
         '2': {
           dayIndex: 2,
           type: 'COMMENT',
-          imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
+          imageUrl: '/assets/png/daily-guide-mock-image.png',
           notice: '데일리 가이드에 따라 답변을 작성해주세요.',
           commentEnabled: true,
           myComment: {
@@ -275,7 +275,7 @@ export const challengeHandlers = [
         '3': {
           dayIndex: 3,
           type: 'COMMENT',
-          imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
+          imageUrl: '/assets/png/daily-guide-mock-image.png',
           notice: '데일리 가이드에 따라 답변을 작성해주세요.',
           commentEnabled: true,
           myComment: {
@@ -288,7 +288,7 @@ export const challengeHandlers = [
         '4': {
           dayIndex: 4,
           type: 'SHARING',
-          imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
+          imageUrl: '/assets/png/daily-guide-mock-image.png',
           notice: '데일리 가이드에 따라 답변을 작성해주세요.',
           commentEnabled: true,
           myComment: {
@@ -298,7 +298,7 @@ export const challengeHandlers = [
         '5': {
           dayIndex: 5,
           type: 'SHARING',
-          imageUrl: '/assets/png/daily-guide-mock-image.jpeg',
+          imageUrl: '/assets/png/daily-guide-mock-image.png',
           notice: '데일리 가이드에 따라 답변을 작성해주세요.',
           commentEnabled: true,
           myComment: {
