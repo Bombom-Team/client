@@ -1,9 +1,10 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import useCommentLike from '../hooks/useCommentLike';
 import useExpandQuotation from '../hooks/useExpandQuotation';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
+import { useAddCommentLikeMutation } from '../hooks/useAddCommentLikeMutation';
+import { useDeleteCommentLikeMutation } from '../hooks/useDeleteCommentLikeMutation';
 import { useUpdateChallengeCommentMutation } from '../hooks/useUpdateChallengeCommentMutation';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
@@ -35,8 +36,8 @@ const CommentCard = ({
   commentId,
   isMyComment,
   challengeId,
-  likeCount: initialCount,
-  isLiked: initialLiked,
+  likeCount,
+  isLiked,
 }: CommentCardProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -51,6 +52,24 @@ const CommentCard = ({
     updateChallengeComment({ challengeId, commentId, comment: newComment });
   };
 
+  const { mutate: addCommentLike } = useAddCommentLikeMutation({
+    challengeId,
+    commentId,
+  });
+
+  const { mutate: deleteCommentLike } = useDeleteCommentLikeMutation({
+    challengeId,
+    commentId,
+  });
+
+  const toggleLike = () => {
+    if (isLiked) {
+      deleteCommentLike();
+    } else {
+      addCommentLike();
+    }
+  };
+
   const { expanded, needExpansion, quoteRef, toggleExpanded } =
     useExpandQuotation({
       quotation,
@@ -58,13 +77,6 @@ const CommentCard = ({
         ? MAX_QUOTATION_LINE.mobile
         : MAX_QUOTATION_LINE.default,
     });
-
-  const { liked, likeCount, toggleLike } = useCommentLike({
-    challengeId,
-    commentId,
-    initialLiked,
-    initialCount,
-  });
 
   return (
     <>
@@ -113,12 +125,12 @@ const CommentCard = ({
               onClick={toggleLike}
               isMobile={isMobile}
             >
-              {liked ? (
+              {isLiked ? (
                 <HeartFilledIcon fill={theme.colors.red} />
               ) : (
                 <HeartIcon color={theme.colors.red} />
               )}
-              <LikeCount liked={liked} isMobile={isMobile}>
+              <LikeCount liked={isLiked} isMobile={isMobile}>
                 {likeCount}
               </LikeCount>
             </LikeButton>
