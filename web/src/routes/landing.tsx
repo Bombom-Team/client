@@ -20,7 +20,7 @@ export const Route = createFileRoute('/landing')({
         content: 'noindex, follow',
       },
       {
-        title: '봄봄 | 뉴스레터로 시작하는 새로운 읽기 습관',
+        title: '봄봄 | 읽고 남기고 쌓는 뉴스레터 리딩 플랫폼',
       },
     ],
   }),
