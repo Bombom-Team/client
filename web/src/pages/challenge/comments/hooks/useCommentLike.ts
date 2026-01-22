@@ -23,7 +23,10 @@ const useCommentLike = ({
     commentId,
     onAddSuccess: ({ likeCount: likeCountResult }) => {
       setLiked(true);
-      setLikeCount(likeCountResult);
+
+      if (likeCountResult) {
+        setLikeCount(likeCountResult);
+      }
     },
   });
 
@@ -32,7 +35,10 @@ const useCommentLike = ({
     commentId,
     onDeleteSuccess: ({ likeCount: likeCountResult }) => {
       setLiked(false);
-      setLikeCount(likeCountResult);
+
+      if (likeCountResult) {
+        setLikeCount(likeCountResult);
+      }
     },
   });
 
