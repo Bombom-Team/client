@@ -9,7 +9,7 @@ import { toast } from '@/components/Toast/utils/toastActions';
 interface UseDeleteCommentLikeMutationParams {
   challengeId: number;
   commentId: number;
-  onDeleteSuccess?: (data: ChallengeCommentLikeResponse) => void;
+  onDeleteSuccess: (data: ChallengeCommentLikeResponse) => void;
 }
 
 export const useDeleteCommentLikeMutation = ({
@@ -25,7 +25,7 @@ export const useDeleteCommentLikeMutation = ({
       queryClient.invalidateQueries({
         queryKey: queries.comments.all(challengeId),
       });
-      onDeleteSuccess?.(likeCount);
+      onDeleteSuccess(likeCount);
     },
     onError: () => {
       toast.error('좋아요 취소에 실패했습니다. 다시 시도해주세요.');

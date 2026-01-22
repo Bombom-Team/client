@@ -9,7 +9,7 @@ import { toast } from '@/components/Toast/utils/toastActions';
 interface UseAddCommentLikeMutationParams {
   challengeId: number;
   commentId: number;
-  onAddSuccess?: (data: ChallengeCommentLikeResponse) => void;
+  onAddSuccess: (data: ChallengeCommentLikeResponse) => void;
 }
 
 export const useAddCommentLikeMutation = ({
@@ -25,7 +25,7 @@ export const useAddCommentLikeMutation = ({
       queryClient.invalidateQueries({
         queryKey: queries.comments.all(challengeId),
       });
-      onAddSuccess?.(likeCount);
+      onAddSuccess(likeCount);
     },
     onError: () => {
       toast.error('좋아요 추가에 실패했습니다. 다시 시도해주세요.');
