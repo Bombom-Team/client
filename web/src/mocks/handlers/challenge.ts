@@ -255,7 +255,7 @@ export const challengeHandlers = [
         '1': {
           dayIndex: 1,
           type: 'READ',
-          imageUrl: 'https://picsum.photos/800/400?random=1',
+          imageUrl: '/assets/png/daily-guide-mock-image.png',
           notice: '첫 날입니다! 가볍게 시작해볼까요?',
           commentEnabled: false,
           myComment: {

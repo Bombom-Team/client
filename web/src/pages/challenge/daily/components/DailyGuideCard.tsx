@@ -29,12 +29,12 @@ const DailyGuideCard = ({ imageUrl, dayIndex }: DailyGuideCardProps) => {
             <GuideImage src={imageUrl} alt={`Day ${dayIndex} guide`} />
           </FlipCardFront>
           <FlipCardBack isMobile={isMobile}>
-            <RemindTitle>Day 1의 내가 남긴 각오</RemindTitle>
+            <RemindTitle>첫날, 내가 남긴 말</RemindTitle>
             <RemindContent isMobile={isMobile}>
-              첫날 각오 컨텐트 영역입니다.
+              {`이 챌린지는 다른 누구보다 나를 위해 시작했다.\n중간에 잘 안 되는 날이 있더라도 스스로를 탓하지 않고,\n끝까지 나를 응원해주는 시간이 되었으면 좋겠다.`}
             </RemindContent>
             <RemindMotivation isMobile={isMobile}>
-              처음의 마음을 떠올리며 오늘도 화이팅!
+              {`처음 다짐했던 마음을 다시 떠올려보세요.\n 오늘의 한 걸음도 그 연장선에 있어요.`}
             </RemindMotivation>
           </FlipCardBack>
         </FlipCardInner>
@@ -83,7 +83,7 @@ const FlipCardBack = styled.div<{ isMobile: boolean }>`
   width: 100%;
   height: 100%;
   padding: ${({ isMobile }) => (isMobile ? '24px 16px' : '32px 24px')};
-  border-radius: 12px;
+  border-radius: 8px;
 
   display: flex;
   gap: 20px;
@@ -91,7 +91,7 @@ const FlipCardBack = styled.div<{ isMobile: boolean }>`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primaryLight};
+  background-color: ${({ theme }) => theme.colors.stroke};
   text-align: center;
 
   backface-visibility: hidden;
@@ -108,7 +108,7 @@ const GuideImage = styled.img`
 `;
 
 const RemindTitle = styled.h3`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading4};
 `;
 
@@ -129,4 +129,5 @@ const RemindMotivation = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  white-space: pre-wrap;
 `;

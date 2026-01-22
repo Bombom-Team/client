@@ -48,6 +48,7 @@ function ChallengeDaily() {
       <DailyGuideCard
         imageUrl={dailyGuide.imageUrl}
         dayIndex={dailyGuide.dayIndex}
+        // dailyGuideType={dailyGuide.type}
       />
       {dailyGuide.notice && (
         <NoticeBox>
