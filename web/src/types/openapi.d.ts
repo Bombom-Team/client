@@ -1644,13 +1644,11 @@ export interface components {
       /** Format: int32 */
       dayIndex: number;
       /** @enum {string} */
-      type: 'READ' | 'COMMENT' | 'SHARING' | 'REMIND';
+      type: 'READ' | 'COMMENT' | 'SHARING';
       imageUrl: string;
       notice?: string;
       commentEnabled: boolean;
       myComment: components['schemas']['MyCommentResponse'];
-      /** 첫날 각오 내용 (REMIND 타입일 때) */
-      remindContent?: string;
     };
     ChallengeCommentOptionsRequest: {
       /** Format: date */
