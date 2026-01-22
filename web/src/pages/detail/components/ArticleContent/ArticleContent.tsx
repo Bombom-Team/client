@@ -42,8 +42,6 @@ const Container = styled.div<{ scale: number }>`
   flex-direction: column;
   align-items: flex-start;
 
-  white-space: pre-line;
-
   -webkit-tap-highlight-color: rgb(0 0 0 / 10%);
   -webkit-touch-callout: default;
 
