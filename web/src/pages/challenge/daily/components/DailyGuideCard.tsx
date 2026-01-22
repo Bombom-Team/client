@@ -91,7 +91,7 @@ const FlipCardBack = styled.div<{ isMobile: boolean }>`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.stroke};
+  background-color: ${({ theme }) => theme.colors.disabledBackground};
   text-align: center;
 
   backface-visibility: hidden;
