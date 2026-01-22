@@ -12,6 +12,8 @@ export const CHALLENGE_COMMENTS = [
     quotation:
       '2026년은 AI와 양자컴퓨팅이 본격적으로 상용화되는 원년이 될 것입니다.',
     isMyComment: false,
+    likeCount: 12,
+    isLiked: false,
   },
   {
     commentId: 2,
@@ -23,6 +25,8 @@ export const CHALLENGE_COMMENTS = [
     createdAt: '2026-01-14T09:00:00.000Z',
     comment: '새해에 읽기 좋은 창업 관련 아티클이었습니다!',
     isMyComment: true,
+    likeCount: 5,
+    isLiked: false,
   },
   {
     commentId: 3,
@@ -35,6 +39,8 @@ export const CHALLENGE_COMMENTS = [
     comment: '올해 경제 전망을 한눈에 볼 수 있어서 좋았어요.',
     quotation: '글로벌 경제는 2026년 완만한 회복세를 보일 것으로 예상됩니다.',
     isMyComment: true,
+    likeCount: 8,
+    isLiked: false,
   },
   {
     commentId: 4,
@@ -46,6 +52,8 @@ export const CHALLENGE_COMMENTS = [
     createdAt: '2026-01-14T07:30:00.000Z',
     comment: '새해 투자 계획 세우는 데 많은 도움이 됐습니다!',
     isMyComment: false,
+    likeCount: 15,
+    isLiked: true,
   },
   {
     commentId: 5,
@@ -57,6 +65,8 @@ export const CHALLENGE_COMMENTS = [
     createdAt: '2026-01-14T06:00:00.000Z',
     comment: '시장 분석이 상세하고 이해하기 쉬웠어요.',
     isMyComment: false,
+    likeCount: 3,
+    isLiked: false,
   },
   {
     commentId: 6,
@@ -71,6 +81,8 @@ export const CHALLENGE_COMMENTS = [
     quotation:
       'S&P 500 지수는 전주 대비 2.5% 상승하며 사상 최고치를 경신했습니다.',
     isMyComment: false,
+    likeCount: 20,
+    isLiked: true,
   },
   {
     commentId: 7,
@@ -84,6 +96,8 @@ export const CHALLENGE_COMMENTS = [
     quotation:
       '2025년 AI 스타트업에 대한 벤처 투자가 30% 증가할 것으로 예상됩니다.',
     isMyComment: false,
+    likeCount: 7,
+    isLiked: false,
   },
   {
     commentId: 8,
@@ -96,6 +110,8 @@ export const CHALLENGE_COMMENTS = [
     comment:
       '모닝브루의 글로벌 뉴스 큐레이션이 훌륭해요. 세계 경제 흐름을 한눈에 파악할 수 있어요.',
     isMyComment: false,
+    likeCount: 10,
+    isLiked: true,
   },
   {
     commentId: 9,
@@ -110,6 +126,8 @@ export const CHALLENGE_COMMENTS = [
     quotation:
       '실패는 성공의 어머니입니다. 중요한 것은 빠르게 배우고 다시 시도하는 것입니다.',
     isMyComment: false,
+    likeCount: 25,
+    isLiked: false,
   },
   {
     commentId: 10,
@@ -122,6 +140,8 @@ export const CHALLENGE_COMMENTS = [
     comment:
       '뉴닉의 간결한 설명이 너무 좋아요. 경제 뉴스를 이렇게 쉽게 이해할 수 있다니!',
     isMyComment: false,
+    likeCount: 18,
+    isLiked: true,
   },
   {
     commentId: 11,
@@ -136,6 +156,8 @@ export const CHALLENGE_COMMENTS = [
     quotation:
       '생성형 AI, 멀티모달 AI, 엣지 AI가 2025년의 3대 핵심 트렌드입니다.',
     isMyComment: false,
+    likeCount: 14,
+    isLiked: false,
   },
   {
     commentId: 12,
@@ -148,6 +170,8 @@ export const CHALLENGE_COMMENTS = [
     comment:
       '시장 이슈 핵심만 요약해줘서 늦은 밤에도 부담 없이 읽을 수 있었어요.',
     isMyComment: false,
+    likeCount: 6,
+    isLiked: false,
   },
   {
     commentId: 13,
@@ -160,6 +184,8 @@ export const CHALLENGE_COMMENTS = [
     comment: '반도체 산업의 흐름을 잘 파악할 수 있었어요.',
     quotation: '글로벌 반도체 시장은 2025년 5% 성장이 예상됩니다.',
     isMyComment: false,
+    likeCount: 9,
+    isLiked: true,
   },
   {
     commentId: 14,
@@ -171,6 +197,8 @@ export const CHALLENGE_COMMENTS = [
     createdAt: '2026-01-14T04:30:00.000Z',
     comment: '부동산 시장 분석이 깊이 있어서 좋았습니다.',
     isMyComment: false,
+    likeCount: 4,
+    isLiked: false,
   },
   {
     commentId: 15,
@@ -183,5 +211,7 @@ export const CHALLENGE_COMMENTS = [
     comment: '새로운 스타트업들의 비즈니스 모델이 흥미로웠어요!',
     quotation: 'AI 기반 헬스케어 스타트업이 주목받고 있습니다.',
     isMyComment: false,
+    likeCount: 11,
+    isLiked: false,
   },
 ];
