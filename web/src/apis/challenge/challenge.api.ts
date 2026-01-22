@@ -76,17 +76,8 @@ export type GetChallengeCommentsParams =
   operations['getChallengeComments']['parameters']['path'] &
     components['schemas']['ChallengeCommentOptionsRequest'] &
     components['schemas']['Pageable'];
-export type ChallengeCommentItem =
-  components['schemas']['ChallengeCommentResponse'] & {
-    likeCount: number;
-    isLiked: boolean;
-  };
-export type GetChallengeCommentsResponse = Omit<
-  components['schemas']['PageChallengeCommentResponse'],
-  'content'
-> & {
-  content?: ChallengeCommentItem[];
-};
+export type GetChallengeCommentsResponse =
+  components['schemas']['PageChallengeCommentResponse'];
 
 export const getChallengeComments = async ({
   challengeId,
@@ -156,9 +147,8 @@ export const patchChallengeComment = async ({
   });
 };
 
-export type ChallengeCommentLikeResponse = {
-  likeCount: number;
-};
+export type ChallengeCommentLikeResponse =
+  components['schemas']['ChallengeCommentLikeResponse'];
 
 export const putChallengeCommentLike = async (
   challengeId: number,
