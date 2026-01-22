@@ -4,6 +4,30 @@
  */
 
 export interface paths {
+  '/api/v1/challenges/{challengeId}/comments/{commentId}/like': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * 챌린지 코멘트 좋아요 추가
+     * @description 특정 챌린지의 팀 코멘트에 좋아요를 추가하고 반영된 좋아요 개수를 반환합니다.
+     */
+    put: operations['addChallengeCommentLike'];
+    post?: never;
+    /**
+     * 챌린지 코멘트 좋아요 취소
+     * @description 특정 챌린지의 팀 코멘트에 좋아요를 취소하고 반영된 좋아요 개수를 반환합니다.
+     */
+    delete: operations['deleteChallengeCommentLike'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/login/sso/verify/success/apple': {
     parameters: {
       query?: never;
@@ -1124,6 +1148,10 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    ChallengeCommentLikeResponse: {
+      /** Format: int32 */
+      likeCount?: number;
+    };
     /** @description 경고 설정 변경 요청 */
     UpdateWarningSettingRequest: {
       isVisible?: boolean;
@@ -1295,15 +1323,15 @@ export interface components {
       sort?: components['schemas']['SortObject'];
       /** Format: int32 */
       pageSize?: number;
+      paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
-      paged?: boolean;
       unpaged?: boolean;
     };
     SortObject: {
       empty?: boolean;
-      sorted?: boolean;
       unsorted?: boolean;
+      sorted?: boolean;
     };
     NewsletterResponse: {
       /** Format: int64 */
@@ -1669,6 +1697,9 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
       isMyComment: boolean;
+      /** Format: int32 */
+      likeCount: number;
+      isLiked: boolean;
     };
     PageChallengeCommentResponse: {
       /** Format: int64 */
@@ -1903,6 +1934,112 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  addChallengeCommentLike: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 챌린지 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 코멘트 좋아요 추가 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeCommentLikeResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트 좋아요 추가 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteChallengeCommentLike: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 챌린지 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 코멘트 좋아요 취소 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeCommentLikeResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트 좋아요 취소 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   handleAppleFormPost: {
     parameters: {
       query?: {
