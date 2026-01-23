@@ -91,7 +91,6 @@ const ModalDescription = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
-  white-space: pre-wrap;
 `;
 
 const HighlightedWarning = styled.div<{ isMobile: boolean }>`

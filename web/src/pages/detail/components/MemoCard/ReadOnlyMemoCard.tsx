@@ -183,7 +183,6 @@ const MemoText = styled.p`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body2};
-  white-space: pre-wrap;
 
   transition: all 0.2s ease-in-out;
   word-break: break-all;
