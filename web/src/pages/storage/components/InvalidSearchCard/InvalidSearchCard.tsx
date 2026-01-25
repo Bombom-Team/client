@@ -23,6 +23,7 @@ export default InvalidSearchCard;
 
 const Container = styled.section`
   width: 100%;
+
   display: flex;
   gap: 22px;
   flex-direction: column;
@@ -40,6 +41,6 @@ const EmptyTitle = styled.h3<{ isMobile: boolean }>`
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.heading4 : theme.fonts.heading3};
   text-align: center;
-  white-space: pre-wrap;
+
   -webkit-text-fill-color: transparent;
 `;

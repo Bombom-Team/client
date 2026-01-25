@@ -119,7 +119,6 @@ const GreetingMessage = styled.p<{ isMobile: boolean }>`
   font: ${({ theme }) => theme.fonts.heading5};
   font-weight: 400;
   text-align: center;
-  white-space: pre-line;
 `;
 
 const Divider = styled.div`
@@ -147,7 +146,6 @@ const Terms = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.caption};
   text-align: center;
-  white-space: pre-line;
 `;
 
 const Highlight = styled.span`
