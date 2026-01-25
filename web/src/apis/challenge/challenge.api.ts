@@ -147,6 +147,27 @@ export const patchChallengeComment = async ({
   });
 };
 
+export type ChallengeCommentLikeResponse =
+  components['schemas']['ChallengeCommentLikeResponse'];
+
+export const putChallengeCommentLike = async (
+  challengeId: number,
+  commentId: number,
+) => {
+  return await fetcher.put<never, ChallengeCommentLikeResponse>({
+    path: `/challenges/${challengeId}/comments/${commentId}/like`,
+  });
+};
+
+export const deleteChallengeCommentLike = async (
+  challengeId: number,
+  commentId: number,
+) => {
+  return await fetcher.delete<never, ChallengeCommentLikeResponse>({
+    path: `/challenges/${challengeId}/comments/${commentId}/like`,
+  });
+};
+
 export type GetTodayDailyGuideResponse =
   components['schemas']['TodayDailyGuideResponse'];
 
