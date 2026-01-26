@@ -4,9 +4,9 @@ import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
-import DailyGuideCard from '@/pages/challenge/daily/components/DailyGuideCard';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
 import DailyGuideCommentsModal from '@/pages/challenge/daily/components/DailyGuideCommentsModal';
+import DailyGuideRemindCard from '@/pages/challenge/daily/components/DailyGuideRemindCard';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -22,17 +22,16 @@ export const Route = createFileRoute(
 });
 
 function ChallengeDaily() {
-  const { challengeId } = useParams({
+  const { challengeId: stringChallengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
+  const challengeId = Number(stringChallengeId);
 
   const device = useDevice();
   const isMobile = device === 'mobile';
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const { data: dailyGuide } = useQuery(
-    queries.todayDailyGuide(Number(challengeId)),
-  );
+  const { data: dailyGuide } = useQuery(queries.todayDailyGuide(challengeId));
 
   if (!dailyGuide) {
     return null;
@@ -45,10 +44,10 @@ function ChallengeDaily() {
   return (
     <Container>
       <DayBadge>Day {dailyGuide.dayIndex}</DayBadge>
-      <DailyGuideCard
+      <DailyGuideRemindCard
         imageUrl={dailyGuide.imageUrl}
-        dayIndex={dailyGuide.dayIndex}
-        // dailyGuideType={dailyGuide.type}
+        challengeId={challengeId}
+        isRemindEnabled={dailyGuide.type === 'REMIND'}
       />
       {dailyGuide.notice && (
         <NoticeBox>

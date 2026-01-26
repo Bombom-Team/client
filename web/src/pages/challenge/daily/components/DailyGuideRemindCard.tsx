@@ -1,49 +1,71 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Flex from '@/components/Flex';
 import { useDevice } from '@/hooks/useDevice';
 
-interface DailyGuideCardProps {
+const FIRST_DAY_INDEX = 1;
+
+interface DailyGuideRemindCardProps {
   imageUrl: string;
-  dayIndex: number;
+  challengeId: number;
+  isRemindEnabled: boolean;
 }
 
-const DailyGuideCard = ({ imageUrl, dayIndex }: DailyGuideCardProps) => {
+const DailyGuideRemindCard = ({
+  imageUrl,
+  challengeId,
+  isRemindEnabled,
+}: DailyGuideRemindCardProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isRemindView, setIsRemindView] = useState(false);
+
+  const { data: firstDailyGuideComment } = useQuery(
+    queries.myDailyGuideComment(challengeId, FIRST_DAY_INDEX),
+  );
 
   const handleFlip = () => {
-    setIsFlipped((prev) => !prev);
+    setIsRemindView((prev) => !prev);
   };
+
+  const canFlip =
+    isRemindEnabled &&
+    !!firstDailyGuideComment &&
+    !!firstDailyGuideComment.comment;
 
   return (
     <Flex direction="column" gap={12} align="center">
-      <RemindButton variant="outlined" onClick={handleFlip}>
-        {isFlipped ? '🔁 데일리 가이드 보기' : '🔁 첫날 각오 다시보기'}
-      </RemindButton>
+      {canFlip && (
+        <RemindButton variant="outlined" onClick={handleFlip}>
+          {isRemindView ? '🔁 데일리 가이드 보기' : '🔁 첫날 각오 다시보기'}
+        </RemindButton>
+      )}
       <FlipCard>
-        <FlipCardInner isFlipped={isFlipped}>
+        <FlipCardInner isRemindView={isRemindView}>
           <FlipCardFront>
-            <GuideImage src={imageUrl} alt={`Day ${dayIndex} guide`} />
+            <GuideImage src={imageUrl} alt={`Day guide image`} />
           </FlipCardFront>
-          <FlipCardBack isMobile={isMobile}>
-            <RemindTitle>첫날, 내가 남긴 말</RemindTitle>
-            <RemindContent isMobile={isMobile}>
-              {`이 챌린지는 다른 누구보다 나를 위해 시작했다.\n중간에 잘 안 되는 날이 있더라도 스스로를 탓하지 않고,\n끝까지 나를 응원해주는 시간이 되었으면 좋겠다.`}
-            </RemindContent>
-            <RemindMotivation isMobile={isMobile}>
-              {`처음 다짐했던 마음을 다시 떠올려보세요.\n 오늘의 한 걸음도 그 연장선에 있어요.`}
-            </RemindMotivation>
-          </FlipCardBack>
+          {canFlip && (
+            <FlipCardBack isMobile={isMobile}>
+              <RemindTitle>첫날, 내가 남긴 말</RemindTitle>
+              <RemindContent isMobile={isMobile}>
+                {firstDailyGuideComment.comment}
+              </RemindContent>
+              <RemindMotivation isMobile={isMobile}>
+                {`처음 다짐했던 마음을 다시 떠올려보세요.\n 오늘의 한 걸음도 그 연장선에 있어요.`}
+              </RemindMotivation>
+            </FlipCardBack>
+          )}
         </FlipCardInner>
       </FlipCard>
     </Flex>
   );
 };
 
-export default DailyGuideCard;
+export default DailyGuideRemindCard;
 
 const RemindButton = styled(Button)`
   width: 100%;
@@ -57,11 +79,11 @@ const FlipCard = styled.div`
   perspective: 1000px;
 `;
 
-const FlipCardInner = styled.div<{ isFlipped: boolean }>`
+const FlipCardInner = styled.div<{ isRemindView: boolean }>`
   position: relative;
 
-  transform: ${({ isFlipped }) =>
-    isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'};
+  transform: ${({ isRemindView }) =>
+    isRemindView ? 'rotateY(180deg)' : 'rotateY(0deg)'};
 
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -113,6 +135,7 @@ const RemindTitle = styled.h3`
 `;
 
 const RemindContent = styled.p<{ isMobile: boolean }>`
+  width: 100%;
   max-width: 400px;
   padding: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
   border-radius: 8px;
@@ -122,12 +145,10 @@ const RemindContent = styled.p<{ isMobile: boolean }>`
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
   text-align: left;
-  white-space: pre-wrap;
 `;
 
 const RemindMotivation = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
-  white-space: pre-wrap;
 `;
