@@ -36,7 +36,7 @@ export const membersHandlers = [
 
   http.post(
     `${baseURL}/members/me/subscriptions/:subscriptionId/unsubscribe`,
-    ({ params }) => {
+    () => {
       // 204 No Content 반환
       return new HttpResponse(null, { status: 204 });
     },
