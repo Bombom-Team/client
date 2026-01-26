@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { FiBell, FiTrendingUp, FiUsers } from 'react-icons/fi';
+import { dashboardQueries } from '@/apis/dashboard/dashboard.query';
 import { Layout } from '@/components/Layout';
 
 export const Route = createFileRoute('/_admin/')({
@@ -8,6 +10,13 @@ export const Route = createFileRoute('/_admin/')({
 });
 
 function IndexPage() {
+  const { data } = useQuery(dashboardQueries.stats());
+  const totalMembers = (data?.totalMembers ?? 0).toLocaleString();
+  const totalNotices = (data?.totalNotices ?? 0).toLocaleString();
+  const monthlyJoinedMembers = (
+    data?.monthlyJoinedMembers ?? 0
+  ).toLocaleString();
+
   return (
     <Layout title="대시보드">
       <WelcomeCard>
@@ -22,7 +31,7 @@ function IndexPage() {
           </IconWrapper>
           <StatInfo>
             <StatLabel>전체 회원</StatLabel>
-            <StatValue>1,234</StatValue>
+            <StatValue>{totalMembers}</StatValue>
           </StatInfo>
         </StatCard>
 
@@ -32,7 +41,7 @@ function IndexPage() {
           </IconWrapper>
           <StatInfo>
             <StatLabel>공지사항</StatLabel>
-            <StatValue>42</StatValue>
+            <StatValue>{totalNotices}</StatValue>
           </StatInfo>
         </StatCard>
 
@@ -42,7 +51,7 @@ function IndexPage() {
           </IconWrapper>
           <StatInfo>
             <StatLabel>이번 달 신규 회원</StatLabel>
-            <StatValue>89</StatValue>
+            <StatValue>{monthlyJoinedMembers}</StatValue>
           </StatInfo>
         </StatCard>
       </DashboardGrid>

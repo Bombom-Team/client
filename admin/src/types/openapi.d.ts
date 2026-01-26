@@ -52,6 +52,81 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/api/v1/files': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 파일 업로드
+     * @description 파일을 업로드하고 URL을 반환합니다.
+     */
+    post: operations['upload'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/challenges/{challengeId}/teams': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 팀 목록 조회
+     * @description 챌린지에 포함된 모든 팀 목록을 조회합니다.
+     *
+     *     **Frontend Tip:**
+     *     - 수동 팀 배정 시 **팀 선택 드롭다운**을 구성하는 데 사용하세요.
+     *     - `id` (팀 ID)와 `progress` (진행도) 정보를 제공합니다.
+     *
+     */
+    get: operations['getChallengeTeams'];
+    put?: never;
+    /**
+     * 챌린지 팀 일괄 생성
+     * @description 지정된 개수만큼 챌린지 팀을 일괄 생성합니다.
+     */
+    post: operations['createChallengeTeams'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/challenges/{challengeId}/teams/assignment': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 챌린지 팀 자동 배정
+     * @description 챌린지 참여자를 대상으로 팀을 자동으로 배정합니다.
+     *     - 목표 팀원 수: 15명
+     *     - 전체 참여자를 무작위로 섞은 후, 균등하게 배분합니다.
+     *
+     *     **Frontend Tip:**
+     *     - 이미 팀이 배정된 상태에서 호출하면 **기존 배정이 초기화되고 재배정**됩니다. (주의 메시지 필요)
+     *
+     */
+    post: operations['assignTeams'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/api/v1/notices/{id}': {
     parameters: {
       query?: never;
@@ -128,6 +203,31 @@ export interface paths {
     patch: operations['updateRole'];
     trace?: never;
   };
+  '/admin/api/v1/challenges/{challengeId}/participants/{participantId}/team': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * 챌린지 참여자 팀 변경
+     * @description 챌린지 참여자의 팀을 수동으로 변경합니다.
+     *
+     *     **Frontend Tip:**
+     *     - `challengeTeamId`는 반드시 **해당 챌린지에 속한 팀의 ID**여야 합니다. (팀 목록 조회 API 활용)
+     *     - 유효하지 않은 팀 ID를 보낼 경우 `400 Bad Request` 에러가 발생하므로, 에러 메시지를 사용자에게 보여주세요.
+     *
+     */
+    patch: operations['updateParticipantTeam'];
+    trace?: never;
+  };
   '/admin/api/v1/members': {
     parameters: {
       query?: never;
@@ -143,6 +243,119 @@ export interface paths {
     put?: never;
     post?: never;
     delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/dashboard/stats': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 대시보드 통계 조회
+     * @description 전체 회원 수, 공지사항 수, 이번 달 신규 회원 수를 조회합니다.
+     */
+    get: operations['getStats'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/challenges': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 목록 조회
+     * @description 챌린지 목록을 조회합니다.
+     *
+     *     - **status**: 챌린지 진행 상태 필터링 (BEFORE_START, ONGOING, COMPLETED)
+     *     - **sort**: 정렬 기준 (기본값: id,DESC)
+     *
+     */
+    get: operations['getChallenges'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/challenges/{challengeId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 단건 조회
+     * @description 챌린지 상세 정보를 조회합니다.
+     */
+    get: operations['getChallenge'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/challenges/{challengeId}/participants': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 참여자 목록 조회
+     * @description 챌린지 별 참여자 목록을 조회합니다.
+     *
+     *     **Frontend Tip:**
+     *     - **teamId 필터링**: 특정 팀의 멤버만 보고 싶을 때 사용하세요.
+     *     - **hasTeam 필터링**: `false`로 설정하면 '팀 미배정자'만 조회할 수 있습니다. (수동 배정 대상 찾기에 유용)
+     *
+     */
+    get: operations['getChallengeParticipants'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/challenges/{challengeId}/teams/{teamId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * 챌린지 팀 삭제
+     * @description 챌린지 팀을 삭제합니다.
+     *
+     *     **Frontend Tip:**
+     *     - 삭제 시 해당 팀에 속해있던 참여자들은 자동으로 **'팀 미배정'** 상태가 됩니다.
+     *
+     */
+    delete: operations['deleteChallengeTeam'];
     options?: never;
     head?: never;
     patch?: never;
@@ -170,6 +383,22 @@ export interface components {
       sender: string;
       previousNewsletterUrl?: string;
       subscribeMethod?: string;
+    };
+    UploadFileResponse: {
+      url?: string;
+    };
+    CreateChallengeTeamsRequest: {
+      /** Format: int32 */
+      count: number;
+    };
+    AssignTeamsRequest: {
+      /**
+       * Format: int32
+       * @description 팀 당 최대 인원 수 (기본값: 15)
+       * @default 15
+       * @example 15
+       */
+      maxTeamSize: number;
     };
     UpdateNoticeRequest: {
       title?: string;
@@ -205,6 +434,10 @@ export interface components {
     };
     UpdateRoleRequest: {
       authority: string;
+    };
+    UpdateParticipantTeamRequest: {
+      /** Format: int64 */
+      challengeTeamId: number;
     };
     GetNoticeResponse: {
       /** Format: int64 */
@@ -318,6 +551,98 @@ export interface components {
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['GetMemberResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      first?: boolean;
+      last?: boolean;
+      empty?: boolean;
+    };
+    DashboardStatsResponse: {
+      /** Format: int64 */
+      totalMembers?: number;
+      /** Format: int64 */
+      totalNotices?: number;
+      /** Format: int64 */
+      dailyJoinedMembers?: number;
+      /** Format: int64 */
+      weeklyJoinedMembers?: number;
+      /** Format: int64 */
+      monthlyJoinedMembers?: number;
+      /** Format: int64 */
+      yearlyJoinedMembers?: number;
+      /** Format: int64 */
+      withdrawnMembersThisMonth?: number;
+    };
+    GetChallengeResponse: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
+      /** Format: int32 */
+      generation?: number;
+      /** Format: date */
+      startDate?: string;
+      /** Format: date */
+      endDate?: string;
+    };
+    PageGetChallengeResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['GetChallengeResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      first?: boolean;
+      last?: boolean;
+      empty?: boolean;
+    };
+    GetChallengeDetailResponse: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
+      /** Format: int32 */
+      generation?: number;
+      /** Format: date */
+      startDate?: string;
+      /** Format: date */
+      endDate?: string;
+    };
+    GetChallengeTeamResponse: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int64 */
+      challengeId?: number;
+      /** Format: int32 */
+      progress?: number;
+    };
+    GetChallengeParticipantResponse: {
+      /** Format: int64 */
+      participantId?: number;
+      nickname?: string;
+      /** Format: int64 */
+      challengeTeamId?: number;
+      /** Format: int32 */
+      completedDays?: number;
+      isSurvived?: boolean;
+    };
+    PageGetChallengeParticipantResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['GetChallengeParticipantResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
@@ -489,6 +814,200 @@ export interface operations {
       };
       /** @description 권한 없음 */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  upload: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'multipart/form-data': {
+          /**
+           * Format: binary
+           * @description 업로드할 파일
+           */
+          file: string;
+        };
+      };
+    };
+    responses: {
+      /** @description 업로드 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['UploadFileResponse'];
+        };
+      };
+      /** @description 잘못된 요청 (파일 없음 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 업로드 실패 */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getChallengeTeams: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['GetChallengeTeamResponse'][];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 챌린지 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  createChallengeTeams: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateChallengeTeamsRequest'];
+      };
+    };
+    responses: {
+      /** @description 생성 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 챌린지 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  assignTeams: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AssignTeamsRequest'];
+      };
+    };
+    responses: {
+      /** @description 배정 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 챌린지 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -793,6 +1312,61 @@ export interface operations {
       };
     };
   };
+  updateParticipantTeam: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 참여자 ID (Member ID) */
+        participantId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateParticipantTeamRequest'];
+      };
+    };
+    responses: {
+      /** @description 변경 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 입력 (유효하지 않은 팀, 현재 팀과 동일 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 챌린지/팀/참여자 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   getMembers: {
     parameters: {
       query: {
@@ -832,6 +1406,223 @@ export interface operations {
       };
       /** @description 권한 없음 */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getStats: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 통계 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['DashboardStatsResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getChallenges: {
+    parameters: {
+      query?: {
+        status?: 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageGetChallengeResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getChallenge: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['GetChallengeDetailResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 챌린지 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getChallengeParticipants: {
+    parameters: {
+      query?: {
+        challengeTeamId?: number;
+        hasTeam?: boolean;
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+      };
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageGetChallengeParticipantResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 챌린지 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteChallengeTeam: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 챌린지 팀 ID */
+        teamId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 삭제 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 챌린지/팀 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
