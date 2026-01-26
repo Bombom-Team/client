@@ -77,8 +77,23 @@ export const patchMemberInfo = async (params: PatchMembersInfoParams) => {
   });
 };
 
-export type GetMySubscriptionsResponse =
-  components['schemas']['SubscribedNewsletterResponse'][];
+export type SubscribeStatus =
+  | 'SUBSCRIBED'
+  | 'UNSUBSCRIBING'
+  | 'UNSUBSCRIBE_FAILED';
+
+export interface SubscribedNewsletterResponse {
+  subscriptionId: number;
+  newsletterId: number;
+  name: string;
+  imageUrl?: string;
+  description: string;
+  category: string;
+  unsubscribeUrl?: string;
+  status: SubscribeStatus;
+}
+
+export type GetMySubscriptionsResponse = SubscribedNewsletterResponse[];
 
 export const getMySubscriptions = async () => {
   return await fetcher.get<GetMySubscriptionsResponse>({
@@ -88,8 +103,8 @@ export const getMySubscriptions = async () => {
 
 export type PostNewsletterUnsubscribeParams =
   operations['unsubscribe']['parameters']['path'];
-export type PostNewsletterUnsubscribeResponse =
-  components['schemas']['UnsubscribeResponse'];
+// Response body is empty (204)
+export type PostNewsletterUnsubscribeResponse = void;
 
 export const postNewsletterUnsubscribe = async ({
   subscriptionId,
