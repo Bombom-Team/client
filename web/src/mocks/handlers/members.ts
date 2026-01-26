@@ -8,14 +8,27 @@ const baseURL = ENV.baseUrl;
 export const membersHandlers = [
   http.get(`${baseURL}/members/me/subscriptions`, () => {
     const subscribedNewsletters = TRENDY_NEWSLETTERS.slice(0, 5).map(
-      (newsletter) => ({
-        newsletterId: newsletter.newsletterId,
-        name: newsletter.name,
-        imageUrl: newsletter.imageUrl,
-        description: newsletter.description,
-        category: newsletter.category,
-        hasUnsubscribeUrl: true,
-      }),
+      (newsletter, index) => {
+        // 테스트를 위해 다양한 상태를 반환하도록 설정
+        let status = 'SUBSCRIBED';
+        if (index === 1) status = 'UNSUBSCRIBING';
+        if (index === 2) status = 'UNSUBSCRIBE_FAILED';
+
+        return {
+          subscriptionId: index + 100, // 고유 ID 부여
+          newsletterId: newsletter.newsletterId,
+          name: newsletter.name,
+          imageUrl: newsletter.imageUrl,
+          description: newsletter.description,
+          category: newsletter.category,
+          // index 2번(실패 케이스)은 외부 링크 제공
+          unsubscribeUrl:
+            index === 2
+              ? `https://example.com/unsubscribe/${newsletter.newsletterId}`
+              : undefined,
+          status,
+        };
+      },
     );
 
     return HttpResponse.json(subscribedNewsletters);
@@ -24,11 +37,8 @@ export const membersHandlers = [
   http.post(
     `${baseURL}/members/me/subscriptions/:subscriptionId/unsubscribe`,
     ({ params }) => {
-      const { subscriptionId } = params;
-
-      return HttpResponse.json({
-        unsubscribeUrl: `https://example.com/newsletters/${subscriptionId}/unsubscribe`,
-      });
+      // 204 No Content 반환
+      return new HttpResponse(null, { status: 204 });
     },
   ),
 
