@@ -177,20 +177,20 @@ const ActionWrapper = styled.div`
 
 const UnsubscribeInfoText = styled.p`
   padding: 6px 10px;
-  
+
   color: ${theme.colors.textTertiary};
   font: ${theme.fonts.body3};
   text-align: center;
 `;
 
-const ActionButton = styled(Button) <{ device: Device }>`
+const ActionButton = styled(Button)<{ device: Device }>`
   padding: 6px 10px;
   border-radius: 8px;
 
   font: ${theme.fonts.body3};
 
   &:disabled {
-    opacity: 1;
     color: ${theme.colors.textSecondary};
+    opacity: 1;
   }
 `;

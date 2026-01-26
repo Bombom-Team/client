@@ -15,9 +15,7 @@ const NewsletterUnsubscribeModal = ({
   onUnsubscribe,
   title = '구독을 해지하시겠습니까?',
   description = (
-    <>
-      구독을 해지하면 해당 뉴스레터의{'\n'}새로운 소식을 받아볼 수 없습니다.
-    </>
+    <>구독을 해지하면 해당 뉴스레터의{'\n'}새로운 소식을 받아볼 수 없습니다.</>
   ),
   confirmButtonText = '네, 해지할래요',
 }: NewsletterUnsubscribeModalProps) => {
@@ -86,7 +84,7 @@ const ModalButtonWrapper = styled.div`
   justify-content: center;
 `;
 
-const ModalButton = styled(Button) <{ isMobile: boolean }>`
+const ModalButton = styled(Button)<{ isMobile: boolean }>`
   height: 48px;
   min-width: ${({ isMobile }) => (isMobile ? '120px' : '160px')};
   border-radius: 8px;
