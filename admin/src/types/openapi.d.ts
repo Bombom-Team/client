@@ -458,11 +458,11 @@ export interface components {
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
-      first?: boolean;
-      last?: boolean;
       empty?: boolean;
     };
     PageableObject: {
@@ -554,11 +554,11 @@ export interface components {
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
-      first?: boolean;
-      last?: boolean;
       empty?: boolean;
     };
     DashboardStatsResponse: {
@@ -576,6 +576,8 @@ export interface components {
       yearlyJoinedMembers?: number;
       /** Format: int64 */
       withdrawnMembersThisMonth?: number;
+      /** Format: int64 */
+      todayActiveMembers?: number;
     };
     GetChallengeResponse: {
       /** Format: int64 */
@@ -599,11 +601,11 @@ export interface components {
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
-      first?: boolean;
-      last?: boolean;
       empty?: boolean;
     };
     GetChallengeDetailResponse: {
@@ -646,11 +648,11 @@ export interface components {
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
-      first?: boolean;
-      last?: boolean;
       empty?: boolean;
     };
   };
