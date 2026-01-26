@@ -43,7 +43,7 @@ export const useUnsubscribeNewsletterMutation = () => {
       toast.error('구독 해지에 실패했습니다. 다시 시도해주세요.');
     },
     onSuccess: () => {
-      toast.success('뉴스레터 구독을 해지했습니다.');
+      // toast.success('뉴스레터 구독을 해지했습니다.');
       // NOTE: Optimistic Update로 이미 UI가 변경되었으므로 invalidateQueries를 하지 않음
       // (목록에서 사라지는 것이 아니라 '성공' 상태를 유지하거나 추후 새로고침 시 반영)
     },

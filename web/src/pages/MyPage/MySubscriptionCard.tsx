@@ -32,7 +32,11 @@ const MySubscriptionCard = ({
   const renderActionButton = () => {
     switch (newsletter.status) {
       case 'UNSUBSCRIBING':
-        return <UnsubscribeInfoText>취소 중...</UnsubscribeInfoText>;
+        return (
+          <ActionButton device={device} variant="filled" disabled>
+            취소 중...
+          </ActionButton>
+        );
 
       case 'UNSUBSCRIBE_FAILED':
         if (!isUrlVisited) {
@@ -49,7 +53,7 @@ const MySubscriptionCard = ({
         return (
           <ActionButton
             device={device}
-            variant="outlined"
+            variant="filled"
             onClick={() => onUnsubscribeConfirm(newsletter.subscriptionId)}
           >
             해지했습니다 (목록 제거)
@@ -58,10 +62,19 @@ const MySubscriptionCard = ({
 
       case 'SUBSCRIBED':
       default:
+        // unsubscribeUrl이 없을 경우 (구독 취소 미지원)
+        if (!newsletter.unsubscribeUrl) {
+          return (
+            <UnsubscribeInfoText>
+              구독 취소를 지원하지 않아요
+            </UnsubscribeInfoText>
+          );
+        }
+
         return (
           <ActionButton
             device={device}
-            variant="transparent"
+            variant="filled"
             onClick={() => onUnsubscribeClick(newsletter.subscriptionId)}
           >
             구독 취소
@@ -163,13 +176,21 @@ const ActionWrapper = styled.div`
 `;
 
 const UnsubscribeInfoText = styled.p`
+  padding: 6px 10px;
+  
   color: ${theme.colors.textTertiary};
   font: ${theme.fonts.body3};
+  text-align: center;
 `;
 
-const ActionButton = styled(Button)<{ device: Device }>`
-  padding: 8px 12px;
+const ActionButton = styled(Button) <{ device: Device }>`
+  padding: 6px 10px;
   border-radius: 8px;
 
   font: ${theme.fonts.body3};
+
+  &:disabled {
+    opacity: 1;
+    color: ${theme.colors.textSecondary};
+  }
 `;

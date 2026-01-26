@@ -5,33 +5,43 @@ import { useDevice } from '@/hooks/useDevice';
 interface NewsletterUnsubscribeModalProps {
   onClose: () => void;
   onUnsubscribe: () => void;
+  title?: string;
+  description?: React.ReactNode;
+  confirmButtonText?: string;
 }
 
 const NewsletterUnsubscribeModal = ({
   onClose,
   onUnsubscribe,
+  title = '구독을 해지하시겠습니까?',
+  description = (
+    <>
+      구독을 해지하면 해당 뉴스레터의{'\n'}새로운 소식을 받아볼 수 없습니다.
+    </>
+  ),
+  confirmButtonText = '네, 해지할래요',
 }: NewsletterUnsubscribeModalProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
 
   return (
     <Container isMobile={isMobile}>
-      <Title isMobile={isMobile}>구독을 해지하러 이동하시겠습니까?</Title>
+      <Title isMobile={isMobile}>{title}</Title>
 
       <UnsubscribeDescription isMobile={isMobile}>
-        구독을 해지하면 해당 뉴스레터의{'\n'}새로운 소식을 받아볼 수 없습니다.
+        {description}
       </UnsubscribeDescription>
 
       <ModalButtonWrapper>
         <ModalButton
           isMobile={isMobile}
-          variant="outlined"
+          variant="filled"
           onClick={() => {
             onUnsubscribe();
             onClose();
           }}
         >
-          네, 해지할래요
+          {confirmButtonText}
         </ModalButton>
         <ModalButton isMobile={isMobile} variant="outlined" onClick={onClose}>
           아니요, 유지할래요
@@ -76,7 +86,7 @@ const ModalButtonWrapper = styled.div`
   justify-content: center;
 `;
 
-const ModalButton = styled(Button)<{ isMobile: boolean }>`
+const ModalButton = styled(Button) <{ isMobile: boolean }>`
   height: 48px;
   min-width: ${({ isMobile }) => (isMobile ? '120px' : '160px')};
   border-radius: 8px;

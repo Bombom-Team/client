@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useUnsubscribe } from './hooks/useUnsubscribe';
 import Modal from '@/components/Modal/Modal';
@@ -17,6 +18,10 @@ const SubscribedNewslettersSection = ({
   newsletters,
   device,
 }: SubscribedNewslettersSectionProps) => {
+  const [actionType, setActionType] = useState<'UNSUBSCRIBE' | 'REMOVE'>(
+    'UNSUBSCRIBE',
+  );
+
   const { selectNewsletter, confirmUnsubscribe } = useUnsubscribe();
   const { modalRef, openModal, closeModal, isOpen } = useModal({
     onClose: () => {
@@ -25,20 +30,35 @@ const SubscribedNewslettersSection = ({
   });
 
   const handleUnsubscribeClick = (newsletterId: number) => {
+    setActionType('UNSUBSCRIBE');
     selectNewsletter(newsletterId);
     openModal();
   };
 
   const handleUnsubscribeConfirm = (newsletterId: number) => {
+    setActionType('REMOVE');
     selectNewsletter(newsletterId);
-    // API 호출 (직접 해지 case)
-    confirmUnsubscribe();
+    openModal();
   };
 
   const confirmUnsubscribeNewsletter = () => {
-    // API 호출 (모달 확인 case)
     confirmUnsubscribe();
     closeModal();
+  };
+
+  const getModalContent = () => {
+    if (actionType === 'REMOVE') {
+      return {
+        title: '구독 해지를 완료하셨나요?',
+        description: (
+          <>
+            해지하지 않고 목록에서 제거하면{'\n'}뉴스레터가 계속 올 수 있어요.
+          </>
+        ),
+        confirmButtonText: '네, 해지했어요',
+      };
+    }
+    return {};
   };
 
   return (
@@ -70,8 +90,10 @@ const SubscribedNewslettersSection = ({
           <NewsletterUnsubscribeModal
             onUnsubscribe={confirmUnsubscribeNewsletter}
             onClose={closeModal}
+            {...getModalContent()}
           />
         </Modal>,
+
         document.body,
       )}
     </>
