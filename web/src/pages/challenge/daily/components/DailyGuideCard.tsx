@@ -8,17 +8,17 @@ import { useDevice } from '@/hooks/useDevice';
 
 const FIRST_DAY_INDEX = 1;
 
-interface DailyGuideRemindCardProps {
+interface DailyGuideCardProps {
   imageUrl: string;
   challengeId: number;
   isRemindEnabled: boolean;
 }
 
-const DailyGuideRemindCard = ({
+const DailyGuideCard = ({
   imageUrl,
   challengeId,
   isRemindEnabled,
-}: DailyGuideRemindCardProps) => {
+}: DailyGuideCardProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
   const [isRemindView, setIsRemindView] = useState(false);
@@ -66,7 +66,7 @@ const DailyGuideRemindCard = ({
   );
 };
 
-export default DailyGuideRemindCard;
+export default DailyGuideCard;
 
 const RemindButton = styled(Button)`
   width: 100%;

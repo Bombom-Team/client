@@ -4,9 +4,9 @@ import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
+import DailyGuideCard from '@/pages/challenge/daily/components/DailyGuideCard';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
 import DailyGuideCommentsModal from '@/pages/challenge/daily/components/DailyGuideCommentsModal';
-import DailyGuideRemindCard from '@/pages/challenge/daily/components/DailyGuideRemindCard';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/daily',
@@ -44,7 +44,7 @@ function ChallengeDaily() {
   return (
     <Container>
       <DayBadge>Day {dailyGuide.dayIndex}</DayBadge>
-      <DailyGuideRemindCard
+      <DailyGuideCard
         imageUrl={dailyGuide.imageUrl}
         challengeId={challengeId}
         isRemindEnabled={dailyGuide.type === 'REMIND'}
