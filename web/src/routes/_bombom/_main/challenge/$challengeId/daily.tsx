@@ -59,14 +59,14 @@ function ChallengeDaily() {
       {commentSectionEnabled && (
         <>
           <DailyGuideComment
-            challengeId={Number(challengeId)}
+            challengeId={challengeId}
             dayIndex={dailyGuide.dayIndex}
             myComment={dailyGuide.myComment}
             viewAllCommentsEnabled={dailyGuide.type === 'SHARING'}
             onViewAllComments={openModal}
           />
           <DailyGuideCommentsModal
-            challengeId={Number(challengeId)}
+            challengeId={challengeId}
             dayIndex={dailyGuide.dayIndex}
             modalRef={modalRef}
             isOpen={isOpen}
