@@ -22,17 +22,16 @@ export const Route = createFileRoute(
 });
 
 function ChallengeDaily() {
-  const { challengeId } = useParams({
+  const { challengeId: stringChallengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
+  const challengeId = Number(stringChallengeId);
 
   const device = useDevice();
   const isMobile = device === 'mobile';
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const { data: dailyGuide } = useQuery(
-    queries.todayDailyGuide(Number(challengeId)),
-  );
+  const { data: dailyGuide } = useQuery(queries.todayDailyGuide(challengeId));
 
   if (!dailyGuide) {
     return null;
@@ -47,8 +46,8 @@ function ChallengeDaily() {
       <DayBadge>Day {dailyGuide.dayIndex}</DayBadge>
       <DailyGuideCard
         imageUrl={dailyGuide.imageUrl}
-        dayIndex={dailyGuide.dayIndex}
-        // dailyGuideType={dailyGuide.type}
+        challengeId={challengeId}
+        isRemindEnabled={dailyGuide.type === 'REMIND'}
       />
       {dailyGuide.notice && (
         <NoticeBox>
@@ -60,14 +59,14 @@ function ChallengeDaily() {
       {commentSectionEnabled && (
         <>
           <DailyGuideComment
-            challengeId={Number(challengeId)}
+            challengeId={challengeId}
             dayIndex={dailyGuide.dayIndex}
             myComment={dailyGuide.myComment}
             viewAllCommentsEnabled={dailyGuide.type === 'SHARING'}
             onViewAllComments={openModal}
           />
           <DailyGuideCommentsModal
-            challengeId={Number(challengeId)}
+            challengeId={challengeId}
             dayIndex={dailyGuide.dayIndex}
             modalRef={modalRef}
             isOpen={isOpen}

@@ -177,6 +177,18 @@ export const getTodayDailyGuide = async (challengeId: number) => {
   });
 };
 
+export type GetMyDailyGuideComment =
+  components['schemas']['DailyGuideCommentResponse'];
+
+export const getMyDailyGuideComment = async (
+  challengeId: number,
+  dayIndex: number,
+) => {
+  return await fetcher.get<GetMyDailyGuideComment>({
+    path: `/challenges/${challengeId}/daily-guides/${dayIndex}/my-comment`,
+  });
+};
+
 export type PostDailyGuideCommentParams =
   components['schemas']['DailyGuideCommentRequest'];
 
