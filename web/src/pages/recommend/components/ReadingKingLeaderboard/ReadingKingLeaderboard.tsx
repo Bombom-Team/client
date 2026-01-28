@@ -86,6 +86,7 @@ const ReadingKingLeaderboard = () => {
                       rank={item.rank}
                       name={item.nickname}
                       readCount={item.monthlyReadCount}
+                      badges={item.badges}
                     />
                   ))}
                 </LeaderboardList>
