@@ -23,9 +23,10 @@ const DailyGuideRemindCard = ({
   const isMobile = device === 'mobile';
   const [isRemindView, setIsRemindView] = useState(false);
 
-  const { data: firstDailyGuideComment } = useQuery(
-    queries.myDailyGuideComment(challengeId, FIRST_DAY_INDEX),
-  );
+  const { data: firstDailyGuideComment } = useQuery({
+    ...queries.myDailyGuideComment(challengeId, FIRST_DAY_INDEX),
+    enabled: isRemindEnabled,
+  });
 
   const handleFlip = () => {
     setIsRemindView((prev) => !prev);
