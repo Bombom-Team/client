@@ -4,6 +4,30 @@
  */
 
 export interface paths {
+  '/api/v1/challenges/{challengeId}/comments/{commentId}/like': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * 챌린지 코멘트 좋아요 추가
+     * @description 특정 챌린지의 팀 코멘트에 좋아요를 추가하고 반영된 좋아요 개수를 반환합니다.
+     */
+    put: operations['addChallengeCommentLike'];
+    post?: never;
+    /**
+     * 챌린지 코멘트 좋아요 취소
+     * @description 특정 챌린지의 팀 코멘트에 좋아요를 취소하고 반영된 좋아요 개수를 반환합니다.
+     */
+    delete: operations['deleteChallengeCommentLike'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/login/sso/verify/success/apple': {
     parameters: {
       query?: never;
@@ -139,7 +163,11 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /**
+     * 데일리 가이드 내 댓글 조회
+     * @description 특정 챌린지의 특정 일차 데일리 가이드에 내가 작성한 댓글을 조회합니다.
+     */
+    get: operations['getDailyGuideComment'];
     put?: never;
     /**
      * 데일리 가이드 댓글 작성
@@ -1124,6 +1152,10 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    ChallengeCommentLikeResponse: {
+      /** Format: int32 */
+      likeCount?: number;
+    };
     /** @description 경고 설정 변경 요청 */
     UpdateWarningSettingRequest: {
       isVisible?: boolean;
@@ -1295,9 +1327,9 @@ export interface components {
       sort?: components['schemas']['SortObject'];
       /** Format: int32 */
       pageSize?: number;
+      paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
-      paged?: boolean;
       unpaged?: boolean;
     };
     SortObject: {
@@ -1382,12 +1414,24 @@ export interface components {
       /** Format: int32 */
       readCount: number;
     };
+    BadgesResponse: {
+      ranking?: components['schemas']['RankingBadgeResponse'];
+      challenge?: components['schemas']['ChallengeBadgeResponse'];
+    };
+    ChallengeBadgeResponse: {
+      /** @enum {string} */
+      grade: 'GOLD' | 'SILVER' | 'BRONZE';
+      name: string;
+      /** Format: int32 */
+      generation: number;
+    };
     MonthlyReadingRankResponse: {
       nickname: string;
       /** Format: int64 */
       rank: number;
       /** Format: int32 */
       monthlyReadCount: number;
+      badges?: components['schemas']['BadgesResponse'];
     };
     MonthlyReadingRankingResponse: {
       /** Format: date-time */
@@ -1397,6 +1441,14 @@ export interface components {
       /** Format: date-time */
       serverTime: string;
       data: components['schemas']['MonthlyReadingRankResponse'][];
+    };
+    RankingBadgeResponse: {
+      /** @enum {string} */
+      grade: 'GOLD' | 'SILVER' | 'BRONZE';
+      /** Format: int32 */
+      year: number;
+      /** Format: int32 */
+      month: number;
     };
     MemberMonthlyReadingRankResponse: {
       /** Format: int64 */
@@ -1498,7 +1550,7 @@ export interface components {
        */
       progress: number;
       /** @enum {string} */
-      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'COMPLETE' | 'FAIL';
+      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
       isSuccess?: boolean;
     };
     ChallengeNewsletterResponse: {
@@ -1610,6 +1662,9 @@ export interface components {
         | 'NOT_SUBSCRIBED'
         | 'ELIGIBLE';
     };
+    MemberDailyCommentResponse: {
+      comment: string;
+    };
     DailyGuideCommentResponse: {
       nickname: string;
       comment: string;
@@ -1644,7 +1699,7 @@ export interface components {
       /** Format: int32 */
       dayIndex: number;
       /** @enum {string} */
-      type: 'READ' | 'COMMENT' | 'SHARING';
+      type: 'READ' | 'COMMENT' | 'SHARING' | 'REMIND';
       imageUrl: string;
       notice?: string;
       commentEnabled: boolean;
@@ -1669,6 +1724,9 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
       isMyComment: boolean;
+      /** Format: int32 */
+      likeCount: number;
+      isLiked: boolean;
     };
     PageChallengeCommentResponse: {
       /** Format: int64 */
@@ -1903,6 +1961,112 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  addChallengeCommentLike: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 챌린지 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 코멘트 좋아요 추가 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeCommentLikeResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트 좋아요 추가 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteChallengeCommentLike: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 챌린지 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 코멘트 좋아요 취소 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeCommentLikeResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트 좋아요 취소 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   handleAppleFormPost: {
     parameters: {
       query?: {
@@ -2211,6 +2375,59 @@ export interface operations {
         content?: never;
       };
       /** @description 챌린지 또는 신청 내역을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getDailyGuideComment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 일차 인덱스 (1부터 시작) */
+        dayIndex: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 댓글 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MemberDailyCommentResponse'];
+        };
+      };
+      /** @description 잘못된 요청 (유효하지 않은 ID) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 참여 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 또는 데일리 가이드를 찾을 수 없음 */
       404: {
         headers: {
           [name: string]: unknown;

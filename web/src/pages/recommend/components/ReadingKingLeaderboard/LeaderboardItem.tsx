@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useRef, useState } from 'react';
 import Tooltip from '@/components/Tooltip/Tooltip';
+import type { Badges, MonthlyReadingBadgeGrade } from '../../types/badges';
 
 const RANK_ICON_MAP: Record<number, string> = {
   1: '👑',
@@ -8,27 +9,11 @@ const RANK_ICON_MAP: Record<number, string> = {
   3: '🥉',
 };
 
-type MonthlyReadingBadgeGrade = 'gold' | 'silver' | 'bronze';
-
 const BADGE_RANKING_LABEL_MAP: Record<MonthlyReadingBadgeGrade, string> = {
-  gold: '1등',
-  silver: '2등',
-  bronze: '3등',
+  GOLD: '1등',
+  SILVER: '2등',
+  BRONZE: '3등',
 };
-
-// Todo: openapi 최신화 후 컴포넌트 내 인터페이스 제거 예정
-interface Badges {
-  ranking: {
-    grade: MonthlyReadingBadgeGrade;
-    year: number;
-    month: number;
-  };
-  challenge: {
-    grade: MonthlyReadingBadgeGrade;
-    name: string;
-    generation: number;
-  };
-}
 
 interface LeaderboardItemProps {
   rank: number;
@@ -47,21 +32,25 @@ const LeaderboardItem = ({
   const [tooltipAnchor, setTooltipAnchor] = useState<{
     current: HTMLElement | null;
   } | null>(null);
+
   const rankingBadgeRef = useRef<HTMLDivElement>(null);
   const challengeBadgeRef = useRef<HTMLDivElement>(null);
+
   const rankingBadgeSrc = badges?.ranking
     ? `/assets/png/ranking_${badges.ranking.grade}.png`
     : null;
   const challengeBadgeSrc = badges?.challenge
     ? `/assets/png/challenge_${badges.challenge.generation}_${badges.challenge.grade}.png`
     : null;
+
   const rankingTooltipText = badges?.ranking
     ? `${badges.ranking.month}월 독서왕 ${
         BADGE_RANKING_LABEL_MAP[badges.ranking.grade]
       }`
     : '';
-  const challengeTooltipText = badges?.challenge?.name ?? '';
-
+  const challengeTooltipText = badges?.challenge
+    ? `${badges.challenge.name} ${badges.challenge.generation}기`
+    : '';
   const showTooltip = (
     text: string,
     anchorRef: { current: HTMLElement | null },
