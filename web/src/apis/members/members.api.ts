@@ -44,23 +44,8 @@ export const patchWeeklyReadingGoal = async ({
   });
 };
 
-type MonthlyReadingBadgeGrade = 'gold' | 'silver' | 'bronze';
-
 type MonthlyReadingRankItem =
-  components['schemas']['MonthlyReadingRankResponse'] & {
-    badges: {
-      ranking: {
-        grade: MonthlyReadingBadgeGrade;
-        year: number;
-        month: number;
-      };
-      challenge: {
-        grade: MonthlyReadingBadgeGrade;
-        name: string;
-        generation: number;
-      };
-    };
-  };
+  components['schemas']['MonthlyReadingRankResponse'];
 
 export type GetMonthlyReadingRankResponse = Omit<
   components['schemas']['MonthlyReadingRankingResponse'],
