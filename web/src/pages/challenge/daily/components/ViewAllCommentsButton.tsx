@@ -1,6 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Button from '@/components/Button/Button';
 import Tooltip from '@/components/Tooltip/Tooltip';
 import { useDevice } from '@/hooks/useDevice';
@@ -17,6 +17,7 @@ const ViewAllCommentsButton = ({
   onViewAllComments,
 }: ViewAllCommentsButtonProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const device = useDevice();
 
@@ -32,6 +33,7 @@ const ViewAllCommentsButton = ({
   return (
     <Container>
       <StyledButton
+        ref={buttonRef}
         variant="transparent"
         onClick={handleViewAllCommentsClick}
         onMouseEnter={() => !submittedMyComment && setShowTooltip(true)}
@@ -43,7 +45,7 @@ const ViewAllCommentsButton = ({
         )}
         전체 답변 보기
       </StyledButton>
-      <Tooltip opened={showTooltip} position="top-right">
+      <Tooltip opened={showTooltip} position="top-right" anchorRef={buttonRef}>
         답변을 제출해야 확인할 수 있어요!
       </Tooltip>
     </Container>

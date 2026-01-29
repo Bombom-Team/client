@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import LeaderboardItem from './LeaderboardItem';
 import { RANKING } from './ReadingKingLeaderboard.constants';
 import ReadingKingLeaderboardSkeleton from './ReadingKingLeaderboardSkeleton';
@@ -17,6 +17,7 @@ const COUNTDOWN_UPDATE_INTERVAL_MS = 1000 * 60 * 10;
 
 const ReadingKingLeaderboard = () => {
   const [rankExplainOpened, setRankExplainOpened] = useState(false);
+  const countdownRef = useRef<HTMLDivElement>(null);
 
   const {
     data: monthlyReadingRank,
@@ -57,13 +58,18 @@ const ReadingKingLeaderboard = () => {
         <Title>이달의 독서왕</Title>
         <CountdownWrapper>
           <Countdown
+            ref={countdownRef}
             onMouseEnter={openRankExplain}
             onMouseLeave={closeRankExplain}
             onFocus={openRankExplain}
             onBlur={closeRankExplain}
           >
             {`${padTimeDigit(leftTime.minutes)}:${padTimeDigit(leftTime.seconds)}`}
-            <Tooltip opened={rankExplainOpened} position="bottom">
+            <Tooltip
+              opened={rankExplainOpened}
+              position="bottom"
+              anchorRef={countdownRef}
+            >
               순위는 10분마다 갱신됩니다.
             </Tooltip>
           </Countdown>

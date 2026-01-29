@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { useLayoutEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useRef, useState } from 'react';
+import Tooltip from '@/components/Tooltip/Tooltip';
 
 const RANK_ICON_MAP: Record<number, string> = {
   1: '👑',
@@ -44,8 +44,11 @@ const LeaderboardItem = ({
   badges,
 }: LeaderboardItemProps) => {
   const [tooltipText, setTooltipText] = useState('');
-  const tooltipRef = useRef<HTMLDivElement>(null);
-  const tooltipPositionRef = useRef({ x: 0, y: 0 });
+  const [tooltipAnchor, setTooltipAnchor] = useState<{
+    current: HTMLElement | null;
+  } | null>(null);
+  const rankingBadgeRef = useRef<HTMLDivElement>(null);
+  const challengeBadgeRef = useRef<HTMLDivElement>(null);
   const rankingBadgeSrc = badges?.ranking
     ? `/assets/png/ranking_${badges.ranking.grade}.png`
     : null;
@@ -59,33 +62,18 @@ const LeaderboardItem = ({
     : '';
   const challengeTooltipText = badges?.challenge?.name ?? '';
 
-  const updateTooltipPosition = (x: number, y: number) => {
-    if (!tooltipRef.current) return;
-    tooltipRef.current.style.left = `${x}px`;
-    tooltipRef.current.style.top = `${y}px`;
-  };
-
   const showTooltip = (
     text: string,
-    rect: DOMRect,
-    align: 'left' | 'center' = 'left',
+    anchorRef: { current: HTMLElement | null },
   ) => {
-    const x = align === 'center' ? rect.left + rect.width / 2 : rect.left;
-    const y = rect.top - 30;
-    tooltipPositionRef.current = { x, y };
-    updateTooltipPosition(x, y);
     setTooltipText(text);
+    setTooltipAnchor(anchorRef);
   };
 
   const hideTooltip = () => {
     setTooltipText('');
+    setTooltipAnchor(null);
   };
-
-  useLayoutEffect(() => {
-    if (!tooltipText) return;
-    const { x, y } = tooltipPositionRef.current;
-    updateTooltipPosition(x, y);
-  }, [tooltipText]);
 
   return (
     <Container
@@ -108,19 +96,13 @@ const LeaderboardItem = ({
         {rankingBadgeSrc && badges?.ranking && (
           <BadgeItem
             tabIndex={0}
-            onMouseEnter={(event) =>
-              showTooltip(
-                rankingTooltipText,
-                event.currentTarget.getBoundingClientRect(),
-              )
+            ref={rankingBadgeRef}
+            onMouseEnter={() =>
+              showTooltip(rankingTooltipText, rankingBadgeRef)
             }
             onMouseLeave={hideTooltip}
-            onFocus={(event) => {
-              showTooltip(
-                rankingTooltipText,
-                event.currentTarget.getBoundingClientRect(),
-                'center',
-              );
+            onFocus={() => {
+              showTooltip(rankingTooltipText, rankingBadgeRef);
             }}
             onBlur={hideTooltip}
           >
@@ -134,19 +116,13 @@ const LeaderboardItem = ({
         {challengeBadgeSrc && badges?.challenge && (
           <BadgeItem
             tabIndex={0}
-            onMouseEnter={(event) =>
-              showTooltip(
-                challengeTooltipText,
-                event.currentTarget.getBoundingClientRect(),
-              )
+            ref={challengeBadgeRef}
+            onMouseEnter={() =>
+              showTooltip(challengeTooltipText, challengeBadgeRef)
             }
             onMouseLeave={hideTooltip}
-            onFocus={(event) => {
-              showTooltip(
-                challengeTooltipText,
-                event.currentTarget.getBoundingClientRect(),
-                'center',
-              );
+            onFocus={() => {
+              showTooltip(challengeTooltipText, challengeBadgeRef);
             }}
             onBlur={hideTooltip}
           >
@@ -158,14 +134,11 @@ const LeaderboardItem = ({
           </BadgeItem>
         )}
       </BadgeWrapper>
-      {tooltipText &&
-        typeof document !== 'undefined' &&
-        createPortal(
-          <FloatingTooltip ref={tooltipRef} role="status">
-            {tooltipText}
-          </FloatingTooltip>,
-          document.body,
-        )}
+      {tooltipText && tooltipAnchor && (
+        <Tooltip opened position="top" anchorRef={tooltipAnchor}>
+          {tooltipText}
+        </Tooltip>
+      )}
     </Container>
   );
 };
@@ -230,29 +203,4 @@ const BadgeItem = styled.div`
 const Badge = styled.img`
   width: 36px;
   height: 36px;
-`;
-
-const FloatingTooltip = styled.div`
-  position: fixed;
-  z-index: ${({ theme }) => theme.zIndex.floating};
-  max-width: 240px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  box-shadow: 0 10px 20px -12px rgb(0 0 0 / 35%);
-
-  background: ${({ theme }) => theme.colors.black};
-  color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.caption};
-  white-space: normal;
-
-  pointer-events: none;
-  transform: translate(0, -8px);
-  word-break: keep-all;
-
-  @media (width <= 768px) {
-    max-width: calc(100vw - 24px);
-
-    font-size: 12px;
-    line-height: 1.4;
-  }
 `;
