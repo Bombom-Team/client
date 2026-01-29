@@ -37,10 +37,11 @@ export const membersHandlers = [
     const limit = url.searchParams.get('limit');
     const limitNumber = limit ? Number(limit) : 10;
 
-    const { data } = getRankingMetadata();
+    const { data, ...metaData } = getRankingMetadata();
     const rankingData = data.slice(0, limitNumber);
 
     return HttpResponse.json({
+      ...metaData,
       data: rankingData,
     });
   }),
