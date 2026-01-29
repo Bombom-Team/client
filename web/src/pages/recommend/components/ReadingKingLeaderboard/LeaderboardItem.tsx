@@ -48,8 +48,9 @@ const LeaderboardItem = ({
         BADGE_RANKING_LABEL_MAP[badges.ranking.grade]
       }`
     : '';
-  const challengeTooltipText = badges?.challenge?.name ?? '';
-
+  const challengeTooltipText = badges?.challenge
+    ? `${badges.challenge.name} ${badges.challenge.generation}기`
+    : '';
   const showTooltip = (
     text: string,
     anchorRef: { current: HTMLElement | null },
