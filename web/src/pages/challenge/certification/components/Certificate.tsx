@@ -1,5 +1,11 @@
 import styled from '@emotion/styled';
+import Flex from '@/components/Flex';
+import Text from '@/components/Text';
+import { formatDate } from '@/utils/date';
 import type { RefObject } from 'react';
+import certificateFrame from '#/assets/avif/certificate-frame.avif';
+import challengeGoldMedal from '#/assets/avif/challenge-gold-medal.avif';
+import logo from '#/assets/avif/logo.avif';
 
 interface CertificateProps {
   nickname: string;
@@ -20,169 +26,170 @@ const Certificate = ({
   // medalCondition,
   ref,
 }: CertificateProps) => {
-  const formattedStartDate = formatDate(startDate);
-  const formattedEndDate = formatDate(endDate);
+  const formattedStartDate = formatDate(new Date(startDate));
+  const formattedEndDate = formatDate(new Date(endDate));
 
   return (
     <CertificateWrapper ref={ref}>
-      <CertificateInner>
-        <Header>
-          <Logo>BOMBOM</Logo>
-          <Title>수료증</Title>
-        </Header>
+      <TopTitle>[봄봄] 챌린지 수료증</TopTitle>
 
-        <Content>
-          <UserName>{nickname}</UserName>
-          <Description>
-            위 사람은 봄봄 {challengeName} {generation}기 챌린지를
-            <br />
-            성실히 수행하였기에 이 수료증을 수여합니다.
-          </Description>
+      <Main>
+        <NameRow>
+          <UserName title={nickname}>{nickname}</UserName>
 
-          <Stats>
-            <StatItem>
-              <StatLabel>달성률</StatLabel>
-            </StatItem>
-            <StatDivider />
-            <StatItem>
-              <StatLabel>완료일</StatLabel>
-            </StatItem>
-          </Stats>
+          <MedalImg src={challengeGoldMedal} alt="" />
+        </NameRow>
 
-          <Period>
-            {formattedStartDate} ~ {formattedEndDate}
-          </Period>
-        </Content>
+        <Flex direction="column" gap={6}>
+          <MetaLine>
+            <MetaLabel>프로그램:</MetaLabel>
+            <MetaValue>{challengeName}</MetaValue>
+          </MetaLine>
+          <MetaLine>
+            <MetaLabel>기수:</MetaLabel>
+            <MetaValue>{generation}기</MetaValue>
+          </MetaLine>
+          <MetaLine>
+            <MetaLabel>기간:</MetaLabel>
+            <MetaValue>
+              {formattedStartDate} ~ {formattedEndDate}
+            </MetaValue>
+          </MetaLine>
+        </Flex>
 
-        <Footer>
-          <FooterText>봄봄 독서 챌린지</FooterText>
-        </Footer>
-      </CertificateInner>
+        <Description>
+          위 사람은 봄봄에서 진행한 {challengeName} {generation}기에
+          <br />
+          단 하루의 결석 없이 모든 일정을 성실히 완료하였으므로
+          <br />이 금메달 수료증을 수여합니다.
+        </Description>
+      </Main>
+
+      <Bottom>
+        <BrandWrapper>
+          <Text font="caption">뉴스레터 서비스</Text>
+          <Flex align="center" gap={8}>
+            <BrandMark src={logo} alt="봄봄 로고" />
+            <Text font="body1">봄봄</Text>
+          </Flex>
+          <Text font="caption">www.bombom.news</Text>
+        </BrandWrapper>
+        <IssuedDate>{formattedEndDate}</IssuedDate>
+        <EmptyBox />
+      </Bottom>
     </CertificateWrapper>
   );
 };
 
 export default Certificate;
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
-};
-
 const CertificateWrapper = styled.div`
+  position: relative;
   width: 100%;
   max-width: 480px;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgb(0 0 0 / 10%);
+  padding: 80px 60px;
+  border-radius: 10px;
 
-  background: linear-gradient(
-    135deg,
-    ${({ theme }) => theme.colors.primaryLight} 0%,
-    ${({ theme }) => theme.colors.white} 50%,
-    ${({ theme }) => theme.colors.primaryLight} 100%
-  );
+  background-image: url(${certificateFrame});
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 
-  aspect-ratio: 3 / 4;
-
-  box-sizing: border-box;
+  aspect-ratio: 456 / 673;
 `;
 
-const CertificateInner = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 32px 24px;
-  border: 2px solid ${({ theme }) => theme.colors.primary};
-  border-radius: 12px;
+const TopTitle = styled.h1`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.heading2};
+  text-align: center;
+`;
 
+const Main = styled.div`
+  margin-top: 32px;
+`;
+
+const NameRow = styled.div`
   display: flex;
-  flex-direction: column;
+  gap: 16px;
   align-items: center;
   justify-content: space-between;
-
-  background-color: ${({ theme }) => theme.colors.white};
-
-  box-sizing: border-box;
 `;
 
-const Header = styled.div`
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-  align-items: center;
-`;
+const UserName = styled.h2`
+  overflow: hidden;
+  max-width: 260px;
+  margin-left: 70px;
 
-const Logo = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
-  font-weight: 700;
-  letter-spacing: 4px;
-`;
-
-const Title = styled.h1`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading2};
 `;
 
-const Content = styled.div`
-  display: flex;
-  gap: 24px;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+const MedalImg = styled.img`
+  width: 140px;
+  height: 140px;
+
+  display: block;
+
+  object-fit: contain;
 `;
 
-const UserName = styled.h2`
-  color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading1};
+const MetaLine = styled.div`
+  display: flex;
+  gap: 8px;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body2};
+`;
+
+const MetaLabel = styled.span`
+  font-weight: 700;
+  opacity: 0.95;
+`;
+
+const MetaValue = styled.span`
+  font-weight: 600;
+  opacity: 0.95;
 `;
 
 const Description = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
+  max-width: 360px;
+  margin: 44px 0 0;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body1};
+`;
+
+const Bottom = styled.div`
+  position: absolute;
+  right: 44px;
+  bottom: 50px;
+  left: 44px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+`;
+
+const EmptyBox = styled.div`
+  flex: 1;
+`;
+
+const IssuedDate = styled.div`
+  flex: 1;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body2};
-  line-height: 1.6;
   text-align: center;
 `;
 
-const Stats = styled.div`
+const BrandWrapper = styled.div`
   display: flex;
-  gap: 24px;
-  align-items: center;
-`;
-
-const StatItem = styled.div`
-  display: flex;
-  gap: 4px;
+  gap: 6px;
+  flex: 1;
   flex-direction: column;
-  align-items: center;
 `;
 
-const StatLabel = styled.span`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
-`;
-
-const StatDivider = styled.div`
-  width: 1px;
-  height: 40px;
-
-  background-color: ${({ theme }) => theme.colors.stroke};
-`;
-
-const Period = styled.p`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
-`;
-
-const Footer = styled.div`
-  display: flex;
-  gap: 4px;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const FooterText = styled.span`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+const BrandMark = styled.img`
+  width: 28px;
+  height: 28px;
 `;
