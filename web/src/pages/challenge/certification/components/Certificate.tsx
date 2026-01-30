@@ -29,6 +29,10 @@ const Certificate = ({
   const formattedStartDate = formatDate(new Date(startDate));
   const formattedEndDate = formatDate(new Date(endDate));
 
+  const issuedDate = new Date(endDate);
+  issuedDate.setDate(issuedDate.getDate() + 1);
+  const formattedIssuedDate = formatDate(issuedDate);
+
   return (
     <CertificateWrapper ref={ref}>
       <TopTitle>[봄봄] 챌린지 수료증</TopTitle>
@@ -74,7 +78,7 @@ const Certificate = ({
           </Flex>
           <Text font="caption">www.bombom.news</Text>
         </BrandWrapper>
-        <IssuedDate>{formattedEndDate}</IssuedDate>
+        <IssuedDate>{formattedIssuedDate}</IssuedDate>
         <EmptyBox />
       </Bottom>
     </CertificateWrapper>
