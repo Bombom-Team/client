@@ -69,11 +69,11 @@ const Certificate = ({
       <TopTitle>[봄봄] 챌린지 수료증</TopTitle>
 
       <Main>
-        <NameRow>
+        <Flex justify="space-between" align="center" gap={16}>
           <UserName title={nickname}>{nickname}</UserName>
 
           <MedalImg src={MEDAL_IMAGE[medal]} alt={MEDAL_LABEL[medal]} />
-        </NameRow>
+        </Flex>
 
         <Flex direction="column" gap={6}>
           <MetaLine>
@@ -145,15 +145,7 @@ const Main = styled.div`
   margin-top: 32px;
 `;
 
-const NameRow = styled.div`
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  justify-content: space-between;
-`;
-
 const UserName = styled.h2`
-  overflow: hidden;
   max-width: 260px;
   margin-left: 70px;
 
@@ -164,10 +156,6 @@ const UserName = styled.h2`
 const MedalImg = styled.img`
   width: 140px;
   height: 140px;
-
-  display: block;
-
-  object-fit: contain;
 `;
 
 const MetaLine = styled.div`

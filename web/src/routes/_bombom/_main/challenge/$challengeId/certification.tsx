@@ -4,6 +4,9 @@ import { createFileRoute, useParams } from '@tanstack/react-router';
 import html2canvas from 'html2canvas';
 import { useRef } from 'react';
 import { queries } from '@/apis/queries';
+import Button from '@/components/Button/Button';
+import Flex from '@/components/Flex';
+import { useDevice } from '@/hooks/useDevice';
 import Certificate from '@/pages/challenge/certification/components/Certificate';
 
 export const Route = createFileRoute(
@@ -25,6 +28,8 @@ function ChallengeCertification() {
   });
   const challengeId = Number(stringChallengeId);
   const certificateRef = useRef<HTMLDivElement>(null);
+  const device = useDevice();
+  const isPC = device === 'pc';
 
   const { data: certificationInfo } = useQuery(
     queries.certificationInfo(challengeId),
@@ -50,10 +55,19 @@ function ChallengeCertification() {
 
   return (
     <Container>
-      <Certificate {...certificationInfo} ref={certificateRef} />
-      <DownloadButton onClick={handleDownload}>
-        이미지로 저장하기
-      </DownloadButton>
+      <Flex direction={isPC ? 'row' : 'column'} align="flex-start" gap={16}>
+        {!isPC && (
+          <DownloadButton onClick={handleDownload}>
+            💾 이미지로 저장하기
+          </DownloadButton>
+        )}
+        <Certificate {...certificationInfo} ref={certificateRef} />
+        {isPC && (
+          <DownloadButton onClick={handleDownload}>
+            💾 이미지로 저장하기
+          </DownloadButton>
+        )}
+      </Flex>
     </Container>
   );
 }
@@ -62,26 +76,16 @@ const Container = styled.section`
   width: 100%;
 
   display: flex;
-  gap: 24px;
   flex-direction: column;
   align-items: center;
 `;
 
-const DownloadButton = styled.button`
-  width: 100%;
-  max-width: 480px;
-  padding: 16px 24px;
+const DownloadButton = styled(Button)`
+  padding: 12px 16px;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
 
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.caption};
   font-weight: 600;
-
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.9;
-  }
+  white-space: nowrap;
 `;
