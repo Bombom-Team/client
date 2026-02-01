@@ -43,10 +43,8 @@ const LeaderboardItem = ({
   readCount,
   badges,
 }: LeaderboardItemProps) => {
-  const [tooltipText, setTooltipText] = useState('');
-  const [tooltipAnchor, setTooltipAnchor] = useState<{
-    current: HTMLElement | null;
-  } | null>(null);
+  const [rankingTooltipOpened, setRankingTooltipOpened] = useState(false);
+  const [challengeTooltipOpened, setChallengeTooltipOpened] = useState(false);
   const rankingBadgeRef = useRef<HTMLDivElement>(null);
   const challengeBadgeRef = useRef<HTMLDivElement>(null);
   const rankingBadgeSrc = badges?.ranking
@@ -62,18 +60,11 @@ const LeaderboardItem = ({
     : '';
   const challengeTooltipText = badges?.challenge?.name ?? '';
 
-  const showTooltip = (
-    text: string,
-    anchorRef: { current: HTMLElement | null },
-  ) => {
-    setTooltipText(text);
-    setTooltipAnchor(anchorRef);
-  };
+  const openRankingTooltip = () => setRankingTooltipOpened(true);
+  const closeRankingTooltip = () => setRankingTooltipOpened(false);
 
-  const hideTooltip = () => {
-    setTooltipText('');
-    setTooltipAnchor(null);
-  };
+  const openChallengeTooltip = () => setChallengeTooltipOpened(true);
+  const closeChallengeTooltip = () => setChallengeTooltipOpened(false);
 
   return (
     <Container
@@ -97,48 +88,53 @@ const LeaderboardItem = ({
           <BadgeItem
             tabIndex={0}
             ref={rankingBadgeRef}
-            onMouseEnter={() =>
-              showTooltip(rankingTooltipText, rankingBadgeRef)
-            }
-            onMouseLeave={hideTooltip}
+            onMouseEnter={openRankingTooltip}
+            onMouseLeave={closeRankingTooltip}
             onFocus={() => {
-              showTooltip(rankingTooltipText, rankingBadgeRef);
+              openRankingTooltip();
             }}
-            onBlur={hideTooltip}
+            onBlur={closeRankingTooltip}
           >
             <Badge
               src={rankingBadgeSrc}
               alt={`${badges.ranking.year}년 ${badges.ranking.month}월 랭킹 ${badges.ranking.grade}`}
               loading="lazy"
             />
+            <Tooltip
+              opened={rankingTooltipOpened}
+              placement="top"
+              anchorRef={rankingBadgeRef}
+            >
+              {rankingTooltipText}
+            </Tooltip>
           </BadgeItem>
         )}
         {challengeBadgeSrc && badges?.challenge && (
           <BadgeItem
             tabIndex={0}
             ref={challengeBadgeRef}
-            onMouseEnter={() =>
-              showTooltip(challengeTooltipText, challengeBadgeRef)
-            }
-            onMouseLeave={hideTooltip}
+            onMouseEnter={openChallengeTooltip}
+            onMouseLeave={closeChallengeTooltip}
             onFocus={() => {
-              showTooltip(challengeTooltipText, challengeBadgeRef);
+              openChallengeTooltip();
             }}
-            onBlur={hideTooltip}
+            onBlur={closeChallengeTooltip}
           >
             <Badge
               src={challengeBadgeSrc}
               alt={`${badges.challenge.name} ${badges.challenge.generation}기 ${badges.challenge.grade}`}
               loading="lazy"
             />
+            <Tooltip
+              opened={challengeTooltipOpened}
+              placement="top"
+              anchorRef={challengeBadgeRef}
+            >
+              {challengeTooltipText}
+            </Tooltip>
           </BadgeItem>
         )}
       </BadgeWrapper>
-      {tooltipText && tooltipAnchor && (
-        <Tooltip opened placement="top" anchorRef={tooltipAnchor}>
-          {tooltipText}
-        </Tooltip>
-      )}
     </Container>
   );
 };
