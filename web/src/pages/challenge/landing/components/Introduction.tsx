@@ -90,10 +90,11 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
           </Flex>
           <Flex direction="column" gap={4} align="center" justify="center">
             <PeriodDate device={device}>
-              시작 일: <Strong>{startDate}</Strong>
+              <Strong>{startDate}</Strong>
             </PeriodDate>
+            ~
             <PeriodDate device={device}>
-              종료 일: <Strong>{endDate}</Strong>
+              <Strong>{endDate}</Strong>
             </PeriodDate>
           </Flex>
         </Period>
@@ -183,7 +184,7 @@ const IntroText = styled(Text)<{ device: Device }>`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
   text-align: center;
   white-space: pre-line;
 `;
@@ -227,13 +228,14 @@ const OverviewItem = styled.p<{ device: Device }>`
 `;
 
 const Period = styled.div`
-  padding: 16px;
+  padding: 16px 32px;
   border-radius: 12px;
 
   display: flex;
   gap: 8px;
   flex-direction: column;
   align-items: center;
+  align-self: center;
   justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.white};
