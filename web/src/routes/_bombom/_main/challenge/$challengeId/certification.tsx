@@ -5,7 +5,6 @@ import html2canvas from 'html2canvas';
 import { useRef } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
-import Flex from '@/components/Flex';
 import { useDevice } from '@/hooks/useDevice';
 import Certificate from '@/pages/challenge/certification/components/Certificate';
 
@@ -21,6 +20,8 @@ export const Route = createFileRoute(
   }),
   component: ChallengeCertification,
 });
+
+const MOBILE_CERTIFICATE_SCALE = 0.6;
 
 function ChallengeCertification() {
   const { challengeId: stringChallengeId } = useParams({
@@ -55,19 +56,21 @@ function ChallengeCertification() {
 
   return (
     <Container>
-      <Flex direction={isPC ? 'row' : 'column'} align="flex-start" gap={16}>
+      <ContentWrapper isPC={isPC}>
         {!isPC && (
           <DownloadButton onClick={handleDownload}>
             💾 이미지로 저장하기
           </DownloadButton>
         )}
-        <Certificate {...certificationInfo} ref={certificateRef} />
+        <CertificateScaler isPC={isPC}>
+          <Certificate {...certificationInfo} ref={certificateRef} />
+        </CertificateScaler>
         {isPC && (
           <DownloadButton onClick={handleDownload}>
             💾 이미지로 저장하기
           </DownloadButton>
         )}
-      </Flex>
+      </ContentWrapper>
     </Container>
   );
 }
@@ -78,6 +81,19 @@ const Container = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+const ContentWrapper = styled.div<{ isPC: boolean }>`
+  display: flex;
+  gap: 16px;
+  flex-direction: ${({ isPC }) => (isPC ? 'row' : 'column')};
+  align-items: ${({ isPC }) => (isPC ? 'flex-start' : 'center')};
+`;
+
+const CertificateScaler = styled.div<{ isPC: boolean }>`
+  transform: ${({ isPC }) =>
+    isPC ? 'none' : `scale(${MOBILE_CERTIFICATE_SCALE})`};
+  transform-origin: top center;
 `;
 
 const DownloadButton = styled(Button)`

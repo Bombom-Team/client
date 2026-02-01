@@ -65,7 +65,7 @@ const Certificate = ({
   const formattedIssuedDate = formatDate(issuedDate);
 
   return (
-    <CertificateWrapper ref={ref}>
+    <Container ref={ref}>
       <TopTitle>[봄봄] 챌린지 수료증</TopTitle>
 
       <Main>
@@ -114,16 +114,15 @@ const Certificate = ({
         <IssuedDate>{formattedIssuedDate}</IssuedDate>
         <EmptyBox />
       </Bottom>
-    </CertificateWrapper>
+    </Container>
   );
 };
 
 export default Certificate;
 
-const CertificateWrapper = styled.div`
+const Container = styled.div`
   position: relative;
-  width: 100%;
-  max-width: 480px;
+  width: 480px;
   padding: 80px 60px;
   border-radius: 10px;
 
