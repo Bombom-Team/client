@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useSearch } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSignupMutation } from '../hooks/useSignupMutation';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
@@ -28,6 +28,7 @@ const SignupCard = () => {
   const [emailHelpOpened, setEmailHelpOpened] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
   const { email: emailParam, name: nameParam } = useSearch({ from: '/signup' });
+  const emailHelpButtonRef = useRef<HTMLButtonElement>(null);
 
   const {
     birthDateError,
@@ -115,12 +116,17 @@ const SignupCard = () => {
               onMouseLeave={closeEmailHelp}
               onFocus={openEmailHelp}
               onBlur={closeEmailHelp}
+              ref={emailHelpButtonRef}
             >
               <EmailHelpIcon fill={theme.colors.primary} />
             </TooltipButton>
             <InfoText>이 주소로 뉴스레터가 도착해요!</InfoText>
 
-            <Tooltip id="email-help-tooltip" opened={emailHelpOpened}>
+            <Tooltip
+              id="email-help-tooltip"
+              opened={emailHelpOpened}
+              anchorRef={emailHelpButtonRef}
+            >
               봄봄은 <b>개인 메일</b>이 아닌 <b>봄봄 전용 메일</b>(
               <b>{EMAIL_DOMAIN}</b>)로 뉴스레터를 <b>수신</b>해요.
               <br />- 뉴스레터 전용이라 깔끔하게 관리돼요.
