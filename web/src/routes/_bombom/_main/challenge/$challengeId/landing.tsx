@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import Hero from '@/pages/challenge/landing/components/Hero';
+import Introduction from '@/pages/challenge/landing/components/Introduction';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/landing',
@@ -35,6 +36,10 @@ function ChallengeLanding() {
       <Hero
         challengeName={challengeInfo.name}
         generation={challengeInfo.generation}
+      />
+      <Introduction
+        startDate={challengeInfo.startDate}
+        endDate={challengeInfo.endDate}
       />
     </Container>
   );
