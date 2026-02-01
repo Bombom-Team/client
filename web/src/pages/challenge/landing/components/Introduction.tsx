@@ -1,7 +1,9 @@
+import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import CalendarIcon from '#/assets/svg/calendar.svg';
 import CheckIcon from '#/assets/svg/check-circle.svg';
 import QuoteIcon from '#/assets/svg/quote.svg';
 
@@ -73,12 +75,19 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
           </OverviewItem>
         </Overview>
         <Period>
-          <Text
-            font={device === 'mobile' ? 'body2' : 'body1'}
-            color="textTertiary"
-          >
-            진행 기간
-          </Text>
+          <Flex gap={4} align="center">
+            <CalendarIcon
+              width={device === 'mobile' ? 16 : 20}
+              height={device === 'mobile' ? 16 : 20}
+              color={theme.colors.textTertiary}
+            />
+            <Text
+              font={device === 'mobile' ? 'body2' : 'body1'}
+              color="textTertiary"
+            >
+              진행 기간
+            </Text>
+          </Flex>
           <Flex direction="column" gap={4} align="center" justify="center">
             <PeriodDate device={device}>
               시작 일: <Strong>{startDate}</Strong>
@@ -209,6 +218,7 @@ const OverviewItem = styled.p<{ device: Device }>`
   svg {
     width: ${({ device }) => (device === 'mobile' ? '16px' : '18px')};
     height: ${({ device }) => (device === 'mobile' ? '16px' : '18px')};
+    margin-top: 2px;
 
     flex-shrink: 0;
 
