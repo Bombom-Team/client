@@ -22,6 +22,52 @@ interface TooltipProps {
 
 const OFFSET_PX = 8;
 
+const getTooltipPosition = (
+  rect: DOMRect,
+  tooltipRect: DOMRect,
+  placement: TooltipPosition,
+) => {
+  let left = rect.left;
+  let top = rect.top;
+
+  switch (placement) {
+    case 'top':
+      left = rect.left;
+      top = rect.top - tooltipRect.height - OFFSET_PX;
+      break;
+    case 'bottom':
+      left = rect.left;
+      top = rect.bottom + OFFSET_PX;
+      break;
+    case 'left':
+      left = rect.left - tooltipRect.width - OFFSET_PX;
+      top = rect.top + rect.height / 2 - tooltipRect.height / 2;
+      break;
+    case 'right':
+      left = rect.right + OFFSET_PX;
+      top = rect.top + rect.height / 2 - tooltipRect.height / 2;
+      break;
+    case 'top-left':
+      left = rect.right - tooltipRect.width;
+      top = rect.top - tooltipRect.height - OFFSET_PX;
+      break;
+    case 'top-right':
+      left = rect.left;
+      top = rect.top - tooltipRect.height - OFFSET_PX;
+      break;
+    case 'bottom-left':
+      left = rect.right - tooltipRect.width;
+      top = rect.bottom + OFFSET_PX;
+      break;
+    case 'bottom-right':
+    default:
+      left = rect.left;
+      top = rect.bottom + OFFSET_PX;
+  }
+
+  return { left, top };
+};
+
 const Tooltip = ({
   id,
   opened,
@@ -39,43 +85,7 @@ const Tooltip = ({
       if (!anchorRef.current || !tooltipRef.current) return;
       const rect = anchorRef.current.getBoundingClientRect();
       const tooltipRect = tooltipRef.current.getBoundingClientRect();
-      let left = rect.left;
-      let top = rect.top;
-
-      switch (placement) {
-        case 'top':
-          left = rect.left;
-          top = rect.top - tooltipRect.height - OFFSET_PX;
-          break;
-        case 'bottom':
-          left = rect.left;
-          top = rect.bottom + OFFSET_PX;
-          break;
-        case 'left':
-          left = rect.left - tooltipRect.width - OFFSET_PX;
-          top = rect.top + rect.height / 2 - tooltipRect.height / 2;
-          break;
-        case 'right':
-          left = rect.right + OFFSET_PX;
-          top = rect.top + rect.height / 2 - tooltipRect.height / 2;
-          break;
-        case 'top-left':
-          left = rect.right - tooltipRect.width;
-          top = rect.top - tooltipRect.height - OFFSET_PX;
-          break;
-        case 'top-right':
-          left = rect.left;
-          top = rect.top - tooltipRect.height - OFFSET_PX;
-          break;
-        case 'bottom-left':
-          left = rect.right - tooltipRect.width;
-          top = rect.bottom + OFFSET_PX;
-          break;
-        case 'bottom-right':
-        default:
-          left = rect.left;
-          top = rect.bottom + OFFSET_PX;
-      }
+      const { left, top } = getTooltipPosition(rect, tooltipRect, placement);
 
       setPosition({
         left,
