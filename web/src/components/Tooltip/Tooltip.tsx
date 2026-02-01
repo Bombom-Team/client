@@ -32,11 +32,11 @@ const getTooltipPosition = (
 
   switch (placement) {
     case 'top':
-      left = rect.left;
+      left = rect.left + rect.width / 2 - tooltipRect.width / 2;
       top = rect.top - tooltipRect.height - OFFSET_PX;
       break;
     case 'bottom':
-      left = rect.left;
+      left = rect.left + rect.width / 2 - tooltipRect.width / 2;
       top = rect.bottom + OFFSET_PX;
       break;
     case 'left':
