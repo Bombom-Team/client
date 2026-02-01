@@ -4,6 +4,7 @@ import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import ChallengeBenefits from '@/pages/challenge/landing/components/ChallengeBenefits';
+import ChallengeDetail from '@/pages/challenge/landing/components/ChallengeDetail';
 import Hero from '@/pages/challenge/landing/components/Hero';
 import Introduction from '@/pages/challenge/landing/components/Introduction';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
@@ -47,6 +48,7 @@ function ChallengeLanding() {
           endDate={challengeInfo.endDate}
         />
         <ChallengeBenefits />
+        <ChallengeDetail />
       </Content>
     </Container>
   );
