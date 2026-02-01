@@ -44,15 +44,8 @@ export const patchWeeklyReadingGoal = async ({
   });
 };
 
-type MonthlyReadingRankItem =
+export type GetMonthlyReadingRankResponse =
   components['schemas']['MonthlyReadingRankResponse'];
-
-export type GetMonthlyReadingRankResponse = Omit<
-  components['schemas']['MonthlyReadingRankingResponse'],
-  'data'
-> & {
-  data: MonthlyReadingRankItem[];
-};
 export type GetMonthlyReadingRankParams =
   operations['getMonthlyReadingRank']['parameters']['query'];
 
