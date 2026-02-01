@@ -12,6 +12,7 @@ import {
   getChallengeArticleHighlights,
   getDailyGuideComments,
   getMyDailyGuideComment,
+  getCertificationInfo,
 } from './challenge.api';
 import type {
   GetChallengeCommentCandidateArticlesParams,
@@ -128,5 +129,10 @@ export const challengeQueries = {
         params,
       ],
       queryFn: () => getDailyGuideComments(params),
+    }),
+  certificationInfo: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', challengeId, 'certification', 'info'],
+      queryFn: () => getCertificationInfo(challengeId),
     }),
 };

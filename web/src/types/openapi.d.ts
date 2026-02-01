@@ -79,7 +79,7 @@ export interface paths {
     put?: never;
     /**
      * 뉴스레터 구독 취소
-     * @description 뉴스레터 구독 취소를 요청합니다. 자동 취소가 비동기로 진행되며, 실패 시 구독 목록에서 수동 취소 링크를 확인할 수 있습니다.
+     * @description 뉴스레터 구독을 취소합니다. 구독 리스트에서 삭제하고 unsubscribeUrl이 존재하는 경우 반환됩니다.
      */
     post: operations['unsubscribe'];
     delete?: never;
@@ -812,6 +812,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/challenges/{id}/certification': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 수료증 정보 조회
+     * @description 사용자의 챌린지 수료증 정보(닉네임, 챌린지명, 기수, 기간, 메달 등급)를 조회합니다.
+     */
+    get: operations['getCertificationInfo'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/challenges/{challengeId}/daily-guides/{dayIndex}/comments': {
     parameters: {
       query?: never;
@@ -1160,6 +1180,9 @@ export interface components {
     UpdateWarningSettingRequest: {
       isVisible?: boolean;
     };
+    UnsubscribeResponse: {
+      unsubscribeUrl?: string;
+    };
     HighlightCreateRequest: {
       location: components['schemas']['HighlightLocationRequest'];
       /** Format: int64 */
@@ -1305,14 +1328,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['NoticeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1368,9 +1391,7 @@ export interface components {
       imageUrl?: string;
       description: string;
       category: string;
-      unsubscribeUrl?: string;
-      /** @enum {string} */
-      status: 'SUBSCRIBED' | 'UNSUBSCRIBING' | 'UNSUBSCRIBE_FAILED';
+      hasUnsubscribeUrl: boolean;
     };
     ReadingInformationResponse: {
       /**
@@ -1413,12 +1434,24 @@ export interface components {
       /** Format: int32 */
       readCount: number;
     };
+    BadgesResponse: {
+      ranking?: components['schemas']['RankingBadgeResponse'];
+      challenge?: components['schemas']['ChallengeBadgeResponse'];
+    };
+    ChallengeBadgeResponse: {
+      /** @enum {string} */
+      grade: 'GOLD' | 'SILVER' | 'BRONZE';
+      name: string;
+      /** Format: int32 */
+      generation: number;
+    };
     MonthlyReadingRankResponse: {
       nickname: string;
       /** Format: int64 */
       rank: number;
       /** Format: int32 */
       monthlyReadCount: number;
+      badges?: components['schemas']['BadgesResponse'];
     };
     MonthlyReadingRankingResponse: {
       /** Format: date-time */
@@ -1428,6 +1461,14 @@ export interface components {
       /** Format: date-time */
       serverTime: string;
       data: components['schemas']['MonthlyReadingRankResponse'][];
+    };
+    RankingBadgeResponse: {
+      /** @enum {string} */
+      grade: 'GOLD' | 'SILVER' | 'BRONZE';
+      /** Format: int32 */
+      year: number;
+      /** Format: int32 */
+      month: number;
     };
     MemberMonthlyReadingRankResponse: {
       /** Format: int64 */
@@ -1483,14 +1524,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1529,7 +1570,7 @@ export interface components {
        */
       progress: number;
       /** @enum {string} */
-      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'COMPLETE' | 'FAIL';
+      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
       isSuccess?: boolean;
     };
     ChallengeNewsletterResponse: {
@@ -1641,6 +1682,20 @@ export interface components {
         | 'NOT_SUBSCRIBED'
         | 'ELIGIBLE';
     };
+    CertificationInfoResponse: {
+      nickname: string;
+      challengeName: string;
+      /** Format: int32 */
+      generation: number;
+      /** Format: date */
+      startDate: string;
+      /** Format: date */
+      endDate: string;
+      /** @enum {string} */
+      medal: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
+      /** Format: int32 */
+      medalCondition: number;
+    };
     MemberDailyCommentResponse: {
       comment: string;
     };
@@ -1655,14 +1710,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['DailyGuideCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1712,14 +1767,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1736,14 +1791,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentHighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1783,14 +1838,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1843,14 +1898,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2138,21 +2193,18 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
-      };
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown;
+        content: {
+          '*/*': components['schemas']['UnsubscribeResponse'];
         };
-        content?: never;
       };
       /** @description 인증 실패 */
       401: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          '*/*': components['schemas']['UnsubscribeResponse'];
+        };
       };
     };
   };
@@ -3675,6 +3727,43 @@ export interface operations {
       };
       /** @description 챌린지를 찾을 수 없음 */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getCertificationInfo: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 수료증 정보 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CertificationInfoResponse'];
+        };
+      };
+      /** @description 잘못된 요청, 챌린지/참가자를 찾을 수 없음, 또는 진행 중인 챌린지, 탈락한 참가자 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
         headers: {
           [name: string]: unknown;
         };

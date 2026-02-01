@@ -2,6 +2,7 @@ import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
 
 const CHALLENGE_TABS = [
+  { id: 'certification', label: '수료증', path: 'certification' },
   { id: 'daily', label: '데일리 가이드', path: 'daily' },
   { id: 'dashboard', label: '진행 현황판', path: 'dashboard' },
   { id: 'comments', label: '한 줄 코멘트', path: 'comments' },
@@ -12,20 +13,34 @@ type ChallengeTabPath = (typeof CHALLENGE_TABS)[number]['path'];
 
 interface UseChallengeDetailTabsProps {
   challengeId: string;
+  isChallengeEnd: boolean;
 }
 
 export const useChallengeDetailTabs = ({
   challengeId,
+  isChallengeEnd,
 }: UseChallengeDetailTabsProps) => {
   const navigate = useNavigate();
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
 
+  const tabs = useMemo(
+    () =>
+      CHALLENGE_TABS.filter((tab) =>
+        isChallengeEnd ? tab.id !== 'daily' : tab.id !== 'certification',
+      ),
+    [isChallengeEnd],
+  );
+
+  const defaultTabId: ChallengeTabId = isChallengeEnd
+    ? 'certification'
+    : 'daily';
+
   const activeTabId: ChallengeTabId = useMemo(
     () =>
-      CHALLENGE_TABS.find((tab) => currentPath.endsWith(`/${tab.path}`))?.id ||
-      'daily',
-    [currentPath],
+      tabs.find((tab) => currentPath.endsWith(`/${tab.path}`))?.id ||
+      defaultTabId,
+    [currentPath, tabs, defaultTabId],
   );
 
   const goToTab = useCallback(
@@ -39,7 +54,7 @@ export const useChallengeDetailTabs = ({
   );
 
   return {
-    tabs: CHALLENGE_TABS,
+    tabs,
     activeTabId,
     goToTab,
   };

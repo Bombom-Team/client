@@ -28,10 +28,6 @@ function ChallengeDetail() {
   const { challengeId } = Route.useParams();
   const device = useDevice();
 
-  const { tabs, activeTabId, goToTab } = useChallengeDetailTabs({
-    challengeId,
-  });
-
   const { data: challengeInfo } = useQuery(
     queries.challengesInfo(Number(challengeId)),
   );
@@ -39,6 +35,15 @@ function ChallengeDetail() {
   const { data: memberChallengeProgressInfo } = useQuery(
     queries.memberProgress(Number(challengeId)),
   );
+
+  const isChallengeEnd = challengeInfo
+    ? new Date(challengeInfo.endDate) < new Date()
+    : false;
+
+  const { tabs, activeTabId, goToTab } = useChallengeDetailTabs({
+    challengeId,
+    isChallengeEnd,
+  });
 
   return (
     <>
