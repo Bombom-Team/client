@@ -28,7 +28,6 @@ function ChallengeCertification() {
     from: '/_bombom/_main/challenge/$challengeId/certification',
   });
   const challengeId = Number(stringChallengeId);
-  const scalerRef = useRef<HTMLDivElement>(null);
   const certificateRef = useRef<HTMLDivElement>(null);
   const device = useDevice();
   const isPC = device === 'pc';
@@ -38,14 +37,9 @@ function ChallengeCertification() {
   );
 
   const handleDownload = async () => {
-    if (!certificateRef.current || !scalerRef.current) return;
-
-    const originalTransform = scalerRef.current.style.transform;
-    scalerRef.current.style.transform = 'none';
+    if (!certificateRef.current) return;
 
     const canvas = await html2canvas(certificateRef.current);
-
-    scalerRef.current.style.transform = originalTransform;
 
     const link = document.createElement('a');
     link.download = `${certificationInfo?.nickname}_수료증.png`;
@@ -65,8 +59,8 @@ function ChallengeCertification() {
             💾 이미지로 저장하기
           </DownloadButton>
         )}
-        <CertificateScaler ref={scalerRef} isPC={isPC}>
-          <Certificate {...certificationInfo} ref={certificateRef} />
+        <CertificateScaler ref={certificateRef} isPC={isPC}>
+          <Certificate {...certificationInfo} />
         </CertificateScaler>
         {isPC && (
           <DownloadButton onClick={handleDownload}>

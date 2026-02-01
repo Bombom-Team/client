@@ -4,7 +4,6 @@ import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { formatDate } from '@/utils/date';
 import type { CertificateMedal } from '../types/certificate';
-import type { RefObject } from 'react';
 import certificateFrame from '#/assets/avif/certificate-frame.avif';
 import challengeBronzeMedal from '#/assets/avif/challenge-bronze-medal.avif';
 import challengeGoldMedal from '#/assets/avif/challenge-gold-medal.avif';
@@ -43,9 +42,7 @@ const getMedalDescription = (
   }
 };
 
-interface CertificateProps extends Certificate {
-  ref: RefObject<HTMLDivElement | null>;
-}
+type CertificateProps = Certificate;
 
 const Certificate = ({
   nickname,
@@ -55,7 +52,6 @@ const Certificate = ({
   endDate,
   medal,
   medalCondition,
-  ref,
 }: CertificateProps) => {
   const formattedStartDate = formatDate(new Date(startDate));
   const formattedEndDate = formatDate(new Date(endDate));
@@ -65,7 +61,7 @@ const Certificate = ({
   const formattedIssuedDate = formatDate(issuedDate);
 
   return (
-    <Container ref={ref}>
+    <Container>
       <TopTitle>[봄봄] 챌린지 수료증</TopTitle>
 
       <Main>
