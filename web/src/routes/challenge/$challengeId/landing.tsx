@@ -5,9 +5,7 @@ import { queries } from '@/apis/queries';
 import Hero from '@/pages/challenge/landing/components/Hero';
 import Introduction from '@/pages/challenge/landing/components/Introduction';
 
-export const Route = createFileRoute(
-  '/_bombom/_main/challenge/$challengeId/landing',
-)({
+export const Route = createFileRoute('/challenge/$challengeId/landing')({
   head: () => ({
     meta: [
       {
@@ -20,7 +18,7 @@ export const Route = createFileRoute(
 
 function ChallengeLanding() {
   const { challengeId } = useParams({
-    from: '/_bombom/_main/challenge/$challengeId/landing',
+    from: '/challenge/$challengeId/landing',
   });
 
   const { data: challengeInfo } = useQuery(
