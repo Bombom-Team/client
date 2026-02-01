@@ -109,8 +109,6 @@ const Tooltip = ({
     </Container>
   );
 
-  if (typeof document === 'undefined') return content;
-
   return createPortal(content, document.body);
 };
 
