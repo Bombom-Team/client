@@ -1,18 +1,49 @@
 import styled from '@emotion/styled';
+import { Certificate } from '../types/certificate';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { formatDate } from '@/utils/date';
+import type { CertificateMedal } from '../types/certificate';
 import type { RefObject } from 'react';
 import certificateFrame from '#/assets/avif/certificate-frame.avif';
+import challengeBronzeMedal from '#/assets/avif/challenge-bronze-medal.avif';
 import challengeGoldMedal from '#/assets/avif/challenge-gold-medal.avif';
+import challengeSilverMedal from '#/assets/avif/challenge-silver-medal.avif';
 import logo from '#/assets/avif/logo.avif';
 
-interface CertificateProps {
-  nickname: string;
-  challengeName: string;
-  generation: number;
-  startDate: string;
-  endDate: string;
+const MEDAL_IMAGE: Record<CertificateMedal, string> = {
+  GOLD: challengeGoldMedal,
+  SILVER: challengeSilverMedal,
+  BRONZE: challengeBronzeMedal,
+  FAIL: '',
+};
+
+const MEDAL_LABEL: Record<CertificateMedal, string> = {
+  GOLD: '금메달',
+  SILVER: '은메달',
+  BRONZE: '동메달',
+  FAIL: '',
+};
+
+const getMedalDescription = (
+  medal: CertificateMedal,
+  medalCondition: number,
+  challengeName: string,
+  generation: number,
+) => {
+  const firstLine = `위 사람은 봄봄에서 진행한 ${challengeName} ${generation}기에`;
+
+  switch (medal) {
+    case 'GOLD':
+      return `${firstLine}\n단 하루의 결석 없이 모든 일정을 성실히 완료하였으므로\n이 금메달 수료증을 수여합니다.`;
+    case 'SILVER':
+      return `${firstLine}\n전체 일정 중 ${medalCondition}% 이상을 성실히 완료하였으므로\n이 은메달 수료증을 수여합니다.`;
+    case 'BRONZE':
+      return `${firstLine}\n전체 일정 중 ${medalCondition}% 이상을 성실히 완료하였으므로\n이 동메당 수료증을 수여합니다.`;
+  }
+};
+
+interface CertificateProps extends Certificate {
   ref: RefObject<HTMLDivElement | null>;
 }
 
@@ -22,8 +53,8 @@ const Certificate = ({
   generation,
   startDate,
   endDate,
-  // medal,
-  // medalCondition,
+  medal,
+  medalCondition,
   ref,
 }: CertificateProps) => {
   const formattedStartDate = formatDate(new Date(startDate));
@@ -41,20 +72,20 @@ const Certificate = ({
         <NameRow>
           <UserName title={nickname}>{nickname}</UserName>
 
-          <MedalImg src={challengeGoldMedal} alt="" />
+          <MedalImg src={MEDAL_IMAGE[medal]} alt={MEDAL_LABEL[medal]} />
         </NameRow>
 
         <Flex direction="column" gap={6}>
           <MetaLine>
-            <MetaLabel>프로그램:</MetaLabel>
+            <MetaLabel>프로그램</MetaLabel>
             <MetaValue>{challengeName}</MetaValue>
           </MetaLine>
           <MetaLine>
-            <MetaLabel>기수:</MetaLabel>
+            <MetaLabel>기수</MetaLabel>
             <MetaValue>{generation}기</MetaValue>
           </MetaLine>
           <MetaLine>
-            <MetaLabel>기간:</MetaLabel>
+            <MetaLabel>기간</MetaLabel>
             <MetaValue>
               {formattedStartDate} ~ {formattedEndDate}
             </MetaValue>
@@ -62,10 +93,12 @@ const Certificate = ({
         </Flex>
 
         <Description>
-          위 사람은 봄봄에서 진행한 {challengeName} {generation}기에
-          <br />
-          단 하루의 결석 없이 모든 일정을 성실히 완료하였으므로
-          <br />이 금메달 수료증을 수여합니다.
+          {getMedalDescription(
+            medal,
+            medalCondition,
+            challengeName,
+            generation,
+          )}
         </Description>
       </Main>
 
@@ -146,13 +179,12 @@ const MetaLine = styled.div`
 `;
 
 const MetaLabel = styled.span`
-  font-weight: 700;
-  opacity: 0.95;
+  width: 64px;
+  font-weight: 600;
 `;
 
 const MetaValue = styled.span`
   font-weight: 600;
-  opacity: 0.95;
 `;
 
 const Description = styled.p`
