@@ -119,14 +119,14 @@ const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '48px' : '120px')};
+  gap: ${({ device }) => (device === 'mobile' ? '84px' : '210px')};
   flex-direction: column;
 `;
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
   text-align: center;
 `;
 
@@ -141,7 +141,7 @@ const FeatureItem = styled.article<{
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '32px' : '48px')};
+  gap: ${({ device }) => (device === 'mobile' ? '32px' : '64px')};
   flex-direction: ${({ imagePosition, device }) => {
     if (device === 'mobile') return 'column';
     return imagePosition === 'left' ? 'row' : 'row-reverse';
@@ -186,8 +186,7 @@ const Description = styled.div<{
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '4px' : '8px')};
   flex-direction: column;
-  align-items: ${({ device }) =>
-    device === 'mobile' ? 'center' : 'flex-start'};
+  align-items: flex-start;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) => {
