@@ -67,7 +67,7 @@ const ReadingKingLeaderboard = () => {
             {`${padTimeDigit(leftTime.minutes)}:${padTimeDigit(leftTime.seconds)}`}
             <Tooltip
               opened={rankExplainOpened}
-              position="bottom"
+              placement="bottom"
               anchorRef={countdownRef}
             >
               순위는 10분마다 갱신됩니다.

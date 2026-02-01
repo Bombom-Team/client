@@ -135,7 +135,7 @@ const LeaderboardItem = ({
         )}
       </BadgeWrapper>
       {tooltipText && tooltipAnchor && (
-        <Tooltip opened position="top" anchorRef={tooltipAnchor}>
+        <Tooltip opened placement="top" anchorRef={tooltipAnchor}>
           {tooltipText}
         </Tooltip>
       )}

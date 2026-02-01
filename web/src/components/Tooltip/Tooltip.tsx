@@ -16,7 +16,7 @@ type TooltipPosition =
 interface TooltipProps {
   id?: string;
   opened: boolean;
-  position?: TooltipPosition;
+  placement?: TooltipPosition;
   anchorRef: { current: HTMLElement | null };
 }
 
@@ -25,11 +25,11 @@ const OFFSET_PX = 8;
 const Tooltip = ({
   id,
   opened,
-  position = 'top',
+  placement = 'top',
   anchorRef,
   children,
 }: PropsWithChildren<TooltipProps>) => {
-  const [style, setStyle] = useState<CSSProperties | null>(null);
+  const [position, setPosition] = useState<CSSProperties | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -42,7 +42,7 @@ const Tooltip = ({
       let left = rect.left;
       let top = rect.top;
 
-      switch (position) {
+      switch (placement) {
         case 'top':
           left = rect.left;
           top = rect.top - tooltipRect.height - OFFSET_PX;
@@ -77,23 +77,23 @@ const Tooltip = ({
           top = rect.bottom + OFFSET_PX;
       }
 
-      setStyle({
+      setPosition({
         left,
         top,
       });
     };
 
     updatePosition();
-  }, [anchorRef, opened, position]);
+  }, [anchorRef, opened, placement]);
 
-  const portalOpened = opened && Boolean(style);
+  const portalOpened = opened && Boolean(position);
   const content = (
     <Container
       ref={tooltipRef}
       role="tooltip"
       id={id}
       opened={portalOpened}
-      style={style ?? {}}
+      style={position ?? {}}
     >
       {children}
     </Container>
