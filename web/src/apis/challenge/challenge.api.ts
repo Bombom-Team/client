@@ -223,10 +223,6 @@ export const getDailyGuideComments = async ({
 export type GetCertificationInfoResponse =
   components['schemas']['CertificationInfoResponse'];
 
-export type GetCertificationInfoParams = {
-  challengeId: number;
-};
-
 export const getCertificationInfo = async (challengeId: number) => {
   return await fetcher.get<GetCertificationInfoResponse>({
     path: `/challenges/${challengeId}/certification`,
