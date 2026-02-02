@@ -44,8 +44,30 @@ export const patchWeeklyReadingGoal = async ({
   });
 };
 
-export type GetMonthlyReadingRankResponse =
-  components['schemas']['MonthlyReadingRankingResponse'];
+type MonthlyReadingBadgeGrade = 'gold' | 'silver' | 'bronze';
+
+type MonthlyReadingRankItem =
+  components['schemas']['MonthlyReadingRankResponse'] & {
+    badges: {
+      ranking: {
+        grade: MonthlyReadingBadgeGrade;
+        year: number;
+        month: number;
+      };
+      challenge: {
+        grade: MonthlyReadingBadgeGrade;
+        name: string;
+        generation: number;
+      };
+    };
+  };
+
+export type GetMonthlyReadingRankResponse = Omit<
+  components['schemas']['MonthlyReadingRankingResponse'],
+  'data'
+> & {
+  data: MonthlyReadingRankItem[];
+};
 export type GetMonthlyReadingRankParams =
   operations['getMonthlyReadingRank']['parameters']['query'];
 
@@ -88,13 +110,11 @@ export const getMySubscriptions = async () => {
 
 export type PostNewsletterUnsubscribeParams =
   operations['unsubscribe']['parameters']['path'];
-export type PostNewsletterUnsubscribeResponse =
-  components['schemas']['UnsubscribeResponse'];
 
 export const postNewsletterUnsubscribe = async ({
   subscriptionId,
 }: PostNewsletterUnsubscribeParams) => {
-  return await fetcher.post<never, PostNewsletterUnsubscribeResponse>({
+  return await fetcher.post<never, never>({
     path: `/members/me/subscriptions/${subscriptionId}/unsubscribe`,
   });
 };

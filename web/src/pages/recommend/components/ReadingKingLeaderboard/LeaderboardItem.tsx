@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { useRef, useState } from 'react';
 import Tooltip from '@/components/Tooltip/Tooltip';
-import type { Badges, MonthlyReadingBadgeGrade } from '../../types/badges';
 
 const RANK_ICON_MAP: Record<number, string> = {
   1: '👑',
@@ -9,11 +8,27 @@ const RANK_ICON_MAP: Record<number, string> = {
   3: '🥉',
 };
 
+type MonthlyReadingBadgeGrade = 'gold' | 'silver' | 'bronze';
+
 const BADGE_RANKING_LABEL_MAP: Record<MonthlyReadingBadgeGrade, string> = {
-  GOLD: '1등',
-  SILVER: '2등',
-  BRONZE: '3등',
+  gold: '1등',
+  silver: '2등',
+  bronze: '3등',
 };
+
+// Todo: openapi 최신화 후 컴포넌트 내 인터페이스 제거 예정
+interface Badges {
+  ranking: {
+    grade: MonthlyReadingBadgeGrade;
+    year: number;
+    month: number;
+  };
+  challenge: {
+    grade: MonthlyReadingBadgeGrade;
+    name: string;
+    generation: number;
+  };
+}
 
 interface LeaderboardItemProps {
   rank: number;
@@ -28,41 +43,28 @@ const LeaderboardItem = ({
   readCount,
   badges,
 }: LeaderboardItemProps) => {
-  const [tooltipText, setTooltipText] = useState('');
-  const [tooltipAnchor, setTooltipAnchor] = useState<{
-    current: HTMLElement | null;
-  } | null>(null);
-
+  const [rankingTooltipOpened, setRankingTooltipOpened] = useState(false);
+  const [challengeTooltipOpened, setChallengeTooltipOpened] = useState(false);
   const rankingBadgeRef = useRef<HTMLDivElement>(null);
   const challengeBadgeRef = useRef<HTMLDivElement>(null);
-
   const rankingBadgeSrc = badges?.ranking
     ? `/assets/png/ranking_${badges.ranking.grade}.png`
     : null;
   const challengeBadgeSrc = badges?.challenge
     ? `/assets/png/challenge_${badges.challenge.generation}_${badges.challenge.grade}.png`
     : null;
-
   const rankingTooltipText = badges?.ranking
     ? `${badges.ranking.month}월 독서왕 ${
         BADGE_RANKING_LABEL_MAP[badges.ranking.grade]
       }`
     : '';
-  const challengeTooltipText = badges?.challenge
-    ? `${badges.challenge.name} ${badges.challenge.generation}기`
-    : '';
-  const showTooltip = (
-    text: string,
-    anchorRef: { current: HTMLElement | null },
-  ) => {
-    setTooltipText(text);
-    setTooltipAnchor(anchorRef);
-  };
+  const challengeTooltipText = badges?.challenge?.name ?? '';
 
-  const hideTooltip = () => {
-    setTooltipText('');
-    setTooltipAnchor(null);
-  };
+  const openRankingTooltip = () => setRankingTooltipOpened(true);
+  const closeRankingTooltip = () => setRankingTooltipOpened(false);
+
+  const openChallengeTooltip = () => setChallengeTooltipOpened(true);
+  const closeChallengeTooltip = () => setChallengeTooltipOpened(false);
 
   return (
     <Container
@@ -86,48 +88,53 @@ const LeaderboardItem = ({
           <BadgeItem
             tabIndex={0}
             ref={rankingBadgeRef}
-            onMouseEnter={() =>
-              showTooltip(rankingTooltipText, rankingBadgeRef)
-            }
-            onMouseLeave={hideTooltip}
+            onMouseEnter={openRankingTooltip}
+            onMouseLeave={closeRankingTooltip}
             onFocus={() => {
-              showTooltip(rankingTooltipText, rankingBadgeRef);
+              openRankingTooltip();
             }}
-            onBlur={hideTooltip}
+            onBlur={closeRankingTooltip}
           >
             <Badge
               src={rankingBadgeSrc}
               alt={`${badges.ranking.year}년 ${badges.ranking.month}월 랭킹 ${badges.ranking.grade}`}
               loading="lazy"
             />
+            <Tooltip
+              opened={rankingTooltipOpened}
+              placement="top"
+              anchorRef={rankingBadgeRef}
+            >
+              {rankingTooltipText}
+            </Tooltip>
           </BadgeItem>
         )}
         {challengeBadgeSrc && badges?.challenge && (
           <BadgeItem
             tabIndex={0}
             ref={challengeBadgeRef}
-            onMouseEnter={() =>
-              showTooltip(challengeTooltipText, challengeBadgeRef)
-            }
-            onMouseLeave={hideTooltip}
+            onMouseEnter={openChallengeTooltip}
+            onMouseLeave={closeChallengeTooltip}
             onFocus={() => {
-              showTooltip(challengeTooltipText, challengeBadgeRef);
+              openChallengeTooltip();
             }}
-            onBlur={hideTooltip}
+            onBlur={closeChallengeTooltip}
           >
             <Badge
               src={challengeBadgeSrc}
               alt={`${badges.challenge.name} ${badges.challenge.generation}기 ${badges.challenge.grade}`}
               loading="lazy"
             />
+            <Tooltip
+              opened={challengeTooltipOpened}
+              placement="top"
+              anchorRef={challengeBadgeRef}
+            >
+              {challengeTooltipText}
+            </Tooltip>
           </BadgeItem>
         )}
       </BadgeWrapper>
-      {tooltipText && tooltipAnchor && (
-        <Tooltip opened position="top" anchorRef={tooltipAnchor}>
-          {tooltipText}
-        </Tooltip>
-      )}
     </Container>
   );
 };

@@ -147,12 +147,45 @@ export const patchChallengeComment = async ({
   });
 };
 
+export type ChallengeCommentLikeResponse =
+  components['schemas']['ChallengeCommentLikeResponse'];
+
+export const putChallengeCommentLike = async (
+  challengeId: number,
+  commentId: number,
+) => {
+  return await fetcher.put<never, ChallengeCommentLikeResponse>({
+    path: `/challenges/${challengeId}/comments/${commentId}/like`,
+  });
+};
+
+export const deleteChallengeCommentLike = async (
+  challengeId: number,
+  commentId: number,
+) => {
+  return await fetcher.delete<never, ChallengeCommentLikeResponse>({
+    path: `/challenges/${challengeId}/comments/${commentId}/like`,
+  });
+};
+
 export type GetTodayDailyGuideResponse =
   components['schemas']['TodayDailyGuideResponse'];
 
 export const getTodayDailyGuide = async (challengeId: number) => {
   return await fetcher.get<GetTodayDailyGuideResponse>({
     path: `/challenges/${challengeId}/daily-guides/today`,
+  });
+};
+
+export type GetMyDailyGuideComment =
+  components['schemas']['DailyGuideCommentResponse'];
+
+export const getMyDailyGuideComment = async (
+  challengeId: number,
+  dayIndex: number,
+) => {
+  return await fetcher.get<GetMyDailyGuideComment>({
+    path: `/challenges/${challengeId}/daily-guides/${dayIndex}/my-comment`,
   });
 };
 

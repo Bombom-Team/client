@@ -45,7 +45,7 @@ const ViewAllCommentsButton = ({
         )}
         전체 답변 보기
       </StyledButton>
-      <Tooltip opened={showTooltip} position="top-right" anchorRef={buttonRef}>
+      <Tooltip opened={showTooltip} placement="top-right" anchorRef={buttonRef}>
         답변을 제출해야 확인할 수 있어요!
       </Tooltip>
     </Container>

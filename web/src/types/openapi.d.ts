@@ -79,7 +79,7 @@ export interface paths {
     put?: never;
     /**
      * 뉴스레터 구독 취소
-     * @description 뉴스레터 구독을 취소합니다. 구독 리스트에서 삭제하고 unsubscribeUrl이 존재하는 경우 반환됩니다.
+     * @description 뉴스레터 구독 취소를 요청합니다. 자동 취소가 비동기로 진행되며, 실패 시 구독 목록에서 수동 취소 링크를 확인할 수 있습니다.
      */
     post: operations['unsubscribe'];
     delete?: never;
@@ -1160,9 +1160,6 @@ export interface components {
     UpdateWarningSettingRequest: {
       isVisible?: boolean;
     };
-    UnsubscribeResponse: {
-      unsubscribeUrl?: string;
-    };
     HighlightCreateRequest: {
       location: components['schemas']['HighlightLocationRequest'];
       /** Format: int64 */
@@ -1308,14 +1305,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['NoticeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1371,7 +1368,9 @@ export interface components {
       imageUrl?: string;
       description: string;
       category: string;
-      hasUnsubscribeUrl: boolean;
+      unsubscribeUrl?: string;
+      /** @enum {string} */
+      status: 'SUBSCRIBED' | 'UNSUBSCRIBING' | 'UNSUBSCRIBE_FAILED';
     };
     ReadingInformationResponse: {
       /**
@@ -1504,14 +1503,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1676,14 +1675,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['DailyGuideCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1733,14 +1732,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1757,14 +1756,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentHighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1804,14 +1803,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1864,14 +1863,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2159,18 +2158,21 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          '*/*': components['schemas']['UnsubscribeResponse'];
+        content?: never;
+      };
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
+        content?: never;
       };
       /** @description 인증 실패 */
       401: {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          '*/*': components['schemas']['UnsubscribeResponse'];
-        };
+        content?: never;
       };
     };
   };

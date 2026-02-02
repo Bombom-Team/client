@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useUnsubscribeNewsletterMutation } from '@/pages/MyPage/hooks/useUnsubscribeNewsletterMutation';
-import { openExternalLink } from '@/utils/externalLink';
 
 export const useUnsubscribe = () => {
   const [selectedNewsletterId, setSelectedNewsletterId] = useState<
@@ -16,13 +15,9 @@ export const useUnsubscribe = () => {
   const confirmUnsubscribe = async () => {
     if (!selectedNewsletterId) return;
 
-    const data = await unsubscribeNewsletter({
+    await unsubscribeNewsletter({
       subscriptionId: selectedNewsletterId,
     });
-
-    if (data?.unsubscribeUrl) {
-      openExternalLink(data?.unsubscribeUrl);
-    }
   };
 
   return {

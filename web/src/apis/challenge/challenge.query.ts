@@ -11,6 +11,7 @@ import {
   getTodayDailyGuide,
   getChallengeArticleHighlights,
   getDailyGuideComments,
+  getMyDailyGuideComment,
 } from './challenge.api';
 import type {
   GetChallengeCommentCandidateArticlesParams,
@@ -105,6 +106,17 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', challengeId, 'daily-guide', 'today'],
       queryFn: () => getTodayDailyGuide(challengeId),
+    }),
+  myDailyGuideComment: (challengeId: number, dayIndex: number) =>
+    queryOptions({
+      queryKey: [
+        'challenges',
+        challengeId,
+        'daily-guides',
+        dayIndex,
+        'my-comment',
+      ],
+      queryFn: () => getMyDailyGuideComment(challengeId, dayIndex),
     }),
   dailyGuideComments: (params: GetDailyGuideCommentsParams) =>
     queryOptions({

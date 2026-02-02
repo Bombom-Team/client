@@ -36,8 +36,6 @@ const Container = styled.div`
   flex-direction: column;
   align-items: flex-start;
 
-  white-space: pre-line;
-
   -webkit-tap-highlight-color: rgb(0 0 0 / 10%);
   -webkit-touch-callout: default;
   user-select: text;

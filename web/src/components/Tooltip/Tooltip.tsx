@@ -16,20 +16,66 @@ type TooltipPosition =
 interface TooltipProps {
   id?: string;
   opened: boolean;
-  position?: TooltipPosition;
+  placement?: TooltipPosition;
   anchorRef: { current: HTMLElement | null };
 }
 
 const OFFSET_PX = 8;
 
+const getTooltipPosition = (
+  rect: DOMRect,
+  tooltipRect: DOMRect,
+  placement: TooltipPosition,
+) => {
+  let left = rect.left;
+  let top = rect.top;
+
+  switch (placement) {
+    case 'top':
+      left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+      top = rect.top - tooltipRect.height - OFFSET_PX;
+      break;
+    case 'bottom':
+      left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+      top = rect.bottom + OFFSET_PX;
+      break;
+    case 'left':
+      left = rect.left - tooltipRect.width - OFFSET_PX;
+      top = rect.top + rect.height / 2 - tooltipRect.height / 2;
+      break;
+    case 'right':
+      left = rect.right + OFFSET_PX;
+      top = rect.top + rect.height / 2 - tooltipRect.height / 2;
+      break;
+    case 'top-left':
+      left = rect.right - tooltipRect.width;
+      top = rect.top - tooltipRect.height - OFFSET_PX;
+      break;
+    case 'top-right':
+      left = rect.left;
+      top = rect.top - tooltipRect.height - OFFSET_PX;
+      break;
+    case 'bottom-left':
+      left = rect.right - tooltipRect.width;
+      top = rect.bottom + OFFSET_PX;
+      break;
+    case 'bottom-right':
+    default:
+      left = rect.left;
+      top = rect.bottom + OFFSET_PX;
+  }
+
+  return { left, top };
+};
+
 const Tooltip = ({
   id,
   opened,
-  position = 'top',
+  placement = 'top',
   anchorRef,
   children,
 }: PropsWithChildren<TooltipProps>) => {
-  const [style, setStyle] = useState<CSSProperties | null>(null);
+  const [position, setPosition] = useState<CSSProperties | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -39,67 +85,29 @@ const Tooltip = ({
       if (!anchorRef.current || !tooltipRef.current) return;
       const rect = anchorRef.current.getBoundingClientRect();
       const tooltipRect = tooltipRef.current.getBoundingClientRect();
-      let left = rect.left;
-      let top = rect.top;
+      const { left, top } = getTooltipPosition(rect, tooltipRect, placement);
 
-      switch (position) {
-        case 'top':
-          left = rect.left;
-          top = rect.top - tooltipRect.height - OFFSET_PX;
-          break;
-        case 'bottom':
-          left = rect.left;
-          top = rect.bottom + OFFSET_PX;
-          break;
-        case 'left':
-          left = rect.left - tooltipRect.width - OFFSET_PX;
-          top = rect.top + rect.height / 2 - tooltipRect.height / 2;
-          break;
-        case 'right':
-          left = rect.right + OFFSET_PX;
-          top = rect.top + rect.height / 2 - tooltipRect.height / 2;
-          break;
-        case 'top-left':
-          left = rect.right - tooltipRect.width;
-          top = rect.top - tooltipRect.height - OFFSET_PX;
-          break;
-        case 'top-right':
-          left = rect.left;
-          top = rect.top - tooltipRect.height - OFFSET_PX;
-          break;
-        case 'bottom-left':
-          left = rect.right - tooltipRect.width;
-          top = rect.bottom + OFFSET_PX;
-          break;
-        case 'bottom-right':
-        default:
-          left = rect.left;
-          top = rect.bottom + OFFSET_PX;
-      }
-
-      setStyle({
+      setPosition({
         left,
         top,
       });
     };
 
     updatePosition();
-  }, [anchorRef, opened, position]);
+  }, [anchorRef, opened, placement]);
 
-  const portalOpened = opened && Boolean(style);
+  const portalOpened = opened && Boolean(position);
   const content = (
     <Container
       ref={tooltipRef}
       role="tooltip"
       id={id}
       opened={portalOpened}
-      style={style ?? {}}
+      style={position ?? {}}
     >
       {children}
     </Container>
   );
-
-  if (typeof document === 'undefined') return content;
 
   return createPortal(content, document.body);
 };

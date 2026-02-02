@@ -96,6 +96,11 @@ const reset = css`
     text-decoration: none;
   }
 
+  p,
+  span {
+    white-space: pre-wrap;
+  }
+
   html {
     -webkit-tap-highlight-color: rgb(0 0 0 / 0%);
 

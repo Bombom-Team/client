@@ -150,5 +150,4 @@ const AccordionDescription = styled.span`
 
 const AccordionContent = styled.div`
   width: 100%;
-  white-space: pre-line;
 `;
