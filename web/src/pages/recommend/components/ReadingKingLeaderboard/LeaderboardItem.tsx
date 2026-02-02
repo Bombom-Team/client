@@ -8,12 +8,12 @@ const RANK_ICON_MAP: Record<number, string> = {
   3: '🥉',
 };
 
-type MonthlyReadingBadgeGrade = 'gold' | 'silver' | 'bronze';
+type MonthlyReadingBadgeGrade = 'GOLD' | 'SILVER' | 'BRONZE';
 
 const BADGE_RANKING_LABEL_MAP: Record<MonthlyReadingBadgeGrade, string> = {
-  gold: '1등',
-  silver: '2등',
-  bronze: '3등',
+  GOLD: '1등',
+  SILVER: '2등',
+  BRONZE: '3등',
 };
 
 // Todo: openapi 최신화 후 컴포넌트 내 인터페이스 제거 예정
