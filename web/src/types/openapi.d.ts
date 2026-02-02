@@ -1413,12 +1413,24 @@ export interface components {
       /** Format: int32 */
       readCount: number;
     };
+    BadgesResponse: {
+      ranking?: components['schemas']['RankingBadgeResponse'];
+      challenge?: components['schemas']['ChallengeBadgeResponse'];
+    };
+    ChallengeBadgeResponse: {
+      /** @enum {string} */
+      grade: 'GOLD' | 'SILVER' | 'BRONZE';
+      name: string;
+      /** Format: int32 */
+      generation: number;
+    };
     MonthlyReadingRankResponse: {
       nickname: string;
       /** Format: int64 */
       rank: number;
       /** Format: int32 */
       monthlyReadCount: number;
+      badges?: components['schemas']['BadgesResponse'];
     };
     MonthlyReadingRankingResponse: {
       /** Format: date-time */
@@ -1428,6 +1440,14 @@ export interface components {
       /** Format: date-time */
       serverTime: string;
       data: components['schemas']['MonthlyReadingRankResponse'][];
+    };
+    RankingBadgeResponse: {
+      /** @enum {string} */
+      grade: 'GOLD' | 'SILVER' | 'BRONZE';
+      /** Format: int32 */
+      year: number;
+      /** Format: int32 */
+      month: number;
     };
     MemberMonthlyReadingRankResponse: {
       /** Format: int64 */
@@ -1529,7 +1549,7 @@ export interface components {
        */
       progress: number;
       /** @enum {string} */
-      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'COMPLETE' | 'FAIL';
+      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
       isSuccess?: boolean;
     };
     ChallengeNewsletterResponse: {
