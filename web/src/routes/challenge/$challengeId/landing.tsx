@@ -8,6 +8,7 @@ import ChallengeChecklist from '@/pages/challenge/landing/components/ChallengeCh
 import ChallengeDetail from '@/pages/challenge/landing/components/ChallengeDetail';
 import Hero from '@/pages/challenge/landing/components/Hero';
 import Introduction from '@/pages/challenge/landing/components/Introduction';
+import RecommendNewsletters from '@/pages/challenge/landing/components/RecommendNewsletters';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import type { Device } from '@/hooks/useDevice';
 
@@ -51,6 +52,7 @@ function ChallengeLanding() {
         <ChallengeBenefits />
         <ChallengeDetail />
         <ChallengeChecklist />
+        <RecommendNewsletters />
       </Content>
     </Container>
   );
