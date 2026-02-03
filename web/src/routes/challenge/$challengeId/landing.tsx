@@ -6,6 +6,7 @@ import { useDevice } from '@/hooks/useDevice';
 import ChallengeBenefits from '@/pages/challenge/landing/components/ChallengeBenefits';
 import ChallengeChecklist from '@/pages/challenge/landing/components/ChallengeChecklist';
 import ChallengeDetail from '@/pages/challenge/landing/components/ChallengeDetail';
+import ChallengeRewards from '@/pages/challenge/landing/components/ChallengeRewards';
 import Hero from '@/pages/challenge/landing/components/Hero';
 import Introduction from '@/pages/challenge/landing/components/Introduction';
 import ParticipationGuide from '@/pages/challenge/landing/components/ParticipationGuide';
@@ -55,6 +56,7 @@ function ChallengeLanding() {
         <ChallengeChecklist />
         <RecommendNewsletters />
         <ParticipationGuide />
+        <ChallengeRewards />
       </Content>
     </Container>
   );
