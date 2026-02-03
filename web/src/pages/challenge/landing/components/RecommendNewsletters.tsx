@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import Badge from '@/components/Badge/Badge';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import dailybyte from '#/assets/avif/dailybyte.avif';
 import factContextPerspective from '#/assets/avif/fact-context-perspective.avif';
@@ -61,16 +62,10 @@ const NEWSLETTER_RECOMMENDATIONS = [
 
 const RecommendNewsletters = () => {
   const device = useDevice();
-  const [flippedCards, setFlippedCards] = useState<boolean[]>(
-    new Array(NEWSLETTER_RECOMMENDATIONS.length).fill(false),
-  );
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const handleCardClick = (index: number) => {
-    setFlippedCards((prev) => {
-      const newFlipped = [...prev];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
+    setSelectedCard((prev) => (prev === index ? null : index));
   };
 
   return (
@@ -86,7 +81,7 @@ const RecommendNewsletters = () => {
             >
               <CardInner
                 className="card-inner"
-                isFlipped={flippedCards[index] ?? false}
+                isFlipped={selectedCard === index}
               >
                 <CardFront className="card-front">
                   <ThumbnailBox>
@@ -94,9 +89,7 @@ const RecommendNewsletters = () => {
                       src={newsletter.imageSource}
                       alt={`${newsletter.name} 로고`}
                     />
-                    <CategoryBadge device={device}>
-                      {newsletter.category}
-                    </CategoryBadge>
+                    <CategoryBadge device={device} text={newsletter.category} />
                   </ThumbnailBox>
                 </CardFront>
                 <CardBack className="card-back">
@@ -128,8 +121,6 @@ const Container = styled.section<{ device: Device }>`
 
   display: flex;
   justify-content: center;
-
-  background-color: #fff6f0;
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
@@ -173,21 +164,18 @@ const NewsletterCard = styled.article<{ device: Device }>`
 
   cursor: pointer;
   perspective: 1200px;
-  transform-style: preserve-3d;
   transition: transform 0.3s ease;
 
   &:hover {
     transform: translateY(-8px) rotateX(18deg) rotateY(-10deg);
 
-    .card-inner {
-      .card-front,
-      .card-back {
-        box-shadow:
-          0 2px 4px rgb(0 0 0 / 4%),
-          0 6px 12px rgb(0 0 0 / 8%),
-          0 12px 24px rgb(0 0 0 / 10%),
-          0 24px 48px rgb(0 0 0 / 14%);
-      }
+    .card-front,
+    .card-back {
+      box-shadow:
+        0 2px 4px rgb(0 0 0 / 4%),
+        0 6px 12px rgb(0 0 0 / 8%),
+        0 12px 24px rgb(0 0 0 / 10%),
+        0 24px 48px rgb(0 0 0 / 14%);
     }
   }
 `;
@@ -199,16 +187,11 @@ const CardInner = styled.div<{ isFlipped: boolean }>`
 
   transform: ${({ isFlipped }) =>
     isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'};
-
   transform-style: preserve-3d;
-
-  transition:
-    transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.3s ease;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
-const CardFront = styled.div`
-  overflow: hidden;
+const cardFaceStyles = `
   position: absolute;
   width: 100%;
   height: 100%;
@@ -218,45 +201,33 @@ const CardFront = styled.div`
     0 2px 6px rgb(0 0 0 / 5%),
     0 8px 16px rgb(0 0 0 / 8%),
     0 16px 32px rgb(0 0 0 / 10%);
+
+  backface-visibility: hidden;
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgb(0 0 0 / 4%);
+    border-radius: 12px;
+    content: '';
+    pointer-events: none;
+  }
+`;
+
+const CardFront = styled.div`
+  ${cardFaceStyles}
+  overflow: hidden;
 
   display: flex;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
-
-  backface-visibility: hidden;
-
-  transition:
-    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    border: 1px solid rgb(0 0 0 / 4%);
-    border-radius: 12px;
-
-    content: '';
-
-    pointer-events: none;
-  }
 `;
 
 const CardBack = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
+  ${cardFaceStyles}
   padding: 24px;
-  border-radius: 12px;
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 3%),
-    0 2px 6px rgb(0 0 0 / 5%),
-    0 8px 16px rgb(0 0 0 / 8%),
-    0 16px 32px rgb(0 0 0 / 10%);
 
   display: flex;
   gap: 16px;
@@ -271,26 +242,7 @@ const CardBack = styled.div`
   );
   text-align: center;
 
-  backface-visibility: hidden;
   transform: rotateY(180deg);
-
-  transition:
-    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 1px solid rgb(0 0 0 / 4%);
-    border-radius: 12px;
-
-    content: '';
-
-    pointer-events: none;
-  }
 `;
 
 const ThumbnailBox = styled.div`
@@ -313,13 +265,13 @@ const Thumbnail = styled.img`
   object-position: center;
 `;
 
-const CategoryBadge = styled.span<{ device: Device }>`
+const CategoryBadge = styled(Badge)<{ device: Device }>`
   position: absolute;
   right: 12px;
   bottom: 12px;
   z-index: 2;
   padding: 6px 12px;
-  border-radius: 999px;
+  border-radius: 24px;
   box-shadow:
     0 1px 3px rgb(0 0 0 / 6%),
     0 2px 8px rgb(0 0 0 / 4%),
@@ -329,7 +281,6 @@ const CategoryBadge = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.body4 : theme.fonts.caption};
-  letter-spacing: 0.01em;
 
   backdrop-filter: blur(8px);
 `;
@@ -338,18 +289,12 @@ const NewsletterName = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
 `;
 
 const NewsletterDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
-  line-height: 1.5;
-  letter-spacing: 0.01em;
-  white-space: pre-line;
 
   opacity: 0.85;
 `;
