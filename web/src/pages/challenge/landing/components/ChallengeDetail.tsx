@@ -106,7 +106,7 @@ const Container = styled.section<{ device: Device }>`
   }};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '84px' : '108px')};
+  gap: ${({ device }) => (device === 'mobile' ? '64px' : '84px')};
   flex-direction: column;
 `;
 
@@ -121,7 +121,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
   text-align: center;
 `;
 
@@ -184,7 +184,6 @@ const Description = styled.p<{
     return device === 'tablet' ? theme.fonts.body1 : theme.fonts.bodyLarge;
   }};
   line-height: 2;
-  text-align: left;
 `;
 
 const ImageSection = styled.div<{ device: Device }>`
@@ -209,6 +208,7 @@ const ImageSection = styled.div<{ device: Device }>`
 const CommentImageWrapper = styled.div`
   width: 100%;
   min-height: 250px;
+  max-width: 80%;
 
   display: flex;
   flex-direction: column;

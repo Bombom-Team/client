@@ -82,7 +82,7 @@ const Container = styled.section<{ device: Device }>`
     device === 'mobile' ? '48px 12px' : '120px 60px'};
 
   display: flex;
-  gap: 28px;
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -93,7 +93,7 @@ const Container = styled.section<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading1};
+    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading1};
   text-align: center;
 `;
 

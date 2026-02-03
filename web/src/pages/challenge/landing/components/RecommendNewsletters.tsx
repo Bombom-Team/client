@@ -117,7 +117,6 @@ const Container = styled.section<{ device: Device }>`
     if (device === 'mobile') return '400px';
     return device === 'tablet' ? '760px' : '1084px';
   }};
-  padding: 0 0 100px;
 
   display: flex;
   justify-content: center;

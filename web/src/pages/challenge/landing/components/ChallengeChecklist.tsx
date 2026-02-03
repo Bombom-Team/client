@@ -57,11 +57,9 @@ export default ChallengeChecklist;
 const Container = styled.section<{ device: Device }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'pc' ? '1084px' : '100%')};
-  padding: ${({ device }) =>
-    device === 'mobile' ? '64px 0 54px' : '96px 0 60px'};
 
   display: flex;
-  gap: 24px;
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -84,7 +82,7 @@ const Title = styled.h2<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading2};
 `;
 
 const ChecklistCard = styled.div<{ device: Device }>`

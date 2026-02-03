@@ -63,7 +63,8 @@ const Container = styled.section<{ device: Device }>`
   width: 100%;
   max-width: 1040px;
   margin: 0 auto;
-  padding: ${({ device }) => (device === 'mobile' ? '80px 20px' : '80px 60px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '80px 20px 0' : '80px 60px 0'};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
@@ -74,7 +75,7 @@ const Container = styled.section<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
   text-align: center;
 `;
 
