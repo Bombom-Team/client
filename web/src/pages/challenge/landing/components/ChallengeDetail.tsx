@@ -207,11 +207,12 @@ const ImageSection = styled.div<{ device: Device }>`
 
 const CommentImageWrapper = styled.div`
   width: 100%;
-  min-height: 250px;
+  min-height: 210px;
   max-width: 80%;
 
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const CommentImage = styled.img<{ offset: number }>`

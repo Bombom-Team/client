@@ -68,6 +68,7 @@ const StepWrapper = styled.div<{ device: Device }>`
 const Step = styled.article`
   padding: 20px 24px;
   border-radius: 16px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 8%);
 
   display: flex;
   gap: 8px;

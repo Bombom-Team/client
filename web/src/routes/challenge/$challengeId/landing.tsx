@@ -117,7 +117,17 @@ const Content = styled.div<{ device: Device }>`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.white};
+  background: linear-gradient(
+    180deg,
+    ${({ theme }) => theme.colors.white} 0%,
+    #f8f8f8 15%,
+    #fafafa 25%,
+    #f8f8f8 40%,
+    #fffbf7 55%,
+    #fff8f4 70%,
+    #f8f8f8 85%,
+    ${({ theme }) => theme.colors.white} 100%
+  );
 
   word-break: keep-all;
 `;

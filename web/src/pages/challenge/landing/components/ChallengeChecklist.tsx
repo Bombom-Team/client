@@ -11,8 +11,8 @@ const ChallengeChecklist = () => {
       <Title device={device}>
         챌린지 참여 전 체크리스트
         <CheckIcon
-          width={device === 'mobile' ? 28 : 32}
-          height={device === 'mobile' ? 28 : 32}
+          width={device === 'mobile' ? 20 : 32}
+          height={device === 'mobile' ? 20 : 32}
           fill={theme.colors.primary}
         />
       </Title>
@@ -56,7 +56,8 @@ export default ChallengeChecklist;
 
 const Container = styled.section<{ device: Device }>`
   width: 100%;
-  max-width: ${({ device }) => (device === 'pc' ? '1084px' : '100%')};
+  max-width: ${({ device }) => (device === 'pc' ? 'min(80%, 1024px)' : '100%')};
+  padding-top: 24px;
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
@@ -81,14 +82,15 @@ const Title = styled.h2<{ device: Device }>`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading2};
+  font: ${({ device, theme }) => {
+    if (device === 'mobile') return theme.fonts.heading5;
+    return device === 'tablet' ? theme.fonts.heading3 : theme.fonts.heading2;
+  }};
 `;
 
 const ChecklistCard = styled.div<{ device: Device }>`
   width: 100%;
   padding: ${({ device }) => (device === 'mobile' ? '12px 8px' : '24px')};
-  border: 2px solid ${({ theme }) => theme.colors.primaryLight};
   border-radius: 20px;
   box-shadow: 0 4px 8px rgb(0 0 0 / 8%);
 
