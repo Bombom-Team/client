@@ -14,6 +14,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 12,
     isLiked: false,
+    replyCount: 3,
   },
   {
     commentId: 2,
@@ -27,6 +28,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: true,
     likeCount: 5,
     isLiked: false,
+    replyCount: 0,
   },
   {
     commentId: 3,
@@ -41,6 +43,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: true,
     likeCount: 8,
     isLiked: false,
+    replyCount: 2,
   },
   {
     commentId: 4,
@@ -54,6 +57,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 15,
     isLiked: true,
+    replyCount: 5,
   },
   {
     commentId: 5,
@@ -67,6 +71,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 3,
     isLiked: false,
+    replyCount: 1,
   },
   {
     commentId: 6,
@@ -83,6 +88,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 20,
     isLiked: true,
+    replyCount: 8,
   },
   {
     commentId: 7,
@@ -98,6 +104,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 7,
     isLiked: false,
+    replyCount: 0,
   },
   {
     commentId: 8,
@@ -112,6 +119,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 10,
     isLiked: true,
+    replyCount: 4,
   },
   {
     commentId: 9,
@@ -128,6 +136,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 25,
     isLiked: false,
+    replyCount: 12,
   },
   {
     commentId: 10,
@@ -142,6 +151,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 18,
     isLiked: true,
+    replyCount: 6,
   },
   {
     commentId: 11,
@@ -158,6 +168,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 14,
     isLiked: false,
+    replyCount: 3,
   },
   {
     commentId: 12,
@@ -172,6 +183,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 6,
     isLiked: false,
+    replyCount: 0,
   },
   {
     commentId: 13,
@@ -186,6 +198,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 9,
     isLiked: true,
+    replyCount: 2,
   },
   {
     commentId: 14,
@@ -199,6 +212,7 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 4,
     isLiked: false,
+    replyCount: 1,
   },
   {
     commentId: 15,
@@ -213,5 +227,6 @@ export const CHALLENGE_COMMENTS = [
     isMyComment: false,
     likeCount: 11,
     isLiked: false,
+    replyCount: 7,
   },
 ];
