@@ -51,6 +51,7 @@ function ChallengeDetailContent() {
     'ALL' | 'SURVIVED' | 'FAILED'
   >('ALL');
   const [shieldCountInput, setShieldCountInput] = useState('1');
+  const [isShieldModalOpen, setIsShieldModalOpen] = useState(false);
 
   const id = Number(challengeId);
 
@@ -131,6 +132,7 @@ function ChallengeDetailContent() {
       queryClient.invalidateQueries({
         queryKey: ['challenges', 'participants', id],
       });
+      setIsShieldModalOpen(false);
       alert('쉴드 지급이 완료되었습니다.');
     },
     onError: (error) => {
@@ -160,6 +162,14 @@ function ChallengeDetailContent() {
     }
   };
 
+  const handleOpenShieldModal = () => {
+    setIsShieldModalOpen(true);
+  };
+
+  const handleCloseShieldModal = () => {
+    setIsShieldModalOpen(false);
+  };
+
   if (!challenge) {
     return (
       <Container>
@@ -174,38 +184,44 @@ function ChallengeDetailContent() {
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
           <ParticipantsActions>
-            <ActionsMenu>
-              <ActionsSummary>관리</ActionsSummary>
-              <ActionsPanel>
-                <ActionsSection>
-                  <ActionsLabel>쉴드 지급</ActionsLabel>
-                  <ShieldGrantGroup>
-                    <ShieldLabel htmlFor="shield-count">개수</ShieldLabel>
-                    <ShieldInput
-                      id="shield-count"
-                      type="number"
-                      min="1"
-                      value={shieldCountInput}
-                      onChange={(event) =>
-                        setShieldCountInput(event.target.value)
-                      }
-                    />
-                    <Button
-                      onClick={handleGrantShield}
-                      disabled={isGrantingShield}
-                    >
-                      {isGrantingShield ? '지급 중...' : '일괄 지급'}
-                    </Button>
-                  </ShieldGrantGroup>
-                </ActionsSection>
-                <ActionsDivider />
-                <Button variant="secondary" onClick={handleManageTeams}>
-                  팀 관리
-                </Button>
-              </ActionsPanel>
-            </ActionsMenu>
+            <Button onClick={handleOpenShieldModal}>쉴드 지급</Button>
+            <Button variant="secondary" onClick={handleManageTeams}>
+              팀 관리
+            </Button>
           </ParticipantsActions>
         </ParticipantsHeader>
+        {isShieldModalOpen && (
+          <ModalOverlay onClick={handleCloseShieldModal}>
+            <ModalCard onClick={(event) => event.stopPropagation()}>
+              <ModalTitle>쉴드 일괄 지급</ModalTitle>
+              <ModalContent>
+                <ShieldGrantGroup>
+                  <ShieldLabel htmlFor="shield-count">개수</ShieldLabel>
+                  <ShieldInput
+                    id="shield-count"
+                    type="number"
+                    min="1"
+                    value={shieldCountInput}
+                    onChange={(event) =>
+                      setShieldCountInput(event.target.value)
+                    }
+                  />
+                </ShieldGrantGroup>
+                <ModalNotice>
+                  생존자에게 설정한 개수만큼 쉴드를 일괄 지급합니다.
+                </ModalNotice>
+              </ModalContent>
+              <ModalActions>
+                <Button variant="secondary" onClick={handleCloseShieldModal}>
+                  취소
+                </Button>
+                <Button onClick={handleGrantShield} disabled={isGrantingShield}>
+                  {isGrantingShield ? '지급 중...' : '지급'}
+                </Button>
+              </ModalActions>
+            </ModalCard>
+          </ModalOverlay>
+        )}
         <Filters>
           <FilterGroup>
             <FilterLabel htmlFor="challenge-team-id">팀 ID</FilterLabel>
@@ -347,63 +363,6 @@ const ParticipantsActions = styled.div`
   justify-content: flex-end;
 `;
 
-const ActionsMenu = styled.details`
-  position: relative;
-`;
-
-const ActionsSummary = styled.summary`
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
-  border: 1px solid ${({ theme }) => theme.colors.gray300};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-
-  background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.gray700};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-
-  cursor: pointer;
-  list-style: none;
-
-  &::-webkit-details-marker {
-    display: none;
-  }
-`;
-
-const ActionsPanel = styled.div`
-  position: absolute;
-  right: 0;
-  z-index: 1;
-  min-width: 260px;
-  margin-top: ${({ theme }) => theme.spacing.xs};
-  padding: ${({ theme }) => theme.spacing.md};
-  border: 1px solid ${({ theme }) => theme.colors.gray200};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
-
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
-  flex-direction: column;
-
-  background-color: ${({ theme }) => theme.colors.white};
-`;
-
-const ActionsSection = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
-  flex-direction: column;
-`;
-
-const ActionsLabel = styled.span`
-  color: ${({ theme }) => theme.colors.gray700};
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-`;
-
-const ActionsDivider = styled.div`
-  height: 1px;
-  background-color: ${({ theme }) => theme.colors.gray200};
-`;
-
 const ShieldGrantGroup = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
@@ -429,6 +388,60 @@ const ShieldInput = styled.input`
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary};
   }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  z-index: 1000;
+  padding: ${({ theme }) => theme.spacing.lg};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: rgb(15 23 42 / 45%);
+
+  inset: 0;
+`;
+
+const ModalCard = styled.div`
+  width: min(420px, 100%);
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.md};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const ModalTitle = styled.h4`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+`;
+
+const ModalContent = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-direction: column;
+`;
+
+const ModalNotice = styled.p`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  justify-content: flex-end;
 `;
 
 const Filters = styled.div`
