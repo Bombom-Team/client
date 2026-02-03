@@ -187,6 +187,7 @@ function ChallengeDetailContent() {
                 {isGrantingShield ? '지급 중...' : '일괄 지급'}
               </Button>
             </ShieldGrantGroup>
+            <ActionDivider aria-hidden="true" />
             <Button variant="secondary" onClick={handleManageTeams}>
               팀 관리
             </Button>
@@ -327,7 +328,7 @@ const ParticipantsTitle = styled.h3`
 
 const ParticipantsActions = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.md};
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
@@ -338,6 +339,13 @@ const ShieldGrantGroup = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
   flex-wrap: wrap;
   align-items: center;
+`;
+
+const ActionDivider = styled.span`
+  width: 1px;
+  height: 28px;
+
+  background-color: ${({ theme }) => theme.colors.gray200};
 `;
 
 const ShieldLabel = styled.label`
