@@ -362,6 +362,7 @@ const ShieldInput = styled.input`
 
 const Filters = styled.div`
   margin-top: ${({ theme }) => theme.spacing.md};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
 
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
