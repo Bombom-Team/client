@@ -46,6 +46,9 @@ function ChallengeTeamsContent() {
   const [hasTeamFilter, setHasTeamFilter] = useState<'ALL' | 'YES' | 'NO'>(
     'ALL',
   );
+  const [survivalFilter, setSurvivalFilter] = useState<
+    'ALL' | 'SURVIVED' | 'FAILED'
+  >('ALL');
   const [maxTeamSizeInput, setMaxTeamSizeInput] = useState('15');
   const [createCountInput, setCreateCountInput] = useState('1');
 
@@ -71,6 +74,14 @@ function ChallengeTeamsContent() {
 
     return hasTeamFilter === 'YES';
   }, [hasTeamFilter]);
+
+  const isSurvived = useMemo(() => {
+    if (survivalFilter === 'ALL') {
+      return undefined;
+    }
+
+    return survivalFilter === 'SURVIVED';
+  }, [survivalFilter]);
 
   const maxTeamSize = useMemo(() => {
     const trimmed = maxTeamSizeInput.trim();
@@ -111,6 +122,11 @@ function ChallengeTeamsContent() {
 
   const handleHasTeamChange = (value: 'ALL' | 'YES' | 'NO') => {
     setHasTeamFilter(value);
+    setParticipantsPage(0);
+  };
+
+  const handleSurvivalChange = (value: 'ALL' | 'SURVIVED' | 'FAILED') => {
+    setSurvivalFilter(value);
     setParticipantsPage(0);
   };
 
@@ -332,29 +348,47 @@ function ChallengeTeamsContent() {
               <option value="NO">미매칭</option>
             </FilterSelect>
           </FilterGroup>
+          <FilterGroup>
+            <FilterLabel htmlFor="participant-survival">상태</FilterLabel>
+            <FilterSelect
+              id="participant-survival"
+              value={survivalFilter}
+              onChange={(event) =>
+                handleSurvivalChange(
+                  event.target.value as 'ALL' | 'SURVIVED' | 'FAILED',
+                )
+              }
+            >
+              <option value="ALL">전체</option>
+              <option value="SURVIVED">생존</option>
+              <option value="FAILED">탈락</option>
+            </FilterSelect>
+          </FilterGroup>
         </Filters>
         <ParticipantsTable>
           <colgroup>
-            <col style={{ width: '24%' }} />
-            <col style={{ width: '22%' }} />
+            <col style={{ width: '20%' }} />
             <col style={{ width: '18%' }} />
-            <col style={{ width: '18%' }} />
-            <col style={{ width: '18%' }} />
+            <col style={{ width: '16%' }} />
+            <col style={{ width: '16%' }} />
+            <col style={{ width: '15%' }} />
+            <col style={{ width: '15%' }} />
           </colgroup>
           <Thead>
             <Tr>
               <Th>닉네임</Th>
               <Th>팀 ID</Th>
               <Th>완료 일수</Th>
+              <Th>쉴드</Th>
               <Th>상태</Th>
               <Th>관리</Th>
             </Tr>
           </Thead>
           <ErrorBoundary
-            fallback={<ChallengeParticipantsTableBodyError colSpan={5} />}
+            fallback={<ChallengeParticipantsTableBodyError colSpan={6} />}
           >
             <Suspense
-              fallback={<ChallengeParticipantsTableBodyLoading colSpan={5} />}
+              fallback={<ChallengeParticipantsTableBodyLoading colSpan={6} />}
             >
               <ChallengeParticipantsTableBody
                 challengeId={id}
@@ -362,6 +396,7 @@ function ChallengeTeamsContent() {
                 pageSize={PARTICIPANTS_PAGE_SIZE}
                 challengeTeamId={challengeTeamId}
                 hasTeam={hasTeam}
+                isSurvived={isSurvived}
                 onDataLoaded={handleParticipantsDataLoaded}
                 editable
               />
@@ -385,8 +420,8 @@ function ChallengeTeamsContent() {
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xl};
+  flex-direction: column;
 `;
 
 const Header = styled.div`
@@ -395,9 +430,9 @@ const Header = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.sm};
 
   display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
   justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.md};
 
   background-color: ${({ theme }) => theme.colors.white};
 `;
@@ -412,8 +447,8 @@ const Title = styled.h2`
 
 const TitleGroup = styled.div`
   display: flex;
-  flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.sm};
+  flex-wrap: wrap;
   align-items: center;
 `;
 
@@ -471,8 +506,8 @@ const Notice = styled.p`
 
 const ActionRow = styled.div`
   display: flex;
-  flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.md};
+  flex-wrap: wrap;
   align-items: center;
 `;
 
@@ -499,6 +534,7 @@ const Input = styled.input`
 const TeamsTable = styled.table`
   width: 100%;
   margin-top: ${({ theme }) => theme.spacing.md};
+
   border-collapse: collapse;
   table-layout: fixed;
 `;
@@ -506,6 +542,7 @@ const TeamsTable = styled.table`
 const ParticipantsTable = styled.table`
   width: 100%;
   margin-top: ${({ theme }) => theme.spacing.md};
+
   border-collapse: collapse;
   table-layout: fixed;
 `;
@@ -534,7 +571,8 @@ const Th = styled.th`
   &:nth-of-type(2),
   &:nth-of-type(3),
   &:nth-of-type(4),
-  &:nth-of-type(5) {
+  &:nth-of-type(5),
+  &:nth-of-type(6) {
     text-align: center;
   }
 `;
@@ -558,8 +596,8 @@ const EmptyState = styled.div`
 
 const Filters = styled.div`
   display: flex;
-  flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.md};
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
 `;

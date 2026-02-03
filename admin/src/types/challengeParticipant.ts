@@ -4,4 +4,5 @@ export interface ChallengeParticipant {
   challengeTeamId: number | null;
   completedDays: number;
   isSurvived: boolean;
+  shieldCount?: number;
 }
