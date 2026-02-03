@@ -142,7 +142,6 @@ const Main = styled.div`
 
 const UserName = styled.h2`
   max-width: 260px;
-  margin-left: 70px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading2};
