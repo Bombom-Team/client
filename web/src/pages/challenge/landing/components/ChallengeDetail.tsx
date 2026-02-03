@@ -35,12 +35,9 @@ const ChallengeDetail = () => {
               <FeatureTitle device={device}>데일리 가이드</FeatureTitle>
             </FeatureTitleWrapper>
             <Description device={device}>
-              <p>뉴스레터 읽기를 이끄는 하루 한 가지 문구,</p>
-              <p>
-                매일 새로운 가이드로 단순한 읽기를 깊이 있는 사색으로
-                전환하세요.
-              </p>
-              <p>한 달 후, 작지만 확실한 변화를 만날 수 있어요.</p>
+              뉴스레터 읽기를 이끄는 하루 한 가지 문구,{'\n'}
+              매일 새로운 가이드로 단순한 읽기를 깊이 있는 사색으로 전환하세요.
+              {'\n'}한 달 후, 작지만 확실한 변화를 만날 수 있어요.
             </Description>
           </TextSection>
         </FeatureItem>
@@ -61,9 +58,9 @@ const ChallengeDetail = () => {
               <FeatureTitle device={device}>챌린지 현황판</FeatureTitle>
             </FeatureTitleWrapper>
             <Description device={device}>
-              <p>참여 팀들의 챌린지 현황을 한눈에 확인하고,</p>
-              <p>꾸준히 이어가는 원동력을 얻어요.</p>
-              <p>다른 팀과 경쟁하며 우리 팀의 달성률에 기여해보세요!</p>
+              참여 팀들의 챌린지 현황을 한눈에 확인하고{'\n'}
+              꾸준히 이어가는 원동력을 얻어요.{'\n'}
+              다른 팀과 경쟁하며 우리 팀의 달성률에 기여해보세요!
             </Description>
           </TextSection>
         </FeatureItem>
@@ -88,11 +85,9 @@ const ChallengeDetail = () => {
               <FeatureTitle device={device}>한 줄 코멘트</FeatureTitle>
             </FeatureTitleWrapper>
             <Description device={device}>
-              <p>다른 유저의 코멘트에서 얻는 새로운 관점,</p>
-              <p>
-                서로의 생각을 공유하며 같은 글도 다르게 읽는 경험을 해보세요.
-              </p>
-              <p>코멘트로 다양한 뉴스레터에 대한 궁금증도 해소할 수 있어요!</p>
+              다른 유저의 코멘트에서 얻는 새로운 관점,{'\n'}
+              서로의 생각을 공유하며 같은 글도 다르게 읽는 경험을 해보세요.
+              {'\n'}코멘트로 다양한 뉴스레터에 대한 궁금증도 해소할 수 있어요!
             </Description>
           </TextSection>
         </FeatureItem>
@@ -155,7 +150,7 @@ const TextSection = styled.div<{
   device: Device;
 }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '16px' : '32px')};
+  gap: ${({ device }) => (device === 'mobile' ? '16px' : '24px')};
   flex-direction: column;
   align-items: flex-start;
 `;
@@ -180,20 +175,16 @@ const FeatureTitle = styled.h3<{ device: Device }>`
   }};
 `;
 
-const Description = styled.div<{
+const Description = styled.p<{
   device: Device;
 }>`
-  display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '4px' : '8px')};
-  flex-direction: column;
-  align-items: flex-start;
-
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.body3;
+    if (device === 'mobile') return theme.fonts.body2;
     return device === 'tablet' ? theme.fonts.body1 : theme.fonts.bodyLarge;
   }};
-  text-align: ${({ device }) => (device === 'mobile' ? 'center' : 'left')};
+  line-height: 2;
+  text-align: left;
 `;
 
 const ImageSection = styled.div<{ device: Device }>`
@@ -208,7 +199,7 @@ const ImageSection = styled.div<{ device: Device }>`
       if (device === 'mobile') return '280px';
       return device === 'tablet' ? '320px' : '480px';
     }};
-    border-radius: 16px;
+    border-radius: 4px;
 
     filter: drop-shadow(0 10px 15px rgb(0 0 0 / 10%))
       drop-shadow(0 4px 6px rgb(0 0 0 / 10%));
