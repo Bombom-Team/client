@@ -174,20 +174,22 @@ function ChallengeDetailContent() {
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
           <ParticipantsActions>
-            <ShieldGrantGroup>
-              <ShieldLabel htmlFor="shield-count">쉴드 지급</ShieldLabel>
-              <ShieldInput
-                id="shield-count"
-                type="number"
-                min="1"
-                value={shieldCountInput}
-                onChange={(event) => setShieldCountInput(event.target.value)}
-              />
-              <Button onClick={handleGrantShield} disabled={isGrantingShield}>
-                {isGrantingShield ? '지급 중...' : '일괄 지급'}
-              </Button>
-            </ShieldGrantGroup>
-            <ActionDivider aria-hidden="true" />
+            <ShieldGrantCard>
+              <ShieldGrantTitle>쉴드 지급</ShieldGrantTitle>
+              <ShieldGrantGroup>
+                <ShieldLabel htmlFor="shield-count">개수</ShieldLabel>
+                <ShieldInput
+                  id="shield-count"
+                  type="number"
+                  min="1"
+                  value={shieldCountInput}
+                  onChange={(event) => setShieldCountInput(event.target.value)}
+                />
+                <Button onClick={handleGrantShield} disabled={isGrantingShield}>
+                  {isGrantingShield ? '지급 중...' : '일괄 지급'}
+                </Button>
+              </ShieldGrantGroup>
+            </ShieldGrantCard>
             <Button variant="secondary" onClick={handleManageTeams}>
               팀 관리
             </Button>
@@ -334,18 +336,27 @@ const ParticipantsActions = styled.div`
   justify-content: flex-end;
 `;
 
+const ShieldGrantCard = styled.div`
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-direction: column;
+`;
+
+const ShieldGrantTitle = styled.span`
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
 const ShieldGrantGroup = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
   flex-wrap: wrap;
   align-items: center;
-`;
-
-const ActionDivider = styled.span`
-  width: 1px;
-  height: 28px;
-
-  background-color: ${({ theme }) => theme.colors.gray200};
 `;
 
 const ShieldLabel = styled.label`
