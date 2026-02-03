@@ -34,11 +34,11 @@ const getMedalDescription = (
 
   switch (medal) {
     case 'GOLD':
-      return `${firstLine}\n단 하루의 결석 없이 모든 일정을 성실히 완료하였으므로\n이 금메달 수료증을 수여합니다.`;
+      return `${firstLine}\n단 하루의 결석 없이 모든 일정을 성실히 완료하였으므로\n이 ${MEDAL_LABEL[medal]} 수료증을 수여합니다.`;
     case 'SILVER':
-      return `${firstLine}\n전체 일정 중 ${medalCondition}% 이상을 성실히 완료하였으므로\n이 은메달 수료증을 수여합니다.`;
+      return `${firstLine}\n전체 일정 중 ${medalCondition}% 이상을 성실히 완료하였으므로\n이 ${MEDAL_LABEL[medal]} 수료증을 수여합니다.`;
     case 'BRONZE':
-      return `${firstLine}\n전체 일정 중 ${medalCondition}% 이상을 성실히 완료하였으므로\n이 동메당 수료증을 수여합니다.`;
+      return `${firstLine}\n전체 일정 중 ${medalCondition}% 이상을 성실히 완료하였으므로\n이 ${MEDAL_LABEL[medal]} 수료증을 수여합니다.`;
   }
 };
 
