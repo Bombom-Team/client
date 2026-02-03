@@ -16,7 +16,7 @@ const BADGE_RANKING_IMAGE_MAP: Record<MonthlyReadingBadgeGrade, string> = {
 };
 
 const BADGE_CHALLENGE_IMAGE_MAP: Record<MonthlyReadingBadgeGrade, string> = {
-  GOLD: '/assets/png/challenge-gold-medal.avif',
+  GOLD: '/assets/avif/challenge-gold-medal.avif',
   SILVER: '/assets/avif/challenge-silver-medal.avif',
   BRONZE: '/assets/avif/challenge-bronze-medal.avif',
 };
