@@ -204,6 +204,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/challenges/{challengeId}/comments/{commentId}/replies': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 코멘트 답글 조회
+     * @description 특정 코멘트에 달린 답글 목록을 페이지네이션하여 조회합니다.
+     */
+    get: operations['getCommentReplies'];
+    put?: never;
+    /**
+     * 코멘트 답글 생성
+     * @description 특정 코멘트에 대해 답글을 작성합니다.
+     */
+    post: operations['createCommentReply'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/bookmarks/articles/{articleId}': {
     parameters: {
       query?: never;
@@ -1236,6 +1260,9 @@ export interface components {
       quotation?: string;
       comment: string;
     };
+    CreateCommentReplyRequest: {
+      reply: string;
+    };
     /** @description 회원가입 요청 데이터 */
     MemberSignupRequest: {
       nickname: string;
@@ -1471,12 +1498,14 @@ export interface components {
       month: number;
     };
     MemberMonthlyReadingRankResponse: {
+      nickname: string;
       /** Format: int64 */
       rank: number;
-      /** Format: int64 */
-      readCount: number;
+      /** Format: int32 */
+      monthlyReadCount: number;
       /** Format: int64 */
       nextRankDifference: number;
+      badges?: components['schemas']['BadgesResponse'];
     };
     MemberProfileResponse: {
       /** Format: int64 */
@@ -1571,7 +1600,7 @@ export interface components {
       progress: number;
       /** @enum {string} */
       grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
-      isSuccess?: boolean;
+      isSurvived?: boolean;
     };
     ChallengeNewsletterResponse: {
       /** Format: int64 */
@@ -1761,6 +1790,8 @@ export interface components {
       /** Format: int32 */
       likeCount: number;
       isLiked: boolean;
+      /** Format: int32 */
+      replyCount: number;
     };
     PageChallengeCommentResponse: {
       /** Format: int64 */
@@ -1772,6 +1803,34 @@ export interface components {
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    CommentReplyResponse: {
+      /** Format: int64 */
+      replyId: number;
+      nickname?: string;
+      profileImageUrl?: string;
+      reply: string;
+      /** Format: date-time */
+      createdAt: string;
+      isMyReply: boolean;
+    };
+    PageCommentReplyResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['CommentReplyResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
@@ -2612,6 +2671,117 @@ export interface operations {
         content?: never;
       };
       /** @description 아티클을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getCommentReplies: {
+    parameters: {
+      query: {
+        /** @description 페이지/정렬 정보 (page, size, sort) */
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 답글 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageCommentReplyResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 답글 조회 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 코멘트를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  createCommentReply: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCommentReplyRequest'];
+      };
+    };
+    responses: {
+      /** @description 코멘트 답글 생성 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 코멘트 답글 작성 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 코멘트를 찾을 수 없음 */
       404: {
         headers: {
           [name: string]: unknown;
