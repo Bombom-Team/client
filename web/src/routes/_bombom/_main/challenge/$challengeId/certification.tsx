@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas';
 import { useRef } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
+import Flex from '@/components/Flex';
 import { useDevice } from '@/hooks/useDevice';
 import Certificate from '@/pages/challenge/certification/components/Certificate';
 
@@ -53,21 +54,14 @@ function ChallengeCertification() {
 
   return (
     <Container>
-      <ContentWrapper isPC={isPC}>
-        {!isPC && (
-          <DownloadButton onClick={handleDownload}>
-            💾 이미지로 저장하기
-          </DownloadButton>
-        )}
+      <Flex direction="column" align="center" gap={16}>
+        <DownloadButton onClick={handleDownload}>
+          💾 이미지로 저장하기
+        </DownloadButton>
         <CertificateScaler ref={certificateRef} isPC={isPC}>
           <Certificate {...certificationInfo} />
         </CertificateScaler>
-        {isPC && (
-          <DownloadButton onClick={handleDownload}>
-            💾 이미지로 저장하기
-          </DownloadButton>
-        )}
-      </ContentWrapper>
+      </Flex>
     </Container>
   );
 }
@@ -78,13 +72,6 @@ const Container = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const ContentWrapper = styled.div<{ isPC: boolean }>`
-  display: flex;
-  gap: 16px;
-  flex-direction: ${({ isPC }) => (isPC ? 'row' : 'column')};
-  align-items: ${({ isPC }) => (isPC ? 'flex-start' : 'center')};
 `;
 
 const CertificateScaler = styled.div<{ isPC: boolean }>`
