@@ -365,6 +365,7 @@ const ParticipantsActions = styled.div`
 
 const ShieldLabel = styled.label`
   color: ${({ theme }) => theme.colors.gray600};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
@@ -440,7 +441,7 @@ const ModalActions = styled.div`
 
 const InputGroup = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
+  gap: ${({ theme }) => theme.spacing.sm};
   flex-direction: column;
 `;
 
