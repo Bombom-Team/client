@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useRef, useState } from 'react';
 import Tooltip from '@/components/Tooltip/Tooltip';
+import type { Badges, MonthlyReadingBadgeGrade } from '../../types/badges';
 
 const RANK_ICON_MAP: Record<number, string> = {
   1: '👑',
@@ -8,27 +9,23 @@ const RANK_ICON_MAP: Record<number, string> = {
   3: '🥉',
 };
 
-type MonthlyReadingBadgeGrade = 'GOLD' | 'SILVER' | 'BRONZE';
+const BADGE_RANKING_IMAGE_MAP: Record<MonthlyReadingBadgeGrade, string> = {
+  GOLD: '/assets/png/ranking_gold.png',
+  SILVER: '/assets/png/ranking_silver.png',
+  BRONZE: '/assets/png/ranking_bronze.png',
+};
+
+const BADGE_CHALLENGE_IMAGE_MAP: Record<MonthlyReadingBadgeGrade, string> = {
+  GOLD: '/assets/avif/challenge-gold-medal.avif',
+  SILVER: '/assets/avif/challenge-silver-medal.avif',
+  BRONZE: '/assets/avif/challenge-bronze-medal.avif',
+};
 
 const BADGE_RANKING_LABEL_MAP: Record<MonthlyReadingBadgeGrade, string> = {
   GOLD: '1등',
   SILVER: '2등',
   BRONZE: '3등',
 };
-
-// Todo: openapi 최신화 후 컴포넌트 내 인터페이스 제거 예정
-interface Badges {
-  ranking: {
-    grade: MonthlyReadingBadgeGrade;
-    year: number;
-    month: number;
-  };
-  challenge: {
-    grade: MonthlyReadingBadgeGrade;
-    name: string;
-    generation: number;
-  };
-}
 
 interface LeaderboardItemProps {
   rank: number;
@@ -47,18 +44,21 @@ const LeaderboardItem = ({
   const [challengeTooltipOpened, setChallengeTooltipOpened] = useState(false);
   const rankingBadgeRef = useRef<HTMLDivElement>(null);
   const challengeBadgeRef = useRef<HTMLDivElement>(null);
+
   const rankingBadgeSrc = badges?.ranking
-    ? `/assets/png/ranking_${badges.ranking.grade}.png`
+    ? BADGE_RANKING_IMAGE_MAP[badges.ranking.grade]
     : null;
   const challengeBadgeSrc = badges?.challenge
-    ? `/assets/png/challenge_${badges.challenge.generation}_${badges.challenge.grade}.png`
+    ? BADGE_CHALLENGE_IMAGE_MAP[badges.challenge.grade]
     : null;
   const rankingTooltipText = badges?.ranking
     ? `${badges.ranking.month}월 독서왕 ${
         BADGE_RANKING_LABEL_MAP[badges.ranking.grade]
       }`
     : '';
-  const challengeTooltipText = badges?.challenge?.name ?? '';
+  const challengeTooltipText = badges?.challenge?.name
+    ? `${badges.challenge.name} ${badges.challenge.generation}기`
+    : '';
 
   const openRankingTooltip = () => setRankingTooltipOpened(true);
   const closeRankingTooltip = () => setRankingTooltipOpened(false);

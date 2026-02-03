@@ -25,7 +25,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: true,
+      isSurvived: true,
     },
   },
   {
@@ -47,7 +47,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: true,
+      isSurvived: true,
     },
   },
   {
@@ -74,7 +74,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: true,
+      isSurvived: true,
     },
   },
   {
@@ -90,7 +90,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: true,
+      isSurvived: true,
     },
   },
   {
@@ -106,7 +106,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: true,
+      isSurvived: true,
     },
   },
   {
@@ -128,7 +128,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: true,
       progress: 0,
       grade: 'GOLD',
-      isSuccess: true,
+      isSurvived: true,
     },
   },
   {
@@ -144,7 +144,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: false,
       progress: 20,
       grade: 'GOLD',
-      isSuccess: false,
+      isSurvived: false,
     },
   },
   {
@@ -171,7 +171,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: true,
       progress: 65,
       grade: 'SILVER',
-      isSuccess: true,
+      isSurvived: true,
     },
   },
   {
@@ -193,7 +193,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: true,
       progress: 100,
       grade: 'GOLD',
-      isSuccess: true,
+      isSurvived: true,
     },
   },
   {
@@ -215,7 +215,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: true,
       progress: 95,
       grade: 'SILVER',
-      isSuccess: true,
+      isSurvived: true,
     },
   },
   {
@@ -237,7 +237,7 @@ export const CHALLENGES: Challenge[] = [
       isJoined: true,
       progress: 82,
       grade: 'BRONZE',
-      isSuccess: true,
+      isSurvived: true,
     },
   },
 ];

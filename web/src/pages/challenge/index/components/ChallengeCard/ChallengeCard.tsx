@@ -12,7 +12,7 @@ type CardType = Challenge['status'] | 'FAILED';
 const getCardType = (challenge: Challenge): CardType => {
   const { status, detail } = challenge;
 
-  if (detail?.isSuccess === false) {
+  if (detail?.isSurvived === false) {
     return 'FAILED';
   }
 
