@@ -174,25 +174,36 @@ function ChallengeDetailContent() {
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
           <ParticipantsActions>
-            <ShieldGrantCard>
-              <ShieldGrantTitle>쉴드 지급</ShieldGrantTitle>
-              <ShieldGrantGroup>
-                <ShieldLabel htmlFor="shield-count">개수</ShieldLabel>
-                <ShieldInput
-                  id="shield-count"
-                  type="number"
-                  min="1"
-                  value={shieldCountInput}
-                  onChange={(event) => setShieldCountInput(event.target.value)}
-                />
-                <Button onClick={handleGrantShield} disabled={isGrantingShield}>
-                  {isGrantingShield ? '지급 중...' : '일괄 지급'}
+            <ActionsMenu>
+              <ActionsSummary>관리</ActionsSummary>
+              <ActionsPanel>
+                <ActionsSection>
+                  <ActionsLabel>쉴드 지급</ActionsLabel>
+                  <ShieldGrantGroup>
+                    <ShieldLabel htmlFor="shield-count">개수</ShieldLabel>
+                    <ShieldInput
+                      id="shield-count"
+                      type="number"
+                      min="1"
+                      value={shieldCountInput}
+                      onChange={(event) =>
+                        setShieldCountInput(event.target.value)
+                      }
+                    />
+                    <Button
+                      onClick={handleGrantShield}
+                      disabled={isGrantingShield}
+                    >
+                      {isGrantingShield ? '지급 중...' : '일괄 지급'}
+                    </Button>
+                  </ShieldGrantGroup>
+                </ActionsSection>
+                <ActionsDivider />
+                <Button variant="secondary" onClick={handleManageTeams}>
+                  팀 관리
                 </Button>
-              </ShieldGrantGroup>
-            </ShieldGrantCard>
-            <Button variant="secondary" onClick={handleManageTeams}>
-              팀 관리
-            </Button>
+              </ActionsPanel>
+            </ActionsMenu>
           </ParticipantsActions>
         </ParticipantsHeader>
         <Filters>
@@ -336,20 +347,61 @@ const ParticipantsActions = styled.div`
   justify-content: flex-end;
 `;
 
-const ShieldGrantCard = styled.div`
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+const ActionsMenu = styled.details`
+  position: relative;
+`;
+
+const ActionsSummary = styled.summary`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+  list-style: none;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+`;
+
+const ActionsPanel = styled.div`
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  min-width: 260px;
+  margin-top: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing.md};
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.sm};
 
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const ActionsSection = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.xs};
   flex-direction: column;
 `;
 
-const ShieldGrantTitle = styled.span`
+const ActionsLabel = styled.span`
   color: ${({ theme }) => theme.colors.gray700};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const ActionsDivider = styled.div`
+  height: 1px;
+  background-color: ${({ theme }) => theme.colors.gray200};
 `;
 
 const ShieldGrantGroup = styled.div`
