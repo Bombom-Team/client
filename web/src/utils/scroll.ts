@@ -5,11 +5,11 @@ export const getScrollPercent = (element?: HTMLElement | null) => {
   let totalScroll = scrollHeight - clientHeight;
 
   if (element) {
-    const { top, height } = element.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
+    const { top: elementTop, height: elementHeight } =
+      element.getBoundingClientRect();
 
-    currentScroll = top * -1;
-    totalScroll = height - viewportHeight;
+    currentScroll = elementTop * -1;
+    totalScroll = elementHeight - clientHeight;
   }
 
   if (totalScroll <= 0) return 100;
