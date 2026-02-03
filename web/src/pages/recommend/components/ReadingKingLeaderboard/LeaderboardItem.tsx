@@ -9,6 +9,18 @@ const RANK_ICON_MAP: Record<number, string> = {
   3: '🥉',
 };
 
+const BADGE_RANKING_IMAGE_MAP: Record<MonthlyReadingBadgeGrade, string> = {
+  GOLD: '/assets/png/ranking_gold.png',
+  SILVER: '/assets/png/ranking_silver.png',
+  BRONZE: '/assets/png/ranking_bronze.png',
+};
+
+const BADGE_CHALLENGE_IMAGE_MAP: Record<MonthlyReadingBadgeGrade, string> = {
+  GOLD: '/assets/png/challenge-gold-medal.avif',
+  SILVER: '/assets/avif/challenge-silver-medal.avif',
+  BRONZE: '/assets/avif/challenge-bronze-medal.avif',
+};
+
 const BADGE_RANKING_LABEL_MAP: Record<MonthlyReadingBadgeGrade, string> = {
   GOLD: '1등',
   SILVER: '2등',
@@ -34,10 +46,10 @@ const LeaderboardItem = ({
   const challengeBadgeRef = useRef<HTMLDivElement>(null);
 
   const rankingBadgeSrc = badges?.ranking
-    ? `/assets/png/ranking_${badges.ranking.grade}.png`
+    ? BADGE_RANKING_IMAGE_MAP[badges.ranking.grade]
     : null;
   const challengeBadgeSrc = badges?.challenge
-    ? `/assets/png/challenge_${badges.challenge.generation}_${badges.challenge.grade}.png`
+    ? BADGE_CHALLENGE_IMAGE_MAP[badges.challenge.grade]
     : null;
   const rankingTooltipText = badges?.ranking
     ? `${badges.ranking.month}월 독서왕 ${
