@@ -32,7 +32,7 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
     });
 
     navigate({
-      to: '/challenge/$challengeId',
+      to: '/challenge/$challengeId/certification',
       params: { challengeId: String(id) },
     });
   };
