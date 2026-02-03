@@ -100,7 +100,7 @@ const ChecklistCard = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const ItemNumber = styled.div<{ device: Device }>`
+const ItemNumber = styled.span<{ device: Device }>`
   width: ${({ device }) => (device === 'mobile' ? '28px' : '32px')};
   height: ${({ device }) => (device === 'mobile' ? '28px' : '32px')};
   margin-top: 2px;
