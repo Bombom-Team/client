@@ -195,8 +195,8 @@ function ChallengeDetailContent() {
             <ModalCard onClick={(event) => event.stopPropagation()}>
               <ModalTitle>쉴드 일괄 지급</ModalTitle>
               <ModalContent>
-                <ShieldGrantGroup>
-                  <ShieldLabel htmlFor="shield-count">개수</ShieldLabel>
+                <InputGroup>
+                  <ShieldLabel htmlFor="shield-count">지급 개수</ShieldLabel>
                   <ShieldInput
                     id="shield-count"
                     type="number"
@@ -206,7 +206,7 @@ function ChallengeDetailContent() {
                       setShieldCountInput(event.target.value)
                     }
                   />
-                </ShieldGrantGroup>
+                </InputGroup>
                 <ModalNotice>
                   생존자에게 설정한 개수만큼 쉴드를 일괄 지급합니다.
                 </ModalNotice>
@@ -363,21 +363,15 @@ const ParticipantsActions = styled.div`
   justify-content: flex-end;
 `;
 
-const ShieldGrantGroup = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
-  flex-wrap: wrap;
-  align-items: center;
-`;
-
 const ShieldLabel = styled.label`
   color: ${({ theme }) => theme.colors.gray600};
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const ShieldInput = styled.input`
-  max-width: 100px;
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
+  width: 100%;
+  max-width: 220px;
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
@@ -411,7 +405,7 @@ const ModalCard = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.md};
 
   display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.lg};
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -427,7 +421,7 @@ const ModalTitle = styled.h4`
 
 const ModalContent = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.md};
   flex-direction: column;
 `;
 
@@ -442,6 +436,12 @@ const ModalActions = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
   justify-content: flex-end;
+`;
+
+const InputGroup = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-direction: column;
 `;
 
 const Filters = styled.div`
