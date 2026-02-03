@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
+import ChallengeApplySection from '@/pages/challenge/landing/components/ChallengeApplySection';
 import ChallengeBenefits from '@/pages/challenge/landing/components/ChallengeBenefits';
 import ChallengeChecklist from '@/pages/challenge/landing/components/ChallengeChecklist';
 import ChallengeDetail from '@/pages/challenge/landing/components/ChallengeDetail';
@@ -27,13 +28,12 @@ export const Route = createFileRoute('/challenge/$challengeId/landing')({
 
 function ChallengeLanding() {
   const device = useDevice();
-  const { challengeId } = useParams({
+  const { challengeId: stringChallengeId } = useParams({
     from: '/challenge/$challengeId/landing',
   });
+  const challengeId = Number(stringChallengeId);
 
-  const { data: challengeInfo } = useQuery(
-    queries.challengesInfo(Number(challengeId)),
-  );
+  const { data: challengeInfo } = useQuery(queries.challengesInfo(challengeId));
 
   if (!challengeInfo) {
     return null;
@@ -58,6 +58,7 @@ function ChallengeLanding() {
         <ParticipationGuide />
         <ChallengeRewards />
       </Content>
+      <ChallengeApplySection challengeId={challengeId} />
     </Container>
   );
 }
