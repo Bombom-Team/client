@@ -33,3 +33,12 @@ export const filterWeekdays = (dates: string[]) => {
     return day !== 0 && day !== 6;
   });
 };
+
+export const compareDates = (date1: Date, date2: Date): -1 | 0 | 1 => {
+  const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+  const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+
+  if (d1.getTime() < d2.getTime()) return -1;
+  if (d1.getTime() > d2.getTime()) return 1;
+  return 0;
+};

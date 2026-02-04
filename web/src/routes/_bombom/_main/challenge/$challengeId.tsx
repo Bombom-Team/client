@@ -9,6 +9,7 @@ import { useDevice } from '@/hooks/useDevice';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import ChallengeGuideModal from '@/pages/challenge/index/components/ChallengeGuideModal/ChallengeGuideModal';
 import { useChallengeDetailTabs } from '@/pages/challenge/index/hooks/useChallengeDetailTabs';
+import { compareDates } from '@/utils/date';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
 import TrophyIcon from '#/assets/svg/trophy.svg';
@@ -37,7 +38,7 @@ function ChallengeDetail() {
   );
 
   const isChallengeEnd = challengeInfo
-    ? new Date(challengeInfo.endDate) < new Date()
+    ? compareDates(new Date(challengeInfo.endDate), new Date()) === -1
     : false;
 
   const { tabs, activeTabId, goToTab } = useChallengeDetailTabs({
