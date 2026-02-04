@@ -1,15 +1,17 @@
 import styled from '@emotion/styled';
 import Text from '@/components/Text';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
 
 const ParticipationGuide = () => {
   const device = useDevice();
+  const { visibleRef, isVisible } = useScrollVisible(0.3);
 
   return (
-    <Container device={device}>
+    <Container ref={visibleRef} device={device}>
       <Title device={device}>챌린지 참여 방법</Title>
       <StepWrapper device={device}>
-        <Step>
+        <Step isVisible={isVisible}>
           <StepNumber device={device}>1</StepNumber>
           <StepContent>
             <StepTitle device={device}>하루 한 개 뉴스레터를 읽어요</StepTitle>
@@ -18,7 +20,7 @@ const ParticipationGuide = () => {
             </StepDescription>
           </StepContent>
         </Step>
-        <Step>
+        <Step isVisible={isVisible}>
           <StepNumber device={device}>2</StepNumber>
           <StepContent>
             <StepTitle device={device}>코멘트를 작성해요</StepTitle>
@@ -65,7 +67,7 @@ const StepWrapper = styled.div<{ device: Device }>`
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
 `;
 
-const Step = styled.article`
+const Step = styled.article<{ isVisible: boolean }>`
   padding: 20px 24px;
   border-radius: 16px;
   box-shadow: 0 4px 8px rgb(0 0 0 / 8%);
@@ -74,6 +76,19 @@ const Step = styled.article`
   gap: 8px;
 
   background-color: ${({ theme }) => theme.colors.white};
+
+  animation: ${({ isVisible }) => isVisible && `fade-in-up 1s ease forwards`};
+
+  opacity: 0;
+
+  transform: translate3d(0, 40px, 0);
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 `;
 
 const StepNumber = styled.span<{ device: Device }>`

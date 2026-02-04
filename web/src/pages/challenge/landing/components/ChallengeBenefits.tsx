@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import Text from '@/components/Text';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
 import BookIcon from '#/assets/svg/book.svg';
 import FlagIcon from '#/assets/svg/flag.svg';
 import LampIcon from '#/assets/svg/lamp.svg';
@@ -25,16 +26,22 @@ export const BENEFITS = [
 
 const ChallengeBenefits = () => {
   const device = useDevice();
+  const { visibleRef, isVisible } = useScrollVisible(0.3);
 
   return (
-    <Container device={device}>
+    <Container ref={visibleRef} device={device}>
       <Title device={device}>
         참여하면 <Highlight>이런게</Highlight> 좋아요
       </Title>
       <CardWrapper device={device}>
         {BENEFITS.map((benefit, index) => {
           return (
-            <BenefitCard key={index} device={device}>
+            <BenefitCard
+              key={index}
+              device={device}
+              isVisible={isVisible}
+              index={index}
+            >
               <IconBox>
                 <benefit.Icon />
               </IconBox>
@@ -93,7 +100,11 @@ const CardWrapper = styled.div<{ device: Device }>`
     device === 'mobile' ? '1fr' : 'repeat(3, 1fr)'};
 `;
 
-const BenefitCard = styled.article<{ device: Device }>`
+const BenefitCard = styled.article<{
+  device: Device;
+  isVisible: boolean;
+  index: number;
+}>`
   position: relative;
   width: 100%;
   max-width: ${({ device }) => (device === 'mobile' ? '400px' : 'none')};
@@ -107,6 +118,22 @@ const BenefitCard = styled.article<{ device: Device }>`
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
+
+  animation: ${({ isVisible }) =>
+    isVisible ? 'fade-in-up 0.8s ease forwards' : 'none'};
+
+  animation-delay: ${({ index }) => index * 0.15}s;
+
+  opacity: 0;
+
+  transform: translate3d(0, 40px, 0);
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 `;
 
 const IconBox = styled.div`

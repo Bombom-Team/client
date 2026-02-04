@@ -20,7 +20,7 @@ const DetailCard = ({
   imagePosition,
 }: DetailCardProps) => {
   const device = useDevice();
-  const { visibleRef, isVisible } = useScrollVisible(0.4);
+  const { visibleRef, isVisible } = useScrollVisible(0.3);
 
   const renderedImageContent =
     typeof imageContent === 'function' ? imageContent(isVisible) : imageContent;

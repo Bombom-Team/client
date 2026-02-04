@@ -3,6 +3,8 @@ import styled from '@emotion/styled';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
+import type { RefObject } from 'react';
 import CalendarIcon from '#/assets/svg/calendar.svg';
 import CheckIcon from '#/assets/svg/check-circle.svg';
 import QuoteIcon from '#/assets/svg/quote.svg';
@@ -14,6 +16,7 @@ interface IntroductionProps {
 
 const Introduction = ({ startDate, endDate }: IntroductionProps) => {
   const device = useDevice();
+  const { visibleRef, isVisible } = useScrollVisible(0.3);
 
   return (
     <Flex
@@ -23,15 +26,18 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
       align="center"
       justify="center"
     >
-      <QuoteWrapper device={device}>
-        <QuoteItem align="flex-start">
+      <QuoteWrapper
+        device={device}
+        ref={visibleRef as RefObject<HTMLDivElement>}
+      >
+        <QuoteItem align="flex-start" isVisible={isVisible}>
           <OpeningQuoteIcon device={device} />
           <QuoteText device={device}>
             꾸준히 읽고 싶은데 동기부여가 부족해
           </QuoteText>
           <ClosingQuoteIcon device={device} />
         </QuoteItem>
-        <QuoteItem align="flex-end">
+        <QuoteItem align="flex-end" isVisible={isVisible}>
           <OpeningQuoteIcon device={device} />
           <QuoteText device={device}>다른 사람들은 어떻게 생각할까?</QuoteText>
           <ClosingQuoteIcon device={device} />
@@ -116,7 +122,7 @@ const QuoteWrapper = styled.div<{ device: Device }>`
   align-items: center;
 `;
 
-const QuoteItem = styled(Flex)`
+const QuoteItem = styled(Flex)<{ isVisible: boolean }>`
   width: 100%;
   max-width: fit-content;
 
@@ -124,12 +130,28 @@ const QuoteItem = styled(Flex)`
   align-items: center;
   justify-content: center;
 
+  animation: ${({ isVisible }) =>
+    isVisible ? 'fade-in-up 0.8s ease forwards' : 'none'};
+
+  opacity: 0;
+
+  transform: translate3d(0, 20px, 0);
+
   &:first-of-type {
     align-self: flex-start;
+    animation-delay: 0.2s;
   }
 
   &:last-of-type {
     align-self: flex-end;
+    animation-delay: 0.4s;
+  }
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
   }
 `;
 

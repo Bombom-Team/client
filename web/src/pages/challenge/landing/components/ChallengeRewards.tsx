@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
 import certificationImage from '#/assets/avif/certification.avif';
 import bronzeBadge from '#/assets/avif/challenge-bronze-medal.avif';
 import goldBadge from '#/assets/avif/challenge-gold-medal.avif';
@@ -10,9 +11,10 @@ import readingKingBadge from '#/assets/avif/readingking-badge.avif';
 
 const ChallengeRewards = () => {
   const device = useDevice();
+  const { visibleRef, isVisible } = useScrollVisible(0.3);
 
   return (
-    <Container device={device}>
+    <Container ref={visibleRef} isVisible={isVisible} device={device}>
       <Title device={device}>챌린지 참여 혜택</Title>
       <ContentWrapper device={device}>
         <Reward device={device}>
@@ -65,7 +67,7 @@ const ChallengeRewards = () => {
 
 export default ChallengeRewards;
 
-const Container = styled.section<{ device: Device }>`
+const Container = styled.section<{ device: Device; isVisible: boolean }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'pc' ? '1084px' : '80%')};
 
@@ -74,6 +76,20 @@ const Container = styled.section<{ device: Device }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  animation: ${({ isVisible }) =>
+    isVisible ? 'fade-in-up 1s ease forwards' : 'none'};
+
+  opacity: 0;
+
+  transform: translate3d(0, 40px, 0);
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 `;
 
 const Title = styled.h2<{ device: Device }>`

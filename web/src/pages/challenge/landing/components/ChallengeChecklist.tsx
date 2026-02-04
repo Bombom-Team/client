@@ -1,13 +1,15 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
 import CheckIcon from '#/assets/svg/check-circle.svg';
 
 const ChallengeChecklist = () => {
   const device = useDevice();
+  const { visibleRef, isVisible } = useScrollVisible(0.3);
 
   return (
-    <Container device={device}>
+    <Container ref={visibleRef} isVisible={isVisible} device={device}>
       <Title device={device}>
         챌린지 참여 전 체크리스트
         <CheckIcon
@@ -54,7 +56,7 @@ const ChallengeChecklist = () => {
 
 export default ChallengeChecklist;
 
-const Container = styled.section<{ device: Device }>`
+const Container = styled.section<{ device: Device; isVisible: boolean }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'pc' ? 'min(80%, 1024px)' : '100%')};
   padding-top: 24px;
@@ -64,6 +66,20 @@ const Container = styled.section<{ device: Device }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  animation: ${({ isVisible }) =>
+    isVisible ? 'fade-in-up 1s ease forwards' : 'none'};
+
+  opacity: 0;
+
+  transform: translate3d(0, 40px, 0);
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`

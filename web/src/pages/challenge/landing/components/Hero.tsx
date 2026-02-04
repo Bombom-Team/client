@@ -48,8 +48,7 @@ const Hero = ({ challengeName, generation, onApply }: HeroProps) => {
 
         <Description device={device}>
           매일 뉴스레터 한 편을 읽고 감상을 남기는 한 달 간의 여정.{'\n'}
-          혼자가 아닌, <HighlightText>함께 읽는 즐거움</HighlightText>을
-          경험하세요.
+          혼자가 아닌, <Highlight>함께 읽는 즐거움</Highlight>을 경험하세요.
         </Description>
 
         <ApplicantButton device={device} onClick={handleApplyClick}>
@@ -333,7 +332,7 @@ const Description = styled.p<{ device: Device }>`
   line-height: 1.6;
 `;
 
-const HighlightText = styled.strong`
+const Highlight = styled.strong`
   color: ${({ theme }) => theme.colors.primary};
 `;
 

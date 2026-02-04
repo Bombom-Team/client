@@ -158,7 +158,7 @@ const CommentImage = styled.img<{ offset: number; isVisible: boolean }>`
   animation: ${({ isVisible }) =>
     isVisible ? 'fade-in 0.4s ease forwards' : 'none'};
 
-  animation-delay: ${({ offset }) => offset * 0.8}s;
+  animation-delay: ${({ offset }) => offset * 0.2}s;
 
   opacity: 0;
 

@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import Badge from '@/components/Badge/Badge';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
 import dailybyte from '#/assets/avif/dailybyte.avif';
 import factContextPerspective from '#/assets/avif/fact-context-perspective.avif';
 import h730 from '#/assets/avif/h730.avif';
@@ -63,13 +64,14 @@ const NEWSLETTER_RECOMMENDATIONS = [
 const RecommendNewsletters = () => {
   const device = useDevice();
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const { visibleRef, isVisible } = useScrollVisible(0.3);
 
   const handleCardClick = (index: number) => {
     setSelectedCard((prev) => (prev === index ? null : index));
   };
 
   return (
-    <Container device={device}>
+    <Container ref={visibleRef} device={device}>
       <ContentWrapper device={device}>
         <Title device={device}>챌린지 추천 뉴스레터</Title>
         <NewslettersGrid device={device}>
@@ -77,6 +79,8 @@ const RecommendNewsletters = () => {
             <NewsletterCard
               key={newsletter.name}
               device={device}
+              isVisible={isVisible}
+              index={index}
               onClick={() => handleCardClick(index)}
             >
               <CardInner
@@ -149,7 +153,11 @@ const NewslettersGrid = styled.div<{ device: Device }>`
   justify-content: center;
 `;
 
-const NewsletterCard = styled.article<{ device: Device }>`
+const NewsletterCard = styled.article<{
+  device: Device;
+  isVisible: boolean;
+  index: number;
+}>`
   position: relative;
   width: ${({ device }) => {
     if (device === 'mobile') return 'calc((100% - 16px) / 2)';
@@ -159,11 +167,27 @@ const NewsletterCard = styled.article<{ device: Device }>`
 
   flex: 0 0 auto;
 
+  animation: ${({ isVisible }) =>
+    isVisible ? 'fade-in-up 0.6s ease forwards' : 'none'};
+
+  animation-delay: ${({ index }) => index * 0.1}s;
+
   aspect-ratio: 1;
 
   cursor: pointer;
+
+  opacity: 0;
   perspective: 1200px;
+
+  transform: translate3d(0, 40px, 0);
   transition: transform 0.3s ease;
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 
   &:hover {
     transform: translateY(-8px) rotateX(18deg) rotateY(-10deg);
