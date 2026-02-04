@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -31,11 +32,11 @@ const RecommendNewsletters = () => {
     ),
   );
 
-  const handleCardClick = (newsletterId: number) => {
+  const selectNewsletter = (newsletterId: number) => {
     setSelectedNewsletterId(newsletterId);
   };
 
-  const handleCloseCard = () => {
+  const closeCard = () => {
     setSelectedNewsletterId(null);
   };
 
@@ -58,23 +59,25 @@ const RecommendNewsletters = () => {
             >
               <NewsletterCard
                 newsletter={newsletter}
-                isSelected={false}
-                onCardClick={handleCardClick}
+                onSelect={selectNewsletter}
+                isFlipped={selectedNewsletterId === newsletter.newsletterId}
               />
             </NewsletterCardBox>
           ))}
         </NewslettersGrid>
       </ContentWrapper>
-      {selectedNewsletterId && (
+      {selectedNewsletterId !== null && selectedNewsletter && (
         <>
-          <Overlay onClick={handleCloseCard} />
-          {selectedNewsletter && (
+          <Overlay />
+          <ModalCardWrapper device={device}>
             <NewsletterCard
+              key={selectedNewsletterId}
               newsletter={selectedNewsletter}
-              isSelected={true}
-              onCardClick={handleCardClick}
+              onSelect={selectNewsletter}
+              onCloseCard={closeCard}
+              isFlipped={true}
             />
-          )}
+          </ModalCardWrapper>
         </>
       )}
     </Container>
@@ -154,4 +157,37 @@ const Overlay = styled.div`
   cursor: pointer;
 
   inset: 0;
+`;
+
+const modalPopIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+`;
+
+const ModalCardWrapper = styled.div<{ device: Device }>`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: ${({ theme }) => theme.zIndex.overlay + 1};
+  width: ${({ device }) => {
+    if (device === 'mobile') return 'min(80vw, 320px)';
+    if (device === 'tablet') return 'min(60vw, 360px)';
+    return 'min(40vw, 420px)';
+  }};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  animation: ${modalPopIn} 0.35s ease-out;
+
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
 `;

@@ -1,22 +1,40 @@
+import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import { useState, type MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
+import Flex from '@/components/Flex';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import type { components } from '@/types/openapi';
+import CloseIcon from '#/assets/svg/close.svg';
 
 interface NewsletterCardProps {
   newsletter: components['schemas']['NewsletterResponse'];
+  onSelect: (newsletterId: number) => void;
+  onCloseCard?: () => void;
+  isFlipped?: boolean;
 }
 
-const NewsletterCard = ({ newsletter }: NewsletterCardProps) => {
+const NewsletterCard = ({
+  newsletter,
+  onSelect,
+  onCloseCard,
+  isFlipped = false,
+}: NewsletterCardProps) => {
   const device = useDevice();
-  const [isFlipped, setIsFlipped] = useState(false);
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    setIsFlipped((prev) => !prev);
+  const handleCardClick = () => {
+    onSelect(newsletter.newsletterId);
+  };
+
+  const handleCloseClick = (e: MouseEvent) => {
+    e.stopPropagation();
+
+    if (onCloseCard) {
+      onCloseCard();
+    }
   };
 
   const handleNavigateDetail = (e: MouseEvent) => {
@@ -34,7 +52,7 @@ const NewsletterCard = ({ newsletter }: NewsletterCardProps) => {
   }
 
   return (
-    <Container device={device} onClick={handleClick}>
+    <Container device={device} onClick={handleCardClick}>
       <CardInner isFlipped={isFlipped}>
         <CardFront>
           <ThumbnailBackground>
@@ -45,12 +63,36 @@ const NewsletterCard = ({ newsletter }: NewsletterCardProps) => {
             <CategoryBadge device={device} text={newsletter.category} />
           </ThumbnailBackground>
         </CardFront>
-        <CardBack>
-          <NewsletterName device={device}>{newsletter.name}</NewsletterName>
-          <NewsletterDescription device={device}>
-            {newsletter.description}
-          </NewsletterDescription>
-          <Button onClick={handleNavigateDetail}>구독하러 가기</Button>
+        <CardBack device={device}>
+          <BackContent device={device}>
+            <Flex justify="space-between">
+              <Flex direction="column" gap={8} justify="flex-start">
+                <CategoryLabel device={device}>
+                  {newsletter.category}
+                </CategoryLabel>
+                <NewsletterName device={device}>
+                  {newsletter.name}
+                </NewsletterName>
+              </Flex>
+              <CloseButton variant="transparent" onClick={handleCloseClick}>
+                <CloseIcon
+                  width={device === 'mobile' ? 32 : 44}
+                  height={device === 'mobile' ? 32 : 44}
+                  fill={theme.colors.black}
+                />
+              </CloseButton>
+            </Flex>
+            <NewsletterDescription device={device}>
+              {newsletter.description}
+            </NewsletterDescription>
+          </BackContent>
+          <SubscribeLink
+            device={device}
+            variant="transparent"
+            onClick={handleNavigateDetail}
+          >
+            구독하러 가기 →
+          </SubscribeLink>
         </CardBack>
       </CardInner>
     </Container>
@@ -115,21 +157,17 @@ const CardFront = styled(CardBase)`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const CardBack = styled(CardBase)`
-  padding: 24px;
+const CardBack = styled(CardBase)<{ device: Device }>`
+  overflow: hidden;
+  padding: ${({ device }) => (device === 'mobile' ? '12px' : '32px')};
 
   display: flex;
-  gap: 16px;
+  gap: ${({ device }) => (device === 'mobile' ? '8px' : '24px')};
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: space-between;
 
-  background: linear-gradient(
-    145deg,
-    #fafafa 0%,
-    ${({ theme }) => theme.colors.white} 100%
-  );
-  text-align: center;
+  background-color: ${({ theme }) => theme.colors.white};
 
   transform: rotateY(180deg);
 `;
@@ -156,9 +194,9 @@ const Thumbnail = styled.img`
 
 const CategoryBadge = styled(Badge)<{ device: Device }>`
   position: absolute;
-  right: 12px;
-  bottom: 12px;
-  z-index: 2;
+  right: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  bottom: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  z-index: ${({ theme }) => theme.zIndex.content};
   padding: 6px 12px;
   border-radius: 24px;
   box-shadow:
@@ -169,7 +207,7 @@ const CategoryBadge = styled(Badge)<{ device: Device }>`
   background: rgb(255 255 255 / 92%);
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
+    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body2};
 
   backdrop-filter: blur(8px);
 `;
@@ -177,13 +215,63 @@ const CategoryBadge = styled(Badge)<{ device: Device }>`
 const NewsletterName = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+`;
+
+const CloseButton = styled(Button)`
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  padding: 0;
 `;
 
 const NewsletterDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+`;
 
-  opacity: 0.85;
+const BackContent = styled.div<{ device: Device }>`
+  display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '4px' : '12px')};
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+const CategoryLabel = styled.span<{ device: Device }>`
+  padding: 4px 0;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
+
+  opacity: 0.6;
+`;
+
+const SubscribeLink = styled(Button)<{ device: Device }>`
+  width: 100%;
+  padding: ${({ device }) => (device === 'mobile' ? '4px 0' : '12px 0')};
+  border-top: 1px solid rgb(0 0 0 / 8%);
+  border-radius: 0%;
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
+  text-align: left;
+
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    background: none;
+    opacity: 0.7;
+  }
+
+  &:hover span {
+    transform: translateX(4px);
+  }
 `;
