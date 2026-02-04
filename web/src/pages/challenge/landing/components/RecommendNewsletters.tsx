@@ -35,6 +35,7 @@ const RecommendNewsletters = () => {
           {recommendNewsletters?.map((newsletter, index) => (
             <NewsletterCardBox
               key={newsletter?.newsletterId}
+              device={device}
               isVisible={isVisible}
               index={index}
             >
@@ -79,6 +80,7 @@ const Title = styled.h2<{ device: Device }>`
 `;
 
 const NewslettersGrid = styled.div<{ device: Device }>`
+  position: relative;
   width: 100%;
 
   display: flex;
@@ -88,12 +90,21 @@ const NewslettersGrid = styled.div<{ device: Device }>`
   justify-content: center;
 `;
 
-const NewsletterCardBox = styled.div<{ isVisible: boolean; index: number }>`
+const NewsletterCardBox = styled.div<{
+  device: Device;
+  isVisible: boolean;
+  index: number;
+}>`
+  width: ${({ device }) => {
+    if (device === 'mobile') return 'calc((100% - 16px) / 2)';
+    if (device === 'tablet') return 'calc((100% - 48px) / 3)';
+    return '200px';
+  }};
+
+  flex: 0 0 auto;
+
+  aspect-ratio: 1;
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  transform: ${({ isVisible }) =>
-    isVisible ? 'translateY(0)' : 'translateY(20px)'};
-  transition:
-    opacity 0.5s ease-in-out,
-    transform 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
   transition-delay: ${({ index }) => `${index * 100}ms`};
 `;

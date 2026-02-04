@@ -63,15 +63,8 @@ const Container = styled.article<{
   device: Device;
 }>`
   position: relative;
-  width: ${({ device }) => {
-    if (device === 'mobile') return 'calc((100% - 16px) / 2)';
-    if (device === 'tablet') return 'calc((100% - 48px) / 3)';
-    return '200px';
-  }};
-
-  flex: 0 0 auto;
-
-  aspect-ratio: 1;
+  width: 100%;
+  height: 100%;
 
   cursor: pointer;
   perspective: 1200px;
