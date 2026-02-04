@@ -7,7 +7,7 @@ import type { MouseEvent } from 'react';
 
 interface ChallengeApplySectionProps {
   challengeName: string;
-  onApply: (event: MouseEvent) => void;
+  onApply: (e: MouseEvent) => void;
 }
 
 const ChallengeApplySection = ({
@@ -16,9 +16,9 @@ const ChallengeApplySection = ({
 }: ChallengeApplySectionProps) => {
   const device = useDevice();
 
-  const handleApplyClick = (event: MouseEvent) => {
-    event.stopPropagation();
-    onApply(event);
+  const handleApplyClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    onApply(e);
 
     trackEvent({
       category: 'Challenge',

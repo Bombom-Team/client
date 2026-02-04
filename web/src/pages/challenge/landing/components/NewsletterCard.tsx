@@ -1,26 +1,37 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { useState, type MouseEvent } from 'react';
 import Badge from '@/components/Badge/Badge';
+import Button from '@/components/Button/Button';
 import { useDevice, type Device } from '@/hooks/useDevice';
-
-interface Newsletter {
-  name: string;
-  category: string;
-  description: string;
-  imageSource: string;
-}
+import type { components } from '@/types/openapi';
 
 interface NewsletterCardProps {
-  newsletter: Newsletter;
+  newsletter: components['schemas']['NewsletterResponse'];
 }
 
 const NewsletterCard = ({ newsletter }: NewsletterCardProps) => {
   const device = useDevice();
   const [isFlipped, setIsFlipped] = useState(false);
+  const navigate = useNavigate();
 
   const handleClick = () => {
     setIsFlipped((prev) => !prev);
   };
+
+  const handleNavigateDetail = (e: MouseEvent) => {
+    e.stopPropagation();
+    navigate({
+      to: '/',
+      search: {
+        newsletterDetail: newsletter.newsletterId,
+      },
+    });
+  };
+
+  if (!newsletter) {
+    return null;
+  }
 
   return (
     <Container device={device} onClick={handleClick}>
@@ -28,7 +39,7 @@ const NewsletterCard = ({ newsletter }: NewsletterCardProps) => {
         <CardFront>
           <ThumbnailBackground>
             <Thumbnail
-              src={newsletter.imageSource}
+              src={newsletter.imageUrl}
               alt={`${newsletter.name} 로고`}
             />
             <CategoryBadge device={device} text={newsletter.category} />
@@ -39,6 +50,7 @@ const NewsletterCard = ({ newsletter }: NewsletterCardProps) => {
           <NewsletterDescription device={device}>
             {newsletter.description}
           </NewsletterDescription>
+          <Button onClick={handleNavigateDetail}>구독하러 가기</Button>
         </CardBack>
       </CardInner>
     </Container>

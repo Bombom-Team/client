@@ -9,15 +9,15 @@ import ArrowRightIcon from '#/assets/svg/arrow-right.svg';
 interface HeroProps {
   challengeName: string;
   generation: number;
-  onApply: (event: MouseEvent) => void;
+  onApply: (e: MouseEvent) => void;
 }
 
 const Hero = ({ challengeName, generation, onApply }: HeroProps) => {
   const device = useDevice();
 
-  const handleApplyClick = (event: MouseEvent) => {
-    event.stopPropagation();
-    onApply(event);
+  const handleApplyClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    onApply(e);
 
     trackEvent({
       category: 'Challenge',
