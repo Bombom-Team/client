@@ -52,7 +52,7 @@ const NewsletterCard = ({
   }
 
   return (
-    <Container device={device} onClick={handleCardClick}>
+    <Container device={device} onClick={handleCardClick} isFlipped={isFlipped}>
       <CardInner isFlipped={isFlipped}>
         <CardFront>
           <ThumbnailBackground>
@@ -103,6 +103,7 @@ export default NewsletterCard;
 
 const Container = styled.article<{
   device: Device;
+  isFlipped: boolean;
 }>`
   position: relative;
   width: 100%;
@@ -110,6 +111,14 @@ const Container = styled.article<{
 
   cursor: pointer;
   perspective: 1200px;
+
+  ${({ isFlipped }) =>
+    !isFlipped &&
+    `
+    &:hover > div {
+      transform: translateY(-8px);
+    }
+  `}
 `;
 
 const CardInner = styled.div<{ isFlipped: boolean }>`
@@ -120,7 +129,9 @@ const CardInner = styled.div<{ isFlipped: boolean }>`
   transform: ${({ isFlipped }) =>
     isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'};
   transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    translate 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 const CardBase = styled.div`
@@ -155,6 +166,14 @@ const CardFront = styled(CardBase)`
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
+
+  article:hover & {
+    box-shadow:
+      0 2px 4px rgb(0 0 0 / 4%),
+      0 4px 12px rgb(0 0 0 / 8%),
+      0 12px 24px rgb(0 0 0 / 12%),
+      0 24px 48px rgb(0 0 0 / 16%);
+  }
 `;
 
 const CardBack = styled(CardBase)<{ device: Device }>`
