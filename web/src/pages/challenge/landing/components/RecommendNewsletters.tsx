@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import NewsletterCard from './NewsletterCard';
 import { newslettersQueries } from '@/apis/newsletters/newsletters.query';
 import { useDevice, type Device } from '@/hooks/useDevice';
@@ -18,6 +19,9 @@ const NEWSLETTER_RECOMMENDATIONS = [
 const RecommendNewsletters = () => {
   const device = useDevice();
   const { visibleRef, isVisible } = useScrollVisible(0.3);
+  const [selectedNewsletterId, setSelectedNewsletterId] = useState<
+    number | null
+  >(null);
 
   const { data: newsletters } = useQuery(newslettersQueries.newsletters());
 
@@ -25,6 +29,18 @@ const RecommendNewsletters = () => {
     NEWSLETTER_RECOMMENDATIONS.some(
       (newsletterName) => newsletterName === newsletter.name,
     ),
+  );
+
+  const handleCardClick = (newsletterId: number) => {
+    setSelectedNewsletterId(newsletterId);
+  };
+
+  const handleCloseCard = () => {
+    setSelectedNewsletterId(null);
+  };
+
+  const selectedNewsletter = recommendNewsletters?.find(
+    (newsletter) => newsletter.newsletterId === selectedNewsletterId,
   );
 
   return (
@@ -38,12 +54,29 @@ const RecommendNewsletters = () => {
               device={device}
               isVisible={isVisible}
               index={index}
+              isSelected={selectedNewsletterId === newsletter.newsletterId}
             >
-              <NewsletterCard newsletter={newsletter} />
+              <NewsletterCard
+                newsletter={newsletter}
+                isSelected={false}
+                onCardClick={handleCardClick}
+              />
             </NewsletterCardBox>
           ))}
         </NewslettersGrid>
       </ContentWrapper>
+      {selectedNewsletterId && (
+        <>
+          <Overlay onClick={handleCloseCard} />
+          {selectedNewsletter && (
+            <NewsletterCard
+              newsletter={selectedNewsletter}
+              isSelected={true}
+              onCardClick={handleCardClick}
+            />
+          )}
+        </>
+      )}
     </Container>
   );
 };
@@ -94,7 +127,9 @@ const NewsletterCardBox = styled.div<{
   device: Device;
   isVisible: boolean;
   index: number;
+  isSelected: boolean;
 }>`
+  visibility: ${({ isSelected }) => (isSelected ? 'hidden' : 'visible')};
   width: ${({ device }) => {
     if (device === 'mobile') return 'calc((100% - 16px) / 2)';
     if (device === 'tablet') return 'calc((100% - 48px) / 3)';
@@ -107,4 +142,16 @@ const NewsletterCardBox = styled.div<{
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   transition: opacity 0.5s ease-in-out;
   transition-delay: ${({ index }) => `${index * 100}ms`};
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  z-index: ${({ theme }) => theme.zIndex.overlay};
+
+  background: rgb(0 0 0 / 40%);
+
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+
+  inset: 0;
 `;
