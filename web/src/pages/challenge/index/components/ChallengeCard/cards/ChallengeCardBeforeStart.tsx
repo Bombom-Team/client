@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useNavigate } from '@tanstack/react-router';
 import { Suspense } from 'react';
 import ChallengeApplyModal from '../../ChallengeApplyModal/ChallengeApplyModal';
 import LoadingModal from '../../ChallengeApplyModal/modals/LoadingModal';
@@ -13,12 +14,12 @@ import useModal from '@/components/Modal/useModal';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import useChallengeApplyMutation from '@/pages/challenge/index/hooks/useChallengeApplyMutation';
 import useChallengeCancelMutation from '@/pages/challenge/index/hooks/useChallengeCancelMutation';
-import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
   const { newsletters, participantCount, generation, startDate, title, id } =
     props;
+  const navigate = useNavigate();
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const { mutate: applyChallenge } = useChallengeApplyMutation({
@@ -35,9 +36,10 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
       label: title,
     });
 
-    openExternalLink(
-      'https://maroon-geranium-880.notion.site/2d103dcf205680dfa045d47385af3df9?source=copy_link',
-    );
+    navigate({
+      to: '/challenge/$challengeId/landing',
+      params: { challengeId: id.toString() },
+    });
   };
 
   const handleApplyClick = (event: React.MouseEvent<HTMLButtonElement>) => {
