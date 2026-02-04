@@ -21,7 +21,7 @@ const ReadingKingMyRank = ({ userRank }: ReadingKingMyRankProps) => {
       <MyRankInfo>
         <InfoWrapper>
           <NameWrapper>
-            <MyRankLabel>{userRank.nickname}</MyRankLabel>
+            <MyRankLabel>{userRank.nickname} 님</MyRankLabel>
             <UserBadgeInfo badges={userRank.badges} />
           </NameWrapper>
           <MyRankLabel>읽은 뉴스레터</MyRankLabel>
