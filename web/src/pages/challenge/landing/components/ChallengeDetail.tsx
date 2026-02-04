@@ -1,6 +1,9 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import DetailCard from './DetailCard';
+import Flex from '@/components/Flex';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import type { DetailCardProps } from './DetailCard';
 import commentCard1 from '#/assets/avif/challenge-comment1.avif';
 import commentCard2 from '#/assets/avif/challenge-comment2.avif';
 import commentCard3 from '#/assets/avif/challenge-comment3.avif';
@@ -10,87 +13,98 @@ import CommentIcon from '#/assets/svg/comment.svg';
 import RoadSignIcon from '#/assets/svg/road-sign.svg';
 import SproutIcon from '#/assets/svg/sprout-stroke.svg';
 
+type Detail = DetailCardProps;
+
 const ChallengeDetail = () => {
   const device = useDevice();
+  const iconSize = device === 'mobile' ? 18 : device === 'tablet' ? 24 : 28;
+
+  const DETAILS: Detail[] = [
+    {
+      icon: (
+        <RoadSignIcon
+          width={iconSize}
+          height={iconSize}
+          color={theme.colors.primary}
+        />
+      ),
+      title: '데일리 가이드',
+      description:
+        '뉴스레터 읽기를 이끄는 하루 한 가지 문구,\n매일 새로운 가이드로 단순한 읽기를 깊이 있는 사색으로 전환하세요.\n한 달 후, 작지만 확실한 변화를 만날 수 있어요.',
+      imageContent: <img src={dailyGuideImage} alt="데일리 가이드" />,
+      imagePosition: 'left',
+    },
+    {
+      icon: (
+        <SproutIcon
+          width={iconSize}
+          height={iconSize}
+          color={theme.colors.primary}
+        />
+      ),
+      title: '챌린지 현황판',
+      description:
+        '참여 팀들의 챌린지 현황을 한눈에 확인하고\n꾸준히 이어가는 원동력을 얻어요.\n다른 팀과 경쟁하며 우리 팀의 달성률에 기여해보세요!',
+      imageContent: <img src={challengeDashboard} alt="챌린지 현황판" />,
+      imagePosition: 'right',
+    },
+    {
+      icon: (
+        <CommentIcon
+          width={iconSize}
+          height={iconSize}
+          fill={theme.colors.primary}
+        />
+      ),
+      title: '한 줄 코멘트',
+      description:
+        '다른 유저의 코멘트에서 얻는 새로운 관점,\n서로의 생각을 공유하며 같은 글도 다르게 읽는 경험을 해보세요.\n코멘트로 다양한 뉴스레터에 대한 궁금증도 해소할 수 있어요!',
+      imageContent: (isVisible) => (
+        <CommentImageWrapper>
+          <CommentImage
+            isVisible={isVisible}
+            src={commentCard1}
+            alt="코멘트1"
+            offset={1}
+          />
+          <CommentImage
+            isVisible={isVisible}
+            src={commentCard2}
+            alt="코멘트2"
+            offset={2}
+          />
+          <CommentImage
+            isVisible={isVisible}
+            src={commentCard3}
+            alt="코멘트3"
+            offset={3}
+          />
+        </CommentImageWrapper>
+      ),
+      imagePosition: 'left',
+    },
+  ];
 
   return (
     <Container device={device}>
       <Title device={device}>
         챌린지, <Highlight>이렇게</Highlight> 구성돼요
       </Title>
-      <ContentWrapper device={device}>
-        <FeatureItem device={device} imagePosition="left">
-          <ImageSection device={device}>
-            <img src={dailyGuideImage} alt="데일리 가이드" />
-          </ImageSection>
-          <TextSection device={device}>
-            <FeatureTitleWrapper device={device}>
-              <RoadSignIcon
-                width={device === 'mobile' ? 18 : device === 'tablet' ? 24 : 28}
-                height={
-                  device === 'mobile' ? 18 : device === 'tablet' ? 24 : 28
-                }
-                color={theme.colors.primary}
-              />
-              <FeatureTitle device={device}>데일리 가이드</FeatureTitle>
-            </FeatureTitleWrapper>
-            <Description device={device}>
-              뉴스레터 읽기를 이끄는 하루 한 가지 문구,{'\n'}
-              매일 새로운 가이드로 단순한 읽기를 깊이 있는 사색으로 전환하세요.
-              {'\n'}한 달 후, 작지만 확실한 변화를 만날 수 있어요.
-            </Description>
-          </TextSection>
-        </FeatureItem>
-
-        <FeatureItem device={device} imagePosition="right">
-          <ImageSection device={device}>
-            <img src={challengeDashboard} alt="챌린지 현황판" />
-          </ImageSection>
-          <TextSection device={device}>
-            <FeatureTitleWrapper device={device}>
-              <SproutIcon
-                width={device === 'mobile' ? 18 : device === 'tablet' ? 24 : 28}
-                height={
-                  device === 'mobile' ? 18 : device === 'tablet' ? 24 : 28
-                }
-                color={theme.colors.primary}
-              />
-              <FeatureTitle device={device}>챌린지 현황판</FeatureTitle>
-            </FeatureTitleWrapper>
-            <Description device={device}>
-              참여 팀들의 챌린지 현황을 한눈에 확인하고{'\n'}
-              꾸준히 이어가는 원동력을 얻어요.{'\n'}
-              다른 팀과 경쟁하며 우리 팀의 달성률에 기여해보세요!
-            </Description>
-          </TextSection>
-        </FeatureItem>
-
-        <FeatureItem device={device} imagePosition="left">
-          <ImageSection device={device}>
-            <CommentImageWrapper>
-              <CommentImage src={commentCard1} alt="코멘트1" offset={1} />
-              <CommentImage src={commentCard2} alt="코멘트2" offset={2} />
-              <CommentImage src={commentCard3} alt="코멘트3" offset={3} />
-            </CommentImageWrapper>
-          </ImageSection>
-          <TextSection device={device}>
-            <FeatureTitleWrapper device={device}>
-              <CommentIcon
-                width={device === 'mobile' ? 18 : device === 'tablet' ? 24 : 28}
-                height={
-                  device === 'mobile' ? 18 : device === 'tablet' ? 24 : 28
-                }
-                fill={theme.colors.primary}
-              />
-              <FeatureTitle device={device}>한 줄 코멘트</FeatureTitle>
-            </FeatureTitleWrapper>
-            <Description device={device}>
-              다른 유저의 코멘트에서 얻는 새로운 관점,{'\n'}
-              서로의 생각을 공유하며 같은 글도 다르게 읽는 경험을 해보세요.
-              {'\n'}코멘트로 다양한 뉴스레터에 대한 궁금증도 해소할 수 있어요!
-            </Description>
-          </TextSection>
-        </FeatureItem>
+      <ContentWrapper
+        device={device}
+        gap={device === 'mobile' ? 84 : 210}
+        direction="column"
+      >
+        {DETAILS.map((feature) => (
+          <DetailCard
+            key={feature.title}
+            icon={feature.icon}
+            title={feature.title}
+            description={feature.description}
+            imageContent={feature.imageContent}
+            imagePosition={feature.imagePosition}
+          />
+        ))}
       </ContentWrapper>
     </Container>
   );
@@ -110,12 +124,8 @@ const Container = styled.section<{ device: Device }>`
   flex-direction: column;
 `;
 
-const ContentWrapper = styled.div<{ device: Device }>`
+const ContentWrapper = styled(Flex)<{ device: Device }>`
   width: 100%;
-
-  display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '84px' : '210px')};
-  flex-direction: column;
 `;
 
 const Title = styled.h2<{ device: Device }>`
@@ -129,100 +139,38 @@ const Highlight = styled.span`
   color: ${({ theme }) => theme.colors.primary};
 `;
 
-const FeatureItem = styled.article<{
-  device: Device;
-  imagePosition: 'left' | 'right';
-}>`
-  width: 100%;
-
-  display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '32px' : '64px')};
-  flex-direction: ${({ imagePosition, device }) => {
-    if (device === 'mobile') return 'column';
-    return imagePosition === 'left' ? 'row' : 'row-reverse';
-  }};
-  align-items: center;
-  justify-content: ${({ device }) =>
-    device === 'mobile' ? 'center' : 'space-between'};
-`;
-
-const TextSection = styled.div<{
-  device: Device;
-}>`
-  display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '16px' : '24px')};
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
-const FeatureTitleWrapper = styled.div<{ device: Device }>`
-  width: 100%;
-
-  display: flex;
-  gap: 4px;
-  flex-direction: ${({ device }) =>
-    device === 'mobile' ? 'row-reverse' : 'row'};
-  align-items: center;
-  justify-content: ${({ device }) =>
-    device === 'mobile' ? 'center' : 'flex-start'};
-`;
-
-const FeatureTitle = styled.h3<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.heading5;
-    return device === 'tablet' ? theme.fonts.heading4 : theme.fonts.heading3;
-  }};
-`;
-
-const Description = styled.p<{
-  device: Device;
-}>`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.body2;
-    return device === 'tablet' ? theme.fonts.body1 : theme.fonts.bodyLarge;
-  }};
-  line-height: 2;
-`;
-
-const ImageSection = styled.div<{ device: Device }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    width: 100%;
-    height: auto;
-    max-width: ${({ device }) => {
-      if (device === 'mobile') return '280px';
-      return device === 'tablet' ? '320px' : '480px';
-    }};
-    border-radius: 4px;
-
-    filter: drop-shadow(0 10px 15px rgb(0 0 0 / 10%))
-      drop-shadow(0 4px 6px rgb(0 0 0 / 10%));
-  }
-`;
-
 const CommentImageWrapper = styled.div`
   width: 100%;
   min-height: 210px;
   max-width: 80%;
+  padding-top: 20px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-const CommentImage = styled.img<{ offset: number }>`
+const CommentImage = styled.img<{ offset: number; isVisible: boolean }>`
   width: 100%;
   border-radius: 12px;
   box-shadow: 0 10px 24px rgb(0 0 0 / 4%);
+
+  animation: ${({ isVisible }) =>
+    isVisible ? 'fade-in 0.4s ease forwards' : 'none'};
+
+  animation-delay: ${({ offset }) => offset * 0.8}s;
+
+  opacity: 0;
 
   transform: ${({ offset }) => {
     const translateY = offset * 14;
     const translateX = offset % 2 === 0 ? 20 : -20;
     return `translate(${translateX}px, ${translateY}px)`;
   }};
+
+  @keyframes fade-in {
+    to {
+      opacity: 1;
+    }
+  }
 `;
