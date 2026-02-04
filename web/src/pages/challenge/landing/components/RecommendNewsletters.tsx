@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
-import Badge from '@/components/Badge/Badge';
+import NewsletterCard from './NewsletterCard';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
 import dailybyte from '#/assets/avif/dailybyte.avif';
@@ -63,12 +62,7 @@ const NEWSLETTER_RECOMMENDATIONS = [
 
 const RecommendNewsletters = () => {
   const device = useDevice();
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const { visibleRef, isVisible } = useScrollVisible(0.3);
-
-  const handleCardClick = (index: number) => {
-    setSelectedCard((prev) => (prev === index ? null : index));
-  };
 
   return (
     <Container ref={visibleRef} device={device}>
@@ -76,36 +70,13 @@ const RecommendNewsletters = () => {
         <Title device={device}>챌린지 추천 뉴스레터</Title>
         <NewslettersGrid device={device}>
           {NEWSLETTER_RECOMMENDATIONS.map((newsletter, index) => (
-            <NewsletterCard
+            <NewsletterCardBox
               key={newsletter.name}
-              device={device}
               isVisible={isVisible}
               index={index}
-              onClick={() => handleCardClick(index)}
             >
-              <CardInner
-                className="card-inner"
-                isFlipped={selectedCard === index}
-              >
-                <CardFront className="card-front">
-                  <ThumbnailBox>
-                    <Thumbnail
-                      src={newsletter.imageSource}
-                      alt={`${newsletter.name} 로고`}
-                    />
-                    <CategoryBadge device={device} text={newsletter.category} />
-                  </ThumbnailBox>
-                </CardFront>
-                <CardBack className="card-back">
-                  <NewsletterName device={device}>
-                    {newsletter.name}
-                  </NewsletterName>
-                  <NewsletterDescription device={device}>
-                    {newsletter.description}
-                  </NewsletterDescription>
-                </CardBack>
-              </CardInner>
-            </NewsletterCard>
+              <NewsletterCard newsletter={newsletter} />
+            </NewsletterCardBox>
           ))}
         </NewslettersGrid>
       </ContentWrapper>
@@ -116,6 +87,7 @@ const RecommendNewsletters = () => {
 export default RecommendNewsletters;
 
 const Container = styled.section<{ device: Device }>`
+  position: relative;
   width: 100%;
   max-width: ${({ device }) => {
     if (device === 'mobile') return '400px';
@@ -153,171 +125,12 @@ const NewslettersGrid = styled.div<{ device: Device }>`
   justify-content: center;
 `;
 
-const NewsletterCard = styled.article<{
-  device: Device;
-  isVisible: boolean;
-  index: number;
-}>`
-  position: relative;
-  width: ${({ device }) => {
-    if (device === 'mobile') return 'calc((100% - 16px) / 2)';
-    if (device === 'tablet') return 'calc((100% - 48px) / 3)';
-    return '200px';
-  }};
-
-  flex: 0 0 auto;
-
-  animation: ${({ isVisible }) =>
-    isVisible ? 'fade-in-up 0.6s ease forwards' : 'none'};
-
-  animation-delay: ${({ index }) => index * 0.1}s;
-
-  aspect-ratio: 1;
-
-  cursor: pointer;
-
-  opacity: 0;
-  perspective: 1200px;
-
-  transform: translate3d(0, 40px, 0);
-  transition: transform 0.3s ease;
-
-  @keyframes fade-in-up {
-    to {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
-    }
-  }
-
-  &:hover {
-    transform: translateY(-8px) rotateX(18deg) rotateY(-10deg);
-
-    .card-front,
-    .card-back {
-      box-shadow:
-        0 2px 4px rgb(0 0 0 / 4%),
-        0 6px 12px rgb(0 0 0 / 8%),
-        0 12px 24px rgb(0 0 0 / 10%),
-        0 24px 48px rgb(0 0 0 / 14%);
-    }
-  }
-`;
-
-const CardInner = styled.div<{ isFlipped: boolean }>`
-  position: relative;
-  width: 100%;
-  height: 100%;
-
-  transform: ${({ isFlipped }) =>
-    isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'};
-  transform-style: preserve-3d;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-`;
-
-const cardFaceStyles = `
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 3%),
-    0 2px 6px rgb(0 0 0 / 5%),
-    0 8px 16px rgb(0 0 0 / 8%),
-    0 16px 32px rgb(0 0 0 / 10%);
-
-  backface-visibility: hidden;
-  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &::before {
-    position: absolute;
-    inset: 0;
-    border: 1px solid rgb(0 0 0 / 4%);
-    border-radius: 12px;
-    content: '';
-    pointer-events: none;
-  }
-`;
-
-const CardFront = styled.div`
-  ${cardFaceStyles}
-  overflow: hidden;
-
-  display: flex;
-  flex-direction: column;
-
-  background-color: ${({ theme }) => theme.colors.white};
-`;
-
-const CardBack = styled.div`
-  ${cardFaceStyles}
-  padding: 24px;
-
-  display: flex;
-  gap: 16px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  background: linear-gradient(
-    145deg,
-    #fafafa 0%,
-    ${({ theme }) => theme.colors.white} 100%
-  );
-  text-align: center;
-
-  transform: rotateY(180deg);
-`;
-
-const ThumbnailBox = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: ${({ theme }) => theme.colors.white};
-`;
-
-const Thumbnail = styled.img`
-  width: 100%;
-  height: 100%;
-
-  object-fit: contain;
-  object-position: center;
-`;
-
-const CategoryBadge = styled(Badge)<{ device: Device }>`
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  z-index: 2;
-  padding: 6px 12px;
-  border-radius: 24px;
-  box-shadow:
-    0 1px 3px rgb(0 0 0 / 6%),
-    0 2px 8px rgb(0 0 0 / 4%),
-    inset 0 0 0 1px rgb(0 0 0 / 4%);
-
-  background: rgb(255 255 255 / 92%);
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.caption};
-
-  backdrop-filter: blur(8px);
-`;
-
-const NewsletterName = styled.h3<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
-`;
-
-const NewsletterDescription = styled.p<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
-
-  opacity: 0.85;
+const NewsletterCardBox = styled.div<{ isVisible: boolean; index: number }>`
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transform: ${({ isVisible }) =>
+    isVisible ? 'translateY(0)' : 'translateY(20px)'};
+  transition:
+    opacity 0.5s ease-in-out,
+    transform 0.5s ease-in-out;
+  transition-delay: ${({ index }) => `${index * 100}ms`};
 `;
