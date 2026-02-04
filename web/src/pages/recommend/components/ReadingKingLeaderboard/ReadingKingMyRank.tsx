@@ -9,11 +9,11 @@ interface ReadingKingMyRankProps {
 
 const ReadingKingMyRank = ({ userRank }: ReadingKingMyRankProps) => {
   const progressRate = calculateRate(
-    userRank.readCount,
-    userRank.readCount + userRank.nextRankDifference,
+    userRank.monthlyReadCount,
+    userRank.monthlyReadCount + userRank.nextRankDifference,
   );
 
-  const rankSummary = `현재 나의 순위 ${userRank.rank}위. 읽은 뉴스레터 ${userRank.readCount}개. 다음 순위까지 ${userRank.nextRankDifference}개 더 읽기. 진행률 ${progressRate}%`;
+  const rankSummary = `현재 나의 순위 ${userRank.rank}위. 읽은 뉴스레터 ${userRank.monthlyReadCount}개. 다음 순위까지 ${userRank.nextRankDifference}개 더 읽기. 진행률 ${progressRate}%`;
 
   return (
     <Container aria-label={rankSummary} tabIndex={0}>
@@ -24,7 +24,7 @@ const ReadingKingMyRank = ({ userRank }: ReadingKingMyRankProps) => {
         </InfoWrapper>
         <InfoWrapper>
           <MyRankValue>{userRank.rank}위</MyRankValue>
-          <MyReadValue>{userRank.readCount}개</MyReadValue>
+          <MyReadValue>{userRank.monthlyReadCount}개</MyReadValue>
         </InfoWrapper>
       </MyRankInfo>
 
