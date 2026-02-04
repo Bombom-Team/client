@@ -1,10 +1,12 @@
+import { theme } from '@bombom/shared';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import Button from '@/components/Button/Button';
+import Flex from '@/components/Flex';
+import ArrowIcon from '@/components/icons/ArrowIcon';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { MouseEvent } from 'react';
-import ArrowRightIcon from '#/assets/svg/arrow-right.svg';
 
 interface HeroProps {
   challengeName: string;
@@ -28,32 +30,49 @@ const Hero = ({ challengeName, generation, onApply }: HeroProps) => {
 
   return (
     <Container device={device}>
-      <DecorationWrapper>
-        <JellySphere1 />
-        <JellySphere2 />
-        <JellySphere3 />
-        <BackgroundGlow />
-      </DecorationWrapper>
+      <IframeBackground
+        src="https://my.spline.design/textfromballoonswithinteractiveanimation-itpCNbfREzmECA7s8G4nFAHi/"
+        title="3D Background Animation"
+        width="80%"
+        height="80%"
+      />
+
+      <SplineButtonCover />
 
       <ContentWrapper device={device}>
         <GenerationBadge
           device={device}
         >{`봄봄 뉴스레터 챌린지 ${generation}기`}</GenerationBadge>
 
-        <BalloonTextWrapper device={device}>
-          <BalloonText device={device} data-text={challengeName}>
-            {challengeName}
-          </BalloonText>
-        </BalloonTextWrapper>
-
         <Description device={device}>
           매일 뉴스레터 한 편을 읽고 감상을 남기는 한 달 간의 여정.{'\n'}
           혼자가 아닌, <Highlight>함께 읽는 즐거움</Highlight>을 경험하세요.
         </Description>
 
+        <Flex direction="column" gap={device === 'mobile' ? 4 : 8}>
+          <PriceBox device={device}>
+            <OriginalPrice device={device}>정가 ₩24,000</OriginalPrice>
+            <ArrowIcon
+              direction="right"
+              color={theme.colors.primary}
+              width={device === 'mobile' ? 24 : 32}
+              height={device === 'mobile' ? 24 : 32}
+            />
+            <FreePrice device={device}>무료</FreePrice>
+          </PriceBox>
+          <DiscountLabel device={device}>
+            {generation}기 특별 할인!
+          </DiscountLabel>
+        </Flex>
+
         <ApplicantButton device={device} onClick={handleApplyClick}>
           지금 참여하기
-          <ArrowRightIcon />
+          <ArrowIcon
+            direction="right"
+            color={theme.colors.white}
+            width={device === 'mobile' ? 24 : 32}
+            height={device === 'mobile' ? 24 : 32}
+          />
         </ApplicantButton>
       </ContentWrapper>
 
@@ -73,17 +92,6 @@ const floatAnimation = keyframes`
   }
 `;
 
-const breathe = keyframes`
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-    filter: brightness(1);
-  }
-  50% {
-    transform: scale(1.03) rotate(1deg);
-    filter: brightness(1.1);
-  }
-`;
-
 const Container = styled.section<{ device: Device }>`
   overflow: hidden;
   position: relative;
@@ -93,119 +101,33 @@ const Container = styled.section<{ device: Device }>`
     `calc(${device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile} + 12px) 24px 96px`};
 
   display: flex;
+  gap: 12px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  background: #fff8f4;
 `;
 
-const DecorationWrapper = styled.div`
+const IframeBackground = styled.iframe`
   position: absolute;
+  top: -20%;
+  left: 0;
   z-index: 0;
-
-  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 
   pointer-events: none;
 `;
 
-const JellySphere1 = styled.div`
+const SplineButtonCover = styled.div`
   position: absolute;
-  top: 10%;
-  left: 10%;
-  width: 128px;
-  height: 128px;
-  border-radius: 50%;
-  box-shadow:
-    inset -10px -10px 30px rgb(0 0 0 / 10%),
-    inset 10px 10px 30px rgb(255 255 255 / 60%),
-    0 20px 40px rgb(255 92 0 / 20%);
+  right: 20px;
+  bottom: 0;
+  z-index: ${({ theme }) => theme.colors.white};
+  width: 200px;
+  height: 200px;
 
-  background: ${({ theme }) => theme.colors.primary};
-  background-image:
-    radial-gradient(
-      circle at 30% 30%,
-      rgb(255 255 255 / 80%) 0%,
-      rgb(255 255 255 / 0%) 50%
-    ),
-    radial-gradient(circle at 70% 70%, rgb(0 0 0 / 10%) 0%, rgb(0 0 0 / 0%) 50%);
-
-  animation: ${floatAnimation} 8s ease-in-out infinite;
-
-  backdrop-filter: blur(5px);
-
-  opacity: 0.6;
-`;
-
-const JellySphere2 = styled.div`
-  position: absolute;
-  right: 5%;
-  bottom: 15%;
-  width: 192px;
-  height: 192px;
-  border-radius: 50%;
-  box-shadow:
-    inset -10px -10px 30px rgb(0 0 0 / 10%),
-    inset 10px 10px 30px rgb(255 255 255 / 60%),
-    0 20px 40px rgb(255 92 0 / 20%);
-
-  background: #ffb300;
-  background-image:
-    radial-gradient(
-      circle at 30% 30%,
-      rgb(255 255 255 / 80%) 0%,
-      rgb(255 255 255 / 0%) 50%
-    ),
-    radial-gradient(circle at 70% 70%, rgb(0 0 0 / 10%) 0%, rgb(0 0 0 / 0%) 50%);
-
-  animation: ${floatAnimation} 5s ease-in-out infinite;
-
-  backdrop-filter: blur(5px);
-
-  opacity: 0.5;
-`;
-
-const JellySphere3 = styled.div`
-  position: absolute;
-  top: 60%;
-  left: 5%;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  box-shadow:
-    inset -10px -10px 30px rgb(0 0 0 / 10%),
-    inset 10px 10px 30px rgb(255 255 255 / 60%),
-    0 20px 40px rgb(255 92 0 / 20%);
-
-  background: #ff8a00;
-  background-image:
-    radial-gradient(
-      circle at 30% 30%,
-      rgb(255 255 255 / 80%) 0%,
-      rgb(255 255 255 / 0%) 50%
-    ),
-    radial-gradient(circle at 70% 70%, rgb(0 0 0 / 10%) 0%, rgb(0 0 0 / 0%) 50%);
-
-  animation: ${floatAnimation} 8s ease-in-out infinite;
-
-  backdrop-filter: blur(5px);
-
-  opacity: 0.4;
-`;
-
-const BackgroundGlow = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 800px;
-  height: 800px;
-  border-radius: 50%;
-
-  background: ${({ theme }) => theme.colors.primary};
-
-  filter: blur(120px);
-  opacity: 0.05;
-  transform: translate(-50%, -50%);
+  background: ${({ theme }) => theme.colors.white};
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
@@ -216,6 +138,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
   margin: 0 auto;
 
   display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '60px')};
   flex-direction: column;
   align-items: center;
 
@@ -277,67 +200,72 @@ const GenerationBadge = styled.div<{ device: Device }>`
   }
 `;
 
-const BalloonTextWrapper = styled.div<{ device: Device }>`
-  position: relative;
-  margin-bottom: ${({ device }) => (device === 'mobile' ? '48px' : '48px')};
-
-  user-select: none;
-`;
-
-const BalloonText = styled.span<{ device: Device }>`
-  position: relative;
-
-  display: block;
-
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: 900;
-  font-size: ${({ device }) =>
-    device === 'mobile' ? '14vw' : device === 'tablet' ? '120px' : '180px'};
-  line-height: 1;
-  letter-spacing: -0.05em;
-
-  animation: ${breathe} 4s ease-in-out infinite;
-
-  text-shadow:
-    1px 1px 0 ${({ theme }) => theme.colors.primaryDark},
-    2px 2px 0 ${({ theme }) => theme.colors.primaryDark},
-    3px 3px 15px rgb(230 83 0 / 40%),
-    -2px -2px 10px rgb(255 255 255 / 80%),
-    0 20px 40px rgb(230 83 0 / 20%);
-  word-break: keep-all;
-
-  &::after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-
-    color: ${({ theme }) => theme.colors.primary};
-
-    content: attr(data-text);
-
-    filter: blur(15px);
-    opacity: 0.3;
-  }
-`;
-
 const Description = styled.p<{ device: Device }>`
   max-width: 672px;
-  margin-top: ${({ device }) => (device === 'mobile' ? '48px' : '48px')};
-  margin-bottom: ${({ device }) => (device === 'mobile' ? '64px' : '64px')};
+  margin-top: ${({ device }) => (device === 'mobile' ? '120px' : '420px')};
 
   color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading3};
   font-weight: 500;
-  font-size: ${({ device }) => (device === 'mobile' ? '18px' : '24px')};
-  line-height: 1.6;
+
+  text-shadow:
+    0 0 30px rgb(255 255 255 / 90%),
+    0 0 15px rgb(255 255 255 / 80%),
+    0 3px 10px rgb(0 0 0 / 25%),
+    0 1px 3px rgb(0 0 0 / 20%);
+
+  -webkit-text-stroke: 0.3px rgb(0 0 0 / 8%);
 `;
 
-const Highlight = styled.strong`
+const Highlight = styled.span`
   color: ${({ theme }) => theme.colors.primary};
+`;
+
+const PriceBox = styled.div<{ device: Device }>`
+  border-radius: 12px;
+
+  display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  text-shadow:
+    0 0 30px rgb(255 255 255 / 100%),
+    0 0 60px rgb(255 255 255 / 90%),
+    0 0 80px rgb(255 255 255 / 70%),
+    0 4px 8px rgb(0 0 0 / 20%);
+`;
+
+const OriginalPrice = styled.p<{ device: Device }>`
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading4};
+  font-weight: 500;
+
+  opacity: 0.7;
+  text-decoration: line-through;
+`;
+
+const FreePrice = styled.span<{ device: Device }>`
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading1};
+  font-weight: 900;
+`;
+
+const DiscountLabel = styled.span<{ device: Device }>`
+  color: ${({ theme }) => theme.colors.primaryDark};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+  font-weight: 600;
 `;
 
 const ApplicantButton = styled(Button)<{ device: Device }>`
+  margin-top: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
   padding: ${({ device }) => (device === 'mobile' ? '16px 24px' : '20px 36px')};
+
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
 `;

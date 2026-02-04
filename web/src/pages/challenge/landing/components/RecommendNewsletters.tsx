@@ -151,8 +151,6 @@ const Overlay = styled.div`
   position: fixed;
   z-index: ${({ theme }) => theme.zIndex.overlay};
 
-  background: rgb(0 0 0 / 40%);
-
   backdrop-filter: blur(8px);
   cursor: pointer;
 
