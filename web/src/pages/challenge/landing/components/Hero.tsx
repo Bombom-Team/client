@@ -122,12 +122,12 @@ const IframeBackground = styled.iframe`
 const SplineButtonCover = styled.div`
   position: absolute;
   right: 20px;
-  bottom: 0;
-  z-index: ${({ theme }) => theme.colors.white};
+  bottom: 20%;
+  z-index: ${({ theme }) => theme.zIndex.floating};
   width: 200px;
-  height: 200px;
+  height: 60px;
 
-  background: ${({ theme }) => theme.colors.white};
+  background: #fffcfb;
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
