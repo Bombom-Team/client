@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { useRef } from 'react';
 import { queries } from '@/apis/queries';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
@@ -39,6 +40,7 @@ export const Route = createFileRoute('/_bombom/articles/$articleId')({
 function ArticleDetailPage() {
   const { articleId } = Route.useParams();
   const articleIdNumber = Number(articleId);
+  const contentRef = useRef<HTMLDivElement>(null);
   const device = useDevice();
 
   const { data: currentArticle } = useQuery(
@@ -55,8 +57,9 @@ function ArticleDetailPage() {
 
   useScrollThreshold({
     enabled: !currentArticle?.isRead && !!currentArticle,
-    threshold: 70,
+    threshold: 50,
     throttleMs: 500,
+    scrollRef: contentRef,
     onTrigger: updateArticleAsRead,
   });
 
@@ -98,6 +101,7 @@ function ArticleDetailPage() {
           <Divider />
 
           <ArticleBody
+            contentRef={contentRef}
             articleId={articleIdNumber}
             newsletterName={currentArticle.newsletter.name}
             articleContent={currentArticle.contents}

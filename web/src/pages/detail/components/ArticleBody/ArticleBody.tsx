@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFloatingToolbarSelection } from './useFloatingToolbarSelection';
 import { useAddHighlightMutation } from '../../hooks/useAddHighlightMutation';
 import { useExternalLinkHandler } from '../../hooks/useExternalLinkHandler';
@@ -12,19 +12,21 @@ import FloatingToolbar from '../FloatingToolbar/FloatingToolbar';
 import MemoPanel from '../MemoPanel/MemoPanel';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { GetArticleByIdResponse } from '@/apis/articles/articles.api';
+import type { RefObject } from 'react';
 
 interface ArticleBodyProps {
+  contentRef: RefObject<HTMLDivElement | null>;
   articleId: number;
   newsletterName: string;
   articleContent: GetArticleByIdResponse['contents'];
 }
 
 const ArticleBody = ({
+  contentRef,
   articleId,
   newsletterName,
   articleContent,
 }: ArticleBodyProps) => {
-  const contentRef = useRef<HTMLDivElement>(null);
   const {
     opened: toolbarOpened,
     position,
