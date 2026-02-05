@@ -177,7 +177,7 @@ export const ChallengeParticipantsTableBody = ({
             )}
           </Td>
           <Td>{participant.completedDays}</Td>
-          <Td>{participant.shieldCount ?? 0}</Td>
+          <Td>{participant.shield ?? participant.shieldCount ?? 0}</Td>
           <Td>{participant.isSurvived ? '생존' : '탈락'}</Td>
           {isEditable && (
             <Td>
