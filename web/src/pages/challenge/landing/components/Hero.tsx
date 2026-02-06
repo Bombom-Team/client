@@ -105,14 +105,14 @@ const Container = styled.section<{ device: Device }>`
   align-items: center;
   justify-content: center;
 
-  background-color: #fffcfb;
+  background: linear-gradient(to bottom, #fff9f3 0%, #fffdfb 90%, #fff 100%);
 `;
 
 const BackgroundImage = styled.div<{ device: Device }>`
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 0;
+  z-index: ${({ theme }) => theme.zIndex.base};
   width: 100%;
   height: 100%;
 
@@ -120,25 +120,26 @@ const BackgroundImage = styled.div<{ device: Device }>`
   background-position: center
     ${({ device }) => (device === 'mobile' ? '20%' : '15%')};
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: ${({ device }) =>
+    device === 'mobile' ? '120%' : 'contain'};
 
   &::before {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: ${({ theme }) => theme.zIndex.content};
     width: 100%;
     height: 100%;
 
-    background:
-      linear-gradient(to right, #fffcfb 0%, transparent 200px),
-      linear-gradient(to left, #fffcfb 0%, transparent 200px),
-      linear-gradient(to bottom, #fffcfb 0%, transparent 200px),
-      linear-gradient(
-        to top,
-        ${({ theme }) => theme.colors.white} 0%,
-        transparent 160px
-      );
+    background: ${({ device }) => {
+      const topGradient = device === 'mobile' ? '25vh' : '300px';
+      const bottomGradient = device === 'mobile' ? '55vh' : '280px';
+
+      return `
+        linear-gradient(to bottom, #fff9f3 0%, transparent ${topGradient}),
+        linear-gradient(to top, #fff 0%, transparent ${bottomGradient})
+      `;
+    }};
 
     content: '';
     pointer-events: none;
@@ -149,7 +150,7 @@ const ContentWrapper = styled.div<{ device: Device; isVisible: boolean }>`
   position: relative;
   z-index: ${({ theme }) => theme.zIndex.elevated};
   width: 100%;
-  max-width: 1152px;
+  max-width: 1084px;
 
   display: flex;
   flex-direction: column;
@@ -232,7 +233,7 @@ const GenerationBadge = styled.div<{ device: Device }>`
 const Description = styled.p<{ device: Device }>`
   margin-top: ${({ device }) => {
     if (device === 'mobile') return 'min(16px, 8vh)';
-    return device === 'tablet' ? '16vh' : 'min(600px, 54vh)';
+    return device === 'tablet' ? '24vh' : 'min(600px, 54vh)';
   }};
 
   color: ${({ theme }) => theme.colors.textPrimary};
