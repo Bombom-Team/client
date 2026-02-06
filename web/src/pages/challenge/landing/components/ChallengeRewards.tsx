@@ -69,7 +69,7 @@ export default ChallengeRewards;
 
 const Container = styled.section<{ device: Device; isVisible: boolean }>`
   width: 100%;
-  max-width: ${({ device }) => (device === 'pc' ? '1084px' : '80%')};
+  max-width: ${({ device }) => (device === 'pc' ? '1084px' : '90%')};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
