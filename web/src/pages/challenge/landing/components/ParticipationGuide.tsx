@@ -94,7 +94,6 @@ const Step = styled.article<{ isVisible: boolean }>`
 const StepNumber = styled.span<{ device: Device }>`
   width: ${({ device }) => (device === 'mobile' ? '28px' : '32px')};
   height: ${({ device }) => (device === 'mobile' ? '28px' : '32px')};
-  margin-top: 2px;
   border-radius: 50%;
 
   display: flex;

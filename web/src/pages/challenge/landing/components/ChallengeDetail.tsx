@@ -58,7 +58,7 @@ const ChallengeDetail = () => {
       ),
       title: '한 줄 코멘트',
       description:
-        '다른 유저의 코멘트에서 얻는 새로운 관점,\n서로의 생각을 공유하며 같은 글도 다르게 읽는 경험을 해보세요.\n코멘트로 다양한 뉴스레터에 대한 궁금증도 해소할 수 있어요!',
+        '다른 유저의 코멘트에서 얻는 새로운 관점을 얻어요.\n서로의 생각을 공유하며 같은 글도 다르게 읽히는 경험을 해보세요.\n코멘트로 다양한 뉴스레터에 대한 궁금증도 해소해 보세요!',
       imageContent: (isVisible) => (
         <CommentImageWrapper>
           <CommentImage

@@ -46,12 +46,12 @@ const Hero = ({ challengeName, generation, onApply }: HeroProps) => {
 
           <Flex direction="column" gap={device === 'mobile' ? 4 : 8}>
             <PriceBox device={device}>
-              <OriginalPrice device={device}>정가 ₩24,000</OriginalPrice>
+              <OriginalPrice device={device}>정가 ₩24,900</OriginalPrice>
               <ArrowIcon
                 direction="right"
-                color={theme.colors.primary}
-                width={device === 'mobile' ? 24 : 32}
-                height={device === 'mobile' ? 24 : 32}
+                color={theme.colors.textSecondary}
+                width={device === 'mobile' ? 16 : 32}
+                height={device === 'mobile' ? 16 : 32}
               />
               <FreePrice device={device}>무료</FreePrice>
             </PriceBox>
@@ -237,7 +237,7 @@ const Description = styled.p<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) => {
-    if (device === 'mobile') return theme.fonts.body3;
+    if (device === 'mobile') return theme.fonts.body2;
     return device === 'tablet' ? theme.fonts.bodyLarge : theme.fonts.heading3;
   }};
   font-weight: 500;
@@ -257,19 +257,12 @@ const PriceBox = styled.div<{ device: Device }>`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-
-  text-shadow:
-    0 0 30px rgb(255 255 255 / 100%),
-    0 0 60px rgb(255 255 255 / 90%),
-    0 0 80px rgb(255 255 255 / 70%),
-    0 4px 8px rgb(0 0 0 / 20%);
 `;
 
 const OriginalPrice = styled.p<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading4};
-  font-weight: 500;
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
 
   opacity: 0.7;
   text-decoration: line-through;
@@ -278,8 +271,7 @@ const OriginalPrice = styled.p<{ device: Device }>`
 const FreePrice = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading1};
-  font-weight: 900;
+    device === 'mobile' ? theme.fonts.heading2 : theme.fonts.heading1};
 `;
 
 const DiscountLabel = styled.span<{ device: Device }>`

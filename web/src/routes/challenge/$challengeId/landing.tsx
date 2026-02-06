@@ -109,7 +109,7 @@ const Container = styled.main<{ device: Device }>`
 
 const Content = styled.div<{ device: Device }>`
   padding: ${({ device }) =>
-    device === 'mobile' ? '0 20px 80px 20px' : '0 60px 240px 60px'};
+    device === 'mobile' ? '0 8px 80px 8px' : '0 60px 240px 60px'};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '80px' : '180px')};

@@ -81,6 +81,8 @@ const FeatureItem = styled.article<{
 const TextSection = styled.div<{
   device: Device;
 }>`
+  max-width: ${({ device }) => (device === 'mobile' ? '88vw' : '100%')};
+
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '16px' : '24px')};
   flex-direction: column;
@@ -113,8 +115,9 @@ const Description = styled.p<{
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) => {
     if (device === 'mobile') return theme.fonts.body2;
-    return device === 'tablet' ? theme.fonts.body1 : theme.fonts.bodyLarge;
+    return device === 'tablet' ? theme.fonts.body1 : theme.fonts.heading5;
   }};
+  font-weight: 400;
   line-height: 2;
 `;
 

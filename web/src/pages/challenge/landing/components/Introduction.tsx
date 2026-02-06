@@ -19,14 +19,14 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
   const { visibleRef, isVisible } = useScrollVisible(0.3);
 
   return (
-    <Flex
+    <Container
       as="section"
       direction="column"
-      gap={device === 'mobile' ? 48 : 64}
+      gap={device === 'mobile' ? 72 : 132}
       align="center"
       justify="center"
     >
-      <QuoteWrapper
+      <IntroWrapper
         device={device}
         ref={visibleRef as RefObject<HTMLDivElement>}
       >
@@ -42,13 +42,18 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
           <QuoteText device={device}>다른 사람들은 어떻게 생각할까?</QuoteText>
           <ClosingQuoteIcon device={device} />
         </QuoteItem>
-      </QuoteWrapper>
+        <IntroText device={device} isVisible={isVisible}>
+          혼자 읽다 보니 이런 생각, 한 번이라도 해보셨나요?
+        </IntroText>
+      </IntroWrapper>
 
-      <IntroText device={device}>
-        혼자 읽다 보니 이런 생각, 한 번이라도 해보셨나요?
-      </IntroText>
-
-      <Flex direction="column" gap={12} align="center" justify="center">
+      <DescriptionWrapper
+        direction="column"
+        gap={device === 'mobile' ? 12 : 20}
+        align="center"
+        justify="center"
+        isVisible={isVisible}
+      >
         <Title device={device}>
           뉴스레터 읽기 챌린지에 <Highlight>여러분을 초대합니다</Highlight>
         </Title>
@@ -56,28 +61,28 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
           정해진 기간 동안 <Strong>매일 뉴스레터 1편 이상</Strong> 읽고,{'\n'}
           나의 생각을 <Strong>한 줄 코멘트</Strong>로 남기는 챌린지예요.
         </Description>
-      </Flex>
+      </DescriptionWrapper>
 
       <InfoCard device={device}>
         <Overview>
           <OverviewItem device={device}>
-            <CheckIcon />
-            <Text
-              color="primary"
-              font={device === 'mobile' ? 'body2' : 'body1'}
-            >
+            <CheckIcon
+              width={device === 'mobile' ? 16 : 20}
+              height={device === 'mobile' ? 16 : 20}
+            />
+            <OverViewText device={device}>
               하루 한 편과 코멘트 한 줄이면 충분해요.
-            </Text>
+            </OverViewText>
           </OverviewItem>
           <OverviewItem device={device}>
-            <CheckIcon />
-            <Text
-              color="primary"
-              font={device === 'mobile' ? 'body2' : 'body1'}
-            >
+            <CheckIcon
+              width={device === 'mobile' ? 16 : 20}
+              height={device === 'mobile' ? 16 : 20}
+            />
+            <OverViewText device={device}>
               완벽한 코멘트가 아니어도 괜찮아요! 내 마음이 남은 한 문장만
               남겨요.
-            </Text>
+            </OverViewText>
           </OverviewItem>
         </Overview>
         <Period>
@@ -88,7 +93,7 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
               color={theme.colors.textTertiary}
             />
             <Text
-              font={device === 'mobile' ? 'body2' : 'body1'}
+              font={device === 'mobile' ? 'body1' : 'bodyLarge'}
               color="textTertiary"
             >
               진행 기간
@@ -105,16 +110,20 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
           </Flex>
         </Period>
       </InfoCard>
-    </Flex>
+    </Container>
   );
 };
 
 export default Introduction;
 
-const QuoteWrapper = styled.div<{ device: Device }>`
+const Container = styled(Flex)`
   width: 100%;
-  max-width: 80%;
-  padding: ${({ device }) => (device === 'pc' ? '24px 60px' : '24px 4px')};
+  max-width: 1084px;
+`;
+
+const IntroWrapper = styled.div<{ device: Device }>`
+  width: 100%;
+  padding: ${({ device }) => (device === 'pc' ? '24px 60px' : '0 4px')};
 
   display: flex;
   gap: ${({ device }) => (device === 'pc' ? '84px' : '64px')};
@@ -158,7 +167,8 @@ const QuoteItem = styled(Flex)<{ isVisible: boolean }>`
 const QuoteText = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading3};
+  font-weight: 400;
   text-align: center;
 `;
 
@@ -180,6 +190,46 @@ const ClosingQuoteIcon = styled(QuoteIcon)<{ device: Device }>`
   transform: rotate(180deg);
 `;
 
+const IntroText = styled(Text)<{ device: Device; isVisible: boolean }>`
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
+  font-weight: 400;
+  text-align: center;
+
+  animation: ${({ isVisible }) =>
+    isVisible ? 'fade-in-up 1s ease forwards' : 'none'};
+
+  animation-delay: 0.4s;
+  opacity: 0;
+
+  transform: translate3d(0, 40px, 0);
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+`;
+
+const DescriptionWrapper = styled(Flex)`
+  animation: ${({ isVisible }) =>
+    isVisible ? 'fade-in-up 1s ease forwards' : 'none'};
+
+  animation-delay: 0.6s;
+  opacity: 0;
+
+  transform: translate3d(0, 20px, 0);
+
+  @keyframes fade-in-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+`;
+
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
@@ -196,19 +246,13 @@ const Strong = styled.span`
   font-weight: 700;
 `;
 
-const IntroText = styled(Text)<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
-  text-align: center;
-`;
-
 const Description = styled.p<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textSecondary};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
+  font-weight: 400;
+  line-height: 1.8;
   text-align: center;
-  white-space: pre-line;
 `;
 
 const InfoCard = styled.div<{ device: Device }>`
@@ -237,16 +281,24 @@ const OverviewItem = styled.p<{ device: Device }>`
   display: flex;
   gap: 4px;
   align-items: flex-start;
+  justify-content: center;
 
   svg {
-    width: ${({ device }) => (device === 'mobile' ? '16px' : '18px')};
-    height: ${({ device }) => (device === 'mobile' ? '16px' : '18px')};
+    width: ${({ device }) => (device === 'mobile' ? '18px' : '24px')};
+    height: ${({ device }) => (device === 'mobile' ? '18px' : '24px')};
     margin-top: 2px;
 
     flex-shrink: 0;
 
     fill: ${({ theme }) => theme.colors.primary};
   }
+`;
+
+const OverViewText = styled.p<{ device: Device }>`
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading5};
+  font-weight: 400;
 `;
 
 const Period = styled.div`
@@ -268,5 +320,6 @@ const PeriodDate = styled.span<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading4};
+  font-weight: 400;
 `;

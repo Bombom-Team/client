@@ -1,5 +1,6 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
+import Flex from '@/components/Flex';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
 import CheckIcon from '#/assets/svg/check-circle.svg';
@@ -20,11 +21,13 @@ const ChallengeChecklist = () => {
       </Title>
       <ContentWrapper device={device}>
         <ChecklistCard device={device}>
-          <ItemNumber device={device}>1</ItemNumber>
-          <ItemContent>
+          <Flex align="center" gap={device === 'mobile' ? 8 : 12}>
+            <ItemNumber device={device}>1</ItemNumber>
             <ItemTitle device={device}>
               봄봄에 회원 가입을 완료해주세요
             </ItemTitle>
+          </Flex>
+          <ItemContent>
             <ItemDescription device={device}>
               가입하고 신청하기 버튼만 누르면 완료!{'\n'}
               공식스토어에서 봄봄 앱을 설치하면 더 편하게 참여할 수 있어요.
@@ -33,11 +36,13 @@ const ChallengeChecklist = () => {
           </ItemContent>
         </ChecklistCard>
         <ChecklistCard device={device}>
-          <ItemNumber device={device}>2</ItemNumber>
-          <ItemContent>
+          <Flex align="center" gap={device === 'mobile' ? 8 : 12}>
+            <ItemNumber device={device}>2</ItemNumber>
             <ItemTitle device={device}>
               매일 발행되는 뉴스레터를 구독해주세요
             </ItemTitle>
+          </Flex>
+          <ItemContent>
             <ItemDescription device={device}>
               원활한 챌린지 진행을 위해 매일 발행되는 뉴스레터를 한 가지 이상
               구독해주세요!{'\n'}
@@ -112,6 +117,7 @@ const ChecklistCard = styled.div<{ device: Device }>`
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '16px' : '24px')};
+  flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
 `;
@@ -119,11 +125,9 @@ const ChecklistCard = styled.div<{ device: Device }>`
 const ItemNumber = styled.span<{ device: Device }>`
   width: ${({ device }) => (device === 'mobile' ? '28px' : '32px')};
   height: ${({ device }) => (device === 'mobile' ? '28px' : '32px')};
-  margin-top: 2px;
   border-radius: 50%;
 
   display: flex;
-  flex-shrink: 0;
   align-items: center;
   justify-content: center;
 
@@ -134,6 +138,8 @@ const ItemNumber = styled.span<{ device: Device }>`
 `;
 
 const ItemContent = styled.div`
+  padding: 0 8px;
+
   display: flex;
   gap: 6px;
   flex-direction: column;
@@ -154,5 +160,5 @@ const ItemDescription = styled.p<{ device: Device }>`
 const ItemNote = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body2};
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
 `;

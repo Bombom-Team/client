@@ -68,10 +68,10 @@ export default ChallengeBenefits;
 
 const Container = styled.section<{ device: Device }>`
   width: 100%;
-  max-width: 1040px;
+  max-width: 1084px;
   margin: 0 auto;
   padding: ${({ device }) =>
-    device === 'mobile' ? '80px 20px 0' : '80px 60px 0'};
+    device === 'mobile' ? '80px 4px 0' : '80px 60px 0'};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
@@ -180,6 +180,6 @@ const SubDescription = styled.p<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
   text-align: center;
 `;
