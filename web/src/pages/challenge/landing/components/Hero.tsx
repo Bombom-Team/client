@@ -6,6 +6,7 @@ import Flex from '@/components/Flex';
 import ArrowIcon from '@/components/icons/ArrowIcon';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
 import type { MouseEvent } from 'react';
 
 interface HeroProps {
@@ -16,6 +17,7 @@ interface HeroProps {
 
 const Hero = ({ challengeName, generation, onApply }: HeroProps) => {
   const device = useDevice();
+  const { visibleRef, isVisible } = useScrollVisible(0.3);
 
   const handleApplyClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -29,40 +31,34 @@ const Hero = ({ challengeName, generation, onApply }: HeroProps) => {
   };
 
   return (
-    <Container device={device}>
-      <IframeBackground
-        src="https://my.spline.design/textfromballoonswithinteractiveanimation-itpCNbfREzmECA7s8G4nFAHi/"
-        title="3D Background Animation"
-        width="80%"
-        height="80%"
-      />
+    <Container device={device} ref={visibleRef}>
+      <BackgroundImage device={device} />
 
-      <SplineButtonCover />
+      <GenerationBadge
+        device={device}
+      >{`봄봄 뉴스레터 챌린지 ${generation}기`}</GenerationBadge>
+      <ContentWrapper device={device} isVisible={isVisible}>
+        <Flex direction="column" gap={device === 'mobile' ? 24 : 60}>
+          <Description device={device}>
+            매일 뉴스레터 한 편을 읽고 감상을 남기는 30일의 여정.{'\n'}
+            혼자가 아닌, <Highlight>함께 읽는 즐거움</Highlight>을 경험하세요.
+          </Description>
 
-      <ContentWrapper device={device}>
-        <GenerationBadge
-          device={device}
-        >{`봄봄 뉴스레터 챌린지 ${generation}기`}</GenerationBadge>
-
-        <Description device={device}>
-          매일 뉴스레터 한 편을 읽고 감상을 남기는 한 달 간의 여정.{'\n'}
-          혼자가 아닌, <Highlight>함께 읽는 즐거움</Highlight>을 경험하세요.
-        </Description>
-
-        <Flex direction="column" gap={device === 'mobile' ? 4 : 8}>
-          <PriceBox device={device}>
-            <OriginalPrice device={device}>정가 ₩24,000</OriginalPrice>
-            <ArrowIcon
-              direction="right"
-              color={theme.colors.primary}
-              width={device === 'mobile' ? 24 : 32}
-              height={device === 'mobile' ? 24 : 32}
-            />
-            <FreePrice device={device}>무료</FreePrice>
-          </PriceBox>
-          <DiscountLabel device={device}>
-            {generation}기 특별 할인!
-          </DiscountLabel>
+          <Flex direction="column" gap={device === 'mobile' ? 4 : 8}>
+            <PriceBox device={device}>
+              <OriginalPrice device={device}>정가 ₩24,000</OriginalPrice>
+              <ArrowIcon
+                direction="right"
+                color={theme.colors.primary}
+                width={device === 'mobile' ? 24 : 32}
+                height={device === 'mobile' ? 24 : 32}
+              />
+              <FreePrice device={device}>무료</FreePrice>
+            </PriceBox>
+            <DiscountLabel device={device}>
+              {generation}기 특별 할인!
+            </DiscountLabel>
+          </Flex>
         </Flex>
 
         <ApplicantButton device={device} onClick={handleApplyClick}>
@@ -75,8 +71,6 @@ const Hero = ({ challengeName, generation, onApply }: HeroProps) => {
           />
         </ApplicantButton>
       </ContentWrapper>
-
-      <BottomFade />
     </Container>
   );
 };
@@ -96,60 +90,95 @@ const Container = styled.section<{ device: Device }>`
   overflow: hidden;
   position: relative;
   width: 100%;
-  min-height: ${({ device }) => (device === 'mobile' ? '90vh' : '95vh')};
-  padding: ${({ theme, device }) =>
-    `calc(${device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile} + 12px) 24px 96px`};
+  min-height: ${({ device }) => (device === 'mobile' ? '100vh' : '95vh')};
+  margin-bottom: ${({ device }) => (device === 'pc' ? '16vh' : '0')};
+  padding: ${({ theme, device }) => {
+    if (device === 'mobile') {
+      return `calc(${theme.heights.headerMobile} + 12px) 0 0`;
+    }
+    return `calc(${theme.heights.headerPC} + 12px) 24px 96px`;
+  }};
 
   display: flex;
   gap: 12px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  background-color: #fffcfb;
 `;
 
-const IframeBackground = styled.iframe`
+const BackgroundImage = styled.div<{ device: Device }>`
   position: absolute;
-  top: -20%;
+  top: 0;
   left: 0;
   z-index: 0;
   width: 100%;
   height: 100%;
-  border: none;
 
-  pointer-events: none;
+  background-image: url('/assets/png/challenge.png');
+  background-position: center
+    ${({ device }) => (device === 'mobile' ? '20%' : '15%')};
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+
+    background:
+      linear-gradient(to right, #fffcfb 0%, transparent 200px),
+      linear-gradient(to left, #fffcfb 0%, transparent 200px),
+      linear-gradient(to bottom, #fffcfb 0%, transparent 200px),
+      linear-gradient(
+        to top,
+        ${({ theme }) => theme.colors.white} 0%,
+        transparent 160px
+      );
+
+    content: '';
+    pointer-events: none;
+  }
 `;
 
-const SplineButtonCover = styled.div`
-  position: absolute;
-  right: 20px;
-  bottom: 20%;
-  z-index: ${({ theme }) => theme.zIndex.floating};
-  width: 200px;
-  height: 60px;
-
-  background: #fffcfb;
-`;
-
-const ContentWrapper = styled.div<{ device: Device }>`
+const ContentWrapper = styled.div<{ device: Device; isVisible: boolean }>`
   position: relative;
   z-index: ${({ theme }) => theme.zIndex.elevated};
   width: 100%;
   max-width: 1152px;
-  margin: 0 auto;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '24px' : '60px')};
   flex-direction: column;
   align-items: center;
 
   text-align: center;
+
+  animation: ${({ isVisible }) =>
+    isVisible ? 'fade-in 0.6s ease forwards' : 'none'};
+
+  opacity: 0;
+
+  @keyframes fade-in {
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 const GenerationBadge = styled.div<{ device: Device }>`
-  position: relative;
-  margin: ${({ device }) => (device === 'mobile' ? '24px 0' : '32px 0')};
-  padding: ${({ device }) => (device === 'mobile' ? '12px 20px' : '16px 32px')};
-  border-radius: 32px;
+  position: absolute;
+  top: ${({ theme, device }) =>
+    `calc(${device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile} + 4vh)`};
+  padding: ${({ device }) =>
+    device === 'mobile'
+      ? 'clamp(12px, 2vw, 16px) clamp(16px, 4vw, 20px)'
+      : '16px 32px'};
+  border-radius: ${({ device }) =>
+    device === 'mobile' ? 'clamp(20px, 5vw, 32px)' : '32px'};
   box-shadow:
     inset 0 2px 8px rgb(255 255 255 / 60%),
     inset 0 -2px 4px rgb(255 92 0 / 10%),
@@ -163,7 +192,7 @@ const GenerationBadge = styled.div<{ device: Device }>`
   );
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body1};
   font-weight: 700;
 
   animation: ${floatAnimation} 6s ease-in-out infinite;
@@ -201,24 +230,22 @@ const GenerationBadge = styled.div<{ device: Device }>`
 `;
 
 const Description = styled.p<{ device: Device }>`
-  max-width: 672px;
-  margin-top: ${({ device }) => (device === 'mobile' ? '120px' : '420px')};
+  margin-top: ${({ device }) => {
+    if (device === 'mobile') return 'min(16px, 8vh)';
+    return device === 'tablet' ? '16vh' : 'min(600px, 54vh)';
+  }};
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading3};
+  font: ${({ theme, device }) => {
+    if (device === 'mobile') return theme.fonts.body3;
+    return device === 'tablet' ? theme.fonts.bodyLarge : theme.fonts.heading3;
+  }};
   font-weight: 500;
 
-  text-shadow:
-    0 0 30px rgb(255 255 255 / 90%),
-    0 0 15px rgb(255 255 255 / 80%),
-    0 3px 10px rgb(0 0 0 / 25%),
-    0 1px 3px rgb(0 0 0 / 20%);
-
-  -webkit-text-stroke: 0.3px rgb(0 0 0 / 8%);
+  word-break: keep-all;
 `;
 
-const Highlight = styled.span`
+const Highlight = styled.strong`
   color: ${({ theme }) => theme.colors.primary};
 `;
 
@@ -268,19 +295,4 @@ const ApplicantButton = styled(Button)<{ device: Device }>`
 
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
-`;
-
-const BottomFade = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  z-index: 10;
-  width: 100%;
-  height: 160px;
-
-  background: linear-gradient(
-    to top,
-    ${({ theme }) => theme.colors.white},
-    transparent
-  );
 `;
