@@ -112,14 +112,17 @@ const Title = styled.h2<{ device: Device }>`
 const ChecklistCard = styled.div<{ device: Device }>`
   width: 100%;
   padding: ${({ device }) => (device === 'mobile' ? '12px 8px' : '24px')};
+  border: 1px solid rgb(255 255 255 / 30%);
   border-radius: 20px;
-  box-shadow: 0 4px 8px rgb(0 0 0 / 8%);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 8%);
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '16px' : '24px')};
   flex-direction: column;
 
-  background-color: ${({ theme }) => theme.colors.white};
+  background: rgb(255 255 255 / 40%);
+
+  backdrop-filter: blur(20px);
 `;
 
 const ItemNumber = styled.span<{ device: Device }>`

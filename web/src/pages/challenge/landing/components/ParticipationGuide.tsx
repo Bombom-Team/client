@@ -12,7 +12,7 @@ const ParticipationGuide = () => {
       <Title device={device}>챌린지 참여 방법</Title>
       <StepWrapper device={device}>
         <Step isVisible={isVisible}>
-          <StepNumber device={device}>1</StepNumber>
+          <StepNumber device={device}>Step 1.</StepNumber>
           <StepContent>
             <StepTitle device={device}>하루 한 개 뉴스레터를 읽어요</StepTitle>
             <StepDescription device={device}>
@@ -21,7 +21,7 @@ const ParticipationGuide = () => {
           </StepContent>
         </Step>
         <Step isVisible={isVisible}>
-          <StepNumber device={device}>2</StepNumber>
+          <StepNumber device={device}>Step 2.</StepNumber>
           <StepContent>
             <StepTitle device={device}>코멘트를 작성해요</StepTitle>
             <StepDescription device={device}>
@@ -69,16 +69,18 @@ const StepWrapper = styled.div<{ device: Device }>`
 
 const Step = styled.article<{ isVisible: boolean }>`
   padding: 20px 24px;
+  border: 1px solid rgb(255 255 255 / 30%);
   border-radius: 16px;
-  box-shadow: 0 4px 8px rgb(0 0 0 / 8%);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 8%);
 
   display: flex;
   gap: 8px;
 
-  background-color: ${({ theme }) => theme.colors.white};
+  background: rgb(255 255 255 / 40%);
 
   animation: ${({ isVisible }) => isVisible && `fade-in-up 1s ease forwards`};
 
+  backdrop-filter: blur(20px);
   opacity: 0;
 
   transform: translate3d(0, 40px, 0);
@@ -92,19 +94,15 @@ const Step = styled.article<{ isVisible: boolean }>`
 `;
 
 const StepNumber = styled.span<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '28px' : '32px')};
-  height: ${({ device }) => (device === 'mobile' ? '28px' : '32px')};
-  border-radius: 50%;
-
   display: flex;
   flex-shrink: 0;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+  white-space: nowrap;
 `;
 
 const StepContent = styled.div`
