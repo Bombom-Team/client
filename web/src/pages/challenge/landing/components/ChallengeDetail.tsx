@@ -44,7 +44,7 @@ const ChallengeDetail = () => {
       ),
       title: '챌린지 현황판',
       description:
-        '참여 팀들의 챌린지 현황을 한눈에 확인하고\n꾸준히 이어가는 원동력을 얻어요.\n다른 팀과 경쟁하며 우리 팀의 달성률에 기여해보세요!',
+        '참여 팀들의 챌린지 현황을 한눈에 확인하고\n꾸준히 이어가는 원동력을 얻어요.\n다른 팀과 경쟁하며 우리 팀의 달성률에 기여해 보세요!',
       imageContent: <img src={challengeDashboard} alt="챌린지 현황판" />,
       imagePosition: 'right',
     },
