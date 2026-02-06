@@ -104,8 +104,6 @@ const Container = styled.section<{ device: Device }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  background: linear-gradient(to bottom, #fff9f3 0%, #fffdfb 90%, #fff 100%);
 `;
 
 const BackgroundImage = styled.div<{ device: Device }>`
@@ -130,16 +128,6 @@ const BackgroundImage = styled.div<{ device: Device }>`
     z-index: ${({ theme }) => theme.zIndex.content};
     width: 100%;
     height: 100%;
-
-    background: ${({ device }) => {
-      const topGradient = device === 'mobile' ? '25vh' : '300px';
-      const bottomGradient = device === 'mobile' ? '55vh' : '280px';
-
-      return `
-        linear-gradient(to bottom, #fff9f3 0%, transparent ${topGradient}),
-        linear-gradient(to top, #fff 0%, transparent ${bottomGradient})
-      `;
-    }};
 
     content: '';
     pointer-events: none;
