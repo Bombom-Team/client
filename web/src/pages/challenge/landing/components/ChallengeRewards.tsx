@@ -161,7 +161,7 @@ const HighLight = styled.span`
 const LeaderboardPreview = styled.img`
   width: 80%;
   height: auto;
-  border: 2px solid ${({ theme }) => theme.colors.stroke};
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-bottom: none;
   border-radius: 24px 24px 0 0;
 `;
