@@ -6,12 +6,25 @@ import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import Flex from '@/components/Flex';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { getDatesDiff } from '@/utils/date';
+import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
 
-  const { detail, id, participantCount, generation, startDate, title } = props;
+  const {
+    detail,
+    id,
+    participantCount,
+    generation,
+    startDate,
+    endDate,
+    title,
+  } = props;
+
+  const isWeeklyChallenge =
+    getDatesDiff(new Date(startDate), new Date(endDate)) <= 7;
 
   const moveToDetail = () => {
     trackEvent({
@@ -20,10 +33,16 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
       label: title,
     });
 
-    navigate({
-      to: '/challenge/$challengeId',
-      params: { challengeId: String(id) },
-    });
+    if (isWeeklyChallenge) {
+      openExternalLink(
+        'https://maroon-geranium-880.notion.site/1-2fb03dcf20568089a20ad05cd3de78fe?pvs=74',
+      );
+    } else {
+      navigate({
+        to: '/challenge/$challengeId/landing',
+        params: { challengeId: id.toString() },
+      });
+    }
   };
 
   return (
