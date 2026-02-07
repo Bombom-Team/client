@@ -15,6 +15,7 @@ export type GetChallengesResponse = PageableResponse<Challenge>;
 export type GetChallengeParticipantsParams = {
   challengeTeamId?: number;
   hasTeam?: boolean;
+  isSurvived?: boolean;
   page?: number;
   size?: number;
   sort?: string[];
@@ -47,6 +48,10 @@ export const getChallengeParticipants = async ({
     ...params,
     hasTeam:
       typeof params.hasTeam === 'boolean' ? String(params.hasTeam) : undefined,
+    isSurvived:
+      typeof params.isSurvived === 'boolean'
+        ? String(params.isSurvived)
+        : undefined,
   };
 
   return fetcher.get<GetChallengeParticipantsResponse>({
@@ -125,5 +130,20 @@ export const deleteChallengeTeam = async ({
 }: DeleteChallengeTeamParams) => {
   return fetcher.delete({
     path: `/challenges/${challengeId}/teams/${teamId}`,
+  });
+};
+
+export type GrantChallengeParticipantsShieldParams = {
+  challengeId: number;
+  count: number;
+};
+
+export const grantChallengeParticipantsShield = async ({
+  challengeId,
+  count,
+}: GrantChallengeParticipantsShieldParams) => {
+  return fetcher.post<{ count: number }, void>({
+    path: `/challenges/${challengeId}/participants/shield`,
+    body: { count },
   });
 };

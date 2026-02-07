@@ -32,6 +32,7 @@ const colors = {
   white: '#FFFFFF',
   black: '#000000',
   red: '#f00000',
+  navy: '#111827',
   error: '#FF4D4F',
   info: '#0D6EFD',
   success: '#198754',

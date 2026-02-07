@@ -16,6 +16,7 @@ interface ChallengeParticipantsTableBodyProps {
   pageSize: number;
   challengeTeamId?: number;
   hasTeam?: boolean;
+  isSurvived?: boolean;
   onDataLoaded?: (totalElements: number, totalPages: number) => void;
   editable?: boolean;
 }
@@ -26,6 +27,7 @@ export const ChallengeParticipantsTableBody = ({
   pageSize,
   challengeTeamId,
   hasTeam,
+  isSurvived,
   onDataLoaded,
   editable = false,
 }: ChallengeParticipantsTableBodyProps) => {
@@ -42,6 +44,7 @@ export const ChallengeParticipantsTableBody = ({
       size: pageSize,
       challengeTeamId,
       hasTeam,
+      isSurvived,
     }),
   );
 
@@ -124,7 +127,7 @@ export const ChallengeParticipantsTableBody = ({
     });
   };
 
-  const columnCount = isEditable ? 5 : 4;
+  const columnCount = isEditable ? 6 : 5;
 
   if (data?.content.length === 0) {
     return (
@@ -174,6 +177,7 @@ export const ChallengeParticipantsTableBody = ({
             )}
           </Td>
           <Td>{participant.completedDays}</Td>
+          <Td>{participant.shield ?? 0}</Td>
           <Td>{participant.isSurvived ? '생존' : '탈락'}</Td>
           {isEditable && (
             <Td>
@@ -269,7 +273,8 @@ const Td = styled.td`
   &:nth-of-type(2),
   &:nth-of-type(3),
   &:nth-of-type(4),
-  &:nth-of-type(5) {
+  &:nth-of-type(5),
+  &:nth-of-type(6) {
     text-align: center;
   }
 `;

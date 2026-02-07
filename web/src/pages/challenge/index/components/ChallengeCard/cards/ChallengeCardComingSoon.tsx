@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router';
 import CardContainer from '../CardContainer';
 import { CardDetailButton, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
@@ -5,11 +6,11 @@ import CardHeader from '../CardHeader';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
-  const { generation, title } = props;
+  const { generation, title, id } = props; // Destructure 'id' here
+  const navigate = useNavigate();
 
   const handleCardClick = () => {
     trackEvent({
@@ -18,9 +19,10 @@ const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
       label: title,
     });
 
-    openExternalLink(
-      'https://maroon-geranium-880.notion.site/2d103dcf205680dfa045d47385af3df9?source=copy_link',
-    );
+    navigate({
+      to: '/challenge/$challengeId/landing',
+      params: { challengeId: id.toString() },
+    });
   };
 
   return (
