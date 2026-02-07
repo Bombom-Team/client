@@ -1,7 +1,8 @@
 import { ConfigContext, ExpoConfig } from 'expo/config';
 import { version } from './package.json';
 
-// const DEV_APP_CONFIG = {
+// 개발 버전 config
+// const APP_CONFIG = {
 //   name: '봄봄-개발',
 //   slug: 'bombom_dev',
 //   color: '#FE5E04',
