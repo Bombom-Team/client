@@ -12,7 +12,7 @@ import { LoginScreenOverlay } from '../login/LoginScreenOverlay';
 
 import * as WebBrowser from 'expo-web-browser';
 import * as SplashScreen from 'expo-splash-screen';
-import { Directory, File, Paths } from 'expo-file-system';
+import { File, Paths } from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 
 import { ENV } from '@/constants/env';
@@ -34,12 +34,12 @@ const saveImageToGallery = async (base64: string, fileName: string) => {
     }
 
     const base64Data = base64.replace(/^data:image\/\w+;base64,/, '');
-    const destination = new Directory(Paths.cache, fileName);
+    const file = new File(Paths.cache, fileName);
 
-    destination.create();
-    await File.downloadFileAsync(base64Data, destination);
+    file.create();
+    file.write(base64Data, { encoding: 'base64' });
 
-    await MediaLibrary.saveToLibraryAsync(destination.uri);
+    await MediaLibrary.saveToLibraryAsync(file.uri);
     Alert.alert('저장 완료', '이미지가 갤러리에 저장되었습니다.');
   } catch (error) {
     console.error('이미지 저장 실패:', error);
