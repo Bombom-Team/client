@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup';
 import { Route as MaintenanceRouteImport } from './routes/maintenance';
 import { Route as LoginRouteImport } from './routes/login';
 import { Route as LandingRouteImport } from './routes/landing';
+import { Route as EventRouteImport } from './routes/event';
 import { Route as BombomRouteImport } from './routes/_bombom';
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
 import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
@@ -53,6 +54,11 @@ const LoginRoute = LoginRouteImport.update({
 const LandingRoute = LandingRouteImport.update({
   id: '/landing',
   path: '/landing',
+  getParentRoute: () => rootRouteImport,
+} as any);
+const EventRoute = EventRouteImport.update({
+  id: '/event',
+  path: '/event',
   getParentRoute: () => rootRouteImport,
 } as any);
 const BombomRoute = BombomRouteImport.update({
@@ -169,6 +175,7 @@ const BombomMainChallengeChallengeIdCertificationRoute =
   } as any);
 
 export interface FileRoutesByFullPath {
+  '/event': typeof EventRoute;
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
@@ -194,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/challenge/$challengeId/': typeof BombomMainChallengeChallengeIdIndexRoute;
 }
 export interface FileRoutesByTo {
+  '/event': typeof EventRoute;
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
@@ -219,6 +227,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   '/_bombom': typeof BombomRouteWithChildren;
+  '/event': typeof EventRoute;
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
@@ -247,6 +256,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
+    | '/event'
     | '/landing'
     | '/login'
     | '/maintenance'
@@ -272,6 +282,7 @@ export interface FileRouteTypes {
     | '/challenge/$challengeId/';
   fileRoutesByTo: FileRoutesByTo;
   to:
+    | '/event'
     | '/landing'
     | '/login'
     | '/maintenance'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_bombom'
+    | '/event'
     | '/landing'
     | '/login'
     | '/maintenance'
@@ -324,6 +336,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   BombomRoute: typeof BombomRouteWithChildren;
+  EventRoute: typeof EventRoute;
   LandingRoute: typeof LandingRoute;
   LoginRoute: typeof LoginRoute;
   MaintenanceRoute: typeof MaintenanceRoute;
@@ -358,6 +371,13 @@ declare module '@tanstack/react-router' {
       path: '/landing';
       fullPath: '/landing';
       preLoaderRoute: typeof LandingRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    '/event': {
+      id: '/event';
+      path: '/event';
+      fullPath: '/event';
+      preLoaderRoute: typeof EventRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     '/_bombom': {
@@ -598,6 +618,7 @@ const BombomRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   BombomRoute: BombomRouteWithChildren,
+  EventRoute: EventRoute,
   LandingRoute: LandingRoute,
   LoginRoute: LoginRoute,
   MaintenanceRoute: MaintenanceRoute,
