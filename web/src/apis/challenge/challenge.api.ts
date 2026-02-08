@@ -93,8 +93,7 @@ export type GetChallengeCommentRepliesParams =
   operations['getCommentReplies']['parameters']['path'] &
     components['schemas']['Pageable'];
 export type GetChallengeCommentRepliesResponse =
-  | components['schemas']['CommentReplyResponse'][]
-  | components['schemas']['PageCommentReplyResponse'];
+  components['schemas']['PageCommentReplyResponse'];
 
 export const getChallengeCommentReplies = async ({
   challengeId,
