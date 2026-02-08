@@ -419,8 +419,8 @@ const ReplyAccordion = styled.button`
 
 const ReplyAccordionLabel = styled.span<{ isOpen: boolean }>`
   color: ${({ theme, isOpen }) =>
-    isOpen ? theme.colors.textPrimary : theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+    isOpen ? theme.colors.textPrimary : theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const ReplySection = styled.div<{ isMobile: boolean }>`
