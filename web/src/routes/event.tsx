@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
+import EventFooter from '@/pages/event/components/EventFooter';
+import LandingHeader from '@/pages/landing/components/LandingHeader';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/event')({
@@ -17,28 +19,22 @@ export const Route = createFileRoute('/event')({
 function EventPage() {
   const device = useDevice();
 
-  return <Container device={device}></Container>;
+  return (
+    <Container device={device}>
+      <LandingHeader />
+      <EventFooter />
+    </Container>
+  );
 }
 
 const Container = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
-  padding: ${({ device }) =>
-    device === 'mobile' ? '0 20px 80px 20px' : '0 60px 240px 60px'};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  background: linear-gradient(
-    180deg,
-    #f9f8f8 0%,
-    #f9f8f8 34%,
-    rgb(212 79 19 / 25%) 80%,
-    #f9f8f8 100%
-  );
 
   word-break: keep-all;
 `;
