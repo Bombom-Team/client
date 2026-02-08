@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import EventFooter from '@/pages/event/components/EventFooter';
+import EventHero from '@/pages/event/components/EventHero';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import type { Device } from '@/hooks/useDevice';
 
@@ -22,6 +23,7 @@ function EventPage() {
   return (
     <Container device={device}>
       <LandingHeader />
+      <EventHero />
       <EventFooter />
     </Container>
   );
@@ -30,6 +32,8 @@ function EventPage() {
 const Container = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
+  max-width: 1280px;
+  margin: 0 auto;
 
   display: flex;
   flex-direction: column;

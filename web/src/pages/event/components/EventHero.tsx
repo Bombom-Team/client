@@ -1,0 +1,240 @@
+import { theme } from '@bombom/shared';
+import styled from '@emotion/styled';
+import { useDevice } from '@/hooks/useDevice';
+import type { Device } from '@/hooks/useDevice';
+
+const EventHero = () => {
+  const device = useDevice();
+
+  return (
+    <Container device={device}>
+      <ContentWrapper device={device}>
+        <DecorativeCircle
+          style={{
+            backgroundColor: '#f9a8d4',
+            left: '20px',
+            top: '80px',
+            width: '80px',
+            height: '80px',
+            opacity: 0.6,
+          }}
+        />
+        <DecorativeCircle
+          style={{
+            backgroundColor: '#93c5fd',
+            right: '20px',
+            bottom: '80px',
+            width: '64px',
+            height: '64px',
+            opacity: 0.6,
+          }}
+        />
+        <DecorativeCircle
+          style={{
+            backgroundColor: '#c084fc',
+            right: '16px',
+            top: '160px',
+            width: '32px',
+            height: '32px',
+          }}
+        />
+
+        <HeroBadge>봄봄 회원가입 500명 돌파 기념 EVENT</HeroBadge>
+
+        <HeroTitle>
+          <TitleText color={theme.colors.white}>선착순</TitleText>
+          <TitleText color="#fff176">70명</TitleText>
+        </HeroTitle>
+        <HeroSubtitle>
+          봄봄 유저
+          <br />
+          선착순 70명에게 쏩니다!
+        </HeroSubtitle>
+
+        <InfoCard>
+          <InfoCardBadge>선착순 100% 당첨</InfoCardBadge>
+          <InfoRow>
+            <InfoLabel>참여대상</InfoLabel>
+            <InfoValue>봄봄 회원가입 유저</InfoValue>
+          </InfoRow>
+          <InfoRowDivider />
+          <InfoRow>
+            <InfoLabel>1회</InfoLabel>
+            <InfoValue>2월 13일 20:00 (35명)</InfoValue>
+          </InfoRow>
+          <InfoRow>
+            <InfoLabel>2회</InfoLabel>
+            <InfoValue>2월 18일 20:00 (35명)</InfoValue>
+          </InfoRow>
+          <InfoRowDivider />
+          <InfoRow>
+            <InfoLabel>당첨자 발표</InfoLabel>
+            <InfoValue>당첨 즉시 지급</InfoValue>
+          </InfoRow>
+        </InfoCard>
+
+        <CTAButton>선착순 경품 받기</CTAButton>
+      </ContentWrapper>
+    </Container>
+  );
+};
+
+export default EventHero;
+
+const Container = styled.section<{ device: Device }>`
+  z-index: ${({ theme }) => theme.zIndex.behind};
+  width: 100%;
+  border-bottom: 4px solid ${({ theme }) => theme.colors.black};
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: #cf0;
+`;
+
+const ContentWrapper = styled.div<{ device: Device }>`
+  position: relative;
+  z-index: ${({ theme }) => theme.zIndex.content};
+  width: 100%;
+  max-width: 1084px;
+  padding: ${({ theme, device }) => {
+    if (device === 'mobile') {
+      return `calc(${theme.heights.headerMobile} + 12px) 0 0`;
+    }
+    return `calc(${theme.heights.headerPC} + 12px) 24px 44px`;
+  }};
+
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DecorativeCircle = styled.span`
+  position: absolute;
+  z-index: ${({ theme }) => theme.zIndex.behind};
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 50%;
+`;
+
+const HeroBadge = styled.div`
+  padding: 8px 18px;
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 32px;
+  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.black};
+  font: ${({ theme }) => theme.fonts.body2};
+  font-weight: 700;
+  text-align: center;
+
+  transform: rotate(-2deg);
+`;
+
+const CTAButton = styled.button`
+  padding: 20px 44px;
+  border: 4px solid ${({ theme }) => theme.colors.black};
+  border-radius: 24px;
+  box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
+
+  background-color: #d81b60;
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ theme }) => theme.fonts.heading4};
+
+  &:hover {
+    box-shadow: 6px 6px 0 0 ${({ theme }) => theme.colors.black};
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+    transform: translateY(0);
+  }
+`;
+
+const InfoCard = styled.div`
+  min-width: 360px;
+  padding: 28px;
+  border: 4px solid ${({ theme }) => theme.colors.black};
+  border-radius: 16px;
+  box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
+
+  display: flex;
+  gap: 24px;
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const InfoCardBadge = styled.div`
+  padding: 10px 12px;
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 20px;
+  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+
+  background-color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ theme }) => theme.fonts.heading6};
+  text-align: center;
+`;
+
+const InfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const InfoRowDivider = styled(InfoRow)`
+  border-bottom: ${({ theme }) => `2px dashed ${theme.colors.stroke}`};
+`;
+
+const InfoLabel = styled.p`
+  color: ${({ theme }) => theme.colors.icons};
+  font: ${({ theme }) => theme.fonts.heading6};
+  text-align: center;
+`;
+
+const InfoValue = styled.p`
+  color: ${({ theme }) => theme.colors.black};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
+  font-weight: 700;
+  text-align: left;
+`;
+
+const HeroTitle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+`;
+
+const TitleText = styled.p<{ color: string }>`
+  color: ${({ color }) => color};
+  font-weight: 700;
+  font-size: 84px;
+  line-height: 84px;
+
+  text-shadow: 2px 2px 0 ${({ theme }) => theme.colors.black};
+
+  -webkit-text-stroke: 2px ${({ theme }) => theme.colors.black};
+`;
+
+const HeroSubtitle = styled.div`
+  padding: 10px 18px;
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 8px;
+  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+
+  background-color: rgb(255 255 255 / 80%);
+  color: ${({ theme }) => theme.colors.black};
+  font: ${({ theme }) => theme.fonts.heading6};
+  text-align: center;
+`;
