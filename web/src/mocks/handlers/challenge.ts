@@ -5,6 +5,7 @@ import { DAILY_GUIDE_COMMENTS } from '../datas/dailyGuideComments';
 import { ENV } from '@/apis/env';
 import type {
   GetChallengeCommentsResponse,
+  GetChallengeCommentRepliesResponse,
   GetChallengeEligibilityResponse,
   GetDailyGuideCommentsResponse,
   GetTodayDailyGuideResponse,
@@ -226,7 +227,11 @@ export const challengeHandlers = [
 
   http.get(
     `${baseURL}/challenges/:challengeId/comments/:commentId/replies`,
-    ({ params }) => {
+    ({ params, request }) => {
+      const url = new URL(request.url);
+      const page = parseInt(url.searchParams.get('page') || '0', 10);
+      const size = parseInt(url.searchParams.get('size') || '20', 10);
+
       const commentId = Number(params.commentId);
       const comment = CHALLENGE_COMMENTS.find(
         (item) => item.commentId === commentId,
@@ -234,7 +239,7 @@ export const challengeHandlers = [
       const replyCount = comment?.replyCount ?? 0;
       const baseTime = comment?.createdAt ?? new Date().toISOString();
 
-      const replies = Array.from({ length: replyCount }, (_, index) => ({
+      const allReplies = Array.from({ length: replyCount }, (_, index) => ({
         replyId: commentId * 100 + index + 1,
         nickname: `답글러${index + 1}`,
         profileImageUrl: `https://i.pravatar.cc/150?img=${(commentId + index) % 70}`,
@@ -245,7 +250,42 @@ export const challengeHandlers = [
         isMyReply: index === 0 && !!comment?.isMyComment,
       }));
 
-      return HttpResponse.json(replies);
+      const totalElements = allReplies.length;
+      const totalPages = Math.ceil(totalElements / size);
+      const startIdx = page * size;
+      const endIdx = startIdx + size;
+      const content = allReplies.slice(startIdx, endIdx);
+
+      const response: GetChallengeCommentRepliesResponse = {
+        content,
+        pageable: {
+          pageNumber: page,
+          pageSize: size,
+          sort: {
+            empty: true,
+            sorted: false,
+            unsorted: true,
+          },
+          offset: startIdx,
+          paged: true,
+          unpaged: false,
+        },
+        totalElements,
+        totalPages,
+        last: page >= totalPages - 1,
+        size,
+        number: page,
+        sort: {
+          empty: true,
+          sorted: false,
+          unsorted: true,
+        },
+        numberOfElements: content.length,
+        first: page === 0,
+        empty: content.length === 0,
+      };
+
+      return HttpResponse.json(response);
     },
   ),
 
