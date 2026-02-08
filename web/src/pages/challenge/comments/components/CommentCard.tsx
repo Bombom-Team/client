@@ -12,6 +12,7 @@ import { useUpdateChallengeCommentMutation } from '../hooks/useUpdateChallengeCo
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
+import Flex from '@/components/Flex/Flex';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
@@ -90,9 +91,9 @@ const CommentCard = ({
   return (
     <>
       <Container isMobile={isMobile} isMyComment={isMyComment}>
-        <CommentHeader>
-          <ArticleInfo>
-            <MetaWrapper isMobile={isMobile}>
+        <Flex gap={12} align="center" justify="space-between">
+          <Flex direction="column" gap={4}>
+            <Flex gap={isMobile ? 4 : 8} wrap="wrap" align="center">
               <Text color="textSecondary" font={isMobile ? 'body3' : 'body2'}>
                 {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
               </Text>
@@ -109,8 +110,8 @@ const CommentCard = ({
                   ),
                 })}
               />
-            </MetaWrapper>
-            <TitleWrapper>
+            </Flex>
+            <Flex gap={4} align="center">
               <MailIcon
                 width={16}
                 height={16}
@@ -123,7 +124,9 @@ const CommentCard = ({
               >
                 {articleTitle}
               </Text>
-          <ButtonWrapper>
+            </Flex>
+          </Flex>
+          <Flex gap={8} align="flex-start">
             {isMyComment && (
               <EditButton
                 variant="transparent"
@@ -150,9 +153,9 @@ const CommentCard = ({
                 {likeCount}
               </Text>
             </LikeButton>
-          </ButtonWrapper>
-        </CommentHeader>
-        <Content isMobile={isMobile}>
+          </Flex>
+        </Flex>
+        <Flex gap={isMobile ? 4 : 8} direction="column">
           {quotation && (
             <Quote ref={quoteRef} isMobile={isMobile} expanded={expanded}>
               {quotation}
@@ -175,9 +178,9 @@ const CommentCard = ({
             </Quote>
           )}
           <Text as="p">{comment}</Text>
-        </Content>
+        </Flex>
         {hasReplies && isReplyOpen && (
-          <ReplySection isMobile={isMobile}>
+          <Flex gap={isMobile ? 8 : 12} direction="column">
             <Suspense fallback={<ReplyList.Loading isMobile={isMobile} />}>
               <ReplyList
                 challengeId={challengeId}
@@ -185,7 +188,7 @@ const CommentCard = ({
                 replyCount={replyCount}
               />
             </Suspense>
-          </ReplySection>
+          </Flex>
         )}
         {hasReplies && (
           <ReplyAccordion
@@ -242,25 +245,6 @@ const Container = styled.article<{ isMobile: boolean; isMyComment: boolean }>`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const CommentHeader = styled.div`
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const ArticleInfo = styled.div`
-  display: flex;
-  gap: 4px;
-  flex-direction: column;
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-`;
-
 const LikeButton = styled(Button)<{ isMobile: boolean }>`
   padding: 0;
 
@@ -283,13 +267,6 @@ const LikeButton = styled(Button)<{ isMobile: boolean }>`
   }
 `;
 
-const MetaWrapper = styled.div<{ isMobile: boolean }>`
-  display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
-  flex-wrap: wrap;
-  align-items: center;
-`;
-
 const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   padding: 2px 6px;
 
@@ -297,12 +274,6 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body4 : theme.fonts.body2};
-`;
-
-const TitleWrapper = styled.div`
-  display: flex;
-  gap: 4px;
-  align-items: center;
 `;
 
 const EditButton = styled(Button)<{ isMobile: boolean }>`
@@ -320,12 +291,6 @@ const EditButton = styled(Button)<{ isMobile: boolean }>`
       fill: ${({ theme }) => theme.colors.primary};
     }
   }
-`;
-
-const Content = styled.div<{ isMobile: boolean }>`
-  display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
-  flex-direction: column;
 `;
 
 const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
@@ -399,10 +364,4 @@ const ReplyAccordion = styled.button`
   background: transparent;
 
   cursor: pointer;
-`;
-
-const ReplySection = styled.div<{ isMobile: boolean }>`
-  display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
-  flex-direction: column;
 `;

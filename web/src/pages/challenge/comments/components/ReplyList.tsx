@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { convertRelativeTime } from '../utils/date';
 import { queries } from '@/apis/queries';
+import Flex from '@/components/Flex/Flex';
 import Text from '@/components/Text/Text';
 import { useDevice } from '@/hooks/useDevice';
 
@@ -33,7 +34,7 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
   return (
     <ReplyListContainer>
       {replies.map((replyItem) => (
-        <ReplyItem key={replyItem.replyId}>
+        <Flex as="li" key={replyItem.replyId} direction="column" gap={4}>
           <ReplyMeta isMobile={isMobile}>
             <Text color="textSecondary">{replyItem.nickname ?? '익명'}</Text>
             <Text color="textTertiary">·</Text>
@@ -44,7 +45,7 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
           <Text as="p" color="textPrimary" font={isMobile ? 'body2' : 'body1'}>
             {replyItem.reply}
           </Text>
-        </ReplyItem>
+        </Flex>
       ))}
     </ReplyListContainer>
   );
@@ -67,12 +68,6 @@ const ReplyListContainer = styled.ul`
 
   display: flex;
   gap: 12px;
-  flex-direction: column;
-`;
-
-const ReplyItem = styled.li`
-  display: flex;
-  gap: 4px;
   flex-direction: column;
 `;
 
