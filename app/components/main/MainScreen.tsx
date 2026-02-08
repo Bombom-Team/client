@@ -24,7 +24,7 @@ import { useDeviceInfo } from '@/hooks/useDeviceInfo';
 
 const saveImageToGallery = async (base64: string, fileName: string) => {
   try {
-    const { status } = await MediaLibrary.requestPermissionsAsync();
+    const { status } = await MediaLibrary.requestPermissionsAsync(true);
     if (status !== 'granted') {
       Alert.alert(
         '권한 필요',
