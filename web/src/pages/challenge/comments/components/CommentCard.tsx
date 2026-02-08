@@ -1,5 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import useExpandQuotation from '../hooks/useExpandQuotation';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
@@ -9,6 +10,7 @@ import { useDeleteCommentLikeMutation } from '../hooks/useDeleteCommentLikeMutat
 import { useUpdateChallengeCommentMutation } from '../hooks/useUpdateChallengeCommentMutation';
 import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
+import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
@@ -82,6 +84,23 @@ const CommentCard = ({
         : MAX_QUOTATION_LINE.default,
     });
   const hasReplies = replyCount > 0;
+
+  const {
+    data: repliesData,
+    isLoading: isRepliesLoading,
+    isError: isRepliesError,
+  } = useQuery({
+    ...queries.comments.replies({
+      challengeId,
+      commentId,
+      page: 0,
+      size: replyCount,
+    }),
+    enabled: isReplyOpen && hasReplies,
+  });
+  const replies = Array.isArray(repliesData)
+    ? repliesData
+    : (repliesData?.content ?? []);
 
   const handleToggleReplyAccordion = () => {
     setIsReplyOpen((prev) => !prev);
@@ -169,6 +188,36 @@ const CommentCard = ({
           )}
           <Comment>{comment}</Comment>
         </Content>
+        {hasReplies && isReplyOpen && (
+          <ReplySection isMobile={isMobile}>
+            {isRepliesLoading ? (
+              <ReplyStatus isMobile={isMobile}>로딩 중...</ReplyStatus>
+            ) : isRepliesError ? (
+              <ReplyStatus isMobile={isMobile}>
+                답글을 불러오지 못했어요.
+              </ReplyStatus>
+            ) : replies.length === 0 ? (
+              <ReplyStatus isMobile={isMobile}>답글이 없어요.</ReplyStatus>
+            ) : (
+              <ReplyList>
+                {replies.map((replyItem) => (
+                  <ReplyItem key={replyItem.replyId}>
+                    <ReplyMeta isMobile={isMobile}>
+                      <ReplyNickname>
+                        {replyItem.nickname ?? DELETED_USER_NICKNAME}
+                      </ReplyNickname>
+                      <ReplyDot>·</ReplyDot>
+                      <span>{convertRelativeTime(replyItem.createdAt)}</span>
+                    </ReplyMeta>
+                    <ReplyContent isMobile={isMobile}>
+                      {replyItem.reply}
+                    </ReplyContent>
+                  </ReplyItem>
+                ))}
+              </ReplyList>
+            )}
+          </ReplySection>
+        )}
         {hasReplies && (
           <ReplyAccordion
             type="button"
@@ -409,6 +458,62 @@ const ReplyAccordion = styled.button`
 
 const ReplyAccordionLabel = styled.span<{ isOpen: boolean }>`
   color: ${({ theme, isOpen }) =>
-    isOpen ? theme.colors.textPrimary : theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+    isOpen ? theme.colors.textPrimary : theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.body2};
+`;
+
+const ReplySection = styled.div<{ isMobile: boolean }>`
+  display: flex;
+  gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
+  flex-direction: column;
+`;
+
+const ReplyList = styled.ul`
+  margin: 0;
+  padding: 0 0 0 12px;
+  border-left: 2px solid ${({ theme }) => theme.colors.stroke};
+
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+`;
+
+const ReplyItem = styled.li`
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+`;
+
+const ReplyMeta = styled.div<{ isMobile: boolean }>`
+  display: flex;
+  gap: 6px;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+`;
+
+const ReplyNickname = styled.span`
+  color: ${({ theme }) => theme.colors.textSecondary};
+`;
+
+const ReplyDot = styled.span`
+  color: ${({ theme }) => theme.colors.textTertiary};
+`;
+
+const ReplyContent = styled.p<{ isMobile: boolean }>`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+`;
+
+const ReplyStatus = styled.p<{ isMobile: boolean }>`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
