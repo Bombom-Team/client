@@ -39,41 +39,47 @@ const EventHero = () => {
           }}
         />
 
-        <HeroBadge>봄봄 회원가입 500명 돌파 기념 EVENT</HeroBadge>
+        <HeroBadge device={device}>
+          봄봄 회원가입 500명 돌파 기념 EVENT
+        </HeroBadge>
 
-        <HeroTitle>
-          <TitleText color={theme.colors.white}>선착순</TitleText>
-          <TitleText color="#fff176">70명</TitleText>
-        </HeroTitle>
-        <HeroSubtitle>
+        <TitleBox>
+          <TitleText color={theme.colors.white} device={device}>
+            선착순
+          </TitleText>
+          <TitleText color="#fff176" device={device}>
+            70명
+          </TitleText>
+        </TitleBox>
+        <HeroBox device={device}>
           봄봄 유저
           <br />
           선착순 70명에게 쏩니다!
-        </HeroSubtitle>
+        </HeroBox>
 
-        <InfoCard>
-          <InfoCardBadge>선착순 100% 당첨</InfoCardBadge>
+        <InfoCard device={device}>
+          <InfoCardBadge device={device}>선착순 100% 당첨</InfoCardBadge>
           <InfoRow>
-            <InfoLabel>참여대상</InfoLabel>
-            <InfoValue>봄봄 회원가입 유저</InfoValue>
+            <InfoLabel device={device}>참여대상</InfoLabel>
+            <InfoValue device={device}>봄봄 회원가입 유저</InfoValue>
           </InfoRow>
           <InfoRowDivider />
           <InfoRow>
-            <InfoLabel>1회</InfoLabel>
-            <InfoValue>2월 13일 20:00 (35명)</InfoValue>
+            <InfoLabel device={device}>1회</InfoLabel>
+            <InfoValue device={device}>2월 13일 20:00 (35명)</InfoValue>
           </InfoRow>
           <InfoRow>
-            <InfoLabel>2회</InfoLabel>
-            <InfoValue>2월 18일 20:00 (35명)</InfoValue>
+            <InfoLabel device={device}>2회</InfoLabel>
+            <InfoValue device={device}>2월 18일 20:00 (35명)</InfoValue>
           </InfoRow>
           <InfoRowDivider />
           <InfoRow>
-            <InfoLabel>당첨자 발표</InfoLabel>
-            <InfoValue>당첨 즉시 지급</InfoValue>
+            <InfoLabel device={device}>당첨자 발표</InfoLabel>
+            <InfoValue device={device}>당첨 즉시 지급</InfoValue>
           </InfoRow>
         </InfoCard>
 
-        <CTAButton>선착순 경품 받기</CTAButton>
+        <ApplyButton device={device}>선착순 경품 받기</ApplyButton>
       </ContentWrapper>
     </Container>
   );
@@ -100,13 +106,13 @@ const ContentWrapper = styled.div<{ device: Device }>`
   max-width: 1084px;
   padding: ${({ theme, device }) => {
     if (device === 'mobile') {
-      return `calc(${theme.heights.headerMobile} + 12px) 0 0`;
+      return `calc(${theme.heights.headerMobile} + 12px) 24px 48px`;
     }
     return `calc(${theme.heights.headerPC} + 12px) 24px 44px`;
   }};
 
   display: flex;
-  gap: 12px;
+  gap: 20px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -115,11 +121,11 @@ const ContentWrapper = styled.div<{ device: Device }>`
 const DecorativeCircle = styled.span`
   position: absolute;
   z-index: ${({ theme }) => theme.zIndex.behind};
-  border: 2px solid ${({ theme }) => theme.colors.black};
+  border: 2px solid ${({ theme }) => theme.colors.dividers};
   border-radius: 50%;
 `;
 
-const HeroBadge = styled.div`
+const HeroBadge = styled.div<{ device: Device }>`
   padding: 8px 18px;
   border: 2px solid ${({ theme }) => theme.colors.black};
   border-radius: 32px;
@@ -131,22 +137,24 @@ const HeroBadge = styled.div`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
   font-weight: 700;
   text-align: center;
 
   transform: rotate(-2deg);
 `;
 
-const CTAButton = styled.button`
-  padding: 20px 44px;
+const ApplyButton = styled.button<{ device: Device }>`
+  padding: ${({ device }) => (device === 'mobile' ? '16px 32px' : '20px 44px')};
   border: 4px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;
   box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
 
   background-color: #d81b60;
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
 
   &:hover {
     box-shadow: 6px 6px 0 0 ${({ theme }) => theme.colors.black};
@@ -159,57 +167,71 @@ const CTAButton = styled.button`
   }
 `;
 
-const InfoCard = styled.div`
+const InfoCard = styled.div<{ device: Device }>`
+  position: relative;
   width: 100%;
   max-width: 360px;
-  padding: 28px;
+  padding: ${({ device }) =>
+    device === 'mobile' ? '32px 12px 12px' : '36px 28px 28px'};
   border: 4px solid ${({ theme }) => theme.colors.black};
   border-radius: 16px;
-  box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
+  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
 
   display: flex;
-  gap: 24px;
+  gap: ${({ device }) => (device === 'mobile' ? '20px' : '24px')};
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const InfoCardBadge = styled.div`
-  padding: 10px 12px;
+const InfoCardBadge = styled.div<{ device: Device }>`
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  padding: ${({ device }) => (device === 'mobile' ? '4px 12px' : '4px 16px')};
   border: 2px solid ${({ theme }) => theme.colors.black};
-  border-radius: 20px;
+  border-radius: 32px;
   box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
+  font-weight: 700;
   text-align: center;
+  white-space: nowrap;
+
+  transform: translateX(-50%);
 `;
 
 const InfoRow = styled.div`
   display: flex;
+  gap: 4px;
   align-items: center;
   justify-content: space-between;
 `;
 
-const InfoRowDivider = styled(InfoRow)`
+const InfoRowDivider = styled.div`
+  margin: -8px 0;
   border-bottom: ${({ theme }) => `2px dashed ${theme.colors.stroke}`};
 `;
 
-const InfoLabel = styled.p`
+const InfoLabel = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.icons};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
   text-align: center;
 `;
 
-const InfoValue = styled.p`
+const InfoValue = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.bodyLarge};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
   font-weight: 700;
   text-align: left;
 `;
 
-const HeroTitle = styled.div`
+const TitleBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -217,25 +239,25 @@ const HeroTitle = styled.div`
   text-align: center;
 `;
 
-const TitleText = styled.p<{ color: string }>`
+const TitleText = styled.p<{ color: string; device: Device }>`
   color: ${({ color }) => color};
   font-weight: 700;
-  font-size: 84px;
-  line-height: 84px;
+  font-size: ${({ device }) => (device === 'mobile' ? '72px' : '84px')};
 
-  text-shadow: 2px 2px 0 ${({ theme }) => theme.colors.black};
+  text-shadow: ${({ theme }) => `2px 2px 0 ${theme.colors.black}`};
 
-  -webkit-text-stroke: 2px ${({ theme }) => theme.colors.black};
+  -webkit-text-stroke: ${({ theme }) => `2px ${theme.colors.black}`};
 `;
 
-const HeroSubtitle = styled.div`
-  padding: 10px 18px;
+const HeroBox = styled.div<{ device: Device }>`
+  padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '10px 18px')};
   border: 2px solid ${({ theme }) => theme.colors.black};
   border-radius: 8px;
   box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
 
   background-color: rgb(255 255 255 / 80%);
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
   text-align: center;
 `;

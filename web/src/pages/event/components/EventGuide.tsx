@@ -18,9 +18,13 @@ const EventGuide = () => {
         <StepCard>
           <StepBadge>STEP 1.</StepBadge>
           <Description device={device}>
-            <StepHighlight>[로그인] 버튼을</StepHighlight> 눌러{'\n'} 회원가입
-            하러 가기
+            <StepHighlight>[로그인]</StepHighlight> 버튼을 눌러 회원가입 하러
+            가기
           </Description>
+          <LoginButtonExample>
+            로그인{' '}
+            <PointerIcon width={20} height={20} fill={theme.colors.white} />
+          </LoginButtonExample>
         </StepCard>
 
         <StepCard>
@@ -48,7 +52,9 @@ const EventGuide = () => {
         <StepCard>
           <StepBadge>STEP 3.</StepBadge>
           <Description device={device}>
-            가입완료! <StepHighlight>[선착순 경품받기]</StepHighlight>
+            가입완료!{'\n'}이벤트 페이지 상단의{' '}
+            <StepHighlight>[선착순 경품받기]</StepHighlight>
+            {'\n'}
             버튼을 눌러 응모하면 끝!
           </Description>
           <ApplyButtonExample>
@@ -148,13 +154,28 @@ const StepHighlight = styled.span`
   text-align: center;
 `;
 
-const ApplyButtonExample = styled.div`
-  padding: 10px 26px;
+const LoginButtonExample = styled.div`
+  padding: 12px 16px;
   border: 2px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;
 
   display: flex;
-  gap: 8px;
+  gap: 4px;
+  align-items: center;
+
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ theme }) => theme.fonts.heading6};
+  text-align: center;
+`;
+
+const ApplyButtonExample = styled.div`
+  padding: 12px 20px;
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 24px;
+
+  display: flex;
+  gap: 4px;
   align-items: center;
 
   background-color: #d81b60;
@@ -163,14 +184,6 @@ const ApplyButtonExample = styled.div`
   text-align: center;
 
   transform: rotate(2deg);
-
-  &:hover {
-    transform: rotate(2deg) translateY(-2px);
-  }
-
-  &:active {
-    transform: rotate(2deg) translateY(0);
-  }
 `;
 
 const StepIllustration = styled.div`
