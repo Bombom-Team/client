@@ -34,7 +34,13 @@ const saveImageToGallery = async (base64: string, fileName: string) => {
     }
 
     const base64Data = base64.replace(/^data:image\/\w+;base64,/, '');
-    const file = new File(Paths.cache, fileName);
+    const timestamp = Date.now();
+    const uniqueFileName = fileName.replace('.png', `_${timestamp}.png`);
+    const file = new File(Paths.cache, uniqueFileName);
+
+    if (file.exists) {
+      file.delete();
+    }
 
     file.create();
     file.write(base64Data, { encoding: 'base64' });
