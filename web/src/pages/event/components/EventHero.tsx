@@ -3,7 +3,11 @@ import styled from '@emotion/styled';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 
-const EventHero = () => {
+interface EventHeroProps {
+  onShowNotice: () => void;
+}
+
+const EventHero = ({ onShowNotice }: EventHeroProps) => {
   const device = useDevice();
 
   return (
@@ -79,7 +83,9 @@ const EventHero = () => {
           </InfoRow>
         </InfoCard>
 
-        <ApplyButton device={device}>선착순 경품 받기</ApplyButton>
+        <ApplyButton type="button" device={device} onClick={onShowNotice}>
+          선착순 경품 받기
+        </ApplyButton>
       </ContentWrapper>
     </Container>
   );
@@ -88,7 +94,7 @@ const EventHero = () => {
 export default EventHero;
 
 const Container = styled.section<{ device: Device }>`
-  z-index: ${({ theme }) => theme.zIndex.behind};
+  z-index: ${({ theme }) => theme.zIndex.base};
   width: 100%;
   border-bottom: 4px solid ${({ theme }) => theme.colors.black};
 

@@ -1,9 +1,12 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
+import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import EventFooter from '@/pages/event/components/EventFooter';
 import EventGuide from '@/pages/event/components/EventGuide';
 import EventHero from '@/pages/event/components/EventHero';
+import EventNoticeModal from '@/pages/event/components/EventNoticeModal';
 import EventPrize from '@/pages/event/components/EventPrize';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import type { Device } from '@/hooks/useDevice';
@@ -21,14 +24,23 @@ export const Route = createFileRoute('/event')({
 
 function EventPage() {
   const device = useDevice();
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   return (
     <Container device={device}>
       <LandingHeader />
-      <EventHero />
+      <EventHero onShowNotice={openModal} />
       <EventPrize />
       <EventGuide />
       <EventFooter />
+      <Modal
+        modalRef={modalRef}
+        closeModal={closeModal}
+        isOpen={isOpen}
+        showCloseButton={false}
+      >
+        <EventNoticeModal closeModal={closeModal} />
+      </Modal>
     </Container>
   );
 }
