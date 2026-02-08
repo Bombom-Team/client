@@ -14,11 +14,20 @@ import useModal from '@/components/Modal/useModal';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import useChallengeApplyMutation from '@/pages/challenge/index/hooks/useChallengeApplyMutation';
 import useChallengeCancelMutation from '@/pages/challenge/index/hooks/useChallengeCancelMutation';
+import { getDatesDiff } from '@/utils/date';
+import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
-  const { newsletters, participantCount, generation, startDate, title, id } =
-    props;
+  const {
+    newsletters,
+    participantCount,
+    generation,
+    startDate,
+    endDate,
+    title,
+    id,
+  } = props;
   const navigate = useNavigate();
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
@@ -29,6 +38,9 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
     challengeId: id,
   });
 
+  const isWeeklyChallenge =
+    getDatesDiff(new Date(startDate), new Date(endDate)) <= 7;
+
   const handleCardClick = () => {
     trackEvent({
       category: 'Challenge',
@@ -36,10 +48,16 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
       label: title,
     });
 
-    navigate({
-      to: '/challenge/$challengeId/landing',
-      params: { challengeId: id.toString() },
-    });
+    if (isWeeklyChallenge) {
+      openExternalLink(
+        'https://maroon-geranium-880.notion.site/1-2fb03dcf20568089a20ad05cd3de78fe?pvs=74',
+      );
+    } else {
+      navigate({
+        to: '/challenge/$challengeId/landing',
+        params: { challengeId: id.toString() },
+      });
+    }
   };
 
   const handleApplyClick = (event: React.MouseEvent<HTMLButtonElement>) => {
