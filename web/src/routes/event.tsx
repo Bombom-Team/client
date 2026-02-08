@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import EventFooter from '@/pages/event/components/EventFooter';
+import EventGuide from '@/pages/event/components/EventGuide';
 import EventHero from '@/pages/event/components/EventHero';
 import EventPrize from '@/pages/event/components/EventPrize';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
@@ -26,6 +27,7 @@ function EventPage() {
       <LandingHeader />
       <EventHero />
       <EventPrize />
+      <EventGuide />
       <EventFooter />
     </Container>
   );

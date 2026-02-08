@@ -160,7 +160,8 @@ const CTAButton = styled.button`
 `;
 
 const InfoCard = styled.div`
-  min-width: 360px;
+  width: 100%;
+  max-width: 360px;
   padding: 28px;
   border: 4px solid ${({ theme }) => theme.colors.black};
   border-radius: 16px;
