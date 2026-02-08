@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import EventFooter from '@/pages/event/components/EventFooter';
 import EventHero from '@/pages/event/components/EventHero';
+import EventPrize from '@/pages/event/components/EventPrize';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import type { Device } from '@/hooks/useDevice';
 
@@ -24,6 +25,7 @@ function EventPage() {
     <Container device={device}>
       <LandingHeader />
       <EventHero />
+      <EventPrize />
       <EventFooter />
     </Container>
   );
