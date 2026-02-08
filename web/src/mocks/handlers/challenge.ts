@@ -224,6 +224,31 @@ export const challengeHandlers = [
     return HttpResponse.json(response);
   }),
 
+  http.get(
+    `${baseURL}/challenges/:challengeId/comments/:commentId/replies`,
+    ({ params }) => {
+      const commentId = Number(params.commentId);
+      const comment = CHALLENGE_COMMENTS.find(
+        (item) => item.commentId === commentId,
+      );
+      const replyCount = comment?.replyCount ?? 0;
+      const baseTime = comment?.createdAt ?? new Date().toISOString();
+
+      const replies = Array.from({ length: replyCount }, (_, index) => ({
+        replyId: commentId * 100 + index + 1,
+        nickname: `답글러${index + 1}`,
+        profileImageUrl: `https://i.pravatar.cc/150?img=${(commentId + index) % 70}`,
+        createdAt: new Date(
+          new Date(baseTime).getTime() + (index + 1) * 60 * 1000,
+        ).toISOString(),
+        reply: `답글 내용 ${index + 1}`,
+        isMyReply: index === 0 && !!comment?.isMyComment,
+      }));
+
+      return HttpResponse.json(replies);
+    },
+  ),
+
   http.get(`${baseURL}/challenges/:challengeId/teams`, () => {
     return HttpResponse.json(CHALLENGE_TEAMS_RESPONSE);
   }),
