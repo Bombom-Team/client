@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { convertRelativeTime } from '../utils/date';
 import { queries } from '@/apis/queries';
+import Text from '@/components/Text/Text';
 import { useDevice } from '@/hooks/useDevice';
 
 interface ReplyListProps {
@@ -34,11 +35,15 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
       {replies.map((replyItem) => (
         <ReplyItem key={replyItem.replyId}>
           <ReplyMeta isMobile={isMobile}>
-            <ReplyNickname>{replyItem.nickname ?? '익명'}</ReplyNickname>
-            <ReplyDot>·</ReplyDot>
-            <span>{convertRelativeTime(replyItem.createdAt)}</span>
+            <Text color="textSecondary">{replyItem.nickname ?? '익명'}</Text>
+            <Text color="textTertiary">·</Text>
+            <Text color="textSecondary">
+              {convertRelativeTime(replyItem.createdAt)}
+            </Text>
           </ReplyMeta>
-          <ReplyContent isMobile={isMobile}>{replyItem.reply}</ReplyContent>
+          <Text as="p" color="textPrimary" font={isMobile ? 'body2' : 'body1'}>
+            {replyItem.reply}
+          </Text>
         </ReplyItem>
       ))}
     </ReplyListContainer>
@@ -79,22 +84,6 @@ const ReplyMeta = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
-`;
-
-const ReplyNickname = styled.span`
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const ReplyDot = styled.span`
-  color: ${({ theme }) => theme.colors.textTertiary};
-`;
-
-const ReplyContent = styled.p<{ isMobile: boolean }>`
-  margin: 0;
-
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
 `;
 
 const ReplyStatus = styled.p<{ isMobile: boolean }>`

@@ -9,14 +9,15 @@ import { MAX_QUOTATION_LINE } from '../constants/comment';
 import { useAddCommentLikeMutation } from '../hooks/useAddCommentLikeMutation';
 import { useDeleteCommentLikeMutation } from '../hooks/useDeleteCommentLikeMutation';
 import { useUpdateChallengeCommentMutation } from '../hooks/useUpdateChallengeCommentMutation';
-import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
+import Text from '@/components/Text/Text';
 import { useDevice } from '@/hooks/useDevice';
+import type { Comment } from '../types/comment';
 import CheckIcon from '#/assets/svg/check-circle.svg';
 import EditIcon from '#/assets/svg/edit.svg';
 import HeartFilledIcon from '#/assets/svg/heart-filled.svg';
@@ -92,9 +93,9 @@ const CommentCard = ({
         <CommentHeader>
           <ArticleInfo>
             <MetaWrapper isMobile={isMobile}>
-              <MetaInfo isMobile={isMobile}>
+              <Text color="textSecondary" font={isMobile ? 'body3' : 'body2'}>
                 {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
-              </MetaInfo>
+              </Text>
               <NewsletterBadge
                 isMobile={isMobile}
                 text={newsletterName}
@@ -115,9 +116,13 @@ const CommentCard = ({
                 height={16}
                 color={theme.colors.textSecondary}
               />
-              <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
-            </TitleWrapper>
-          </ArticleInfo>
+              <Text
+                as="p"
+                color="textTertiary"
+                font={isMobile ? 'body3' : 'body2'}
+              >
+                {articleTitle}
+              </Text>
           <ButtonWrapper>
             {isMyComment && (
               <EditButton
@@ -138,9 +143,12 @@ const CommentCard = ({
               ) : (
                 <HeartIcon color={theme.colors.red} />
               )}
-              <LikeCount liked={isLiked} isMobile={isMobile}>
+              <Text
+                color={isLiked ? 'red' : 'textSecondary'}
+                font={isMobile ? 'body3' : 'body2'}
+              >
                 {likeCount}
-              </LikeCount>
+              </Text>
             </LikeButton>
           </ButtonWrapper>
         </CommentHeader>
@@ -166,7 +174,7 @@ const CommentCard = ({
                 ))}
             </Quote>
           )}
-          <Comment>{comment}</Comment>
+          <Text as="p">{comment}</Text>
         </Content>
         {hasReplies && isReplyOpen && (
           <ReplySection isMobile={isMobile}>
@@ -185,9 +193,9 @@ const CommentCard = ({
             onClick={toggleReplyAccordion}
             aria-expanded={isReplyOpen}
           >
-            <ReplyAccordionLabel isOpen={isReplyOpen}>
+            <Text>
               {isReplyOpen ? '답글 접기' : `답글 ${replyCount}개 더보기`}
-            </ReplyAccordionLabel>
+            </Text>
             <ChevronIcon
               direction={isReplyOpen ? 'up' : 'down'}
               width={16}
@@ -275,13 +283,6 @@ const LikeButton = styled(Button)<{ isMobile: boolean }>`
   }
 `;
 
-const LikeCount = styled.span<{ isMobile: boolean; liked: boolean }>`
-  color: ${({ theme, liked }) =>
-    liked ? theme.colors.red : theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
-`;
-
 const MetaWrapper = styled.div<{ isMobile: boolean }>`
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
@@ -298,22 +299,10 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
     isMobile ? theme.fonts.body4 : theme.fonts.body2};
 `;
 
-const MetaInfo = styled.span<{ isMobile: boolean }>`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
-`;
-
 const TitleWrapper = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
-`;
-
-const ArticleTitle = styled.p<{ isMobile: boolean }>`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
 const EditButton = styled(Button)<{ isMobile: boolean }>`
@@ -398,11 +387,6 @@ const ExpandQuoteButton = styled(ExpandButton)`
   }
 `;
 
-const Comment = styled.p`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
-`;
-
 const ReplyAccordion = styled.button`
   padding: 0;
   border: none;
@@ -415,12 +399,6 @@ const ReplyAccordion = styled.button`
   background: transparent;
 
   cursor: pointer;
-`;
-
-const ReplyAccordionLabel = styled.span<{ isOpen: boolean }>`
-  color: ${({ theme, isOpen }) =>
-    isOpen ? theme.colors.textPrimary : theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const ReplySection = styled.div<{ isMobile: boolean }>`
