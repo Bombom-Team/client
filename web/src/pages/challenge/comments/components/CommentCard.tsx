@@ -1,5 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import { useState } from 'react';
 import useExpandQuotation from '../hooks/useExpandQuotation';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
@@ -10,6 +11,7 @@ import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
+import ChevronIcon from '@/components/icons/ChevronIcon';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
@@ -38,11 +40,13 @@ const CommentCard = ({
   challengeId,
   likeCount,
   isLiked,
+  replyCount,
 }: CommentCardProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
   const relativeTime = convertRelativeTime(createdAt);
   const { modalRef, openModal, closeModal, isOpen } = useModal();
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
 
   const { mutate: updateChallengeComment } = useUpdateChallengeCommentMutation({
     challengeId,
@@ -77,6 +81,11 @@ const CommentCard = ({
         ? MAX_QUOTATION_LINE.mobile
         : MAX_QUOTATION_LINE.default,
     });
+  const hasReplies = replyCount > 0;
+
+  const handleToggleReplyAccordion = () => {
+    setIsReplyOpen((prev) => !prev);
+  };
 
   return (
     <>
@@ -160,6 +169,22 @@ const CommentCard = ({
           )}
           <Comment>{comment}</Comment>
         </Content>
+        {hasReplies && (
+          <ReplyAccordion
+            type="button"
+            onClick={handleToggleReplyAccordion}
+            aria-expanded={isReplyOpen}
+          >
+            <ReplyAccordionLabel isOpen={isReplyOpen}>
+              {isReplyOpen ? '답글 접기' : `답글 ${replyCount}개 더보기`}
+            </ReplyAccordionLabel>
+            <ChevronIcon
+              direction={isReplyOpen ? 'up' : 'down'}
+              width={16}
+              height={16}
+            />
+          </ReplyAccordion>
+        )}
       </Container>
 
       <Modal
@@ -365,5 +390,25 @@ const ExpandQuoteButton = styled(ExpandButton)`
 
 const Comment = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body1};
+`;
+
+const ReplyAccordion = styled.button`
+  padding: 0;
+  border: none;
+
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+
+  background: transparent;
+
+  cursor: pointer;
+`;
+
+const ReplyAccordionLabel = styled.span<{ isOpen: boolean }>`
+  color: ${({ theme, isOpen }) =>
+    isOpen ? theme.colors.textPrimary : theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body1};
 `;
