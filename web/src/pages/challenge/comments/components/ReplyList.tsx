@@ -10,8 +10,6 @@ interface ReplyListProps {
   replyCount: number;
 }
 
-const DELETED_USER_NICKNAME = '탈퇴한 회원';
-
 const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -36,9 +34,7 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
       {replies.map((replyItem) => (
         <ReplyItem key={replyItem.replyId}>
           <ReplyMeta isMobile={isMobile}>
-            <ReplyNickname>
-              {replyItem.nickname ?? DELETED_USER_NICKNAME}
-            </ReplyNickname>
+            <ReplyNickname>{replyItem.nickname ?? '익명'}</ReplyNickname>
             <ReplyDot>·</ReplyDot>
             <span>{convertRelativeTime(replyItem.createdAt)}</span>
           </ReplyMeta>

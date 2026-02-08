@@ -1,7 +1,8 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import useExpandQuotation from '../hooks/useExpandQuotation';
+import useReplyAccordion from '../hooks/useReplyAccordion';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
 import ReplyList from './ReplyList';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
@@ -47,7 +48,9 @@ const CommentCard = ({
   const isMobile = device === 'mobile';
   const relativeTime = convertRelativeTime(createdAt);
   const { modalRef, openModal, closeModal, isOpen } = useModal();
-  const [isReplyOpen, setIsReplyOpen] = useState(false);
+  const { isReplyOpen, toggleReplyAccordion, hasReplies } = useReplyAccordion({
+    replyCount,
+  });
 
   const { mutate: updateChallengeComment } = useUpdateChallengeCommentMutation({
     challengeId,
@@ -82,11 +85,6 @@ const CommentCard = ({
         ? MAX_QUOTATION_LINE.mobile
         : MAX_QUOTATION_LINE.default,
     });
-  const hasReplies = replyCount > 0;
-
-  const handleToggleReplyAccordion = () => {
-    setIsReplyOpen((prev) => !prev);
-  };
 
   return (
     <>
@@ -184,7 +182,7 @@ const CommentCard = ({
         {hasReplies && (
           <ReplyAccordion
             type="button"
-            onClick={handleToggleReplyAccordion}
+            onClick={toggleReplyAccordion}
             aria-expanded={isReplyOpen}
           >
             <ReplyAccordionLabel isOpen={isReplyOpen}>
