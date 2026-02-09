@@ -1696,7 +1696,7 @@ export interface components {
     };
     TodayTodoResponse: {
       /** @enum {string} */
-      challengeTodoType?: 'READ' | 'COMMENT';
+      challengeTodoType?: 'READ' | 'COMMENT' | 'MINDSET';
       /** @enum {string} */
       challengeTodoStatus?: 'COMPLETE' | 'INCOMPLETE';
     };
