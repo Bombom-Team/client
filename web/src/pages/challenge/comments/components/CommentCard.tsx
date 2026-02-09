@@ -3,18 +3,16 @@ import styled from '@emotion/styled';
 import { Suspense } from 'react';
 import useExpandQuotation from '../hooks/useExpandQuotation';
 import useReplyAccordion from '../hooks/useReplyAccordion';
-import useReplyInput from '../hooks/useReplyInput';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
 import ReplyList from './ReplyList';
+import ReplyWriter from './ReplyWriter';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
 import { useAddCommentLikeMutation } from '../hooks/useAddCommentLikeMutation';
-import { useAddCommentReplyMutation } from '../hooks/useAddCommentReplyMutation';
 import { useDeleteCommentLikeMutation } from '../hooks/useDeleteCommentLikeMutation';
 import { useUpdateChallengeCommentMutation } from '../hooks/useUpdateChallengeCommentMutation';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
-import Checkbox from '@/components/Checkbox/Checkbox';
 import Flex from '@/components/Flex/Flex';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import Modal from '@/components/Modal/Modal';
@@ -27,7 +25,6 @@ import EditIcon from '#/assets/svg/edit.svg';
 import HeartFilledIcon from '#/assets/svg/heart-filled.svg';
 import HeartIcon from '#/assets/svg/heart.svg';
 import MailIcon from '#/assets/svg/mail.svg';
-import SendIcon from '#/assets/svg/send.svg';
 
 type CommentCardProps = Comment & {
   challengeId: number;
@@ -57,31 +54,6 @@ const CommentCard = ({
   const { isReplyOpen, toggleReplyAccordion, hasReplies } = useReplyAccordion({
     replyCount,
   });
-
-  const {
-    isReplyInputOpen,
-    toggleReplyInput,
-    replyText,
-    changeReplyText,
-    isPrivate,
-    toggleIsPrivate,
-    resetReplyInput,
-  } = useReplyInput();
-
-  const { mutate: addCommentReply } = useAddCommentReplyMutation({
-    challengeId,
-    commentId,
-  });
-
-  const handleReplySubmit = () => {
-    if (!replyText.trim()) return;
-    addCommentReply(
-      { reply: replyText, isPrivate },
-      {
-        onSuccess: resetReplyInput,
-      },
-    );
-  };
 
   const { mutate: updateChallengeComment } = useUpdateChallengeCommentMutation({
     challengeId,
@@ -208,51 +180,7 @@ const CommentCard = ({
           )}
           <Text as="p">{comment}</Text>
         </Flex>
-        <ReplyButton
-          variant="transparent"
-          onClick={toggleReplyInput}
-          isMobile={isMobile}
-        >
-          {isReplyInputOpen ? '답글 취소' : '답글 쓰기'}
-        </ReplyButton>
-        {isReplyInputOpen && (
-          <ReplyInputWrapper>
-            <Checkbox
-              id={`private-reply-${commentId}`}
-              checked={isPrivate}
-              onChange={toggleIsPrivate}
-            >
-              <Text color="textTertiary" font="body2">
-                비밀답글
-              </Text>
-            </Checkbox>
-            <ReplyInput
-              placeholder="이 코멘트에 답글을 남겨보세요..."
-              value={replyText}
-              onChange={(e) => changeReplyText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-                  handleReplySubmit();
-                }
-              }}
-              isMobile={isMobile}
-            />
-            <ReplySubmitButton
-              onClick={handleReplySubmit}
-              disabled={!replyText.trim()}
-            >
-              <SendIcon
-                width={20}
-                height={20}
-                fill={
-                  replyText.trim()
-                    ? theme.colors.white
-                    : theme.colors.textTertiary
-                }
-              />
-            </ReplySubmitButton>
-          </ReplyInputWrapper>
-        )}
+        <ReplyWriter challengeId={challengeId} commentId={commentId} />
         {hasReplies && isReplyOpen && (
           <Flex gap={isMobile ? 8 : 12} direction="column">
             <Suspense fallback={<ReplyList.Loading isMobile={isMobile} />}>
@@ -438,65 +366,4 @@ const ReplyAccordion = styled.button`
   background: transparent;
 
   cursor: pointer;
-`;
-
-const ReplyButton = styled(Button)<{ isMobile: boolean }>`
-  padding: 0;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
-
-  text-decoration: underline;
-
-  &:hover {
-    background: none;
-  }
-`;
-
-const ReplyInputWrapper = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-`;
-
-const ReplyInput = styled.input<{ isMobile: boolean }>`
-  padding: 8px 12px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 12px;
-
-  flex: 1;
-
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
-
-  &::placeholder {
-    color: ${({ theme }) => theme.colors.textTertiary};
-  }
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const ReplySubmitButton = styled(Button)`
-  padding: 8px;
-  border-radius: 8px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: ${({ theme }) => theme.colors.primary};
-
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.stroke};
-    cursor: not-allowed;
-  }
-
-  &:hover:not(:disabled) {
-    background-color: ${({ theme }) => theme.colors.primaryDark};
-  }
 `;
