@@ -179,6 +179,13 @@ const CommentCard = ({
           )}
           <Text as="p">{comment}</Text>
         </Flex>
+        <ReplyButton
+          variant="transparent"
+          onClick={() => console.log('답글쓰기 클릭')}
+          isMobile={isMobile}
+        >
+          답글쓰기
+        </ReplyButton>
         {hasReplies && isReplyOpen && (
           <Flex gap={isMobile ? 8 : 12} direction="column">
             <Suspense fallback={<ReplyList.Loading isMobile={isMobile} />}>
@@ -239,7 +246,7 @@ const Container = styled.article<{ isMobile: boolean; isMyComment: boolean }>`
   box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '8px' : '16px')};
+  gap: 8px;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -364,4 +371,18 @@ const ReplyAccordion = styled.button`
   background: transparent;
 
   cursor: pointer;
+`;
+
+const ReplyButton = styled(Button)<{ isMobile: boolean }>`
+  padding: 0;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+
+  text-decoration: underline;
+
+  &:hover {
+    background: none;
+  }
 `;
