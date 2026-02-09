@@ -1,8 +1,9 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import useExpandQuotation from '../hooks/useExpandQuotation';
 import useReplyAccordion from '../hooks/useReplyAccordion';
+import useReplyInput from '../hooks/useReplyInput';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
 import ReplyList from './ReplyList';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
@@ -57,29 +58,27 @@ const CommentCard = ({
     replyCount,
   });
 
-  const [isReplyInputOpen, setIsReplyInputOpen] = useState(false);
-  const [replyText, setReplyText] = useState('');
-  const [isPrivate, setIsPrivate] = useState(false);
+  const {
+    isReplyInputOpen,
+    toggleReplyInput,
+    replyText,
+    changeReplyText,
+    isPrivate,
+    toggleIsPrivate,
+    resetReplyInput,
+  } = useReplyInput();
 
   const { mutate: addCommentReply } = useAddCommentReplyMutation({
     challengeId,
     commentId,
   });
 
-  const handleReplyButtonClick = () => {
-    setIsReplyInputOpen((prev) => !prev);
-  };
-
   const handleReplySubmit = () => {
     if (!replyText.trim()) return;
     addCommentReply(
       { reply: replyText, isPrivate },
       {
-        onSuccess: () => {
-          setReplyText('');
-          setIsPrivate(false);
-          setIsReplyInputOpen(false);
-        },
+        onSuccess: resetReplyInput,
       },
     );
   };
@@ -211,7 +210,7 @@ const CommentCard = ({
         </Flex>
         <ReplyButton
           variant="transparent"
-          onClick={handleReplyButtonClick}
+          onClick={toggleReplyInput}
           isMobile={isMobile}
         >
           {isReplyInputOpen ? '답글 취소' : '답글 쓰기'}
@@ -221,7 +220,7 @@ const CommentCard = ({
             <Checkbox
               id={`private-reply-${commentId}`}
               checked={isPrivate}
-              onChange={(e) => setIsPrivate(e.target.checked)}
+              onChange={toggleIsPrivate}
             >
               <Text color="textTertiary" font="body2">
                 비밀답글
@@ -230,7 +229,7 @@ const CommentCard = ({
             <ReplyInput
               placeholder="이 코멘트에 답글을 남겨보세요..."
               value={replyText}
-              onChange={(e) => setReplyText(e.target.value)}
+              onChange={(e) => changeReplyText(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
                   handleReplySubmit();
