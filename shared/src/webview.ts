@@ -24,7 +24,11 @@ export type WebToRNMessage =
   | { type: 'REQUEST_DEVICE_UUID' }
   | { type: 'CHECK_NOTIFICATION_PERMISSION'; payload: { enabled: boolean } }
   | { type: 'REGISTER_FCM_TOKEN'; payload: { memberId: number } }
-  | { type: 'REGISTER_FCM_TOKEN_LOGGED_IN'; payload: { memberId: number } };
+  | { type: 'REGISTER_FCM_TOKEN_LOGGED_IN'; payload: { memberId: number } }
+  | {
+      type: 'SAVE_IMAGE';
+      payload: { imageFileBase64: string; fileName: string };
+    };
 
 export type RNToWebMessage =
   | {
