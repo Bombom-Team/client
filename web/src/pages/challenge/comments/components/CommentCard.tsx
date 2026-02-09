@@ -7,6 +7,7 @@ import EditCommentModalContent from './EditCommentModal/EditCommentModalContent'
 import ReplyList from './ReplyList';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
 import { useAddCommentLikeMutation } from '../hooks/useAddCommentLikeMutation';
+import { useAddCommentReplyMutation } from '../hooks/useAddCommentReplyMutation';
 import { useDeleteCommentLikeMutation } from '../hooks/useDeleteCommentLikeMutation';
 import { useUpdateChallengeCommentMutation } from '../hooks/useUpdateChallengeCommentMutation';
 import { convertRelativeTime } from '../utils/date';
@@ -60,17 +61,27 @@ const CommentCard = ({
   const [replyText, setReplyText] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
 
+  const { mutate: addCommentReply } = useAddCommentReplyMutation({
+    challengeId,
+    commentId,
+  });
+
   const handleReplyButtonClick = () => {
     setIsReplyInputOpen((prev) => !prev);
   };
 
   const handleReplySubmit = () => {
     if (!replyText.trim()) return;
-    // TODO: 답글 등록 API 호출
-    console.log('답글 등록:', replyText, '비공개:', isPrivate);
-    setReplyText('');
-    setIsPrivate(false);
-    setIsReplyInputOpen(false);
+    addCommentReply(
+      { reply: replyText, isPrivate },
+      {
+        onSuccess: () => {
+          setReplyText('');
+          setIsPrivate(false);
+          setIsReplyInputOpen(false);
+        },
+      },
+    );
   };
 
   const { mutate: updateChallengeComment } = useUpdateChallengeCommentMutation({

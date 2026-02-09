@@ -289,6 +289,13 @@ export const challengeHandlers = [
     },
   ),
 
+  http.put(
+    `${baseURL}/challenges/:challengeId/comments/:commentId/replies`,
+    async () => {
+      return HttpResponse.json({ success: true });
+    },
+  ),
+
   http.get(`${baseURL}/challenges/:challengeId/teams`, () => {
     return HttpResponse.json(CHALLENGE_TEAMS_RESPONSE);
   }),
