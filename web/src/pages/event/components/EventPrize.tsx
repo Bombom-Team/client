@@ -11,11 +11,7 @@ const EventPrize = () => {
 
       <PrizeCard>
         <CoffeeImage src="/assets/png/event-coffee.png" alt="" />
-        <PrizeTitle>
-          메가커피
-          <br />
-          아메리카노(ICE)
-        </PrizeTitle>
+        <PrizeTitle>메가커피 아메리카노(ICE)</PrizeTitle>
       </PrizeCard>
     </Container>
   );
@@ -68,8 +64,8 @@ const PrizeCard = styled.div`
 `;
 
 const CoffeeImage = styled.img`
-  width: 144px;
-  height: 192px;
+  width: 80%;
+  height: auto;
 `;
 
 const PrizeTitle = styled.p`
