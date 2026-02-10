@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAddCommentReplyMutation } from '../hooks/useAddCommentReplyMutation';
 import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
+import Flex from '@/components/Flex';
 import Text from '@/components/Text/Text';
 import { useDevice } from '@/hooks/useDevice';
 import SendIcon from '#/assets/svg/send.svg';
@@ -68,31 +69,33 @@ const ReplyWriter = ({ challengeId, commentId }: ReplyWriterProps) => {
               비밀답글
             </Text>
           </Checkbox>
-          <Input
-            placeholder="이 코멘트에 답글을 남겨보세요..."
-            value={replyText}
-            onChange={(e) => setReplyText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-                handleReplySubmit();
-              }
-            }}
-            isMobile={isMobile}
-          />
-          <SubmitButton
-            onClick={handleReplySubmit}
-            disabled={!replyText.trim()}
-          >
-            <SendIcon
-              width={20}
-              height={20}
-              fill={
-                replyText.trim()
-                  ? theme.colors.white
-                  : theme.colors.textTertiary
-              }
+          <InputGroup>
+            <Input
+              placeholder="이 코멘트에 답글을 남겨보세요."
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                  handleReplySubmit();
+                }
+              }}
+              isMobile={isMobile}
             />
-          </SubmitButton>
+            <SubmitButton
+              onClick={handleReplySubmit}
+              disabled={!replyText.trim()}
+            >
+              <SendIcon
+                width={20}
+                height={20}
+                fill={
+                  replyText.trim()
+                    ? theme.colors.white
+                    : theme.colors.textTertiary
+                }
+              />
+            </SubmitButton>
+          </InputGroup>
         </InputWrapper>
       )}
     </>
@@ -118,6 +121,18 @@ const ToggleButton = styled(Button)<{ isMobile: boolean }>`
 const InputWrapper = styled.div`
   display: flex;
   gap: 8px;
+  align-items: center;
+
+  @media (width <= 400px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+`;
+
+const InputGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  flex: 1;
   align-items: center;
 `;
 
