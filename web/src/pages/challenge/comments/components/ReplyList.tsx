@@ -6,6 +6,8 @@ import Flex from '@/components/Flex/Flex';
 import Text from '@/components/Text/Text';
 import { useDevice } from '@/hooks/useDevice';
 
+const DELETED_USER_NICKNAME = '탈퇴한 회원';
+
 interface ReplyListProps {
   challengeId: number;
   commentId: number;
@@ -36,7 +38,9 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
       {replies.map((replyItem) => (
         <Flex as="li" key={replyItem.replyId} direction="column" gap={4}>
           <ReplyMeta isMobile={isMobile}>
-            <Text color="textSecondary">{replyItem.nickname ?? '익명'}</Text>
+            <Text color="textSecondary">
+              {replyItem.nickname ?? DELETED_USER_NICKNAME}
+            </Text>
             <Text color="textTertiary">·</Text>
             <Text color="textSecondary">
               {convertRelativeTime(replyItem.createdAt)}
