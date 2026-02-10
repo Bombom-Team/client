@@ -7,7 +7,9 @@ import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Flex from '@/components/Flex';
 import { useDevice } from '@/hooks/useDevice';
+import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import Certificate from '@/pages/challenge/certification/components/Certificate';
+import { isWebView } from '@/utils/device';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/certification',
@@ -41,11 +43,20 @@ function ChallengeCertification() {
     if (!certificateRef.current) return;
 
     const canvas = await html2canvas(certificateRef.current);
+    const fileName = `${certificationInfo?.nickname}_수료증.png`;
 
-    const link = document.createElement('a');
-    link.download = `${certificationInfo?.nickname}_수료증.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    if (isWebView()) {
+      const imageFileBase64 = canvas.toDataURL('image/png');
+      sendMessageToRN({
+        type: 'SAVE_IMAGE',
+        payload: { imageFileBase64, fileName },
+      });
+    } else {
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
   };
 
   if (!certificationInfo) {

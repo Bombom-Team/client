@@ -1,6 +1,15 @@
 import { ConfigContext, ExpoConfig } from 'expo/config';
 import { version } from './package.json';
 
+// 개발 버전 config
+// const APP_CONFIG = {
+//   name: '봄봄-개발',
+//   slug: 'bombom_dev',
+//   color: '#FE5E04',
+//   bundleIdentifier: 'com.antarctica.bombom.dev',
+//   icon: './app/assets/images/logo.png',
+// };
+
 const APP_CONFIG = {
   name: '봄봄',
   slug: 'bombom',
