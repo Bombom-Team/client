@@ -6,6 +6,8 @@ import Flex from '@/components/Flex/Flex';
 import Text from '@/components/Text/Text';
 import { useDevice } from '@/hooks/useDevice';
 
+const DELETED_USER_NICKNAME = '탈퇴한 회원';
+
 interface ReplyListProps {
   challengeId: number;
   commentId: number;
@@ -35,19 +37,21 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
     <ReplyListContainer>
       {replies.map((replyItem) => (
         <Flex as="li" key={replyItem.replyId} direction="column" gap={4}>
-          <ReplyMeta isMobile={isMobile}>
-            <Text color="textSecondary">{replyItem.nickname ?? '익명'}</Text>
-            <Text color="textTertiary">·</Text>
-            <Text color="textSecondary">
+          <Flex gap={6} align="center">
+            <ReplyMetaText isMobile={isMobile}>
+              {replyItem.nickname ?? DELETED_USER_NICKNAME}
+            </ReplyMetaText>
+            <Dot isMobile={isMobile}>·</Dot>
+            <ReplyMetaText isMobile={isMobile}>
               {convertRelativeTime(replyItem.createdAt)}
-            </Text>
+            </ReplyMetaText>
             {replyItem.isPrivate && (
               <>
-                <Text color="textTertiary">·</Text>
-                <Text color="textSecondary">(비밀 답글)</Text>
+                <Dot isMobile={isMobile}>·</Dot>
+                <ReplyMetaText isMobile={isMobile}>(비밀 답글)</ReplyMetaText>
               </>
             )}
-          </ReplyMeta>
+          </Flex>
           <Text as="p" color="textPrimary" font={isMobile ? 'body2' : 'body1'}>
             {replyItem.reply}
           </Text>
@@ -77,14 +81,16 @@ const ReplyListContainer = styled.ul`
   flex-direction: column;
 `;
 
-const ReplyMeta = styled.div<{ isMobile: boolean }>`
-  display: flex;
-  gap: 6px;
-  align-items: center;
-
+const ReplyMetaText = styled.span<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+`;
+
+const Dot = styled.span<{ isMobile: boolean }>`
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.body1};
 `;
 
 const ReplyStatus = styled.p<{ isMobile: boolean }>`

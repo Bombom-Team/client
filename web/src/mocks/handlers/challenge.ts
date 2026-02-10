@@ -290,7 +290,7 @@ export const challengeHandlers = [
     },
   ),
 
-  http.put(
+  http.post(
     `${baseURL}/challenges/:challengeId/comments/:commentId/replies`,
     async () => {
       return HttpResponse.json({ success: true });

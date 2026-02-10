@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useAddCommentReplyMutation } from '../hooks/useAddCommentReplyMutation';
 import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
-import Flex from '@/components/Flex';
 import Text from '@/components/Text/Text';
 import { useDevice } from '@/hooks/useDevice';
 import SendIcon from '#/assets/svg/send.svg';
