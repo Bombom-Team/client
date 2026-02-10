@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { formatEventDateTime, extractKSTDate } from '../utils/date';
 import Flex from '@/components/Flex';
 import { useDevice } from '@/hooks/useDevice';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { Device } from '@/hooks/useDevice';
 
 const ROUND_START = {
@@ -22,6 +23,16 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
 
   const isFirstRoundComplete = today > firstRoundDeadline;
   const isSecondRoundComplete = today > secondRoundDeadline;
+
+  const handleApplyClick = () => {
+    onShowNotice();
+
+    trackEvent({
+      category: 'Event',
+      action: '선착순 경품 받기 버튼 클릭',
+      label: formatEventDateTime(new Date()),
+    });
+  };
 
   return (
     <Container device={device}>
@@ -101,7 +112,7 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
           </InfoRow>
         </InfoCard>
 
-        <ApplyButton type="button" device={device} onClick={onShowNotice}>
+        <ApplyButton type="button" device={device} onClick={handleApplyClick}>
           선착순 경품 받기
         </ApplyButton>
       </ContentWrapper>
