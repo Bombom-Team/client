@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Flex from '@/components/Flex';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 
@@ -42,11 +43,13 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
           }}
         />
 
-        <HeroBadge device={device}>
-          봄봄 회원가입 500명 돌파 기념 EVENT
-        </HeroBadge>
+        <Flex direction="column" align="center" justify="center">
+          <HeroBadge device={device}>
+            봄봄 회원가입 500명 돌파 기념 EVENT
+          </HeroBadge>
+          <HeroImage src="/assets/png/event-logo.png" alt="" device={device} />
+        </Flex>
 
-        <HeroImage src="/assets/png/event-logo.png" alt="" device={device} />
         <Title device={device}>
           봄봄 유저
           <br />
@@ -62,11 +65,11 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
           <InfoRowDivider />
           <InfoRow>
             <InfoLabel device={device}>1회</InfoLabel>
-            <InfoValue device={device}>2월 13일 20:00 (35명)</InfoValue>
+            <InfoValue device={device}>2월 18일 20:00 (35명)</InfoValue>
           </InfoRow>
           <InfoRow>
             <InfoLabel device={device}>2회</InfoLabel>
-            <InfoValue device={device}>2월 18일 20:00 (35명)</InfoValue>
+            <InfoValue device={device}>2월 21일 20:00 (35명)</InfoValue>
           </InfoRow>
           <InfoRowDivider />
           <InfoRow>
@@ -124,7 +127,7 @@ const DecorativeCircle = styled.span`
 `;
 
 const HeroBadge = styled.div<{ device: Device }>`
-  padding: 8px 18px;
+  padding: ${({ device }) => (device === 'mobile' ? '4px 12px' : '8px 14px')};
   border: 2px solid ${({ theme }) => theme.colors.black};
   border-radius: 32px;
   box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
@@ -136,7 +139,7 @@ const HeroBadge = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
   font-weight: 700;
   text-align: center;
 
