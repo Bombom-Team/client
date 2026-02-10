@@ -42,3 +42,9 @@ export const compareDates = (date1: Date, date2: Date): -1 | 0 | 1 => {
   if (d1.getTime() > d2.getTime()) return 1;
   return 0;
 };
+
+export const getDatesDiff = (date1: Date, date2: Date) => {
+  const timesDiff = Math.abs(date1.getTime() - date2.getTime());
+  const daysDiff = Math.floor(timesDiff / (1000 * 60 * 60 * 24));
+  return daysDiff;
+};

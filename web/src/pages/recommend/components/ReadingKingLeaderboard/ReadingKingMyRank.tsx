@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import UserBadgeInfo from './UserBadgeInfo';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import { calculateRate } from '@/utils/math';
 import type { components } from '@/types/openapi';
@@ -19,7 +20,10 @@ const ReadingKingMyRank = ({ userRank }: ReadingKingMyRankProps) => {
     <Container aria-label={rankSummary} tabIndex={0}>
       <MyRankInfo>
         <InfoWrapper>
-          <MyRankLabel>나의 순위</MyRankLabel>
+          <NameWrapper>
+            <MyRankLabel>{userRank.nickname} 님</MyRankLabel>
+            <UserBadgeInfo badges={userRank.badges} />
+          </NameWrapper>
           <MyRankLabel>읽은 뉴스레터</MyRankLabel>
         </InfoWrapper>
         <InfoWrapper>
@@ -55,6 +59,12 @@ const Container = styled.section`
 const MyRankInfo = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const NameWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
 `;
 
 const InfoWrapper = styled.div`
