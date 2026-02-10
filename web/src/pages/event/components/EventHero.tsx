@@ -1,4 +1,3 @@
-import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
@@ -47,19 +46,12 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
           봄봄 회원가입 500명 돌파 기념 EVENT
         </HeroBadge>
 
-        <TitleBox>
-          <TitleText color={theme.colors.white} device={device}>
-            선착순
-          </TitleText>
-          <TitleText color="#fff176" device={device}>
-            70명
-          </TitleText>
-        </TitleBox>
-        <HeroBox device={device}>
+        <HeroImage src="/assets/png/event-logo.png" alt="" device={device} />
+        <Title device={device}>
           봄봄 유저
           <br />
           선착순 70명에게 쏩니다!
-        </HeroBox>
+        </Title>
 
         <InfoCard device={device}>
           <InfoCardBadge device={device}>선착순 100% 당첨</InfoCardBadge>
@@ -237,25 +229,12 @@ const InfoValue = styled.p<{ device: Device }>`
   text-align: left;
 `;
 
-const TitleBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  text-align: center;
+const HeroImage = styled.img<{ device: Device }>`
+  width: ${({ device }) => (device === 'mobile' ? '110%' : '72%')};
+  height: auto;
 `;
 
-const TitleText = styled.p<{ color: string; device: Device }>`
-  color: ${({ color }) => color};
-  font-weight: 700;
-  font-size: ${({ device }) => (device === 'mobile' ? '72px' : '84px')};
-
-  text-shadow: ${({ theme }) => `2px 2px 0 ${theme.colors.black}`};
-
-  -webkit-text-stroke: ${({ theme }) => `2px ${theme.colors.black}`};
-`;
-
-const HeroBox = styled.div<{ device: Device }>`
+const Title = styled.div<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '10px 18px')};
   border: 2px solid ${({ theme }) => theme.colors.black};
   border-radius: 8px;
