@@ -248,6 +248,7 @@ export const challengeHandlers = [
         ).toISOString(),
         reply: `답글 내용 ${index + 1}`,
         isMyReply: index === 0 && !!comment?.isMyComment,
+        isPrivate: index % 2 === 0,
       }));
 
       const totalElements = allReplies.length;

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  putCommentReply,
-  type PutCommentReplyParams,
+  postCommentReply,
+  type PostCommentReplyParams,
 } from '@/apis/challenge/challenge.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
@@ -18,8 +18,8 @@ export const useAddCommentReplyMutation = ({
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: PutCommentReplyParams) =>
-      putCommentReply(challengeId, commentId, params),
+    mutationFn: (params: PostCommentReplyParams) =>
+      postCommentReply(challengeId, commentId, params),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queries.comments.all(challengeId),

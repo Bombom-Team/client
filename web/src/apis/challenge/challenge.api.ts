@@ -183,17 +183,17 @@ export const deleteChallengeCommentLike = async (
   });
 };
 
-export type PutCommentReplyParams = {
+export type PostCommentReplyParams = {
   reply: string;
   isPrivate: boolean;
 };
 
-export const putCommentReply = (
+export const postCommentReply = (
   challengeId: number,
   commentId: number,
-  params: PutCommentReplyParams,
+  params: PostCommentReplyParams,
 ) =>
-  fetcher.put<PutCommentReplyParams, never>({
+  fetcher.post<PostCommentReplyParams, never>({
     path: `/challenges/${challengeId}/comments/${commentId}/replies`,
     body: params,
   });
