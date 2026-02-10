@@ -41,6 +41,12 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
             <Text color="textSecondary">
               {convertRelativeTime(replyItem.createdAt)}
             </Text>
+            {replyItem.isPrivate && (
+              <>
+                <Text color="textTertiary">·</Text>
+                <Text color="textSecondary">(비밀 답글)</Text>
+              </>
+            )}
           </ReplyMeta>
           <Text as="p" color="textPrimary" font={isMobile ? 'body2' : 'body1'}>
             {replyItem.reply}
