@@ -8,6 +8,7 @@ import {
   getChallengeTeams,
   getChallengeCommentCandidateArticles,
   getChallengeComments,
+  getChallengeCommentReplies,
   getTodayDailyGuide,
   getChallengeArticleHighlights,
   getDailyGuideComments,
@@ -17,6 +18,7 @@ import {
 import type {
   GetChallengeCommentCandidateArticlesParams,
   GetChallengeCommentsParams,
+  GetChallengeCommentRepliesParams,
   GetChallengeArticleHighlightsParams,
   GetDailyGuideCommentsParams,
 } from './challenge.api';
@@ -82,6 +84,16 @@ export const challengeQueries = {
           return (lastPage.number ?? 0) + 1;
         },
         initialPageParam: 0,
+      }),
+    replies: (params: GetChallengeCommentRepliesParams) =>
+      queryOptions({
+        queryKey: [
+          ...challengeQueries.comments.all(params.challengeId),
+          params.commentId,
+          'replies',
+          params,
+        ],
+        queryFn: () => getChallengeCommentReplies(params),
       }),
   },
   challengeCommentCandidateArticles: (
