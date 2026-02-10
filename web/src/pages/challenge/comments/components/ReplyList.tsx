@@ -37,15 +37,17 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
     <ReplyListContainer>
       {replies.map((replyItem) => (
         <Flex as="li" key={replyItem.replyId} direction="column" gap={4}>
-          <ReplyMeta isMobile={isMobile}>
-            <Text color="textSecondary">
+          <Flex gap={6} align="center">
+            <Text color="textSecondary" font={isMobile ? 'body2' : 'body1'}>
               {replyItem.nickname ?? DELETED_USER_NICKNAME}
             </Text>
-            <Text color="textTertiary">·</Text>
-            <Text color="textSecondary">
+            <Text color="textTertiary" font={isMobile ? 'body2' : 'body1'}>
+              ·
+            </Text>
+            <Text color="textSecondary" font={isMobile ? 'body2' : 'body1'}>
               {convertRelativeTime(replyItem.createdAt)}
             </Text>
-          </ReplyMeta>
+          </Flex>
           <Text as="p" color="textPrimary" font={isMobile ? 'body2' : 'body1'}>
             {replyItem.reply}
           </Text>
@@ -73,16 +75,6 @@ const ReplyListContainer = styled.ul`
   display: flex;
   gap: 12px;
   flex-direction: column;
-`;
-
-const ReplyMeta = styled.div<{ isMobile: boolean }>`
-  display: flex;
-  gap: 6px;
-  align-items: center;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
 const ReplyStatus = styled.p<{ isMobile: boolean }>`
