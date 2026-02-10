@@ -1,7 +1,13 @@
 import styled from '@emotion/styled';
+import { formatEventDateTime, extractKSTDate } from '../utils/date';
 import Flex from '@/components/Flex';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
+
+const ROUND_START = {
+  first: '2026-02-18T20:00:00+09:00',
+  second: '2026-02-21T20:00:00+09:00',
+} as const;
 
 interface EventHeroProps {
   onShowNotice: () => void;
@@ -10,19 +16,9 @@ interface EventHeroProps {
 const EventHero = ({ onShowNotice }: EventHeroProps) => {
   const device = useDevice();
 
-  const now = new Date();
-  const koreaTime = new Date(
-    now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
-  );
-
-  const today = new Date(
-    koreaTime.getFullYear(),
-    koreaTime.getMonth(),
-    koreaTime.getDate(),
-  );
-
-  const firstRoundDeadline = new Date(2026, 1, 18);
-  const secondRoundDeadline = new Date(2026, 1, 21);
+  const today = extractKSTDate(new Date());
+  const firstRoundDeadline = extractKSTDate(new Date(ROUND_START.first));
+  const secondRoundDeadline = extractKSTDate(new Date(ROUND_START.second));
 
   const isFirstRoundComplete = today > firstRoundDeadline;
   const isSecondRoundComplete = today > secondRoundDeadline;
@@ -83,7 +79,7 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
           <InfoRow>
             <InfoLabel device={device}>1회</InfoLabel>
             <InfoValue device={device} isCompleted={isFirstRoundComplete}>
-              2월 18일 20:00 (35명)
+              {`${formatEventDateTime(new Date(ROUND_START.first))} (35명)`}
             </InfoValue>
             {isFirstRoundComplete && (
               <CompletedStamp device={device}>마감</CompletedStamp>
@@ -92,7 +88,7 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
           <InfoRow>
             <InfoLabel device={device}>2회</InfoLabel>
             <InfoValue device={device} isCompleted={isSecondRoundComplete}>
-              2월 21일 20:00 (35명)
+              {`${formatEventDateTime(new Date(ROUND_START.second))} (35명)`}
             </InfoValue>
             {isSecondRoundComplete && (
               <CompletedStamp device={device}>마감</CompletedStamp>
