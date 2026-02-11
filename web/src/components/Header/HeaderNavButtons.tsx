@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router';
 import type { Device } from '@/hooks/useDevice';
 import type { Nav } from '@/types/nav';
 import CompassIcon from '#/assets/svg/compass.svg';
-import HomeIcon from '#/assets/svg/home.svg';
+import MailIcon from '#/assets/svg/mail.svg';
 import StorageIcon from '#/assets/svg/storage.svg';
 import ChallengeIcon from '#/assets/svg/trophy.svg';
 
@@ -11,7 +11,7 @@ const NAV_LABEL = {
   today: '투데이',
   storage: '보관함',
   challenge: '챌린지',
-  recommend: '추천',
+  recommend: '둘러보기',
 } as const;
 
 interface HeaderNavButtonsProps {
@@ -30,7 +30,7 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
         to="/today"
         className="nav-link"
       >
-        <HomeIcon
+        <MailIcon
           width={24}
           height={24}
           color={activeNav === 'today' ? 'white' : 'black'}
