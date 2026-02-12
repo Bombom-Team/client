@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import LinkIcon from '#/assets/svg/link.svg';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
 
-const SHARE_EVENT_FORM_URL = 'https://forms.gle/VeRTYnvBoVGYu6Hg6';
+const SHARE_EVENT_FORM_URL = 'https://forms.gle/BwUfEcxVYSzwVuTc6';
 
 const EventShareGuide = () => {
   return (
