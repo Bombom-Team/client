@@ -1,21 +1,32 @@
 import styled from '@emotion/styled';
+import QueueStatus from './QueueStatus/QueueStatus';
 import Button from '@/components/Button/Button';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import type { QueueEntry } from '@/apis/event/event.api';
 
 interface EventNoticeModalProps {
+  queueEntry: QueueEntry | undefined;
   closeModal: () => void;
 }
 
-const EventNoticeModal = ({ closeModal }: EventNoticeModalProps) => {
+const EventNoticeModal = ({
+  queueEntry,
+  closeModal,
+}: EventNoticeModalProps) => {
   const device = useDevice();
 
   return (
     <Container>
-      <ContentWrapper>
-        <Title device={device}>이벤트 기간이 아닙니다.</Title>
-        <Description>자세한 내용은 이벤트 페이지를 참고해주세요.</Description>
-        <ConfirmButton onClick={closeModal}>확인</ConfirmButton>
-      </ContentWrapper>
+      {queueEntry ? (
+        <QueueStatus queueEntry={queueEntry} />
+      ) : (
+        <ContentWrapper>
+          <Title device={device}>이벤트 기간이 아닙니다.</Title>
+          <Description>자세한 내용은 이벤트 페이지를 참고해주세요.</Description>
+        </ContentWrapper>
+      )}
+
+      <ConfirmButton onClick={closeModal}>확인</ConfirmButton>
     </Container>
   );
 };

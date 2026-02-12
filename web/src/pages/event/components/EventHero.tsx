@@ -11,10 +11,10 @@ const ROUND_START = {
 } as const;
 
 interface EventHeroProps {
-  onShowNotice: () => void;
+  onApply: () => void;
 }
 
-const EventHero = ({ onShowNotice }: EventHeroProps) => {
+const EventHero = ({ onApply }: EventHeroProps) => {
   const device = useDevice();
 
   const today = extractKSTDate(new Date());
@@ -25,7 +25,7 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
   const isSecondRoundComplete = today > secondRoundDeadline;
 
   const handleApplyClick = () => {
-    onShowNotice();
+    onApply();
 
     trackEvent({
       category: 'Event',

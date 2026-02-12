@@ -2,17 +2,17 @@ import WaitingState from './WaitingState';
 import type { QueueEntry } from '@/apis/event/event.api';
 
 interface QueueStatusProps {
-  queueData: QueueEntry | undefined;
+  queueEntry: QueueEntry | undefined;
 }
 
-const QueueStatus = ({ queueData }: QueueStatusProps) => {
-  if (!queueData || queueData.status === 'NOT_IN_QUEUE') {
+const QueueStatus = ({ queueEntry }: QueueStatusProps) => {
+  if (!queueEntry || queueEntry.status === 'NOT_IN_QUEUE') {
     return null;
   }
 
-  switch (queueData.status) {
+  switch (queueEntry.status) {
     case 'WAITING':
-      return <WaitingState queueData={queueData} />;
+      return <WaitingState queueData={queueEntry} />;
 
     default:
       return null;
