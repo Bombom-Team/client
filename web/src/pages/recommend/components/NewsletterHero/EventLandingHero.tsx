@@ -59,7 +59,7 @@ const HeroContent = styled.div<{ isPC: boolean }>`
   padding: ${({ isPC }) => (isPC ? '0 24px' : '0 4px')};
 
   display: flex;
-  gap: ${({ isPC }) => (isPC ? '16px' : '8px')};
+  gap: ${({ isPC }) => (isPC ? '16px' : '12px')};
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
