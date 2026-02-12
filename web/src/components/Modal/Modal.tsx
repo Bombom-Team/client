@@ -43,6 +43,7 @@ const Modal = ({
             type="button"
             onClick={closeModal}
             aria-label="모달 닫기"
+            isMobile={isMobile}
           >
             <CloseIcon width={36} height={36} fill={theme.colors.black} />
           </CloseButton>
@@ -88,10 +89,10 @@ const Container = styled.div<{
   ${({ position }) => containerStyles[position]}
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled.button<{ isMobile: boolean }>`
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: ${({ isMobile }) => (isMobile ? '12px' : '20px')};
+  right: ${({ isMobile }) => (isMobile ? '12px' : '20px')};
   border: none;
 
   display: flex;
