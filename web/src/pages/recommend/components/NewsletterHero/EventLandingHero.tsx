@@ -17,10 +17,7 @@ const EventLandingHero = () => {
     <Container isPC={isPC}>
       <HeroContent isPC={isPC}>
         <HeroBadge isPC={isPC}>회원가입 500명 돌파</HeroBadge>
-        <HeroTitle isPC={isPC}>
-          봄봄은 지금{'\n'}
-          <Highlight>선착순 이벤트</Highlight> 중!
-        </HeroTitle>
+        <HeroTitle isPC={isPC}>봄봄이{'\n'}커피 쏜다!</HeroTitle>
         <CTAButton
           isPC={isPC}
           onClick={() => {
@@ -52,7 +49,7 @@ const Container = styled.section<{ isPC: boolean }>`
   align-items: center;
   justify-content: center;
 
-  background-color: #bef074;
+  background-color: #f1c972;
 `;
 
 const HeroContent = styled.div<{ isPC: boolean }>`
@@ -96,10 +93,6 @@ const HeroBadge = styled.div<{ isPC: boolean }>`
   text-align: center;
 
   transform: rotate(-2deg);
-`;
-
-const Highlight = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const CTAButton = styled.button<{ isPC: boolean }>`
