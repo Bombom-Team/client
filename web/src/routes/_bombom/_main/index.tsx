@@ -73,6 +73,8 @@ const Container = styled.div<{ device: Device }>`
 `;
 
 const MainContent = styled.div<{ device: Device }>`
+  max-width: 100%;
+
   display: flex;
   gap: 16px;
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
