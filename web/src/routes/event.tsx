@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { COUPON_NAME } from '@/apis/event/constants';
-import { queries } from '@/apis/queries';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
@@ -12,7 +10,7 @@ import EventHero from '@/pages/event/components/EventHero';
 import EventNoticeModal from '@/pages/event/components/EventNoticeModal';
 import EventPrize from '@/pages/event/components/EventPrize';
 import EventShareGuide from '@/pages/event/components/EventShareGuide';
-import { useAddQueueEntryMutation } from '@/pages/event/hooks/useAddQueueEntryMutation';
+import { useQueueEntry } from '@/pages/event/hooks/useQueueEntry';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import type { Device } from '@/hooks/useDevice';
 
@@ -30,10 +28,9 @@ export const Route = createFileRoute('/event')({
 function EventPage() {
   const device = useDevice();
   const { modalRef, openModal, closeModal, isOpen } = useModal();
-  const { mutate: addQueueEntry } = useAddQueueEntryMutation({
+  const { queueEntry, addQueueEntry } = useQueueEntry({
     couponName: COUPON_NAME,
   });
-  const { data: queueEntry } = useQuery(queries.queueEntry(COUPON_NAME));
 
   const handleApply = () => {
     addQueueEntry();
