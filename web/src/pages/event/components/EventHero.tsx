@@ -128,7 +128,7 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
           device={device}
           onClick={handleApplyButtonClick}
         >
-          선착순 경품 받기
+          {isLoggedIn ? '선착순 경품 받기' : '로그인하고 선착순 경품 받기'}
         </ApplyButton>
       </ContentWrapper>
     </Container>
@@ -196,7 +196,7 @@ const HeroBadge = styled.div<{ device: Device }>`
 `;
 
 const ApplyButton = styled.button<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '16px 32px' : '20px 44px')};
+  padding: ${({ device }) => (device === 'mobile' ? '12px 20px' : '20px 44px')};
   border: 4px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;
   box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
