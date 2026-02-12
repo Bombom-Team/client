@@ -11,6 +11,7 @@ import EventGuide from '@/pages/event/components/EventGuide';
 import EventHero from '@/pages/event/components/EventHero';
 import EventNoticeModal from '@/pages/event/components/EventNoticeModal';
 import EventPrize from '@/pages/event/components/EventPrize';
+import EventShareGuide from '@/pages/event/components/EventShareGuide';
 import { useAddQueueEntryMutation } from '@/pages/event/hooks/useAddQueueEntryMutation';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import type { Device } from '@/hooks/useDevice';
@@ -45,6 +46,7 @@ function EventPage() {
       <EventHero onApply={handleApply} />
       <EventPrize />
       <EventGuide />
+      <EventShareGuide />
       <EventFooter />
       <Modal
         modalRef={modalRef}
