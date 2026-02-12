@@ -70,7 +70,7 @@ const EventImage = styled.img<{ device: Device }>`
 const HeroTitle = styled.p<{ isPC: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isPC }) =>
-    isPC ? theme.fonts.heading3 : theme.fonts.heading5};
+    isPC ? theme.fonts.heading3 : theme.fonts.heading4};
   text-align: left;
 
   word-break: keep-all;
