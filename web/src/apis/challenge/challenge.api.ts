@@ -183,6 +183,21 @@ export const deleteChallengeCommentLike = async (
   });
 };
 
+export type PostCommentReplyParams = {
+  reply: string;
+  isPrivate: boolean;
+};
+
+export const postCommentReply = (
+  challengeId: number,
+  commentId: number,
+  params: PostCommentReplyParams,
+) =>
+  fetcher.post<PostCommentReplyParams, never>({
+    path: `/challenges/${challengeId}/comments/${commentId}/replies`,
+    body: params,
+  });
+
 export type GetTodayDailyGuideResponse =
   components['schemas']['TodayDailyGuideResponse'];
 

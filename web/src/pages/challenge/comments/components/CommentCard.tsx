@@ -5,6 +5,7 @@ import useExpandQuotation from '../hooks/useExpandQuotation';
 import useReplyAccordion from '../hooks/useReplyAccordion';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
 import ReplyList from './ReplyList';
+import ReplyWriter from './ReplyWriter';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
 import { useAddCommentLikeMutation } from '../hooks/useAddCommentLikeMutation';
 import { useDeleteCommentLikeMutation } from '../hooks/useDeleteCommentLikeMutation';
@@ -179,6 +180,7 @@ const CommentCard = ({
           )}
           <Text as="p">{comment}</Text>
         </Flex>
+        <ReplyWriter challengeId={challengeId} commentId={commentId} />
         {hasReplies && isReplyOpen && (
           <Flex gap={isMobile ? 8 : 12} direction="column">
             <Suspense fallback={<ReplyList.Loading isMobile={isMobile} />}>
@@ -239,7 +241,7 @@ const Container = styled.article<{ isMobile: boolean; isMyComment: boolean }>`
   box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '8px' : '16px')};
+  gap: 8px;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};

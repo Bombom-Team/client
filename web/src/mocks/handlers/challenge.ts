@@ -248,6 +248,7 @@ export const challengeHandlers = [
         ).toISOString(),
         reply: `답글 내용 ${index + 1}`,
         isMyReply: index === 0 && !!comment?.isMyComment,
+        isPrivate: index % 2 === 0,
       }));
 
       const totalElements = allReplies.length;
@@ -286,6 +287,13 @@ export const challengeHandlers = [
       };
 
       return HttpResponse.json(response);
+    },
+  ),
+
+  http.post(
+    `${baseURL}/challenges/:challengeId/comments/:commentId/replies`,
+    async () => {
+      return HttpResponse.json({ success: true });
     },
   ),
 
