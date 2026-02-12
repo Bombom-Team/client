@@ -52,7 +52,7 @@ const Container = styled.section<{ isPC: boolean }>`
   align-items: center;
   justify-content: center;
 
-  background-color: #cf0;
+  background-color: #bdf100;
 `;
 
 const HeroContent = styled.div<{ isPC: boolean }>`
