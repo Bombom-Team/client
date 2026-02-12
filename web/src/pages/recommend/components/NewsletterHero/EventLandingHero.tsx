@@ -1,16 +1,10 @@
-import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import ArrowIcon from '@/components/icons/ArrowIcon';
-import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 
 const EventLandingHero = () => {
-  const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
   const device = useDevice();
   const isPC = device === 'pc';
@@ -19,51 +13,27 @@ const EventLandingHero = () => {
     navigate({ to: '/event' });
   };
 
-  const handleLoginClick = () => {
-    if (isWebView())
-      sendMessageToRN({
-        type: 'SHOW_LOGIN_SCREEN',
-      });
-    else navigate({ to: '/login' });
-  };
-
   return (
     <Container isPC={isPC}>
       <HeroContent isPC={isPC}>
+        <HeroBadge isPC={isPC}>회원가입 500명 돌파</HeroBadge>
         <HeroTitle isPC={isPC}>
           봄봄은 지금{'\n'}
           <Highlight>선착순 이벤트</Highlight> 중!
         </HeroTitle>
-        {isLoggedIn ? (
-          <HeroButton
-            isPC={isPC}
-            onClick={() => {
-              handleNavigateEventClick();
-              trackEvent({
-                category: 'Navigation',
-                action: '이벤트 페이지 이동버튼 클릭',
-                label: '이벤트 페이지 배너',
-              });
-            }}
-          >
-            지금 확인하기
-            <ArrowIcon direction="right" color={theme.colors.primary} />
-          </HeroButton>
-        ) : (
-          <HeroButton
-            isPC={isPC}
-            onClick={() => {
-              handleLoginClick();
-              trackEvent({
-                category: 'Navigation',
-                action: '로그인 버튼 클릭',
-                label: '이벤트 페이지 배너',
-              });
-            }}
-          >
-            로그인하고 참여하기
-          </HeroButton>
-        )}
+        <CTAButton
+          isPC={isPC}
+          onClick={() => {
+            handleNavigateEventClick();
+            trackEvent({
+              category: 'Navigation',
+              action: '이벤트 페이지 이동버튼 클릭',
+              label: '이벤트 페이지 배너',
+            });
+          }}
+        >
+          지금 확인하기
+        </CTAButton>
       </HeroContent>
       <EventImage src="/assets/png/event-logo.png" alt="" device={device} />
     </Container>
@@ -109,11 +79,30 @@ const HeroTitle = styled.p<{ isPC: boolean }>`
   word-break: keep-all;
 `;
 
+const HeroBadge = styled.div<{ isPC: boolean }>`
+  padding: ${({ isPC }) => (isPC ? '6px 14px' : '4px 12px')};
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 32px;
+  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.black};
+  font: ${({ theme, isPC }) => (isPC ? theme.fonts.body2 : theme.fonts.body3)};
+  font-weight: 700;
+  text-align: center;
+
+  transform: rotate(-2deg);
+`;
+
 const Highlight = styled.span`
   color: ${({ theme }) => theme.colors.primary};
 `;
 
-const HeroButton = styled.button<{ isPC: boolean }>`
+const CTAButton = styled.button<{ isPC: boolean }>`
   padding: ${({ isPC }) => (isPC ? '12px 24px' : '8px 12px')};
   border: none;
   border-radius: 12px;

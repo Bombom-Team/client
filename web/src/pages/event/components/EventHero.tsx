@@ -1,7 +1,11 @@
 import styled from '@emotion/styled';
+import { useNavigate } from '@tanstack/react-router';
 import { formatEventDateTime, extractKSTDate } from '../utils/date';
 import Flex from '@/components/Flex';
+import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
+import { sendMessageToRN } from '@/libs/webview/webview.utils';
+import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 
 const ROUND_START = {
@@ -15,6 +19,8 @@ interface EventHeroProps {
 
 const EventHero = ({ onShowNotice }: EventHeroProps) => {
   const device = useDevice();
+  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
   const today = extractKSTDate(new Date());
   const firstRoundDeadline = extractKSTDate(new Date(ROUND_START.first));
@@ -22,6 +28,22 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
 
   const isFirstRoundComplete = today > firstRoundDeadline;
   const isSecondRoundComplete = today > secondRoundDeadline;
+
+  const goToLogin = () => {
+    if (isWebView())
+      sendMessageToRN({
+        type: 'SHOW_LOGIN_SCREEN',
+      });
+    else navigate({ to: '/login' });
+  };
+
+  const handleApplyButtonClick = () => {
+    if (isLoggedIn) {
+      onShowNotice();
+    } else {
+      goToLogin();
+    }
+  };
 
   return (
     <Container device={device}>
@@ -101,7 +123,11 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
           </InfoRow>
         </InfoCard>
 
-        <ApplyButton type="button" device={device} onClick={onShowNotice}>
+        <ApplyButton
+          type="button"
+          device={device}
+          onClick={handleApplyButtonClick}
+        >
           선착순 경품 받기
         </ApplyButton>
       </ContentWrapper>
