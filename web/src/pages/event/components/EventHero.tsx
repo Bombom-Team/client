@@ -1,7 +1,11 @@
 import styled from '@emotion/styled';
+import { useNavigate } from '@tanstack/react-router';
 import { formatEventDateTime, extractKSTDate } from '../utils/date';
 import Flex from '@/components/Flex';
+import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
+import { sendMessageToRN } from '@/libs/webview/webview.utils';
+import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 
 const ROUND_START = {
@@ -15,6 +19,8 @@ interface EventHeroProps {
 
 const EventHero = ({ onShowNotice }: EventHeroProps) => {
   const device = useDevice();
+  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
   const today = extractKSTDate(new Date());
   const firstRoundDeadline = extractKSTDate(new Date(ROUND_START.first));
@@ -22,6 +28,22 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
 
   const isFirstRoundComplete = today > firstRoundDeadline;
   const isSecondRoundComplete = today > secondRoundDeadline;
+
+  const goToLogin = () => {
+    if (isWebView())
+      sendMessageToRN({
+        type: 'SHOW_LOGIN_SCREEN',
+      });
+    else navigate({ to: '/login' });
+  };
+
+  const handleApplyButtonClick = () => {
+    if (isLoggedIn) {
+      onShowNotice();
+    } else {
+      goToLogin();
+    }
+  };
 
   return (
     <Container device={device}>
@@ -101,8 +123,12 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
           </InfoRow>
         </InfoCard>
 
-        <ApplyButton type="button" device={device} onClick={onShowNotice}>
-          선착순 경품 받기
+        <ApplyButton
+          type="button"
+          device={device}
+          onClick={handleApplyButtonClick}
+        >
+          {isLoggedIn ? '선착순 경품 받기' : '로그인하고 선착순 경품 받기'}
         </ApplyButton>
       </ContentWrapper>
     </Container>
@@ -170,7 +196,7 @@ const HeroBadge = styled.div<{ device: Device }>`
 `;
 
 const ApplyButton = styled.button<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '16px 32px' : '20px 44px')};
+  padding: ${({ device }) => (device === 'mobile' ? '12px 20px' : '20px 44px')};
   border: 4px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;
   box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};

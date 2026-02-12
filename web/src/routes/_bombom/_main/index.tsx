@@ -5,7 +5,7 @@ import ReadingKingLeaderboard from '../../../pages/recommend/components/ReadingK
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import ChallengeSection from '@/pages/recommend/components/ChallengeSection/ChallengeSection';
-import NewsletterHero from '@/pages/recommend/components/NewsletterHero/NewsletterHero';
+import EventLandingHero from '@/pages/recommend/components/NewsletterHero/EventLandingHero';
 import NoticeAnnounceBar from '@/pages/recommend/components/NoticeAnnounceBar/NoticeAnnounceBar';
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
 import type { Device } from '@/hooks/useDevice';
@@ -47,7 +47,7 @@ function Index() {
 
       <MainContent device={device}>
         <MainSection device={device}>
-          <NewsletterHero />
+          <EventLandingHero />
           <ChallengeSection />
           <TrendySection />
         </MainSection>
