@@ -14,23 +14,22 @@ const EventLandingHero = () => {
   };
 
   return (
-    <Container isPC={isPC}>
+    <Container
+      isPC={isPC}
+      type="button"
+      onClick={() => {
+        handleNavigateEventClick();
+        trackEvent({
+          category: 'Navigation',
+          action: '이벤트 페이지 이동버튼 클릭',
+          label: '이벤트 페이지 배너',
+        });
+      }}
+    >
       <HeroContent isPC={isPC}>
         <HeroBadge isPC={isPC}>회원가입 500명 돌파</HeroBadge>
         <HeroTitle isPC={isPC}>봄봄이{'\n'}커피 쏜다!</HeroTitle>
-        <CTAButton
-          isPC={isPC}
-          onClick={() => {
-            handleNavigateEventClick();
-            trackEvent({
-              category: 'Navigation',
-              action: '이벤트 페이지 이동버튼 클릭',
-              label: '이벤트 페이지 배너',
-            });
-          }}
-        >
-          지금 확인하기
-        </CTAButton>
+        <IndicateText isPC={isPC}>지금 확인하기</IndicateText>
       </HeroContent>
       <EventImage src="/assets/png/event-logo.png" alt="" device={device} />
     </Container>
@@ -39,7 +38,7 @@ const EventLandingHero = () => {
 
 export default EventLandingHero;
 
-const Container = styled.section<{ isPC: boolean }>`
+const Container = styled.button<{ isPC: boolean }>`
   width: 100%;
   padding: ${({ isPC }) => (isPC ? '12px 24px' : '12px 16px')};
   border-radius: 16px;
@@ -95,7 +94,7 @@ const HeroBadge = styled.div<{ isPC: boolean }>`
   transform: rotate(-2deg);
 `;
 
-const CTAButton = styled.button<{ isPC: boolean }>`
+const IndicateText = styled.p<{ isPC: boolean }>`
   padding: ${({ isPC }) => (isPC ? '12px 24px' : '8px 12px')};
   border: none;
   border-radius: 12px;
@@ -104,11 +103,4 @@ const CTAButton = styled.button<{ isPC: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isPC }) => (isPC ? theme.fonts.body2 : theme.fonts.body3)};
   font-weight: 700;
-
-  transition: all 0.2s ease;
-
-  &:hover {
-    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
-    transform: translateY(-2px);
-  }
 `;
