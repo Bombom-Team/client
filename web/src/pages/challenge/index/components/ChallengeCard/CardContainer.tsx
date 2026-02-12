@@ -14,7 +14,7 @@ const Container = styled.button`
   position: relative;
   width: 100%;
   height: 172px;
-  min-width: 320px;
+  min-width: 280px;
   max-width: 440px;
   padding: 20px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};

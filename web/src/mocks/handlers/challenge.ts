@@ -5,6 +5,7 @@ import { DAILY_GUIDE_COMMENTS } from '../datas/dailyGuideComments';
 import { ENV } from '@/apis/env';
 import type {
   GetChallengeCommentsResponse,
+  GetChallengeCommentRepliesResponse,
   GetChallengeEligibilityResponse,
   GetDailyGuideCommentsResponse,
   GetTodayDailyGuideResponse,
@@ -223,6 +224,78 @@ export const challengeHandlers = [
 
     return HttpResponse.json(response);
   }),
+
+  http.get(
+    `${baseURL}/challenges/:challengeId/comments/:commentId/replies`,
+    ({ params, request }) => {
+      const url = new URL(request.url);
+      const page = parseInt(url.searchParams.get('page') || '0', 10);
+      const size = parseInt(url.searchParams.get('size') || '20', 10);
+
+      const commentId = Number(params.commentId);
+      const comment = CHALLENGE_COMMENTS.find(
+        (item) => item.commentId === commentId,
+      );
+      const replyCount = comment?.replyCount ?? 0;
+      const baseTime = comment?.createdAt ?? new Date().toISOString();
+
+      const allReplies = Array.from({ length: replyCount }, (_, index) => ({
+        replyId: commentId * 100 + index + 1,
+        nickname: `답글러${index + 1}`,
+        profileImageUrl: `https://i.pravatar.cc/150?img=${(commentId + index) % 70}`,
+        createdAt: new Date(
+          new Date(baseTime).getTime() + (index + 1) * 60 * 1000,
+        ).toISOString(),
+        reply: `답글 내용 ${index + 1}`,
+        isMyReply: index === 0 && !!comment?.isMyComment,
+        isPrivate: index % 2 === 0,
+      }));
+
+      const totalElements = allReplies.length;
+      const totalPages = Math.ceil(totalElements / size);
+      const startIdx = page * size;
+      const endIdx = startIdx + size;
+      const content = allReplies.slice(startIdx, endIdx);
+
+      const response: GetChallengeCommentRepliesResponse = {
+        content,
+        pageable: {
+          pageNumber: page,
+          pageSize: size,
+          sort: {
+            empty: true,
+            sorted: false,
+            unsorted: true,
+          },
+          offset: startIdx,
+          paged: true,
+          unpaged: false,
+        },
+        totalElements,
+        totalPages,
+        last: page >= totalPages - 1,
+        size,
+        number: page,
+        sort: {
+          empty: true,
+          sorted: false,
+          unsorted: true,
+        },
+        numberOfElements: content.length,
+        first: page === 0,
+        empty: content.length === 0,
+      };
+
+      return HttpResponse.json(response);
+    },
+  ),
+
+  http.post(
+    `${baseURL}/challenges/:challengeId/comments/:commentId/replies`,
+    async () => {
+      return HttpResponse.json({ success: true });
+    },
+  ),
 
   http.get(`${baseURL}/challenges/:challengeId/teams`, () => {
     return HttpResponse.json(CHALLENGE_TEAMS_RESPONSE);

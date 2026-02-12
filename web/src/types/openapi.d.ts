@@ -220,6 +220,10 @@ export interface paths {
     /**
      * 코멘트 답글 생성
      * @description 특정 코멘트에 대해 답글을 작성합니다.
+     *
+     *     - isPrivate=true: 비공개 답글 (코멘트 작성자 및 본인에게만 공개)
+     *     - isPrivate=false: 공개 답글 (모든 챌린지 참여자에게 공개)
+     *
      */
     post: operations['createCommentReply'];
     delete?: never;
@@ -1262,6 +1266,7 @@ export interface components {
     };
     CreateCommentReplyRequest: {
       reply: string;
+      isPrivate?: boolean;
     };
     /** @description 회원가입 요청 데이터 */
     MemberSignupRequest: {
@@ -1820,6 +1825,7 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
       isMyReply: boolean;
+      isPrivate: boolean;
     };
     PageCommentReplyResponse: {
       /** Format: int64 */
