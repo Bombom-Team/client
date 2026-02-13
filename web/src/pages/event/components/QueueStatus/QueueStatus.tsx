@@ -12,7 +12,7 @@ const QueueStatus = ({ queueEntry }: QueueStatusProps) => {
 
   switch (queueEntry.status) {
     case 'WAITING':
-      return <WaitingState queueData={queueEntry} />;
+      return <WaitingState queueEntry={queueEntry} />;
 
     default:
       return null;

@@ -6,10 +6,10 @@ import { useDevice, type Device } from '@/hooks/useDevice';
 import type { QueueEntry } from '@/apis/event/event.api';
 
 interface WaitingStateProps {
-  queueData: QueueEntry;
+  queueEntry: QueueEntry;
 }
 
-const WaitingState = ({ queueData }: WaitingStateProps) => {
+const WaitingState = ({ queueEntry }: WaitingStateProps) => {
   const device = useDevice();
 
   return (
@@ -26,7 +26,7 @@ const WaitingState = ({ queueData }: WaitingStateProps) => {
           font={device === 'mobile' ? 'heading5' : 'heading4'}
           color="primary"
         >
-          {queueData.position}번
+          {queueEntry.position}번
         </Text>
       </WaitingInfo>
 
@@ -43,7 +43,7 @@ const WaitingState = ({ queueData }: WaitingStateProps) => {
           font={device === 'mobile' ? 'heading5' : 'heading4'}
           color="textPrimary"
         >
-          {queueData.activeCount}명
+          {queueEntry.activeCount}명
         </Text>
       </WaitingInfo>
 

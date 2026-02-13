@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAddQueueEntryMutation } from './useAddQueueEntryMutation';
-import { COUPON_NAME } from '@/apis/event/constants';
 import { queries } from '@/apis/queries';
 
 type UseQueueEntryParams = {
@@ -14,7 +13,7 @@ export const useQueueEntry = ({ couponName }: UseQueueEntryParams) => {
   });
 
   const { data: queueEntry } = useQuery({
-    ...queries.queueEntry(COUPON_NAME),
+    ...queries.queueEntry(couponName),
     enabled: isSuccess,
     refetchInterval: (query) => {
       const { data } = query.state;
