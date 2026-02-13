@@ -13,12 +13,12 @@ const WaitingState = ({ queueData }: WaitingStateProps) => {
   const device = useDevice();
 
   return (
-    <Flex direction="column" gap={12} align="center">
+    <Flex direction="column" gap={device === 'mobile' ? 12 : 16} align="center">
       <Text
         font={device === 'mobile' ? 'heading6' : 'heading5'}
         color="textPrimary"
       >
-        현재 접속자가 많아 대기 중이에요.
+        접속자가 많아 대기 중이에요.
       </Text>
       <WaitingInfo device={device}>
         <Text>나의 대기 번호</Text>
@@ -53,11 +53,8 @@ const WaitingState = ({ queueData }: WaitingStateProps) => {
         <SpinnerDot delay={0.4} />
       </LoadingSpinner>
 
-      <PollingMessage device={device}>
-        {queueData.pollingTtlSeconds}초마다 자동 업데이트 중...
-      </PollingMessage>
       <Text
-        font={device === 'mobile' ? 'body2' : 'bodyLarge'}
+        font={device === 'mobile' ? 'body2' : 'body1'}
         color="textSecondary"
       >
         ※ 이 창을 닫거나 새로고침 또는 뒤로가기를 누를 경우 대기 시간이
@@ -114,11 +111,4 @@ const SpinnerDot = styled.div<{ delay: number }>`
   animation: ${pulse} 1.4s ease-in-out infinite;
 
   animation-delay: ${({ delay }) => delay}s;
-`;
-
-const PollingMessage = styled.p<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.caption : theme.fonts.body3};
-  text-align: center;
 `;

@@ -26,7 +26,7 @@ const EventNoticeModal = ({
         </ContentWrapper>
       )}
 
-      <ConfirmButton onClick={closeModal}>확인</ConfirmButton>
+      <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>
     </Container>
   );
 };
@@ -37,6 +37,7 @@ const Container = styled.div`
   width: 100%;
 
   display: flex;
+  gap: 12px;
   flex-direction: column;
   align-items: center;
 `;
