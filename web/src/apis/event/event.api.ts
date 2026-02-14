@@ -24,3 +24,27 @@ export const getMyQueueEntry = async (couponName: string) => {
     path: `/coupons/${couponName}/queue-entries/me`,
   });
 };
+
+export type IssuedCoupon = {
+  couponName: string;
+  imageUrl: string;
+  issuedAt: string;
+};
+type PostIssueCouponResponse = {
+  imageUrl: string;
+  issuedAt: string;
+};
+
+export const postIssueCoupon = async (couponName: string) => {
+  return fetcher.post<never, PostIssueCouponResponse>({
+    path: `/coupons/${couponName}/issues`,
+  });
+};
+
+type GetMyCouponsResponse = IssuedCoupon[];
+
+export const getMyCoupons = async () => {
+  return fetcher.get<GetMyCouponsResponse>({
+    path: '/coupons/issues/me',
+  });
+};
