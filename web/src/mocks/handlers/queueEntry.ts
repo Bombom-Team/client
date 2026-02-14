@@ -4,8 +4,10 @@ import {
   queueStore,
   createMockQueueEntry,
   QUEUE_SCENARIOS,
+  issuedCouponsStore,
+  MOCK_COUPON_IMAGES,
 } from '../datas/queueEntry';
-import type { QueueEntry } from '@/apis/event/event.api';
+import type { QueueEntry, CouponName } from '@/apis/event/event.api';
 
 const baseURL = ENV.baseUrl;
 
@@ -17,7 +19,7 @@ const MOCK_SCENARIO = 'DYNAMIC';
 let registrationTime: number | null = null;
 let currentStatus: QueueEntry['status'] = 'NOT_IN_QUEUE';
 
-const getDynamicQueueEntry = (couponName: string): QueueEntry => {
+const getDynamicQueueEntry = (couponName: CouponName): QueueEntry => {
   if (!registrationTime) {
     return createMockQueueEntry('NOT_IN_QUEUE', { couponName });
   }
@@ -60,7 +62,7 @@ const getDynamicQueueEntry = (couponName: string): QueueEntry => {
 export const queueEntryHandlers = [
   // 대기열 등록
   http.post(`${baseURL}/coupons/:couponName/queue-entries`, ({ params }) => {
-    const { couponName } = params as { couponName: string };
+    const { couponName } = params as { couponName: CouponName };
 
     // 이미 등록된 경우 에러
     if (queueStore.has(couponName) && currentStatus !== 'NOT_IN_QUEUE') {
@@ -91,7 +93,7 @@ export const queueEntryHandlers = [
 
   // 내 대기열 상태 조회
   http.get(`${baseURL}/coupons/:couponName/queue-entries/me`, ({ params }) => {
-    const { couponName } = params as { couponName: string };
+    const { couponName } = params as { couponName: CouponName };
 
     let queueEntry: QueueEntry;
 
@@ -109,5 +111,65 @@ export const queueEntryHandlers = [
     }
 
     return HttpResponse.json(queueEntry);
+  }),
+
+  // 쿠폰 발급
+  http.post(`${baseURL}/coupons/:couponName/issues`, ({ params }) => {
+    const { couponName } = params as { couponName: CouponName };
+
+    // ACTIVE 상태가 아니면 발급 불가
+    const queueEntry = queueStore.get(couponName);
+    if (!queueEntry || queueEntry.status !== 'ACTIVE') {
+      return HttpResponse.json(
+        {
+          message: '쿠폰 발급 가능한 상태가 아닙니다.',
+        },
+        { status: 400 },
+      );
+    }
+
+    // 이미 발급된 쿠폰인지 확인
+    const alreadyIssued = issuedCouponsStore.some(
+      (coupon) => coupon.couponName === couponName,
+    );
+    if (alreadyIssued) {
+      return HttpResponse.json(
+        {
+          message: '이미 발급된 쿠폰입니다.',
+        },
+        { status: 400 },
+      );
+    }
+
+    // 쿠폰 발급
+    const issuedAt = new Date().toISOString();
+    const imageUrl = MOCK_COUPON_IMAGES[couponName];
+
+    const issuedCoupon = {
+      couponName,
+      imageUrl,
+      issuedAt,
+    };
+
+    issuedCouponsStore.push(issuedCoupon);
+
+    // 대기열 상태를 ISSUED로 변경
+    queueStore.set(couponName, {
+      ...queueEntry,
+      status: 'ISSUED',
+    });
+
+    return HttpResponse.json(
+      {
+        imageUrl,
+        issuedAt,
+      },
+      { status: 201 },
+    );
+  }),
+
+  // 내가 발급받은 쿠폰 목록 조회
+  http.get(`${baseURL}/coupons/issues/me`, () => {
+    return HttpResponse.json(issuedCouponsStore);
   }),
 ];

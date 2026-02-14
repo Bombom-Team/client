@@ -1,7 +1,14 @@
-import type { QueueEntry, QueueStatus } from '@/apis/event/event.api';
+import type {
+  QueueEntry,
+  QueueStatus,
+  IssuedCoupon,
+} from '@/apis/event/event.api';
 
 // 대기열 상태를 관리하는 mock 저장소
 export const queueStore = new Map<string, QueueEntry>();
+
+// 발급된 쿠폰을 관리하는 mock 저장소
+export const issuedCouponsStore: IssuedCoupon[] = [];
 
 // 초기 mock 데이터 생성 함수
 export const createMockQueueEntry = (
@@ -80,3 +87,11 @@ export const QUEUE_SCENARIOS = {
   // 대기열에 없음
   NOT_IN_QUEUE: createMockQueueEntry('NOT_IN_QUEUE'),
 };
+
+// Mock 쿠폰 이미지 데이터
+export const MOCK_COUPON_IMAGES = {
+  'day1-coupon':
+    'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=250&fit=crop',
+  'day2-coupon':
+    'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=250&fit=crop',
+} as const;
