@@ -1,3 +1,4 @@
+import IssuedState from './IssuedState';
 import ReadyState from './ReadyState';
 import WaitingState from './WaitingState';
 import { QUEUE_STATUS_TYPE } from '../../constants/constants';
@@ -18,6 +19,9 @@ const QueueStatus = ({ queueEntry }: QueueStatusProps) => {
 
     case QUEUE_STATUS_TYPE.ready:
       return <ReadyState queueEntry={queueEntry} />;
+
+    case QUEUE_STATUS_TYPE.issued:
+      return <IssuedState />;
 
     default:
       return null;
