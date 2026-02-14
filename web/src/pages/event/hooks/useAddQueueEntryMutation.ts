@@ -2,9 +2,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postQueueEntry } from '@/apis/event/event.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
+import type { CouponName } from '@/apis/event/event.api';
 
 interface UseAddQueueEntryMutationParams {
-  couponName: string;
+  couponName: CouponName;
 }
 
 export const useAddQueueEntryMutation = ({

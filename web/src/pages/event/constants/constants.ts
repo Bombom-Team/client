@@ -6,3 +6,8 @@ export const QUEUE_STATUS_TYPE = {
   issued: 'ISSUED',
   unregistered: 'NOT_IN_QUEUE',
 };
+
+export const COUPON_TYPE = {
+  'day1-coupon': '1회차 쿠폰',
+  'day2-coupon': '2회차 쿠폰',
+} as const;

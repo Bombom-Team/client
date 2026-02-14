@@ -1,8 +1,9 @@
 import { fetcher } from '@bombom/shared/apis';
 
 export type QueueStatus = 'WAITING' | 'ACTIVE' | 'ISSUED' | 'NOT_IN_QUEUE';
+export type CouponName = 'day1-coupon' | 'day2-coupon';
 export type QueueEntry = {
-  couponName: string;
+  couponName: CouponName;
   status: QueueStatus;
   position: number | null;
   activeCount: number;
@@ -11,7 +12,7 @@ export type QueueEntry = {
 };
 type PostQueueEntryResponse = QueueEntry;
 
-export const postQueueEntry = async (couponName: string) => {
+export const postQueueEntry = async (couponName: CouponName) => {
   return fetcher.post<never, PostQueueEntryResponse>({
     path: `/coupons/${couponName}/queue-entries`,
   });
@@ -19,14 +20,14 @@ export const postQueueEntry = async (couponName: string) => {
 
 type GetQueueEntryResponse = QueueEntry;
 
-export const getMyQueueEntry = async (couponName: string) => {
+export const getMyQueueEntry = async (couponName: CouponName) => {
   return fetcher.get<GetQueueEntryResponse>({
     path: `/coupons/${couponName}/queue-entries/me`,
   });
 };
 
 export type IssuedCoupon = {
-  couponName: string;
+  couponName: CouponName;
   imageUrl: string;
   issuedAt: string;
 };
@@ -35,7 +36,7 @@ type PostIssueCouponResponse = {
   issuedAt: string;
 };
 
-export const postIssueCoupon = async (couponName: string) => {
+export const postIssueCoupon = async (couponName: CouponName) => {
   return fetcher.post<never, PostIssueCouponResponse>({
     path: `/coupons/${couponName}/issues`,
   });

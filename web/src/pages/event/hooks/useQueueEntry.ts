@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAddQueueEntryMutation } from './useAddQueueEntryMutation';
 import { queries } from '@/apis/queries';
+import type { CouponName } from '@/apis/event/event.api';
 
 type UseQueueEntryParams = {
-  couponName: string;
+  couponName: CouponName;
   onActiveTimeout?: () => void;
 };
 
