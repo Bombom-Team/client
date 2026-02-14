@@ -15,22 +15,18 @@ const WaitingState = ({ queueEntry }: WaitingStateProps) => {
   return (
     <Flex direction="column" gap={device === 'mobile' ? 12 : 16} align="center">
       <Text
+        font={device === 'mobile' ? 'heading3' : 'heading2'}
+        color="textPrimary"
+      >
+        접속 대기
+      </Text>
+      <WaitingInfo
         font={device === 'mobile' ? 'heading5' : 'heading4'}
         color="textPrimary"
       >
-        접속자가 많아 대기 중이에요.
-      </Text>
-      <Flex direction="column" align="center">
-        <Text font={device === 'mobile' ? 'body2' : 'body1'}>
-          나의 대기 번호
-        </Text>
-        <Text
-          font={device === 'mobile' ? 'heading4' : 'heading3'}
-          color="primary"
-        >
-          {queueEntry.position}번
-        </Text>
-      </Flex>
+        <Highlight>{queueEntry.position}명</Highlight>이 대기 중이에요.
+        {'\n'}대기 순서에 따라 자동으로 접속돼요.
+      </WaitingInfo>
 
       <LoadingSpinner device={device}>
         <SpinnerDot delay={0} />
@@ -38,13 +34,25 @@ const WaitingState = ({ queueEntry }: WaitingStateProps) => {
         <SpinnerDot delay={0.4} />
       </LoadingSpinner>
 
-      <Caution
-        font={device === 'mobile' ? 'body2' : 'body1'}
-        color="textSecondary"
+      <Flex
+        direction="column"
+        align="flex-start"
+        gap={device === 'mobile' ? 8 : 4}
       >
-        ※ 이 창을 닫거나 새로고침 또는 뒤로가기를 누를 경우 대기 시간이
-        초기화돼요.
-      </Caution>
+        <Caution
+          font={device === 'mobile' ? 'body2' : 'body1'}
+          color="textSecondary"
+        >
+          ※ 이 창을 닫거나 새로고침 또는 뒤로가기를 누를 경우 대기 시간이
+          초기화돼요.
+        </Caution>
+        <Caution
+          font={device === 'mobile' ? 'body2' : 'body1'}
+          color="textSecondary"
+        >
+          ※ 접속 대기 중에 쿠폰이 모두 소진되면 이벤트가 조기 마감될 수 있어요.
+        </Caution>
+      </Flex>
     </Flex>
   );
 };
@@ -85,5 +93,14 @@ const SpinnerDot = styled.div<{ delay: number }>`
 `;
 
 const Caution = styled(Text)`
+  line-height: 1.4;
+`;
+
+const WaitingInfo = styled(Text)`
+  font-weight: 400;
   text-align: center;
+`;
+
+const Highlight = styled.strong`
+  color: ${({ theme }) => theme.colors.primary};
 `;
