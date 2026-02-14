@@ -17,16 +17,20 @@ const EventNoticeModal = ({
 
   return (
     <Container>
-      {queueEntry ? (
-        <QueueStatus queueEntry={queueEntry} />
-      ) : (
-        <ContentWrapper>
-          <Title device={device}>이벤트 기간이 아닙니다.</Title>
-          <Description>자세한 내용은 이벤트 페이지를 참고해주세요.</Description>
-        </ContentWrapper>
-      )}
+      <ContentWrapper>
+        {queueEntry ? (
+          <QueueStatus queueEntry={queueEntry} />
+        ) : (
+          <>
+            <Title device={device}>이벤트 기간이 아닙니다.</Title>
+            <Description>
+              자세한 내용은 이벤트 페이지를 참고해주세요.
+            </Description>
+          </>
+        )}
 
-      <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>
+        <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>
+      </ContentWrapper>
     </Container>
   );
 };
