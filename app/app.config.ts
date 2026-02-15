@@ -118,6 +118,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           color: APP_CONFIG.color,
         },
       ],
+      [
+        'expo-media-library',
+        {
+          photosPermission: false,
+          savePhotosPermission: 'Allow $(PRODUCT_NAME) to save photos.',
+          isAccessMediaLocationEnabled: false,
+        },
+      ],
       '@react-native-firebase/app',
       '@react-native-firebase/messaging',
       './plugins/withAndroidManifestFix',
