@@ -124,6 +124,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           photosPermission: false,
           savePhotosPermission: 'Allow $(PRODUCT_NAME) to save photos.',
           isAccessMediaLocationEnabled: false,
+          granularPermissions: ['photo'],
         },
       ],
       '@react-native-firebase/app',
