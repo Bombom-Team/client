@@ -8,7 +8,20 @@ import type {
 export const queueStore = new Map<string, QueueEntry>();
 
 // 발급된 쿠폰을 관리하는 mock 저장소
-export const issuedCouponsStore: IssuedCoupon[] = [];
+export const issuedCouponsStore: IssuedCoupon[] = [
+  {
+    couponName: 'day1-coupon',
+    imageUrl:
+      'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=250&fit=crop',
+    issuedAt: new Date().toISOString(),
+  },
+  {
+    couponName: 'day2-coupon',
+    imageUrl:
+      'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=250&fit=crop',
+    issuedAt: new Date().toISOString(),
+  },
+];
 
 // 초기 mock 데이터 생성 함수
 export const createMockQueueEntry = (
