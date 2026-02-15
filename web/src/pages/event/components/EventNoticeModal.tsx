@@ -1,19 +1,39 @@
 import styled from '@emotion/styled';
+import { useEffect } from 'react';
 import QueueStatus from './QueueStatus/QueueStatus';
+import { QUEUE_STATUS_TYPE } from '../constants/constants';
 import Button from '@/components/Button/Button';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import type { QueueEntry } from '@/apis/event/event.api';
 
 interface EventNoticeModalProps {
   queueEntry: QueueEntry | undefined;
+  cancelQueueEntry: () => void;
   closeModal: () => void;
 }
 
 const EventNoticeModal = ({
   queueEntry,
+  cancelQueueEntry,
   closeModal,
 }: EventNoticeModalProps) => {
   const device = useDevice();
+
+  const handleCloseModal = () => {
+    cancelQueueEntry();
+    closeModal();
+  };
+
+  useEffect(() => {
+    return () => {
+      if (
+        queueEntry?.status === QUEUE_STATUS_TYPE.waiting ||
+        queueEntry?.status === QUEUE_STATUS_TYPE.ready
+      ) {
+        cancelQueueEntry();
+      }
+    };
+  }, [queueEntry?.status, cancelQueueEntry]);
 
   return (
     <Container>
@@ -29,7 +49,7 @@ const EventNoticeModal = ({
           </>
         )}
 
-        <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>
+        <ConfirmButton onClick={handleCloseModal}>닫기</ConfirmButton>
       </ContentWrapper>
     </Container>
   );

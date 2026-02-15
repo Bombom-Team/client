@@ -28,11 +28,11 @@ export const Route = createFileRoute('/event')({
 function EventPage() {
   const device = useDevice();
   const { modalRef, openModal, closeModal, isOpen } = useModal();
-  const { queueEntry, addQueueEntry } = useQueueEntry({
+  const { queueEntry, addQueueEntry, cancelQueueEntry } = useQueueEntry({
     couponName: COUPON_NAME,
   });
 
-  const handleApply = () => {
+  const applyEvent = () => {
     addQueueEntry();
     openModal();
   };
@@ -40,7 +40,7 @@ function EventPage() {
   return (
     <Container device={device}>
       <LandingHeader />
-      <EventHero onApply={handleApply} />
+      <EventHero onApply={applyEvent} />
       <EventPrize />
       <EventGuide />
       <EventShareGuide />
@@ -51,7 +51,11 @@ function EventPage() {
         isOpen={isOpen}
         showCloseButton={false}
       >
-        <EventNoticeModal queueEntry={queueEntry} closeModal={closeModal} />
+        <EventNoticeModal
+          queueEntry={queueEntry}
+          cancelQueueEntry={cancelQueueEntry}
+          closeModal={closeModal}
+        />
       </Modal>
     </Container>
   );
