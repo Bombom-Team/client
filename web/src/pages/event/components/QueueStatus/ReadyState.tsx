@@ -1,4 +1,8 @@
 import styled from '@emotion/styled';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { useCaptcha } from '../../hooks/useCaptcha';
+import { useIssueCouponMutation } from '../../hooks/useIssueCouponMutation';
+import { ENV } from '@/apis/env';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
@@ -11,12 +15,27 @@ interface ReadyStateProps {
 
 const ReadyState = ({ queueEntry }: ReadyStateProps) => {
   const device = useDevice();
+  const { isCaptchaValid } = useCaptcha();
+  const { mutate: issueCoupon } = useIssueCouponMutation({
+    couponName: queueEntry.couponName,
+  });
+
+  const handleCaptchaChange = async (token: string | null) => {
+    if (token) {
+      const isValid = await isCaptchaValid(token);
+      if (isValid) {
+        issueCoupon();
+      }
+    }
+  };
 
   return (
     <Flex direction="column" gap={16} align="center">
       <ReadyMessage device={device}>
         인증 후 지금 바로 쿠폰을 발급받으세요!
       </ReadyMessage>
+
+      <ReCAPTCHA sitekey={ENV.captchaSiteKey} onChange={handleCaptchaChange} />
 
       {queueEntry.activeExpiresInSeconds && (
         <Flex direction="column" gap={4} align="center" justify="center">

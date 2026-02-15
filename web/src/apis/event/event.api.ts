@@ -49,3 +49,17 @@ export const getMyCoupons = async () => {
     path: '/coupons/issues/me',
   });
 };
+
+type PostCaptchaRequest = {
+  gRecaptchaResponse: string;
+};
+type PostCaptchaResponse = {
+  success: boolean;
+};
+
+export const postCaptcha = async (gRecaptchaResponse: string) => {
+  return fetcher.post<PostCaptchaRequest, PostCaptchaResponse>({
+    path: '/notifications/captcha',
+    body: { gRecaptchaResponse },
+  });
+};
