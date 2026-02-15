@@ -24,6 +24,7 @@ export const useQueueEntry = ({ couponName }: UseQueueEntryParams) => {
       const { data } = query.state;
       return data?.pollingTtlSeconds ? data.pollingTtlSeconds * 1000 : false;
     },
+    refetchIntervalInBackground: true,
   });
 
   return {
