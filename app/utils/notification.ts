@@ -2,6 +2,8 @@ import messaging from '@react-native-firebase/messaging';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Alert, Linking, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ASYNC_STORAGE_KEY } from '@/constants/asyncStorage';
 
 // 안드로이드 알림 채널 생성
 export const createAndroidChannel = async () => {
@@ -93,5 +95,24 @@ export const getFCMToken = async () => {
     return token;
   } catch (error) {
     console.error('FCM 토큰을 가져오는데 실패했습니다.', error);
+  }
+};
+
+export const updateMemberId = async (id: number) => {
+  try {
+    await AsyncStorage.setItem(ASYNC_STORAGE_KEY.memberId, String(id));
+  } catch (error) {
+    console.error('memberId 저장에 실패했습니다.', error);
+  }
+};
+
+export const getMemberId = async () => {
+  try {
+    const memberIdString = await AsyncStorage.getItem(
+      ASYNC_STORAGE_KEY.memberId,
+    );
+    return Number(memberIdString);
+  } catch (error) {
+    console.error('memberId 조회에 실패했습니다.', error);
   }
 };
