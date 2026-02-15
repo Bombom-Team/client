@@ -9,8 +9,8 @@ export const useCaptcha = () => {
     }
 
     try {
-      const { success } = await validateCaptcha(token);
-      return success;
+      const { isSuccess } = await validateCaptcha(token);
+      return isSuccess;
     } catch {
       return false;
     }

@@ -60,7 +60,8 @@ type PostCaptchaRequest = {
   gRecaptchaResponse: string;
 };
 type PostCaptchaResponse = {
-  success: boolean;
+  isSuccess: boolean;
+  message: string;
 };
 
 export const postCaptcha = async (gRecaptchaResponse: string) => {
