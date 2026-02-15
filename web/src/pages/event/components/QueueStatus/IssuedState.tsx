@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { COUPON_TYPE } from '../../constants/constants';
+import { formatEventDateTime } from '../../utils/date';
 import { queries } from '@/apis/queries';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
@@ -26,12 +27,23 @@ const IssuedState = () => {
       >
         {coupons.map((coupon) => {
           return (
-            <>
-              <img src={coupon.imageUrl} alt="선착순 경품 쿠폰" />
-              <Text font={device === 'mobile' ? 'body3' : 'body2'}>
-                {`${coupon.issuedAt} (${COUPON_TYPE[coupon.couponName]})`}
+            <Flex
+              key={coupon.couponName}
+              direction="column"
+              gap={8}
+              align="center"
+              justify="center"
+            >
+              <img
+                src={coupon.imageUrl}
+                alt="선착순 경품 쿠폰"
+                width="90%"
+                height="auto"
+              />
+              <Text font={device === 'mobile' ? 'body2' : 'body1'}>
+                {`${formatEventDateTime(new Date(coupon.issuedAt))} 발급 (${COUPON_TYPE[coupon.couponName]})`}
               </Text>
-            </>
+            </Flex>
           );
         })}
       </Flex>
