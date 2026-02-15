@@ -6,7 +6,7 @@ import { useDevice } from '@/hooks/useDevice';
 import EventFooter from '@/pages/event/components/EventFooter';
 import EventGuide from '@/pages/event/components/EventGuide';
 import EventHero from '@/pages/event/components/EventHero';
-import EventNoticeModal from '@/pages/event/components/EventNoticeModal';
+import EventModal from '@/pages/event/components/EventModal';
 import EventPrize from '@/pages/event/components/EventPrize';
 import EventShareGuide from '@/pages/event/components/EventShareGuide';
 import { COUPON_NAME } from '@/pages/event/constants/constants';
@@ -51,7 +51,7 @@ function EventPage() {
         isOpen={isOpen}
         showCloseButton={false}
       >
-        <EventNoticeModal
+        <EventModal
           queueEntry={queueEntry}
           cancelQueueEntry={cancelQueueEntry}
           closeModal={closeModal}

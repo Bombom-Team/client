@@ -6,17 +6,17 @@ import Button from '@/components/Button/Button';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import type { QueueEntry } from '@/apis/event/event.api';
 
-interface EventNoticeModalProps {
+interface EventModalProps {
   queueEntry: QueueEntry | undefined;
   cancelQueueEntry: () => void;
   closeModal: () => void;
 }
 
-const EventNoticeModal = ({
+const EventModal = ({
   queueEntry,
   cancelQueueEntry,
   closeModal,
-}: EventNoticeModalProps) => {
+}: EventModalProps) => {
   const device = useDevice();
 
   const handleCloseModal = () => {
@@ -55,7 +55,7 @@ const EventNoticeModal = ({
   );
 };
 
-export default EventNoticeModal;
+export default EventModal;
 
 const Container = styled.div`
   width: 100%;
