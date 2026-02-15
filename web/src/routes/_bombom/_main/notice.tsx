@@ -148,7 +148,6 @@ const AccordionDescription = styled.span`
   font: ${({ theme }) => theme.fonts.body3};
 `;
 
-const AccordionContent = styled.div`
+const AccordionContent = styled.p`
   width: 100%;
-  white-space: pre-line;
 `;

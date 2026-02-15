@@ -4,6 +4,7 @@ import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
+import DailyGuideCard from '@/pages/challenge/daily/components/DailyGuideCard';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
 import DailyGuideCommentsModal from '@/pages/challenge/daily/components/DailyGuideCommentsModal';
 
@@ -21,17 +22,16 @@ export const Route = createFileRoute(
 });
 
 function ChallengeDaily() {
-  const { challengeId } = useParams({
+  const { challengeId: stringChallengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
+  const challengeId = Number(stringChallengeId);
 
   const device = useDevice();
   const isMobile = device === 'mobile';
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
-  const { data: dailyGuide } = useQuery(
-    queries.todayDailyGuide(Number(challengeId)),
-  );
+  const { data: dailyGuide } = useQuery(queries.todayDailyGuide(challengeId));
 
   if (!dailyGuide) {
     return null;
@@ -43,38 +43,37 @@ function ChallengeDaily() {
 
   return (
     <Container>
-      <GuideCard>
-        <DayBadge>Day {dailyGuide.dayIndex}</DayBadge>
-        <GuideImage
-          src={dailyGuide.imageUrl}
-          alt={`Day ${dailyGuide.dayIndex} guide`}
-        />
-        {dailyGuide.notice && (
-          <NoticeBox>
-            <NoticeIcon isMobile={isMobile}>💡</NoticeIcon>
-            <NoticeText isMobile={isMobile}>{dailyGuide.notice}</NoticeText>
-          </NoticeBox>
-        )}
+      <DayBadge>Day {dailyGuide.dayIndex}</DayBadge>
+      <DailyGuideCard
+        imageUrl={dailyGuide.imageUrl}
+        challengeId={challengeId}
+        isRemindEnabled={dailyGuide.type === 'REMIND'}
+      />
+      {dailyGuide.notice && (
+        <NoticeBox>
+          <NoticeIcon isMobile={isMobile}>💡</NoticeIcon>
+          <NoticeText isMobile={isMobile}>{dailyGuide.notice}</NoticeText>
+        </NoticeBox>
+      )}
 
-        {commentSectionEnabled && (
-          <>
-            <DailyGuideComment
-              challengeId={Number(challengeId)}
-              dayIndex={dailyGuide.dayIndex}
-              myComment={dailyGuide.myComment}
-              viewAllCommentsEnabled={dailyGuide.type === 'SHARING'}
-              onViewAllComments={openModal}
-            />
-            <DailyGuideCommentsModal
-              challengeId={Number(challengeId)}
-              dayIndex={dailyGuide.dayIndex}
-              modalRef={modalRef}
-              isOpen={isOpen}
-              closeModal={closeModal}
-            />
-          </>
-        )}
-      </GuideCard>
+      {commentSectionEnabled && (
+        <>
+          <DailyGuideComment
+            challengeId={challengeId}
+            dayIndex={dailyGuide.dayIndex}
+            myComment={dailyGuide.myComment}
+            viewAllCommentsEnabled={dailyGuide.type === 'SHARING'}
+            onViewAllComments={openModal}
+          />
+          <DailyGuideCommentsModal
+            challengeId={challengeId}
+            dayIndex={dailyGuide.dayIndex}
+            modalRef={modalRef}
+            isOpen={isOpen}
+            closeModal={closeModal}
+          />
+        </>
+      )}
     </Container>
   );
 }
@@ -83,17 +82,9 @@ const Container = styled.section`
   width: 100%;
 
   display: flex;
-  gap: 24px;
-  flex-direction: column;
-`;
-
-const GuideCard = styled.div`
-  width: 100%;
-  border-radius: 12px;
-
-  display: flex;
   gap: 16px;
   flex-direction: column;
+  align-items: center;
 
   background-color: ${({ theme }) => theme.colors.white};
 `;
@@ -103,17 +94,12 @@ const DayBadge = styled.div`
   padding: 6px 12px;
   border-radius: 8px;
 
+  align-self: flex-start;
+
   background-color: ${({ theme }) => theme.colors.primaryLight};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
   font-weight: 600;
-`;
-
-const GuideImage = styled.img`
-  width: 100%;
-  max-height: 600px;
-
-  object-fit: contain;
 `;
 
 const NoticeBox = styled.div`

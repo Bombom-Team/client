@@ -26,7 +26,7 @@ const NewsletterFilterSkeleton = () => {
       {isPC && (
         <TitleWrapper>
           <IconWrapper>
-            <NewsIcon width={16} height={16} fill={theme.colors.white} />
+            <NewsIcon width={16} height={16} color={theme.colors.white} />
           </IconWrapper>
           <Title>뉴스레터</Title>
         </TitleWrapper>

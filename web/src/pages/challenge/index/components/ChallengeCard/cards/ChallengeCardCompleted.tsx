@@ -32,7 +32,7 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
     });
 
     navigate({
-      to: '/challenge/$challengeId',
+      to: '/challenge/$challengeId/certification',
       params: { challengeId: String(id) },
     });
   };
@@ -45,7 +45,7 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
           <Tag>{generation}기</Tag>
         </Flex>
 
-        {detail?.isSuccess && gradeConfig && (
+        {detail?.isSurvived && gradeConfig && (
           <GradeBadgeTopRight>
             <img src={GRADE_CONFIG[grade]} alt={`${grade} 메달`} width={48} />
           </GradeBadgeTopRight>

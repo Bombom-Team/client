@@ -187,7 +187,6 @@ const CommentText = styled.p<{ isMobile: boolean }>`
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
   line-height: 1.6;
-  white-space: pre-wrap;
 `;
 
 const StateText = styled.p<{ isMobile: boolean }>`

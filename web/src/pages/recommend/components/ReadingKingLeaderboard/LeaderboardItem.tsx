@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import UserBadgeInfo from './UserBadgeInfo';
+import type { Badges } from '../../types/badges';
 
 const RANK_ICON_MAP: Record<number, string> = {
   1: '👑',
@@ -10,30 +12,48 @@ interface LeaderboardItemProps {
   rank: number;
   name: string;
   readCount: number;
+  badges?: Badges;
 }
 
-const LeaderboardItem = ({ rank, name, readCount }: LeaderboardItemProps) => (
-  <Container
-    role="listitem"
-    tabIndex={0}
-    aria-label={`${rank}위: ${name}, ${readCount}개 읽음`}
-  >
-    <RankIconWrapper aria-hidden="true">
-      {RANK_ICON_MAP[rank] ?? `#${rank}`}
-    </RankIconWrapper>
+const LeaderboardItem = ({
+  rank,
+  name,
+  readCount,
+  badges,
+}: LeaderboardItemProps) => {
+  return (
+    <Container
+      role="listitem"
+      tabIndex={0}
+      aria-label={`${rank}위: ${name}, ${readCount}개 읽음`}
+    >
+      <ContentWrapper>
+        <RankIconWrapper aria-hidden="true">
+          {RANK_ICON_MAP[rank] ?? `#${rank}`}
+        </RankIconWrapper>
 
-    <UserInfoBox aria-hidden="true">
-      <UserName>{name}</UserName>
-      <ReadCount>{readCount}개 읽음</ReadCount>
-    </UserInfoBox>
-  </Container>
-);
+        <UserInfoBox aria-hidden="true">
+          <UserName>{name}</UserName>
+          <ReadCount>{readCount}개 읽음</ReadCount>
+        </UserInfoBox>
+      </ContentWrapper>
+
+      <UserBadgeInfo badges={badges} />
+    </Container>
+  );
+};
 
 export default LeaderboardItem;
 
 export const Container = styled.div`
   border-radius: 12px;
 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const ContentWrapper = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;

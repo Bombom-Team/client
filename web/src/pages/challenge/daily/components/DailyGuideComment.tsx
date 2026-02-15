@@ -184,7 +184,6 @@ const SubmittedComment = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body2 : theme.fonts.body1};
-  white-space: pre-wrap;
 
   overflow-wrap: break-word;
 `;

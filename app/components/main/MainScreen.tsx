@@ -1,4 +1,5 @@
 import styled from '@emotion/native';
+import { Alert } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
@@ -11,6 +12,8 @@ import { LoginScreenOverlay } from '../login/LoginScreenOverlay';
 
 import * as WebBrowser from 'expo-web-browser';
 import * as SplashScreen from 'expo-splash-screen';
+import { File, Paths } from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
 
 import { ENV } from '@/constants/env';
 import { WEBVIEW_USER_AGENT } from '@/constants/webview';
@@ -18,6 +21,37 @@ import { goToSystemPermission } from '@/utils/notification';
 import useNotification from '@/hooks/useNotification';
 import { useEffect, useRef } from 'react';
 import { useDeviceInfo } from '@/hooks/useDeviceInfo';
+
+const saveImageToGallery = async (base64: string, fileName: string) => {
+  try {
+    const { status } = await MediaLibrary.requestPermissionsAsync(true);
+    if (status !== 'granted') {
+      Alert.alert(
+        '권한 필요',
+        '이미지를 저장하려면 갤러리 접근 권한이 필요합니다.',
+      );
+      return;
+    }
+
+    const base64Data = base64.replace(/^data:image\/\w+;base64,/, '');
+    const timestamp = Date.now();
+    const uniqueFileName = fileName.replace('.png', `_${timestamp}.png`);
+    const file = new File(Paths.cache, uniqueFileName);
+
+    if (file.exists) {
+      file.delete();
+    }
+
+    file.create();
+    file.write(base64Data, { encoding: 'base64' });
+
+    await MediaLibrary.saveToLibraryAsync(file.uri);
+    Alert.alert('저장 완료', '이미지가 갤러리에 저장되었습니다.');
+  } catch (error) {
+    console.error('이미지 저장 실패:', error);
+    Alert.alert('저장 실패', '이미지 저장 중 오류가 발생했습니다.');
+  }
+};
 
 export const MainScreen = () => {
   const { showWebViewLogin, showLogin, hideLogin } = useAuth();
@@ -87,6 +121,13 @@ export const MainScreen = () => {
 
         case 'CHECK_NOTIFICATION_PERMISSION':
           goToSystemPermission(message.payload.enabled);
+          break;
+
+        case 'SAVE_IMAGE':
+          saveImageToGallery(
+            message.payload.imageFileBase64,
+            message.payload.fileName,
+          );
           break;
 
         default:

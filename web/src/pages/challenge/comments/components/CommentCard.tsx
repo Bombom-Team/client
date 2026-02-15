@@ -1,18 +1,29 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import { Suspense } from 'react';
 import useExpandQuotation from '../hooks/useExpandQuotation';
+import useReplyAccordion from '../hooks/useReplyAccordion';
 import EditCommentModalContent from './EditCommentModal/EditCommentModalContent';
+import ReplyList from './ReplyList';
+import ReplyWriter from './ReplyWriter';
 import { MAX_QUOTATION_LINE } from '../constants/comment';
+import { useAddCommentLikeMutation } from '../hooks/useAddCommentLikeMutation';
+import { useDeleteCommentLikeMutation } from '../hooks/useDeleteCommentLikeMutation';
 import { useUpdateChallengeCommentMutation } from '../hooks/useUpdateChallengeCommentMutation';
-import { Comment } from '../types/comment';
 import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
+import Flex from '@/components/Flex/Flex';
+import ChevronIcon from '@/components/icons/ChevronIcon';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
+import Text from '@/components/Text/Text';
 import { useDevice } from '@/hooks/useDevice';
+import type { Comment } from '../types/comment';
 import CheckIcon from '#/assets/svg/check-circle.svg';
 import EditIcon from '#/assets/svg/edit.svg';
+import HeartFilledIcon from '#/assets/svg/heart-filled.svg';
+import HeartIcon from '#/assets/svg/heart.svg';
 import MailIcon from '#/assets/svg/mail.svg';
 
 type CommentCardProps = Comment & {
@@ -32,11 +43,17 @@ const CommentCard = ({
   commentId,
   isMyComment,
   challengeId,
+  likeCount,
+  isLiked,
+  replyCount,
 }: CommentCardProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
   const relativeTime = convertRelativeTime(createdAt);
   const { modalRef, openModal, closeModal, isOpen } = useModal();
+  const { isReplyOpen, toggleReplyAccordion, hasReplies } = useReplyAccordion({
+    replyCount,
+  });
 
   const { mutate: updateChallengeComment } = useUpdateChallengeCommentMutation({
     challengeId,
@@ -44,6 +61,24 @@ const CommentCard = ({
 
   const editPostedComment = (newComment: string) => {
     updateChallengeComment({ challengeId, commentId, comment: newComment });
+  };
+
+  const { mutate: addCommentLike } = useAddCommentLikeMutation({
+    challengeId,
+    commentId,
+  });
+
+  const { mutate: deleteCommentLike } = useDeleteCommentLikeMutation({
+    challengeId,
+    commentId,
+  });
+
+  const toggleLike = () => {
+    if (isLiked) {
+      deleteCommentLike();
+    } else {
+      addCommentLike();
+    }
   };
 
   const { expanded, needExpansion, quoteRef, toggleExpanded } =
@@ -57,12 +92,12 @@ const CommentCard = ({
   return (
     <>
       <Container isMobile={isMobile} isMyComment={isMyComment}>
-        <CommentHeader>
-          <ArticleInfo>
-            <MetaWrapper>
-              <MetaInfo isMobile={isMobile}>
+        <Flex gap={12} align="center" justify="space-between">
+          <Flex direction="column" gap={4}>
+            <Flex gap={isMobile ? 4 : 8} wrap="wrap" align="center">
+              <Text color="textSecondary" font={isMobile ? 'body3' : 'body2'}>
                 {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
-              </MetaInfo>
+              </Text>
               <NewsletterBadge
                 isMobile={isMobile}
                 text={newsletterName}
@@ -76,27 +111,52 @@ const CommentCard = ({
                   ),
                 })}
               />
-            </MetaWrapper>
-            <TitleWrapper>
+            </Flex>
+            <Flex gap={4} align="center">
               <MailIcon
                 width={16}
                 height={16}
                 color={theme.colors.textSecondary}
               />
-              <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
-            </TitleWrapper>
-          </ArticleInfo>
-          {isMyComment && (
-            <EditButton variant="transparent" onClick={openModal}>
-              <EditIcon
-                width={20}
-                height={20}
-                fill={theme.colors.textSecondary}
-              />
-            </EditButton>
-          )}
-        </CommentHeader>
-        <Content isMobile={isMobile}>
+              <Text
+                as="p"
+                color="textTertiary"
+                font={isMobile ? 'body3' : 'body2'}
+              >
+                {articleTitle}
+              </Text>
+            </Flex>
+          </Flex>
+          <Flex gap={8} align="flex-start">
+            {isMyComment && (
+              <EditButton
+                variant="transparent"
+                onClick={openModal}
+                isMobile={isMobile}
+              >
+                <EditIcon fill={theme.colors.textSecondary} />
+              </EditButton>
+            )}
+            <LikeButton
+              variant="transparent"
+              onClick={toggleLike}
+              isMobile={isMobile}
+            >
+              {isLiked ? (
+                <HeartFilledIcon fill={theme.colors.red} />
+              ) : (
+                <HeartIcon color={theme.colors.red} />
+              )}
+              <Text
+                color={isLiked ? 'red' : 'textSecondary'}
+                font={isMobile ? 'body3' : 'body2'}
+              >
+                {likeCount}
+              </Text>
+            </LikeButton>
+          </Flex>
+        </Flex>
+        <Flex gap={isMobile ? 4 : 8} direction="column">
           {quotation && (
             <Quote ref={quoteRef} isMobile={isMobile} expanded={expanded}>
               {quotation}
@@ -118,8 +178,36 @@ const CommentCard = ({
                 ))}
             </Quote>
           )}
-          <Comment>{comment}</Comment>
-        </Content>
+          <Text as="p">{comment}</Text>
+        </Flex>
+        <ReplyWriter challengeId={challengeId} commentId={commentId} />
+        {hasReplies && isReplyOpen && (
+          <Flex gap={isMobile ? 8 : 12} direction="column">
+            <Suspense fallback={<ReplyList.Loading isMobile={isMobile} />}>
+              <ReplyList
+                challengeId={challengeId}
+                commentId={commentId}
+                replyCount={replyCount}
+              />
+            </Suspense>
+          </Flex>
+        )}
+        {hasReplies && (
+          <ReplyAccordion
+            type="button"
+            onClick={toggleReplyAccordion}
+            aria-expanded={isReplyOpen}
+          >
+            <Text>
+              {isReplyOpen ? '답글 접기' : `답글 ${replyCount}개 더보기`}
+            </Text>
+            <ChevronIcon
+              direction={isReplyOpen ? 'up' : 'down'}
+              width={16}
+              height={16}
+            />
+          </ReplyAccordion>
+        )}
       </Container>
 
       <Modal
@@ -153,28 +241,32 @@ const Container = styled.article<{ isMobile: boolean; isMyComment: boolean }>`
   box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '8px' : '16px')};
+  gap: 8px;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const CommentHeader = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-`;
+const LikeButton = styled(Button)<{ isMobile: boolean }>`
+  padding: 0;
 
-const ArticleInfo = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 0;
   flex-direction: column;
-`;
-
-const MetaWrapper = styled.div`
-  display: flex;
-  gap: 8px;
   align-items: center;
+
+  svg {
+    width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+    height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+  }
+
+  &:hover {
+    background: none;
+
+    svg {
+      color: ${({ theme }) => theme.colors.red};
+    }
+  }
 `;
 
 const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
@@ -183,28 +275,17 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    isMobile ? theme.fonts.body4 : theme.fonts.body2};
 `;
 
-const MetaInfo = styled.span<{ isMobile: boolean }>`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
-`;
+const EditButton = styled(Button)<{ isMobile: boolean }>`
+  padding: 0;
 
-const TitleWrapper = styled.div`
-  display: flex;
-  gap: 4px;
-  align-items: center;
-`;
+  svg {
+    width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+    height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+  }
 
-const ArticleTitle = styled.p<{ isMobile: boolean }>`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
-`;
-
-const EditButton = styled(Button)`
   &:hover {
     background: none;
 
@@ -212,12 +293,6 @@ const EditButton = styled(Button)`
       fill: ${({ theme }) => theme.colors.primary};
     }
   }
-`;
-
-const Content = styled.div<{ isMobile: boolean }>`
-  display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
-  flex-direction: column;
 `;
 
 const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
@@ -279,7 +354,16 @@ const ExpandQuoteButton = styled(ExpandButton)`
   }
 `;
 
-const Comment = styled.p`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+const ReplyAccordion = styled.button`
+  padding: 0;
+  border: none;
+
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+
+  background: transparent;
+
+  cursor: pointer;
 `;

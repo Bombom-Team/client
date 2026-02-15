@@ -89,6 +89,21 @@ export const getChallengeComments = async ({
   });
 };
 
+export type GetChallengeCommentRepliesParams =
+  operations['getCommentReplies']['parameters']['path'] &
+    components['schemas']['Pageable'];
+export type GetChallengeCommentRepliesResponse =
+  components['schemas']['PageCommentReplyResponse'];
+
+export const getChallengeCommentReplies = async ({
+  challengeId,
+  commentId,
+}: GetChallengeCommentRepliesParams) => {
+  return await fetcher.get<GetChallengeCommentRepliesResponse>({
+    path: `/challenges/${challengeId}/comments/${commentId}/replies`,
+  });
+};
+
 export type GetChallengeCommentCandidateArticlesParams =
   operations['getChallengeCommentCandidateArticles']['parameters']['query'];
 export type GetChallengeCommentCandidateArticlesResponse =
@@ -147,12 +162,60 @@ export const patchChallengeComment = async ({
   });
 };
 
+export type ChallengeCommentLikeResponse =
+  components['schemas']['ChallengeCommentLikeResponse'];
+
+export const putChallengeCommentLike = async (
+  challengeId: number,
+  commentId: number,
+) => {
+  return await fetcher.put<never, ChallengeCommentLikeResponse>({
+    path: `/challenges/${challengeId}/comments/${commentId}/like`,
+  });
+};
+
+export const deleteChallengeCommentLike = async (
+  challengeId: number,
+  commentId: number,
+) => {
+  return await fetcher.delete<never, ChallengeCommentLikeResponse>({
+    path: `/challenges/${challengeId}/comments/${commentId}/like`,
+  });
+};
+
+export type PostCommentReplyParams = {
+  reply: string;
+  isPrivate: boolean;
+};
+
+export const postCommentReply = (
+  challengeId: number,
+  commentId: number,
+  params: PostCommentReplyParams,
+) =>
+  fetcher.post<PostCommentReplyParams, never>({
+    path: `/challenges/${challengeId}/comments/${commentId}/replies`,
+    body: params,
+  });
+
 export type GetTodayDailyGuideResponse =
   components['schemas']['TodayDailyGuideResponse'];
 
 export const getTodayDailyGuide = async (challengeId: number) => {
   return await fetcher.get<GetTodayDailyGuideResponse>({
     path: `/challenges/${challengeId}/daily-guides/today`,
+  });
+};
+
+export type GetMyDailyGuideComment =
+  components['schemas']['DailyGuideCommentResponse'];
+
+export const getMyDailyGuideComment = async (
+  challengeId: number,
+  dayIndex: number,
+) => {
+  return await fetcher.get<GetMyDailyGuideComment>({
+    path: `/challenges/${challengeId}/daily-guides/${dayIndex}/my-comment`,
   });
 };
 
@@ -184,5 +247,14 @@ export const getDailyGuideComments = async ({
   return await fetcher.get<GetDailyGuideCommentsResponse>({
     path: `/challenges/${challengeId}/daily-guides/${dayIndex}/comments`,
     query: params,
+  });
+};
+
+export type GetCertificationInfoResponse =
+  components['schemas']['CertificationInfoResponse'];
+
+export const getCertificationInfo = async (challengeId: number) => {
+  return await fetcher.get<GetCertificationInfoResponse>({
+    path: `/challenges/${challengeId}/certification`,
   });
 };

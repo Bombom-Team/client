@@ -23,7 +23,11 @@ export type WebToRNMessage =
   | { type: 'OPEN_BROWSER'; payload: { url: string } }
   | { type: 'REQUEST_DEVICE_UUID' }
   | { type: 'CHECK_NOTIFICATION_PERMISSION'; payload: { enabled: boolean } }
-  | { type: 'MEMBER_ID'; payload: { memberId: number } };
+  | { type: 'MEMBER_ID'; payload: { memberId: number } }
+  | {
+      type: 'SAVE_IMAGE';
+      payload: { imageFileBase64: string; fileName: string };
+    };
 
 export type RNToWebMessage =
   | {

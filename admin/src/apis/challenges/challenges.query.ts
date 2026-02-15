@@ -8,6 +8,7 @@ import {
   getChallengeTeams,
   createChallengeTeams,
   deleteChallengeTeam,
+  grantChallengeParticipantsShield,
 } from './challenges.api';
 import type {
   AssignChallengeTeamsParams,
@@ -15,6 +16,7 @@ import type {
   DeleteChallengeTeamParams,
   GetChallengeParticipantsParams,
   GetChallengesParams,
+  GrantChallengeParticipantsShieldParams,
   UpdateParticipantTeamParams,
 } from './challenges.api';
 
@@ -72,6 +74,10 @@ export const challengesQueries = {
     deleteTeam: () => ({
       mutationFn: (params: DeleteChallengeTeamParams) =>
         deleteChallengeTeam(params),
+    }),
+    grantParticipantsShield: () => ({
+      mutationFn: (params: GrantChallengeParticipantsShieldParams) =>
+        grantChallengeParticipantsShield(params),
     }),
   },
 };

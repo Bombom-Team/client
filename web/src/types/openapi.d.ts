@@ -4,6 +4,30 @@
  */
 
 export interface paths {
+  '/api/v1/challenges/{challengeId}/comments/{commentId}/like': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * 챌린지 코멘트 좋아요 추가
+     * @description 특정 챌린지의 팀 코멘트에 좋아요를 추가하고 반영된 좋아요 개수를 반환합니다.
+     */
+    put: operations['addChallengeCommentLike'];
+    post?: never;
+    /**
+     * 챌린지 코멘트 좋아요 취소
+     * @description 특정 챌린지의 팀 코멘트에 좋아요를 취소하고 반영된 좋아요 개수를 반환합니다.
+     */
+    delete: operations['deleteChallengeCommentLike'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/login/sso/verify/success/apple': {
     parameters: {
       query?: never;
@@ -139,7 +163,11 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /**
+     * 데일리 가이드 내 댓글 조회
+     * @description 특정 챌린지의 특정 일차 데일리 가이드에 내가 작성한 댓글을 조회합니다.
+     */
+    get: operations['getDailyGuideComment'];
     put?: never;
     /**
      * 데일리 가이드 댓글 작성
@@ -170,6 +198,34 @@ export interface paths {
      * @description 특정 챌린지에서 팀 코멘트를 작성합니다.
      */
     post: operations['createChallengeComment'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{challengeId}/comments/{commentId}/replies': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 코멘트 답글 조회
+     * @description 특정 코멘트에 달린 답글 목록을 페이지네이션하여 조회합니다.
+     */
+    get: operations['getCommentReplies'];
+    put?: never;
+    /**
+     * 코멘트 답글 생성
+     * @description 특정 코멘트에 대해 답글을 작성합니다.
+     *
+     *     - isPrivate=true: 비공개 답글 (코멘트 작성자 및 본인에게만 공개)
+     *     - isPrivate=false: 공개 답글 (모든 챌린지 참여자에게 공개)
+     *
+     */
+    post: operations['createCommentReply'];
     delete?: never;
     options?: never;
     head?: never;
@@ -784,6 +840,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/challenges/{id}/certification': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 수료증 정보 조회
+     * @description 사용자의 챌린지 수료증 정보(닉네임, 챌린지명, 기수, 기간, 메달 등급)를 조회합니다.
+     */
+    get: operations['getCertificationInfo'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/challenges/{challengeId}/daily-guides/{dayIndex}/comments': {
     parameters: {
       query?: never;
@@ -1124,6 +1200,10 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    ChallengeCommentLikeResponse: {
+      /** Format: int32 */
+      likeCount?: number;
+    };
     /** @description 경고 설정 변경 요청 */
     UpdateWarningSettingRequest: {
       isVisible?: boolean;
@@ -1183,6 +1263,10 @@ export interface components {
       articleId: number;
       quotation?: string;
       comment: string;
+    };
+    CreateCommentReplyRequest: {
+      reply: string;
+      isPrivate?: boolean;
     };
     /** @description 회원가입 요청 데이터 */
     MemberSignupRequest: {
@@ -1295,9 +1379,9 @@ export interface components {
       sort?: components['schemas']['SortObject'];
       /** Format: int32 */
       pageSize?: number;
+      paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
-      paged?: boolean;
       unpaged?: boolean;
     };
     SortObject: {
@@ -1382,12 +1466,24 @@ export interface components {
       /** Format: int32 */
       readCount: number;
     };
+    BadgesResponse: {
+      ranking?: components['schemas']['RankingBadgeResponse'];
+      challenge?: components['schemas']['ChallengeBadgeResponse'];
+    };
+    ChallengeBadgeResponse: {
+      /** @enum {string} */
+      grade: 'GOLD' | 'SILVER' | 'BRONZE';
+      name: string;
+      /** Format: int32 */
+      generation: number;
+    };
     MonthlyReadingRankResponse: {
       nickname: string;
       /** Format: int64 */
       rank: number;
       /** Format: int32 */
       monthlyReadCount: number;
+      badges?: components['schemas']['BadgesResponse'];
     };
     MonthlyReadingRankingResponse: {
       /** Format: date-time */
@@ -1398,13 +1494,23 @@ export interface components {
       serverTime: string;
       data: components['schemas']['MonthlyReadingRankResponse'][];
     };
+    RankingBadgeResponse: {
+      /** @enum {string} */
+      grade: 'GOLD' | 'SILVER' | 'BRONZE';
+      /** Format: int32 */
+      year: number;
+      /** Format: int32 */
+      month: number;
+    };
     MemberMonthlyReadingRankResponse: {
+      nickname: string;
       /** Format: int64 */
       rank: number;
-      /** Format: int64 */
-      readCount: number;
+      /** Format: int32 */
+      monthlyReadCount: number;
       /** Format: int64 */
       nextRankDifference: number;
+      badges?: components['schemas']['BadgesResponse'];
     };
     MemberProfileResponse: {
       /** Format: int64 */
@@ -1498,8 +1604,8 @@ export interface components {
        */
       progress: number;
       /** @enum {string} */
-      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'COMPLETE' | 'FAIL';
-      isSuccess?: boolean;
+      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
+      isSurvived?: boolean;
     };
     ChallengeNewsletterResponse: {
       /** Format: int64 */
@@ -1595,7 +1701,7 @@ export interface components {
     };
     TodayTodoResponse: {
       /** @enum {string} */
-      challengeTodoType?: 'READ' | 'COMMENT';
+      challengeTodoType?: 'READ' | 'COMMENT' | 'MINDSET';
       /** @enum {string} */
       challengeTodoStatus?: 'COMPLETE' | 'INCOMPLETE';
     };
@@ -1609,6 +1715,23 @@ export interface components {
         | 'ALREADY_APPLIED'
         | 'NOT_SUBSCRIBED'
         | 'ELIGIBLE';
+    };
+    CertificationInfoResponse: {
+      nickname: string;
+      challengeName: string;
+      /** Format: int32 */
+      generation: number;
+      /** Format: date */
+      startDate: string;
+      /** Format: date */
+      endDate: string;
+      /** @enum {string} */
+      medal: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
+      /** Format: int32 */
+      medalCondition: number;
+    };
+    MemberDailyCommentResponse: {
+      comment: string;
     };
     DailyGuideCommentResponse: {
       nickname: string;
@@ -1644,7 +1767,7 @@ export interface components {
       /** Format: int32 */
       dayIndex: number;
       /** @enum {string} */
-      type: 'READ' | 'COMMENT' | 'SHARING';
+      type: 'READ' | 'COMMENT' | 'SHARING' | 'REMIND';
       imageUrl: string;
       notice?: string;
       commentEnabled: boolean;
@@ -1669,6 +1792,11 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
       isMyComment: boolean;
+      /** Format: int32 */
+      likeCount: number;
+      isLiked: boolean;
+      /** Format: int32 */
+      replyCount: number;
     };
     PageChallengeCommentResponse: {
       /** Format: int64 */
@@ -1680,6 +1808,35 @@ export interface components {
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    CommentReplyResponse: {
+      /** Format: int64 */
+      replyId: number;
+      nickname?: string;
+      profileImageUrl?: string;
+      reply: string;
+      /** Format: date-time */
+      createdAt: string;
+      isMyReply: boolean;
+      isPrivate: boolean;
+    };
+    PageCommentReplyResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['CommentReplyResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
@@ -1903,6 +2060,112 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  addChallengeCommentLike: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 챌린지 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 코멘트 좋아요 추가 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeCommentLikeResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트 좋아요 추가 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteChallengeCommentLike: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 챌린지 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 코멘트 좋아요 취소 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeCommentLikeResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트 좋아요 취소 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 코멘트를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   handleAppleFormPost: {
     parameters: {
       query?: {
@@ -2219,6 +2482,59 @@ export interface operations {
       };
     };
   };
+  getDailyGuideComment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 일차 인덱스 (1부터 시작) */
+        dayIndex: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 댓글 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MemberDailyCommentResponse'];
+        };
+      };
+      /** @description 잘못된 요청 (유효하지 않은 ID) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 참여 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 또는 데일리 가이드를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   createDailyGuideComment: {
     parameters: {
       query?: never;
@@ -2361,6 +2677,117 @@ export interface operations {
         content?: never;
       };
       /** @description 아티클을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getCommentReplies: {
+    parameters: {
+      query: {
+        /** @description 페이지/정렬 정보 (page, size, sort) */
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 답글 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageCommentReplyResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 답글 조회 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 코멘트를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  createCommentReply: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+        /** @description 코멘트 ID */
+        commentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCommentReplyRequest'];
+      };
+    };
+    responses: {
+      /** @description 코멘트 답글 생성 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 코멘트 답글 작성 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 코멘트를 찾을 수 없음 */
       404: {
         headers: {
           [name: string]: unknown;
@@ -3476,6 +3903,43 @@ export interface operations {
       };
       /** @description 챌린지를 찾을 수 없음 */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getCertificationInfo: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 수료증 정보 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CertificationInfoResponse'];
+        };
+      };
+      /** @description 잘못된 요청, 챌린지/참가자를 찾을 수 없음, 또는 진행 중인 챌린지, 탈락한 참가자 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
         headers: {
           [name: string]: unknown;
         };
