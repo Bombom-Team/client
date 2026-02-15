@@ -17,7 +17,7 @@ import * as MediaLibrary from 'expo-media-library';
 
 import { ENV } from '@/constants/env';
 import { WEBVIEW_USER_AGENT } from '@/constants/webview';
-import { goToSystemPermission } from '@/utils/notification';
+import { goToSystemPermission, updateMemberId } from '@/utils/notification';
 import useNotification from '@/hooks/useNotification';
 import { useEffect, useRef } from 'react';
 import { useDeviceInfo } from '@/hooks/useDeviceInfo';
@@ -60,8 +60,7 @@ export const MainScreen = () => {
   const webViewLoadEndCleanupRef = useRef<() => void>(null);
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
-  const { onNotification, updateMemberId, registerFCMToken } =
-    useNotification();
+  const { onNotification, registerFCMToken } = useNotification();
 
   const handleWebViewLoadEnd = () => {
     console.log('WebView 로드 완료');
@@ -116,6 +115,7 @@ export const MainScreen = () => {
 
         case 'REGISTER_FCM_TOKEN':
           if (message.payload.memberId) {
+            updateMemberId(message.payload.memberId);
             registerFCMToken(message.payload.memberId);
           }
           break;
