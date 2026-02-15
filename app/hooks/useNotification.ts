@@ -5,6 +5,7 @@ import {
   createAndroidChannel,
   getFCMToken,
   getMemberId,
+  requestNotificationPermission,
 } from '@/utils/notification';
 import { useWebView } from '@/contexts/WebViewContext';
 import { getDeviceUUID } from '@/utils/device';
@@ -23,6 +24,9 @@ const useNotification = () => {
   const { sendMessageToWeb } = useWebView();
 
   const registerFCMToken = useCallback(async (memberId: number) => {
+    const granted = await requestNotificationPermission();
+    if (!granted) return;
+
     try {
       const deviceUuid = await getDeviceUUID();
       const token = await getFCMToken();
