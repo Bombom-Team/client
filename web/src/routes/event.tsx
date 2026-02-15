@@ -27,7 +27,9 @@ export const Route = createFileRoute('/event')({
 
 function EventPage() {
   const device = useDevice();
-  const { modalRef, openModal, closeModal, isOpen } = useModal();
+  const { modalRef, openModal, closeModal, isOpen } = useModal({
+    closeOnBackdropClick: false,
+  });
   const { queueEntry, addQueueEntry, cancelQueueEntry } = useQueueEntry({
     couponName: COUPON_NAME,
   });
