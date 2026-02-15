@@ -60,7 +60,8 @@ export const MainScreen = () => {
   const webViewLoadEndCleanupRef = useRef<() => void>(null);
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
-  const { onNotification, updateMemberId } = useNotification();
+  const { onNotification, updateMemberId, registerFCMToken } =
+    useNotification();
 
   const handleWebViewLoadEnd = () => {
     console.log('WebView 로드 완료');
@@ -113,9 +114,9 @@ export const MainScreen = () => {
           sendDeviceInfoToWeb();
           break;
 
-        case 'MEMBER_ID':
+        case 'REGISTER_FCM_TOKEN':
           if (message.payload.memberId) {
-            updateMemberId(message.payload.memberId);
+            registerFCMToken(message.payload.memberId);
           }
           break;
 
