@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAddQueueEntryMutation } from './useAddQueueEntryMutation';
+import { useCancelQueueEntryMutation } from './useCancelQueueEntryMutation';
 import { queries } from '@/apis/queries';
 import type { CouponName } from '@/apis/event/event.api';
 
@@ -10,6 +11,9 @@ type UseQueueEntryParams = {
 
 export const useQueueEntry = ({ couponName }: UseQueueEntryParams) => {
   const { mutate: addQueueEntry, isSuccess } = useAddQueueEntryMutation({
+    couponName,
+  });
+  const { mutate: cancelQueueEntry } = useCancelQueueEntryMutation({
     couponName,
   });
 
@@ -25,5 +29,6 @@ export const useQueueEntry = ({ couponName }: UseQueueEntryParams) => {
   return {
     queueEntry,
     addQueueEntry,
+    cancelQueueEntry,
   };
 };

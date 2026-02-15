@@ -26,6 +26,12 @@ export const getMyQueueEntry = async (couponName: CouponName) => {
   });
 };
 
+export const deleteMyQueueEntry = async (couponName: CouponName) => {
+  return fetcher.delete({
+    path: `/coupons/${couponName}/queue-entries/me`,
+  });
+};
+
 export type IssuedCoupon = {
   couponName: CouponName;
   imageUrl: string;
