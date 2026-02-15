@@ -168,6 +168,35 @@ export const queueEntryHandlers = [
     );
   }),
 
+  // 대기열 취소
+  http.delete(
+    `${baseURL}/coupons/:couponName/queue-entries/me`,
+    ({ params }) => {
+      const { couponName } = params as { couponName: CouponName };
+
+      // 대기열에 없는 경우
+      if (!queueStore.has(couponName) && !registrationTime) {
+        return HttpResponse.json(
+          {
+            message: '대기열에 등록되어 있지 않습니다.',
+          },
+          { status: 404 },
+        );
+      }
+
+      // 대기열에서 제거
+      queueStore.delete(couponName);
+
+      // DYNAMIC 시나리오의 경우 등록 시간 초기화
+      if (MOCK_SCENARIO === 'DYNAMIC') {
+        registrationTime = null;
+        currentStatus = 'NOT_IN_QUEUE';
+      }
+
+      return new HttpResponse(null, { status: 204 });
+    },
+  ),
+
   // 내가 발급받은 쿠폰 목록 조회
   http.get(`${baseURL}/coupons/issues/me`, () => {
     return HttpResponse.json(issuedCouponsStore);
