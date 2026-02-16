@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
+import { formatEventStartTime } from './utils/formatEventStartTime';
 import { eventsQueries } from '@/apis/events/events.query';
 import { EVENT_STATUS_LABELS, type EventStatus } from '@/types/event';
 
@@ -19,6 +21,7 @@ export const EventsTableBody = ({
   status,
   onDataLoaded,
 }: EventsTableBodyProps) => {
+  const navigate = useNavigate();
   const { data } = useSuspenseQuery(
     eventsQueries.list({
       keyword,
@@ -50,10 +53,18 @@ export const EventsTableBody = ({
   return (
     <Tbody>
       {data.content.map((eventItem) => (
-        <Tr key={eventItem.id}>
+        <Tr
+          key={eventItem.id}
+          onClick={() =>
+            navigate({
+              to: '/events/$eventId',
+              params: { eventId: eventItem.id.toString() },
+            })
+          }
+        >
           <Td>{eventItem.id}</Td>
           <Td>{eventItem.name}</Td>
-          <Td>{eventItem.startTime}</Td>
+          <Td>{formatEventStartTime(eventItem.startTime)}</Td>
           <Td>
             <StatusBadge status={eventItem.status}>
               {EVENT_STATUS_LABELS[eventItem.status]}
@@ -92,6 +103,8 @@ EventsTableBody.Error = function EventsTableBodyError() {
 const Tbody = styled.tbody``;
 
 const Tr = styled.tr`
+  cursor: pointer;
+
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray50};
   }

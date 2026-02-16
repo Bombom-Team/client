@@ -1,5 +1,5 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { getEvents } from './events.api';
+import { getEventDetail, getEvents, getEventSchedules } from './events.api';
 import type { GetEventsParams } from './events.api';
 
 const EVENTS_STALE_TIME = 1000 * 60; // 1 minute
@@ -13,6 +13,22 @@ export const eventsQueries = {
       queryKey: ['events', params] as const,
       queryFn: () => getEvents(params),
       placeholderData: keepPreviousData,
+      staleTime: EVENTS_STALE_TIME,
+      gcTime: EVENTS_GC_TIME,
+    }),
+
+  detail: (eventId: number) =>
+    queryOptions({
+      queryKey: ['events', 'detail', eventId] as const,
+      queryFn: () => getEventDetail(eventId),
+      staleTime: EVENTS_STALE_TIME,
+      gcTime: EVENTS_GC_TIME,
+    }),
+
+  schedules: (eventId: number) =>
+    queryOptions({
+      queryKey: ['events', 'schedules', eventId] as const,
+      queryFn: () => getEventSchedules(eventId),
       staleTime: EVENTS_STALE_TIME,
       gcTime: EVENTS_GC_TIME,
     }),
