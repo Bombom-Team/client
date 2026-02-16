@@ -8,44 +8,56 @@ import { Suspense, useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Layout } from '@/components/Layout';
 import Pagination from '@/components/Pagination';
-import { ChallengesTableBody } from '@/pages/challenges/ChallengesTableBody';
-import {
-  CHALLENGE_STATUS_LABELS,
-  type ChallengeStatus,
-} from '@/types/challenge';
+import { EventsTableBody } from '@/pages/events/EventsTableBody';
+import { EVENT_STATUS_LABELS, type EventStatus } from '@/types/event';
 
-const STATUS_OPTIONS = ['BEFORE_START', 'ONGOING', 'COMPLETED'] as const;
+const STATUS_OPTIONS = [
+  'SCHEDULED',
+  'IN_PROGRESS',
+  'COMPLETED',
+  'CANCELLED',
+] as const;
 
-export const Route = createFileRoute('/_admin/challenges/')({
-  component: ChallengesPage,
+export const Route = createFileRoute('/_admin/events')({
+  component: EventsPage,
   validateSearch: (search: Record<string, unknown>) => {
     const rawStatus = typeof search.status === 'string' ? search.status : null;
-    const status = STATUS_OPTIONS.includes(rawStatus as ChallengeStatus)
-      ? (rawStatus as ChallengeStatus)
+    const status = STATUS_OPTIONS.includes(rawStatus as EventStatus)
+      ? (rawStatus as EventStatus)
       : undefined;
+    const keyword =
+      typeof search.keyword === 'string' ? search.keyword : undefined;
 
     return {
       page: Number(search.page ?? 0),
       size: Number(search.size ?? 10),
+      keyword: keyword?.trim() ? keyword.trim() : undefined,
       status,
     };
   },
 });
 
-function ChallengesPage() {
+function EventsPage() {
   const search = useSearch({ from: Route.id });
   const navigate = useNavigate();
-  const [totalChallenges, setTotalChallenges] = useState(0);
+  const [totalEvents, setTotalEvents] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   const statusOptions = useMemo(
     () =>
       STATUS_OPTIONS.map((value) => ({
         value,
-        label: CHALLENGE_STATUS_LABELS[value],
+        label: EVENT_STATUS_LABELS[value],
       })),
     [],
   );
+
+  const handleKeywordChange = (keyword: string) => {
+    navigate({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      search: { ...search, page: 0, keyword: keyword || undefined } as any,
+    });
+  };
 
   const handleStatusChange = (statusValue: string) => {
     const nextStatus = statusValue === 'ALL' ? undefined : statusValue;
@@ -68,49 +80,52 @@ function ChallengesPage() {
 
   const handleDataLoaded = useCallback(
     (newTotalElements: number, newTotalPages: number) => {
-      setTotalChallenges(newTotalElements);
+      setTotalEvents(newTotalElements);
       setTotalPages(newTotalPages);
     },
     [],
   );
 
   return (
-    <Layout title="챌린지">
+    <Layout title="이벤트 관리">
       <Container>
         <Header>
-          <Title>챌린지 ({totalChallenges}개)</Title>
-          <Filter>
-            <FilterLabel htmlFor="challenge-status">상태</FilterLabel>
+          <Title>이벤트 ({totalEvents}개)</Title>
+          <FiltersWrapper>
+            <SearchInput
+              placeholder="이벤트 이름 검색"
+              value={search.keyword ?? ''}
+              onChange={(event) => handleKeywordChange(event.target.value)}
+            />
             <Select
-              id="challenge-status"
               value={search.status ?? 'ALL'}
               onChange={(event) => handleStatusChange(event.target.value)}
             >
-              <option value="ALL">전체</option>
+              <option value="ALL">전체 상태</option>
               {statusOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
             </Select>
-          </Filter>
+          </FiltersWrapper>
         </Header>
 
         <Table>
           <Thead>
             <Tr>
               <Th>ID</Th>
-              <Th>챌린지명</Th>
-              <Th>기수</Th>
-              <Th>시작일</Th>
-              <Th>종료일</Th>
+              <Th>이벤트명</Th>
+              <Th>시작 시간</Th>
+              <Th>상태</Th>
             </Tr>
           </Thead>
-          <ErrorBoundary fallback={<ChallengesTableBody.Error />}>
-            <Suspense fallback={<ChallengesTableBody.Loading />}>
-              <ChallengesTableBody
+          <ErrorBoundary fallback={<EventsTableBody.Error />}>
+            <Suspense fallback={<EventsTableBody.Loading />}>
+              <EventsTableBody
                 currentPage={search.page}
                 pageSize={search.size}
+                keyword={search.keyword}
                 status={search.status}
                 onDataLoaded={handleDataLoaded}
               />
@@ -118,9 +133,9 @@ function ChallengesPage() {
           </ErrorBoundary>
         </Table>
 
-        {totalChallenges > 0 && totalPages > 0 && (
+        {totalEvents > 0 && totalPages > 0 && (
           <Pagination
-            totalCount={totalChallenges}
+            totalCount={totalEvents}
             totalPages={totalPages}
             currentPage={search.page}
             onPageChange={handlePageChange}
@@ -157,19 +172,30 @@ const Title = styled.h3`
   font-size: ${({ theme }) => theme.fontSize.xl};
 `;
 
-const Filter = styled.div`
+const FiltersWrapper = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
   align-items: center;
 `;
 
-const FilterLabel = styled.label`
-  color: ${({ theme }) => theme.colors.gray600};
+const SearchInput = styled.input`
+  min-width: 260px;
+  min-height: 42px;
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  color: ${({ theme }) => theme.colors.gray700};
   font-size: ${({ theme }) => theme.fontSize.sm};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const Select = styled.select`
-  min-width: 140px;
+  min-width: 160px;
   min-height: 42px;
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
   border: 1px solid ${({ theme }) => theme.colors.gray300};
@@ -194,6 +220,12 @@ const Thead = styled.thead`
   background-color: ${({ theme }) => theme.colors.gray50};
 `;
 
+const Tr = styled.tr`
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.gray50};
+  }
+`;
+
 const Th = styled.th`
   padding: ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
@@ -202,10 +234,4 @@ const Th = styled.th`
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   font-size: ${({ theme }) => theme.fontSize.sm};
   text-align: left;
-`;
-
-const Tr = styled.tr`
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.gray50};
-  }
 `;

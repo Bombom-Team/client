@@ -14,6 +14,7 @@ import { Route as R403RouteImport } from './routes/403'
 import { Route as AdminIndexRouteImport } from './routes/_admin/index'
 import { Route as AdminNoticesRouteImport } from './routes/_admin/notices'
 import { Route as AdminMembersRouteImport } from './routes/_admin/members'
+import { Route as AdminEventsRouteImport } from './routes/_admin/events'
 import { Route as AdminChallengesRouteImport } from './routes/_admin/challenges'
 import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/index'
 import { Route as AdminNewslettersIndexRouteImport } from './routes/_admin/newsletters/index'
@@ -52,6 +53,11 @@ const AdminNoticesRoute = AdminNoticesRouteImport.update({
 const AdminMembersRoute = AdminMembersRouteImport.update({
   id: '/members',
   path: '/members',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminChallengesRoute = AdminChallengesRouteImport.update({
@@ -141,6 +147,7 @@ const AdminChallengesChallengeIdTeamsRoute =
 export interface FileRoutesByFullPath {
   '/403': typeof R403Route
   '/challenges': typeof AdminChallengesRouteWithChildren
+  '/events': typeof AdminEventsRoute
   '/members': typeof AdminMembersRoute
   '/notices': typeof AdminNoticesRouteWithChildren
   '/': typeof AdminIndexRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/403': typeof R403Route
+  '/events': typeof AdminEventsRoute
   '/members': typeof AdminMembersRoute
   '/': typeof AdminIndexRoute
   '/newsletters/new': typeof AdminNewslettersNewRoute
@@ -180,6 +188,7 @@ export interface FileRoutesById {
   '/403': typeof R403Route
   '/_admin': typeof AdminRouteWithChildren
   '/_admin/challenges': typeof AdminChallengesRouteWithChildren
+  '/_admin/events': typeof AdminEventsRoute
   '/_admin/members': typeof AdminMembersRoute
   '/_admin/notices': typeof AdminNoticesRouteWithChildren
   '/_admin/': typeof AdminIndexRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/403'
     | '/challenges'
+    | '/events'
     | '/members'
     | '/notices'
     | '/'
@@ -223,6 +233,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/403'
+    | '/events'
     | '/members'
     | '/'
     | '/newsletters/new'
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/_admin'
     | '/_admin/challenges'
+    | '/_admin/events'
     | '/_admin/members'
     | '/_admin/notices'
     | '/_admin/'
@@ -300,6 +312,13 @@ declare module '@tanstack/react-router' {
       path: '/members'
       fullPath: '/members'
       preLoaderRoute: typeof AdminMembersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/events': {
+      id: '/_admin/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/challenges': {
@@ -489,6 +508,7 @@ const AdminNewslettersNewsletterIdRouteWithChildren =
 
 interface AdminRouteChildren {
   AdminChallengesRoute: typeof AdminChallengesRouteWithChildren
+  AdminEventsRoute: typeof AdminEventsRoute
   AdminMembersRoute: typeof AdminMembersRoute
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
@@ -499,6 +519,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminChallengesRoute: AdminChallengesRouteWithChildren,
+  AdminEventsRoute: AdminEventsRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
