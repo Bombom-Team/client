@@ -6,14 +6,79 @@ import {
   QUEUE_SCENARIOS,
   issuedCouponsStore,
   MOCK_COUPON_IMAGES,
+  EVENT_TIME_SCENARIO,
+  EVENT_START_TIME,
+  EVENT_END_TIME,
 } from '../datas/queueEntry';
 import type { QueueEntry, CouponName } from '@/apis/event/event.api';
+import type { EventErrorResponse } from '@/pages/event/types/event';
 
 const baseURL = ENV.baseUrl;
 
 // MSW 테스트용 시나리오 선택 (개발 시 변경하여 테스트)
 // 'WAITING_HIGH' | 'WAITING_LOW' | 'ACTIVE_LONG' | 'ACTIVE_SHORT' | 'ISSUED' | 'NOT_IN_QUEUE' | 'DYNAMIC'
 const MOCK_SCENARIO = 'DYNAMIC';
+
+// 이벤트 시간 체크 함수
+const checkEventTime = ():
+  | { status: 'valid' }
+  | { status: 'error'; response: EventErrorResponse; httpStatus: number } => {
+  if (EVENT_TIME_SCENARIO === 'NOT_STARTED') {
+    return {
+      status: 'error',
+      response: {
+        status: 'BAD_REQUEST',
+        code: 'C002',
+        message: '이벤트가 아직 시작되지 않았습니다.',
+        reason: 'EVENT_NOT_STARTED',
+      },
+      httpStatus: 400,
+    };
+  }
+
+  if (EVENT_TIME_SCENARIO === 'ENDED') {
+    return {
+      status: 'error',
+      response: {
+        status: 'CONFLICT',
+        code: 'C003',
+        message: '이벤트가 종료되었습니다.',
+        reason: 'EVENT_ENDED',
+      },
+      httpStatus: 409,
+    };
+  }
+
+  // 실제 시간 기반 체크 (EVENT_TIME_SCENARIO가 'IN_PROGRESS'일 때도 동작)
+  const now = new Date();
+  if (now < EVENT_START_TIME) {
+    return {
+      status: 'error',
+      response: {
+        status: 'BAD_REQUEST',
+        code: 'C002',
+        message: '이벤트가 아직 시작되지 않았습니다.',
+        reason: 'EVENT_NOT_STARTED',
+      },
+      httpStatus: 400,
+    };
+  }
+
+  if (now > EVENT_END_TIME) {
+    return {
+      status: 'error',
+      response: {
+        status: 'CONFLICT',
+        code: 'C003',
+        message: '이벤트가 종료되었습니다.',
+        reason: 'EVENT_ENDED',
+      },
+      httpStatus: 409,
+    };
+  }
+
+  return { status: 'valid' };
+};
 
 // 동적 시나리오: 등록 -> 대기 -> 입장 -> 발급 시뮬레이션
 let registrationTime: number | null = null;
@@ -63,6 +128,14 @@ export const queueEntryHandlers = [
   // 대기열 등록
   http.post(`${baseURL}/coupons/:couponName/queue-entries`, ({ params }) => {
     const { couponName } = params as { couponName: CouponName };
+
+    // 이벤트 시간 체크
+    const timeCheck = checkEventTime();
+    if (timeCheck.status === 'error') {
+      return HttpResponse.json(timeCheck.response, {
+        status: timeCheck.httpStatus,
+      });
+    }
 
     // 이미 등록된 경우 에러
     if (queueStore.has(couponName) && currentStatus !== 'NOT_IN_QUEUE') {

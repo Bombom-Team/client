@@ -35,6 +35,7 @@ export const createMockQueueEntry = (
     activeCount: 45,
     activeExpiresInSeconds: null,
     pollingTtlSeconds: null,
+    reason: null,
   };
 
   // 상태별 기본값 설정
@@ -61,6 +62,14 @@ export const createMockQueueEntry = (
       return {
         ...baseEntry,
         activeCount: 0,
+        ...options,
+      };
+    case 'SOLD_OUT':
+      return {
+        ...baseEntry,
+        activeCount: 10,
+        pollingTtlSeconds: 3,
+        reason: 'SOLD_OUT',
         ...options,
       };
     default:
@@ -108,3 +117,12 @@ export const MOCK_COUPON_IMAGES = {
   'day2-coupon':
     'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=250&fit=crop',
 } as const;
+
+// 이벤트 시간 설정 (테스트용)
+// 'NOT_STARTED' | 'IN_PROGRESS' | 'ENDED'를 테스트하려면 아래 값을 변경
+export const EVENT_TIME_SCENARIO: 'NOT_STARTED' | 'IN_PROGRESS' | 'ENDED' =
+  'ENDED';
+
+// 이벤트 시작/종료 시간 (테스트용 - 현재 시간 기준)
+export const EVENT_START_TIME = new Date(Date.now() - 1000 * 60 * 60); // 1시간 전 시작
+export const EVENT_END_TIME = new Date(Date.now() + 1000 * 60 * 60); // 1시간 후 종료
