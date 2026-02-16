@@ -16,8 +16,8 @@ import type { EventErrorResponse } from '@/pages/event/types/event';
 const baseURL = ENV.baseUrl;
 
 // MSW 테스트용 시나리오 선택 (개발 시 변경하여 테스트)
-// 'WAITING_HIGH' | 'WAITING_LOW' | 'ACTIVE_LONG' | 'ACTIVE_SHORT' | 'ISSUED' | 'NOT_IN_QUEUE' | 'DYNAMIC'
-const MOCK_SCENARIO = 'DYNAMIC';
+// 'WAITING_HIGH' | 'WAITING_LOW' | 'ACTIVE_LONG' | 'ACTIVE_SHORT' | 'ISSUED' | 'NOT_IN_QUEUE' | 'SOLD_OUT' | 'DYNAMIC'
+const MOCK_SCENARIO = 'SOLD_OUT';
 
 // 이벤트 시간 체크 함수
 const checkEventTime = ():

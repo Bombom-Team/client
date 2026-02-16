@@ -108,6 +108,9 @@ export const QUEUE_SCENARIOS = {
 
   // 대기열에 없음
   NOT_IN_QUEUE: createMockQueueEntry('NOT_IN_QUEUE'),
+
+  // 쿠폰 소진
+  SOLD_OUT: createMockQueueEntry('SOLD_OUT'),
 };
 
 // Mock 쿠폰 이미지 데이터
@@ -121,7 +124,7 @@ export const MOCK_COUPON_IMAGES = {
 // 이벤트 시간 설정 (테스트용)
 // 'NOT_STARTED' | 'IN_PROGRESS' | 'ENDED'를 테스트하려면 아래 값을 변경
 export const EVENT_TIME_SCENARIO: 'NOT_STARTED' | 'IN_PROGRESS' | 'ENDED' =
-  'ENDED';
+  'IN_PROGRESS';
 
 // 이벤트 시작/종료 시간 (테스트용 - 현재 시간 기준)
 export const EVENT_START_TIME = new Date(Date.now() - 1000 * 60 * 60); // 1시간 전 시작
