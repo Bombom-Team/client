@@ -34,3 +34,22 @@ export const getEventSchedules = async (eventId: number) => {
     path: `/events/${eventId}/schedules`,
   });
 };
+
+export type UpdateEventPayload = {
+  name: string;
+  startTime: string;
+  status: EventStatus;
+};
+
+export const updateEvent = async ({
+  eventId,
+  payload,
+}: {
+  eventId: number;
+  payload: UpdateEventPayload;
+}) => {
+  return fetcher.patch<UpdateEventPayload, void>({
+    path: `/events/${eventId}`,
+    body: payload,
+  });
+};

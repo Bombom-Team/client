@@ -1,6 +1,11 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { getEventDetail, getEvents, getEventSchedules } from './events.api';
-import type { GetEventsParams } from './events.api';
+import {
+  getEventDetail,
+  getEvents,
+  getEventSchedules,
+  updateEvent,
+} from './events.api';
+import type { GetEventsParams, UpdateEventPayload } from './events.api';
 
 const EVENTS_STALE_TIME = 1000 * 60; // 1 minute
 const EVENTS_GC_TIME = 1000 * 60 * 5; // 5 minutes
@@ -32,4 +37,15 @@ export const eventsQueries = {
       staleTime: EVENTS_STALE_TIME,
       gcTime: EVENTS_GC_TIME,
     }),
+  mutation: {
+    update: () => ({
+      mutationFn: ({
+        eventId,
+        payload,
+      }: {
+        eventId: number;
+        payload: UpdateEventPayload;
+      }) => updateEvent({ eventId, payload }),
+    }),
+  },
 };
