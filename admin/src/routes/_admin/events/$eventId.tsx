@@ -8,6 +8,7 @@ import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { EventDetailView } from '@/pages/events/EventDetailView';
 import { useCreateEventScheduleMutation } from '@/pages/events/hooks/useCreateEventScheduleMutation';
+import { useDeleteEventScheduleMutation } from '@/pages/events/hooks/useDeleteEventScheduleMutation';
 import { useUpdateEventMutation } from '@/pages/events/hooks/useUpdateEventMutation';
 import { buildNotificationMessage } from '@/pages/events/utils/buildNotificationMessage';
 import { formatEventStartTime } from '@/pages/events/utils/formatEventStartTime';
@@ -58,6 +59,9 @@ function EventDetailContent() {
   const [scheduleTypeInput, setScheduleTypeInput] =
     useState<EventNotificationScheduleType>('BEFORE_MINUTES');
   const [minutesBeforeInput, setMinutesBeforeInput] = useState('10');
+  const [deletingScheduleId, setDeletingScheduleId] = useState<number | null>(
+    null,
+  );
 
   const handleBack = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,6 +79,10 @@ function EventDetailContent() {
       eventId: id,
       onSuccess: () => setIsCreateScheduleModalOpen(false),
     });
+  const { mutate: deleteSchedule } = useDeleteEventScheduleMutation({
+    eventId: id,
+    onSettled: () => setDeletingScheduleId(null),
+  });
 
   const formattedStartTimeForInput = useMemo(
     () => convertIsoToDatetimeLocal(event.startTime),
@@ -200,6 +208,14 @@ function EventDetailContent() {
     }
   };
 
+  const handleDeleteSchedule = (scheduleId: number) => {
+    if (!confirm('정말 이 알림 스케줄을 삭제하시겠습니까?')) {
+      return;
+    }
+    setDeletingScheduleId(scheduleId);
+    deleteSchedule({ eventId: id, scheduleId });
+  };
+
   if (!event) {
     return (
       <Container>
@@ -212,7 +228,12 @@ function EventDetailContent() {
   }
 
   return (
-    <EventDetailView event={event} schedules={schedules}>
+    <EventDetailView
+      event={event}
+      schedules={schedules}
+      deletingScheduleId={deletingScheduleId}
+      onDeleteSchedule={handleDeleteSchedule}
+    >
       <ButtonGroup>
         <Button variant="secondary" onClick={handleOpenCreateScheduleModal}>
           알림 스케줄 생성

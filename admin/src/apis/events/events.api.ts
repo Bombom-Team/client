@@ -80,3 +80,15 @@ export const createEventSchedule = async ({
     body: payload,
   });
 };
+
+export const deleteEventSchedule = async ({
+  eventId,
+  scheduleId,
+}: {
+  eventId: number;
+  scheduleId: number;
+}) => {
+  return fetcher.delete<never, void>({
+    path: `/events/${eventId}/schedules/${scheduleId}`,
+  });
+};

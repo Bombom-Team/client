@@ -11,12 +11,16 @@ import {
 interface EventDetailViewProps {
   event: Event;
   schedules: EventNotificationSchedule[];
+  deletingScheduleId?: number | null;
+  onDeleteSchedule?: (scheduleId: number) => void;
   children?: React.ReactNode;
 }
 
 export const EventDetailView = ({
   event,
   schedules,
+  deletingScheduleId,
+  onDeleteSchedule,
   children,
 }: EventDetailViewProps) => {
   return (
@@ -72,12 +76,13 @@ export const EventDetailView = ({
                 <Th>발송 상태</Th>
                 <Th>실제 발송 시각</Th>
                 <Th>미리보기</Th>
+                <Th>관리</Th>
               </Tr>
             </Thead>
             <Tbody>
               {schedules.length === 0 ? (
                 <Tr>
-                  <Td colSpan={6}>
+                  <Td colSpan={7}>
                     <EmptyState>등록된 알림 스케줄이 없습니다.</EmptyState>
                   </Td>
                 </Tr>
@@ -123,6 +128,20 @@ export const EventDetailView = ({
                           eventStartTime: formatEventStartTime(event.startTime),
                         })}
                       </MessagePreview>
+                    </Td>
+                    <Td>
+                      <DeleteButton
+                        type="button"
+                        disabled={
+                          deletingScheduleId !== null &&
+                          deletingScheduleId === schedule.id
+                        }
+                        onClick={() => onDeleteSchedule?.(schedule.id)}
+                      >
+                        {deletingScheduleId === schedule.id
+                          ? '삭제 중...'
+                          : '삭제'}
+                      </DeleteButton>
                     </Td>
                   </Tr>
                 ))
@@ -364,4 +383,26 @@ const EmptyState = styled.div`
 
 const TimeText = styled.span`
   white-space: nowrap;
+`;
+
+const DeleteButton = styled.button`
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border: 1px solid ${({ theme }) => theme.colors.error};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.error};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: ${({ theme }) => theme.colors.gray50};
+  }
 `;
