@@ -2,10 +2,10 @@ import styled from '@emotion/styled';
 import { EVENT_STATUS_TYPE } from '../constants/constants';
 import Button from '@/components/Button/Button';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import type { EventStatus } from '../types/event';
+import type { EventErrorStatus } from '../types/event';
 
 interface NoticeModalProps {
-  noticeType: EventStatus;
+  noticeType: EventErrorStatus;
   closeModal: () => void;
 }
 

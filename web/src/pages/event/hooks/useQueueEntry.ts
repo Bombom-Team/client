@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { useAddQueueEntryMutation } from './useAddQueueEntryMutation';
 import { useCancelQueueEntryMutation } from './useCancelQueueEntryMutation';
 import { queries } from '@/apis/queries';
-import type { EventStatus } from '../types/event';
+import type { EventErrorStatus } from '../types/event';
 import type { CouponName } from '@/apis/event/event.api';
 
 type UseQueueEntryParams = {
@@ -12,12 +12,13 @@ type UseQueueEntryParams = {
 };
 
 export const useQueueEntry = ({ couponName }: UseQueueEntryParams) => {
-  const [eventStatus, setEventStatus] = useState<EventStatus | null>(null);
+  const [eventErrorStatus, setEventErrorStatus] =
+    useState<EventErrorStatus | null>(null);
 
   const { mutate: addQueueEntry, isSuccess } = useAddQueueEntryMutation({
     couponName,
-    onAddQueueEntryError: (reason) => {
-      setEventStatus(reason);
+    onAddQueueEntryError: (errorStatus) => {
+      setEventErrorStatus(errorStatus);
     },
   });
   const { mutate: cancelQueueEntry } = useCancelQueueEntryMutation({
@@ -35,14 +36,14 @@ export const useQueueEntry = ({ couponName }: UseQueueEntryParams) => {
   });
 
   const resetEventStatus = useCallback(() => {
-    setEventStatus(null);
+    setEventErrorStatus(null);
   }, []);
 
   return {
     queueEntry,
     addQueueEntry,
     cancelQueueEntry,
-    eventStatus,
+    eventErrorStatus,
     resetEventStatus,
   };
 };

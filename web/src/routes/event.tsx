@@ -35,7 +35,7 @@ function EventPage() {
     queueEntry,
     addQueueEntry,
     cancelQueueEntry,
-    eventStatus,
+    eventErrorStatus,
     resetEventStatus,
   } = useQueueEntry({
     couponName: COUPON_NAME,
@@ -61,12 +61,15 @@ function EventPage() {
       <EventFooter />
       <Modal
         modalRef={modalRef}
-        closeModal={eventStatus ? closeNoticeModal : closeModal}
+        closeModal={eventErrorStatus ? closeNoticeModal : closeModal}
         isOpen={isOpen}
         showCloseButton={false}
       >
-        {eventStatus ? (
-          <NoticeModal noticeType={eventStatus} closeModal={closeNoticeModal} />
+        {eventErrorStatus ? (
+          <NoticeModal
+            noticeType={eventErrorStatus}
+            closeModal={closeNoticeModal}
+          />
         ) : (
           <EventModal
             queueEntry={queueEntry}

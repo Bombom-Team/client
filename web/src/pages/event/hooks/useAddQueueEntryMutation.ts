@@ -5,12 +5,12 @@ import { EVENT_STATUS_TYPE } from '../constants/constants';
 import { postQueueEntry } from '@/apis/event/event.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
-import type { EventStatus } from '../types/event';
+import type { EventErrorStatus } from '../types/event';
 import type { CouponName } from '@/apis/event/event.api';
 
 interface UseAddQueueEntryMutationParams {
   couponName: CouponName;
-  onAddQueueEntryError?: (eventStatus: EventStatus | null) => void;
+  onAddQueueEntryError?: (eventStatus: EventErrorStatus | null) => void;
 }
 
 export const useAddQueueEntryMutation = ({
@@ -19,7 +19,7 @@ export const useAddQueueEntryMutation = ({
 }: UseAddQueueEntryMutationParams) => {
   const queryClient = useQueryClient();
 
-  const getEventStatusType = useCallback((error: unknown) => {
+  const getEventErrorStatus = useCallback((error: unknown) => {
     if (!(error instanceof ApiError)) {
       return null;
     }
@@ -43,10 +43,10 @@ export const useAddQueueEntryMutation = ({
       });
     },
     onError: (error) => {
-      const eventStatusType = getEventStatusType(error);
-      onAddQueueEntryError?.(eventStatusType);
+      const eventErrorStatus = getEventErrorStatus(error);
+      onAddQueueEntryError?.(eventErrorStatus);
 
-      if (!eventStatusType) {
+      if (!eventErrorStatus) {
         toast.error('대기열 등록에 실패했습니다. 다시 시도해주세요.');
       }
     },
