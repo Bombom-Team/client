@@ -8,6 +8,7 @@ import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { EventDetailView } from '@/pages/events/EventDetailView';
 import { useCreateEventScheduleMutation } from '@/pages/events/hooks/useCreateEventScheduleMutation';
+import { useDeleteEventMutation } from '@/pages/events/hooks/useDeleteEventMutation';
 import { useDeleteEventScheduleMutation } from '@/pages/events/hooks/useDeleteEventScheduleMutation';
 import { useUpdateEventMutation } from '@/pages/events/hooks/useUpdateEventMutation';
 import { buildNotificationMessage } from '@/pages/events/utils/buildNotificationMessage';
@@ -78,6 +79,13 @@ function EventDetailContent() {
     useCreateEventScheduleMutation({
       eventId: id,
       onSuccess: () => setIsCreateScheduleModalOpen(false),
+    });
+  const { mutate: deleteEvent, isPending: isDeletingEvent } =
+    useDeleteEventMutation({
+      onSuccess: () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        navigate({ to: '/events', search: { page: 0, size: 10 } } as any);
+      },
     });
   const { mutate: deleteSchedule } = useDeleteEventScheduleMutation({
     eventId: id,
@@ -216,6 +224,13 @@ function EventDetailContent() {
     deleteSchedule({ eventId: id, scheduleId });
   };
 
+  const handleDeleteEvent = () => {
+    if (!confirm('정말 이 이벤트를 삭제하시겠습니까?')) {
+      return;
+    }
+    deleteEvent(id);
+  };
+
   if (!event) {
     return (
       <Container>
@@ -240,6 +255,13 @@ function EventDetailContent() {
         </Button>
         <Button variant="secondary" onClick={handleOpenEditModal}>
           수정
+        </Button>
+        <Button
+          variant="danger"
+          onClick={handleDeleteEvent}
+          disabled={isDeletingEvent}
+        >
+          {isDeletingEvent ? '삭제 중...' : '삭제'}
         </Button>
         <Button onClick={handleBack}>목록</Button>
       </ButtonGroup>

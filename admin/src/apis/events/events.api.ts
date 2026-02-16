@@ -68,6 +68,12 @@ export const createEvent = async (payload: CreateEventPayload) => {
   });
 };
 
+export const deleteEvent = async (eventId: number) => {
+  return fetcher.delete<never, void>({
+    path: `/events/${eventId}`,
+  });
+};
+
 export const createEventSchedule = async ({
   eventId,
   payload,

@@ -2,6 +2,7 @@ import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import {
   createEvent,
   createEventSchedule,
+  deleteEvent,
   deleteEventSchedule,
   getEventDetail,
   getEvents,
@@ -48,6 +49,9 @@ export const eventsQueries = {
   mutation: {
     create: () => ({
       mutationFn: (payload: CreateEventPayload) => createEvent(payload),
+    }),
+    delete: () => ({
+      mutationFn: (eventId: number) => deleteEvent(eventId),
     }),
     createSchedule: () => ({
       mutationFn: ({
