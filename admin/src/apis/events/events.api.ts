@@ -42,6 +42,11 @@ export type UpdateEventPayload = {
 };
 
 export type CreateEventPayload = UpdateEventPayload;
+export type CreateEventSchedulePayload = {
+  scheduledAt: string;
+  type: 'BEFORE_MINUTES' | 'AT_START';
+  minutesBefore?: number | null;
+};
 
 export const updateEvent = async ({
   eventId,
@@ -59,6 +64,19 @@ export const updateEvent = async ({
 export const createEvent = async (payload: CreateEventPayload) => {
   return fetcher.post<CreateEventPayload, void>({
     path: '/events',
+    body: payload,
+  });
+};
+
+export const createEventSchedule = async ({
+  eventId,
+  payload,
+}: {
+  eventId: number;
+  payload: CreateEventSchedulePayload;
+}) => {
+  return fetcher.post<CreateEventSchedulePayload, void>({
+    path: `/events/${eventId}/schedules`,
     body: payload,
   });
 };

@@ -1,6 +1,7 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import {
   createEvent,
+  createEventSchedule,
   getEventDetail,
   getEvents,
   getEventSchedules,
@@ -8,6 +9,7 @@ import {
 } from './events.api';
 import type {
   CreateEventPayload,
+  CreateEventSchedulePayload,
   GetEventsParams,
   UpdateEventPayload,
 } from './events.api';
@@ -45,6 +47,15 @@ export const eventsQueries = {
   mutation: {
     create: () => ({
       mutationFn: (payload: CreateEventPayload) => createEvent(payload),
+    }),
+    createSchedule: () => ({
+      mutationFn: ({
+        eventId,
+        payload,
+      }: {
+        eventId: number;
+        payload: CreateEventSchedulePayload;
+      }) => createEventSchedule({ eventId, payload }),
     }),
     update: () => ({
       mutationFn: ({

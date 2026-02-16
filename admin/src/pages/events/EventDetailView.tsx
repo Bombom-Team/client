@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
 import { buildNotificationMessage } from './utils/buildNotificationMessage';
 import { formatEventStartTime } from './utils/formatEventStartTime';
 import {
@@ -20,9 +19,6 @@ export const EventDetailView = ({
   schedules,
   children,
 }: EventDetailViewProps) => {
-  const [previewSchedule, setPreviewSchedule] =
-    useState<EventNotificationSchedule | null>(null);
-
   return (
     <Container>
       <Header>
@@ -121,12 +117,12 @@ export const EventDetailView = ({
                       )}
                     </Td>
                     <Td>
-                      <PreviewButton
-                        type="button"
-                        onClick={() => setPreviewSchedule(schedule)}
-                      >
-                        미리보기
-                      </PreviewButton>
+                      <MessagePreview>
+                        {buildNotificationMessage({
+                          schedule,
+                          eventStartTime: formatEventStartTime(event.startTime),
+                        })}
+                      </MessagePreview>
                     </Td>
                   </Tr>
                 ))
@@ -137,28 +133,6 @@ export const EventDetailView = ({
       </SchedulesSection>
 
       {children}
-
-      {previewSchedule && (
-        <ModalOverlay onClick={() => setPreviewSchedule(null)}>
-          <ModalCard onClick={(event) => event.stopPropagation()}>
-            <ModalTitle>메시지 미리보기</ModalTitle>
-            <MessagePreview>
-              {buildNotificationMessage({
-                schedule: previewSchedule,
-                eventStartTime: formatEventStartTime(event.startTime),
-              })}
-            </MessagePreview>
-            <ModalActions>
-              <PreviewButton
-                type="button"
-                onClick={() => setPreviewSchedule(null)}
-              >
-                닫기
-              </PreviewButton>
-            </ModalActions>
-          </ModalCard>
-        </ModalOverlay>
-      )}
     </Container>
   );
 };
@@ -339,7 +313,7 @@ const Td = styled.td`
 
 const MessagePreview = styled.pre`
   margin: 0;
-  padding: ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
   background-color: ${({ theme }) => theme.colors.gray50};
@@ -388,63 +362,6 @@ const EmptyState = styled.div`
   text-align: center;
 `;
 
-const PreviewButton = styled.button`
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
-  border: 1px solid ${({ theme }) => theme.colors.gray300};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-
-  background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.gray700};
-  font-size: ${({ theme }) => theme.fontSize.xs};
-  white-space: nowrap;
-
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.gray50};
-  }
-`;
-
 const TimeText = styled.span`
   white-space: nowrap;
-`;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  z-index: 1000;
-  padding: ${({ theme }) => theme.spacing.lg};
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: rgb(15 23 42 / 45%);
-
-  inset: 0;
-`;
-
-const ModalCard = styled.div`
-  width: min(500px, 100%);
-  padding: ${({ theme }) => theme.spacing.lg};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: ${({ theme }) => theme.shadows.md};
-
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
-  flex-direction: column;
-
-  background-color: ${({ theme }) => theme.colors.white};
-`;
-
-const ModalTitle = styled.h4`
-  margin: 0;
-
-  color: ${({ theme }) => theme.colors.gray900};
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  font-size: ${({ theme }) => theme.fontSize.lg};
-`;
-
-const ModalActions = styled.div`
-  display: flex;
-  justify-content: flex-end;
 `;

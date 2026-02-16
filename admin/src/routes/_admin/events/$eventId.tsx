@@ -7,8 +7,17 @@ import { eventsQueries } from '@/apis/events/events.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { EventDetailView } from '@/pages/events/EventDetailView';
+import { useCreateEventScheduleMutation } from '@/pages/events/hooks/useCreateEventScheduleMutation';
 import { useUpdateEventMutation } from '@/pages/events/hooks/useUpdateEventMutation';
-import { EVENT_STATUS_LABELS, type EventStatus } from '@/types/event';
+import { buildNotificationMessage } from '@/pages/events/utils/buildNotificationMessage';
+import { formatEventStartTime } from '@/pages/events/utils/formatEventStartTime';
+import {
+  EVENT_NOTIFICATION_SCHEDULE_TYPE_LABELS,
+  EVENT_STATUS_LABELS,
+  type EventNotificationSchedule,
+  type EventNotificationScheduleType,
+  type EventStatus,
+} from '@/types/event';
 
 export const Route = createFileRoute('/_admin/events/$eventId')({
   component: EventDetailPage,
@@ -17,6 +26,9 @@ export const Route = createFileRoute('/_admin/events/$eventId')({
 const EVENT_STATUS_OPTIONS = Object.entries(EVENT_STATUS_LABELS) as Array<
   [EventStatus, string]
 >;
+const EVENT_SCHEDULE_TYPE_OPTIONS = Object.entries(
+  EVENT_NOTIFICATION_SCHEDULE_TYPE_LABELS,
+) as Array<[EventNotificationScheduleType, string]>;
 
 function EventDetailPage() {
   return (
@@ -37,9 +49,15 @@ function EventDetailContent() {
   const { data: event } = useSuspenseQuery(eventsQueries.detail(id));
   const { data: schedules } = useSuspenseQuery(eventsQueries.schedules(id));
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCreateScheduleModalOpen, setIsCreateScheduleModalOpen] =
+    useState(false);
   const [nameInput, setNameInput] = useState('');
   const [startTimeInput, setStartTimeInput] = useState('');
   const [statusInput, setStatusInput] = useState<EventStatus>('SCHEDULED');
+  const [scheduleAtInput, setScheduleAtInput] = useState('');
+  const [scheduleTypeInput, setScheduleTypeInput] =
+    useState<EventNotificationScheduleType>('BEFORE_MINUTES');
+  const [minutesBeforeInput, setMinutesBeforeInput] = useState('10');
 
   const handleBack = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,11 +70,47 @@ function EventDetailContent() {
       onSuccess: () => setIsEditModalOpen(false),
     },
   );
+  const { mutate: createSchedule, isPending: isCreatingSchedule } =
+    useCreateEventScheduleMutation({
+      eventId: id,
+      onSuccess: () => setIsCreateScheduleModalOpen(false),
+    });
 
   const formattedStartTimeForInput = useMemo(
     () => convertIsoToDatetimeLocal(event.startTime),
     [event.startTime],
   );
+  const schedulePreviewMessage = useMemo(() => {
+    const parsedMinutes = Number(minutesBeforeInput);
+    const previewSchedule: EventNotificationSchedule = {
+      id: 0,
+      eventId: id,
+      scheduledAt: convertDatetimeLocalToRequestStartTime(
+        scheduleAtInput || formattedStartTimeForInput,
+      ),
+      type: scheduleTypeInput,
+      minutesBefore:
+        scheduleTypeInput === 'BEFORE_MINUTES' &&
+        !Number.isNaN(parsedMinutes) &&
+        parsedMinutes >= 0
+          ? parsedMinutes
+          : null,
+      sent: false,
+      sentAt: null,
+    };
+
+    return buildNotificationMessage({
+      schedule: previewSchedule,
+      eventStartTime: formatEventStartTime(event.startTime),
+    });
+  }, [
+    event.startTime,
+    formattedStartTimeForInput,
+    id,
+    minutesBeforeInput,
+    scheduleAtInput,
+    scheduleTypeInput,
+  ]);
 
   const handleOpenEditModal = () => {
     setNameInput(event.name);
@@ -67,6 +121,17 @@ function EventDetailContent() {
 
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
+  };
+
+  const handleOpenCreateScheduleModal = () => {
+    setScheduleAtInput(formattedStartTimeForInput);
+    setScheduleTypeInput('BEFORE_MINUTES');
+    setMinutesBeforeInput('10');
+    setIsCreateScheduleModalOpen(true);
+  };
+
+  const handleCloseCreateScheduleModal = () => {
+    setIsCreateScheduleModalOpen(false);
   };
 
   const handleUpdateEvent = () => {
@@ -90,6 +155,51 @@ function EventDetailContent() {
     });
   };
 
+  const handleCreateSchedule = () => {
+    if (!scheduleAtInput) {
+      alert('발송 예정 시각을 입력해주세요.');
+      return;
+    }
+
+    if (scheduleTypeInput === 'BEFORE_MINUTES') {
+      const parsedMinutes = Number(minutesBeforeInput);
+      if (Number.isNaN(parsedMinutes) || parsedMinutes < 0) {
+        alert('분(전)은 0 이상의 숫자로 입력해주세요.');
+        return;
+      }
+
+      createSchedule({
+        eventId: id,
+        payload: {
+          scheduledAt: convertDatetimeLocalToRequestStartTime(scheduleAtInput),
+          type: scheduleTypeInput,
+          minutesBefore: parsedMinutes,
+        },
+      });
+      return;
+    }
+
+    createSchedule({
+      eventId: id,
+      payload: {
+        scheduledAt: convertDatetimeLocalToRequestStartTime(
+          scheduleTypeInput === 'AT_START'
+            ? formattedStartTimeForInput
+            : scheduleAtInput,
+        ),
+        type: scheduleTypeInput,
+        minutesBefore: null,
+      },
+    });
+  };
+
+  const handleScheduleTypeChange = (value: EventNotificationScheduleType) => {
+    setScheduleTypeInput(value);
+    if (value === 'AT_START') {
+      setScheduleAtInput(formattedStartTimeForInput);
+    }
+  };
+
   if (!event) {
     return (
       <Container>
@@ -104,6 +214,9 @@ function EventDetailContent() {
   return (
     <EventDetailView event={event} schedules={schedules}>
       <ButtonGroup>
+        <Button variant="secondary" onClick={handleOpenCreateScheduleModal}>
+          알림 스케줄 생성
+        </Button>
         <Button variant="secondary" onClick={handleOpenEditModal}>
           수정
         </Button>
@@ -154,6 +267,74 @@ function EventDetailContent() {
               </Button>
               <Button onClick={handleUpdateEvent} disabled={isUpdating}>
                 {isUpdating ? '수정 중...' : '저장'}
+              </Button>
+            </ModalActions>
+          </ModalCard>
+        </ModalOverlay>
+      )}
+
+      {isCreateScheduleModalOpen && (
+        <ModalOverlay onClick={handleCloseCreateScheduleModal}>
+          <ModalCard onClick={(event) => event.stopPropagation()}>
+            <ModalTitle>알림 스케줄 생성</ModalTitle>
+            <FormGroup>
+              <Label htmlFor="schedule-at">발송 예정 시각</Label>
+              <Input
+                id="schedule-at"
+                type="datetime-local"
+                value={scheduleAtInput}
+                disabled={scheduleTypeInput === 'AT_START'}
+                onChange={(event) => setScheduleAtInput(event.target.value)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="schedule-type">스케줄 유형</Label>
+              <Select
+                id="schedule-type"
+                value={scheduleTypeInput}
+                onChange={(event) =>
+                  handleScheduleTypeChange(
+                    event.target.value as EventNotificationScheduleType,
+                  )
+                }
+              >
+                {EVENT_SCHEDULE_TYPE_OPTIONS.map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            </FormGroup>
+            {scheduleTypeInput === 'BEFORE_MINUTES' && (
+              <FormGroup>
+                <Label htmlFor="minutes-before">분(전)</Label>
+                <Input
+                  id="minutes-before"
+                  type="number"
+                  min="0"
+                  value={minutesBeforeInput}
+                  onChange={(event) =>
+                    setMinutesBeforeInput(event.target.value)
+                  }
+                />
+              </FormGroup>
+            )}
+            <FormGroup>
+              <Label>메시지 미리보기</Label>
+              <PreviewText>{schedulePreviewMessage}</PreviewText>
+            </FormGroup>
+            <ModalActions>
+              <Button
+                variant="secondary"
+                onClick={handleCloseCreateScheduleModal}
+              >
+                취소
+              </Button>
+              <Button
+                onClick={handleCreateSchedule}
+                disabled={isCreatingSchedule}
+              >
+                {isCreatingSchedule ? '생성 중...' : '저장'}
               </Button>
             </ModalActions>
           </ModalCard>
@@ -288,4 +469,16 @@ const ModalActions = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
   justify-content: flex-end;
+`;
+
+const PreviewText = styled.pre`
+  margin: 0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.gray50};
+  color: ${({ theme }) => theme.colors.gray800};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.6;
+  white-space: pre-line;
 `;
