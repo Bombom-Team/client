@@ -9,6 +9,7 @@ import EventHero from '@/pages/event/components/EventHero';
 import EventModal from '@/pages/event/components/EventModal';
 import EventPrize from '@/pages/event/components/EventPrize';
 import EventShareGuide from '@/pages/event/components/EventShareGuide';
+import NoticeModal from '@/pages/event/components/NoticeModal';
 import { COUPON_NAME } from '@/pages/event/constants/constants';
 import { useQueueEntry } from '@/pages/event/hooks/useQueueEntry';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
@@ -30,9 +31,20 @@ function EventPage() {
   const { modalRef, openModal, closeModal, isOpen } = useModal({
     closeOnBackdropClick: false,
   });
-  const { queueEntry, addQueueEntry, cancelQueueEntry } = useQueueEntry({
+  const {
+    queueEntry,
+    addQueueEntry,
+    cancelQueueEntry,
+    eventStatus,
+    resetEventStatus,
+  } = useQueueEntry({
     couponName: COUPON_NAME,
   });
+
+  const closeNoticeModal = () => {
+    resetEventStatus();
+    closeModal();
+  };
 
   const applyEvent = () => {
     addQueueEntry();
@@ -49,15 +61,19 @@ function EventPage() {
       <EventFooter />
       <Modal
         modalRef={modalRef}
-        closeModal={closeModal}
+        closeModal={eventStatus ? closeNoticeModal : closeModal}
         isOpen={isOpen}
         showCloseButton={false}
       >
-        <EventModal
-          queueEntry={queueEntry}
-          cancelQueueEntry={cancelQueueEntry}
-          closeModal={closeModal}
-        />
+        {eventStatus ? (
+          <NoticeModal noticeType={eventStatus} closeModal={closeNoticeModal} />
+        ) : (
+          <EventModal
+            queueEntry={queueEntry}
+            cancelQueueEntry={cancelQueueEntry}
+            closeModal={closeModal}
+          />
+        )}
       </Modal>
     </Container>
   );

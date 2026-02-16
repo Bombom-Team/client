@@ -7,6 +7,11 @@ export const QUEUE_STATUS_TYPE = {
   unregistered: 'NOT_IN_QUEUE',
 };
 
+export const EVENT_STATUS_TYPE = {
+  notStarted: 'EVENT_NOT_STARTED',
+  ended: 'EVENT_ENDED',
+} as const;
+
 export const COUPON_TYPE = {
   'day1-coupon': '1회차',
   'day2-coupon': '2회차',

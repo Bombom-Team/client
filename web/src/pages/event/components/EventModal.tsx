@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import QueueStatus from './QueueStatus/QueueStatus';
 import { QUEUE_STATUS_TYPE } from '../constants/constants';
 import Button from '@/components/Button/Button';
-import { useDevice, type Device } from '@/hooks/useDevice';
 import type { QueueEntry } from '@/apis/event/event.api';
 
 interface EventModalProps {
@@ -17,8 +16,6 @@ const EventModal = ({
   cancelQueueEntry,
   closeModal,
 }: EventModalProps) => {
-  const device = useDevice();
-
   const handleCloseModal = () => {
     cancelQueueEntry();
     closeModal();
@@ -38,16 +35,7 @@ const EventModal = ({
   return (
     <Container>
       <ContentWrapper>
-        {queueEntry ? (
-          <QueueStatus queueEntry={queueEntry} />
-        ) : (
-          <>
-            <Title device={device}>이벤트 기간이 아닙니다.</Title>
-            <Description>
-              자세한 내용은 이벤트 페이지를 참고해주세요.
-            </Description>
-          </>
-        )}
+        {queueEntry && <QueueStatus queueEntry={queueEntry} />}
 
         <ConfirmButton onClick={handleCloseModal}>닫기</ConfirmButton>
       </ContentWrapper>
@@ -75,19 +63,6 @@ const ContentWrapper = styled.div`
   gap: 24px;
   flex-direction: column;
   align-items: center;
-`;
-
-const Title = styled.h3<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
-  text-align: center;
-`;
-
-const Description = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
-  text-align: center;
 `;
 
 const ConfirmButton = styled(Button)`
