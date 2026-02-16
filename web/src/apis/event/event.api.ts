@@ -1,6 +1,11 @@
 import { fetcher } from '@bombom/shared/apis';
 
-export type QueueStatus = 'WAITING' | 'ACTIVE' | 'ISSUED' | 'NOT_IN_QUEUE';
+export type QueueStatus =
+  | 'WAITING'
+  | 'ACTIVE'
+  | 'ISSUED'
+  | 'NOT_IN_QUEUE'
+  | 'SOLD_OUT';
 export type CouponName = 'day1-coupon' | 'day2-coupon';
 export type QueueEntry = {
   couponName: CouponName;
@@ -9,6 +14,7 @@ export type QueueEntry = {
   activeCount: number;
   activeExpiresInSeconds: number | null;
   pollingTtlSeconds: number | null;
+  reason: string | null;
 };
 type PostQueueEntryResponse = QueueEntry;
 

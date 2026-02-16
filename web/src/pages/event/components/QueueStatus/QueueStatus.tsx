@@ -1,5 +1,6 @@
 import IssuedState from './IssuedState';
 import ReadyState from './ReadyState';
+import SoldOutState from './SoldOutState';
 import WaitingState from './WaitingState';
 import { QUEUE_STATUS_TYPE } from '../../constants/constants';
 import type { QueueEntry } from '@/apis/event/event.api';
@@ -22,6 +23,9 @@ const QueueStatus = ({ queueEntry }: QueueStatusProps) => {
 
     case QUEUE_STATUS_TYPE.issued:
       return <IssuedState />;
+
+    case QUEUE_STATUS_TYPE.soldOut:
+      return <SoldOutState />;
 
     default:
       return null;

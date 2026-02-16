@@ -5,6 +5,7 @@ export const QUEUE_STATUS_TYPE = {
   ready: 'ACTIVE',
   issued: 'ISSUED',
   unregistered: 'NOT_IN_QUEUE',
+  soldOut: 'SOLD_OUT',
 };
 
 export const EVENT_STATUS_TYPE = {
