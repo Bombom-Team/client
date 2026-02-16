@@ -41,6 +41,8 @@ export type UpdateEventPayload = {
   status: EventStatus;
 };
 
+export type CreateEventPayload = UpdateEventPayload;
+
 export const updateEvent = async ({
   eventId,
   payload,
@@ -50,6 +52,13 @@ export const updateEvent = async ({
 }) => {
   return fetcher.patch<UpdateEventPayload, void>({
     path: `/events/${eventId}`,
+    body: payload,
+  });
+};
+
+export const createEvent = async (payload: CreateEventPayload) => {
+  return fetcher.post<CreateEventPayload, void>({
+    path: '/events',
     body: payload,
   });
 };
