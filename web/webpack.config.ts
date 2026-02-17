@@ -98,6 +98,9 @@ export default (env: Env, argv: Argv) => {
       new webpack.DefinePlugin({
         'process.env': JSON.stringify(process.env),
         'process.env.ENABLE_MSW': JSON.stringify(env.ENABLE_MSW),
+        'process.env.API_BASE_URL_EVENT': JSON.stringify(
+          process.env.API_BASE_URL_EVENT,
+        ),
       }),
       new CopyWebpackPlugin({
         patterns: [
