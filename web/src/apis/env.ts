@@ -1,6 +1,6 @@
 export const ENV = {
   baseUrl: `${process.env.API_BASE_URL}`,
-  eventBaseUrl: `${process.env.API_EVENT_BASE_URL}`,
+  eventBaseUrl: `${process.env.API_BASE_URL_EVENT}`,
   token: `${process.env.API_TOKEN}`,
   enableMsw: `${process.env.ENABLE_MSW}`,
   sentryDsn: `${process.env.SENTRY_DSN}`,
