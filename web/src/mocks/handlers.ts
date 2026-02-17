@@ -6,6 +6,7 @@ import { bookmarkHandlers } from './handlers/bookmark';
 import { challengeHandlers } from './handlers/challenge';
 import { membersHandlers } from './handlers/members';
 import { newsletterDetailHandlers } from './handlers/newsletterDetail';
+import { queueEntryHandlers } from './handlers/queueEntry';
 import type { Highlight } from '@/pages/detail/types/highlight';
 
 const baseURL = ENV.baseUrl;
@@ -144,4 +145,5 @@ export const handlers = [
   ...bookmarkHandlers,
   ...membersHandlers,
   ...challengeHandlers,
+  ...queueEntryHandlers,
 ];
