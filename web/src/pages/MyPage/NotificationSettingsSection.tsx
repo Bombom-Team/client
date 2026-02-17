@@ -23,15 +23,16 @@ const NotificationSettingsSection = () => {
     deviceUuid,
   });
 
-  const handleToggleClick = () => {
-    if (!userProfile?.id || !deviceUuid) return;
+  const handleToggleNotificationClick = () => {
+    if (!memberId || !deviceUuid) return;
 
     const newStatus = !notificationStatus;
-
-    sendMessageToRN({
-      type: 'CHECK_NOTIFICATION_PERMISSION',
-      payload: { enabled: newStatus },
-    });
+    if (newStatus) {
+      sendMessageToRN({
+        type: 'ENABLE_NOTIFICATION',
+        payload: { enabled: true, memberId },
+      });
+    }
 
     updateNotificationSettings(newStatus);
   };
@@ -40,7 +41,7 @@ const NotificationSettingsSection = () => {
     <Container>
       <SettingOption>
         <SettingLabel>새로운 아티클 알림 받기</SettingLabel>
-        <ToggleWrapper type="button" onClick={handleToggleClick}>
+        <ToggleWrapper type="button" onClick={handleToggleNotificationClick}>
           <ToggleTrack enabled={notificationStatus ?? false}>
             <ToggleThumb enabled={notificationStatus ?? false} />
           </ToggleTrack>

@@ -122,8 +122,10 @@ export const MainScreen = () => {
           }
           break;
 
-        case 'CHECK_NOTIFICATION_PERMISSION':
+        case 'ENABLE_NOTIFICATION':
           goToSystemPermission(message.payload.enabled);
+          updateMemberId(message.payload.memberId);
+          registerFCMToken(message.payload.memberId);
           break;
 
         case 'SAVE_IMAGE':
