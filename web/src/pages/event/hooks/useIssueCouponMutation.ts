@@ -21,6 +21,9 @@ export const useIssueCouponMutation = ({
       queryClient.invalidateQueries({
         queryKey: eventQueries.myCoupons().queryKey,
       });
+      queryClient.invalidateQueries({
+        queryKey: eventQueries.queueEntry(couponName).queryKey,
+      });
       toast.success('쿠폰이 발급되었습니다!');
     },
     onError: (error) => {
