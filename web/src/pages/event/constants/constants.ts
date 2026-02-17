@@ -1,4 +1,4 @@
-export const COUPON_NAME = 'day1-coupon';
+export const COUPON_NAME = 'avengers';
 
 export const QUEUE_STATUS_TYPE = {
   waiting: 'WAITING',
@@ -16,4 +16,5 @@ export const EVENT_STATUS_TYPE = {
 export const COUPON_TYPE = {
   'day1-coupon': '1회차',
   'day2-coupon': '2회차',
+  avengers: '테스트',
 } as const;
