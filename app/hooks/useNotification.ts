@@ -5,12 +5,12 @@ import {
   createAndroidChannel,
   getFCMToken,
   getMemberId,
+  getNotificationUrl,
   requestNotificationPermission,
 } from '@/utils/notification';
 import { useWebView } from '@/contexts/WebViewContext';
 import { getDeviceUUID } from '@/utils/device';
 import { putFCMToken } from '@/apis/notification';
-import { getNotificationUrl } from '@/utils/notificationRouting';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
