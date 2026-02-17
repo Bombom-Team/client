@@ -8,12 +8,14 @@ import {
   getEvents,
   getEventSchedules,
   updateEvent,
+  updateEventSchedule,
 } from './events.api';
 import type {
   CreateEventPayload,
   CreateEventSchedulePayload,
   GetEventsParams,
   UpdateEventPayload,
+  UpdateEventSchedulePayload,
 } from './events.api';
 
 const EVENTS_STALE_TIME = 1000 * 60; // 1 minute
@@ -79,6 +81,17 @@ export const eventsQueries = {
         eventId: number;
         payload: UpdateEventPayload;
       }) => updateEvent({ eventId, payload }),
+    }),
+    updateSchedule: () => ({
+      mutationFn: ({
+        eventId,
+        scheduleId,
+        payload,
+      }: {
+        eventId: number;
+        scheduleId: number;
+        payload: UpdateEventSchedulePayload;
+      }) => updateEventSchedule({ eventId, scheduleId, payload }),
     }),
   },
 };

@@ -47,6 +47,7 @@ export type CreateEventSchedulePayload = {
   type: 'BEFORE_MINUTES' | 'AT_START';
   minutesBefore?: number | null;
 };
+export type UpdateEventSchedulePayload = CreateEventSchedulePayload;
 
 export const updateEvent = async ({
   eventId,
@@ -96,5 +97,20 @@ export const deleteEventSchedule = async ({
 }) => {
   return fetcher.delete<never, void>({
     path: `/events/${eventId}/schedules/${scheduleId}`,
+  });
+};
+
+export const updateEventSchedule = async ({
+  eventId,
+  scheduleId,
+  payload,
+}: {
+  eventId: number;
+  scheduleId: number;
+  payload: UpdateEventSchedulePayload;
+}) => {
+  return fetcher.patch<UpdateEventSchedulePayload, void>({
+    path: `/events/${eventId}/schedules/${scheduleId}`,
+    body: payload,
   });
 };

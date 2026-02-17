@@ -1,8 +1,8 @@
-export const formatEventStartTime = (value: string) => {
-  const date = new Date(value);
+export const formatEventStartTime = (value: string | Date) => {
+  const date = value instanceof Date ? value : new Date(value);
 
   if (Number.isNaN(date.getTime())) {
-    return value;
+    return typeof value === 'string' ? value : '';
   }
 
   const year = date.getFullYear();

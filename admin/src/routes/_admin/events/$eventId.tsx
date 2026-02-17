@@ -11,6 +11,7 @@ import { useCreateEventScheduleMutation } from '@/pages/events/hooks/useCreateEv
 import { useDeleteEventMutation } from '@/pages/events/hooks/useDeleteEventMutation';
 import { useDeleteEventScheduleMutation } from '@/pages/events/hooks/useDeleteEventScheduleMutation';
 import { useUpdateEventMutation } from '@/pages/events/hooks/useUpdateEventMutation';
+import { useUpdateEventScheduleMutation } from '@/pages/events/hooks/useUpdateEventScheduleMutation';
 import { buildNotificationMessage } from '@/pages/events/utils/buildNotificationMessage';
 import { formatEventStartTime } from '@/pages/events/utils/formatEventStartTime';
 import {
@@ -53,6 +54,7 @@ function EventDetailContent() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateScheduleModalOpen, setIsCreateScheduleModalOpen] =
     useState(false);
+  const [isEditScheduleModalOpen, setIsEditScheduleModalOpen] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const [startTimeInput, setStartTimeInput] = useState('');
   const [statusInput, setStatusInput] = useState<EventStatus>('SCHEDULED');
@@ -60,6 +62,15 @@ function EventDetailContent() {
   const [scheduleTypeInput, setScheduleTypeInput] =
     useState<EventNotificationScheduleType>('BEFORE_MINUTES');
   const [minutesBeforeInput, setMinutesBeforeInput] = useState('10');
+  const [editingSchedule, setEditingSchedule] =
+    useState<EventNotificationSchedule | null>(null);
+  const [editScheduleAtInput, setEditScheduleAtInput] = useState('');
+  const [editScheduleTypeInput, setEditScheduleTypeInput] =
+    useState<EventNotificationScheduleType>('BEFORE_MINUTES');
+  const [editMinutesBeforeInput, setEditMinutesBeforeInput] = useState('10');
+  const [editingScheduleId, setEditingScheduleId] = useState<number | null>(
+    null,
+  );
   const [deletingScheduleId, setDeletingScheduleId] = useState<number | null>(
     null,
   );
@@ -91,6 +102,15 @@ function EventDetailContent() {
     eventId: id,
     onSettled: () => setDeletingScheduleId(null),
   });
+  const { mutate: updateSchedule, isPending: isUpdatingSchedule } =
+    useUpdateEventScheduleMutation({
+      eventId: id,
+      onSuccess: () => {
+        setIsEditScheduleModalOpen(false);
+        setEditingSchedule(null);
+      },
+      onSettled: () => setEditingScheduleId(null),
+    });
 
   const formattedStartTimeForInput = useMemo(
     () => convertIsoToDatetimeLocal(event.startTime),
@@ -127,6 +147,38 @@ function EventDetailContent() {
     scheduleAtInput,
     scheduleTypeInput,
   ]);
+  const editSchedulePreviewMessage = useMemo(() => {
+    const parsedMinutes = Number(editMinutesBeforeInput);
+    const previewSchedule: EventNotificationSchedule = {
+      id: editingSchedule?.id ?? 0,
+      eventId: id,
+      scheduledAt: convertDatetimeLocalToRequestStartTime(
+        editScheduleAtInput || formattedStartTimeForInput,
+      ),
+      type: editScheduleTypeInput,
+      minutesBefore:
+        editScheduleTypeInput === 'BEFORE_MINUTES' &&
+        !Number.isNaN(parsedMinutes) &&
+        parsedMinutes >= 0
+          ? parsedMinutes
+          : null,
+      sent: false,
+      sentAt: null,
+    };
+
+    return buildNotificationMessage({
+      schedule: previewSchedule,
+      eventStartTime: formatEventStartTime(event.startTime),
+    });
+  }, [
+    editMinutesBeforeInput,
+    editScheduleAtInput,
+    editScheduleTypeInput,
+    editingSchedule?.id,
+    event.startTime,
+    formattedStartTimeForInput,
+    id,
+  ]);
 
   const handleOpenEditModal = () => {
     setNameInput(event.name);
@@ -148,6 +200,25 @@ function EventDetailContent() {
 
   const handleCloseCreateScheduleModal = () => {
     setIsCreateScheduleModalOpen(false);
+  };
+
+  const handleOpenEditScheduleModal = (schedule: EventNotificationSchedule) => {
+    setEditingSchedule(schedule);
+    setEditScheduleTypeInput(schedule.type);
+    setEditScheduleAtInput(
+      schedule.type === 'AT_START'
+        ? formattedStartTimeForInput
+        : convertIsoToDatetimeLocal(schedule.scheduledAt),
+    );
+    setEditMinutesBeforeInput(
+      schedule.minutesBefore !== null ? String(schedule.minutesBefore) : '10',
+    );
+    setIsEditScheduleModalOpen(true);
+  };
+
+  const handleCloseEditScheduleModal = () => {
+    setIsEditScheduleModalOpen(false);
+    setEditingSchedule(null);
   };
 
   const handleUpdateEvent = () => {
@@ -216,6 +287,60 @@ function EventDetailContent() {
     }
   };
 
+  const handleEditScheduleTypeChange = (
+    value: EventNotificationScheduleType,
+  ) => {
+    setEditScheduleTypeInput(value);
+    if (value === 'AT_START') {
+      setEditScheduleAtInput(formattedStartTimeForInput);
+    }
+  };
+
+  const handleUpdateSchedule = () => {
+    if (!editingSchedule) {
+      return;
+    }
+
+    if (!editScheduleAtInput) {
+      alert('발송 예정 시각을 입력해주세요.');
+      return;
+    }
+
+    if (editScheduleTypeInput === 'BEFORE_MINUTES') {
+      const parsedMinutes = Number(editMinutesBeforeInput);
+      if (Number.isNaN(parsedMinutes) || parsedMinutes < 0) {
+        alert('분(전)은 0 이상의 숫자로 입력해주세요.');
+        return;
+      }
+
+      setEditingScheduleId(editingSchedule.id);
+      updateSchedule({
+        eventId: id,
+        scheduleId: editingSchedule.id,
+        payload: {
+          scheduledAt:
+            convertDatetimeLocalToRequestStartTime(editScheduleAtInput),
+          type: editScheduleTypeInput,
+          minutesBefore: parsedMinutes,
+        },
+      });
+      return;
+    }
+
+    setEditingScheduleId(editingSchedule.id);
+    updateSchedule({
+      eventId: id,
+      scheduleId: editingSchedule.id,
+      payload: {
+        scheduledAt: convertDatetimeLocalToRequestStartTime(
+          formattedStartTimeForInput,
+        ),
+        type: editScheduleTypeInput,
+        minutesBefore: null,
+      },
+    });
+  };
+
   const handleDeleteSchedule = (scheduleId: number) => {
     if (!confirm('정말 이 알림 스케줄을 삭제하시겠습니까?')) {
       return;
@@ -246,7 +371,9 @@ function EventDetailContent() {
     <EventDetailView
       event={event}
       schedules={schedules}
+      editingScheduleId={editingScheduleId}
       deletingScheduleId={deletingScheduleId}
+      onEditSchedule={handleOpenEditScheduleModal}
       onDeleteSchedule={handleDeleteSchedule}
     >
       <ButtonGroup>
@@ -378,6 +505,74 @@ function EventDetailContent() {
                 disabled={isCreatingSchedule}
               >
                 {isCreatingSchedule ? '생성 중...' : '저장'}
+              </Button>
+            </ModalActions>
+          </ModalCard>
+        </ModalOverlay>
+      )}
+
+      {isEditScheduleModalOpen && editingSchedule && (
+        <ModalOverlay onClick={handleCloseEditScheduleModal}>
+          <ModalCard onClick={(event) => event.stopPropagation()}>
+            <ModalTitle>알림 스케줄 수정</ModalTitle>
+            <FormGroup>
+              <Label htmlFor="edit-schedule-at">발송 예정 시각</Label>
+              <Input
+                id="edit-schedule-at"
+                type="datetime-local"
+                value={editScheduleAtInput}
+                disabled={editScheduleTypeInput === 'AT_START'}
+                onChange={(event) => setEditScheduleAtInput(event.target.value)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="edit-schedule-type">스케줄 유형</Label>
+              <Select
+                id="edit-schedule-type"
+                value={editScheduleTypeInput}
+                onChange={(event) =>
+                  handleEditScheduleTypeChange(
+                    event.target.value as EventNotificationScheduleType,
+                  )
+                }
+              >
+                {EVENT_SCHEDULE_TYPE_OPTIONS.map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            </FormGroup>
+            {editScheduleTypeInput === 'BEFORE_MINUTES' && (
+              <FormGroup>
+                <Label htmlFor="edit-minutes-before">분(전)</Label>
+                <Input
+                  id="edit-minutes-before"
+                  type="number"
+                  min="0"
+                  value={editMinutesBeforeInput}
+                  onChange={(event) =>
+                    setEditMinutesBeforeInput(event.target.value)
+                  }
+                />
+              </FormGroup>
+            )}
+            <FormGroup>
+              <Label>메시지 미리보기</Label>
+              <PreviewText>{editSchedulePreviewMessage}</PreviewText>
+            </FormGroup>
+            <ModalActions>
+              <Button
+                variant="secondary"
+                onClick={handleCloseEditScheduleModal}
+              >
+                취소
+              </Button>
+              <Button
+                onClick={handleUpdateSchedule}
+                disabled={isUpdatingSchedule}
+              >
+                {isUpdatingSchedule ? '수정 중...' : '저장'}
               </Button>
             </ModalActions>
           </ModalCard>

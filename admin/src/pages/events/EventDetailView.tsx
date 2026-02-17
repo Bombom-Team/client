@@ -12,6 +12,8 @@ interface EventDetailViewProps {
   event: Event;
   schedules: EventNotificationSchedule[];
   deletingScheduleId?: number | null;
+  editingScheduleId?: number | null;
+  onEditSchedule?: (schedule: EventNotificationSchedule) => void;
   onDeleteSchedule?: (scheduleId: number) => void;
   children?: React.ReactNode;
 }
@@ -20,6 +22,8 @@ export const EventDetailView = ({
   event,
   schedules,
   deletingScheduleId,
+  editingScheduleId,
+  onEditSchedule,
   onDeleteSchedule,
   children,
 }: EventDetailViewProps) => {
@@ -130,18 +134,32 @@ export const EventDetailView = ({
                       </MessagePreview>
                     </Td>
                     <Td>
-                      <DeleteButton
-                        type="button"
-                        disabled={
-                          deletingScheduleId !== null &&
-                          deletingScheduleId === schedule.id
-                        }
-                        onClick={() => onDeleteSchedule?.(schedule.id)}
-                      >
-                        {deletingScheduleId === schedule.id
-                          ? '삭제 중...'
-                          : '삭제'}
-                      </DeleteButton>
+                      <ActionButtons>
+                        <EditButton
+                          type="button"
+                          disabled={
+                            editingScheduleId !== null &&
+                            editingScheduleId === schedule.id
+                          }
+                          onClick={() => onEditSchedule?.(schedule)}
+                        >
+                          {editingScheduleId === schedule.id
+                            ? '수정 중...'
+                            : '수정'}
+                        </EditButton>
+                        <DeleteButton
+                          type="button"
+                          disabled={
+                            deletingScheduleId !== null &&
+                            deletingScheduleId === schedule.id
+                          }
+                          onClick={() => onDeleteSchedule?.(schedule.id)}
+                        >
+                          {deletingScheduleId === schedule.id
+                            ? '삭제 중...'
+                            : '삭제'}
+                        </DeleteButton>
+                      </ActionButtons>
                     </Td>
                   </Tr>
                 ))
@@ -317,7 +335,7 @@ const Th = styled.th`
   color: ${({ theme }) => theme.colors.gray700};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   font-size: ${({ theme }) => theme.fontSize.sm};
-  text-align: left;
+  text-align: center;
 `;
 
 const Td = styled.td`
@@ -383,6 +401,34 @@ const EmptyState = styled.div`
 
 const TimeText = styled.span`
   white-space: nowrap;
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  align-items: center;
+`;
+
+const EditButton = styled.button`
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: ${({ theme }) => theme.colors.gray50};
+  }
 `;
 
 const DeleteButton = styled.button`
