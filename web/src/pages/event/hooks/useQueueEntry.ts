@@ -14,20 +14,23 @@ type UseQueueEntryParams = {
 export const useQueueEntry = ({ couponName }: UseQueueEntryParams) => {
   const [eventErrorStatus, setEventErrorStatus] =
     useState<EventErrorStatus | null>(null);
+  const [isPollingEnabled, setIsPollingEnabled] = useState(false);
 
-  const { mutate: addQueueEntry, isSuccess } = useAddQueueEntryMutation({
+  const { mutate: addQueueEntry } = useAddQueueEntryMutation({
     couponName,
+    onAddQueueEntrySuccess: () => setIsPollingEnabled(true),
     onAddQueueEntryError: (errorStatus) => {
       setEventErrorStatus(errorStatus);
     },
   });
   const { mutate: cancelQueueEntry } = useCancelQueueEntryMutation({
     couponName,
+    onCancelSuccess: () => setIsPollingEnabled(false),
   });
 
   const { data: queueEntry } = useQuery({
     ...queries.queueEntry(couponName),
-    enabled: isSuccess,
+    enabled: isPollingEnabled,
     refetchInterval: (query) => {
       const { data } = query.state;
       return data?.pollingTtlSeconds ? data.pollingTtlSeconds * 1000 : false;

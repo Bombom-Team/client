@@ -10,11 +10,13 @@ import type { CouponName } from '@/apis/event/event.api';
 
 interface UseAddQueueEntryMutationParams {
   couponName: CouponName;
+  onAddQueueEntrySuccess?: () => void;
   onAddQueueEntryError?: (eventStatus: EventErrorStatus | null) => void;
 }
 
 export const useAddQueueEntryMutation = ({
   couponName,
+  onAddQueueEntrySuccess,
   onAddQueueEntryError,
 }: UseAddQueueEntryMutationParams) => {
   const queryClient = useQueryClient();
@@ -41,6 +43,7 @@ export const useAddQueueEntryMutation = ({
       queryClient.invalidateQueries({
         queryKey: queries.queueEntry(couponName).queryKey,
       });
+      onAddQueueEntrySuccess?.();
     },
     onError: (error) => {
       const eventErrorStatus = getEventErrorStatus(error);
