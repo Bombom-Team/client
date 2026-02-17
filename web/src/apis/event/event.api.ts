@@ -1,4 +1,5 @@
 import { fetcher } from '@bombom/shared/apis';
+import { ENV } from '@bombom/shared/env';
 
 export type QueueStatus =
   | 'WAITING'
@@ -21,6 +22,7 @@ type PostQueueEntryResponse = QueueEntry;
 export const postQueueEntry = async (couponName: CouponName) => {
   return fetcher.post<never, PostQueueEntryResponse>({
     path: `/coupons/${couponName}/queue-entries`,
+    baseUrl: ENV.eventBaseUrl,
   });
 };
 
@@ -29,12 +31,14 @@ type GetQueueEntryResponse = QueueEntry;
 export const getMyQueueEntry = async (couponName: CouponName) => {
   return fetcher.get<GetQueueEntryResponse>({
     path: `/coupons/${couponName}/queue-entries/me`,
+    baseUrl: ENV.eventBaseUrl,
   });
 };
 
 export const deleteMyQueueEntry = async (couponName: CouponName) => {
   return fetcher.delete({
     path: `/coupons/${couponName}/queue-entries/me`,
+    baseUrl: ENV.eventBaseUrl,
   });
 };
 
@@ -51,6 +55,7 @@ type PostIssueCouponResponse = {
 export const postIssueCoupon = async (couponName: CouponName) => {
   return fetcher.post<never, PostIssueCouponResponse>({
     path: `/coupons/${couponName}/issues`,
+    baseUrl: ENV.eventBaseUrl,
   });
 };
 
@@ -59,6 +64,7 @@ type GetMyCouponsResponse = IssuedCoupon[];
 export const getMyCoupons = async () => {
   return fetcher.get<GetMyCouponsResponse>({
     path: '/coupons/issues/me',
+    baseUrl: ENV.eventBaseUrl,
   });
 };
 
