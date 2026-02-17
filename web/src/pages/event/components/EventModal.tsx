@@ -35,9 +35,13 @@ const EventModal = ({
   return (
     <Container>
       <ContentWrapper>
-        {queueEntry && <QueueStatus queueEntry={queueEntry} />}
+        {queueEntry && (
+          <QueueStatus queueEntry={queueEntry} onClose={closeModal} />
+        )}
 
-        <ConfirmButton onClick={handleCloseModal}>닫기</ConfirmButton>
+        {queueEntry?.status !== QUEUE_STATUS_TYPE.issued && (
+          <ConfirmButton onClick={handleCloseModal}>닫기</ConfirmButton>
+        )}
       </ContentWrapper>
     </Container>
   );

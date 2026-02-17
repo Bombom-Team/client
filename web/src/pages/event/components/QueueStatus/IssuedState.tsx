@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import html2canvas from 'html2canvas';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { COUPON_TYPE } from '../../constants/constants';
 import { formatEventDateTime } from '../../utils/date';
+import CloseWarningModal from '../CloseWarningModal';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Flex from '@/components/Flex';
@@ -14,13 +15,14 @@ import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 
 interface IssuedStateProps {
-  onRegisterDownload?: (fn: () => Promise<void>) => void;
+  onClose: () => void;
 }
 
-const IssuedState = ({ onRegisterDownload }: IssuedStateProps) => {
+const IssuedState = ({ onClose }: IssuedStateProps) => {
   const device = useDevice();
   const { data: coupons } = useQuery(queries.myCoupons());
   const couponRef = useRef<HTMLDivElement>(null);
+  const [showWarning, setShowWarning] = useState(false);
 
   const handleDownload = useCallback(async () => {
     if (!couponRef.current) return;
@@ -40,12 +42,11 @@ const IssuedState = ({ onRegisterDownload }: IssuedStateProps) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!coupons || coupons.length === 0) return;
-    onRegisterDownload?.(handleDownload);
-  }, [coupons, onRegisterDownload, handleDownload]);
-
   if (!coupons || coupons.length === 0) return null;
+
+  if (showWarning) {
+    return <CloseWarningModal onDownload={handleDownload} onClose={onClose} />;
+  }
 
   return (
     <Flex direction="column" gap={16} align="center">
@@ -85,6 +86,7 @@ const IssuedState = ({ onRegisterDownload }: IssuedStateProps) => {
       <DownloadButton onClick={handleDownload}>
         💾 이미지로 저장하기
       </DownloadButton>
+      <CloseButton onClick={() => setShowWarning(true)}>닫기</CloseButton>
     </Flex>
   );
 };
@@ -108,4 +110,11 @@ const DownloadButton = styled(Button)`
 
   font: ${({ theme }) => theme.fonts.body2};
   font-weight: 600;
+`;
+
+const CloseButton = styled(Button)`
+  width: 100%;
+  max-width: 200px;
+
+  font: ${({ theme }) => theme.fonts.body1};
 `;

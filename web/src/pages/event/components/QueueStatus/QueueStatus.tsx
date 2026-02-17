@@ -7,10 +7,10 @@ import type { QueueEntry } from '@/apis/event/event.api';
 
 interface QueueStatusProps {
   queueEntry: QueueEntry | undefined;
-  onRegisterDownload?: (fn: () => Promise<void>) => void;
+  onClose: () => void;
 }
 
-const QueueStatus = ({ queueEntry, onRegisterDownload }: QueueStatusProps) => {
+const QueueStatus = ({ queueEntry, onClose }: QueueStatusProps) => {
   if (!queueEntry || queueEntry.status === QUEUE_STATUS_TYPE.unregistered) {
     return null;
   }
@@ -23,7 +23,7 @@ const QueueStatus = ({ queueEntry, onRegisterDownload }: QueueStatusProps) => {
       return <ReadyState queueEntry={queueEntry} />;
 
     case QUEUE_STATUS_TYPE.issued:
-      return <IssuedState onRegisterDownload={onRegisterDownload} />;
+      return <IssuedState onClose={onClose} />;
 
     case QUEUE_STATUS_TYPE.soldOut:
       return <SoldOutState />;
