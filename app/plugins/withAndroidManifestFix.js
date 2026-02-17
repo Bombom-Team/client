@@ -34,28 +34,6 @@ module.exports = function withNotificationToolsReplace(config, props = {}) {
       });
     }
 
-    // Google Play 정책 준수: READ_MEDIA_IMAGES/VIDEO 권한 완전 제거
-    // 이 앱은 이미지를 갤러리에서 읽지 않고 저장만 하므로 READ 권한 불필요
-    // Android 13+: MediaLibrary.saveToLibraryAsync()는 READ 권한 없이도 작동
-    // Android 12 이하: WRITE_EXTERNAL_STORAGE 권한으로 충분
-    manifest.manifest['uses-permission'] =
-      manifest.manifest['uses-permission'] || [];
-
-    const permissionsToRemove = [
-      'android.permission.READ_MEDIA_IMAGES',
-      'android.permission.READ_MEDIA_VIDEO',
-      'android.permission.READ_MEDIA_AUDIO',
-    ];
-
-    manifest.manifest['uses-permission'] = manifest.manifest[
-      'uses-permission'
-    ].filter((permission) => {
-      return (
-        !permission.$ ||
-        !permissionsToRemove.includes(permission.$['android:name'])
-      );
-    });
-
     return config;
   });
 };
