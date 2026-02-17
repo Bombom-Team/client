@@ -49,6 +49,7 @@ jobs:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
           API_BASE_URL: ${{ vars.API_BASE_URL }}
+          API_BASE_URL_EVENT: ${{ vars.API_BASE_URL_EVENT }}
           MONITORING_STATUS_URL: ${{ vars.MONITORING_STATUS_URL }}
           SERVER_TYPE: ${{ vars.SERVER_TYPE }}
         run: pnpm run web:build
