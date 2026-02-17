@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 import { useAddQueueEntryMutation } from './useAddQueueEntryMutation';
 import { useCancelQueueEntryMutation } from './useCancelQueueEntryMutation';
+import { QUEUE_STATUS_TYPE } from '../constants/constants';
 import { queries } from '@/apis/queries';
 import type { EventErrorStatus } from '../types/event';
 import type { CouponName } from '@/apis/event/event.api';
@@ -30,10 +31,17 @@ export const useQueueEntry = ({ couponName }: UseQueueEntryParams) => {
 
   const { data: queueEntry } = useQuery({
     ...queries.queueEntry(couponName),
-    enabled: isPollingEnabled,
+    enabled: (query) => {
+      if (!isPollingEnabled) return false;
+      const status = query.state.data?.status;
+      return !status || status === QUEUE_STATUS_TYPE.waiting;
+    },
     refetchInterval: (query) => {
       const { data } = query.state;
-      return data?.pollingTtlSeconds ? data.pollingTtlSeconds * 1000 : false;
+      const interval = data?.pollingTtlSeconds
+        ? data.pollingTtlSeconds * 1000
+        : false;
+      return interval;
     },
     refetchIntervalInBackground: true,
   });
