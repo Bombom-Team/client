@@ -18,7 +18,7 @@ const CloseWarningModal = ({ onDownload, onClose }: CloseWarningModalProps) => {
   };
 
   return (
-    <Flex direction="column" gap={24} align="center">
+    <Container>
       <Flex direction="column" gap={8} align="center">
         <Text font="heading6">이미지를 저장하셨나요?</Text>
         <Description>
@@ -35,11 +35,22 @@ const CloseWarningModal = ({ onDownload, onClose }: CloseWarningModalProps) => {
           그냥 닫기
         </SecondaryButton>
       </ButtonGroup>
-    </Flex>
+    </Container>
   );
 };
 
 export default CloseWarningModal;
+
+const Container = styled.div`
+  width: 100%;
+  min-width: 264px;
+  padding: 0 8px;
+
+  display: flex;
+  gap: 24px;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const ButtonGroup = styled(Flex)`
   width: 100%;
