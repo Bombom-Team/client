@@ -13,9 +13,13 @@ import NoticeModal from '@/pages/event/components/NoticeModal';
 import { COUPON_NAME } from '@/pages/event/constants/constants';
 import { useQueueEntry } from '@/pages/event/hooks/useQueueEntry';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
+import type { CouponName } from '@/apis/event/event.api';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/event')({
+  validateSearch: (search) => ({
+    coupon: (search.coupon as CouponName) || COUPON_NAME,
+  }),
   head: () => ({
     meta: [
       {
@@ -27,6 +31,7 @@ export const Route = createFileRoute('/event')({
 });
 
 function EventPage() {
+  const { coupon } = Route.useSearch();
   const device = useDevice();
   const { modalRef, openModal, closeModal, isOpen } = useModal({
     closeOnBackdropClick: false,
@@ -38,7 +43,7 @@ function EventPage() {
     eventErrorStatus,
     resetEventStatus,
   } = useQueueEntry({
-    couponName: COUPON_NAME,
+    couponName: coupon,
   });
 
   const closeNoticeModal = () => {
