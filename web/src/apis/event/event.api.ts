@@ -78,7 +78,8 @@ type PostCaptchaResponse = {
 
 export const postCaptcha = async (gRecaptchaResponse: string) => {
   return fetcher.post<PostCaptchaRequest, PostCaptchaResponse>({
-    path: '/notifications/captcha',
+    path: '/notifications/capcha',
     body: { gRecaptchaResponse },
+    baseUrl: ENV.notificationBaseUrl,
   });
 };
