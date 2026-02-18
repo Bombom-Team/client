@@ -1,4 +1,4 @@
-export const COUPON_NAME = 'avengers';
+export const COUPON_NAME = 'day1-coupon';
 
 export const QUEUE_STATUS_TYPE = {
   waiting: 'WAITING',
