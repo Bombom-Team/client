@@ -8,10 +8,15 @@ import type { QueueEntry } from '@/apis/event/event.api';
 
 interface QueueStatusProps {
   queueEntry: QueueEntry | undefined;
+  refetchQueueEntry: () => void;
   onClose: () => void;
 }
 
-const QueueStatus = ({ queueEntry, onClose }: QueueStatusProps) => {
+const QueueStatus = ({
+  queueEntry,
+  refetchQueueEntry,
+  onClose,
+}: QueueStatusProps) => {
   if (!queueEntry) {
     return null;
   }
@@ -24,7 +29,12 @@ const QueueStatus = ({ queueEntry, onClose }: QueueStatusProps) => {
       return <WaitingState queueEntry={queueEntry} />;
 
     case QUEUE_STATUS_TYPE.ready:
-      return <ReadyState queueEntry={queueEntry} />;
+      return (
+        <ReadyState
+          queueEntry={queueEntry}
+          refetchQueueEntry={refetchQueueEntry}
+        />
+      );
 
     case QUEUE_STATUS_TYPE.issued:
       return <IssuedState onClose={onClose} />;
