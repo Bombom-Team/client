@@ -59,7 +59,9 @@ const EventShareGuide = () => {
 
             <StepRow>
               <StepBadge>STEP 3</StepBadge>
-              <StepText>아래 버튼을 눌러 구글 폼에 제출하면 완료!</StepText>
+              <StepText>
+                아래 버튼을 눌러 2/21 오후 7시까지 구글 폼에 제출하면 완료!
+              </StepText>
             </StepRow>
           </StepWrapper>
 
@@ -77,6 +79,9 @@ const EventShareGuide = () => {
 
           <NoticeText>
             * 비공개 계정이나 삭제된 게시글은 당첨에서 제외될 수 있습니다.
+          </NoticeText>
+          <NoticeText>
+            * 공유 이벤트 폼 제출 마감은 2026.02.21 19:00 입니다.
           </NoticeText>
         </PrizeCard>
       </CardWrapper>
