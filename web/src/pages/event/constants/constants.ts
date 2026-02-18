@@ -11,6 +11,7 @@ export const QUEUE_STATUS_TYPE = {
 export const EVENT_STATUS_TYPE = {
   notStarted: 'EVENT_NOT_STARTED',
   ended: 'EVENT_ENDED',
+  unknownError: 'UNKNOWN_ERROR',
 } as const;
 
 export const COUPON_TYPE = {

@@ -12,14 +12,20 @@ interface NoticeModalProps {
 const NoticeModal = ({ noticeType, closeModal }: NoticeModalProps) => {
   const device = useDevice();
 
+  const getNoticeTitle = () => {
+    if (noticeType === EVENT_STATUS_TYPE.notStarted) {
+      return '이벤트 기간이 아니에요.';
+    }
+
+    return noticeType === EVENT_STATUS_TYPE.ended
+      ? '다음 이벤트를 기대해주세요!'
+      : '이벤트를 신청할 수 없습니다.';
+  };
+
   return (
     <Container>
       <ContentWrapper>
-        <Title device={device}>
-          {noticeType === EVENT_STATUS_TYPE.notStarted
-            ? '이벤트 기간이 아니에요.'
-            : '다음 이벤트를 기대해주세요!'}
-        </Title>
+        <Title device={device}>{getNoticeTitle()}</Title>
         <Description>자세한 내용은 이벤트 페이지를 참고해주세요.</Description>
 
         <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>

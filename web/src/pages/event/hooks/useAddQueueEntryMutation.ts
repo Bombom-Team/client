@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 import { EVENT_STATUS_TYPE } from '../constants/constants';
 import { postQueueEntry } from '@/apis/event/event.api';
 import { queries } from '@/apis/queries';
-import { toast } from '@/components/Toast/utils/toastActions';
 import type { EventErrorStatus } from '../types/event';
 import type { CouponName } from '@/apis/event/event.api';
 
@@ -34,7 +33,7 @@ export const useAddQueueEntryMutation = ({
       return eventStatus;
     }
 
-    return null;
+    return EVENT_STATUS_TYPE.unknownError;
   }, []);
 
   return useMutation({
@@ -48,10 +47,6 @@ export const useAddQueueEntryMutation = ({
     onError: (error) => {
       const eventErrorStatus = getEventErrorStatus(error);
       onAddQueueEntryError?.(eventErrorStatus);
-
-      if (!eventErrorStatus) {
-        toast.error('대기열 등록에 실패했습니다. 다시 시도해주세요.');
-      }
     },
   });
 };
