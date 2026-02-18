@@ -4,6 +4,7 @@ import { formatEventDateTime, extractKSTDate } from '../utils/date';
 import Flex from '@/components/Flex';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
@@ -14,10 +15,10 @@ const ROUND_START = {
 } as const;
 
 interface EventHeroProps {
-  onShowNotice: () => void;
+  onApply: () => void;
 }
 
-const EventHero = ({ onShowNotice }: EventHeroProps) => {
+const EventHero = ({ onApply }: EventHeroProps) => {
   const device = useDevice();
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
@@ -39,10 +40,16 @@ const EventHero = ({ onShowNotice }: EventHeroProps) => {
 
   const handleApplyButtonClick = () => {
     if (isLoggedIn) {
-      onShowNotice();
+      onApply();
     } else {
       goToLogin();
     }
+
+    trackEvent({
+      category: 'Event',
+      action: '선착순 경품 받기 버튼 클릭',
+      label: formatEventDateTime(new Date()),
+    });
   };
 
   return (

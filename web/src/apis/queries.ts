@@ -2,6 +2,7 @@ import { articlesQueries } from './articles/articles.query';
 import { authQueries } from './auth/auth.query';
 import { bookmarkQueries } from './bookmark/bookmark.query';
 import { challengeQueries } from './challenge/challenge.query';
+import { eventQueries } from './event/event.query';
 import { highlightQueries } from './highlight/highlight.query';
 import { membersQueries } from './members/members.query';
 import { newslettersQueries } from './newsletters/newsletters.query';
@@ -39,4 +40,7 @@ export const queries = {
 
   // previous articles
   ...previousArticlesQueries,
+
+  // event
+  ...eventQueries,
 };

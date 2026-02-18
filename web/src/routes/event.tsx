@@ -6,13 +6,20 @@ import { useDevice } from '@/hooks/useDevice';
 import EventFooter from '@/pages/event/components/EventFooter';
 import EventGuide from '@/pages/event/components/EventGuide';
 import EventHero from '@/pages/event/components/EventHero';
-import EventNoticeModal from '@/pages/event/components/EventNoticeModal';
+import EventModal from '@/pages/event/components/EventModal';
 import EventPrize from '@/pages/event/components/EventPrize';
 import EventShareGuide from '@/pages/event/components/EventShareGuide';
+import NoticeModal from '@/pages/event/components/NoticeModal';
+import { COUPON_NAME } from '@/pages/event/constants/constants';
+import { useQueueEntry } from '@/pages/event/hooks/useQueueEntry';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
+import type { CouponName } from '@/apis/event/event.api';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/event')({
+  validateSearch: (search): { coupon?: CouponName } => ({
+    coupon: search.coupon as CouponName,
+  }),
   head: () => ({
     meta: [
       {
@@ -24,24 +31,59 @@ export const Route = createFileRoute('/event')({
 });
 
 function EventPage() {
+  const { coupon } = Route.useSearch();
   const device = useDevice();
-  const { modalRef, openModal, closeModal, isOpen } = useModal();
+  const { modalRef, openModal, closeModal, isOpen } = useModal({
+    closeOnBackdropClick: false,
+  });
+  const {
+    queueEntry,
+    refetchQueueEntry,
+    addQueueEntry,
+    cancelQueueEntry,
+    eventErrorStatus,
+    resetEventStatus,
+  } = useQueueEntry({
+    couponName: coupon ?? COUPON_NAME,
+  });
+
+  const closeNoticeModal = () => {
+    resetEventStatus();
+    closeModal();
+  };
+
+  const applyEvent = () => {
+    addQueueEntry();
+    openModal();
+  };
 
   return (
     <Container device={device}>
       <LandingHeader />
-      <EventHero onShowNotice={openModal} />
+      <EventHero onApply={applyEvent} />
       <EventPrize />
       <EventGuide />
       <EventShareGuide />
       <EventFooter />
       <Modal
         modalRef={modalRef}
-        closeModal={closeModal}
+        closeModal={eventErrorStatus ? closeNoticeModal : closeModal}
         isOpen={isOpen}
         showCloseButton={false}
       >
-        <EventNoticeModal closeModal={closeModal} />
+        {eventErrorStatus ? (
+          <NoticeModal
+            noticeType={eventErrorStatus}
+            closeModal={closeNoticeModal}
+          />
+        ) : (
+          <EventModal
+            queueEntry={queueEntry}
+            cancelQueueEntry={cancelQueueEntry}
+            refetchQueueEntry={refetchQueueEntry}
+            closeModal={closeModal}
+          />
+        )}
       </Modal>
     </Container>
   );
