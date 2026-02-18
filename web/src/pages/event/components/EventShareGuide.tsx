@@ -83,7 +83,7 @@ const EventShareGuide = () => {
               * 비공개 계정이나 삭제된 게시글은 당첨에서 제외될 수 있습니다.
             </NoticeText>
             <NoticeText>
-              * 공유 이벤트 폼 제출 마감은 2026.02.21 19:00 입니다.
+              * 공유 이벤트 폼 제출 마감은 2026.02.23 13:00 입니다.
             </NoticeText>
           </NoticeWrapper>
         </PrizeCard>
