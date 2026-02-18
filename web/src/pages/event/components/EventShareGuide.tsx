@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Flex from '@/components/Flex';
 import LinkIcon from '#/assets/svg/link.svg';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
 
@@ -59,7 +60,9 @@ const EventShareGuide = () => {
 
             <StepRow>
               <StepBadge>STEP 3</StepBadge>
-              <StepText>아래 버튼을 눌러 구글 폼에 제출하면 완료!</StepText>
+              <StepText>
+                아래 버튼을 눌러 2/21 오후 7시까지 구글 폼에 제출하면 완료!
+              </StepText>
             </StepRow>
           </StepWrapper>
 
@@ -75,9 +78,14 @@ const EventShareGuide = () => {
             </ShareButton>
           </ButtonWrapper>
 
-          <NoticeText>
-            * 비공개 계정이나 삭제된 게시글은 당첨에서 제외될 수 있습니다.
-          </NoticeText>
+          <NoticeWrapper direction="column" align="flex-start" gap={8}>
+            <NoticeText>
+              * 비공개 계정이나 삭제된 게시글은 당첨에서 제외될 수 있습니다.
+            </NoticeText>
+            <NoticeText>
+              * 공유 이벤트 폼 제출 마감은 2026.02.21 19:00 입니다.
+            </NoticeText>
+          </NoticeWrapper>
         </PrizeCard>
       </CardWrapper>
     </Container>
@@ -291,11 +299,14 @@ const ShareButton = styled.a`
   }
 `;
 
-const NoticeText = styled.p`
-  margin-top: 24px;
+const NoticeWrapper = styled(Flex)`
+  width: 100%;
+  padding-top: 24px;
+`;
 
+const NoticeText = styled.p`
   color: #9ca3af;
   font: ${({ theme }) => theme.fonts.body2};
   font-weight: 500;
-  text-align: center;
+  text-align: left;
 `;
