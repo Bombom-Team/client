@@ -119,6 +119,8 @@ export const MOCK_COUPON_IMAGES = {
     'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=250&fit=crop',
   'day2-coupon':
     'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=250&fit=crop',
+  avengers:
+    'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=250&fit=crop',
 } as const;
 
 // 이벤트 시간 설정 (테스트용)

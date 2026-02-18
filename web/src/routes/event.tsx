@@ -17,8 +17,8 @@ import type { CouponName } from '@/apis/event/event.api';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/event')({
-  validateSearch: (search) => ({
-    coupon: (search.coupon as CouponName) || COUPON_NAME,
+  validateSearch: (search): { coupon?: CouponName } => ({
+    coupon: search.coupon as CouponName,
   }),
   head: () => ({
     meta: [
@@ -43,7 +43,7 @@ function EventPage() {
     eventErrorStatus,
     resetEventStatus,
   } = useQueueEntry({
-    couponName: coupon,
+    couponName: coupon ?? COUPON_NAME,
   });
 
   const closeNoticeModal = () => {
