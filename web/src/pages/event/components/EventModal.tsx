@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import QueueStatus from './QueueStatus/QueueStatus';
 import { QUEUE_STATUS_TYPE } from '../constants/constants';
 import Button from '@/components/Button/Button';
@@ -16,6 +16,9 @@ const EventModal = ({
   cancelQueueEntry,
   closeModal,
 }: EventModalProps) => {
+  const statusRef = useRef(queueEntry?.status);
+  statusRef.current = queueEntry?.status;
+
   const handleCloseModal = () => {
     cancelQueueEntry();
     closeModal();
@@ -24,13 +27,14 @@ const EventModal = ({
   useEffect(() => {
     return () => {
       if (
-        queueEntry?.status === QUEUE_STATUS_TYPE.waiting ||
-        queueEntry?.status === QUEUE_STATUS_TYPE.ready
+        statusRef.current === QUEUE_STATUS_TYPE.waiting ||
+        statusRef.current === QUEUE_STATUS_TYPE.ready
       ) {
         cancelQueueEntry();
       }
     };
-  }, [queueEntry?.status, cancelQueueEntry]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container>

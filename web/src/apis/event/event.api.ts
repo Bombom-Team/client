@@ -7,7 +7,7 @@ export type QueueStatus =
   | 'ISSUED'
   | 'NOT_IN_QUEUE'
   | 'SOLD_OUT';
-export type CouponName = 'day1-coupon' | 'day2-coupon';
+export type CouponName = 'day1-coupon' | 'day2-coupon' | 'avengers';
 export type QueueEntry = {
   couponName: CouponName;
   status: QueueStatus;
@@ -78,7 +78,8 @@ type PostCaptchaResponse = {
 
 export const postCaptcha = async (gRecaptchaResponse: string) => {
   return fetcher.post<PostCaptchaRequest, PostCaptchaResponse>({
-    path: '/notifications/captcha',
+    path: '/notifications/capcha',
     body: { gRecaptchaResponse },
+    baseUrl: ENV.notificationBaseUrl,
   });
 };

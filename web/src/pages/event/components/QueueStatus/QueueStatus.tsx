@@ -1,6 +1,7 @@
 import IssuedState from './IssuedState';
 import ReadyState from './ReadyState';
 import SoldOutState from './SoldOutState';
+import UnregisteredState from './UnregisteredState';
 import WaitingState from './WaitingState';
 import { QUEUE_STATUS_TYPE } from '../../constants/constants';
 import type { QueueEntry } from '@/apis/event/event.api';
@@ -11,11 +12,14 @@ interface QueueStatusProps {
 }
 
 const QueueStatus = ({ queueEntry, onClose }: QueueStatusProps) => {
-  if (!queueEntry || queueEntry.status === QUEUE_STATUS_TYPE.unregistered) {
+  if (!queueEntry) {
     return null;
   }
 
   switch (queueEntry.status) {
+    case QUEUE_STATUS_TYPE.unregistered:
+      return <UnregisteredState />;
+
     case QUEUE_STATUS_TYPE.waiting:
       return <WaitingState queueEntry={queueEntry} />;
 
