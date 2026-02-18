@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { queries } from '@/apis/queries';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
@@ -52,15 +54,28 @@ function EventPage() {
     closeModal();
   };
 
+  const { data: myCoupon, refetch: getMyCoupons } = useQuery({
+    ...queries.myCoupons(),
+    enabled: false,
+  });
+
   const applyEvent = () => {
     addQueueEntry();
     openModal();
   };
 
+  const handleGetMyCoupon = () => {
+    getMyCoupons();
+  };
+
   return (
     <Container device={device}>
       <LandingHeader />
-      <EventHero onApply={applyEvent} />
+      <EventHero
+        onApply={applyEvent}
+        myCoupon={myCoupon}
+        onGetMyCoupon={handleGetMyCoupon}
+      />
       <EventPrize />
       <EventGuide />
       <EventShareGuide />

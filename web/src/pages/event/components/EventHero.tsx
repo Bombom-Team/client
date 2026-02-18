@@ -1,12 +1,8 @@
 import styled from '@emotion/styled';
-import { useNavigate } from '@tanstack/react-router';
 import { formatEventDateTime, extractKSTDate } from '../utils/date';
 import Flex from '@/components/Flex';
-import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
-import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
+import type { IssuedCoupon } from '@/apis/event/event.api';
 import type { Device } from '@/hooks/useDevice';
 
 const ROUND_START = {
@@ -16,12 +12,14 @@ const ROUND_START = {
 
 interface EventHeroProps {
   onApply: () => void;
+  myCoupon: IssuedCoupon[] | undefined;
+  onGetMyCoupon: () => void;
 }
 
-const EventHero = ({ onApply }: EventHeroProps) => {
+const EventHero = ({ myCoupon, onGetMyCoupon }: EventHeroProps) => {
   const device = useDevice();
-  const { isLoggedIn } = useAuth();
-  const navigate = useNavigate();
+  // const { isLoggedIn } = useAuth();
+  // const navigate = useNavigate();
 
   const today = extractKSTDate(new Date());
   const firstRoundDeadline = extractKSTDate(new Date(ROUND_START.first));
@@ -30,27 +28,27 @@ const EventHero = ({ onApply }: EventHeroProps) => {
   const isFirstRoundComplete = today > firstRoundDeadline;
   const isSecondRoundComplete = today > secondRoundDeadline;
 
-  const goToLogin = () => {
-    if (isWebView())
-      sendMessageToRN({
-        type: 'SHOW_LOGIN_SCREEN',
-      });
-    else navigate({ to: '/login' });
-  };
+  // const goToLogin = () => {
+  //   if (isWebView())
+  //     sendMessageToRN({
+  //       type: 'SHOW_LOGIN_SCREEN',
+  //     });
+  //   else navigate({ to: '/login' });
+  // };
 
-  const handleApplyButtonClick = () => {
-    if (isLoggedIn) {
-      onApply();
-    } else {
-      goToLogin();
-    }
+  // const handleApplyButtonClick = () => {
+  //   if (isLoggedIn) {
+  //     onApply();
+  //   } else {
+  //     goToLogin();
+  //   }
 
-    trackEvent({
-      category: 'Event',
-      action: '선착순 경품 받기 버튼 클릭',
-      label: formatEventDateTime(new Date()),
-    });
-  };
+  //   trackEvent({
+  //     category: 'Event',
+  //     action: '선착순 경품 받기 버튼 클릭',
+  //     label: formatEventDateTime(new Date()),
+  //   });
+  // };
 
   return (
     <Container device={device}>
@@ -130,13 +128,22 @@ const EventHero = ({ onApply }: EventHeroProps) => {
           </InfoRow>
         </InfoCard>
 
-        <ApplyButton
+        {/* <ApplyButton
           type="button"
           device={device}
           onClick={handleApplyButtonClick}
         >
           {isLoggedIn ? '선착순 경품 받기' : '로그인하고 선착순 경품 받기'}
-        </ApplyButton>
+        </ApplyButton> */}
+        {myCoupon && myCoupon.length > 0 && (
+          <GetMyCouponButton
+            type="button"
+            device={device}
+            onClick={onGetMyCoupon}
+          >
+            내 쿠폰 확인하기
+          </GetMyCouponButton>
+        )}
       </ContentWrapper>
     </Container>
   );
@@ -202,24 +209,46 @@ const HeroBadge = styled.div<{ device: Device }>`
   transform: rotate(-2deg);
 `;
 
-const ApplyButton = styled.button<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '12px 20px' : '20px 44px')};
-  border: 4px solid ${({ theme }) => theme.colors.black};
-  border-radius: 24px;
-  box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
+// const ApplyButton = styled.button<{ device: Device }>`
+//   padding: ${({ device }) => (device === 'mobile' ? '12px 20px' : '20px 44px')};
+//   border: 4px solid ${({ theme }) => theme.colors.black};
+//   border-radius: 24px;
+//   box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
 
-  background-color: #d81b60;
-  color: ${({ theme }) => theme.colors.white};
+//   background-color: #d81b60;
+//   color: ${({ theme }) => theme.colors.white};
+//   font: ${({ theme, device }) =>
+//     device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+
+//   &:hover {
+//     box-shadow: 6px 6px 0 0 ${({ theme }) => theme.colors.black};
+//     transform: translateY(-2px);
+//   }
+
+//   &:active {
+//     box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+//     transform: translateY(0);
+//   }
+// `;
+
+const GetMyCouponButton = styled.button<{ device: Device }>`
+  padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '12px 28px')};
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 24px;
+  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.black};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
 
   &:hover {
-    box-shadow: 6px 6px 0 0 ${({ theme }) => theme.colors.black};
+    box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
     transform: translateY(-2px);
   }
 
   &:active {
-    box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+    box-shadow: 1px 1px 0 0 ${({ theme }) => theme.colors.black};
     transform: translateY(0);
   }
 `;
