@@ -7,12 +7,14 @@ import type { QueueEntry } from '@/apis/event/event.api';
 
 interface EventModalProps {
   queueEntry: QueueEntry | undefined;
+  refetchQueueEntry: () => void;
   cancelQueueEntry: () => void;
   closeModal: () => void;
 }
 
 const EventModal = ({
   queueEntry,
+  refetchQueueEntry,
   cancelQueueEntry,
   closeModal,
 }: EventModalProps) => {
@@ -40,7 +42,7 @@ const EventModal = ({
     <Container>
       <ContentWrapper>
         {queueEntry && (
-          <QueueStatus queueEntry={queueEntry} onClose={closeModal} />
+          <QueueStatus queueEntry={queueEntry} refetchQueueEntry={refetchQueueEntry} onClose={closeModal} />
         )}
 
         {queueEntry?.status !== QUEUE_STATUS_TYPE.issued && (

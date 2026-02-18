@@ -38,6 +38,7 @@ function EventPage() {
   });
   const {
     queueEntry,
+    refetchQueueEntry,
     addQueueEntry,
     cancelQueueEntry,
     eventErrorStatus,
@@ -79,6 +80,7 @@ function EventPage() {
           <EventModal
             queueEntry={queueEntry}
             cancelQueueEntry={cancelQueueEntry}
+            refetchQueueEntry={refetchQueueEntry}
             closeModal={closeModal}
           />
         )}

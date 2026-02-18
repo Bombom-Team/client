@@ -13,16 +13,17 @@ import type { Device } from '@/hooks/useDevice';
 
 interface ReadyStateProps {
   queueEntry: QueueEntry;
+  refetchQueueEntry: () => void;
 }
 
-const ReadyState = ({ queueEntry }: ReadyStateProps) => {
+const ReadyState = ({ queueEntry, refetchQueueEntry }: ReadyStateProps) => {
   const device = useDevice();
   const { isCaptchaValid } = useCaptcha();
   const { mutate: issueCoupon } = useIssueCouponMutation({
     couponName: queueEntry.couponName,
   });
 
-  const expiresAt = useMemo(
+  const expiredCaptchaTime = useMemo(
     () =>
       queueEntry.activeExpiresInSeconds
         ? new Date(Date.now() + queueEntry.activeExpiresInSeconds * 1000)
@@ -31,7 +32,9 @@ const ReadyState = ({ queueEntry }: ReadyStateProps) => {
   );
 
   const { leftTime } = useCountdown({
-    targetTime: expiresAt ?? new Date(),
+    targetTime: expiredCaptchaTime ?? new Date(),
+    onComplete: expiredCaptchaTime ? refetchQueueEntry : undefined,
+    completeDelay: 3000,
   });
 
   const handleCaptchaChange = async (token: string | null) => {
@@ -51,7 +54,7 @@ const ReadyState = ({ queueEntry }: ReadyStateProps) => {
 
       <ReCAPTCHA sitekey={ENV.captchaSiteKey} onChange={handleCaptchaChange} />
 
-      {expiresAt && (
+      {expiredCaptchaTime && (
         <Flex direction="column" gap={4} align="center" justify="center">
           <Text font={device === 'mobile' ? 'body3' : 'body2'}>
             ⏰ 이 창은
