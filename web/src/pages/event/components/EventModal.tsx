@@ -42,7 +42,11 @@ const EventModal = ({
     <Container>
       <ContentWrapper>
         {queueEntry && (
-          <QueueStatus queueEntry={queueEntry} refetchQueueEntry={refetchQueueEntry} onClose={closeModal} />
+          <QueueStatus
+            queueEntry={queueEntry}
+            refetchQueueEntry={refetchQueueEntry}
+            onClose={closeModal}
+          />
         )}
 
         {queueEntry?.status !== QUEUE_STATUS_TYPE.issued && (
