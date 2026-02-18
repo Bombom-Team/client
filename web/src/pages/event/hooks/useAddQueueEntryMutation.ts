@@ -10,8 +10,8 @@ import type { CouponName } from '@/apis/event/event.api';
 
 interface UseAddQueueEntryMutationParams {
   couponName: CouponName;
-  onAddQueueEntrySuccess?: () => void;
-  onAddQueueEntryError?: (eventStatus: EventErrorStatus | null) => void;
+  onAddQueueEntrySuccess: () => void;
+  onAddQueueEntryError: (eventStatus: EventErrorStatus | null) => void;
 }
 
 export const useAddQueueEntryMutation = ({

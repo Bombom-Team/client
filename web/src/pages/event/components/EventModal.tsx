@@ -45,7 +45,7 @@ const EventModal = ({
           <QueueStatus
             queueEntry={queueEntry}
             refetchQueueEntry={refetchQueueEntry}
-            onClose={closeModal}
+            onClose={handleCloseModal}
           />
         )}
 
