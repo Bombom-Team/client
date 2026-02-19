@@ -4,6 +4,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import ReadingKingLeaderboard from '../../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
+import AppInstallSection from '@/pages/recommend/components/AppInstallSection/AppInstallSection';
 import ChallengeSection from '@/pages/recommend/components/ChallengeSection/ChallengeSection';
 import EventLandingHero from '@/pages/recommend/components/NewsletterHero/EventLandingHero';
 import NoticeAnnounceBar from '@/pages/recommend/components/NoticeAnnounceBar/NoticeAnnounceBar';
@@ -53,6 +54,7 @@ function Index() {
         </MainSection>
         <SideSection device={device}>
           <ReadingKingLeaderboard />
+          <AppInstallSection />
         </SideSection>
       </MainContent>
     </Container>
@@ -97,5 +99,8 @@ const SideSection = styled.div<{ device: Device }>`
   max-width: ${({ device }) => (device === 'mobile' ? '400px' : 'none')};
   margin: ${({ device }) => (device === 'mobile' ? '0 auto' : '0')};
 
+  display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
+  flex-direction: column;
   flex-shrink: 0;
 `;
