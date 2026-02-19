@@ -34,7 +34,7 @@ const AppInstallSection = () => {
   return (
     <>
       <Container>
-        <ContentWrapper>
+        <ContentWrapper gap={20} direction="column" align="center">
           <Flex direction="column" gap={8} align="center">
             <Text
               as="h3"
@@ -111,18 +111,13 @@ const Container = styled.section`
   backdrop-filter: blur(10px);
 `;
 
-const ContentWrapper = styled.div`
-  display: flex;
-  gap: 20px;
-  flex-direction: column;
-  align-items: center;
-
-  text-align: center;
-`;
-
 const ButtonWrapper = styled(Flex)`
   width: 100%;
   flex-wrap: wrap;
+`;
+
+const ContentWrapper = styled(Flex)`
+  text-align: center;
 `;
 
 const StoreButton = styled.button<{
