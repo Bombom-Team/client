@@ -21,6 +21,7 @@ import { goToSystemPermission, updateMemberId } from '@/utils/notification';
 import useNotification from '@/hooks/useNotification';
 import { useEffect, useRef } from 'react';
 import { useDeviceInfo } from '@/hooks/useDeviceInfo';
+import { useNotificationPermission } from '@/hooks/useNotificationPermission';
 
 const saveImageToGallery = async (base64: string, fileName: string) => {
   try {
@@ -58,12 +59,12 @@ const saveImageToGallery = async (base64: string, fileName: string) => {
 export const MainScreen = () => {
   const { showWebViewLogin, showLogin, hideLogin } = useAuth();
   const { webViewRef } = useWebView();
-  const { sendDeviceInfoToWeb, sendNotificationPermissionInfo } =
-    useDeviceInfo();
+  const { sendDeviceInfoToWeb } = useDeviceInfo();
   const webViewLoadEndCleanupRef = useRef<() => void>(null);
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
   const { onNotification, registerFCMToken } = useNotification();
+  const { sendPermissionToWeb } = useNotificationPermission();
 
   const handleWebViewLoadEnd = () => {
     console.log('WebView 로드 완료');
@@ -124,7 +125,7 @@ export const MainScreen = () => {
           break;
 
         case 'CHECK_NOTIFICATION_PERMISSION':
-          sendNotificationPermissionInfo();
+          sendPermissionToWeb();
           break;
 
         case 'SHOW_NOTIFICATION_PERMISSION_SETTING':

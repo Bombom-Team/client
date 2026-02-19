@@ -1,6 +1,5 @@
 import { useWebView } from '@/contexts/WebViewContext';
 import { getDeviceUUID } from '@/utils/device';
-import { checkNotificationPermission } from '@/utils/notification';
 import { useCallback } from 'react';
 
 export const useDeviceInfo = () => {
@@ -20,20 +19,7 @@ export const useDeviceInfo = () => {
     }
   }, [sendMessageToWeb]);
 
-  const sendNotificationPermissionInfo = useCallback(async () => {
-    try {
-      const hasPermission = await checkNotificationPermission();
-      sendMessageToWeb({
-        type: 'NOTIFICATION_PERMISSION',
-        payload: { hasPermission },
-      });
-    } catch (error) {
-      console.error('알림 권한 정보 전송 실패:', error);
-    }
-  }, [sendMessageToWeb]);
-
   return {
     sendDeviceInfoToWeb,
-    sendNotificationPermissionInfo,
   };
 };
