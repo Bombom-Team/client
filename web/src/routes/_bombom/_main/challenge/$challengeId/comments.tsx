@@ -51,7 +51,9 @@ function ChallengeComments() {
   const device = useDevice();
   const isMobile = device === 'mobile';
 
-  const { modalRef, openModal, closeModal, isOpen } = useModal();
+  const { modalRef, openModal, closeModal, isOpen } = useModal({
+    closeOnBackdropClick: false,
+  });
 
   const { baseQueryParams, changePage, page, resetPage } =
     useCommentsPagination({
@@ -120,7 +122,7 @@ function ChallengeComments() {
           isOpen={isOpen}
           closeModal={closeModal}
           position={device === 'mobile' ? 'bottom' : 'center'}
-          showCloseButton={false}
+          showCloseButton={true}
         >
           <AddCommentModalContent
             closeCommentModal={closeModal}
