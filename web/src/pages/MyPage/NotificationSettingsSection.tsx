@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import useNotificationMutation from './useNotificationMutation';
+import useNotificationSettingsMutation from './hooks/useNotificationSettingsMutation';
 import { queries } from '@/apis/queries';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useAuth } from '@/contexts/AuthContext';
@@ -17,16 +17,17 @@ const NotificationSettingsSection = () => {
   const { hasPermission } = useWebViewNotificationPermission();
 
   const { data: notificationStatus } = useQuery(
-    queries.notificationStatus({
+    queries.notificationSettings({
       memberId,
       deviceUuid,
     }),
   );
 
-  const { mutate: updateNotificationSettings } = useNotificationMutation({
-    memberId,
-    deviceUuid,
-  });
+  const { mutate: updateNotificationSettings } =
+    useNotificationSettingsMutation({
+      memberId,
+      deviceUuid,
+    });
 
   const handleToggleNotificationClick = () => {
     updateNotificationSettings(!notificationStatus);

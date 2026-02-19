@@ -3,15 +3,15 @@ import { putNotificationSettings } from '@/apis/notification/notification.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 
-interface useNotificationMutationParams {
+interface UseNotificationSettingsMutationParams {
   memberId: number;
   deviceUuid: string;
 }
 
-const useNotificationMutation = ({
+const useNotificationSettingsMutation = ({
   memberId,
   deviceUuid,
-}: useNotificationMutationParams) => {
+}: UseNotificationSettingsMutationParams) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -19,16 +19,16 @@ const useNotificationMutation = ({
       putNotificationSettings({ memberId, deviceUuid, enabled }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queries.notificationStatus({
+        queryKey: queries.notificationSettings({
           memberId,
           deviceUuid,
         }).queryKey,
       });
     },
     onError: () => {
-      toast.error('알림 설정 변경에 실패했습니다. 다시 시도해주세요.');
+      toast.error('전체 알림 설정 변경에 실패했습니다. 다시 시도해주세요.');
     },
   });
 };
 
-export default useNotificationMutation;
+export default useNotificationSettingsMutation;
