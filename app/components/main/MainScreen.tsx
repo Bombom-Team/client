@@ -58,7 +58,8 @@ const saveImageToGallery = async (base64: string, fileName: string) => {
 export const MainScreen = () => {
   const { showWebViewLogin, showLogin, hideLogin } = useAuth();
   const { webViewRef } = useWebView();
-  const { sendDeviceInfoToWeb } = useDeviceInfo();
+  const { sendDeviceInfoToWeb, sendNotificationPermissionInfo } =
+    useDeviceInfo();
   const webViewLoadEndCleanupRef = useRef<() => void>(null);
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
@@ -122,10 +123,8 @@ export const MainScreen = () => {
           }
           break;
 
-        case 'ENABLE_NOTIFICATION':
-          goToSystemPermission(message.payload.enabled);
-          updateMemberId(message.payload.memberId);
-          registerFCMToken(message.payload.memberId);
+        case 'CHECK_NOTIFICATION_PERMISSION':
+          sendNotificationPermissionInfo();
           break;
 
         case 'SAVE_IMAGE':

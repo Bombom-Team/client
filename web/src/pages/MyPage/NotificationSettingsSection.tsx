@@ -1,15 +1,19 @@
+import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import useNotificationMutation from './useNotificationMutation';
 import { queries } from '@/apis/queries';
+import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebViewDeviceUuid } from '@/libs/webview/useWebViewDeviceUuid';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
+import { useWebViewNotificationPermission } from '@/libs/webview/useWebViewNotificationPermission';
+import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const NotificationSettingsSection = () => {
   const { userProfile } = useAuth();
   const deviceUuid = useWebViewDeviceUuid();
   const memberId = userProfile?.id ?? 0;
+  const { hasPermission } = useWebViewNotificationPermission();
 
   const { data: notificationStatus } = useQuery(
     queries.notificationStatus({
@@ -24,31 +28,41 @@ const NotificationSettingsSection = () => {
   });
 
   const handleToggleNotificationClick = () => {
-    if (!memberId || !deviceUuid) return;
-
-    const newStatus = !notificationStatus;
-    if (newStatus) {
-      sendMessageToRN({
-        type: 'ENABLE_NOTIFICATION',
-        payload: { enabled: true, memberId },
-      });
-    }
-
-    updateNotificationSettings(newStatus);
+    updateNotificationSettings(!notificationStatus);
   };
 
   return (
     <Container>
+      {hasPermission && (
+        <GoToDeviceSettingSection>
+          <InfoText>
+            <InfoIcon width={24} height={24} />
+            알림을 수신하려면 앱 설정에서 알림 권한을 허용해 주세요.
+          </InfoText>
+
+          <SubInfoText>
+            앱 설정 열기
+            <ChevronIcon
+              direction="right"
+              width={20}
+              height={20}
+              fill={theme.colors.black}
+            />
+          </SubInfoText>
+        </GoToDeviceSettingSection>
+      )}
       <SettingOption>
         <SettingLabel>새로운 아티클 알림 받기</SettingLabel>
-        <ToggleWrapper type="button" onClick={handleToggleNotificationClick}>
+        <ToggleButton
+          type="button"
+          onClick={handleToggleNotificationClick}
+          disabled={!hasPermission}
+        >
           <ToggleTrack enabled={notificationStatus ?? false}>
             <ToggleThumb enabled={notificationStatus ?? false} />
           </ToggleTrack>
-        </ToggleWrapper>
+        </ToggleButton>
       </SettingOption>
-
-      <InfoText>알림을 수신하려면 앱 설정의 알림 권한이 필요합니다.</InfoText>
     </Container>
   );
 };
@@ -76,7 +90,7 @@ const SettingLabel = styled.p`
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
-const ToggleWrapper = styled.button<{ disabled?: boolean }>`
+const ToggleButton = styled.button<{ disabled?: boolean }>`
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   transition: opacity 0.2s;
@@ -117,7 +131,33 @@ const ToggleThumb = styled.div<{ enabled: boolean }>`
   transition: transform 0.3s;
 `;
 
+const GoToDeviceSettingSection = styled.button`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid ${({ theme }) => theme.colors.primaryInfo};
+  border-radius: 8px;
+
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
+`;
+
 const InfoText = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.caption};
+  display: flex;
+  gap: 4px;
+
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.body1};
+  text-align: left;
+`;
+
+const SubInfoText = styled.span`
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body1};
 `;
