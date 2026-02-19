@@ -127,6 +127,10 @@ export const MainScreen = () => {
           sendNotificationPermissionInfo();
           break;
 
+        case 'SHOW_NOTIFICATION_PERMISSION_SETTING':
+          goToSystemPermission();
+          break;
+
         case 'SAVE_IMAGE':
           saveImageToGallery(
             message.payload.imageFileBase64,

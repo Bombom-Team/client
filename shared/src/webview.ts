@@ -25,6 +25,9 @@ export type WebToRNMessage =
   | {
       type: 'CHECK_NOTIFICATION_PERMISSION';
     }
+  | {
+      type: 'SHOW_NOTIFICATION_PERMISSION_SETTING';
+    }
   | { type: 'REGISTER_FCM_TOKEN'; payload: { memberId: number } }
   | {
       type: 'SAVE_IMAGE';

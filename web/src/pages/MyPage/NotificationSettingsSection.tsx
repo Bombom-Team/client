@@ -7,6 +7,7 @@ import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebViewDeviceUuid } from '@/libs/webview/useWebViewDeviceUuid';
 import { useWebViewNotificationPermission } from '@/libs/webview/useWebViewNotificationPermission';
+import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const NotificationSettingsSection = () => {
@@ -31,10 +32,14 @@ const NotificationSettingsSection = () => {
     updateNotificationSettings(!notificationStatus);
   };
 
+  const openSystemSettings = () => {
+    sendMessageToRN({ type: 'SHOW_NOTIFICATION_PERMISSION_SETTING' });
+  };
+
   return (
     <Container>
-      {hasPermission && (
-        <GoToDeviceSettingSection>
+      {hasPermission === false && (
+        <GoToDeviceSettingSection onClick={openSystemSettings}>
           <InfoText>
             <InfoIcon width={24} height={24} />
             알림을 수신하려면 앱 설정에서 알림 권한을 허용해 주세요.
