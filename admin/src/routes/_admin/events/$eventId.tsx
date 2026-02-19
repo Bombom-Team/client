@@ -192,9 +192,15 @@ function EventDetailContent() {
   };
 
   const handleOpenCreateScheduleModal = () => {
-    setScheduleAtInput(formattedStartTimeForInput);
+    const defaultMinutesBefore = 10;
     setScheduleTypeInput('BEFORE_MINUTES');
-    setMinutesBeforeInput('10');
+    setMinutesBeforeInput(String(defaultMinutesBefore));
+    setScheduleAtInput(
+      calculateScheduledAtFromMinutes(
+        formattedStartTimeForInput,
+        defaultMinutesBefore,
+      ) ?? formattedStartTimeForInput,
+    );
     setIsCreateScheduleModalOpen(true);
   };
 
@@ -203,12 +209,20 @@ function EventDetailContent() {
   };
 
   const handleOpenEditScheduleModal = (schedule: EventNotificationSchedule) => {
+    const normalizedScheduleAt =
+      schedule.type === 'BEFORE_MINUTES' && schedule.minutesBefore !== null
+        ? (calculateScheduledAtFromMinutes(
+            formattedStartTimeForInput,
+            schedule.minutesBefore,
+          ) ?? convertIsoToDatetimeLocal(schedule.scheduledAt))
+        : convertIsoToDatetimeLocal(schedule.scheduledAt);
+
     setEditingSchedule(schedule);
     setEditScheduleTypeInput(schedule.type);
     setEditScheduleAtInput(
       schedule.type === 'AT_START'
         ? formattedStartTimeForInput
-        : convertIsoToDatetimeLocal(schedule.scheduledAt),
+        : normalizedScheduleAt,
     );
     setEditMinutesBeforeInput(
       schedule.minutesBefore !== null ? String(schedule.minutesBefore) : '10',
@@ -282,8 +296,21 @@ function EventDetailContent() {
 
   const handleScheduleTypeChange = (value: EventNotificationScheduleType) => {
     setScheduleTypeInput(value);
+
     if (value === 'AT_START') {
       setScheduleAtInput(formattedStartTimeForInput);
+      return;
+    }
+
+    const parsedMinutes = Number(minutesBeforeInput);
+    if (!Number.isNaN(parsedMinutes) && parsedMinutes >= 0) {
+      const syncedScheduleAt = calculateScheduledAtFromMinutes(
+        formattedStartTimeForInput,
+        parsedMinutes,
+      );
+      if (syncedScheduleAt) {
+        setScheduleAtInput(syncedScheduleAt);
+      }
     }
   };
 
@@ -291,8 +318,95 @@ function EventDetailContent() {
     value: EventNotificationScheduleType,
   ) => {
     setEditScheduleTypeInput(value);
+
     if (value === 'AT_START') {
       setEditScheduleAtInput(formattedStartTimeForInput);
+      return;
+    }
+
+    const parsedMinutes = Number(editMinutesBeforeInput);
+    if (!Number.isNaN(parsedMinutes) && parsedMinutes >= 0) {
+      const syncedScheduleAt = calculateScheduledAtFromMinutes(
+        formattedStartTimeForInput,
+        parsedMinutes,
+      );
+      if (syncedScheduleAt) {
+        setEditScheduleAtInput(syncedScheduleAt);
+      }
+    }
+  };
+
+  const handleScheduleAtChange = (value: string) => {
+    setScheduleAtInput(value);
+
+    if (scheduleTypeInput !== 'BEFORE_MINUTES') {
+      return;
+    }
+
+    const syncedMinutes = calculateMinutesBeforeFromScheduleAt(
+      formattedStartTimeForInput,
+      value,
+    );
+    if (syncedMinutes !== null) {
+      setMinutesBeforeInput(String(syncedMinutes));
+    }
+  };
+
+  const handleMinutesBeforeChange = (value: string) => {
+    setMinutesBeforeInput(value);
+
+    if (scheduleTypeInput !== 'BEFORE_MINUTES') {
+      return;
+    }
+
+    const parsedMinutes = Number(value);
+    if (Number.isNaN(parsedMinutes) || parsedMinutes < 0) {
+      return;
+    }
+
+    const syncedScheduleAt = calculateScheduledAtFromMinutes(
+      formattedStartTimeForInput,
+      parsedMinutes,
+    );
+    if (syncedScheduleAt) {
+      setScheduleAtInput(syncedScheduleAt);
+    }
+  };
+
+  const handleEditScheduleAtChange = (value: string) => {
+    setEditScheduleAtInput(value);
+
+    if (editScheduleTypeInput !== 'BEFORE_MINUTES') {
+      return;
+    }
+
+    const syncedMinutes = calculateMinutesBeforeFromScheduleAt(
+      formattedStartTimeForInput,
+      value,
+    );
+    if (syncedMinutes !== null) {
+      setEditMinutesBeforeInput(String(syncedMinutes));
+    }
+  };
+
+  const handleEditMinutesBeforeChange = (value: string) => {
+    setEditMinutesBeforeInput(value);
+
+    if (editScheduleTypeInput !== 'BEFORE_MINUTES') {
+      return;
+    }
+
+    const parsedMinutes = Number(value);
+    if (Number.isNaN(parsedMinutes) || parsedMinutes < 0) {
+      return;
+    }
+
+    const syncedScheduleAt = calculateScheduledAtFromMinutes(
+      formattedStartTimeForInput,
+      parsedMinutes,
+    );
+    if (syncedScheduleAt) {
+      setEditScheduleAtInput(syncedScheduleAt);
     }
   };
 
@@ -454,7 +568,7 @@ function EventDetailContent() {
                 type="datetime-local"
                 value={scheduleAtInput}
                 disabled={scheduleTypeInput === 'AT_START'}
-                onChange={(event) => setScheduleAtInput(event.target.value)}
+                onChange={(event) => handleScheduleAtChange(event.target.value)}
               />
             </FormGroup>
             <FormGroup>
@@ -484,7 +598,7 @@ function EventDetailContent() {
                   min="0"
                   value={minutesBeforeInput}
                   onChange={(event) =>
-                    setMinutesBeforeInput(event.target.value)
+                    handleMinutesBeforeChange(event.target.value)
                   }
                 />
               </FormGroup>
@@ -522,7 +636,9 @@ function EventDetailContent() {
                 type="datetime-local"
                 value={editScheduleAtInput}
                 disabled={editScheduleTypeInput === 'AT_START'}
-                onChange={(event) => setEditScheduleAtInput(event.target.value)}
+                onChange={(event) =>
+                  handleEditScheduleAtChange(event.target.value)
+                }
               />
             </FormGroup>
             <FormGroup>
@@ -552,7 +668,7 @@ function EventDetailContent() {
                   min="0"
                   value={editMinutesBeforeInput}
                   onChange={(event) =>
-                    setEditMinutesBeforeInput(event.target.value)
+                    handleEditMinutesBeforeChange(event.target.value)
                   }
                 />
               </FormGroup>
@@ -597,6 +713,55 @@ const convertDatetimeLocalToRequestStartTime = (value: string) => {
   }
 
   return value;
+};
+
+const calculateScheduledAtFromMinutes = (
+  eventStartDatetimeLocal: string,
+  minutesBefore: number,
+) => {
+  const eventStartDate = new Date(eventStartDatetimeLocal);
+  if (
+    Number.isNaN(eventStartDate.getTime()) ||
+    Number.isNaN(minutesBefore) ||
+    minutesBefore < 0
+  ) {
+    return null;
+  }
+
+  const scheduledAtDate = new Date(
+    eventStartDate.getTime() - minutesBefore * 60 * 1000,
+  );
+  const year = scheduledAtDate.getFullYear();
+  const month = String(scheduledAtDate.getMonth() + 1).padStart(2, '0');
+  const day = String(scheduledAtDate.getDate()).padStart(2, '0');
+  const hour = String(scheduledAtDate.getHours()).padStart(2, '0');
+  const minute = String(scheduledAtDate.getMinutes()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hour}:${minute}`;
+};
+
+const calculateMinutesBeforeFromScheduleAt = (
+  eventStartDatetimeLocal: string,
+  scheduleAtDatetimeLocal: string,
+) => {
+  const eventStartDate = new Date(eventStartDatetimeLocal);
+  const scheduleAtDate = new Date(scheduleAtDatetimeLocal);
+
+  if (
+    Number.isNaN(eventStartDate.getTime()) ||
+    Number.isNaN(scheduleAtDate.getTime())
+  ) {
+    return null;
+  }
+
+  const diffMinutes = Math.round(
+    (eventStartDate.getTime() - scheduleAtDate.getTime()) / (60 * 1000),
+  );
+  if (diffMinutes < 0) {
+    return null;
+  }
+
+  return diffMinutes;
 };
 
 const Container = styled.div`
