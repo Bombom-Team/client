@@ -146,9 +146,9 @@ const Header = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
 
   display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
   justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.md};
 `;
 
 const Title = styled.h3`
@@ -170,6 +170,7 @@ const FilterLabel = styled.label`
 
 const Select = styled.select`
   min-width: 140px;
+  min-height: 42px;
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
