@@ -5,6 +5,7 @@ import { Linking, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ASYNC_STORAGE_KEY } from '@/constants/asyncStorage';
 import { startActivityAsync, ActivityAction } from 'expo-intent-launcher';
+import { applicationId } from 'expo-application';
 
 // 안드로이드 알림 채널 생성
 export const createAndroidChannel = async () => {
@@ -69,7 +70,12 @@ export const goToSystemPermission = async () => {
     }
 
     if (Platform.OS === 'android') {
-      await startActivityAsync(ActivityAction.APP_NOTIFICATION_SETTINGS);
+      await startActivityAsync(ActivityAction.APP_NOTIFICATION_SETTINGS, {
+        extra: {
+          'android.provider.extra.APP_PACKAGE': applicationId,
+          app_package: applicationId,
+        },
+      });
     }
   } catch (error) {
     console.error('알림 권한 설정을 여는데 실패했습니다. :', error);
