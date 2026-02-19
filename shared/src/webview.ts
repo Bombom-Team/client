@@ -64,5 +64,8 @@ export type RNToWebMessage =
       };
     }
   | {
-      type: 'REQUEST_NOTIFICATION_ACTIVE';
+      type: 'NOTIFICATION_PERMISSION';
+      payload: {
+        hasPermission: boolean;
+      };
     };
