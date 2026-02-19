@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import { formatEventDateTime, extractKSTDate } from '../utils/date';
+import { formatEventDateTime } from '../utils/date';
 import Flex from '@/components/Flex';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
@@ -8,11 +8,6 @@ import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
-
-const ROUND_START = {
-  first: '2026-02-18T20:00:00+09:00',
-  second: '2026-02-21T20:00:00+09:00',
-} as const;
 
 interface EventHeroProps {
   onApply: () => void;
@@ -22,13 +17,6 @@ const EventHero = ({ onApply }: EventHeroProps) => {
   const device = useDevice();
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
-
-  const today = extractKSTDate(new Date());
-  const firstRoundDeadline = extractKSTDate(new Date(ROUND_START.first));
-  const secondRoundDeadline = extractKSTDate(new Date(ROUND_START.second));
-
-  const isFirstRoundComplete = today > firstRoundDeadline;
-  const isSecondRoundComplete = today > secondRoundDeadline;
 
   const goToLogin = () => {
     if (isWebView())
@@ -106,22 +94,8 @@ const EventHero = ({ onApply }: EventHeroProps) => {
           </InfoRow>
           <InfoRowDivider />
           <InfoRow>
-            <InfoLabel device={device}>1회</InfoLabel>
-            <InfoValue device={device} isCompleted={isFirstRoundComplete}>
-              {`${formatEventDateTime(new Date(ROUND_START.first))} (35명)`}
-            </InfoValue>
-            {isFirstRoundComplete && (
-              <CompletedStamp device={device}>마감</CompletedStamp>
-            )}
-          </InfoRow>
-          <InfoRow>
-            <InfoLabel device={device}>2회</InfoLabel>
-            <InfoValue device={device} isCompleted={isSecondRoundComplete}>
-              {`${formatEventDateTime(new Date(ROUND_START.second))} (35명)`}
-            </InfoValue>
-            {isSecondRoundComplete && (
-              <CompletedStamp device={device}>마감</CompletedStamp>
-            )}
+            <InfoLabel device={device}>일정</InfoLabel>
+            <InfoValue device={device}>2월 23일(월) 오후 2시 70명</InfoValue>
           </InfoRow>
           <InfoRowDivider />
           <InfoRow>
@@ -282,23 +256,18 @@ const InfoLabel = styled.p<{ device: Device }>`
   text-align: center;
 `;
 
-const InfoValue = styled.p<{ device: Device; isCompleted?: boolean }>`
+const InfoValue = styled.p<{ device: Device }>`
   position: relative;
 
   display: flex;
   gap: 8px;
   align-items: center;
 
-  color: ${({ theme, isCompleted }) =>
-    isCompleted ? theme.colors.textTertiary : theme.colors.black};
+  color: ${({ theme }) => theme.colors.black};
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
   font-weight: 700;
   text-align: left;
-
-  opacity: ${({ isCompleted }) => (isCompleted ? 0.4 : 1)};
-  text-decoration: ${({ isCompleted }) =>
-    isCompleted ? 'line-through' : 'none'};
 `;
 
 const HeroImage = styled.img<{ device: Device }>`
@@ -317,21 +286,4 @@ const Title = styled.div<{ device: Device }>`
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
   text-align: center;
-`;
-
-const CompletedStamp = styled.span<{ device: Device }>`
-  position: absolute;
-  right: 40px;
-  z-index: ${({ theme }) => theme.zIndex.elevated};
-  padding: ${({ device }) => (device === 'mobile' ? '2px 8px' : '6px 12px')};
-  border: 4px solid ${({ theme }) => theme.colors.red};
-  border-radius: 4px;
-  box-shadow: 2px 2px 1px 0 ${({ theme }) => theme.colors.icons};
-
-  color: ${({ theme }) => theme.colors.red};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
-  font-weight: 800;
-
-  transform: rotate(-4deg);
 `;
