@@ -27,7 +27,7 @@ function ImageInfoCard({
         <TitleBox>
           <Title>{title}</Title>
           {isSubscribed && (
-            <CheckIcon width={16} height={16} fill={theme.colors.primary} />
+            <CheckIcon width={20} height={20} fill={theme.colors.primary} />
           )}
         </TitleBox>
         <Description>{description || title}</Description>
