@@ -116,3 +116,14 @@ export const getMemberId = async () => {
     console.error('memberId 조회에 실패했습니다.', error);
   }
 };
+
+export const getNotificationUrl = (data: Record<string, unknown>) => {
+  switch (data.notificationType) {
+    case 'ARTICLE':
+      return `/articles/${data.articleId}`;
+    case 'EVENT':
+      return '/event';
+    default:
+      return null;
+  }
+};
