@@ -62,7 +62,7 @@ export default CarouselNavButtons;
 const Container = styled.div<{ position: SlideButtonPosition }>`
   position: ${({ position }) =>
     position === 'middle' ? 'absolute' : 'relative'};
-  top: 50%;
+  top: ${({ position }) => (position === 'middle' ? '50%' : 'auto')};
   left: 0;
   width: 100%;
   padding: 12px 8px;
