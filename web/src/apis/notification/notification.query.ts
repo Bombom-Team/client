@@ -7,15 +7,25 @@ import {
 } from './notification.api';
 
 export const notificationQueries = {
-  notificationSettings: (params: GetNotificationSettingsParams) =>
-    queryOptions({
-      queryKey: ['notifications', 'tokens', 'settings', 'status', params],
-      queryFn: () => getNotificationSettings(params),
-    }),
-
-  notificationSetting: (params: GetNotificationSettingParams) =>
-    queryOptions({
-      queryKey: ['notifications', 'settings', params],
-      queryFn: () => getNotificationSetting(params),
-    }),
+  settings: {
+    all: (memberId: number) => ['notifications', memberId, 'settings'] as const,
+    global: (params: GetNotificationSettingsParams) =>
+      queryOptions({
+        queryKey: [
+          ...notificationQueries.settings.all(params.memberId),
+          'tokens',
+          'status',
+          params,
+        ],
+        queryFn: () => getNotificationSettings(params),
+      }),
+    category: (params: GetNotificationSettingParams) =>
+      queryOptions({
+        queryKey: [
+          ...notificationQueries.settings.all(params.memberId),
+          params,
+        ],
+        queryFn: () => getNotificationSetting(params),
+      }),
+  },
 };

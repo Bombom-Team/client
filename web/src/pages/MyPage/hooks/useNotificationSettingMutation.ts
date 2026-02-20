@@ -20,12 +20,9 @@ const useNotificationSettingMutation = ({
   return useMutation({
     mutationFn: ({ enabled, category }: MutationFnParams) =>
       patchNotificationSetting({ memberId, enabled, category }),
-    onSuccess: (_, { category }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queries.notificationSetting({
-          memberId,
-          category,
-        }).queryKey,
+        queryKey: queries.comments.all(memberId),
       });
     },
     onError: (_, { category }) => {
