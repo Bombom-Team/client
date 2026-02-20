@@ -14,42 +14,48 @@ type JsonBody = Record<string, unknown> | unknown[];
 
 type FetcherOptions<TRequest extends JsonBody> = {
   path: string;
+  baseUrl?: string;
   query?: Record<string, string | number | undefined | string[]>;
   body?: TRequest;
   headers?: HeadersInit;
 };
 
 export const fetcher = {
-  get: async <TResponse>({ path, query }: FetcherOptions<never>) =>
-    request<never, TResponse>({ path, query, method: 'GET' }),
+  get: async <TResponse>({ path, baseUrl, query }: FetcherOptions<never>) =>
+    request<never, TResponse>({ path, baseUrl, query, method: 'GET' }),
   post: async <TRequest extends JsonBody, TResponse>({
     path,
+    baseUrl,
     body,
     headers,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, body, method: 'POST', headers }),
+    request<TRequest, TResponse>({ path, baseUrl, body, method: 'POST', headers }),
   patch: async <TRequest extends JsonBody, TResponse>({
     path,
+    baseUrl,
     query,
     body,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, query, body, method: 'PATCH' }),
+    request<TRequest, TResponse>({ path, baseUrl, query, body, method: 'PATCH' }),
   put: async <TRequest extends JsonBody, TResponse>({
     path,
+    baseUrl,
     body,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, body, method: 'PUT' }),
+    request<TRequest, TResponse>({ path, baseUrl, body, method: 'PUT' }),
   delete: async <TRequest extends JsonBody, TResponse>({
     path,
+    baseUrl,
     body,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, body, method: 'DELETE' }),
+    request<TRequest, TResponse>({ path, baseUrl, body, method: 'DELETE' }),
 };
 
 type FetchMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
 
 type RequestOptions<TRequest> = {
   path: string;
+  baseUrl?: string;
   method: FetchMethod;
   query?: Record<string, string | number | undefined | string[]>;
   body?: TRequest;
@@ -58,13 +64,14 @@ type RequestOptions<TRequest> = {
 
 const request = async <TRequest, TResponse>({
   path,
+  baseUrl = ENV.baseUrl,
   method,
   query = {},
   body,
   headers,
 }: RequestOptions<TRequest>): Promise<TResponse> => {
   try {
-    const url = new URL(ENV.baseUrl + path);
+    const url = new URL(baseUrl + path);
     const stringifiedQuery: Record<string, string> = Object.fromEntries(
       Object.entries(query)
         .map(([key, value]) => [key, value?.toString()])

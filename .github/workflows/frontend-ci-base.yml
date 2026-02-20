@@ -49,8 +49,11 @@ jobs:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
           API_BASE_URL: ${{ vars.API_BASE_URL }}
+          API_BASE_URL_EVENT: ${{ vars.API_BASE_URL_EVENT }}
+          API_BASE_URL_NOTIFICATION: ${{ vars.API_BASE_URL_NOTIFICATION }}
           MONITORING_STATUS_URL: ${{ vars.MONITORING_STATUS_URL }}
           SERVER_TYPE: ${{ vars.SERVER_TYPE }}
+          CAPTCHA_SITE_KEY: ${{ vars.CAPTCHA_SITE_KEY }}
         run: pnpm run web:build
 
       - name: Upload dist artifact

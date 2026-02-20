@@ -1,31 +1,46 @@
 import styled from '@emotion/styled';
+import { EVENT_STATUS_TYPE } from '../constants/constants';
 import Button from '@/components/Button/Button';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import type { EventErrorStatus } from '../types/event';
 
-interface EventNoticeModalProps {
+interface NoticeModalProps {
+  noticeType: EventErrorStatus;
   closeModal: () => void;
 }
 
-const EventNoticeModal = ({ closeModal }: EventNoticeModalProps) => {
+const NoticeModal = ({ noticeType, closeModal }: NoticeModalProps) => {
   const device = useDevice();
+
+  const getNoticeTitle = () => {
+    if (noticeType === EVENT_STATUS_TYPE.notStarted) {
+      return '이벤트 기간이 아니에요.';
+    }
+
+    return noticeType === EVENT_STATUS_TYPE.ended
+      ? '다음 이벤트를 기대해주세요!'
+      : '이벤트를 신청할 수 없습니다.';
+  };
 
   return (
     <Container>
       <ContentWrapper>
-        <Title device={device}>이벤트 기간이 아닙니다.</Title>
+        <Title device={device}>{getNoticeTitle()}</Title>
         <Description>자세한 내용은 이벤트 페이지를 참고해주세요.</Description>
-        <ConfirmButton onClick={closeModal}>확인</ConfirmButton>
+
+        <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>
       </ContentWrapper>
     </Container>
   );
 };
 
-export default EventNoticeModal;
+export default NoticeModal;
 
 const Container = styled.div`
   width: 100%;
 
   display: flex;
+  gap: 12px;
   flex-direction: column;
   align-items: center;
 `;
