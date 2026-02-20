@@ -1,6 +1,5 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
-import Badge from '../Badge/Badge';
 import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
 import type { ComponentProps } from 'react';
 import CheckIcon from '#/assets/svg/check-circle.svg';
@@ -28,13 +27,7 @@ function ImageInfoCard({
         <TitleBox>
           <Title>{title}</Title>
           {isSubscribed && (
-            <Badge
-              text="구독 중"
-              variant="outlinePrimary"
-              icon={
-                <CheckIcon width={16} height={16} fill={theme.colors.white} />
-              }
-            />
+            <CheckIcon width={20} height={20} fill={theme.colors.primary} />
           )}
         </TitleBox>
         <Description>{description || title}</Description>
@@ -73,7 +66,7 @@ export const InfoBox = styled.div`
   min-height: 64px;
 
   display: flex;
-  gap: 8px;
+  gap: 4px;
   flex: 1;
   flex-direction: column;
   justify-content: center;
@@ -82,8 +75,6 @@ export const InfoBox = styled.div`
 const TitleBox = styled.div`
   display: flex;
   gap: 8px;
-  flex: 1;
-  flex-direction: row;
   align-items: center;
 `;
 
@@ -92,6 +83,7 @@ const Title = styled.h3`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading6};
+  line-height: 1;
 `;
 
 const Description = styled.p`
