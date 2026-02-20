@@ -24,15 +24,16 @@ Notifications.setNotificationHandler({
 const useNotification = () => {
   const { sendMessageToWeb } = useWebView();
 
-  const registerFCMToken = useCallback(async (memberId: number) => {
+  const registerFCMToken = useCallback(async () => {
     const granted = await requestNotificationPermission();
     if (!granted) return;
 
     try {
+      const memberId = await getMemberId();
       const deviceUuid = await getDeviceUUID();
       const token = await getFCMToken();
 
-      if (token && deviceUuid) {
+      if (memberId && token && deviceUuid) {
         await putFCMToken({
           memberId,
           deviceUuid,
@@ -73,10 +74,7 @@ const useNotification = () => {
     const unsubscribeTokenRefresh = messaging().onTokenRefresh(async () => {
       console.log('FCM 토큰이 갱신되었습니다');
       try {
-        const memberId = await getMemberId();
-        if (memberId) {
-          await registerFCMToken(memberId);
-        }
+        await registerFCMToken();
       } catch (error) {
         console.error('FCM 토큰 갱신 중 오류 발생:', error);
       }

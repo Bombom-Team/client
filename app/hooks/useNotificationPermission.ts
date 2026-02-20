@@ -1,9 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { useWebView } from '@/contexts/WebViewContext';
-import { checkNotificationPermission } from '@/utils/notification';
+import { checkNotificationPermission, getMemberId } from '@/utils/notification';
 
-export const useNotificationPermission = () => {
+interface UseNotificationPermissionParams {
+  onPermissionGranted?: () => void | Promise<void>;
+}
+
+export const useNotificationPermission = ({
+  onPermissionGranted,
+}: UseNotificationPermissionParams = {}) => {
   const { sendMessageToWeb } = useWebView();
   const permissionRef = useRef<boolean | null>(null);
   const appStateRef = useRef(AppState.currentState);
@@ -26,8 +32,13 @@ export const useNotificationPermission = () => {
     const updatePermission = async () => {
       try {
         const hasPermission = await checkNotificationPermission();
+        const previousPermission = permissionRef.current;
 
-        if (permissionRef.current !== hasPermission) {
+        if (previousPermission === false && hasPermission === true) {
+          await onPermissionGranted?.();
+        }
+
+        if (previousPermission !== hasPermission) {
           permissionRef.current = hasPermission;
           sendMessageToWeb({
             type: 'NOTIFICATION_PERMISSION',
@@ -57,7 +68,7 @@ export const useNotificationPermission = () => {
     return () => {
       subscription.remove();
     };
-  }, [sendMessageToWeb]);
+  }, [sendMessageToWeb, onPermissionGranted]);
 
   return {
     sendPermissionToWeb,

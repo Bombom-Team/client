@@ -64,7 +64,9 @@ export const MainScreen = () => {
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
   const { onNotification, registerFCMToken } = useNotification();
-  const { sendPermissionToWeb } = useNotificationPermission();
+  const { sendPermissionToWeb } = useNotificationPermission({
+    onPermissionGranted: registerFCMToken,
+  });
 
   const handleWebViewLoadEnd = () => {
     console.log('WebView 로드 완료');
@@ -120,7 +122,7 @@ export const MainScreen = () => {
         case 'REGISTER_FCM_TOKEN':
           if (message.payload.memberId) {
             updateMemberId(message.payload.memberId);
-            registerFCMToken(message.payload.memberId);
+            registerFCMToken();
           }
           break;
 
