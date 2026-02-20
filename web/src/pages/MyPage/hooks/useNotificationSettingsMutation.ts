@@ -19,7 +19,7 @@ const useNotificationSettingsMutation = ({
       putNotificationSettings({ memberId, deviceUuid, enabled }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queries.comments.all(memberId),
+        queryKey: queries.notificationSettings.all(memberId),
       });
     },
     onError: () => {

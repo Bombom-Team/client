@@ -35,12 +35,16 @@ export type GetNotificationSettingParams = {
   memberId: number;
   category: string;
 };
+type GetNotificationSettingResponse = {
+  category: string;
+  enabled: boolean;
+};
 
 export const getNotificationSetting = ({
   memberId,
   category,
 }: GetNotificationSettingParams) => {
-  return fetcher.get<boolean>({
+  return fetcher.get<GetNotificationSettingResponse>({
     path: `/notifications/${memberId}/settings/${category}`,
   });
 };

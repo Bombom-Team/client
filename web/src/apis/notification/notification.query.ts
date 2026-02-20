@@ -7,12 +7,12 @@ import {
 } from './notification.api';
 
 export const notificationQueries = {
-  settings: {
+  notificationSettings: {
     all: (memberId: number) => ['notifications', memberId, 'settings'] as const,
     global: (params: GetNotificationSettingsParams) =>
       queryOptions({
         queryKey: [
-          ...notificationQueries.settings.all(params.memberId),
+          ...notificationQueries.notificationSettings.all(params.memberId),
           'tokens',
           'status',
           params,
@@ -22,7 +22,7 @@ export const notificationQueries = {
     category: (params: GetNotificationSettingParams) =>
       queryOptions({
         queryKey: [
-          ...notificationQueries.settings.all(params.memberId),
+          ...notificationQueries.notificationSettings.all(params.memberId),
           params,
         ],
         queryFn: () => getNotificationSetting(params),

@@ -18,8 +18,8 @@ const NotificationSettingsSection = () => {
   const memberId = userProfile?.id ?? 0;
   const { hasPermission } = useWebViewNotificationPermission();
 
-  const { data: notificationStatus } = useQuery(
-    queries.notificationSettings({
+  const { data: globalNotification } = useQuery(
+    queries.notificationSettings.global({
       memberId,
       deviceUuid,
     }),
@@ -32,14 +32,14 @@ const NotificationSettingsSection = () => {
     });
 
   const { data: articleNotification } = useQuery(
-    queries.notificationSetting({
+    queries.notificationSettings.category({
       memberId,
       category: 'article',
     }),
   );
 
   const { data: eventNotification } = useQuery(
-    queries.notificationSetting({
+    queries.notificationSettings.category({
       memberId,
       category: 'event',
     }),
@@ -49,20 +49,24 @@ const NotificationSettingsSection = () => {
     memberId,
   });
 
-  const toggleNotificationClick = () => {
-    updateNotificationSettings(!notificationStatus);
+  console.log(articleNotification, 'articleNotification');
+  console.log(eventNotification, 'eventNotification');
+  console.log(globalNotification, 'globalNotification');
+
+  const toggleGlobalNotification = () => {
+    updateNotificationSettings(!globalNotification);
   };
 
   const toggleArticleNotification = () => {
     updateNotificationSetting({
-      enabled: !articleNotification,
+      enabled: !articleNotification?.enabled,
       category: 'article',
     });
   };
 
   const toggleEventNotification = () => {
     updateNotificationSetting({
-      enabled: !eventNotification,
+      enabled: !eventNotification?.enabled,
       category: 'event',
     });
   };
@@ -96,11 +100,11 @@ const NotificationSettingsSection = () => {
         <SettingLabel>전체 알림</SettingLabel>
         <ToggleButton
           type="button"
-          onClick={toggleNotificationClick}
+          onClick={toggleGlobalNotification}
           disabled={!hasPermission}
         >
-          <ToggleTrack enabled={notificationStatus ?? false}>
-            <ToggleThumb enabled={notificationStatus ?? false} />
+          <ToggleTrack enabled={globalNotification ?? false}>
+            <ToggleThumb enabled={globalNotification ?? false} />
           </ToggleTrack>
         </ToggleButton>
       </PrimarySettingOption>
@@ -115,8 +119,8 @@ const NotificationSettingsSection = () => {
             onClick={toggleArticleNotification}
             disabled={!hasPermission}
           >
-            <ToggleTrack enabled={articleNotification ?? false}>
-              <ToggleThumb enabled={articleNotification ?? false} />
+            <ToggleTrack enabled={articleNotification?.enabled ?? false}>
+              <ToggleThumb enabled={articleNotification?.enabled ?? false} />
             </ToggleTrack>
           </ToggleButton>
         </CategorySettingOption>
@@ -130,8 +134,8 @@ const NotificationSettingsSection = () => {
             onClick={toggleEventNotification}
             disabled={!hasPermission}
           >
-            <ToggleTrack enabled={eventNotification ?? false}>
-              <ToggleThumb enabled={eventNotification ?? false} />
+            <ToggleTrack enabled={eventNotification?.enabled ?? false}>
+              <ToggleThumb enabled={eventNotification?.enabled ?? false} />
             </ToggleTrack>
           </ToggleButton>
         </CategorySettingOption>
