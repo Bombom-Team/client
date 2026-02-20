@@ -182,17 +182,8 @@ const SettingHint = styled.p`
 `;
 
 const ToggleButton = styled.button<{ disabled?: boolean }>`
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   transition: opacity 0.2s;
-
-  &:hover:not(:disabled) {
-    opacity: 0.8;
-  }
-
-  &:active:not(:disabled) {
-    opacity: 0.6;
-  }
 `;
 
 const ToggleTrack = styled.div<{ enabled: boolean }>`
