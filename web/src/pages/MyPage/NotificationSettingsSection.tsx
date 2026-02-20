@@ -16,40 +16,50 @@ const NotificationSettingsSection = () => {
   const memberId = userProfile?.id ?? 0;
   const { hasPermission } = useWebViewNotificationPermission();
 
-  const { data: articleNotification } = useQuery(
-    queries.notificationSettings.category({
+  const { data: articleNotification } = useQuery({
+    ...queries.notificationSettings.category({
       memberId,
       category: 'article',
     }),
-  );
+    enabled: !!hasPermission,
+  });
 
-  const { data: eventNotification } = useQuery(
-    queries.notificationSettings.category({
+  const { data: eventNotification } = useQuery({
+    ...queries.notificationSettings.category({
       memberId,
       category: 'event',
     }),
-  );
+    enabled: !!hasPermission,
+  });
 
   const { mutate: updateNotificationSetting } = useNotificationSettingMutation({
     memberId,
   });
 
+  const openSystemSettings = () => {
+    sendMessageToRN({ type: 'SHOW_NOTIFICATION_PERMISSION_SETTING' });
+  };
+
   const toggleArticleNotification = () => {
-    updateNotificationSetting({
-      enabled: !articleNotification?.enabled,
-      category: 'article',
-    });
+    if (hasPermission) {
+      updateNotificationSetting({
+        enabled: !articleNotification?.enabled,
+        category: 'article',
+      });
+    } else {
+      openSystemSettings();
+    }
   };
 
   const toggleEventNotification = () => {
-    updateNotificationSetting({
-      enabled: !eventNotification?.enabled,
-      category: 'event',
-    });
-  };
-
-  const openSystemSettings = () => {
-    sendMessageToRN({ type: 'SHOW_NOTIFICATION_PERMISSION_SETTING' });
+    if (hasPermission) {
+      updateNotificationSetting({
+        enabled: !eventNotification?.enabled,
+        category: 'event',
+      });
+    } else {
+      openSystemSettings();
+    }
   };
 
   return (
@@ -80,17 +90,13 @@ const NotificationSettingsSection = () => {
           </Text>
         </SectionHeader>
 
-        <SettingCard>
+        <SettingCard hasPermission={!!hasPermission}>
           <SettingRow>
             <SettingInfo>
               <SettingLabel>아티클 알림</SettingLabel>
               <SettingHint>새로운 아티클 도착 시 알림</SettingHint>
             </SettingInfo>
-            <ToggleButton
-              type="button"
-              onClick={toggleArticleNotification}
-              disabled={!hasPermission}
-            >
+            <ToggleButton type="button" onClick={toggleArticleNotification}>
               <ToggleTrack enabled={articleNotification?.enabled ?? false}>
                 <ToggleThumb enabled={articleNotification?.enabled ?? false} />
               </ToggleTrack>
@@ -104,11 +110,7 @@ const NotificationSettingsSection = () => {
               <SettingLabel>이벤트 알림</SettingLabel>
               <SettingHint>이벤트 및 프로모션 알림</SettingHint>
             </SettingInfo>
-            <ToggleButton
-              type="button"
-              onClick={toggleEventNotification}
-              disabled={!hasPermission}
-            >
+            <ToggleButton type="button" onClick={toggleEventNotification}>
               <ToggleTrack enabled={eventNotification?.enabled ?? false}>
                 <ToggleThumb enabled={eventNotification?.enabled ?? false} />
               </ToggleTrack>
@@ -142,7 +144,7 @@ const SectionHeader = styled.div`
   flex-direction: column;
 `;
 
-const SettingCard = styled.div`
+const SettingCard = styled.div<{ hasPermission: boolean }>`
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
@@ -151,6 +153,8 @@ const SettingCard = styled.div`
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
+
+  opacity: ${({ hasPermission }) => (hasPermission ? 1 : 0.6)};
 `;
 
 const SettingRow = styled.div`
