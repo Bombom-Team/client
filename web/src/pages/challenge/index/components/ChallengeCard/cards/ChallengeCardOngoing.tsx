@@ -40,7 +40,9 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
     });
 
     navigate({
-      to: '/challenge/$challengeId',
+      to: detail?.isJoined
+        ? '/challenge/$challengeId'
+        : '/challenge/$challengeId/landing',
       params: { challengeId: String(id) },
     });
   };
