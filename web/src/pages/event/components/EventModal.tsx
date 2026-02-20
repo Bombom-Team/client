@@ -18,8 +18,8 @@ const EventModal = ({
   cancelQueueEntry,
   closeModal,
 }: EventModalProps) => {
-  const statusRef = useRef(queueEntry?.status);
-  statusRef.current = queueEntry?.status;
+  const statusRef = useRef(queueEntry.status);
+  statusRef.current = queueEntry.status;
 
   const handleCloseModal = () => {
     cancelQueueEntry();
@@ -41,15 +41,13 @@ const EventModal = ({
   return (
     <Container>
       <ContentWrapper>
-        {queueEntry && (
-          <QueueStatus
-            queueEntry={queueEntry}
-            refetchQueueEntry={refetchQueueEntry}
-            onClose={handleCloseModal}
-          />
-        )}
+        <QueueStatus
+          queueEntry={queueEntry}
+          refetchQueueEntry={refetchQueueEntry}
+          onClose={handleCloseModal}
+        />
 
-        {queueEntry?.status !== QUEUE_STATUS_TYPE.issued && (
+        {queueEntry.status !== QUEUE_STATUS_TYPE.issued && (
           <ConfirmButton onClick={handleCloseModal}>닫기</ConfirmButton>
         )}
       </ContentWrapper>
