@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { putNotificationSetting } from '@/apis/notification/notification.api';
+import { patchNotificationSetting } from '@/apis/notification/notification.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 
@@ -19,7 +19,7 @@ const useNotificationSettingMutation = ({
 
   return useMutation({
     mutationFn: ({ enabled, category }: MutationFnParams) =>
-      putNotificationSetting({ memberId, enabled, category }),
+      patchNotificationSetting({ memberId, enabled, category }),
     onSuccess: (_, { category }) => {
       queryClient.invalidateQueries({
         queryKey: queries.notificationSetting({

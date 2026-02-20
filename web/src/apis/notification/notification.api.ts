@@ -41,23 +41,23 @@ export const getNotificationSetting = ({
   category,
 }: GetNotificationSettingParams) => {
   return fetcher.get<boolean>({
-    path: `/notifications/tokens/${memberId}/settings/${category}`,
+    path: `/notifications/${memberId}/settings/${category}`,
   });
 };
 
-type PutNotificationSettingParams = {
+type PatchNotificationSettingParams = {
   memberId: number;
   category: string;
   enabled: boolean;
 };
 
-export const putNotificationSetting = ({
+export const patchNotificationSetting = ({
   memberId,
   category,
   enabled,
-}: PutNotificationSettingParams) => {
-  return fetcher.put({
-    path: `/notifications/tokens/${memberId}/settings/${category}`,
+}: PatchNotificationSettingParams) => {
+  return fetcher.patch({
+    path: `/notifications/${memberId}/settings/${category}`,
     body: { enabled },
   });
 };
