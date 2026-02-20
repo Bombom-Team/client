@@ -1,9 +1,11 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import useNotificationSettingMutation from './hooks/useNotificationSettingMutation';
 import useNotificationSettingsMutation from './hooks/useNotificationSettingsMutation';
 import { queries } from '@/apis/queries';
 import ChevronIcon from '@/components/icons/ChevronIcon';
+import Text from '@/components/Text';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebViewDeviceUuid } from '@/libs/webview/useWebViewDeviceUuid';
 import { useWebViewNotificationPermission } from '@/libs/webview/useWebViewNotificationPermission';
@@ -29,8 +31,40 @@ const NotificationSettingsSection = () => {
       deviceUuid,
     });
 
-  const handleToggleNotificationClick = () => {
+  const { data: articleNotification } = useQuery(
+    queries.notificationSetting({
+      memberId,
+      category: 'article',
+    }),
+  );
+
+  const { data: eventNotification } = useQuery(
+    queries.notificationSetting({
+      memberId,
+      category: 'event',
+    }),
+  );
+
+  const { mutate: updateNotificationSetting } = useNotificationSettingMutation({
+    memberId,
+  });
+
+  const toggleNotificationClick = () => {
     updateNotificationSettings(!notificationStatus);
+  };
+
+  const toggleArticleNotification = () => {
+    updateNotificationSetting({
+      enabled: !articleNotification,
+      category: 'article',
+    });
+  };
+
+  const toggleEventNotification = () => {
+    updateNotificationSetting({
+      enabled: !eventNotification,
+      category: 'event',
+    });
   };
 
   const openSystemSettings = () => {
@@ -57,18 +91,51 @@ const NotificationSettingsSection = () => {
           </SubInfoText>
         </GoToDeviceSettingSection>
       )}
-      <SettingOption>
-        <SettingLabel>새로운 아티클 알림 받기</SettingLabel>
+
+      <PrimarySettingOption>
+        <SettingLabel>전체 알림</SettingLabel>
         <ToggleButton
           type="button"
-          onClick={handleToggleNotificationClick}
+          onClick={toggleNotificationClick}
           disabled={!hasPermission}
         >
           <ToggleTrack enabled={notificationStatus ?? false}>
             <ToggleThumb enabled={notificationStatus ?? false} />
           </ToggleTrack>
         </ToggleButton>
-      </SettingOption>
+      </PrimarySettingOption>
+
+      <CategorySettingsGroup>
+        <CategorySettingOption>
+          <Text color="textSecondary" font="body1">
+            아티클 알림
+          </Text>
+          <ToggleButton
+            type="button"
+            onClick={toggleArticleNotification}
+            disabled={!hasPermission}
+          >
+            <ToggleTrack enabled={articleNotification ?? false}>
+              <ToggleThumb enabled={articleNotification ?? false} />
+            </ToggleTrack>
+          </ToggleButton>
+        </CategorySettingOption>
+
+        <CategorySettingOption>
+          <Text color="textSecondary" font="body1">
+            이벤트 알림
+          </Text>
+          <ToggleButton
+            type="button"
+            onClick={toggleEventNotification}
+            disabled={!hasPermission}
+          >
+            <ToggleTrack enabled={eventNotification ?? false}>
+              <ToggleThumb enabled={eventNotification ?? false} />
+            </ToggleTrack>
+          </ToggleButton>
+        </CategorySettingOption>
+      </CategorySettingsGroup>
     </Container>
   );
 };
@@ -79,11 +146,15 @@ const Container = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 24px;
+  gap: 20px;
   flex-direction: column;
 `;
 
-const SettingOption = styled.div`
+const PrimarySettingOption = styled.div`
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -93,7 +164,26 @@ const SettingOption = styled.div`
 
 const SettingLabel = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.heading6};
+`;
+
+const CategorySettingsGroup = styled.div`
+  padding-left: 16px;
+
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+`;
+
+const CategorySettingOption = styled.div`
+  padding: 12px 16px;
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background-color: ${({ theme }) => theme.colors.backgroundHover};
 `;
 
 const ToggleButton = styled.button<{ disabled?: boolean }>`
