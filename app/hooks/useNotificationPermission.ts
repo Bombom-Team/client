@@ -5,7 +5,7 @@ import { checkNotificationPermission } from '@/utils/notification';
 
 export const useNotificationPermission = () => {
   const { sendMessageToWeb } = useWebView();
-  const permissionRef = useRef<boolean>(null);
+  const permissionRef = useRef<boolean | null>(null);
   const appStateRef = useRef(AppState.currentState);
 
   const sendPermissionToWeb = useCallback(async () => {
@@ -42,11 +42,13 @@ export const useNotificationPermission = () => {
     const subscription = AppState.addEventListener(
       'change',
       (nextAppState: AppStateStatus) => {
+        const previousAppState = appStateRef.current;
+        appStateRef.current = nextAppState;
+
         if (
-          appStateRef.current.match(/inactive|background/) &&
+          previousAppState.match(/inactive|background/) &&
           nextAppState === 'active'
         ) {
-          appStateRef.current = nextAppState;
           updatePermission();
         }
       },
