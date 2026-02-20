@@ -6,7 +6,7 @@ import Button from '@/components/Button/Button';
 import type { QueueEntry } from '@/apis/event/event.api';
 
 interface EventModalProps {
-  queueEntry: QueueEntry | undefined;
+  queueEntry: QueueEntry;
   refetchQueueEntry: () => void;
   cancelQueueEntry: () => void;
   closeModal: () => void;

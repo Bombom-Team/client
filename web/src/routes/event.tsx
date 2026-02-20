@@ -6,6 +6,7 @@ import { useDevice } from '@/hooks/useDevice';
 import EventFooter from '@/pages/event/components/EventFooter';
 import EventGuide from '@/pages/event/components/EventGuide';
 import EventHero from '@/pages/event/components/EventHero';
+import EventLoadingModal from '@/pages/event/components/EventLoadingModal';
 import EventModal from '@/pages/event/components/EventModal';
 import EventPrize from '@/pages/event/components/EventPrize';
 import EventShareGuide from '@/pages/event/components/EventShareGuide';
@@ -76,13 +77,15 @@ function EventPage() {
             noticeType={eventErrorStatus}
             closeModal={closeNoticeModal}
           />
-        ) : (
+        ) : queueEntry ? (
           <EventModal
             queueEntry={queueEntry}
             cancelQueueEntry={cancelQueueEntry}
             refetchQueueEntry={refetchQueueEntry}
             closeModal={closeModal}
           />
+        ) : (
+          <EventLoadingModal />
         )}
       </Modal>
     </Container>
