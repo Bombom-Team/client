@@ -2,34 +2,19 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import useNotificationSettingMutation from './hooks/useNotificationSettingMutation';
-import useNotificationSettingsMutation from './hooks/useNotificationSettingsMutation';
 import { queries } from '@/apis/queries';
+import Divider from '@/components/Divider/Divider';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import Text from '@/components/Text';
 import { useAuth } from '@/contexts/AuthContext';
-import { useWebViewDeviceUuid } from '@/libs/webview/useWebViewDeviceUuid';
 import { useWebViewNotificationPermission } from '@/libs/webview/useWebViewNotificationPermission';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const NotificationSettingsSection = () => {
   const { userProfile } = useAuth();
-  const deviceUuid = useWebViewDeviceUuid();
   const memberId = userProfile?.id ?? 0;
   const { hasPermission } = useWebViewNotificationPermission();
-
-  const { data: globalNotification } = useQuery(
-    queries.notificationSettings.global({
-      memberId,
-      deviceUuid,
-    }),
-  );
-
-  const { mutate: updateNotificationSettings } =
-    useNotificationSettingsMutation({
-      memberId,
-      deviceUuid,
-    });
 
   const { data: articleNotification } = useQuery(
     queries.notificationSettings.category({
@@ -48,14 +33,6 @@ const NotificationSettingsSection = () => {
   const { mutate: updateNotificationSetting } = useNotificationSettingMutation({
     memberId,
   });
-
-  console.log(articleNotification, 'articleNotification');
-  console.log(eventNotification, 'eventNotification');
-  console.log(globalNotification, 'globalNotification');
-
-  const toggleGlobalNotification = () => {
-    updateNotificationSettings(!globalNotification);
-  };
 
   const toggleArticleNotification = () => {
     updateNotificationSetting({
@@ -96,50 +73,49 @@ const NotificationSettingsSection = () => {
         </GoToDeviceSettingSection>
       )}
 
-      <PrimarySettingOption>
-        <SettingLabel>전체 알림</SettingLabel>
-        <ToggleButton
-          type="button"
-          onClick={toggleGlobalNotification}
-          disabled={!hasPermission}
-        >
-          <ToggleTrack enabled={globalNotification ?? false}>
-            <ToggleThumb enabled={globalNotification ?? false} />
-          </ToggleTrack>
-        </ToggleButton>
-      </PrimarySettingOption>
-
-      <CategorySettingsGroup>
-        <CategorySettingOption>
-          <Text color="textSecondary" font="body1">
-            아티클 알림
+      <SettingSection>
+        <SectionHeader>
+          <Text font="body2" color="textSecondary">
+            * 알림 설정은 계정과 연동돼요.
           </Text>
-          <ToggleButton
-            type="button"
-            onClick={toggleArticleNotification}
-            disabled={!hasPermission}
-          >
-            <ToggleTrack enabled={articleNotification?.enabled ?? false}>
-              <ToggleThumb enabled={articleNotification?.enabled ?? false} />
-            </ToggleTrack>
-          </ToggleButton>
-        </CategorySettingOption>
+        </SectionHeader>
 
-        <CategorySettingOption>
-          <Text color="textSecondary" font="body1">
-            이벤트 알림
-          </Text>
-          <ToggleButton
-            type="button"
-            onClick={toggleEventNotification}
-            disabled={!hasPermission}
-          >
-            <ToggleTrack enabled={eventNotification?.enabled ?? false}>
-              <ToggleThumb enabled={eventNotification?.enabled ?? false} />
-            </ToggleTrack>
-          </ToggleButton>
-        </CategorySettingOption>
-      </CategorySettingsGroup>
+        <SettingCard>
+          <SettingRow>
+            <SettingInfo>
+              <SettingLabel>아티클 알림</SettingLabel>
+              <SettingHint>새로운 아티클 도착 시 알림</SettingHint>
+            </SettingInfo>
+            <ToggleButton
+              type="button"
+              onClick={toggleArticleNotification}
+              disabled={!hasPermission}
+            >
+              <ToggleTrack enabled={articleNotification?.enabled ?? false}>
+                <ToggleThumb enabled={articleNotification?.enabled ?? false} />
+              </ToggleTrack>
+            </ToggleButton>
+          </SettingRow>
+
+          <Divider />
+
+          <SettingRow>
+            <SettingInfo>
+              <SettingLabel>이벤트 알림</SettingLabel>
+              <SettingHint>이벤트 및 프로모션 알림</SettingHint>
+            </SettingInfo>
+            <ToggleButton
+              type="button"
+              onClick={toggleEventNotification}
+              disabled={!hasPermission}
+            >
+              <ToggleTrack enabled={eventNotification?.enabled ?? false}>
+                <ToggleThumb enabled={eventNotification?.enabled ?? false} />
+              </ToggleTrack>
+            </ToggleButton>
+          </SettingRow>
+        </SettingCard>
+      </SettingSection>
     </Container>
   );
 };
@@ -150,44 +126,55 @@ const Container = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 20px;
+  gap: 24px;
   flex-direction: column;
 `;
 
-const PrimarySettingOption = styled.div`
-  padding: 16px 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  background-color: ${({ theme }) => theme.colors.white};
-`;
-
-const SettingLabel = styled.p`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
-`;
-
-const CategorySettingsGroup = styled.div`
-  padding-left: 16px;
-
+const SettingSection = styled.div`
   display: flex;
   gap: 12px;
   flex-direction: column;
 `;
 
-const CategorySettingOption = styled.div`
-  padding: 12px 16px;
-  border-radius: 8px;
+const SectionHeader = styled.div`
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+`;
+
+const SettingCard = styled.div`
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
   display: flex;
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const SettingRow = styled.div`
+  display: flex;
+  gap: 16px;
   align-items: center;
   justify-content: space-between;
+`;
 
-  background-color: ${({ theme }) => theme.colors.backgroundHover};
+const SettingInfo = styled.div`
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  flex-direction: column;
+`;
+
+const SettingLabel = styled.p`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body1};
+`;
+
+const SettingHint = styled.p`
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.body3};
 `;
 
 const ToggleButton = styled.button<{ disabled?: boolean }>`
