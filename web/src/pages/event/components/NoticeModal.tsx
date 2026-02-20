@@ -18,7 +18,7 @@ const NoticeModal = ({ noticeType, closeModal }: NoticeModalProps) => {
     }
 
     return noticeType === EVENT_STATUS_TYPE.ended
-      ? '다음 이벤트를 기대해주세요!'
+      ? '이벤트가 종료되었어요.'
       : '이벤트를 신청할 수 없습니다.';
   };
 
@@ -26,7 +26,16 @@ const NoticeModal = ({ noticeType, closeModal }: NoticeModalProps) => {
     <Container>
       <ContentWrapper>
         <Title device={device}>{getNoticeTitle()}</Title>
-        <Description>자세한 내용은 이벤트 페이지를 참고해주세요.</Description>
+
+        {noticeType === EVENT_STATUS_TYPE.unknownError ? (
+          <Description>
+            자세한 내용은 이벤트 페이지를 참고해주세요.{' '}
+          </Description>
+        ) : (
+          <Description>
+            <HighLight>2월 23일 오후 2시</HighLight>에 이벤트가 시작돼요!{' '}
+          </Description>
+        )}
 
         <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>
       </ContentWrapper>
@@ -65,7 +74,8 @@ const Title = styled.h3<{ device: Device }>`
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.heading5};
+  font-weight: 400;
   text-align: center;
 `;
 
@@ -74,4 +84,8 @@ const ConfirmButton = styled(Button)`
   max-width: 200px;
 
   font: ${({ theme }) => theme.fonts.body1};
+`;
+
+const HighLight = styled.strong`
+  color: ${({ theme }) => theme.colors.primary};
 `;
