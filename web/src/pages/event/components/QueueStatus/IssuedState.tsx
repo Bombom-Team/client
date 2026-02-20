@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import html2canvas from 'html2canvas';
 import { useCallback, useRef } from 'react';
-import { COUPON_TYPE } from '../../constants/constants';
 import { formatEventDateTime } from '../../utils/date';
 import CloseWarningModal from '../CloseWarningModal';
 import { queries } from '@/apis/queries';
@@ -84,7 +83,7 @@ const IssuedState = ({ onClose }: IssuedStateProps) => {
                     height="auto"
                   />
                   <Text font={device === 'mobile' ? 'body2' : 'body1'}>
-                    {`${formatEventDateTime(new Date(coupon.issuedAt))} 발급 (${COUPON_TYPE[coupon.couponName]})`}
+                    {`${formatEventDateTime(new Date(coupon.issuedAt))} 발급`}
                   </Text>
                 </Flex>
               );
