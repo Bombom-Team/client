@@ -15,7 +15,7 @@ export const notificationQueries = {
 
   notificationSetting: (params: GetNotificationSettingParams) =>
     queryOptions({
-      queryKey: ['notifications', 'tokens', 'settings', params],
+      queryKey: ['notifications', 'settings', params],
       queryFn: () => getNotificationSetting(params),
     }),
 };
