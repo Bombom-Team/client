@@ -33,18 +33,53 @@ const QRCodeModal = ({
       closeModal={onClose}
     >
       <Container>
-        <QRModalTitle>{storeInfo.title}</QRModalTitle>
-        <QRCodeWrapper>
-          <img
-            src={storeInfo.src}
-            width={256}
-            height={256}
-            alt={storeInfo.alt}
-          />
-        </QRCodeWrapper>
-        <QRModalDescription>
-          QR 코드를 스캔하여 앱을 설치하세요
-        </QRModalDescription>
+        {storeType === 'all' ? (
+          <>
+            <QRCodesWrapper>
+              <QRCodeSection>
+                <QRModalTitle>App Store</QRModalTitle>
+                <QRCodeWrapper>
+                  <img
+                    src={appStoreQRCodeIcon}
+                    width={200}
+                    height={200}
+                    alt="App Store QR Code"
+                  />
+                </QRCodeWrapper>
+              </QRCodeSection>
+
+              <QRCodeSection>
+                <QRModalTitle>Google Play</QRModalTitle>
+                <QRCodeWrapper>
+                  <img
+                    src={playStoreQRCodeIcon}
+                    width={200}
+                    height={200}
+                    alt="Google Play QR Code"
+                  />
+                </QRCodeWrapper>
+              </QRCodeSection>
+            </QRCodesWrapper>
+            <QRModalDescription>
+              QR 코드를 스캔하여 앱을 설치하세요
+            </QRModalDescription>
+          </>
+        ) : (
+          <>
+            <QRModalTitle>{storeInfo.title}</QRModalTitle>
+            <QRCodeWrapper>
+              <img
+                src={storeInfo.src}
+                width={256}
+                height={256}
+                alt={storeInfo.alt}
+              />
+            </QRCodeWrapper>
+            <QRModalDescription>
+              QR 코드를 스캔하여 앱을 설치하세요
+            </QRModalDescription>
+          </>
+        )}
       </Container>
     </Modal>
   );
@@ -57,6 +92,21 @@ const Container = styled.div`
 
   display: flex;
   gap: 24px;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const QRCodesWrapper = styled.div`
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+`;
+
+const QRCodeSection = styled.div`
+  display: flex;
+  gap: 16px;
   flex-direction: column;
   align-items: center;
 `;
