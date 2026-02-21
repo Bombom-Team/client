@@ -1,19 +1,22 @@
 import styled from '@emotion/styled';
-import Text from '@/components/Text';
+import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
+import type { Device } from '@/hooks/useDevice';
 
-const EventLoadingModal = () => {
+interface EventLoadingModalProps {
+  closeModal: () => void;
+}
+
+const EventLoadingModal = ({ closeModal }: EventLoadingModalProps) => {
   const device = useDevice();
 
   return (
     <Container>
       <ContentWrapper>
-        <Text
-          font={device === 'mobile' ? 'heading5' : 'heading4'}
-          color="textPrimary"
-        >
-          접속 중입니다
-        </Text>
+        <Title device={device}>접속 중</Title>
+
+        <Description>잠시만 기다려주세요.</Description>
+        <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>
       </ContentWrapper>
     </Container>
   );
@@ -39,4 +42,25 @@ const ContentWrapper = styled.div`
   gap: 24px;
   flex-direction: column;
   align-items: center;
+`;
+
+const Title = styled.h3<{ device: Device }>`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+  text-align: center;
+`;
+
+const Description = styled.p`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.heading5};
+  font-weight: 400;
+  text-align: center;
+`;
+
+const ConfirmButton = styled(Button)`
+  width: 100%;
+  max-width: 200px;
+
+  font: ${({ theme }) => theme.fonts.body1};
 `;

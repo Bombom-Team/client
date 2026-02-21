@@ -79,7 +79,7 @@ function EventPage() {
       );
     }
 
-    return <EventLoadingModal />;
+    return <EventLoadingModal closeModal={closeModal} />;
   };
   return (
     <Container device={device}>
