@@ -1,6 +1,8 @@
 import { useEffect, useCallback } from 'react';
 import * as Notifications from 'expo-notifications';
-import messaging from '@react-native-firebase/messaging';
+import messaging, {
+  FirebaseMessagingTypes,
+} from '@react-native-firebase/messaging';
 import {
   createAndroidChannel,
   getFCMToken,
@@ -81,23 +83,25 @@ const useNotification = () => {
     });
 
     // FCM 포그라운드 메시지 리스너: 앱이 열려있을 때 FCM 메시지를 받으면 즉시 로컬 알림으로 표시
-    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-      // FCM에서 메시지를 받으면 Expo Notifications로 로컬 알림 표시
-      if (remoteMessage.notification) {
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: remoteMessage.notification.title,
-            body: remoteMessage.notification.body,
-            data: remoteMessage.data,
-          },
-          trigger: null, // 즉시 표시 (타이머 없음)
-        });
-      }
-    });
+    const unsubscribe = messaging().onMessage(
+      async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+        // FCM에서 메시지를 받으면 Expo Notifications로 로컬 알림 표시
+        if (remoteMessage.notification) {
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: remoteMessage.notification.title,
+              body: remoteMessage.notification.body,
+              data: remoteMessage.data,
+            },
+            trigger: null, // 즉시 표시 (타이머 없음)
+          });
+        }
+      },
+    );
 
     // 백그라운드에서 알림을 탭한 경우
     const unsubscribeNotificationOpened = messaging().onNotificationOpenedApp(
-      (remoteMessage) => {
+      (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
         const url = getNotificationUrl(remoteMessage.data ?? {});
         if (url) {
           sendMessageToWeb({
