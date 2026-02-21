@@ -1,9 +1,9 @@
 import { APP_STORE_LINK, PLAY_STORE_LINK } from '@bombom/shared';
 import remoteConfig from '@react-native-firebase/remote-config';
+import Constants from 'expo-constants';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { Alert, Linking, Platform } from 'react-native';
-import { version } from '../package.json';
 
 const parseVersion = (input: string) => {
   return input
@@ -34,6 +34,8 @@ const compareVersion = (currentVersion: string, minVersion: string) => {
 
 const checkForceUpdateRequired = async () => {
   try {
+    const currentVersion = Constants.expoConfig?.version ?? '0.0.0';
+
     await remoteConfig().setConfigSettings({
       minimumFetchIntervalMillis: __DEV__ ? 60 * 1000 : 6 * 60 * 60 * 1000,
     });
@@ -51,7 +53,7 @@ const checkForceUpdateRequired = async () => {
     const iosMinVersion = remoteConfig().getValue('ios_min_version').asString();
     const minVersion = Platform.OS === 'android' ? androidMinVersion : iosMinVersion;
 
-    return compareVersion(version, minVersion) < 0;
+    return compareVersion(currentVersion, minVersion) < 0;
   } catch (error) {
     console.error('강제 업데이트 체크 실패:', error);
     return false;
