@@ -34,6 +34,10 @@ const compareVersion = (currentVersion: string, minVersion: string) => {
 
 const checkForceUpdateRequired = async () => {
   try {
+    await remoteConfig().setConfigSettings({
+      minimumFetchIntervalMillis: __DEV__ ? 60 * 1000 : 6 * 60 * 60 * 1000,
+    });
+
     await remoteConfig().setDefaults({
       android_min_version: '0.0.0',
       ios_min_version: '0.0.0',
