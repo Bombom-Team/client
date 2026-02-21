@@ -54,7 +54,11 @@ const ReadyState = ({ queueEntry, refetchQueueEntry }: ReadyStateProps) => {
         인증 후 지금 바로 쿠폰을 발급받으세요!
       </ReadyMessage>
 
-      <ReCAPTCHA sitekey={ENV.captchaSiteKey} onChange={handleCaptchaChange} />
+      <ReCAPTCHA
+        sitekey={ENV.captchaSiteKey}
+        onChange={handleCaptchaChange}
+        size={device === 'mobile' ? 'compact' : 'normal'}
+      />
 
       {expiredCaptchaTime && (
         <Flex direction="column" gap={4} align="center" justify="center">
@@ -74,7 +78,7 @@ const ReadyState = ({ queueEntry, refetchQueueEntry }: ReadyStateProps) => {
             color="textTertiary"
           >
             {isCompleting
-              ? '대기열이 곧 초기화돼요.'
+              ? '대기열에서 곧 나가져요. 참여를 원하시면 다시 신청해주세요.'
               : '만료 전에 인증을 통과해주세요!'}
           </Text>
           {isCompleting && (
