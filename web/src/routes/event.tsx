@@ -14,7 +14,7 @@ import NoticeModal from '@/pages/event/components/NoticeModal';
 import { COUPON_NAME } from '@/pages/event/constants/constants';
 import { useQueueEntry } from '@/pages/event/hooks/useQueueEntry';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
-import type { CouponName } from '@/apis/event/event.api';
+import type { CouponName, QueueEntry } from '@/apis/event/event.api';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/event')({
@@ -58,6 +58,29 @@ function EventPage() {
     openModal();
   };
 
+  const getModalContent = (queueEntry: QueueEntry | undefined) => {
+    if (eventErrorStatus) {
+      return (
+        <NoticeModal
+          noticeType={eventErrorStatus}
+          closeModal={closeNoticeModal}
+        />
+      );
+    }
+
+    if (queueEntry) {
+      return (
+        <EventModal
+          queueEntry={queueEntry}
+          cancelQueueEntry={cancelQueueEntry}
+          refetchQueueEntry={refetchQueueEntry}
+          closeModal={closeModal}
+        />
+      );
+    }
+
+    return <EventLoadingModal />;
+  };
   return (
     <Container device={device}>
       <LandingHeader />
@@ -72,21 +95,7 @@ function EventPage() {
         isOpen={isOpen}
         showCloseButton={false}
       >
-        {eventErrorStatus ? (
-          <NoticeModal
-            noticeType={eventErrorStatus}
-            closeModal={closeNoticeModal}
-          />
-        ) : queueEntry ? (
-          <EventModal
-            queueEntry={queueEntry}
-            cancelQueueEntry={cancelQueueEntry}
-            refetchQueueEntry={refetchQueueEntry}
-            closeModal={closeModal}
-          />
-        ) : (
-          <EventLoadingModal />
-        )}
+        {getModalContent(queueEntry)}
       </Modal>
     </Container>
   );
