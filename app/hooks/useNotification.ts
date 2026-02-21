@@ -5,6 +5,7 @@ import {
   createAndroidChannel,
   getFCMToken,
   getMemberId,
+  getNotificationUrl,
   requestNotificationPermission,
 } from '@/utils/notification';
 import { useWebView } from '@/contexts/WebViewContext';
@@ -51,11 +52,12 @@ const useNotification = () => {
       const message = await messaging().getInitialNotification();
       if (!message) return;
 
-      if (message.data?.notificationType === 'ARTICLE') {
+      const url = getNotificationUrl(message.data ?? {});
+      if (url) {
         setTimeout(() => {
           sendMessageToWeb({
             type: 'NOTIFICATION_ROUTING',
-            payload: { url: `/articles/${message.data?.articleId}` },
+            payload: { url },
           });
         }, 800);
       }
@@ -98,10 +100,11 @@ const useNotification = () => {
     // 백그라운드에서 알림을 탭한 경우
     const unsubscribeNotificationOpened = messaging().onNotificationOpenedApp(
       (remoteMessage) => {
-        if (remoteMessage.data?.notificationType === 'ARTICLE') {
+        const url = getNotificationUrl(remoteMessage.data ?? {});
+        if (url) {
           sendMessageToWeb({
             type: 'NOTIFICATION_ROUTING',
-            payload: { url: `/articles/${remoteMessage.data?.articleId}` },
+            payload: { url },
           });
         }
       },
@@ -112,12 +115,11 @@ const useNotification = () => {
       Notifications.addNotificationResponseReceivedListener((response) => {
         const { data } = response.notification.request.content;
 
-        if (data.notificationType === 'ARTICLE') {
+        const url = getNotificationUrl(data);
+        if (url) {
           sendMessageToWeb({
             type: 'NOTIFICATION_ROUTING',
-            payload: {
-              url: `/articles/${data.articleId}`,
-            },
+            payload: { url },
           });
         }
       });
