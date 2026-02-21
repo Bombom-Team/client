@@ -26,10 +26,10 @@ const useNotification = () => {
 
   const registerFCMToken = useCallback(async () => {
     const granted = await requestNotificationPermission();
-    if (!granted) return;
+    const memberId = await getMemberId();
+    if (!granted || !memberId) return;
 
     try {
-      const memberId = await getMemberId();
       const deviceUuid = await getDeviceUUID();
       const token = await getFCMToken();
 
