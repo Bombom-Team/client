@@ -1,8 +1,9 @@
 import messaging from '@react-native-firebase/messaging';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Alert, Linking, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ASYNC_STORAGE_KEY } from '@/constants/asyncStorage';
 
 // 안드로이드 알림 채널 생성
 export const createAndroidChannel = async () => {
@@ -14,32 +15,11 @@ export const createAndroidChannel = async () => {
   }
 };
 
-export const hasRequestedPermission = async (): Promise<boolean> => {
-  try {
-    const key = 'notification_permission_requested';
-    const permissionRequested = await AsyncStorage.getItem(key);
-    return permissionRequested === 'true';
-  } catch (error) {
-    console.error('권한 요청 기록 확인 실패:', error);
-    return false;
-  }
-};
-
-const setPermissionRequested = async (): Promise<void> => {
-  try {
-    const key = 'notification_permission_requested';
-    await AsyncStorage.setItem(key, 'true');
-  } catch (error) {
-    console.error('권한 요청 기록 저장 실패:', error);
-  }
-};
-
 // 사용자 알림 권한 요청
 export const requestNotificationPermission = async () => {
   try {
     if (Platform.OS === 'ios') {
       const auth = await messaging().requestPermission();
-      await setPermissionRequested();
 
       return (
         auth === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -49,7 +29,6 @@ export const requestNotificationPermission = async () => {
 
     if (Platform.OS === 'android') {
       const { status } = await Notifications.requestPermissionsAsync();
-      await setPermissionRequested();
 
       return status === 'granted';
     }
@@ -66,11 +45,20 @@ export const checkNotificationPermission = async () => {
     return false;
   }
 
-  const authStatus = await messaging().hasPermission();
-  return (
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL
-  );
+  if (Platform.OS === 'ios') {
+    const iosGrantedStatus = await messaging().hasPermission();
+    return (
+      iosGrantedStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      iosGrantedStatus === messaging.AuthorizationStatus.PROVISIONAL
+    );
+  }
+
+  if (Platform.OS === 'android') {
+    const { status } = await Notifications.getPermissionsAsync();
+    return status === 'granted';
+  }
+
+  return false;
 };
 
 export const goToSystemPermission = async (enabled: boolean) => {
@@ -107,5 +95,24 @@ export const getFCMToken = async () => {
     return token;
   } catch (error) {
     console.error('FCM 토큰을 가져오는데 실패했습니다.', error);
+  }
+};
+
+export const updateMemberId = async (id: number) => {
+  try {
+    await AsyncStorage.setItem(ASYNC_STORAGE_KEY.memberId, String(id));
+  } catch (error) {
+    console.error('memberId 저장에 실패했습니다.', error);
+  }
+};
+
+export const getMemberId = async () => {
+  try {
+    const memberIdString = await AsyncStorage.getItem(
+      ASYNC_STORAGE_KEY.memberId,
+    );
+    return Number(memberIdString);
+  } catch (error) {
+    console.error('memberId 조회에 실패했습니다.', error);
   }
 };
