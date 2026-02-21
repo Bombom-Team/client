@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { useWebView } from '@/contexts/WebViewContext';
-import { checkNotificationPermission, getMemberId } from '@/utils/notification';
+import { checkNotificationPermission } from '@/utils/notification';
 
 interface UseNotificationPermissionParams {
   onPermissionGranted?: () => void | Promise<void>;
