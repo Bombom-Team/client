@@ -40,9 +40,7 @@ function ResourcesPage() {
             <RowDescription>패턴 목록/규칙 관리</RowDescription>
             <ActionCell>
               <Link to="/resources/unsubscribe-pattern">
-                <Button as="span" variant="secondary">
-                  관리하기
-                </Button>
+                <Button as="span">관리하기</Button>
               </Link>
             </ActionCell>
           </ListRow>
