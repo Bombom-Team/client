@@ -2,11 +2,19 @@ import { ApiError } from '@bombom/shared/apis';
 import { javascript } from '@codemirror/lang-javascript';
 import { EditorView } from '@codemirror/view';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, Link, useSearch } from '@tanstack/react-router';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  createFileRoute,
+  Link,
+  useNavigate,
+  useSearch,
+} from '@tanstack/react-router';
 import CodeMirror from '@uiw/react-codemirror';
 import { useEffect, useState } from 'react';
-import { lambdaPlaywrightQueries } from '@/apis/lambdaPlaywright/lambdaPlaywright.query';
+import {
+  lambdaPlaywrightQueries,
+  useUpdateLambdaPlaywrightSourceMutation,
+} from '@/apis/lambdaPlaywright/lambdaPlaywright.query';
 import { Button } from '@/components/Button';
 
 export const Route = createFileRoute(
@@ -20,11 +28,16 @@ export const Route = createFileRoute(
 
 function UnsubscribeLambdaEditorPage() {
   const { mode } = useSearch({ from: Route.id });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useQuery(
     lambdaPlaywrightQueries.source(),
   );
+  const { mutateAsync: updateSourceMutation, isPending: isUpdatePending } =
+    useUpdateLambdaPlaywrightSourceMutation();
   const [code, setCode] = useState('');
   const isEditable = mode === 'edit';
+  const isChanged = code !== (data?.content ?? '');
   const errorMessage =
     error instanceof ApiError
       ? `조회 실패 (${error.status}): ${error.message}`
@@ -43,12 +56,31 @@ function UnsubscribeLambdaEditorPage() {
     setCode(data?.content ?? '');
   };
 
+  const handleSaveClick = async () => {
+    try {
+      await updateSourceMutation({ content: code });
+      await queryClient.invalidateQueries({
+        queryKey: lambdaPlaywrightQueries.source().queryKey,
+      });
+      alert(
+        '수정 내용이 반영되었습니다.\n1) GitHub로 푸시되고 이미지가 빌드되어 AWS ECR에 푸시됩니다.\n2) 푸시 후 Lambda 실행 이미지는 수동으로 변경해야 합니다.',
+      );
+      void navigate({ to: '/resources/unsubscribe-lambda' });
+    } catch (saveError) {
+      const saveErrorMessage =
+        saveError instanceof ApiError
+          ? `저장 실패 (${saveError.status}): ${saveError.message}`
+          : `저장 실패: ${(saveError as Error)?.message ?? '알 수 없는 오류'}`;
+      alert(saveErrorMessage);
+    }
+  };
+
   return (
     <Container>
       <TopBar>
         <InfoText>
           {isEditable
-            ? '수정 모드입니다. 현재 저장 API는 아직 연결되어 있지 않습니다.'
+            ? '수정 저장 시 GitHub 푸시 및 이미지 빌드 후 AWS ECR 푸시가 진행됩니다. 이후 Lambda 실행 이미지는 수동으로 변경해야 합니다.'
             : '읽기 전용 모드입니다.'}
         </InfoText>
         <ActionBox>
@@ -64,6 +96,17 @@ function UnsubscribeLambdaEditorPage() {
               onClick={handleResetClick}
             >
               원본으로 되돌리기
+            </Button>
+          ) : null}
+          {isEditable ? (
+            <Button
+              type="button"
+              onClick={() => {
+                void handleSaveClick();
+              }}
+              disabled={!isChanged || isUpdatePending}
+            >
+              {isUpdatePending ? '저장 중...' : '저장'}
             </Button>
           ) : null}
           <Button type="button" onClick={handleCopyClick}>
