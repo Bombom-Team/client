@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import type { StoreType } from '../PromotionBanner/PromotionBanner.types';
 import appStoreQRCodeIcon from '#/assets/avif/app_store_qr_code.avif';
@@ -36,7 +37,7 @@ const QRCodeModal = ({
         {storeType === 'all' ? (
           <>
             <QRCodesWrapper>
-              <QRCodeSection>
+              <Flex direction="column" gap={16} align="center">
                 <QRModalTitle>App Store</QRModalTitle>
                 <QRCodeWrapper>
                   <img
@@ -46,9 +47,9 @@ const QRCodeModal = ({
                     alt="App Store QR Code"
                   />
                 </QRCodeWrapper>
-              </QRCodeSection>
+              </Flex>
 
-              <QRCodeSection>
+              <Flex direction="column" gap={16} align="center">
                 <QRModalTitle>Google Play</QRModalTitle>
                 <QRCodeWrapper>
                   <img
@@ -58,7 +59,7 @@ const QRCodeModal = ({
                     alt="Google Play QR Code"
                   />
                 </QRCodeWrapper>
-              </QRCodeSection>
+              </Flex>
             </QRCodesWrapper>
             <QRModalDescription>
               QR 코드를 스캔하여 앱을 설치하세요
@@ -102,13 +103,6 @@ const QRCodesWrapper = styled.div`
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: center;
-`;
-
-const QRCodeSection = styled.div`
-  display: flex;
-  gap: 16px;
-  flex-direction: column;
-  align-items: center;
 `;
 
 const QRModalTitle = styled.h2`
