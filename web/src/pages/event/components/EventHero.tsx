@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import { QUEUE_STATUS_TYPE } from '../constants/constants';
 import { formatEventDateTime } from '../utils/date';
 import Flex from '@/components/Flex';
 import { useAuth } from '@/contexts/AuthContext';
@@ -8,15 +7,13 @@ import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { isWebView } from '@/utils/device';
-import type { QueueEntry } from '@/apis/event/event.api';
 import type { Device } from '@/hooks/useDevice';
 
 interface EventHeroProps {
   onApply: () => void;
-  queueEntry: QueueEntry | undefined;
 }
 
-const EventHero = ({ onApply, queueEntry }: EventHeroProps) => {
+const EventHero = ({ onApply }: EventHeroProps) => {
   const device = useDevice();
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
@@ -41,18 +38,6 @@ const EventHero = ({ onApply, queueEntry }: EventHeroProps) => {
       action: '선착순 경품 받기 버튼 클릭',
       label: formatEventDateTime(new Date()),
     });
-  };
-
-  const getEventButtonText = () => {
-    if (!isLoggedIn) {
-      return '로그인하고 선착순 경품 받기';
-    }
-
-    if (queueEntry?.status === QUEUE_STATUS_TYPE.issued) {
-      return '내 쿠폰 확인하기';
-    }
-
-    return '선착순 경품 받기';
   };
 
   return (
@@ -122,10 +107,9 @@ const EventHero = ({ onApply, queueEntry }: EventHeroProps) => {
         <EventButton
           type="button"
           device={device}
-          isIssued={queueEntry?.status === QUEUE_STATUS_TYPE.issued}
           onClick={handleEventButtonClick}
         >
-          {getEventButtonText()}
+          {isLoggedIn ? '선착순 경품 받기' : '로그인하고 선착순 경품 받기'}
         </EventButton>
       </ContentWrapper>
     </Container>
@@ -192,14 +176,13 @@ const HeroBadge = styled.div<{ device: Device }>`
   transform: rotate(-2deg);
 `;
 
-const EventButton = styled.button<{ isIssued: boolean; device: Device }>`
+const EventButton = styled.button<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '12px 20px' : '20px 44px')};
   border: 4px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;
   box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
 
-  background-color: ${({ theme, isIssued }) =>
-    isIssued ? theme.colors.primary : '#d81b60'};
+  background-color: #d81b60;
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
