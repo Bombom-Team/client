@@ -84,7 +84,7 @@ function EventPage() {
   return (
     <Container device={device}>
       <LandingHeader />
-      <EventHero onApply={applyEvent} queueEntry={queueEntry} />
+      <EventHero onApply={applyEvent} />
       <EventPrize />
       <EventGuide />
       <EventShareGuide />
