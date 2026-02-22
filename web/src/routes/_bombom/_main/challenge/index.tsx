@@ -28,15 +28,15 @@ function RouteComponent() {
     (challenge) =>
       (challenge.participationInfo?.isJoined &&
         challenge.status === 'BEFORE_START') ||
-      (challenge.status === 'ONGOING' &&
-        challenge.registrationPhase !== 'LATE'),
+      (challenge.participationInfo?.isJoined && challenge.status === 'ONGOING'),
   );
 
   const availableChallenges = challenges?.filter(
     (challenge) =>
       (!challenge.participationInfo?.isJoined &&
         challenge.status === 'BEFORE_START') ||
-      challenge.registrationPhase === 'LATE' ||
+      (!challenge.participationInfo?.isJoined &&
+        challenge.registrationPhase === 'LATE') ||
       challenge.status === 'COMING_SOON',
   );
   const completedChallenges = challenges?.filter(
