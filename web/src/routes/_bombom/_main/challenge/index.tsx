@@ -26,13 +26,17 @@ function RouteComponent() {
 
   const joinedChallenges = challenges?.filter(
     (challenge) =>
-      (challenge.detail?.isJoined && challenge.status === 'BEFORE_START') ||
-      challenge.status === 'ONGOING',
+      (challenge.participationInfo?.isJoined &&
+        challenge.status === 'BEFORE_START') ||
+      (challenge.participationInfo?.isJoined && challenge.status === 'ONGOING'),
   );
 
   const availableChallenges = challenges?.filter(
     (challenge) =>
-      (!challenge.detail?.isJoined && challenge.status === 'BEFORE_START') ||
+      (!challenge.participationInfo?.isJoined &&
+        challenge.status === 'BEFORE_START') ||
+      (!challenge.participationInfo?.isJoined &&
+        challenge.registrationPhase === 'LATE') ||
       challenge.status === 'COMING_SOON',
   );
   const completedChallenges = challenges?.filter(
