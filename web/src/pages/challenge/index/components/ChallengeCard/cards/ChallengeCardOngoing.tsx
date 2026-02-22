@@ -58,7 +58,8 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   };
 
   const shouldShowApplyButton =
-    registrationPhase === 'EARLY' || registrationPhase === 'LATE';
+    !participationInfo?.isJoined &&
+    (registrationPhase === 'EARLY' || registrationPhase === 'LATE');
   const applyButtonText =
     registrationPhase === 'LATE' ? '추가 신청하기' : '신청하기';
 
