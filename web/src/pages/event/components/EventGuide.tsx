@@ -1,5 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import Text from '@/components/Text';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import AppleIcon from '#/assets/svg/apple.svg';
 import GoogleIcon from '#/assets/svg/google.svg';
@@ -56,7 +57,11 @@ const EventGuide = () => {
             <StepHighlight>[선착순 경품받기]</StepHighlight>
             {'\n'}
             버튼을 눌러 응모하면 끝!
+            {'\n'}
           </Description>
+          <ActivationNotice color="red" font="heading6">
+            * 선착순 응모는 2월 23일 오후 2시에 시작돼요.
+          </ActivationNotice>
           <ApplyButtonExample>
             선착순 경품 받기
             <PointerIcon width={20} height={20} fill={theme.colors.white} />
@@ -218,4 +223,8 @@ const WhiteBox = styled.div`
   justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const ActivationNotice = styled(Text)`
+  text-align: center;
 `;
