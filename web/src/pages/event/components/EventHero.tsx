@@ -27,7 +27,7 @@ const EventHero = ({ onApply }: EventHeroProps) => {
     else navigate({ to: '/login' });
   };
 
-  const handleApplyButtonClick = () => {
+  const handleEventButtonClick = () => {
     if (isLoggedIn) {
       onApply();
     } else {
@@ -105,13 +105,13 @@ const EventHero = ({ onApply }: EventHeroProps) => {
           </InfoRow>
         </InfoCard>
 
-        <ApplyButton
+        <EventButton
           type="button"
           device={device}
-          onClick={handleApplyButtonClick}
+          onClick={handleEventButtonClick}
         >
           {isLoggedIn ? '선착순 경품 받기' : '로그인하고 선착순 경품 받기'}
-        </ApplyButton>
+        </EventButton>
 
         <EventNotificationButton />
       </ContentWrapper>
@@ -179,7 +179,7 @@ const HeroBadge = styled.div<{ device: Device }>`
   transform: rotate(-2deg);
 `;
 
-const ApplyButton = styled.button<{ device: Device }>`
+const EventButton = styled.button<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '12px 20px' : '20px 44px')};
   border: 4px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;

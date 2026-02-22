@@ -1,49 +1,28 @@
 import styled from '@emotion/styled';
-import { EVENT_STATUS_TYPE } from '../constants/constants';
 import Button from '@/components/Button/Button';
-import { useDevice, type Device } from '@/hooks/useDevice';
-import type { EventErrorStatus } from '../types/event';
+import { useDevice } from '@/hooks/useDevice';
+import type { Device } from '@/hooks/useDevice';
 
-interface NoticeModalProps {
-  noticeType: EventErrorStatus;
+interface EventLoadingModalProps {
   closeModal: () => void;
 }
 
-const NoticeModal = ({ noticeType, closeModal }: NoticeModalProps) => {
+const EventLoadingModal = ({ closeModal }: EventLoadingModalProps) => {
   const device = useDevice();
-
-  const getNoticeTitle = () => {
-    if (noticeType === EVENT_STATUS_TYPE.notStarted) {
-      return '이벤트 기간이 아니에요.';
-    }
-
-    return noticeType === EVENT_STATUS_TYPE.ended
-      ? '이벤트가 종료되었어요.'
-      : '이벤트를 신청할 수 없습니다.';
-  };
 
   return (
     <Container>
       <ContentWrapper>
-        <Title device={device}>{getNoticeTitle()}</Title>
+        <Title device={device}>접속 중</Title>
 
-        {noticeType === EVENT_STATUS_TYPE.unknownError ? (
-          <Description>
-            자세한 내용은 이벤트 페이지를 참고해주세요.{' '}
-          </Description>
-        ) : (
-          <Description>
-            <HighLight>2월 23일 오후 2시</HighLight>에 이벤트가 시작돼요!{' '}
-          </Description>
-        )}
-
+        <Description>잠시만 기다려주세요.</Description>
         <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>
       </ContentWrapper>
     </Container>
   );
 };
 
-export default NoticeModal;
+export default EventLoadingModal;
 
 const Container = styled.div`
   width: 100%;
@@ -84,8 +63,4 @@ const ConfirmButton = styled(Button)`
   max-width: 200px;
 
   font: ${({ theme }) => theme.fonts.body1};
-`;
-
-const HighLight = styled.strong`
-  color: ${({ theme }) => theme.colors.primary};
 `;

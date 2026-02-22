@@ -216,7 +216,8 @@ export const queueEntryHandlers = [
 
     // 쿠폰 발급
     const issuedAt = new Date().toISOString();
-    const imageUrl = MOCK_COUPON_IMAGES[couponName];
+    const imageUrl =
+      MOCK_COUPON_IMAGES[couponName as keyof typeof MOCK_COUPON_IMAGES];
 
     const issuedCoupon = {
       couponName,
