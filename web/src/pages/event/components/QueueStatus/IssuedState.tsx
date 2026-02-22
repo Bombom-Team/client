@@ -19,6 +19,8 @@ interface IssuedStateProps {
   onClose: () => void;
 }
 
+const COUPON_IMAGE_BASE_URL = 'https://www.bombom.news/';
+
 const IssuedState = ({ onClose }: IssuedStateProps) => {
   const device = useDevice();
   const couponRef = useRef<HTMLDivElement>(null);
@@ -77,7 +79,7 @@ const IssuedState = ({ onClose }: IssuedStateProps) => {
                   justify="center"
                 >
                   <img
-                    src={coupon.imageUrl}
+                    src={`${COUPON_IMAGE_BASE_URL}${coupon.imageUrl}`}
                     alt="선착순 경품 쿠폰"
                     width="90%"
                     height="auto"
