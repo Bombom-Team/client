@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
 import useEventNotification from '../hooks/useEventNotification';
 import { formatEventDateTime } from '../utils/date';
 import useModal from '@/components/Modal/useModal';
@@ -11,10 +10,8 @@ import QRCodeModal from '@/pages/recommend/components/QRCodeModal/QRCodeModal';
 import { isWebView } from '@/utils/device';
 import { downloadApp } from '@/utils/downloadApp';
 import type { Device } from '@/hooks/useDevice';
-import type { StoreType } from '@/pages/recommend/components/PromotionBanner/PromotionBanner.types';
 
 const EventNotificationButton = () => {
-  const [storeType, setStoreType] = useState<StoreType | null>(null);
   const { modalRef, closeModal, isOpen, openModal } = useModal();
   const { isLoggedIn } = useAuth();
   const device = useDevice();
@@ -36,7 +33,6 @@ const EventNotificationButton = () => {
 
   const enableNotificationInWeb = () => {
     if (device === 'pc') {
-      setStoreType('all');
       openModal();
     } else {
       downloadApp();
@@ -55,11 +51,6 @@ const EventNotificationButton = () => {
       action: '이벤트 알림 받기 버튼 클릭',
       label: `${formatEventDateTime(new Date())} ${isAppEnvironment ? 'App' : 'Web'}`,
     });
-  };
-
-  const handleCloseModal = () => {
-    setStoreType(null);
-    closeModal();
   };
 
   const getButtonText = () => {
@@ -84,8 +75,8 @@ const EventNotificationButton = () => {
       <QRCodeModal
         modalRef={modalRef}
         isOpen={isOpen}
-        onClose={handleCloseModal}
-        storeType={storeType}
+        onClose={closeModal}
+        storeType="all"
       />
     </>
   );
