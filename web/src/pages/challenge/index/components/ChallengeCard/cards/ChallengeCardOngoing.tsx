@@ -20,7 +20,8 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const {
-    detail,
+    participationInfo,
+    registrationPhase,
     id,
     participantCount,
     generation,
@@ -58,6 +59,12 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
     });
   };
 
+  const shouldShowApplyButton =
+    !participationInfo?.isJoined &&
+    (registrationPhase === 'EARLY' || registrationPhase === 'LATE');
+  const applyButtonText =
+    registrationPhase === 'LATE' ? '추가 신청하기' : '신청하기';
+
   return (
     <>
       <CardContainer onClick={moveToDetail}>
@@ -76,10 +83,14 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
         </CardHeader>
 
         <CardFooter>
-          {detail?.isJoined ? (
-            <ChallengeProgress>{detail.progress}% 달성 중</ChallengeProgress>
+          {shouldShowApplyButton ? (
+            <ApplyButton onClick={handleApplyClick}>
+              {applyButtonText}
+            </ApplyButton>
           ) : (
-            <ApplyButton onClick={handleApplyClick}>신청하기</ApplyButton>
+            <ChallengeProgress>
+              {participationInfo?.progress ?? 0}% 달성 중
+            </ChallengeProgress>
           )}
           <CardDetailButton>자세히 보기 →</CardDetailButton>
         </CardFooter>
