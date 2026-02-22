@@ -22,7 +22,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     status: 'BEFORE_START',
     registrationPhase: 'EARLY',
-    participantInfo: {
+    participationInfo: {
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
@@ -45,7 +45,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     status: 'BEFORE_START',
     registrationPhase: 'EARLY',
-    participantInfo: {
+    participationInfo: {
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
@@ -73,7 +73,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     status: 'BEFORE_START',
     registrationPhase: 'EARLY',
-    participantInfo: {
+    participationInfo: {
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
@@ -90,7 +90,7 @@ export const CHALLENGES: Challenge[] = [
     newsletters: [],
     status: 'BEFORE_START',
     registrationPhase: 'EARLY',
-    participantInfo: {
+    participationInfo: {
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
@@ -107,7 +107,7 @@ export const CHALLENGES: Challenge[] = [
     newsletters: [],
     status: 'BEFORE_START',
     registrationPhase: 'EARLY',
-    participantInfo: {
+    participationInfo: {
       isJoined: false,
       progress: 0,
       grade: 'GOLD',
@@ -130,7 +130,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     status: 'BEFORE_START',
     registrationPhase: 'EARLY',
-    participantInfo: {
+    participationInfo: {
       isJoined: true,
       progress: 0,
       grade: 'GOLD',
@@ -147,7 +147,7 @@ export const CHALLENGES: Challenge[] = [
     newsletters: [],
     status: 'ONGOING',
     registrationPhase: 'LATE',
-    participantInfo: {
+    participationInfo: {
       isJoined: false,
       progress: 20,
       grade: 'GOLD',
@@ -175,7 +175,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     status: 'ONGOING',
     registrationPhase: 'LATE',
-    participantInfo: {
+    participationInfo: {
       isJoined: true,
       progress: 65,
       grade: 'SILVER',
@@ -198,7 +198,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     status: 'COMPLETED',
     registrationPhase: 'CLOSED',
-    participantInfo: {
+    participationInfo: {
       isJoined: true,
       progress: 100,
       grade: 'GOLD',
@@ -221,7 +221,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     status: 'COMPLETED',
     registrationPhase: 'CLOSED',
-    participantInfo: {
+    participationInfo: {
       isJoined: true,
       progress: 95,
       grade: 'SILVER',
@@ -244,7 +244,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     status: 'COMPLETED',
     registrationPhase: 'CLOSED',
-    participantInfo: {
+    participationInfo: {
       isJoined: true,
       progress: 82,
       grade: 'BRONZE',

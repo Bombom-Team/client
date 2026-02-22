@@ -7,7 +7,7 @@ export type Challenge = Omit<
   components['schemas']['ChallengeResponse'],
   'detail'
 > & {
-  participantInfo?: components['schemas']['ChallengeDetailResponse'];
+  participationInfo?: components['schemas']['ChallengeDetailResponse'];
   registrationPhase: RegistrationPhase;
 };
 

@@ -26,7 +26,7 @@ function RouteComponent() {
 
   const joinedChallenges = challenges?.filter(
     (challenge) =>
-      (challenge.participantInfo?.isJoined &&
+      (challenge.participationInfo?.isJoined &&
         challenge.status === 'BEFORE_START') ||
       (challenge.status === 'ONGOING' &&
         challenge.registrationPhase !== 'LATE'),
@@ -34,7 +34,7 @@ function RouteComponent() {
 
   const availableChallenges = challenges?.filter(
     (challenge) =>
-      (!challenge.participantInfo?.isJoined &&
+      (!challenge.participationInfo?.isJoined &&
         challenge.status === 'BEFORE_START') ||
       challenge.registrationPhase === 'LATE' ||
       challenge.status === 'COMING_SOON',
