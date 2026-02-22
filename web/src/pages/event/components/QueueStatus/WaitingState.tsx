@@ -12,6 +12,8 @@ interface WaitingStateProps {
 const WaitingState = ({ queueEntry }: WaitingStateProps) => {
   const device = useDevice();
 
+  const remainingUserCount = (queueEntry.position ?? 1) - 1;
+
   return (
     <Flex direction="column" gap={device === 'mobile' ? 12 : 16} align="center">
       <Text
@@ -24,8 +26,15 @@ const WaitingState = ({ queueEntry }: WaitingStateProps) => {
         font={device === 'mobile' ? 'heading5' : 'heading4'}
         color="textPrimary"
       >
-        <Highlight>{queueEntry.position}명</Highlight>이 대기 중이에요.
-        {'\n'}대기 순서에 따라 자동으로 접속돼요.
+        내 앞에 <Highlight>{remainingUserCount}명</Highlight>이 대기 중이에요.
+      </WaitingInfo>
+      <WaitingInfo
+        font={device === 'mobile' ? 'heading5' : 'heading4'}
+        color="textPrimary"
+      >
+        {remainingUserCount === 0
+          ? '잠시후 자동으로 접속돼요.'
+          : '대기 순서에 따라 자동으로 접속돼요.'}
       </WaitingInfo>
 
       <LoadingSpinner device={device}>

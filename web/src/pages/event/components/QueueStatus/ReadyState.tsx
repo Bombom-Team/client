@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMemo } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -31,10 +32,11 @@ const ReadyState = ({ queueEntry, refetchQueueEntry }: ReadyStateProps) => {
     [],
   );
 
-  const { leftTime } = useCountdown({
-    targetTime: expiredCaptchaTime ?? new Date(),
+  const { leftTime, isCompleting } = useCountdown({
+    targetTime:
+      expiredCaptchaTime ?? new Date(Date.now() + 1000 * 60 * 2).toISOString(),
     onComplete: expiredCaptchaTime ? refetchQueueEntry : undefined,
-    completeDelay: 3000,
+    completeDelay: 2000,
   });
 
   const handleCaptchaChange = async (token: string | null) => {
@@ -52,20 +54,40 @@ const ReadyState = ({ queueEntry, refetchQueueEntry }: ReadyStateProps) => {
         인증 후 지금 바로 쿠폰을 발급받으세요!
       </ReadyMessage>
 
-      <ReCAPTCHA sitekey={ENV.captchaSiteKey} onChange={handleCaptchaChange} />
+      <ReCAPTCHA
+        sitekey={ENV.captchaSiteKey}
+        onChange={handleCaptchaChange}
+        size={device === 'mobile' ? 'compact' : 'normal'}
+      />
 
       {expiredCaptchaTime && (
         <Flex direction="column" gap={4} align="center" justify="center">
           <Text font={device === 'mobile' ? 'body3' : 'body2'}>
-            ⏰ 이 창은
-            <HighLight>{leftTime.totalSeconds}</HighLight>초 후에 만료됩니다.
+            {isCompleting ? (
+              '인증 시간이 만료되었어요.'
+            ) : (
+              <>
+                ⏰ 이 창은
+                <HighLight>{leftTime.totalSeconds}</HighLight>초 후에
+                만료됩니다.
+              </>
+            )}
           </Text>
           <Text
             font={device === 'mobile' ? 'body4' : 'body3'}
             color="textTertiary"
           >
-            만료 전에 인증을 통과해주세요!
+            {isCompleting
+              ? '대기열에서 곧 나가져요. 참여를 원하시면 다시 신청해주세요.'
+              : '만료 전에 인증을 통과해주세요!'}
           </Text>
+          {isCompleting && (
+            <LoadingSpinner device={device}>
+              <SpinnerDot delay={0} />
+              <SpinnerDot delay={0.2} />
+              <SpinnerDot delay={0.4} />
+            </LoadingSpinner>
+          )}
         </Flex>
       )}
     </Flex>
@@ -83,4 +105,37 @@ const ReadyMessage = styled.p<{ device: Device }>`
 
 const HighLight = styled.span`
   color: ${({ theme }) => theme.colors.primary};
+`;
+
+const pulse = keyframes`
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+`;
+
+const LoadingSpinner = styled.div<{ device: Device }>`
+  margin-top: 8px;
+
+  display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  align-items: center;
+  justify-content: center;
+`;
+
+const SpinnerDot = styled.div<{ delay: number }>`
+  width: 12px;
+  height: 12px;
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 50%;
+
+  background-color: ${({ theme }) => theme.colors.primary};
+
+  animation: ${pulse} 1.4s ease-in-out infinite;
+
+  animation-delay: ${({ delay }) => delay}s;
 `;

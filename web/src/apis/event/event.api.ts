@@ -7,7 +7,7 @@ export type QueueStatus =
   | 'ISSUED'
   | 'NOT_IN_QUEUE'
   | 'SOLD_OUT';
-export type CouponName = 'apple' | 'day2-coupon' | 'avengers';
+export type CouponName = string;
 export type QueueEntry = {
   couponName: CouponName;
   status: QueueStatus;

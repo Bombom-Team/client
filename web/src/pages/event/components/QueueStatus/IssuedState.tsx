@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import html2canvas from 'html2canvas';
 import { useCallback, useRef } from 'react';
-import { COUPON_TYPE } from '../../constants/constants';
 import { formatEventDateTime } from '../../utils/date';
 import CloseWarningModal from '../CloseWarningModal';
 import { queries } from '@/apis/queries';
@@ -19,6 +18,8 @@ import type { Device } from '@/hooks/useDevice';
 interface IssuedStateProps {
   onClose: () => void;
 }
+
+const COUPON_IMAGE_BASE_URL = 'https://www.bombom.news/';
 
 const IssuedState = ({ onClose }: IssuedStateProps) => {
   const device = useDevice();
@@ -78,13 +79,13 @@ const IssuedState = ({ onClose }: IssuedStateProps) => {
                   justify="center"
                 >
                   <img
-                    src={coupon.imageUrl}
+                    src={`${COUPON_IMAGE_BASE_URL}${coupon.imageUrl}`}
                     alt="선착순 경품 쿠폰"
                     width="90%"
                     height="auto"
                   />
                   <Text font={device === 'mobile' ? 'body2' : 'body1'}>
-                    {`${formatEventDateTime(new Date(coupon.issuedAt))} 발급 (${COUPON_TYPE[coupon.couponName]})`}
+                    {`${formatEventDateTime(new Date(coupon.issuedAt))} 발급`}
                   </Text>
                 </Flex>
               );

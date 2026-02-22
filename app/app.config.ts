@@ -118,6 +118,16 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           color: APP_CONFIG.color,
         },
       ],
+      [
+        'expo-media-library',
+        {
+          photosPermission: false,
+          savePhotosPermission:
+            '다운로드한 이미지를 사진 앱에 저장하기 위해 접근 권한이 필요합니다.',
+          isAccessMediaLocationEnabled: false,
+          granularPermissions: ['photo'],
+        },
+      ],
       '@react-native-firebase/app',
       '@react-native-firebase/messaging',
       './plugins/withAndroidManifestFix',
