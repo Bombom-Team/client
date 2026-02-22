@@ -79,7 +79,7 @@ export interface paths {
     put?: never;
     /**
      * 뉴스레터 구독 취소
-     * @description 뉴스레터 구독을 취소합니다. 구독 리스트에서 삭제하고 unsubscribeUrl이 존재하는 경우 반환됩니다.
+     * @description 뉴스레터 구독 취소를 요청합니다. 자동 취소가 비동기로 진행되며, 실패 시 구독 목록에서 수동 취소 링크를 확인할 수 있습니다.
      */
     post: operations['unsubscribe'];
     delete?: never;
@@ -820,6 +820,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/challenges/{id}/landing': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 랜딩 페이지 조회
+     * @description 챌린지 랜딩 페이지에 필요한 정보(기수, 기간, 필수 뉴스레터, 뱃지 수여 여부)를 조회합니다.
+     */
+    get: operations['getChallengeLanding'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/challenges/{id}/eligibility': {
     parameters: {
       query?: never;
@@ -1208,9 +1228,6 @@ export interface components {
     UpdateWarningSettingRequest: {
       isVisible?: boolean;
     };
-    UnsubscribeResponse: {
-      unsubscribeUrl?: string;
-    };
     HighlightCreateRequest: {
       location: components['schemas']['HighlightLocationRequest'];
       /** Format: int64 */
@@ -1423,7 +1440,9 @@ export interface components {
       imageUrl?: string;
       description: string;
       category: string;
-      hasUnsubscribeUrl: boolean;
+      unsubscribeUrl?: string;
+      /** @enum {string} */
+      status: 'SUBSCRIBED' | 'UNSUBSCRIBING' | 'UNSUBSCRIBE_FAILED';
     };
     ReadingInformationResponse: {
       /**
@@ -1631,7 +1650,9 @@ export interface components {
       newsletters: components['schemas']['ChallengeNewsletterResponse'][];
       /** @enum {string} */
       status: 'COMING_SOON' | 'BEFORE_START' | 'ONGOING' | 'COMPLETED';
-      detail?: components['schemas']['ChallengeDetailResponse'];
+      /** @enum {string} */
+      registrationPhase: 'EARLY' | 'LATE' | 'CLOSED';
+      participationInfo?: components['schemas']['ChallengeDetailResponse'];
     };
     ChallengeInfoResponse: {
       name: string;
@@ -1704,6 +1725,25 @@ export interface components {
       challengeTodoType?: 'READ' | 'COMMENT' | 'MINDSET';
       /** @enum {string} */
       challengeTodoStatus?: 'COMPLETE' | 'INCOMPLETE';
+    };
+    ChallengeLandingNewsletterResponse: {
+      /** Format: int64 */
+      id: number;
+      name: string;
+      imageUrl: string;
+      category: string;
+      description: string;
+    };
+    ChallengeLandingResponse: {
+      name: string;
+      /** Format: int32 */
+      generation: number;
+      /** Format: date */
+      startDate: string;
+      /** Format: date */
+      endDate: string;
+      grantsBadge: boolean;
+      newsletters: components['schemas']['ChallengeLandingNewsletterResponse'][];
     };
     ChallengeEligibilityResponse: {
       /** @description 신청 가능 여부 */
@@ -2258,18 +2298,14 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          '*/*': components['schemas']['UnsubscribeResponse'];
-        };
+        content?: never;
       };
       /** @description 인증 실패 */
       401: {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          '*/*': components['schemas']['UnsubscribeResponse'];
-        };
+        content?: never;
       };
     };
   };
@@ -3867,6 +3903,42 @@ export interface operations {
       };
       /** @description 챌린지 참가자에 대한 데이터 정합성 불일치 */
       500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getChallengeLanding: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 챌린지 랜딩 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeLandingResponse'];
+        };
+      };
+      /** @description 잘못된 요청 (유효하지 않은 ID) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지를 찾을 수 없음 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
