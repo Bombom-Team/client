@@ -1,7 +1,15 @@
 import { fetcher } from '@bombom/shared/apis';
 import type { components, operations } from '@/types/openapi';
 
-export type Challenge = components['schemas']['ChallengeResponse'];
+export type RegistrationPhase = 'EARLY' | 'LATE' | 'CLOSED';
+
+export type Challenge = Omit<
+  components['schemas']['ChallengeResponse'],
+  'detail'
+> & {
+  participationInfo?: components['schemas']['ChallengeDetailResponse'];
+  registrationPhase: RegistrationPhase;
+};
 
 export type GetChallengesResponse = Challenge[];
 
