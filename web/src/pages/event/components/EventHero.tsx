@@ -215,28 +215,6 @@ const EventButton = styled.button<{ isIssued: boolean; device: Device }>`
   }
 `;
 
-const GetMyCouponButton = styled.button<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '12px 28px')};
-  border: 2px solid ${({ theme }) => theme.colors.black};
-  border-radius: 24px;
-  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
-
-  background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
-
-  &:hover {
-    box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
-    transform: translateY(-2px);
-  }
-
-  &:active {
-    box-shadow: 1px 1px 0 0 ${({ theme }) => theme.colors.black};
-    transform: translateY(0);
-  }
-`;
-
 const InfoCard = styled.div<{ device: Device }>`
   position: relative;
   width: 100%;
