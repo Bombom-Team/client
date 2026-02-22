@@ -7,7 +7,7 @@ const useEventNotification = () => {
   const { userProfile } = useAuth();
   const memberId = userProfile?.id ?? 0;
 
-  const { data: notificationEnabled, isLoading } = useQuery({
+  const { data: notificationEnabled } = useQuery({
     ...queries.notificationSettings.category({
       memberId,
       category: 'event',
@@ -25,7 +25,6 @@ const useEventNotification = () => {
 
   return {
     notificationEnabled,
-    isLoading,
     isPending,
     enableEventNotification,
   };
