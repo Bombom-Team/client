@@ -41,7 +41,7 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
     });
 
     navigate({
-      to: detail?.isJoined
+      to: participationInfo?.isJoined
         ? '/challenge/$challengeId'
         : '/challenge/$challengeId/landing',
       params: { challengeId: String(id) },
