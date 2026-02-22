@@ -1,1 +1,1 @@
-export type StoreType = 'appStore' | 'playStore';
+export type StoreType = 'appStore' | 'playStore' | 'all';
