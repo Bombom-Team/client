@@ -19,9 +19,9 @@ const GRADE_CONFIG: Record<GradeType, string> = {
 const ChallengeCardCompleted = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
 
-  const { participationInfo, id, generation, title } = props;
+  const { participantInfo, id, generation, title } = props;
 
-  const grade = participationInfo?.grade as GradeType;
+  const grade = participantInfo?.grade as GradeType;
   const gradeConfig = grade ? GRADE_CONFIG[grade] : null;
 
   const moveToDetail = () => {
@@ -45,7 +45,7 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
           <Tag>{generation}기</Tag>
         </Flex>
 
-        {participationInfo?.isSurvived && gradeConfig && (
+        {participantInfo?.isSurvived && gradeConfig && (
           <GradeBadgeTopRight>
             <img src={GRADE_CONFIG[grade]} alt={`${grade} 메달`} width={48} />
           </GradeBadgeTopRight>
@@ -55,7 +55,7 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
       <CardFooter>
         <CompletionInfo>
           <CompletionText>
-            {participationInfo?.progress}% 달성 완료
+            {participantInfo?.progress}% 달성 완료
           </CompletionText>
         </CompletionInfo>
         <CardDetailButton>자세히 보기 →</CardDetailButton>

@@ -20,7 +20,7 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const {
-    participationInfo,
+    participantInfo,
     registrationPhase,
     id,
     participantCount,
@@ -86,7 +86,7 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
             </ApplyButton>
           ) : (
             <ChallengeProgress>
-              {participationInfo?.progress ?? 0}% 달성 중
+              {participantInfo?.progress ?? 0}% 달성 중
             </ChallengeProgress>
           )}
           <CardDetailButton>자세히 보기 →</CardDetailButton>
