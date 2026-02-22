@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
 import { useAuth } from '@/contexts/AuthContext';
-import useNotificationSettingMutation from '@/pages/MyPage/hooks/useNotificationSettingMutation';
+import useCategoryNotificationMutation from '@/pages/MyPage/hooks/useCategoryNotificationMutation';
 
 const useEventNotification = () => {
   const { userProfile } = useAuth();
@@ -15,7 +15,7 @@ const useEventNotification = () => {
   });
 
   const { mutate: updateNotificationSetting, isPending } =
-    useNotificationSettingMutation({
+    useCategoryNotificationMutation({
       memberId,
     });
 
@@ -25,7 +25,7 @@ const useEventNotification = () => {
 
   return {
     notificationEnabled,
-    isPending,
+    isNotificationUpdating: isPending,
     enableEventNotification,
   };
 };

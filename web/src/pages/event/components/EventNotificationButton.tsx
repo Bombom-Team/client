@@ -16,8 +16,11 @@ const EventNotificationButton = () => {
   const { isLoggedIn } = useAuth();
   const device = useDevice();
 
-  const { notificationEnabled, isPending, enableEventNotification } =
-    useEventNotification();
+  const {
+    notificationEnabled,
+    isNotificationUpdating,
+    enableEventNotification,
+  } = useEventNotification();
 
   const isAppEnvironment = isWebView();
 
@@ -54,7 +57,7 @@ const EventNotificationButton = () => {
   };
 
   const getButtonText = () => {
-    if (isPending) return '로딩 중...';
+    if (isNotificationUpdating) return '로딩 중...';
     if (notificationEnabled) return '🔔 알림 설정 완료';
     if (!isAppEnvironment) return '🔔 앱 설치하고 알림 받기';
 
