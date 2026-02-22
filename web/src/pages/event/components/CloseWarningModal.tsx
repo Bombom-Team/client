@@ -22,7 +22,7 @@ const CloseWarningModal = ({ onDownload, onClose }: CloseWarningModalProps) => {
       <Flex direction="column" gap={8} align="center">
         <Text font="heading5">이미지를 저장하셨나요?</Text>
         <Description>
-          지금 닫으면 추후 선물함에서 확인할 수 있지만,
+          이벤트가 종료되면 추후 선물함에서 확인할 수 있지만,
           <br />
           <Highlight>이미지 다운로드를 권장해요.</Highlight>
         </Description>
