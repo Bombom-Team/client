@@ -3,7 +3,7 @@ import { patchNotificationSetting } from '@/apis/notification/notification.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 
-interface UseNotificationSettingMutationParams {
+interface UseCategoryNotificationMutationParams {
   memberId: number;
 }
 
@@ -12,9 +12,9 @@ interface MutationFnParams {
   category: string;
 }
 
-const useNotificationSettingMutation = ({
+const useCategoryNotificationMutation = ({
   memberId,
-}: UseNotificationSettingMutationParams) => {
+}: UseCategoryNotificationMutationParams) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -34,4 +34,4 @@ const useNotificationSettingMutation = ({
   });
 };
 
-export default useNotificationSettingMutation;
+export default useCategoryNotificationMutation;

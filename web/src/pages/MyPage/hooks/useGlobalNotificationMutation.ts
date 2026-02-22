@@ -3,15 +3,15 @@ import { putNotificationSettings } from '@/apis/notification/notification.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 
-interface UseNotificationSettingsMutationParams {
+interface UseGlobalNotificationMutationParams {
   memberId: number;
   deviceUuid: string;
 }
 
-const useNotificationSettingsMutation = ({
+const useGlobalNotificationMutation = ({
   memberId,
   deviceUuid,
-}: UseNotificationSettingsMutationParams) => {
+}: UseGlobalNotificationMutationParams) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -28,4 +28,4 @@ const useNotificationSettingsMutation = ({
   });
 };
 
-export default useNotificationSettingsMutation;
+export default useGlobalNotificationMutation;

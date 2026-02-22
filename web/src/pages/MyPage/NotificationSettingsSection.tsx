@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import useNotificationSettingMutation from './hooks/useNotificationSettingMutation';
+import useCategoryNotificationMutation from './hooks/useCategoryNotificationMutation';
 import { queries } from '@/apis/queries';
 import Divider from '@/components/Divider/Divider';
 import ChevronIcon from '@/components/icons/ChevronIcon';
@@ -32,9 +32,10 @@ const NotificationSettingsSection = () => {
     enabled: !!hasPermission,
   });
 
-  const { mutate: updateNotificationSetting } = useNotificationSettingMutation({
-    memberId,
-  });
+  const { mutate: updateCategoryNotification } =
+    useCategoryNotificationMutation({
+      memberId,
+    });
 
   const openSystemSettings = () => {
     sendMessageToRN({ type: 'SHOW_NOTIFICATION_PERMISSION_SETTING' });
@@ -42,7 +43,7 @@ const NotificationSettingsSection = () => {
 
   const toggleArticleNotification = () => {
     if (hasPermission) {
-      updateNotificationSetting({
+      updateCategoryNotification({
         enabled: !articleNotification?.enabled,
         category: 'article',
       });
@@ -53,7 +54,7 @@ const NotificationSettingsSection = () => {
 
   const toggleEventNotification = () => {
     if (hasPermission) {
-      updateNotificationSetting({
+      updateCategoryNotification({
         enabled: !eventNotification?.enabled,
         category: 'event',
       });
