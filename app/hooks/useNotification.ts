@@ -35,7 +35,7 @@ const useNotification = () => {
       const deviceUuid = await getDeviceUUID();
       const token = await getFCMToken();
 
-      if (memberId && token && deviceUuid) {
+      if (token && deviceUuid) {
         await putFCMToken({
           memberId,
           deviceUuid,
