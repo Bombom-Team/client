@@ -89,6 +89,10 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
         구독 뉴스레터
       </MyPageButton>
 
+      <MyPageButton to="/my?tab=rewards" onClick={onClose}>
+        선물함
+      </MyPageButton>
+
       {isWebView() && (
         <MyPageButton to="/my?tab=notification" onClick={onClose}>
           알림 설정
