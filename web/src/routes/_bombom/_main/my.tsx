@@ -11,6 +11,7 @@ import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
 import ProfileSection from '@/pages/MyPage/ProfileSection';
+import RewardsSection from '@/pages/MyPage/RewardsSection';
 import SubscribedNewslettersSection from '@/pages/MyPage/SubscribedNewslettersSection';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
@@ -75,6 +76,8 @@ function MyPage() {
             device={device}
           />
         );
+      case 'rewards':
+        return <RewardsSection />;
       // case 'notification':
       //   return <NotificationSettingsSection />;
       default:
