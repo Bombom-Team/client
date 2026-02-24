@@ -3,6 +3,7 @@ import { Link, useRouterState } from '@tanstack/react-router';
 import {
   FiBell,
   FiCalendar,
+  FiCode,
   FiFlag,
   FiHome,
   FiMail,
@@ -48,6 +49,13 @@ export const Sidebar = () => {
         <NavItem to="/events" isActive={currentPath.startsWith('/events')}>
           <FiCalendar />
           <span>이벤트 관리</span>
+        </NavItem>
+        <NavItem
+          to="/resources"
+          isActive={currentPath.startsWith('/resources')}
+        >
+          <FiCode />
+          <span>리소스 관리</span>
         </NavItem>
       </Nav>
       <Footer>© 2025 BomBom. All rights reserved.</Footer>
