@@ -84,17 +84,10 @@ function NewsletterDetailView() {
   };
 
   const handleStatusSubmit = () => {
-    if (statusForm.status === 'SUSPENDED' && !statusForm.suspendedAt) {
-      alert('휴재일을 입력해주세요.');
-      return;
-    }
-
     const suspendedAt =
-      statusForm.status === 'SUSPENDED'
-        ? statusForm.suspendedAt
-        : statusForm.status === 'DISCONTINUED'
-          ? statusForm.suspendedAt || getTodayDateString()
-          : undefined;
+      statusForm.status === 'SUSPENDED' || statusForm.status === 'DISCONTINUED'
+        ? statusForm.suspendedAt || getTodayDateString()
+        : undefined;
 
     updateStatus(
       {
@@ -243,7 +236,8 @@ function NewsletterDetailView() {
                   />
                 </StatusRow>
               )}
-              {statusForm.status === 'DISCONTINUED' && (
+              {(statusForm.status === 'SUSPENDED' ||
+                statusForm.status === 'DISCONTINUED') && (
                 <StatusHint>
                   날짜를 입력하지 않으면 오늘 날짜로 자동 적용됩니다.
                 </StatusHint>
@@ -526,5 +520,5 @@ const StatusAction = styled.div`
 
 const StatusHint = styled.span`
   color: ${({ theme }) => theme.colors.gray500};
-  font-size: ${({ theme }) => theme.fontSize.xs};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
