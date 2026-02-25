@@ -17,12 +17,12 @@ export const NOTIFICATION_SETTINGS = [
   {
     category: CATEGORY.challengeStart,
     label: '챌린지 시작 알림',
-    hint: '신청 완료한 챌린지 시작 시 알림',
+    hint: '챌린지 시작일 알림',
   },
   {
     category: CATEGORY.challengeTodoReminder,
     label: '챌린지 리마인드 알림',
-    hint: '오늘의 챌린지 수행 리마인드 알림',
+    hint: '오늘의 챌린지 목표 리마인드 알림',
   },
 ] as const;
 
@@ -92,6 +92,12 @@ const SettingRow = styled.div`
   gap: 16px;
   align-items: center;
   justify-content: space-between;
+
+  & + & {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid ${({ theme }) => theme.colors.dividers};
+  }
 `;
 
 const SettingInfo = styled.div`
