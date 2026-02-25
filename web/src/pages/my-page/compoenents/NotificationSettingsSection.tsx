@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import useCategoryNotificationMutation from './hooks/useCategoryNotificationMutation';
+import useCategoryNotificationMutation from '../hooks/useCategoryNotificationMutation';
 import { queries } from '@/apis/queries';
 import Divider from '@/components/Divider/Divider';
 import ChevronIcon from '@/components/icons/ChevronIcon';
