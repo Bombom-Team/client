@@ -20,6 +20,13 @@ import {
   PREVIOUS_STRATEGY_LABELS,
 } from '@/types/newsletter';
 
+type StatusBadgeTone =
+  | 'active'
+  | 'suspendedVisible'
+  | 'suspendedHidden'
+  | 'discontinued'
+  | 'unknown';
+
 export const Route = createFileRoute('/_admin/newsletters/')({
   component: NewslettersPage,
   validateSearch: (search: Record<string, unknown>) => ({
@@ -61,6 +68,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
   const [selectedCategory, setSelectedCategory] = useState(
     (search.category as string) || '',
   );
+  const [isBusinessRuleOpen, setIsBusinessRuleOpen] = useState(false);
 
   if (!data) return null;
 
@@ -80,6 +88,18 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
   ) => {
     if (!status) return '상태 없음';
     return STATUS_LABELS[status] ?? '상태 미정';
+  };
+
+  const getStatusTone = (
+    status?: NewsletterStatusType | NewsletterDetailStatusType,
+  ): StatusBadgeTone => {
+    if (!status) return 'unknown';
+    if (status === 'ACTIVE') return 'active';
+    if (status === 'SUSPENDED_VISIBLE') return 'suspendedVisible';
+    if (status === 'SUSPENDED_HIDDEN') return 'suspendedHidden';
+    if (status === 'SUSPENDED') return 'suspendedVisible';
+    if (status === 'DISCONTINUED') return 'discontinued';
+    return 'unknown';
   };
 
   // Normalize data: Handle both PageableResponse and flat array
@@ -195,6 +215,32 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
             )}
           </FilterSelect>
         </SearchForm>
+        <BusinessRuleToggle
+          type="button"
+          onClick={() => setIsBusinessRuleOpen((prev) => !prev)}
+        >
+          <BusinessRuleArrow>
+            {isBusinessRuleOpen ? '▼' : '▶'}
+          </BusinessRuleArrow>
+          비즈니스 규칙
+        </BusinessRuleToggle>
+        {isBusinessRuleOpen && (
+          <BusinessRuleBox>
+            <BusinessRuleTitle>휴재 노출/비노출 기준</BusinessRuleTitle>
+            <BusinessRuleText>
+              <strong>휴재(노출)</strong>: 휴재 상태이지만 서비스에 노출되는
+              상태
+            </BusinessRuleText>
+            <BusinessRuleText>
+              <strong>휴재(비노출)</strong>: 휴재 상태이며 서비스에서 숨김
+              처리되는 상태
+            </BusinessRuleText>
+            <BusinessRuleText>
+              위 구분은 백엔드가 `suspendedAt` 등 상태 변경 정보로 계산한 응답
+              값을 기준으로 합니다. (현재 6개월 기준)
+            </BusinessRuleText>
+          </BusinessRuleBox>
+        )}
       </SearchSection>
 
       {content.length === 0 ? (
@@ -212,7 +258,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
                   <Info>
                     <TopMetaRow>
                       <Category>{newsletter.categoryName}</Category>
-                      <StatusBadge>
+                      <StatusBadge $tone={getStatusTone(newsletter.status)}>
                         {getStatusLabel(newsletter.status)}
                       </StatusBadge>
                     </TopMetaRow>
@@ -255,6 +301,10 @@ const Container = styled.div`
 const SearchSection = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-direction: column;
 
   background: white;
 
@@ -473,17 +523,60 @@ const SubscriptionCount = styled.span`
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
-const StatusBadge = styled.span`
+const STATUS_BADGE_COLORS: Record<
+  StatusBadgeTone,
+  {
+    border: string;
+    background: string;
+    text: string;
+    dot: string;
+  }
+> = {
+  active: {
+    border: '#bbf7d0',
+    background: '#f0fdf4',
+    text: '#166534',
+    dot: '#16a34a',
+  },
+  suspendedVisible: {
+    border: '#fde68a',
+    background: '#fffbeb',
+    text: '#92400e',
+    dot: '#d97706',
+  },
+  suspendedHidden: {
+    border: '#ddd6fe',
+    background: '#f5f3ff',
+    text: '#5b21b6',
+    dot: '#7c3aed',
+  },
+  discontinued: {
+    border: '#fecaca',
+    background: '#fef2f2',
+    text: '#991b1b',
+    dot: '#dc2626',
+  },
+  unknown: {
+    border: '#e5e7eb',
+    background: '#f9fafb',
+    text: '#374151',
+    dot: '#6b7280',
+  },
+};
+
+const StatusBadge = styled.span<{ $tone: StatusBadgeTone }>`
   padding: 5px 11px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid
+    ${({ $tone }) => STATUS_BADGE_COLORS[$tone ?? 'unknown'].border};
   border-radius: 999px;
 
   display: inline-flex;
   gap: 6px;
   align-items: center;
 
-  background-color: #fff;
-  color: #1e3a8a;
+  background-color: ${({ $tone }) =>
+    STATUS_BADGE_COLORS[$tone ?? 'unknown'].background};
+  color: ${({ $tone }) => STATUS_BADGE_COLORS[$tone ?? 'unknown'].text};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
   font-size: 12px;
   line-height: 1.2;
@@ -496,7 +589,7 @@ const StatusBadge = styled.span`
     height: 7px;
     border-radius: 999px;
 
-    background-color: #2563eb;
+    background-color: ${({ $tone }) => STATUS_BADGE_COLORS[$tone].dot};
 
     content: '';
   }
@@ -509,4 +602,56 @@ const EmptyState = styled.div`
   background: white;
   color: ${({ theme }) => theme.colors.gray500};
   text-align: center;
+`;
+
+const BusinessRuleToggle = styled.button`
+  padding: 0;
+  border: none;
+
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  align-self: flex-start;
+
+  background: transparent;
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+`;
+
+const BusinessRuleArrow = styled.span`
+  width: 10px;
+
+  display: inline-flex;
+  justify-content: center;
+
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1;
+`;
+
+const BusinessRuleBox = styled.div`
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+
+  background: ${({ theme }) => theme.colors.gray50};
+`;
+
+const BusinessRuleTitle = styled.span`
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const BusinessRuleText = styled.span`
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  line-height: 1.5;
 `;
