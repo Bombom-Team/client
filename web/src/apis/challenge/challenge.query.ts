@@ -14,6 +14,7 @@ import {
   getDailyGuideComments,
   getMyDailyGuideComment,
   getCertificationInfo,
+  getChallengeLanding,
 } from './challenge.api';
 import type {
   GetChallengeCommentCandidateArticlesParams,
@@ -146,5 +147,10 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', challengeId, 'certification', 'info'],
       queryFn: () => getCertificationInfo(challengeId),
+    }),
+  challengeLanding: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', challengeId, 'landing'],
+      queryFn: () => getChallengeLanding(challengeId),
     }),
 };

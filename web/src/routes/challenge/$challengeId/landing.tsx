@@ -41,19 +41,15 @@ function ChallengeLanding() {
 
   const { modalRef, closeModal, isOpen, openModal } = useModal();
 
-  const { data: challengeInfo } = useQuery(queries.challengesInfo(challengeId));
-  const { data: challenges } = useQuery(queries.challenges());
-
-  const currentChallenge = challenges?.find(
-    (challenge) => challenge.id === challengeId,
+  const { data: challengeLandingInfo } = useQuery(
+    queries.challengeLanding(challengeId),
   );
-  const newsletters = currentChallenge?.newsletters ?? [];
 
   const { mutate: applyChallenge } = useChallengeApplyMutation({
     challengeId,
   });
 
-  if (!challengeInfo) {
+  if (!challengeLandingInfo) {
     return null;
   }
 
@@ -62,14 +58,14 @@ function ChallengeLanding() {
       <Container device={device}>
         <LandingHeader />
         <Hero
-          challengeName={challengeInfo.name}
-          generation={challengeInfo.generation}
+          challengeName={challengeLandingInfo.name}
+          generation={challengeLandingInfo.generation}
           onApply={openModal}
         />
         <Content device={device}>
           <Introduction
-            startDate={challengeInfo.startDate}
-            endDate={challengeInfo.endDate}
+            startDate={challengeLandingInfo.startDate}
+            endDate={challengeLandingInfo.endDate}
           />
           <ChallengeBenefits />
           <ChallengeDetail />
@@ -79,7 +75,7 @@ function ChallengeLanding() {
           <ChallengeRewards />
         </Content>
         <ChallengeApplySection
-          challengeName={challengeInfo.name}
+          challengeName={challengeLandingInfo.name}
           onApply={openModal}
         />
       </Container>
@@ -94,7 +90,7 @@ function ChallengeLanding() {
             challengeId={challengeId}
             closeModal={closeModal}
             onApply={applyChallenge}
-            newsletters={newsletters}
+            newsletters={challengeLandingInfo.newsletters}
           />
         </Suspense>
       </Modal>

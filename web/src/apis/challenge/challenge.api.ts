@@ -258,3 +258,12 @@ export const getCertificationInfo = async (challengeId: number) => {
     path: `/challenges/${challengeId}/certification`,
   });
 };
+
+export type GetChallengeLandingResponse =
+  components['schemas']['ChallengeLandingResponse'];
+
+export const getChallengeLanding = async (challengeId: number) => {
+  return await fetcher.get<GetChallengeLandingResponse>({
+    path: `/api/v1/challenges/${challengeId}/landing`,
+  });
+};
