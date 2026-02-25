@@ -30,6 +30,14 @@ const mapDetailStatusToRequestStatus = (
   return 'SUSPENDED';
 };
 
+const getTodayDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 function NewsletterDetailView() {
   const { newsletterId } = useParams({ from: Route.id });
   const queryClient = useQueryClient();
@@ -39,6 +47,7 @@ function NewsletterDetailView() {
   );
   const { mutate: updateStatus, isPending: isStatusUpdating } =
     useUpdateNewsletterStatusMutation();
+  const [isStatusEditing, setIsStatusEditing] = useState(false);
   const [statusForm, setStatusForm] = useState<{
     status: NewsletterStatusType;
     suspendedAt: string;
@@ -53,9 +62,26 @@ function NewsletterDetailView() {
       status: mapDetailStatusToRequestStatus(newsletter.status),
       suspendedAt: newsletter.suspendedAt ?? '',
     });
+    setIsStatusEditing(false);
   }, [newsletter]);
 
   if (!newsletter) return null;
+
+  const handleStatusEditStart = () => {
+    setStatusForm({
+      status: mapDetailStatusToRequestStatus(newsletter.status),
+      suspendedAt: newsletter.suspendedAt ?? '',
+    });
+    setIsStatusEditing(true);
+  };
+
+  const handleStatusEditCancel = () => {
+    setStatusForm({
+      status: mapDetailStatusToRequestStatus(newsletter.status),
+      suspendedAt: newsletter.suspendedAt ?? '',
+    });
+    setIsStatusEditing(false);
+  };
 
   const handleStatusSubmit = () => {
     if (statusForm.status === 'SUSPENDED' && !statusForm.suspendedAt) {
@@ -63,18 +89,23 @@ function NewsletterDetailView() {
       return;
     }
 
+    const suspendedAt =
+      statusForm.status === 'SUSPENDED'
+        ? statusForm.suspendedAt
+        : statusForm.status === 'DISCONTINUED'
+          ? statusForm.suspendedAt || getTodayDateString()
+          : undefined;
+
     updateStatus(
       {
         id: Number(newsletterId),
         status: statusForm.status,
-        suspendedAt:
-          statusForm.status === 'SUSPENDED'
-            ? statusForm.suspendedAt
-            : undefined,
+        suspendedAt,
       },
       {
         onSuccess: () => {
           alert('상태가 변경되었습니다.');
+          setIsStatusEditing(false);
           void queryClient.invalidateQueries({
             queryKey: ['newsletters', 'detail', Number(newsletterId)],
           });
@@ -173,45 +204,67 @@ function NewsletterDetailView() {
               {NEWSLETTER_DETAIL_STATUS_LABELS[newsletter.status]}
             </StatusValue>
           </StatusRow>
-          <StatusRow>
-            <StatusLabel>변경할 상태</StatusLabel>
-            <StatusSelect
-              value={statusForm.status}
-              onChange={(e) => {
-                const status = e.target.value as NewsletterStatusType;
-                setStatusForm((prev) => ({
-                  ...prev,
-                  status,
-                }));
-              }}
-            >
-              {Object.entries(NEWSLETTER_STATUS_LABELS).map(([key, label]) => (
-                <option key={key} value={key}>
-                  {label}
-                </option>
-              ))}
-            </StatusSelect>
-          </StatusRow>
-          {statusForm.status === 'SUSPENDED' && (
-            <StatusRow>
-              <StatusLabel>휴재일</StatusLabel>
-              <StatusDateInput
-                type="date"
-                value={statusForm.suspendedAt}
-                onChange={(e) => {
-                  setStatusForm((prev) => ({
-                    ...prev,
-                    suspendedAt: e.target.value,
-                  }));
-                }}
-              />
-            </StatusRow>
+          {isStatusEditing && (
+            <>
+              <StatusRow>
+                <StatusLabel>변경할 상태</StatusLabel>
+                <StatusSelect
+                  value={statusForm.status}
+                  onChange={(e) => {
+                    const status = e.target.value as NewsletterStatusType;
+                    setStatusForm((prev) => ({
+                      ...prev,
+                      status,
+                    }));
+                  }}
+                >
+                  {Object.entries(NEWSLETTER_STATUS_LABELS).map(
+                    ([key, label]) => (
+                      <option key={key} value={key}>
+                        {label}
+                      </option>
+                    ),
+                  )}
+                </StatusSelect>
+              </StatusRow>
+              {(statusForm.status === 'SUSPENDED' ||
+                statusForm.status === 'DISCONTINUED') && (
+                <StatusRow>
+                  <StatusLabel>발행 중단 일자</StatusLabel>
+                  <StatusDateInput
+                    type="date"
+                    value={statusForm.suspendedAt}
+                    onChange={(e) => {
+                      setStatusForm((prev) => ({
+                        ...prev,
+                        suspendedAt: e.target.value,
+                      }));
+                    }}
+                  />
+                </StatusRow>
+              )}
+              {statusForm.status === 'DISCONTINUED' && (
+                <StatusHint>
+                  날짜를 입력하지 않으면 오늘 날짜로 자동 적용됩니다.
+                </StatusHint>
+              )}
+            </>
           )}
-          <StatusAction>
-            <Button onClick={handleStatusSubmit} disabled={isStatusUpdating}>
-              {isStatusUpdating ? '변경 중...' : '상태 변경'}
-            </Button>
-          </StatusAction>
+          {!isStatusEditing && (
+            <StatusRowRight>
+              <Button onClick={handleStatusEditStart}>상태 변경</Button>
+            </StatusRowRight>
+          )}
+          {isStatusEditing && (
+            <StatusAction>
+              <Button onClick={handleStatusSubmit} disabled={isStatusUpdating}>
+                {isStatusUpdating ? '저장 중...' : '상태 저장'}
+              </Button>
+              <Button variant="secondary" onClick={handleStatusEditCancel}>
+                취소
+              </Button>
+            </StatusAction>
+          )}
         </StatusSection>
 
         <Divider />
@@ -420,6 +473,10 @@ const StatusRow = styled.div`
   align-items: center;
 `;
 
+const StatusRowRight = styled(StatusRow)`
+  justify-content: flex-end;
+`;
+
 const StatusLabel = styled.span`
   min-width: 96px;
 
@@ -462,4 +519,12 @@ const StatusDateInput = styled.input`
 
 const StatusAction = styled.div`
   margin-top: ${({ theme }) => theme.spacing.xs};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+`;
+
+const StatusHint = styled.span`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
