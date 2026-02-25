@@ -264,6 +264,6 @@ export type GetChallengeLandingResponse =
 
 export const getChallengeLanding = async (challengeId: number) => {
   return await fetcher.get<GetChallengeLandingResponse>({
-    path: `/api/v1/challenges/${challengeId}/landing`,
+    path: `/challenges/${challengeId}/landing`,
   });
 };
