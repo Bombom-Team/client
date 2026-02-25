@@ -3,4 +3,4 @@ export const CATEGORY = {
   event: 'event',
   challengeStart: 'challenge-start',
   challengeTodoReminder: 'challenge-todo-reminder',
-};
+} as const;

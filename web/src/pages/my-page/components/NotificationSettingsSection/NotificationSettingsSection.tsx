@@ -10,6 +10,7 @@ import Text from '@/components/Text';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebViewNotificationPermission } from '@/libs/webview/useWebViewNotificationPermission';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
+import type { Category, NotificationSetting } from '../../types/notification';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const NotificationSettingsSection = () => {
@@ -17,9 +18,10 @@ const NotificationSettingsSection = () => {
   const memberId = userProfile?.id ?? 0;
   const { hasPermission } = useWebViewNotificationPermission();
 
-  const notifications = useQueries({
+  const notificationsEnabled = useQueries({
     queries: Object.values(CATEGORY).map((category) => ({
       ...queries.notificationSettings.category({ memberId, category }),
+      select: (data: NotificationSetting) => data.enabled,
       enabled: !!hasPermission,
     })),
   });
@@ -33,15 +35,11 @@ const NotificationSettingsSection = () => {
     sendMessageToRN({ type: 'SHOW_NOTIFICATION_PERMISSION_SETTING' });
   };
 
-  const toggleNotification = (category: string) => {
+  const toggleNotification = (category: Category, currentEnabled: boolean) => {
     if (hasPermission) {
-      const currentEnabled = notifications.find(
-        (notification) => notification.data?.category === category,
-      )?.data?.enabled;
-
       updateCategoryNotification({
-        enabled: !currentEnabled,
         category,
+        enabled: !currentEnabled,
       });
     } else {
       openSystemSettings();
@@ -78,7 +76,7 @@ const NotificationSettingsSection = () => {
 
         <SettingCardList
           hasPermission={!!hasPermission}
-          notifications={notifications}
+          notificationsEnabled={notificationsEnabled}
           onToggle={toggleNotification}
         />
       </SettingSection>

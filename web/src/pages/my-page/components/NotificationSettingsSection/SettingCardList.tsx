@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 import { CATEGORY } from '../../constants/notification';
-import type { NotificationSetting } from '../../types/notification';
+import type { Category } from '../../types/notification';
 import type { UseQueryResult } from '@tanstack/react-query';
 
-const SETTINGS = [
+export const NOTIFICATION_SETTINGS = [
   {
     category: CATEGORY.article,
     label: '아티클 알림',
@@ -28,25 +28,26 @@ const SETTINGS = [
 
 interface SettingCardListProps {
   hasPermission: boolean;
-  notifications: UseQueryResult<NotificationSetting>[];
-  onToggle: (category: string) => void;
+  notificationsEnabled: UseQueryResult<boolean>[];
+  onToggle: (category: Category, currentEnabled: boolean) => void;
 }
 
 const SettingCardList = ({
   hasPermission,
-  notifications,
+  notificationsEnabled,
   onToggle,
 }: SettingCardListProps) => {
-  const settings = SETTINGS.map((setting) => {
-    const notificationSettings = notifications.find(
-      (notification) => notification.data?.category === setting.category,
-    )?.data;
+  const enabledStatus = Object.fromEntries(
+    NOTIFICATION_SETTINGS.map((setting, index) => [
+      setting.category,
+      notificationsEnabled[index]?.data ?? false,
+    ]),
+  );
 
-    return {
-      ...setting,
-      enabled: notificationSettings?.enabled ?? false,
-    };
-  });
+  const settings = NOTIFICATION_SETTINGS.map((setting) => ({
+    ...setting,
+    enabled: enabledStatus[setting.category] ?? false,
+  }));
 
   return (
     <Container hasPermission={hasPermission}>
@@ -59,7 +60,7 @@ const SettingCardList = ({
           <ToggleButton
             type="button"
             disabled={!hasPermission}
-            onClick={() => onToggle(setting.category)}
+            onClick={() => onToggle(setting.category, setting.enabled)}
           >
             <ToggleTrack enabled={setting.enabled}>
               <ToggleThumb enabled={setting.enabled} />
