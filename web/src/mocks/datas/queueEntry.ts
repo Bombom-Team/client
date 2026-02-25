@@ -10,7 +10,7 @@ export const queueStore = new Map<string, QueueEntry>();
 // 발급된 쿠폰을 관리하는 mock 저장소
 export const issuedCouponsStore: IssuedCoupon[] = [
   {
-    couponName: 'day1-coupon',
+    couponName: 'apple',
     imageUrl:
       'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=250&fit=crop',
     issuedAt: new Date().toISOString(),
@@ -29,7 +29,7 @@ export const createMockQueueEntry = (
   options?: Partial<QueueEntry>,
 ): QueueEntry => {
   const baseEntry: QueueEntry = {
-    couponName: 'day1-coupon',
+    couponName: 'apple',
     status,
     position: null,
     activeCount: 45,
@@ -115,7 +115,7 @@ export const QUEUE_SCENARIOS = {
 
 // Mock 쿠폰 이미지 데이터
 export const MOCK_COUPON_IMAGES = {
-  'day1-coupon':
+  apple:
     'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=250&fit=crop',
   'day2-coupon':
     'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=250&fit=crop',
