@@ -7,7 +7,7 @@ export const NOTIFICATION_SETTINGS = [
   {
     category: CATEGORY.article,
     label: '아티클 알림',
-    hint: '새로운 아티클 도착 시 알림',
+    hint: '새로운 아티클 도착 알림',
   },
   {
     category: CATEGORY.event,
