@@ -14,6 +14,9 @@ import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import {
   NEWSLETTER_CATEGORY_LABELS,
+  NEWSLETTER_DETAIL_STATUS_LABELS,
+  type NewsletterDetailStatusType,
+  type NewsletterStatusType,
   PREVIOUS_STRATEGY_LABELS,
 } from '@/types/newsletter';
 
@@ -26,6 +29,7 @@ export const Route = createFileRoute('/_admin/newsletters/')({
     keyword: (search.keyword as string) || undefined,
     category: (search.category as string) || undefined,
     previousStrategy: (search.previousStrategy as string) || undefined,
+    status: (search.status as string) || undefined,
   }),
 });
 
@@ -60,6 +64,24 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
 
   if (!data) return null;
 
+  const STATUS_LABELS: Record<
+    NewsletterStatusType | NewsletterDetailStatusType,
+    string
+  > = {
+    ACTIVE: '발행중',
+    SUSPENDED: '휴재',
+    SUSPENDED_VISIBLE: '휴재(노출)',
+    SUSPENDED_HIDDEN: '휴재(비노출)',
+    DISCONTINUED: '폐간',
+  };
+
+  const getStatusLabel = (
+    status?: NewsletterStatusType | NewsletterDetailStatusType,
+  ) => {
+    if (!status) return '상태 없음';
+    return STATUS_LABELS[status] ?? '상태 미정';
+  };
+
   // Normalize data: Handle both PageableResponse and flat array
   const content = Array.isArray(data) ? data : data.content || [];
 
@@ -72,6 +94,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
         keyword: keyword || undefined,
         category: selectedCategory || undefined,
         previousStrategy: search.previousStrategy,
+        status: search.status,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
     });
@@ -110,6 +133,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
                   keyword: keyword || undefined,
                   category: newCategory || undefined,
                   previousStrategy: search.previousStrategy,
+                  status: search.status,
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 } as any,
               });
@@ -132,6 +156,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
                   keyword: keyword || undefined,
                   category: selectedCategory || undefined,
                   previousStrategy: e.target.value || undefined,
+                  status: search.status,
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 } as any,
               });
@@ -143,6 +168,31 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
                 {label}
               </option>
             ))}
+          </FilterSelect>
+          <FilterSelect
+            value={(search.status as string) || ''}
+            onChange={(e) => {
+              navigate({
+                search: {
+                  ...search,
+                  page: 0,
+                  keyword: keyword || undefined,
+                  category: selectedCategory || undefined,
+                  previousStrategy: search.previousStrategy,
+                  status: e.target.value || undefined,
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } as any,
+              });
+            }}
+          >
+            <option value="">발행 상태</option>
+            {Object.entries(NEWSLETTER_DETAIL_STATUS_LABELS).map(
+              ([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ),
+            )}
           </FilterSelect>
         </SearchForm>
       </SearchSection>
@@ -160,7 +210,12 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
                 <CardHeader>
                   <Thumbnail src={newsletter.imageUrl} alt={newsletter.name} />
                   <Info>
-                    <Category>{newsletter.categoryName}</Category>
+                    <TopMetaRow>
+                      <Category>{newsletter.categoryName}</Category>
+                      <StatusBadge>
+                        {getStatusLabel(newsletter.status)}
+                      </StatusBadge>
+                    </TopMetaRow>
                     <Name>{newsletter.name}</Name>
                     <MetaInfo>
                       <IssueCycleBadge>{newsletter.issueCycle}</IssueCycleBadge>
@@ -366,6 +421,13 @@ const Category = styled.span`
   font-size: 10px;
 `;
 
+const TopMetaRow = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const Name = styled.h3`
   overflow: hidden;
   margin: 0;
@@ -409,6 +471,35 @@ const SubscriptionCount = styled.span`
 
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+const StatusBadge = styled.span`
+  padding: 5px 11px;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+
+  background-color: #fff;
+  color: #1e3a8a;
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  text-shadow: none;
+
+  &::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+
+    background-color: #2563eb;
+
+    content: '';
+  }
 `;
 
 const EmptyState = styled.div`

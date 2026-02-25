@@ -1,11 +1,19 @@
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams, Link } from '@tanstack/react-router';
-import { newslettersQueries } from '@/apis/newsletters/newsletters.query';
+import { useEffect, useState } from 'react';
+import {
+  useUpdateNewsletterStatusMutation,
+  newslettersQueries,
+} from '@/apis/newsletters/newsletters.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import {
+  NEWSLETTER_DETAIL_STATUS_LABELS,
+  NEWSLETTER_STATUS_LABELS,
   PREVIOUS_STRATEGY_LABELS,
+  type NewsletterDetailStatusType,
+  type NewsletterStatusType,
   type PreviousStrategyType,
 } from '@/types/newsletter';
 
@@ -13,14 +21,71 @@ export const Route = createFileRoute('/_admin/newsletters/$newsletterId/')({
   component: NewsletterDetailView,
 });
 
+const mapDetailStatusToRequestStatus = (
+  status: NewsletterDetailStatusType,
+): NewsletterStatusType => {
+  if (status === 'ACTIVE' || status === 'DISCONTINUED') {
+    return status;
+  }
+  return 'SUSPENDED';
+};
+
 function NewsletterDetailView() {
   const { newsletterId } = useParams({ from: Route.id });
+  const queryClient = useQueryClient();
 
   const { data: newsletter } = useSuspenseQuery(
     newslettersQueries.detail(Number(newsletterId)),
   );
+  const { mutate: updateStatus, isPending: isStatusUpdating } =
+    useUpdateNewsletterStatusMutation();
+  const [statusForm, setStatusForm] = useState<{
+    status: NewsletterStatusType;
+    suspendedAt: string;
+  }>({
+    status: 'ACTIVE',
+    suspendedAt: '',
+  });
+
+  useEffect(() => {
+    if (!newsletter) return;
+    setStatusForm({
+      status: mapDetailStatusToRequestStatus(newsletter.status),
+      suspendedAt: newsletter.suspendedAt ?? '',
+    });
+  }, [newsletter]);
 
   if (!newsletter) return null;
+
+  const handleStatusSubmit = () => {
+    if (statusForm.status === 'SUSPENDED' && !statusForm.suspendedAt) {
+      alert('휴재일을 입력해주세요.');
+      return;
+    }
+
+    updateStatus(
+      {
+        id: Number(newsletterId),
+        status: statusForm.status,
+        suspendedAt:
+          statusForm.status === 'SUSPENDED'
+            ? statusForm.suspendedAt
+            : undefined,
+      },
+      {
+        onSuccess: () => {
+          alert('상태가 변경되었습니다.');
+          void queryClient.invalidateQueries({
+            queryKey: ['newsletters', 'detail', Number(newsletterId)],
+          });
+          void queryClient.invalidateQueries({ queryKey: ['newsletters'] });
+        },
+        onError: (error) => {
+          alert(`상태 변경 실패: ${error.message}`);
+        },
+      },
+    );
+  };
 
   return (
     <Layout title="뉴스레터 상세">
@@ -97,6 +162,57 @@ function NewsletterDetailView() {
             </LinkItem>
           )}
         </LinkGrid>
+
+        <Divider />
+
+        <SectionTitle>발행 상태</SectionTitle>
+        <StatusSection>
+          <StatusRow>
+            <StatusLabel>현재 상태</StatusLabel>
+            <StatusValue>
+              {NEWSLETTER_DETAIL_STATUS_LABELS[newsletter.status]}
+            </StatusValue>
+          </StatusRow>
+          <StatusRow>
+            <StatusLabel>변경할 상태</StatusLabel>
+            <StatusSelect
+              value={statusForm.status}
+              onChange={(e) => {
+                const status = e.target.value as NewsletterStatusType;
+                setStatusForm((prev) => ({
+                  ...prev,
+                  status,
+                }));
+              }}
+            >
+              {Object.entries(NEWSLETTER_STATUS_LABELS).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </StatusSelect>
+          </StatusRow>
+          {statusForm.status === 'SUSPENDED' && (
+            <StatusRow>
+              <StatusLabel>휴재일</StatusLabel>
+              <StatusDateInput
+                type="date"
+                value={statusForm.suspendedAt}
+                onChange={(e) => {
+                  setStatusForm((prev) => ({
+                    ...prev,
+                    suspendedAt: e.target.value,
+                  }));
+                }}
+              />
+            </StatusRow>
+          )}
+          <StatusAction>
+            <Button onClick={handleStatusSubmit} disabled={isStatusUpdating}>
+              {isStatusUpdating ? '변경 중...' : '상태 변경'}
+            </Button>
+          </StatusAction>
+        </StatusSection>
 
         <Divider />
 
@@ -290,4 +406,60 @@ const Footer = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
   justify-content: flex-end;
+`;
+
+const StatusSection = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-direction: column;
+`;
+
+const StatusRow = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
+`;
+
+const StatusLabel = styled.span`
+  min-width: 96px;
+
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+const StatusValue = styled.span`
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const StatusSelect = styled.select`
+  min-width: 160px;
+  padding: 8px 12px;
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const StatusDateInput = styled.input`
+  padding: 8px 12px;
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const StatusAction = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.xs};
 `;

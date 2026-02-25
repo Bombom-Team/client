@@ -34,6 +34,7 @@ const DEFAULT_SEARCH = {
   keyword: '',
   category: '',
   previousStrategy: '',
+  status: '',
 };
 
 function NewsletterCreatePage() {
