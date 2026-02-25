@@ -4,6 +4,74 @@
  */
 
 export interface paths {
+  '/admin/api/v1/lambda-playwright/source': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lambda Playwright 스크립트 조회
+     * @description GitHub에 저장된 index.js 내용을 조회합니다.
+     */
+    get: operations['getSource'];
+    /**
+     * Lambda Playwright 스크립트 수정
+     * @description GitHub에 저장된 index.js 내용을 수정하고 커밋합니다.
+     */
+    put: operations['updateSource'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/unsubscribe-patterns': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 구독 해지 패턴 목록 조회
+     * @description 시스템에 등록된 모든 구독 해지 패턴 목록을 조회합니다.
+     */
+    get: operations['getUnsubscribePatterns'];
+    put?: never;
+    /**
+     * 구독 해지 패턴 생성
+     * @description 새로운 구독 해지 자동화를 위한 패턴을 생성합니다. patternKey는 고유해야 합니다.
+     */
+    post: operations['createUnsubscribePattern'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/seed/challenge/stopped': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 종료된 챌린지 생성
+     * @description 강제로 종료된 상태의 챌린지 데이터(종료일이 1일 전)를 생성합니다.
+     */
+    post: operations['seedStoppedChallenge'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/api/v1/notices': {
     parameters: {
       query?: never;
@@ -72,6 +140,58 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/api/v1/events': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 이벤트 목록 조회
+     * @description 이벤트 목록을 조회합니다.
+     *
+     *     - **keyword**: 이벤트 이름 검색
+     *     - **status**: 이벤트 상태 필터링 (SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED)
+     *
+     */
+    get: operations['getEvents'];
+    put?: never;
+    /**
+     * 이벤트 생성
+     * @description 새로운 이벤트를 등록합니다.
+     */
+    post: operations['createEvent'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/events/{id}/schedules': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 이벤트 알림 스케줄 목록 조회
+     * @description 단일 이벤트에 대한 알림 스케줄 목록을 조회합니다.
+     */
+    get: operations['getEventNotificationSchedules'];
+    put?: never;
+    /**
+     * 이벤트 알림 스케줄 생성
+     * @description 단일 이벤트에 대한 알림 스케줄을 생성합니다.
+     */
+    post: operations['createEventNotificationSchedule'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/api/v1/challenges/{challengeId}/teams': {
     parameters: {
       query?: never;
@@ -125,6 +245,53 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/challenges/{challengeId}/participants/shield': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 챌린지 생존자 쉴드 일괄 지급
+     * @description 특정 챌린지의 모든 생존 참여자에게 쉴드를 일괄 지급합니다.
+     *     - DB 부하 최소화를 위해 벌크 업데이트(Bulk Update) 방식으로 처리됩니다.
+     *     - 지급할 쉴드 개수를 지정할 수 있습니다.
+     *
+     */
+    post: operations['grantShield'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/unsubscribe-patterns/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 구독 해지 패턴 상세 조회
+     * @description ID를 통해 특정 구독 해지 패턴의 상세 정보를 조회합니다.
+     */
+    get: operations['getUnsubscribePattern'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * 구독 해지 패턴 수정
+     * @description 기존 패턴의 내용을 수정합니다. patternKey는 수정이 불가능하며 patternValue만 변경할 수 있습니다.
+     */
+    patch: operations['updateUnsubscribePattern'];
     trace?: never;
   };
   '/admin/api/v1/notices/{id}': {
@@ -203,6 +370,62 @@ export interface paths {
     patch: operations['updateRole'];
     trace?: never;
   };
+  '/admin/api/v1/events/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 이벤트 상세 조회
+     * @description 이벤트 상세 정보를 조회합니다.
+     */
+    get: operations['getEvent'];
+    put?: never;
+    post?: never;
+    /**
+     * 이벤트 삭제
+     * @description 기존 이벤트를 삭제합니다.
+     */
+    delete: operations['deleteEvent'];
+    options?: never;
+    head?: never;
+    /**
+     * 이벤트 수정
+     * @description 기존 이벤트의 정보를 수정합니다.
+     */
+    patch: operations['updateEvent'];
+    trace?: never;
+  };
+  '/admin/api/v1/events/{id}/schedules/{scheduleId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 이벤트 알림 스케줄 상세 조회
+     * @description 단일 이벤트에 대한 특정 알림 스케줄 상세 정보를 조회합니다.
+     */
+    get: operations['getEventNotificationSchedule'];
+    put?: never;
+    post?: never;
+    /**
+     * 이벤트 알림 스케줄 삭제
+     * @description 단일 이벤트에 대한 알림 스케줄을 삭제합니다.
+     */
+    delete: operations['deleteEventNotificationSchedule'];
+    options?: never;
+    head?: never;
+    /**
+     * 이벤트 알림 스케줄 수정
+     * @description 단일 이벤트에 대한 알림 스케줄 정보를 수정합니다.
+     */
+    patch: operations['updateEventNotificationSchedule'];
+    trace?: never;
+  };
   '/admin/api/v1/challenges/{challengeId}/participants/{participantId}/team': {
     parameters: {
       query?: never;
@@ -226,6 +449,26 @@ export interface paths {
      *
      */
     patch: operations['updateParticipantTeam'];
+    trace?: never;
+  };
+  '/admin/api/v1/ping': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * DB 연결 확인
+     * @description 현재 연결된 DB URL을 반환하여 라우팅이 정상 작동하는지 확인합니다.
+     */
+    get: operations['ping'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   '/admin/api/v1/members': {
@@ -365,6 +608,13 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    LambdaPlaywrightSourceRequest: {
+      content: string;
+    };
+    UnsubscribePatternRequest: {
+      patternKey: string;
+      patternValue: string;
+    };
     CreateNoticeRequest: {
       title: string;
       content: string;
@@ -387,6 +637,21 @@ export interface components {
     UploadFileResponse: {
       url?: string;
     };
+    CreateEventRequest: {
+      name: string;
+      /** Format: date-time */
+      startTime: string;
+      /** @enum {string} */
+      status: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+    };
+    CreateEventNotificationScheduleRequest: {
+      /** Format: date-time */
+      scheduledAt: string;
+      /** @enum {string} */
+      type: 'BEFORE_MINUTES' | 'AT_START';
+      /** Format: int32 */
+      minutesBefore?: number;
+    };
     CreateChallengeTeamsRequest: {
       /** Format: int32 */
       count: number;
@@ -399,6 +664,13 @@ export interface components {
        * @example 15
        */
       maxTeamSize: number;
+    };
+    GrantShieldRequest: {
+      /** Format: int32 */
+      count?: number;
+    };
+    UnsubscribePatternUpdateRequest: {
+      patternValue: string;
     };
     UpdateNoticeRequest: {
       title?: string;
@@ -435,9 +707,30 @@ export interface components {
     UpdateRoleRequest: {
       authority: string;
     };
+    UpdateEventRequest: {
+      name: string;
+      /** Format: date-time */
+      startTime: string;
+      /** @enum {string} */
+      status: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+    };
+    UpdateEventNotificationScheduleRequest: {
+      /** Format: date-time */
+      scheduledAt: string;
+      /** @enum {string} */
+      type: 'BEFORE_MINUTES' | 'AT_START';
+      /** Format: int32 */
+      minutesBefore?: number;
+    };
     UpdateParticipantTeamRequest: {
       /** Format: int64 */
       challengeTeamId: number;
+    };
+    UnsubscribePatternResponse: {
+      /** Format: int64 */
+      id?: number;
+      patternKey?: string;
+      patternValue?: string;
     };
     GetNoticeResponse: {
       /** Format: int64 */
@@ -561,6 +854,58 @@ export interface components {
       pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
+    LambdaPlaywrightSourceResponse: {
+      content?: string;
+    };
+    GetEventResponse: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
+      /** Format: date-time */
+      startTime?: string;
+      /** @enum {string} */
+      status?: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+    };
+    PageGetEventResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['GetEventResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    GetEventDetailResponse: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
+      /** Format: date-time */
+      startTime?: string;
+      /** @enum {string} */
+      status?: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+    };
+    GetEventNotificationScheduleResponse: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: date-time */
+      scheduledAt?: string;
+      /** @enum {string} */
+      type?: 'BEFORE_MINUTES' | 'AT_START';
+      /** Format: int32 */
+      minutesBefore?: number;
+      sent?: boolean;
+      /** Format: date-time */
+      sentAt?: string;
+    };
     DashboardStatsResponse: {
       /** Format: int64 */
       totalMembers?: number;
@@ -636,6 +981,8 @@ export interface components {
       /** Format: int32 */
       completedDays?: number;
       isSurvived?: boolean;
+      /** Format: int32 */
+      shield?: number;
     };
     PageGetChallengeParticipantResponse: {
       /** Format: int64 */
@@ -664,6 +1011,124 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  getSource: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['LambdaPlaywrightSourceResponse'];
+        };
+      };
+    };
+  };
+  updateSource: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LambdaPlaywrightSourceRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getUnsubscribePatterns: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['UnsubscribePatternResponse'][];
+        };
+      };
+    };
+  };
+  createUnsubscribePattern: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UnsubscribePatternRequest'];
+      };
+    };
+    responses: {
+      /** @description 생성 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 입력값 또는 중복된 patternKey */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  seedStoppedChallenge: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': string;
+        };
+      };
+    };
+  };
   getNotices: {
     parameters: {
       query?: {
@@ -881,6 +1346,182 @@ export interface operations {
       };
     };
   };
+  getEvents: {
+    parameters: {
+      query?: {
+        keyword?: string;
+        status?: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageGetEventResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  createEvent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateEventRequest'];
+      };
+    };
+    responses: {
+      /** @description 이벤트 생성 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getEventNotificationSchedules: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 이벤트 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['GetEventNotificationScheduleResponse'][];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 이벤트 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  createEventNotificationSchedule: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 이벤트 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateEventNotificationScheduleRequest'];
+      };
+    };
+    responses: {
+      /** @description 생성 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 이벤트 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   getChallengeTeams: {
     parameters: {
       query?: never;
@@ -1009,6 +1650,136 @@ export interface operations {
         content?: never;
       };
       /** @description 존재하지 않는 챌린지 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  grantShield: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        challengeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GrantShieldRequest'];
+      };
+    };
+    responses: {
+      /** @description 지급 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 챌린지 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getUnsubscribePattern: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /**
+         * @description 패턴 식별자 ID
+         * @example 1
+         */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['UnsubscribePatternResponse'];
+        };
+      };
+      /** @description 존재하지 않는 패턴 ID */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['UnsubscribePatternResponse'];
+        };
+      };
+    };
+  };
+  updateUnsubscribePattern: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /**
+         * @description 패턴 식별자 ID
+         * @example 1
+         */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UnsubscribePatternUpdateRequest'];
+      };
+    };
+    responses: {
+      /** @description 수정 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 입력값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 패턴 ID */
       404: {
         headers: {
           [name: string]: unknown;
@@ -1314,6 +2085,276 @@ export interface operations {
       };
     };
   };
+  getEvent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 조회할 이벤트 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 상세 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['GetEventDetailResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 이벤트 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteEvent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 삭제할 이벤트 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 이벤트 삭제 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  updateEvent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 수정할 이벤트 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateEventRequest'];
+      };
+    };
+    responses: {
+      /** @description 이벤트 수정 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 이벤트 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getEventNotificationSchedule: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 이벤트 ID */
+        id: number;
+        /** @description 스케줄 ID */
+        scheduleId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 상세 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['GetEventNotificationScheduleResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 이벤트/스케줄 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteEventNotificationSchedule: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 이벤트 ID */
+        id: number;
+        /** @description 스케줄 ID */
+        scheduleId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 삭제 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 이벤트/스케줄 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  updateEventNotificationSchedule: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 이벤트 ID */
+        id: number;
+        /** @description 스케줄 ID */
+        scheduleId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateEventNotificationScheduleRequest'];
+      };
+    };
+    responses: {
+      /** @description 수정 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 이벤트/스케줄 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   updateParticipantTeam: {
     parameters: {
       query?: never;
@@ -1366,6 +2407,26 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  ping: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': string;
+        };
       };
     };
   };
@@ -1540,6 +2601,7 @@ export interface operations {
       query?: {
         challengeTeamId?: number;
         hasTeam?: boolean;
+        isSurvived?: boolean;
         /** @description Zero-based page index (0..N) */
         page?: number;
         /** @description The size of the page to be returned */

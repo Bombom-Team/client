@@ -24,7 +24,7 @@ const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
       label: title,
     });
 
-    if (isWeeklyChallenge) {
+    if (startDate && endDate && isWeeklyChallenge) {
       openExternalLink(
         'https://maroon-geranium-880.notion.site/1-2fb03dcf20568089a20ad05cd3de78fe?pvs=74',
       );

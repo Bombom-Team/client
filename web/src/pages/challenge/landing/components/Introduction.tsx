@@ -100,13 +100,19 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
             </Text>
           </Flex>
           <Flex direction="column" gap={4} align="center" justify="center">
-            <PeriodDate device={device}>
-              <Strong>{startDate}</Strong>
-            </PeriodDate>
-            ~
-            <PeriodDate device={device}>
-              <Strong>{endDate}</Strong>
-            </PeriodDate>
+            {startDate && endDate ? (
+              <>
+                <PeriodDate device={device}>
+                  <Strong>{startDate}</Strong>
+                </PeriodDate>
+                ~
+                <PeriodDate device={device}>
+                  <Strong>{endDate}</Strong>
+                </PeriodDate>
+              </>
+            ) : (
+              <ComingSoonText device={device}>Coming Soon</ComingSoonText>
+            )}
           </Flex>
         </Period>
       </InfoCard>
@@ -321,5 +327,12 @@ const PeriodDate = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading4};
+  font-weight: 400;
+`;
+
+const ComingSoonText = styled.span<{ device: Device }>`
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
   font-weight: 400;
 `;
