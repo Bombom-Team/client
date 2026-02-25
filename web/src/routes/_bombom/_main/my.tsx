@@ -11,7 +11,7 @@ import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
-import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection';
+import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection/NotificationSettingsSection';
 import ProfileSection from '@/pages/my-page/components/ProfileSection';
 import RewardsSection from '@/pages/my-page/components/RewardsSection';
 import SubscribedNewslettersSection from '@/pages/my-page/components/SubscribedNewslettersSection';
