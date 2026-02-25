@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQueries } from '@tanstack/react-query';
-import SettingCardList from './SettingCardList';
+import SettingList from './SettingList';
 import { CATEGORY } from '../../constants/notification';
 import useCategoryNotificationMutation from '../../hooks/useCategoryNotificationMutation';
 import { queries } from '@/apis/queries';
@@ -74,7 +74,7 @@ const NotificationSettingsSection = () => {
           </Text>
         </SectionHeader>
 
-        <SettingCardList
+        <SettingList
           hasPermission={!!hasPermission}
           notificationsEnabled={notificationsEnabled}
           onToggle={toggleNotification}

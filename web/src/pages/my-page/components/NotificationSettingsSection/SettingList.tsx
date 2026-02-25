@@ -26,17 +26,17 @@ export const NOTIFICATION_SETTINGS = [
   },
 ] as const;
 
-interface SettingCardListProps {
+interface SettingListProps {
   hasPermission: boolean;
   notificationsEnabled: UseQueryResult<boolean>[];
   onToggle: (category: Category, currentEnabled: boolean) => void;
 }
 
-const SettingCardList = ({
+const SettingList = ({
   hasPermission,
   notificationsEnabled,
   onToggle,
-}: SettingCardListProps) => {
+}: SettingListProps) => {
   const enabledStatus = Object.fromEntries(
     NOTIFICATION_SETTINGS.map((setting, index) => [
       setting.category,
@@ -72,7 +72,7 @@ const SettingCardList = ({
   );
 };
 
-export default SettingCardList;
+export default SettingList;
 
 const Container = styled.div<{ hasPermission: boolean }>`
   padding: 20px;
