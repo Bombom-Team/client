@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
@@ -29,6 +29,10 @@ export const Route = createFileRoute('/event')({
     ],
   }),
   component: EventPage,
+
+  beforeLoad: () => {
+    throw redirect({ to: '/' });
+  },
 });
 
 function EventPage() {
