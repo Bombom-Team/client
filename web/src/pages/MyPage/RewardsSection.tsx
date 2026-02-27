@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { formatEventDateTime } from '../event/utils/date';
 import { queries } from '@/apis/queries';
 
+const COUPON_IMAGE_BASE_URL = 'https://www.bombom.news/';
+
 const RewardsSection = () => {
   const { data: coupons, isLoading } = useQuery(queries.myCoupons());
 
@@ -42,8 +44,6 @@ const RewardsSection = () => {
 };
 
 export default RewardsSection;
-
-const COUPON_IMAGE_BASE_URL = 'https://www.bombom.news/';
 
 const Container = styled.section`
   width: 100%;
