@@ -64,7 +64,6 @@ type GetMyCouponsResponse = IssuedCoupon[];
 export const getMyCoupons = async () => {
   return fetcher.get<GetMyCouponsResponse>({
     path: '/coupons/issues/me',
-    baseUrl: ENV.eventBaseUrl,
   });
 };
 

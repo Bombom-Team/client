@@ -11,6 +11,7 @@ import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
 import ProfileSection from '@/pages/MyPage/ProfileSection';
+import RewardsSection from '@/pages/MyPage/RewardsSection';
 import SubscribedNewslettersSection from '@/pages/MyPage/SubscribedNewslettersSection';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
@@ -21,7 +22,7 @@ type MyPageTab = 'profile' | 'newsletters' | 'notification' | 'rewards';
 const DEFAULT_TABS = [
   { id: 'profile', label: '내 정보' },
   { id: 'newsletters', label: '구독 뉴스레터' },
-  // { id: 'rewards', label: '선물함' },
+  { id: 'rewards', label: '선물함' },
 ] as const;
 
 // const WEBVIEW_TABS = [{ id: 'notification', label: '알림 설정' }] as const;
@@ -75,8 +76,8 @@ function MyPage() {
             device={device}
           />
         );
-      // case 'rewards':
-      //   return <RewardsSection />;
+      case 'rewards':
+        return <RewardsSection />;
       // case 'notification':
       //   return <NotificationSettingsSection />;
       default:
