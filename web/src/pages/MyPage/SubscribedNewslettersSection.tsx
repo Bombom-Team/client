@@ -46,21 +46,6 @@ const SubscribedNewslettersSection = ({
     closeModal();
   };
 
-  const getModalContent = () => {
-    if (actionType === 'REMOVE') {
-      return {
-        title: '구독 해지를 완료하셨나요?',
-        description: (
-          <>
-            해지하지 않고 목록에서 제거하면{'\n'}뉴스레터가 계속 올 수 있어요.
-          </>
-        ),
-        confirmButtonText: '네, 해지했어요',
-      };
-    }
-    return {};
-  };
-
   return (
     <>
       <Container>
@@ -89,7 +74,7 @@ const SubscribedNewslettersSection = ({
           <NewsletterUnsubscribeModal
             onUnsubscribe={confirmUnsubscribeNewsletter}
             onClose={closeModal}
-            {...getModalContent()}
+            type={actionType}
           />
         </Modal>,
 
