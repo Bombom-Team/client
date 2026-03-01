@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router';
 import CardContainer from '../CardContainer';
 import { CardDetailButton, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
@@ -5,11 +6,16 @@ import CardHeader from '../CardHeader';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { getDatesDiff } from '@/utils/date';
 import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
-  const { generation, title } = props;
+  const { generation, title, startDate, endDate, id } = props;
+  const navigate = useNavigate();
+
+  const isWeeklyChallenge =
+    getDatesDiff(new Date(startDate), new Date(endDate)) <= 7;
 
   const handleCardClick = () => {
     trackEvent({
@@ -18,9 +24,16 @@ const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
       label: title,
     });
 
-    openExternalLink(
-      'https://maroon-geranium-880.notion.site/2d103dcf205680dfa045d47385af3df9?source=copy_link',
-    );
+    if (startDate && endDate && isWeeklyChallenge) {
+      openExternalLink(
+        'https://maroon-geranium-880.notion.site/1-2fb03dcf20568089a20ad05cd3de78fe?pvs=74',
+      );
+    } else {
+      navigate({
+        to: '/challenge/$challengeId/landing',
+        params: { challengeId: id.toString() },
+      });
+    }
   };
 
   return (

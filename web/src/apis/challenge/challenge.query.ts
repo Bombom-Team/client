@@ -8,13 +8,17 @@ import {
   getChallengeTeams,
   getChallengeCommentCandidateArticles,
   getChallengeComments,
+  getChallengeCommentReplies,
   getTodayDailyGuide,
   getChallengeArticleHighlights,
   getDailyGuideComments,
+  getMyDailyGuideComment,
+  getCertificationInfo,
 } from './challenge.api';
 import type {
   GetChallengeCommentCandidateArticlesParams,
   GetChallengeCommentsParams,
+  GetChallengeCommentRepliesParams,
   GetChallengeArticleHighlightsParams,
   GetDailyGuideCommentsParams,
 } from './challenge.api';
@@ -81,6 +85,16 @@ export const challengeQueries = {
         },
         initialPageParam: 0,
       }),
+    replies: (params: GetChallengeCommentRepliesParams) =>
+      queryOptions({
+        queryKey: [
+          ...challengeQueries.comments.all(params.challengeId),
+          params.commentId,
+          'replies',
+          params,
+        ],
+        queryFn: () => getChallengeCommentReplies(params),
+      }),
   },
   challengeCommentCandidateArticles: (
     params: GetChallengeCommentCandidateArticlesParams,
@@ -106,6 +120,17 @@ export const challengeQueries = {
       queryKey: ['challenges', challengeId, 'daily-guide', 'today'],
       queryFn: () => getTodayDailyGuide(challengeId),
     }),
+  myDailyGuideComment: (challengeId: number, dayIndex: number) =>
+    queryOptions({
+      queryKey: [
+        'challenges',
+        challengeId,
+        'daily-guides',
+        dayIndex,
+        'my-comment',
+      ],
+      queryFn: () => getMyDailyGuideComment(challengeId, dayIndex),
+    }),
   dailyGuideComments: (params: GetDailyGuideCommentsParams) =>
     queryOptions({
       queryKey: [
@@ -116,5 +141,10 @@ export const challengeQueries = {
         params,
       ],
       queryFn: () => getDailyGuideComments(params),
+    }),
+  certificationInfo: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', challengeId, 'certification', 'info'],
+      queryFn: () => getCertificationInfo(challengeId),
     }),
 };

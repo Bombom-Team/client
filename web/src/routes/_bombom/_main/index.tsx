@@ -4,8 +4,9 @@ import { createFileRoute } from '@tanstack/react-router';
 import ReadingKingLeaderboard from '../../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
+import AppInstallSection from '@/pages/recommend/components/AppInstallSection/AppInstallSection';
 import ChallengeSection from '@/pages/recommend/components/ChallengeSection/ChallengeSection';
-import NewsletterHero from '@/pages/recommend/components/NewsletterHero/NewsletterHero';
+import EventLandingHero from '@/pages/recommend/components/NewsletterHero/EventLandingHero';
 import NoticeAnnounceBar from '@/pages/recommend/components/NoticeAnnounceBar/NoticeAnnounceBar';
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
 import type { Device } from '@/hooks/useDevice';
@@ -47,12 +48,13 @@ function Index() {
 
       <MainContent device={device}>
         <MainSection device={device}>
-          <NewsletterHero />
+          <EventLandingHero />
           <ChallengeSection />
           <TrendySection />
         </MainSection>
         <SideSection device={device}>
           <ReadingKingLeaderboard />
+          <AppInstallSection />
         </SideSection>
       </MainContent>
     </Container>
@@ -73,6 +75,8 @@ const Container = styled.div<{ device: Device }>`
 `;
 
 const MainContent = styled.div<{ device: Device }>`
+  max-width: 100%;
+
   display: flex;
   gap: 16px;
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
@@ -95,5 +99,8 @@ const SideSection = styled.div<{ device: Device }>`
   max-width: ${({ device }) => (device === 'mobile' ? '400px' : 'none')};
   margin: ${({ device }) => (device === 'mobile' ? '0 auto' : '0')};
 
+  display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
+  flex-direction: column;
   flex-shrink: 0;
 `;

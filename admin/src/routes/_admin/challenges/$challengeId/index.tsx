@@ -1,5 +1,10 @@
+import { ApiError } from '@bombom/shared/apis';
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -42,9 +47,15 @@ function ChallengeDetailContent() {
   const [hasTeamFilter, setHasTeamFilter] = useState<'ALL' | 'YES' | 'NO'>(
     'ALL',
   );
+  const [survivalFilter, setSurvivalFilter] = useState<
+    'ALL' | 'SURVIVED' | 'FAILED'
+  >('ALL');
+  const [shieldCountInput, setShieldCountInput] = useState('1');
+  const [isShieldModalOpen, setIsShieldModalOpen] = useState(false);
 
   const id = Number(challengeId);
 
+  const queryClient = useQueryClient();
   const { data: challenge } = useSuspenseQuery(challengesQueries.detail(id));
   const { data: teams } = useSuspenseQuery(challengesQueries.teams(id));
 
@@ -65,6 +76,20 @@ function ChallengeDetailContent() {
 
     return hasTeamFilter === 'YES';
   }, [hasTeamFilter]);
+
+  const isSurvived = useMemo(() => {
+    if (survivalFilter === 'ALL') {
+      return undefined;
+    }
+
+    return survivalFilter === 'SURVIVED';
+  }, [survivalFilter]);
+
+  const shieldCount = useMemo(() => {
+    const trimmed = shieldCountInput.trim();
+    const parsed = Number(trimmed);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }, [shieldCountInput]);
 
   const handleParticipantsDataLoaded = useCallback(
     (totalElements: number, totalPages: number) => {
@@ -96,11 +121,53 @@ function ChallengeDetailContent() {
     setParticipantsPage(0);
   };
 
+  const handleSurvivalChange = (value: 'ALL' | 'SURVIVED' | 'FAILED') => {
+    setSurvivalFilter(value);
+    setParticipantsPage(0);
+  };
+
+  const { mutate: grantShield, isPending: isGrantingShield } = useMutation({
+    ...challengesQueries.mutation.grantParticipantsShield(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['challenges', 'participants', id],
+      });
+      setIsShieldModalOpen(false);
+      alert('쉴드 지급이 완료되었습니다.');
+    },
+    onError: (error) => {
+      if (error instanceof ApiError) {
+        alert(error.message);
+        return;
+      }
+      alert('쉴드 지급에 실패했습니다.');
+    },
+  });
+
   const handleManageTeams = () => {
     navigate({
       to: '/challenges/$challengeId/teams',
       params: { challengeId },
     });
+  };
+
+  const handleGrantShield = () => {
+    if (shieldCount <= 0) {
+      alert('쉴드 개수는 1 이상 입력해주세요.');
+      return;
+    }
+
+    if (confirm(`생존자에게 쉴드 ${shieldCount}개를 지급할까요?`)) {
+      grantShield({ challengeId: id, count: shieldCount });
+    }
+  };
+
+  const handleOpenShieldModal = () => {
+    setIsShieldModalOpen(true);
+  };
+
+  const handleCloseShieldModal = () => {
+    setIsShieldModalOpen(false);
   };
 
   if (!challenge) {
@@ -117,11 +184,44 @@ function ChallengeDetailContent() {
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
           <ParticipantsActions>
+            <Button onClick={handleOpenShieldModal}>쉴드 지급</Button>
             <Button variant="secondary" onClick={handleManageTeams}>
               팀 관리
             </Button>
           </ParticipantsActions>
         </ParticipantsHeader>
+        {isShieldModalOpen && (
+          <ModalOverlay onClick={handleCloseShieldModal}>
+            <ModalCard onClick={(event) => event.stopPropagation()}>
+              <ModalTitle>쉴드 일괄 지급</ModalTitle>
+              <ModalContent>
+                <InputGroup>
+                  <ShieldLabel htmlFor="shield-count">지급 개수</ShieldLabel>
+                  <ShieldInput
+                    id="shield-count"
+                    type="number"
+                    min="1"
+                    value={shieldCountInput}
+                    onChange={(event) =>
+                      setShieldCountInput(event.target.value)
+                    }
+                  />
+                </InputGroup>
+                <ModalNotice>
+                  생존자에게 설정한 개수만큼 쉴드를 일괄 지급합니다.
+                </ModalNotice>
+              </ModalContent>
+              <ModalActions>
+                <Button variant="secondary" onClick={handleCloseShieldModal}>
+                  취소
+                </Button>
+                <Button onClick={handleGrantShield} disabled={isGrantingShield}>
+                  {isGrantingShield ? '지급 중...' : '지급'}
+                </Button>
+              </ModalActions>
+            </ModalCard>
+          </ModalOverlay>
+        )}
         <Filters>
           <FilterGroup>
             <FilterLabel htmlFor="challenge-team-id">팀 ID</FilterLabel>
@@ -152,28 +252,46 @@ function ChallengeDetailContent() {
               <option value="NO">미매칭</option>
             </FilterSelect>
           </FilterGroup>
+          <FilterGroup>
+            <FilterLabel htmlFor="challenge-survival">상태</FilterLabel>
+            <FilterSelect
+              id="challenge-survival"
+              value={survivalFilter}
+              onChange={(event) =>
+                handleSurvivalChange(
+                  event.target.value as 'ALL' | 'SURVIVED' | 'FAILED',
+                )
+              }
+            >
+              <option value="ALL">전체</option>
+              <option value="SURVIVED">생존</option>
+              <option value="FAILED">탈락</option>
+            </FilterSelect>
+          </FilterGroup>
         </Filters>
 
         <Table>
           <colgroup>
-            <col style={{ width: '28%' }} />
             <col style={{ width: '24%' }} />
-            <col style={{ width: '24%' }} />
-            <col style={{ width: '24%' }} />
+            <col style={{ width: '20%' }} />
+            <col style={{ width: '20%' }} />
+            <col style={{ width: '16%' }} />
+            <col style={{ width: '20%' }} />
           </colgroup>
           <Thead>
             <Tr>
               <Th>닉네임</Th>
               <Th>팀 ID</Th>
               <Th>완료 일수</Th>
+              <Th>쉴드</Th>
               <Th>상태</Th>
             </Tr>
           </Thead>
           <ErrorBoundary
-            fallback={<ChallengeParticipantsTableBodyError colSpan={4} />}
+            fallback={<ChallengeParticipantsTableBodyError colSpan={5} />}
           >
             <Suspense
-              fallback={<ChallengeParticipantsTableBodyLoading colSpan={4} />}
+              fallback={<ChallengeParticipantsTableBodyLoading colSpan={5} />}
             >
               <ChallengeParticipantsTableBody
                 challengeId={id}
@@ -181,6 +299,7 @@ function ChallengeDetailContent() {
                 pageSize={PARTICIPANTS_PAGE_SIZE}
                 challengeTeamId={challengeTeamId}
                 hasTeam={hasTeam}
+                isSurvived={isSurvived}
                 onDataLoaded={handleParticipantsDataLoaded}
                 editable={false}
               />
@@ -224,8 +343,8 @@ const ParticipantsHeader = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
 
   display: flex;
-  flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.md};
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
 `;
@@ -238,15 +357,101 @@ const ParticipantsTitle = styled.h3`
 
 const ParticipantsActions = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
+`;
+
+const ShieldLabel = styled.label`
+  color: ${({ theme }) => theme.colors.gray600};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const ShieldInput = styled.input`
+  width: 100%;
+  max-width: 220px;
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.4;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  z-index: 1000;
+  padding: ${({ theme }) => theme.spacing.lg};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: rgb(15 23 42 / 45%);
+
+  inset: 0;
+`;
+
+const ModalCard = styled.div`
+  width: min(420px, 100%);
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.md};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.lg};
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const ModalTitle = styled.h4`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+`;
+
+const ModalContent = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-direction: column;
+`;
+
+const ModalNotice = styled.p`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  justify-content: flex-end;
+`;
+
+const InputGroup = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-direction: column;
 `;
 
 const Filters = styled.div`
   margin-top: ${({ theme }) => theme.spacing.md};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
   display: flex;
-  flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.md};
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
 `;
@@ -279,6 +484,7 @@ const FilterSelect = styled.select`
 `;
 const Table = styled.table`
   width: 100%;
+
   border-collapse: collapse;
   table-layout: fixed;
 `;
@@ -298,7 +504,8 @@ const Th = styled.th`
 
   &:nth-of-type(2),
   &:nth-of-type(3),
-  &:nth-of-type(4) {
+  &:nth-of-type(4),
+  &:nth-of-type(5) {
     text-align: center;
   }
 `;

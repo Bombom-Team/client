@@ -4,7 +4,8 @@ import messaging from '@react-native-firebase/messaging';
 import {
   createAndroidChannel,
   getFCMToken,
-  hasRequestedPermission,
+  getMemberId,
+  getNotificationUrl,
   requestNotificationPermission,
 } from '@/utils/notification';
 import { useWebView } from '@/contexts/WebViewContext';
@@ -23,17 +24,22 @@ Notifications.setNotificationHandler({
 const useNotification = () => {
   const { sendMessageToWeb } = useWebView();
 
-  const registerFCMToken = useCallback(async (memberId?: number) => {
+  const registerFCMToken = useCallback(async (memberId: number) => {
+    const granted = await requestNotificationPermission();
+    if (!granted) return;
+
     try {
       const deviceUuid = await getDeviceUUID();
       const token = await getFCMToken();
 
-      if (memberId && token && deviceUuid) {
+      if (token && deviceUuid) {
         await putFCMToken({
           memberId,
           deviceUuid,
           token,
         });
+
+        console.log('FCM 토큰이 성공적으로 등록되었습니다.');
       }
     } catch (error) {
       console.error('FCM 토큰 등록에 실패했습니다.', error);
@@ -46,11 +52,12 @@ const useNotification = () => {
       const message = await messaging().getInitialNotification();
       if (!message) return;
 
-      if (message.data?.notificationType === 'ARTICLE') {
+      const url = getNotificationUrl(message.data ?? {});
+      if (url) {
         setTimeout(() => {
           sendMessageToWeb({
             type: 'NOTIFICATION_ROUTING',
-            payload: { url: `/articles/${message.data?.articleId}` },
+            payload: { url },
           });
         }, 800);
       }
@@ -59,30 +66,21 @@ const useNotification = () => {
     }
   }, [sendMessageToWeb]);
 
-  const handleLoggedInPermission = async (memberId?: number) => {
-    try {
-      if (!memberId) {
-        console.log('memberId가 없어 권한 요청을 건너뜁니다.');
-        return;
-      }
-
-      const alreadyRequested = await hasRequestedPermission();
-      if (alreadyRequested) return;
-
-      const updatedPermission = await requestNotificationPermission();
-      if (updatedPermission) {
-        await registerFCMToken(memberId);
-        sendMessageToWeb({
-          type: 'REQUEST_NOTIFICATION_ACTIVE',
-        });
-      }
-    } catch (error) {
-      console.error('권한 요청 및 등록 실패:', error);
-    }
-  };
-
   const onNotification = useCallback(() => {
     coldStartNotificationOpen();
+
+    // FCM 토큰 갱신 리스너: 토큰이 변경되면 자동으로 서버에 업데이트
+    const unsubscribeTokenRefresh = messaging().onTokenRefresh(async () => {
+      console.log('FCM 토큰이 갱신되었습니다');
+      try {
+        const memberId = await getMemberId();
+        if (memberId) {
+          await registerFCMToken(memberId);
+        }
+      } catch (error) {
+        console.error('FCM 토큰 갱신 중 오류 발생:', error);
+      }
+    });
 
     // FCM 포그라운드 메시지 리스너: 앱이 열려있을 때 FCM 메시지를 받으면 즉시 로컬 알림으로 표시
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
@@ -102,10 +100,11 @@ const useNotification = () => {
     // 백그라운드에서 알림을 탭한 경우
     const unsubscribeNotificationOpened = messaging().onNotificationOpenedApp(
       (remoteMessage) => {
-        if (remoteMessage.data?.notificationType === 'ARTICLE') {
+        const url = getNotificationUrl(remoteMessage.data ?? {});
+        if (url) {
           sendMessageToWeb({
             type: 'NOTIFICATION_ROUTING',
-            payload: { url: `/articles/${remoteMessage.data?.articleId}` },
+            payload: { url },
           });
         }
       },
@@ -116,23 +115,23 @@ const useNotification = () => {
       Notifications.addNotificationResponseReceivedListener((response) => {
         const { data } = response.notification.request.content;
 
-        if (data.notificationType === 'ARTICLE') {
+        const url = getNotificationUrl(data);
+        if (url) {
           sendMessageToWeb({
             type: 'NOTIFICATION_ROUTING',
-            payload: {
-              url: `/articles/${data.articleId}`,
-            },
+            payload: { url },
           });
         }
       });
 
     // 클린업
     return () => {
+      unsubscribeTokenRefresh();
       unsubscribe();
       unsubscribeNotificationOpened();
       responseListener.remove();
     };
-  }, [coldStartNotificationOpen, sendMessageToWeb]);
+  }, [coldStartNotificationOpen, registerFCMToken, sendMessageToWeb]);
 
   useEffect(() => {
     createAndroidChannel();
@@ -141,7 +140,6 @@ const useNotification = () => {
   return {
     onNotification,
     registerFCMToken,
-    handleLoggedInPermission,
   };
 };
 

@@ -10,9 +10,9 @@ export type ChallengeCardProps = Challenge;
 type CardType = Challenge['status'] | 'FAILED';
 
 const getCardType = (challenge: Challenge): CardType => {
-  const { status, detail } = challenge;
+  const { status, participationInfo } = challenge;
 
-  if (detail?.isSuccess === false) {
+  if (participationInfo?.isSurvived === false) {
     return 'FAILED';
   }
 
