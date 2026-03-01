@@ -7,17 +7,17 @@ export interface Action {
   ariaLabel?: string;
 }
 
-interface FloatingActionButtonsProps {
+interface FloatingActionPanelProps {
   top: string;
   left: string;
   actions: Action[];
 }
 
-const FloatingActionButtons = ({
+const FloatingActionPanel = ({
   top,
   left,
   actions,
-}: FloatingActionButtonsProps) => {
+}: FloatingActionPanelProps) => {
   return (
     <Container top={top} left={left}>
       {actions.map((action, index) =>
@@ -38,7 +38,7 @@ const FloatingActionButtons = ({
   );
 };
 
-export default FloatingActionButtons;
+export default FloatingActionPanel;
 
 const Container = styled.div<{ top: string; left: string }>`
   position: fixed;

@@ -1,4 +1,3 @@
-import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useQuery } from '@tanstack/react-query';
@@ -6,16 +5,15 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useRef } from 'react';
 import { queries } from '@/apis/queries';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
-import ChevronIcon from '@/components/icons/ChevronIcon';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import Spacing from '@/components/Spacing/Spacing';
 import { useDevice } from '@/hooks/useDevice';
 import useScrollProgress from '@/hooks/useScrollProgress';
 import useScrollRestoration from '@/hooks/useScrollRestoration';
 import { useScrollThreshold } from '@/hooks/useScrollThreshold';
+import ArticleActionButtons from '@/pages/detail/components/ArticleActionButtons/ArticleActionButtons';
 import ArticleBody from '@/pages/detail/components/ArticleBody/ArticleBody';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
-import FloatingActionButtons from '@/pages/detail/components/FloatingActionButtons/FloatingActionButtons';
 import TodayUnreadArticlesSection from '@/pages/detail/components/TodayUnreadArticlesSection/TodayUnreadArticlesSection';
 import useArticleAsReadMutation from '@/pages/detail/hooks/useArticleAsReadMutation';
 import { useArticleBookmark } from '@/pages/detail/hooks/useArticleBookmark';
@@ -130,51 +128,11 @@ function ArticleDetailPage() {
           <TodayUnreadArticlesSection articleId={articleIdNumber} />
         </ArticleContent>
 
-        {device === 'pc' && isBookmarked !== null && (
-          <FloatingActionButtons
-            top="80vh"
-            left={`calc(50% - (${ARTICLE_MAX_WIDTH / 2}px + 90px))`}
-            actions={[
-              ...(currentArticle.isRead
-                ? [
-                    {
-                      icon: (
-                        <DotLottieReact
-                          src="/assets/lottie/success-check.lottie"
-                          style={{ width: '32px', height: '32px' }}
-                          loop={false}
-                          autoplay
-                        />
-                      ),
-                    },
-                  ]
-                : []),
-              {
-                icon: isBookmarked ? (
-                  <BookmarkActiveIcon width={28} height={28} />
-                ) : (
-                  <BookmarkInactiveIcon
-                    width={28}
-                    height={28}
-                    color={theme.colors.primary}
-                  />
-                ),
-                onClick: toggleBookmark,
-                ariaLabel: '북마크',
-              },
-              {
-                icon: (
-                  <ChevronIcon
-                    direction="up"
-                    width={28}
-                    height={28}
-                    color={theme.colors.icons}
-                  />
-                ),
-                onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
-                ariaLabel: '맨 위로',
-              },
-            ]}
+        {device === 'pc' && (
+          <ArticleActionButtons
+            isRead={currentArticle.isRead}
+            bookmarked={isBookmarked}
+            onBookmarkClick={toggleBookmark}
           />
         )}
       </Container>
