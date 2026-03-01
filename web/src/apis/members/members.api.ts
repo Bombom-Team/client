@@ -99,22 +99,8 @@ export const patchMemberInfo = async (params: PatchMembersInfoParams) => {
   });
 };
 
-export type SubscribeStatus =
-  | 'SUBSCRIBED'
-  | 'UNSUBSCRIBING'
-  | 'UNSUBSCRIBE_FAILED';
-
-export interface SubscribedNewsletterResponse {
-  subscriptionId: number;
-  newsletterId: number;
-  name: string;
-  imageUrl?: string;
-  description: string;
-  category: string;
-  unsubscribeUrl?: string;
-  status: SubscribeStatus;
-}
-
+export type SubscribedNewsletterResponse =
+  components['schemas']['SubscribedNewsletterResponse'];
 export type GetMySubscriptionsResponse = SubscribedNewsletterResponse[];
 
 export const getMySubscriptions = async () => {
