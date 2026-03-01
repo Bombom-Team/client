@@ -70,7 +70,6 @@ const SubscribedNewslettersSection = ({
               <MySubscriptionCard
                 key={newsletter.newsletterId}
                 newsletter={newsletter}
-                device={device}
                 onUnsubscribeClick={handleUnsubscribeClick}
                 onUnsubscribeConfirm={handleUnsubscribeConfirm}
               />

@@ -1,22 +1,18 @@
-import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { openExternalLink } from '@/utils/externalLink';
 import type { SubscribedNewsletterResponse } from '@/apis/members/members.api';
-import type { Device } from '@/hooks/useDevice';
 
 interface MySubscriptionCardProps {
   newsletter: SubscribedNewsletterResponse;
-  device: Device;
   onUnsubscribeClick: (id: number) => void;
   onUnsubscribeConfirm: (id: number) => void;
 }
 
 const MySubscriptionCard = ({
   newsletter,
-  device,
   onUnsubscribeClick,
   onUnsubscribeConfirm,
 }: MySubscriptionCardProps) => {
@@ -33,7 +29,7 @@ const MySubscriptionCard = ({
     switch (newsletter.status) {
       case 'UNSUBSCRIBING':
         return (
-          <ActionButton device={device} variant="filled" disabled>
+          <ActionButton variant="filled" disabled>
             취소 중...
           </ActionButton>
         );
@@ -41,18 +37,13 @@ const MySubscriptionCard = ({
       case 'UNSUBSCRIBE_FAILED':
         if (!isUrlVisited) {
           return (
-            <ActionButton
-              device={device}
-              variant="filled"
-              onClick={handleExternalLinkClick}
-            >
+            <ActionButton variant="filled" onClick={handleExternalLinkClick}>
               직접 취소하러 가기
             </ActionButton>
           );
         }
         return (
           <ActionButton
-            device={device}
             variant="filled"
             onClick={() => onUnsubscribeConfirm(newsletter.subscriptionId)}
           >
@@ -73,7 +64,6 @@ const MySubscriptionCard = ({
 
         return (
           <ActionButton
-            device={device}
             variant="filled"
             onClick={() => onUnsubscribeClick(newsletter.subscriptionId)}
           >
@@ -84,7 +74,7 @@ const MySubscriptionCard = ({
   };
 
   return (
-    <Card device={device}>
+    <Container>
       <NewsletterContent>
         <NewsletterImage
           src={newsletter.imageUrl ?? ''}
@@ -100,22 +90,22 @@ const MySubscriptionCard = ({
         </NewsletterInfo>
       </NewsletterContent>
       <ActionWrapper>{renderActionButton()}</ActionWrapper>
-    </Card>
+    </Container>
   );
 };
 
 export default MySubscriptionCard;
 
-const Card = styled.div<{ device: Device }>`
+const Container = styled.div`
   padding: 16px;
-  border: 1px solid ${theme.colors.stroke};
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 12px;
 
   display: flex;
   gap: 12px;
   flex-direction: column;
 
-  background: ${theme.colors.white};
+  background: ${({ theme }) => theme.colors.white};
 
   transition: all 0.2s ease-in-out;
 `;
@@ -150,8 +140,8 @@ const NewsletterInfo = styled.div`
 const NewsletterName = styled.h3`
   overflow: hidden;
 
-  color: ${theme.colors.textPrimary};
-  font: ${theme.fonts.body1};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body1};
   font-weight: 600;
   white-space: nowrap;
 
@@ -163,8 +153,8 @@ const NewsletterDescription = styled.p`
 
   display: -webkit-box;
 
-  color: ${theme.colors.textSecondary};
-  font: ${theme.fonts.body2};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.body2};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -178,19 +168,19 @@ const ActionWrapper = styled.div`
 const UnsubscribeInfoText = styled.p`
   padding: 6px 10px;
 
-  color: ${theme.colors.textTertiary};
-  font: ${theme.fonts.body3};
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.body3};
   text-align: center;
 `;
 
-const ActionButton = styled(Button)<{ device: Device }>`
+const ActionButton = styled(Button)`
   padding: 6px 10px;
   border-radius: 8px;
 
-  font: ${theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.body3};
 
   &:disabled {
-    color: ${theme.colors.textSecondary};
+    color: ${({ theme }) => theme.colors.textSecondary};
     opacity: 1;
   }
 `;
