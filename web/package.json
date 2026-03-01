@@ -87,6 +87,7 @@
     "@bombom/shared": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@lottiefiles/dotlottie-react": "^0.18.3",
     "@microsoft/clarity": "^1.0.0",
     "@sentry/react": "^10.0.0",
     "@tanstack/react-query": "^5.82.0",

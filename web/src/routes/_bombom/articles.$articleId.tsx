@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useRef } from 'react';
@@ -72,13 +73,23 @@ function ArticleDetailPage() {
       {device !== 'pc' && (
         <MobileDetailHeader
           right={
-            <BookmarkButton type="button" onClick={toggleBookmark}>
-              <BookmarkIcon
-                as={isBookmarked ? BookmarkActiveIcon : BookmarkInactiveIcon}
-                width={28}
-                height={28}
-              />
-            </BookmarkButton>
+            <RightActions>
+              {currentArticle.isRead && (
+                <DotLottieReact
+                  src="/assets/lottie/success-check.lottie"
+                  style={{ width: '28px', height: '28px' }}
+                  loop={false}
+                  autoplay
+                />
+              )}
+              <BookmarkButton type="button" onClick={toggleBookmark}>
+                <BookmarkIcon
+                  as={isBookmarked ? BookmarkActiveIcon : BookmarkInactiveIcon}
+                  width={28}
+                  height={28}
+                />
+              </BookmarkButton>
+            </RightActions>
           }
         />
       )}
@@ -179,7 +190,6 @@ const ContentDescription = styled.p`
 `;
 
 const BookmarkButton = styled.button`
-  margin-left: auto;
   padding: 8px;
 
   display: flex;
@@ -196,6 +206,12 @@ const BookmarkButton = styled.button`
   &:hover > svg {
     transform: scale(1.1);
   }
+`;
+
+const RightActions = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
 `;
 
 const BookmarkIcon = styled.svg`
