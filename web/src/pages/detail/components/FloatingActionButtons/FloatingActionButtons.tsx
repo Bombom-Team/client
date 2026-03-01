@@ -1,58 +1,45 @@
-import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
-import ChevronIcon from '@/components/icons/ChevronIcon';
-import BookmarkActiveIcon from '#/assets/svg/bookmark-active.svg';
-import BookmarkInactiveIcon from '#/assets/svg/bookmark-inactive.svg';
+import type { ReactNode } from 'react';
+
+export interface Action {
+  icon: ReactNode;
+  onClick: () => void;
+  ariaLabel?: string;
+}
 
 interface FloatingActionButtonsProps {
-  bookmarked: boolean | null;
-  onBookmarkClick: (bookmarked: boolean) => void;
+  top: string;
+  left: string;
+  actions: Action[];
 }
 
 const FloatingActionButtons = ({
-  bookmarked,
-  onBookmarkClick,
-  ...props
+  top,
+  left,
+  actions,
 }: FloatingActionButtonsProps) => {
-  if (bookmarked === null) return null;
-
-  const handleBookmarkClick = () => {
-    onBookmarkClick(bookmarked);
-  };
-
-  const handleScrollUp = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <Container {...props}>
-      <ActionButton type="button" onClick={handleBookmarkClick}>
-        {bookmarked ? (
-          <BookmarkActiveIcon width={28} height={28} />
-        ) : (
-          <BookmarkInactiveIcon
-            width={28}
-            height={28}
-            color={theme.colors.primary}
-          />
-        )}
-      </ActionButton>
-
-      <ActionButton type="button" onClick={handleScrollUp}>
-        <ChevronIcon
-          direction="up"
-          width={28}
-          height={28}
-          color={theme.colors.icons}
-        />
-      </ActionButton>
+    <Container top={top} left={left}>
+      {actions.map((action, index) => (
+        <ActionButton
+          key={index}
+          type="button"
+          onClick={action.onClick}
+          aria-label={action.ariaLabel}
+        >
+          {action.icon}
+        </ActionButton>
+      ))}
     </Container>
   );
 };
 
 export default FloatingActionButtons;
 
-const Container = styled.div`
+const Container = styled.div<{ top: string; left: string }>`
+  position: fixed;
+  top: ${({ top }) => top};
+  left: ${({ left }) => left};
   z-index: ${({ theme }) => theme.zIndex.floating};
   width: 56px;
   padding: 4px 0;

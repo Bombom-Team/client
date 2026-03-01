@@ -1,3 +1,4 @@
+import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useQuery } from '@tanstack/react-query';
@@ -5,6 +6,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useRef } from 'react';
 import { queries } from '@/apis/queries';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
+import ChevronIcon from '@/components/icons/ChevronIcon';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import Spacing from '@/components/Spacing/Spacing';
 import { useDevice } from '@/hooks/useDevice';
@@ -128,10 +130,37 @@ function ArticleDetailPage() {
           <TodayUnreadArticlesSection articleId={articleIdNumber} />
         </ArticleContent>
 
-        {device === 'pc' && (
-          <ArticleActionButtons
-            bookmarked={isBookmarked}
-            onBookmarkClick={toggleBookmark}
+        {device === 'pc' && isBookmarked !== null && (
+          <FloatingActionButtons
+            top="80vh"
+            left={`calc(50% - (${ARTICLE_MAX_WIDTH / 2}px + 90px))`}
+            actions={[
+              {
+                icon: isBookmarked ? (
+                  <BookmarkActiveIcon width={28} height={28} />
+                ) : (
+                  <BookmarkInactiveIcon
+                    width={28}
+                    height={28}
+                    color={theme.colors.primary}
+                  />
+                ),
+                onClick: toggleBookmark,
+                ariaLabel: '북마크',
+              },
+              {
+                icon: (
+                  <ChevronIcon
+                    direction="up"
+                    width={28}
+                    height={28}
+                    color={theme.colors.icons}
+                  />
+                ),
+                onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+                ariaLabel: '맨 위로',
+              },
+            ]}
           />
         )}
       </Container>
@@ -142,12 +171,6 @@ function ArticleDetailPage() {
 const Container = styled.div`
   position: relative;
   width: 100%;
-`;
-
-const ArticleActionButtons = styled(FloatingActionButtons)`
-  position: fixed;
-  top: 80vh;
-  left: calc(50% - (${ARTICLE_MAX_WIDTH / 2}px + 90px));
 `;
 
 const ArticleContent = styled.div<{ device: Device }>`
