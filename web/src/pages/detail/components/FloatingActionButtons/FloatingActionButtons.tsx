@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 export interface Action {
   icon: ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   ariaLabel?: string;
 }
 
@@ -20,16 +20,20 @@ const FloatingActionButtons = ({
 }: FloatingActionButtonsProps) => {
   return (
     <Container top={top} left={left}>
-      {actions.map((action, index) => (
-        <ActionButton
-          key={index}
-          type="button"
-          onClick={action.onClick}
-          aria-label={action.ariaLabel}
-        >
-          {action.icon}
-        </ActionButton>
-      ))}
+      {actions.map((action, index) =>
+        action.onClick ? (
+          <ActionButton
+            key={index}
+            type="button"
+            onClick={action.onClick}
+            aria-label={action.ariaLabel}
+          >
+            {action.icon}
+          </ActionButton>
+        ) : (
+          <ActionItem key={index}>{action.icon}</ActionItem>
+        ),
+      )}
     </Container>
   );
 };
@@ -58,7 +62,8 @@ const Container = styled.div<{ top: string; left: string }>`
 `;
 
 const ActionButton = styled.button`
-  padding: 8px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
 
   display: flex;
@@ -74,4 +79,16 @@ const ActionButton = styled.button`
   &:hover > svg {
     transform: scale(1.1);
   }
+`;
+
+const ActionItem = styled.div`
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+
+  background-color: ${({ theme }) => theme.colors.white};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
