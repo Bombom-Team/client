@@ -29,13 +29,13 @@ const SubscribedNewslettersSection = ({
     },
   });
 
-  const handleUnsubscribeClick = (newsletterId: number) => {
+  const handleUnsubscribeRequest = (newsletterId: number) => {
     setActionType('UNSUBSCRIBE');
     selectNewsletter(newsletterId);
     openModal();
   };
 
-  const handleUnsubscribeConfirm = (newsletterId: number) => {
+  const handleRemoveRequest = (newsletterId: number) => {
     setActionType('REMOVE');
     selectNewsletter(newsletterId);
     openModal();
@@ -55,8 +55,8 @@ const SubscribedNewslettersSection = ({
               <MySubscriptionCard
                 key={newsletter.newsletterId}
                 newsletter={newsletter}
-                onUnsubscribeClick={handleUnsubscribeClick}
-                onUnsubscribeConfirm={handleUnsubscribeConfirm}
+                onUnsubscribeRequest={handleUnsubscribeRequest}
+                onRemoveRequest={handleRemoveRequest}
               />
             ))}
           </NewsletterGrid>

@@ -7,14 +7,14 @@ import type { SubscribedNewsletterResponse } from '@/apis/members/members.api';
 
 interface MySubscriptionCardProps {
   newsletter: SubscribedNewsletterResponse;
-  onUnsubscribeClick: (id: number) => void;
-  onUnsubscribeConfirm: (id: number) => void;
+  onUnsubscribeRequest: (id: number) => void;
+  onRemoveRequest: (id: number) => void;
 }
 
 const MySubscriptionCard = ({
   newsletter,
-  onUnsubscribeClick,
-  onUnsubscribeConfirm,
+  onUnsubscribeRequest,
+  onRemoveRequest,
 }: MySubscriptionCardProps) => {
   const [isUrlVisited, setIsUrlVisited] = useState(false);
 
@@ -45,7 +45,7 @@ const MySubscriptionCard = ({
         return (
           <ActionButton
             variant="filled"
-            onClick={() => onUnsubscribeConfirm(newsletter.subscriptionId)}
+            onClick={() => onRemoveRequest(newsletter.subscriptionId)}
           >
             해지했습니다 (목록 제거)
           </ActionButton>
@@ -65,7 +65,7 @@ const MySubscriptionCard = ({
         return (
           <ActionButton
             variant="filled"
-            onClick={() => onUnsubscribeClick(newsletter.subscriptionId)}
+            onClick={() => onUnsubscribeRequest(newsletter.subscriptionId)}
           >
             구독 취소
           </ActionButton>
