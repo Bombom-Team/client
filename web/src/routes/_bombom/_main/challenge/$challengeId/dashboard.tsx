@@ -13,8 +13,6 @@ import type { Theme } from '@emotion/react/macro';
 import type { CSSObject } from '@emotion/styled';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
-const REQUIRED_RATE = 80;
-
 const getTeamLabel = (team: TeamInfoResponse[number]) =>
   team.isMyTeam ? '우리팀' : `${team.teamNumber}팀`;
 
@@ -65,12 +63,16 @@ function ChallengeDashboardRoute() {
   });
 
   const device = useDevice();
+  const maxAbsentDays =
+    challengeInfo && challengeInfo.totalDays >= challengeInfo.requiredDays
+      ? challengeInfo.totalDays - challengeInfo.requiredDays
+      : 0;
 
   return (
     <Container>
       <InfoWrapper>
         <AchievementAverage>
-          팀 평균 달성률 :{' '}
+          오늘 팀 평균 달성률 :{' '}
           {teamChallengeProgressInfo?.teamSummary.achievementAverage}%
         </AchievementAverage>
         <TabsWrapper device={device}>
@@ -89,8 +91,8 @@ function ChallengeDashboardRoute() {
           </Tabs>
         </TabsWrapper>
         <WarningMessage>
-          🚨 챌린지 기간의 {REQUIRED_RATE}%(
-          {challengeInfo?.requiredDays}일) 미만 달성 시 챌린지 탈락 처리됩니다.
+          🚨 챌린지 기간 중 {maxAbsentDays}일(20%) 초과 결석 시 챌린지
+          탈락처리됩니다.
         </WarningMessage>
       </InfoWrapper>
       {teamChallengeProgressInfo && (
