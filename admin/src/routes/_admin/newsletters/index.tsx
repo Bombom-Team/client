@@ -14,8 +14,18 @@ import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import {
   NEWSLETTER_CATEGORY_LABELS,
+  NEWSLETTER_DETAIL_STATUS_LABELS,
+  type NewsletterDetailStatusType,
+  type NewsletterStatusType,
   PREVIOUS_STRATEGY_LABELS,
 } from '@/types/newsletter';
+
+type StatusBadgeTone =
+  | 'active'
+  | 'suspendedVisible'
+  | 'suspendedHidden'
+  | 'discontinued'
+  | 'unknown';
 
 export const Route = createFileRoute('/_admin/newsletters/')({
   component: NewslettersPage,
@@ -26,6 +36,7 @@ export const Route = createFileRoute('/_admin/newsletters/')({
     keyword: (search.keyword as string) || undefined,
     category: (search.category as string) || undefined,
     previousStrategy: (search.previousStrategy as string) || undefined,
+    status: (search.status as string) || undefined,
   }),
 });
 
@@ -57,8 +68,39 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
   const [selectedCategory, setSelectedCategory] = useState(
     (search.category as string) || '',
   );
+  const [isBusinessRuleOpen, setIsBusinessRuleOpen] = useState(false);
 
   if (!data) return null;
+
+  const STATUS_LABELS: Record<
+    NewsletterStatusType | NewsletterDetailStatusType,
+    string
+  > = {
+    ACTIVE: '발행중',
+    SUSPENDED: '휴재',
+    SUSPENDED_VISIBLE: '휴재(노출)',
+    SUSPENDED_HIDDEN: '휴재(비노출)',
+    DISCONTINUED: '폐간',
+  };
+
+  const getStatusLabel = (
+    status?: NewsletterStatusType | NewsletterDetailStatusType,
+  ) => {
+    if (!status) return '상태 없음';
+    return STATUS_LABELS[status] ?? '상태 미정';
+  };
+
+  const getStatusTone = (
+    status?: NewsletterStatusType | NewsletterDetailStatusType,
+  ): StatusBadgeTone => {
+    if (!status) return 'unknown';
+    if (status === 'ACTIVE') return 'active';
+    if (status === 'SUSPENDED_VISIBLE') return 'suspendedVisible';
+    if (status === 'SUSPENDED_HIDDEN') return 'suspendedHidden';
+    if (status === 'SUSPENDED') return 'suspendedVisible';
+    if (status === 'DISCONTINUED') return 'discontinued';
+    return 'unknown';
+  };
 
   // Normalize data: Handle both PageableResponse and flat array
   const content = Array.isArray(data) ? data : data.content || [];
@@ -72,6 +114,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
         keyword: keyword || undefined,
         category: selectedCategory || undefined,
         previousStrategy: search.previousStrategy,
+        status: search.status,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
     });
@@ -110,6 +153,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
                   keyword: keyword || undefined,
                   category: newCategory || undefined,
                   previousStrategy: search.previousStrategy,
+                  status: search.status,
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 } as any,
               });
@@ -132,6 +176,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
                   keyword: keyword || undefined,
                   category: selectedCategory || undefined,
                   previousStrategy: e.target.value || undefined,
+                  status: search.status,
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 } as any,
               });
@@ -144,7 +189,58 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
               </option>
             ))}
           </FilterSelect>
+          <FilterSelect
+            value={(search.status as string) || ''}
+            onChange={(e) => {
+              navigate({
+                search: {
+                  ...search,
+                  page: 0,
+                  keyword: keyword || undefined,
+                  category: selectedCategory || undefined,
+                  previousStrategy: search.previousStrategy,
+                  status: e.target.value || undefined,
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } as any,
+              });
+            }}
+          >
+            <option value="">발행 상태</option>
+            {Object.entries(NEWSLETTER_DETAIL_STATUS_LABELS).map(
+              ([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ),
+            )}
+          </FilterSelect>
         </SearchForm>
+        <BusinessRuleToggle
+          type="button"
+          onClick={() => setIsBusinessRuleOpen((prev) => !prev)}
+        >
+          <BusinessRuleArrow>
+            {isBusinessRuleOpen ? '▼' : '▶'}
+          </BusinessRuleArrow>
+          비즈니스 규칙
+        </BusinessRuleToggle>
+        {isBusinessRuleOpen && (
+          <BusinessRuleBox>
+            <BusinessRuleTitle>휴재 노출/비노출 기준</BusinessRuleTitle>
+            <BusinessRuleText>
+              <strong>휴재(노출)</strong>: 휴재 상태이지만 서비스에 노출되는
+              상태
+            </BusinessRuleText>
+            <BusinessRuleText>
+              <strong>휴재(비노출)</strong>: 휴재 상태이며 서비스에서 숨김
+              처리되는 상태
+            </BusinessRuleText>
+            <BusinessRuleText>
+              위 구분은 백엔드가 `suspendedAt` 등 상태 변경 정보로 계산한 응답
+              값을 기준으로 합니다. (현재 6개월 기준)
+            </BusinessRuleText>
+          </BusinessRuleBox>
+        )}
       </SearchSection>
 
       {content.length === 0 ? (
@@ -160,7 +256,12 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
                 <CardHeader>
                   <Thumbnail src={newsletter.imageUrl} alt={newsletter.name} />
                   <Info>
-                    <Category>{newsletter.categoryName}</Category>
+                    <TopMetaRow>
+                      <Category>{newsletter.categoryName}</Category>
+                      <StatusBadge $tone={getStatusTone(newsletter.status)}>
+                        {getStatusLabel(newsletter.status)}
+                      </StatusBadge>
+                    </TopMetaRow>
                     <Name>{newsletter.name}</Name>
                     <MetaInfo>
                       <IssueCycleBadge>{newsletter.issueCycle}</IssueCycleBadge>
@@ -200,6 +301,10 @@ const Container = styled.div`
 const SearchSection = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-direction: column;
 
   background: white;
 
@@ -366,6 +471,13 @@ const Category = styled.span`
   font-size: 10px;
 `;
 
+const TopMetaRow = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const Name = styled.h3`
   overflow: hidden;
   margin: 0;
@@ -411,6 +523,78 @@ const SubscriptionCount = styled.span`
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
+const STATUS_BADGE_COLORS: Record<
+  StatusBadgeTone,
+  {
+    border: string;
+    background: string;
+    text: string;
+    dot: string;
+  }
+> = {
+  active: {
+    border: '#bbf7d0',
+    background: '#f0fdf4',
+    text: '#166534',
+    dot: '#16a34a',
+  },
+  suspendedVisible: {
+    border: '#fde68a',
+    background: '#fffbeb',
+    text: '#92400e',
+    dot: '#d97706',
+  },
+  suspendedHidden: {
+    border: '#ddd6fe',
+    background: '#f5f3ff',
+    text: '#5b21b6',
+    dot: '#7c3aed',
+  },
+  discontinued: {
+    border: '#fecaca',
+    background: '#fef2f2',
+    text: '#991b1b',
+    dot: '#dc2626',
+  },
+  unknown: {
+    border: '#e5e7eb',
+    background: '#f9fafb',
+    text: '#374151',
+    dot: '#6b7280',
+  },
+};
+
+const StatusBadge = styled.span<{ $tone: StatusBadgeTone }>`
+  padding: 5px 11px;
+  border: 1px solid
+    ${({ $tone }) => STATUS_BADGE_COLORS[$tone ?? 'unknown'].border};
+  border-radius: 999px;
+
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+
+  background-color: ${({ $tone }) =>
+    STATUS_BADGE_COLORS[$tone ?? 'unknown'].background};
+  color: ${({ $tone }) => STATUS_BADGE_COLORS[$tone ?? 'unknown'].text};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  text-shadow: none;
+
+  &::before {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+
+    background-color: ${({ $tone }) => STATUS_BADGE_COLORS[$tone].dot};
+
+    content: '';
+  }
+`;
+
 const EmptyState = styled.div`
   padding: 4rem;
   border-radius: ${({ theme }) => theme.borderRadius.lg};
@@ -418,4 +602,56 @@ const EmptyState = styled.div`
   background: white;
   color: ${({ theme }) => theme.colors.gray500};
   text-align: center;
+`;
+
+const BusinessRuleToggle = styled.button`
+  padding: 0;
+  border: none;
+
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  align-self: flex-start;
+
+  background: transparent;
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+`;
+
+const BusinessRuleArrow = styled.span`
+  width: 10px;
+
+  display: inline-flex;
+  justify-content: center;
+
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1;
+`;
+
+const BusinessRuleBox = styled.div`
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+
+  background: ${({ theme }) => theme.colors.gray50};
+`;
+
+const BusinessRuleTitle = styled.span`
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const BusinessRuleText = styled.span`
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  line-height: 1.5;
 `;
