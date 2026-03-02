@@ -63,7 +63,10 @@ function ChallengeDashboardRoute() {
   });
 
   const device = useDevice();
-  const maxAbsentDays = challengeInfo && challengeInfo.totalDays >= challengeInfo.requiredDays ? challengeInfo.totalDays - challengeInfo.requiredDays : 0;
+  const maxAbsentDays =
+    challengeInfo && challengeInfo.totalDays >= challengeInfo.requiredDays
+      ? challengeInfo.totalDays - challengeInfo.requiredDays
+      : 0;
 
   return (
     <Container>
@@ -88,7 +91,8 @@ function ChallengeDashboardRoute() {
           </Tabs>
         </TabsWrapper>
         <WarningMessage>
-          🚨 챌린지 기간 중 {maxAbsentDays}일(20%) 초과 결석 시 챌린지 탈락처리됩니다.
+          🚨 챌린지 기간 중 {maxAbsentDays}일(20%) 초과 결석 시 챌린지
+          탈락처리됩니다.
         </WarningMessage>
       </InfoWrapper>
       {teamChallengeProgressInfo && (
