@@ -18,6 +18,9 @@ const useChallengeCancelMutation = ({
       queryClient.invalidateQueries({
         queryKey: challengeQueries.challenges().queryKey,
       });
+      queryClient.invalidateQueries({
+        queryKey: challengeQueries.challengeSummaries().queryKey,
+      });
 
       toast.success('챌린지 신청 취소가 완료되었습니다.');
     },
