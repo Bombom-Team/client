@@ -11,6 +11,21 @@ export const getChallenges = async () => {
   });
 };
 
+type GetChallengeSummariesParams = {
+  view: 'summary';
+};
+
+export const getChallengeSummaries = async () => {
+  const params: GetChallengeSummariesParams = {
+    view: 'summary',
+  };
+
+  return await fetcher.get<GetChallengesResponse>({
+    path: '/challenges',
+    query: params,
+  });
+};
+
 export type GetChallengeEligibilityResponse =
   components['schemas']['ChallengeEligibilityResponse'];
 

@@ -1,6 +1,7 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import {
   getChallenges,
+  getChallengeSummaries,
   getChallengeEligibility,
   getChallengeInfo,
   getMemberChallengeProgress,
@@ -29,6 +30,11 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', 'list'],
       queryFn: getChallenges,
+    }),
+  challengeSummaries: () =>
+    queryOptions({
+      queryKey: ['challenges', 'list', 'summary'],
+      queryFn: getChallengeSummaries,
     }),
   eligibility: (challengeId: number) =>
     queryOptions({
