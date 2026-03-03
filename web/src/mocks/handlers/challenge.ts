@@ -115,7 +115,19 @@ const buildTeamProgressResponse = (
 };
 
 export const challengeHandlers = [
-  http.get(`${baseURL}/challenges`, () => {
+  http.get(`${baseURL}/challenges`, ({ request }) => {
+    const url = new URL(request.url);
+    const view = url.searchParams.get('view');
+
+    if (view && view !== 'summary') {
+      return HttpResponse.json(
+        {
+          message: 'Invalid view query',
+        },
+        { status: 400 },
+      );
+    }
+
     return HttpResponse.json(CHALLENGES);
   }),
 
