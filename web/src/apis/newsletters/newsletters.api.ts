@@ -1,7 +1,15 @@
 import { fetcher } from '@bombom/shared/apis';
 import type { components, operations } from '@/types/openapi';
 
-type GetNewslettersResponse = components['schemas']['NewsletterResponse'][];
+export type Category = {
+  id: number;
+  name: string;
+};
+
+export type GetNewslettersResponse = {
+  categories: Category[];
+  newsletters: components['schemas']['NewsletterResponse'][];
+};
 
 export const getNewsletters = async () => {
   return await fetcher.get<GetNewslettersResponse>({
