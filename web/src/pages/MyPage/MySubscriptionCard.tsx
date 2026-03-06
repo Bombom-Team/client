@@ -47,7 +47,7 @@ const MySubscriptionCard = ({
             variant="filled"
             onClick={() => onRemoveRequest(newsletter.subscriptionId)}
           >
-            해지했습니다 (목록 제거)
+            취소되었습니다 (목록 제거)
           </ActionButton>
         );
 

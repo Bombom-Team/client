@@ -40,10 +40,7 @@ export const useUnsubscribeNewsletterMutation = () => {
         queries.mySubscriptions().queryKey,
         context?.previousSubscriptions,
       );
-      toast.error('구독 해지에 실패했습니다. 다시 시도해주세요.');
-    },
-    onSuccess: () => {
-      toast.success('뉴스레터 구독을 해지했습니다.');
+      toast.error('구독 취소에 실패했습니다. 다시 시도해주세요.');
     },
     onSettled: () => {
       queryClient.invalidateQueries({

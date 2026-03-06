@@ -4,16 +4,16 @@ import { useDevice } from '@/hooks/useDevice';
 
 const MODAL_CONTENT = {
   UNSUBSCRIBE: {
-    title: '구독을 해지하시겠습니까?',
+    title: '구독을 취소하시겠습니까?',
     description:
-      '구독을 해지하면 해당 뉴스레터의\n새로운 소식을 받아볼 수 없습니다.',
-    confirmButtonText: '네, 해지할래요',
+      '구독을 취소하면 해당 뉴스레터의\n새로운 소식을 받아볼 수 없습니다.',
+    confirmButtonText: '네, 취소할래요',
   },
   REMOVE: {
-    title: '구독 해지를 완료하셨나요?',
+    title: '구독 취소를 완료하셨나요?',
     description:
-      '해지하지 않고 목록에서 제거하면\n뉴스레터가 계속 올 수 있어요.',
-    confirmButtonText: '네, 해지했어요',
+      '취소하지 않고 목록에서 제거하면\n뉴스레터가 계속 올 수 있어요.',
+    confirmButtonText: '네, 취소했어요',
   },
 };
 
