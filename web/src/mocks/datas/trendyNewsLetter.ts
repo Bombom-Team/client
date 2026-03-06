@@ -1,3 +1,11 @@
+export const NEWSLETTER_CATEGORIES = [
+  { id: 1, name: 'IT/테크' },
+  { id: 2, name: '비즈/재테크' },
+  { id: 3, name: '문화/예술' },
+  { id: 4, name: '트렌드/라이프' },
+  { id: 5, name: '시사/사회' },
+];
+
 export const TRENDY_NEWSLETTERS = [
   {
     newsletterId: 1,
@@ -7,6 +15,8 @@ export const TRENDY_NEWSLETTERS = [
       '매일 아침, 인공지능 업계의 최신 뉴스와 트렌드를 간결하게 정리해서 전달하는 뉴스레터입니다.',
     subscribeUrl: 'https://ainews.co.kr/subscribe',
     category: 'IT/테크',
+    status: 'ACTIVE' as const,
+    isSubscribed: false,
   },
   {
     newsletterId: 2,
@@ -16,6 +26,8 @@ export const TRENDY_NEWSLETTERS = [
       '국내외 테크 업계의 주요 소식을 매주 정리해서 전달하는 주간 뉴스레터입니다.',
     subscribeUrl: 'https://techweekly.io/subscribe',
     category: 'IT/테크',
+    status: 'ACTIVE' as const,
+    isSubscribed: false,
   },
   {
     newsletterId: 3,
@@ -25,6 +37,8 @@ export const TRENDY_NEWSLETTERS = [
       '국내 스타트업 생태계의 인사이트를 깊이 있게 다루는 뉴스레터입니다.',
     subscribeUrl: 'https://startupinsider.kr/newsletter',
     category: '비즈/재테크',
+    status: 'ACTIVE' as const,
+    isSubscribed: false,
   },
   {
     newsletterId: 4,
@@ -34,6 +48,8 @@ export const TRENDY_NEWSLETTERS = [
       '디자인 업계의 최신 트렌드와 인사이트를 공유하는 크리에이터들을 위한 뉴스레터입니다.',
     subscribeUrl: 'https://designtrends.studio/subscribe',
     category: '문화/예술',
+    status: 'ACTIVE' as const,
+    isSubscribed: false,
   },
   {
     newsletterId: 5,
@@ -43,6 +59,8 @@ export const TRENDY_NEWSLETTERS = [
       '금융 시장의 주요 이슈와 투자 인사이트를 매일 아침 간결하게 정리해서 전달합니다.',
     subscribeUrl: 'https://financedaily.net/subscribe',
     category: '비즈/재테크',
+    status: 'ACTIVE' as const,
+    isSubscribed: true,
   },
   {
     newsletterId: 6,
@@ -51,6 +69,8 @@ export const TRENDY_NEWSLETTERS = [
     description: '마케팅 전문가들을 위한 실무 중심의 뉴스레터입니다.',
     subscribeUrl: 'https://marketinginsights.pro/join',
     category: '비즈/재테크',
+    status: 'ACTIVE' as const,
+    isSubscribed: false,
   },
   {
     newsletterId: 7,
@@ -59,6 +79,8 @@ export const TRENDY_NEWSLETTERS = [
     description: '개발자를 위한 기술 뉴스레터입니다.',
     subscribeUrl: 'https://devfocus.dev/newsletter',
     category: 'IT/테크',
+    status: 'ACTIVE' as const,
+    isSubscribed: false,
   },
   {
     newsletterId: 8,
@@ -68,5 +90,7 @@ export const TRENDY_NEWSLETTERS = [
       '이커머스 업계의 트렌드와 성공 사례를 분석하는 주간 뉴스레터입니다.',
     subscribeUrl: 'https://ecommerceweekly.biz/subscribe',
     category: '비즈/재테크',
+    status: 'SUSPENDED' as const,
+    isSubscribed: false,
   },
 ];

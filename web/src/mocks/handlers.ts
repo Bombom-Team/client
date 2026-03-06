@@ -1,6 +1,9 @@
 import { http, HttpResponse } from 'msw';
 import { ENV } from '../apis/env';
-import { TRENDY_NEWSLETTERS } from './datas/trendyNewsLetter';
+import {
+  NEWSLETTER_CATEGORIES,
+  TRENDY_NEWSLETTERS,
+} from './datas/trendyNewsLetter';
 import { articleHandlers } from './handlers/articles';
 import { bookmarkHandlers } from './handlers/bookmark';
 import { challengeHandlers } from './handlers/challenge';
@@ -16,7 +19,10 @@ const HIGHLIGHTS: Highlight[] = [];
 export const handlers = [
   // 뉴스레터 목록
   http.get(`${baseURL}/newsletters`, () => {
-    return HttpResponse.json(TRENDY_NEWSLETTERS);
+    return HttpResponse.json({
+      categories: NEWSLETTER_CATEGORIES,
+      newsletters: TRENDY_NEWSLETTERS,
+    });
   }),
 
   // 멤버 읽기 상태
