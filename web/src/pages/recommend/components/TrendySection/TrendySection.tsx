@@ -142,6 +142,13 @@ const TrendySection = () => {
           </ExpandableSearchContainer>
         </SectionHeader>
         <TagContainer>
+          <Chip
+            key="all"
+            text={ALL_NEWSLETTERS}
+            selected={selectedCategory === ALL_NEWSLETTERS}
+            onSelect={() => setSelectedCategory(ALL_NEWSLETTERS)}
+            aria-label={`${ALL_NEWSLETTERS} 카테고리`}
+          />
           {categories.map(({ id, name }) => (
             <Chip
               key={id}
