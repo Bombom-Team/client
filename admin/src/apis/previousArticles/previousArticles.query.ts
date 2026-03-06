@@ -1,9 +1,11 @@
 import { queryOptions, useMutation } from '@tanstack/react-query';
 import {
   createPreviousArticle,
+  deletePreviousArticle,
   getPreviousArticleDetail,
   getPreviousArticles,
   type CreatePreviousArticleParams,
+  type DeletePreviousArticleParams,
   type GetPreviousArticleDetailParams,
   type GetPreviousArticlesParams,
 } from './previousArticles.api';
@@ -25,5 +27,12 @@ export const useCreatePreviousArticle = () => {
   return useMutation({
     mutationFn: (params: CreatePreviousArticleParams) =>
       createPreviousArticle(params),
+  });
+};
+
+export const useDeletePreviousArticle = () => {
+  return useMutation({
+    mutationFn: (params: DeletePreviousArticleParams) =>
+      deletePreviousArticle(params),
   });
 };

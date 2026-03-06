@@ -6,6 +6,7 @@ import { newslettersQueries } from '@/apis/newsletters/newsletters.query';
 import {
   previousArticlesQueries,
   useCreatePreviousArticle,
+  useDeletePreviousArticle,
 } from '@/apis/previousArticles/previousArticles.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
@@ -22,6 +23,8 @@ function NewsletterPreviousArticlesPage() {
   const queryClient = useQueryClient();
   const { mutate: createPreviousArticle, isPending } =
     useCreatePreviousArticle();
+  const { mutate: deletePreviousArticle, isPending: isDeletePending } =
+    useDeletePreviousArticle();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -86,6 +89,32 @@ function NewsletterPreviousArticlesPage() {
     );
   };
 
+  const handleDeletePreviousArticle = (articleId: number) => {
+    const targetArticle = previousArticles.find(
+      (article) => article.id === articleId,
+    );
+    const confirmed = window.confirm(
+      `정말 삭제할까요?\n제목: ${targetArticle?.title ?? '알 수 없음'}`,
+    );
+    if (!confirmed) return;
+
+    deletePreviousArticle(
+      { newsletterId: parsedNewsletterId, articleId },
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({
+            queryKey: previousArticlesQueries.list({
+              newsletterId: parsedNewsletterId,
+            }).queryKey,
+          });
+        },
+        onError: (error) => {
+          alert(`삭제 실패: ${error.message}`);
+        },
+      },
+    );
+  };
+
   return (
     <Layout title="지난 뉴스레터 관리">
       <Container>
@@ -131,6 +160,16 @@ function NewsletterPreviousArticlesPage() {
                     </ItemMeta>
                   </DetailContent>
                 </Link>
+                <ItemActions>
+                  <DeleteButton
+                    type="button"
+                    variant="secondary"
+                    disabled={isDeletePending}
+                    onClick={() => handleDeletePreviousArticle(article.id)}
+                  >
+                    삭제
+                  </DeleteButton>
+                </ItemActions>
               </ListItem>
             ))}
           </List>
@@ -287,6 +326,11 @@ const List = styled.ul`
 const ListItem = styled.li`
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: stretch;
+  justify-content: space-between;
 `;
 
 const DetailContent = styled.div`
@@ -294,11 +338,25 @@ const DetailContent = styled.div`
 
   display: flex;
   gap: ${({ theme }) => theme.spacing.xs};
+  flex: 1;
   flex-direction: column;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray50};
   }
+`;
+
+const ItemActions = styled.div`
+  padding: ${({ theme }) => theme.spacing.md};
+  display: flex;
+`;
+
+const DeleteButton = styled(Button)`
+  min-width: 72px;
+  min-height: 20px;
+  padding: 0 14px;
+
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const TopRow = styled.div`
