@@ -1,7 +1,9 @@
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions, useMutation } from '@tanstack/react-query';
 import {
+  createPreviousArticle,
   getPreviousArticleDetail,
   getPreviousArticles,
+  type CreatePreviousArticleParams,
   type GetPreviousArticleDetailParams,
   type GetPreviousArticlesParams,
 } from './previousArticles.api';
@@ -17,4 +19,11 @@ export const previousArticlesQueries = {
       queryKey: ['articles', 'previous', 'detail', params] as const,
       queryFn: () => getPreviousArticleDetail(params),
     }),
+};
+
+export const useCreatePreviousArticle = () => {
+  return useMutation({
+    mutationFn: (params: CreatePreviousArticleParams) =>
+      createPreviousArticle(params),
+  });
 };

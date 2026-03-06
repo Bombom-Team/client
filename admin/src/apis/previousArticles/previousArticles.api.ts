@@ -5,6 +5,10 @@ export type GetPreviousArticleDetailParams = {
   newsletterId: number;
   articleId: number;
 };
+export type CreatePreviousArticleParams = {
+  newsletterId: number;
+  payload: CreatePreviousArticleRequest;
+};
 
 export type PreviousArticle = {
   id: number;
@@ -26,6 +30,13 @@ export type PreviousArticleDetail = {
   arrivedDateTime: string;
   isFixed: boolean;
   newsletterId: number;
+};
+
+export type CreatePreviousArticleRequest = {
+  title: string;
+  contents: string;
+  arrivedDateTime: string;
+  isFixed: boolean;
 };
 
 export const getPreviousArticles = async (
@@ -62,4 +73,14 @@ export const getPreviousArticleDetail = async (
     }
     throw error;
   }
+};
+
+export const createPreviousArticle = async ({
+  newsletterId,
+  payload,
+}: CreatePreviousArticleParams) => {
+  return fetcher.post<CreatePreviousArticleRequest, PreviousArticleDetail>({
+    path: `/newsletters/${newsletterId}/articles/previous`,
+    body: payload,
+  });
 };

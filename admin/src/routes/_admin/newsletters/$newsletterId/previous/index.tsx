@@ -1,8 +1,12 @@
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, createFileRoute, useParams } from '@tanstack/react-router';
+import { useState, type FormEvent } from 'react';
 import { newslettersQueries } from '@/apis/newsletters/newsletters.query';
-import { previousArticlesQueries } from '@/apis/previousArticles/previousArticles.query';
+import {
+  previousArticlesQueries,
+  useCreatePreviousArticle,
+} from '@/apis/previousArticles/previousArticles.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 
@@ -15,6 +19,18 @@ export const Route = createFileRoute(
 function NewsletterPreviousArticlesPage() {
   const { newsletterId } = useParams({ from: Route.id });
   const parsedNewsletterId = Number(newsletterId);
+  const queryClient = useQueryClient();
+  const { mutate: createPreviousArticle, isPending } =
+    useCreatePreviousArticle();
+
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    contents: '',
+    arrivedDateTime: '',
+    isFixed: false,
+  });
+
   const { data: newsletter } = useSuspenseQuery(
     newslettersQueries.detail(parsedNewsletterId),
   );
@@ -24,14 +40,65 @@ function NewsletterPreviousArticlesPage() {
     }),
   );
 
+  const handleCreateSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!formData.arrivedDateTime) {
+      alert('도착일을 입력해주세요.');
+      return;
+    }
+
+    const parsedDate = new Date(formData.arrivedDateTime);
+    if (Number.isNaN(parsedDate.getTime())) {
+      alert('도착일 형식이 올바르지 않습니다.');
+      return;
+    }
+
+    createPreviousArticle(
+      {
+        newsletterId: parsedNewsletterId,
+        payload: {
+          title: formData.title,
+          contents: formData.contents,
+          arrivedDateTime: parsedDate.toISOString(),
+          isFixed: formData.isFixed,
+        },
+      },
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({
+            queryKey: previousArticlesQueries.list({
+              newsletterId: parsedNewsletterId,
+            }).queryKey,
+          });
+          setIsCreateOpen(false);
+          setFormData({
+            title: '',
+            contents: '',
+            arrivedDateTime: '',
+            isFixed: false,
+          });
+        },
+        onError: (error) => {
+          alert(`생성 실패: ${error.message}`);
+        },
+      },
+    );
+  };
+
   return (
     <Layout title="지난 뉴스레터 관리">
       <Container>
         <Header>
-          <Title>{newsletter.name}</Title>
-          <Description>
-            지난 뉴스레터 {previousArticles.length.toLocaleString()}건
-          </Description>
+          <HeaderText>
+            <Title>{newsletter.name}</Title>
+            <Description>
+              지난 뉴스레터 {previousArticles.length.toLocaleString()}건
+            </Description>
+          </HeaderText>
+          <Button type="button" onClick={() => setIsCreateOpen(true)}>
+            지난 뉴스레터 생성
+          </Button>
         </Header>
 
         {previousArticles.length === 0 ? (
@@ -81,6 +148,87 @@ function NewsletterPreviousArticlesPage() {
           </Link>
         </Footer>
       </Container>
+
+      {isCreateOpen && (
+        <ModalOverlay onClick={() => setIsCreateOpen(false)}>
+          <ModalCard onClick={(event) => event.stopPropagation()}>
+            <ModalTitle>지난 뉴스레터 생성</ModalTitle>
+            <ModalForm onSubmit={handleCreateSubmit}>
+              <Field>
+                <FieldLabel>제목</FieldLabel>
+                <FieldInput
+                  value={formData.title}
+                  onChange={(event) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      title: event.target.value,
+                    }))
+                  }
+                  required
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel>본문(HTML)</FieldLabel>
+                <FieldTextArea
+                  value={formData.contents}
+                  onChange={(event) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      contents: event.target.value,
+                    }))
+                  }
+                  rows={8}
+                  required
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel>도착일</FieldLabel>
+                <FieldInput
+                  type="datetime-local"
+                  value={formData.arrivedDateTime}
+                  onChange={(event) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      arrivedDateTime: event.target.value,
+                    }))
+                  }
+                  required
+                />
+              </Field>
+
+              <CheckRow>
+                <CheckInput
+                  id="is-fixed"
+                  type="checkbox"
+                  checked={formData.isFixed}
+                  onChange={(event) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      isFixed: event.target.checked,
+                    }))
+                  }
+                />
+                <CheckLabel htmlFor="is-fixed">고정 아티클로 등록</CheckLabel>
+              </CheckRow>
+
+              <ModalActions>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setIsCreateOpen(false)}
+                >
+                  취소
+                </Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? '생성 중...' : '생성'}
+                </Button>
+              </ModalActions>
+            </ModalForm>
+          </ModalCard>
+        </ModalOverlay>
+      )}
     </Layout>
   );
 }
@@ -98,6 +246,13 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: flex-start;
+  justify-content: space-between;
+`;
+
+const HeaderText = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.xs};
   flex-direction: column;
@@ -197,5 +352,99 @@ const EmptyState = styled.div`
 
 const Footer = styled.div`
   display: flex;
+  justify-content: flex-end;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgb(0 0 0 / 45%);
+
+  inset: 0;
+`;
+
+const ModalCard = styled.div`
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-direction: column;
+
+  background: ${({ theme }) => theme.colors.white};
+
+  overflow-y: auto;
+`;
+
+const ModalTitle = styled.h3`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.gray900};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+`;
+
+const ModalForm = styled.form`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-direction: column;
+`;
+
+const Field = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-direction: column;
+`;
+
+const FieldLabel = styled.label`
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const FieldInput = styled.input`
+  min-height: 48px;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const FieldTextArea = styled.textarea`
+  min-height: 380px;
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.5;
+
+  resize: vertical;
+`;
+
+const CheckRow = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
+`;
+
+const CheckInput = styled.input`
+  width: 24px;
+  height: 24px;
+`;
+
+const CheckLabel = styled.label`
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.base};
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
   justify-content: flex-end;
 `;
