@@ -34,6 +34,7 @@ const ArticleActionButtons = ({
                     autoplay
                   />
                 ),
+                ariaLabel: '아티클 읽기 완료',
               },
             ]
           : []),
