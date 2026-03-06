@@ -2,8 +2,6 @@ export const NEWSLETTER_CATEGORIES = [
   { id: 1, name: 'IT/테크' },
   { id: 2, name: '비즈/재테크' },
   { id: 3, name: '문화/예술' },
-  { id: 4, name: '트렌드/라이프' },
-  { id: 5, name: '시사/사회' },
 ];
 
 export const TRENDY_NEWSLETTERS = [
