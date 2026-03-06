@@ -36,6 +36,7 @@ import { Route as AdminNewslettersNewsletterIdIndexRouteImport } from './routes/
 import { Route as AdminChallengesChallengeIdIndexRouteImport } from './routes/_admin/challenges/$challengeId/index'
 import { Route as AdminResourcesUnsubscribeLambdaEditorRouteImport } from './routes/_admin/resources/unsubscribe-lambda/editor'
 import { Route as AdminNoticesNoticeIdEditRouteImport } from './routes/_admin/notices/$noticeId/edit'
+import { Route as AdminNewslettersNewsletterIdPreviousRouteImport } from './routes/_admin/newsletters/$newsletterId/previous'
 import { Route as AdminNewslettersNewsletterIdEditRouteImport } from './routes/_admin/newsletters/$newsletterId/edit'
 import { Route as AdminChallengesChallengeIdTeamsRouteImport } from './routes/_admin/challenges/$challengeId/teams'
 
@@ -183,6 +184,12 @@ const AdminNoticesNoticeIdEditRoute =
     path: '/edit',
     getParentRoute: () => AdminNoticesNoticeIdRoute,
   } as any)
+const AdminNewslettersNewsletterIdPreviousRoute =
+  AdminNewslettersNewsletterIdPreviousRouteImport.update({
+    id: '/previous',
+    path: '/previous',
+    getParentRoute: () => AdminNewslettersNewsletterIdRoute,
+  } as any)
 const AdminNewslettersNewsletterIdEditRoute =
   AdminNewslettersNewsletterIdEditRouteImport.update({
     id: '/edit',
@@ -219,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/resources/': typeof AdminResourcesIndexRoute
   '/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute
   '/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute
+  '/newsletters/$newsletterId/previous': typeof AdminNewslettersNewsletterIdPreviousRoute
   '/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
   '/resources/unsubscribe-lambda/editor': typeof AdminResourcesUnsubscribeLambdaEditorRoute
   '/challenges/$challengeId/': typeof AdminChallengesChallengeIdIndexRoute
@@ -241,6 +249,7 @@ export interface FileRoutesByTo {
   '/resources': typeof AdminResourcesIndexRoute
   '/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute
   '/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute
+  '/newsletters/$newsletterId/previous': typeof AdminNewslettersNewsletterIdPreviousRoute
   '/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
   '/resources/unsubscribe-lambda/editor': typeof AdminResourcesUnsubscribeLambdaEditorRoute
   '/challenges/$challengeId': typeof AdminChallengesChallengeIdIndexRoute
@@ -273,6 +282,7 @@ export interface FileRoutesById {
   '/_admin/resources/': typeof AdminResourcesIndexRoute
   '/_admin/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute
   '/_admin/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute
+  '/_admin/newsletters/$newsletterId/previous': typeof AdminNewslettersNewsletterIdPreviousRoute
   '/_admin/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
   '/_admin/resources/unsubscribe-lambda/editor': typeof AdminResourcesUnsubscribeLambdaEditorRoute
   '/_admin/challenges/$challengeId/': typeof AdminChallengesChallengeIdIndexRoute
@@ -305,6 +315,7 @@ export interface FileRouteTypes {
     | '/resources/'
     | '/challenges/$challengeId/teams'
     | '/newsletters/$newsletterId/edit'
+    | '/newsletters/$newsletterId/previous'
     | '/notices/$noticeId/edit'
     | '/resources/unsubscribe-lambda/editor'
     | '/challenges/$challengeId/'
@@ -327,6 +338,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/challenges/$challengeId/teams'
     | '/newsletters/$newsletterId/edit'
+    | '/newsletters/$newsletterId/previous'
     | '/notices/$noticeId/edit'
     | '/resources/unsubscribe-lambda/editor'
     | '/challenges/$challengeId'
@@ -358,6 +370,7 @@ export interface FileRouteTypes {
     | '/_admin/resources/'
     | '/_admin/challenges/$challengeId/teams'
     | '/_admin/newsletters/$newsletterId/edit'
+    | '/_admin/newsletters/$newsletterId/previous'
     | '/_admin/notices/$noticeId/edit'
     | '/_admin/resources/unsubscribe-lambda/editor'
     | '/_admin/challenges/$challengeId/'
@@ -562,6 +575,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNoticesNoticeIdEditRouteImport
       parentRoute: typeof AdminNoticesNoticeIdRoute
     }
+    '/_admin/newsletters/$newsletterId/previous': {
+      id: '/_admin/newsletters/$newsletterId/previous'
+      path: '/previous'
+      fullPath: '/newsletters/$newsletterId/previous'
+      preLoaderRoute: typeof AdminNewslettersNewsletterIdPreviousRouteImport
+      parentRoute: typeof AdminNewslettersNewsletterIdRoute
+    }
     '/_admin/newsletters/$newsletterId/edit': {
       id: '/_admin/newsletters/$newsletterId/edit'
       path: '/edit'
@@ -689,6 +709,7 @@ const AdminResourcesRouteWithChildren = AdminResourcesRoute._addFileChildren(
 
 interface AdminNewslettersNewsletterIdRouteChildren {
   AdminNewslettersNewsletterIdEditRoute: typeof AdminNewslettersNewsletterIdEditRoute
+  AdminNewslettersNewsletterIdPreviousRoute: typeof AdminNewslettersNewsletterIdPreviousRoute
   AdminNewslettersNewsletterIdIndexRoute: typeof AdminNewslettersNewsletterIdIndexRoute
 }
 
@@ -696,6 +717,8 @@ const AdminNewslettersNewsletterIdRouteChildren: AdminNewslettersNewsletterIdRou
   {
     AdminNewslettersNewsletterIdEditRoute:
       AdminNewslettersNewsletterIdEditRoute,
+    AdminNewslettersNewsletterIdPreviousRoute:
+      AdminNewslettersNewsletterIdPreviousRoute,
     AdminNewslettersNewsletterIdIndexRoute:
       AdminNewslettersNewsletterIdIndexRoute,
   }
