@@ -55,7 +55,7 @@ function MyPage() {
   const { data: mySubscriptions } = useQuery({
     ...queries.mySubscriptions(),
     refetchInterval: () => {
-      if (countRef.current >= 10) return false;
+      if (countRef.current >= 60) return false;
       countRef.current += 1;
       return 5 * 1000;
     },
