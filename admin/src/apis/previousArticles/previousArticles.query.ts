@@ -4,10 +4,12 @@ import {
   deletePreviousArticle,
   getPreviousArticleDetail,
   getPreviousArticles,
+  updatePreviousArticle,
   type CreatePreviousArticleParams,
   type DeletePreviousArticleParams,
   type GetPreviousArticleDetailParams,
   type GetPreviousArticlesParams,
+  type UpdatePreviousArticleParams,
 } from './previousArticles.api';
 
 export const previousArticlesQueries = {
@@ -34,5 +36,12 @@ export const useDeletePreviousArticle = () => {
   return useMutation({
     mutationFn: (params: DeletePreviousArticleParams) =>
       deletePreviousArticle(params),
+  });
+};
+
+export const useUpdatePreviousArticle = () => {
+  return useMutation({
+    mutationFn: (params: UpdatePreviousArticleParams) =>
+      updatePreviousArticle(params),
   });
 };

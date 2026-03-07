@@ -7,6 +7,7 @@ import {
   previousArticlesQueries,
   useCreatePreviousArticle,
   useDeletePreviousArticle,
+  useUpdatePreviousArticle,
 } from '@/apis/previousArticles/previousArticles.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
@@ -25,9 +26,19 @@ function NewsletterPreviousArticlesPage() {
     useCreatePreviousArticle();
   const { mutate: deletePreviousArticle, isPending: isDeletePending } =
     useDeletePreviousArticle();
+  const { mutate: updatePreviousArticle, isPending: isUpdatePending } =
+    useUpdatePreviousArticle();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingArticleId, setEditingArticleId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
+    title: '',
+    contents: '',
+    arrivedDateTime: '',
+    isFixed: false,
+  });
+  const [editFormData, setEditFormData] = useState({
     title: '',
     contents: '',
     arrivedDateTime: '',
@@ -115,6 +126,73 @@ function NewsletterPreviousArticlesPage() {
     );
   };
 
+  const handleOpenEditModal = (articleId: number) => {
+    const targetArticle = previousArticles.find(
+      (article) => article.id === articleId,
+    );
+    if (!targetArticle) return;
+
+    const arrivedDate = new Date(targetArticle.arrivedDateTime);
+    const localDatetimeValue = Number.isNaN(arrivedDate.getTime())
+      ? ''
+      : toDatetimeLocalValue(arrivedDate);
+
+    setEditingArticleId(articleId);
+    setEditFormData({
+      title: targetArticle.title,
+      contents: targetArticle.contents,
+      arrivedDateTime: localDatetimeValue,
+      isFixed: targetArticle.isFixed,
+    });
+    setIsEditOpen(true);
+  };
+
+  const handleEditSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (editingArticleId === null) return;
+    if (!editFormData.arrivedDateTime) {
+      alert('도착일을 입력해주세요.');
+      return;
+    }
+
+    const parsedDate = new Date(editFormData.arrivedDateTime);
+    if (Number.isNaN(parsedDate.getTime())) {
+      alert('도착일 형식이 올바르지 않습니다.');
+      return;
+    }
+
+    const confirmed = window.confirm('수정 내용을 저장할까요?');
+    if (!confirmed) return;
+
+    updatePreviousArticle(
+      {
+        newsletterId: parsedNewsletterId,
+        articleId: editingArticleId,
+        payload: {
+          title: editFormData.title,
+          contents: editFormData.contents,
+          arrivedDateTime: parsedDate.toISOString(),
+          isFixed: editFormData.isFixed,
+        },
+      },
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({
+            queryKey: previousArticlesQueries.list({
+              newsletterId: parsedNewsletterId,
+            }).queryKey,
+          });
+          setIsEditOpen(false);
+          setEditingArticleId(null);
+        },
+        onError: (error) => {
+          alert(`수정 실패: ${error.message}`);
+        },
+      },
+    );
+  };
+
   return (
     <Layout title="지난 뉴스레터 관리">
       <Container>
@@ -161,9 +239,14 @@ function NewsletterPreviousArticlesPage() {
                   </DetailContent>
                 </Link>
                 <ItemActions>
+                  <EditButton
+                    type="button"
+                    onClick={() => handleOpenEditModal(article.id)}
+                  >
+                    수정
+                  </EditButton>
                   <DeleteButton
                     type="button"
-                    variant="secondary"
                     disabled={isDeletePending}
                     onClick={() => handleDeletePreviousArticle(article.id)}
                   >
@@ -268,6 +351,97 @@ function NewsletterPreviousArticlesPage() {
           </ModalCard>
         </ModalOverlay>
       )}
+
+      {isEditOpen && (
+        <ModalOverlay
+          onClick={() => {
+            setIsEditOpen(false);
+            setEditingArticleId(null);
+          }}
+        >
+          <ModalCard onClick={(event) => event.stopPropagation()}>
+            <ModalTitle>지난 뉴스레터 수정</ModalTitle>
+            <ModalForm onSubmit={handleEditSubmit}>
+              <Field>
+                <FieldLabel>제목</FieldLabel>
+                <FieldInput
+                  value={editFormData.title}
+                  onChange={(event) =>
+                    setEditFormData((prev) => ({
+                      ...prev,
+                      title: event.target.value,
+                    }))
+                  }
+                  required
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel>본문(HTML)</FieldLabel>
+                <FieldTextArea
+                  value={editFormData.contents}
+                  onChange={(event) =>
+                    setEditFormData((prev) => ({
+                      ...prev,
+                      contents: event.target.value,
+                    }))
+                  }
+                  rows={8}
+                  required
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel>도착일</FieldLabel>
+                <FieldInput
+                  type="datetime-local"
+                  value={editFormData.arrivedDateTime}
+                  onChange={(event) =>
+                    setEditFormData((prev) => ({
+                      ...prev,
+                      arrivedDateTime: event.target.value,
+                    }))
+                  }
+                  required
+                />
+              </Field>
+
+              <CheckRow>
+                <CheckInput
+                  id="is-fixed-edit"
+                  type="checkbox"
+                  checked={editFormData.isFixed}
+                  onChange={(event) =>
+                    setEditFormData((prev) => ({
+                      ...prev,
+                      isFixed: event.target.checked,
+                    }))
+                  }
+                />
+                <CheckLabel htmlFor="is-fixed-edit">
+                  고정 아티클로 등록
+                </CheckLabel>
+              </CheckRow>
+
+              <ModalActions>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    setIsEditOpen(false);
+                    setEditingArticleId(null);
+                  }}
+                >
+                  취소
+                </Button>
+                <Button type="submit" disabled={isUpdatePending}>
+                  {isUpdatePending ? '수정 중...' : '수정'}
+                </Button>
+              </ModalActions>
+            </ModalForm>
+          </ModalCard>
+        </ModalOverlay>
+      )}
     </Layout>
   );
 }
@@ -329,7 +503,7 @@ const ListItem = styled.li`
 
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
-  align-items: stretch;
+  align-items: center;
   justify-content: space-between;
 `;
 
@@ -347,16 +521,46 @@ const DetailContent = styled.div`
 `;
 
 const ItemActions = styled.div`
-  padding: ${({ theme }) => theme.spacing.md};
+  padding-right: ${({ theme }) => theme.spacing.md};
+
   display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-shrink: 0;
+  align-items: center;
+`;
+
+const EditButton = styled(Button)`
+  min-width: 76px;
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border-radius: 12px;
+
+  background: #6f72ee;
+  color: ${({ theme }) => theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  &:hover:not(:disabled) {
+    background: #5f63e5;
+  }
 `;
 
 const DeleteButton = styled(Button)`
-  min-width: 72px;
-  min-height: 20px;
-  padding: 0 14px;
+  min-width: 76px;
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid #e6655b;
+  border-radius: 12px;
 
+  background: #f26a5d;
+  color: #fff;
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
   font-size: ${({ theme }) => theme.fontSize.sm};
+
+  &:hover:not(:disabled) {
+    background: #e6655b;
+  }
 `;
 
 const TopRow = styled.div`
@@ -506,3 +710,12 @@ const ModalActions = styled.div`
   gap: ${({ theme }) => theme.spacing.xs};
   justify-content: flex-end;
 `;
+
+const toDatetimeLocalValue = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
