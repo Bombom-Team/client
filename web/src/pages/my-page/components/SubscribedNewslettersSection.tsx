@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useUnsubscribe } from './hooks/useUnsubscribe';
+import NewsletterUnsubscribeModal from './NewsletterUnsubscribeModal';
+import { useUnsubscribe } from '../hooks/useUnsubscribe';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
-import MySubscriptionCard from '@/pages/MyPage/MySubscriptionCard';
-import NewsletterUnsubscribeModal from '@/pages/MyPage/NewsletterUnsubscribeModal';
+import MySubscriptionCard from '@/pages/my-page/MySubscriptionCard';
 import type { GetMySubscriptionsResponse } from '@/apis/members/members.api';
 import type { Device } from '@/hooks/useDevice';
 
