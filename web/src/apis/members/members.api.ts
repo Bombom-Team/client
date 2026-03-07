@@ -99,8 +99,9 @@ export const patchMemberInfo = async (params: PatchMembersInfoParams) => {
   });
 };
 
-export type GetMySubscriptionsResponse =
-  components['schemas']['SubscribedNewsletterResponse'][];
+export type SubscribedNewsletterResponse =
+  components['schemas']['SubscribedNewsletterResponse'];
+export type GetMySubscriptionsResponse = SubscribedNewsletterResponse[];
 
 export const getMySubscriptions = async () => {
   return await fetcher.get<GetMySubscriptionsResponse>({
