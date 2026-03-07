@@ -21,6 +21,7 @@ import { goToSystemPermission, updateMemberId } from '@/utils/notification';
 import useNotification from '@/hooks/useNotification';
 import { useEffect, useRef } from 'react';
 import { useDeviceInfo } from '@/hooks/useDeviceInfo';
+import { useNotificationPermission } from '@/hooks/useNotificationPermission';
 
 const saveImageToGallery = async (base64: string, fileName: string) => {
   try {
@@ -63,6 +64,9 @@ export const MainScreen = () => {
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
   const { onNotification, registerFCMToken } = useNotification();
+  const { sendPermissionToWeb } = useNotificationPermission({
+    onPermissionGranted: registerFCMToken,
+  });
 
   const handleWebViewLoadEnd = () => {
     console.log('WebView 로드 완료');
@@ -118,12 +122,16 @@ export const MainScreen = () => {
         case 'REGISTER_FCM_TOKEN':
           if (message.payload.memberId) {
             updateMemberId(message.payload.memberId);
-            registerFCMToken(message.payload.memberId);
+            registerFCMToken();
           }
           break;
 
         case 'CHECK_NOTIFICATION_PERMISSION':
-          goToSystemPermission(message.payload.enabled);
+          sendPermissionToWeb();
+          break;
+
+        case 'SHOW_NOTIFICATION_PERMISSION_SETTING':
+          goToSystemPermission();
           break;
 
         case 'SAVE_IMAGE':

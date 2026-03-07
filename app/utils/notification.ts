@@ -1,9 +1,11 @@
 import messaging from '@react-native-firebase/messaging';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { Alert, Linking, Platform } from 'react-native';
+import { Linking, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ASYNC_STORAGE_KEY } from '@/constants/asyncStorage';
+import { startActivityAsync, ActivityAction } from 'expo-intent-launcher';
+import { applicationId } from 'expo-application';
 
 // 안드로이드 알림 채널 생성
 export const createAndroidChannel = async () => {
@@ -61,26 +63,22 @@ export const checkNotificationPermission = async () => {
   return false;
 };
 
-export const goToSystemPermission = async (enabled: boolean) => {
+export const goToSystemPermission = async () => {
   try {
-    const hasPermission = await checkNotificationPermission();
-    if (enabled && !hasPermission) {
-      Alert.alert(
-        '알림 권한 필요',
-        '알림을 받으려면 시스템 설정에서 알림 권한을 허용해주세요.',
-        [
-          { text: '취소', style: 'cancel' },
-          {
-            text: '설정 열기',
-            onPress: () => {
-              Linking.openSettings();
-            },
-          },
-        ],
-      );
+    if (Platform.OS === 'ios') {
+      await Linking.openSettings();
+    }
+
+    if (Platform.OS === 'android') {
+      await startActivityAsync(ActivityAction.APP_NOTIFICATION_SETTINGS, {
+        extra: {
+          'android.provider.extra.APP_PACKAGE': applicationId,
+          app_package: applicationId,
+        },
+      });
     }
   } catch (error) {
-    console.error('알림 권한 확인 실패:', error);
+    console.error('알림 권한 설정을 여는데 실패했습니다. :', error);
   }
 };
 
