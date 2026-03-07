@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import NewsletterList from './NewsletterList';
 import NewsletterDetail from '../NewsletterDetail/NewsletterDetail';
@@ -11,11 +11,10 @@ import ImageInfoCardSkeleton from '@/components/ImageInfoCard/ImageInfoCardSkele
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import SearchInput from '@/components/SearchInput/SearchInput';
-import { CATEGORIES, NEWSLETTER_COUNT } from '@/constants/newsletter';
+import { NEWSLETTER_COUNT } from '@/constants/newsletter';
 import { useDevice } from '@/hooks/useDevice';
 import { useSearchParamState } from '@/hooks/useSearchParamState';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import type { Category } from '@/constants/newsletter';
 import type { Device } from '@/hooks/useDevice';
 import type { Newsletter } from '@/types/newsletter';
 import type { ChangeEvent } from 'react';
@@ -23,11 +22,12 @@ import CloseIcon from '#/assets/svg/close.svg';
 import ReadingGlassesIcon from '#/assets/svg/reading-glasses.svg';
 import TrendingUpIcon from '#/assets/svg/trending-up.svg';
 
-const HIDE_NEWSLETTERS = ['계발메이트'];
+const ALL_NEWSLETTERS = '전체';
 
 const TrendySection = () => {
   const device = useDevice();
-  const [selectedCategory, setSelectedCategory] = useState<Category>('전체');
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>(ALL_NEWSLETTERS);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -35,7 +35,13 @@ const TrendySection = () => {
   const [selectedNewsletterId, setSelectedNewsletterId] = useSearchParamState<
     number | null
   >('newsletterDetail', { replace: false });
-  const { data: newsletters, isLoading } = useQuery(queries.newsletters());
+  const { data, isLoading } = useQuery(queries.newsletters());
+
+  const categories = useMemo(() => data?.categories ?? [], [data?.categories]);
+  const newsletters = useMemo(
+    () => data?.newsletters ?? [],
+    [data?.newsletters],
+  );
 
   const {
     modalRef: detailModalRef,
@@ -51,17 +57,18 @@ const TrendySection = () => {
   const filteredNewsletters = newsletters
     ?.filter(
       (newsletter) =>
-        selectedCategory === '전체' || newsletter.category === selectedCategory,
+        selectedCategory === ALL_NEWSLETTERS ||
+        newsletter.category === selectedCategory,
     )
     .filter(
       (newsletter) =>
         searchQuery === '' ||
         newsletter.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    )
-    .filter((newsletter) => !HIDE_NEWSLETTERS.includes(newsletter.name));
+    );
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (selectedCategory !== '전체') setSelectedCategory('전체');
+    if (selectedCategory !== ALL_NEWSLETTERS)
+      setSelectedCategory(ALL_NEWSLETTERS);
 
     setSearchQuery(e.target.value);
   };
@@ -135,13 +142,20 @@ const TrendySection = () => {
           </ExpandableSearchContainer>
         </SectionHeader>
         <TagContainer>
-          {CATEGORIES.map((category, index) => (
+          <Chip
+            key="all"
+            text={ALL_NEWSLETTERS}
+            selected={selectedCategory === ALL_NEWSLETTERS}
+            onSelect={() => setSelectedCategory(ALL_NEWSLETTERS)}
+            aria-label={`${ALL_NEWSLETTERS} 카테고리`}
+          />
+          {categories.map(({ id, name }) => (
             <Chip
-              key={index}
-              text={category}
-              selected={selectedCategory === category}
-              onSelect={() => setSelectedCategory(category)}
-              aria-label={`${category} 필터링`}
+              key={id}
+              text={name}
+              selected={selectedCategory === name}
+              onSelect={() => setSelectedCategory(name)}
+              aria-label={`${name} 필터링`}
             />
           ))}
         </TagContainer>

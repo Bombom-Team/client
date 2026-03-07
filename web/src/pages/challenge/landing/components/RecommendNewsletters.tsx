@@ -24,9 +24,9 @@ const RecommendNewsletters = () => {
     number | null
   >(null);
 
-  const { data: newsletters } = useQuery(newslettersQueries.newsletters());
+  const { data } = useQuery(newslettersQueries.newsletters());
 
-  const recommendNewsletters = newsletters?.filter((newsletter) =>
+  const recommendNewsletters = data?.newsletters.filter((newsletter) =>
     NEWSLETTER_RECOMMENDATIONS.some(
       (newsletterName) => newsletterName === newsletter.name,
     ),
