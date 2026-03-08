@@ -34,6 +34,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
+      buildNumber: '5',
       googleServicesFile: './GoogleService-Info.plist',
       infoPlist: {
         UIBackgroundModes: ['remote-notification'],
@@ -61,6 +62,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       edgeToEdgeEnabled: true,
       package: APP_CONFIG.bundleIdentifier,
       googleServicesFile: './google-services.json',
+      blockedPermissions: ['com.google.android.gms.permission.AD_ID'],
     },
     web: {
       bundler: 'metro',
