@@ -13,6 +13,11 @@ export type DeletePreviousArticleParams = {
   newsletterId: number;
   articleId: number;
 };
+export type UpdatePreviousArticleParams = {
+  newsletterId: number;
+  articleId: number;
+  payload: UpdatePreviousArticleRequest;
+};
 
 export type PreviousArticle = {
   id: number;
@@ -42,6 +47,8 @@ export type CreatePreviousArticleRequest = {
   arrivedDateTime: string;
   isFixed: boolean;
 };
+export type UpdatePreviousArticleRequest =
+  Partial<CreatePreviousArticleRequest>;
 
 export const getPreviousArticles = async (
   params: GetPreviousArticlesParams,
@@ -95,5 +102,16 @@ export const deletePreviousArticle = async ({
 }: DeletePreviousArticleParams) => {
   return fetcher.delete<never, void>({
     path: `/newsletters/${newsletterId}/articles/previous/${articleId}`,
+  });
+};
+
+export const updatePreviousArticle = async ({
+  newsletterId,
+  articleId,
+  payload,
+}: UpdatePreviousArticleParams) => {
+  return fetcher.patch<UpdatePreviousArticleRequest, PreviousArticleDetail>({
+    path: `/newsletters/${newsletterId}/articles/previous/${articleId}`,
+    body: payload,
   });
 };

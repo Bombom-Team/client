@@ -11,6 +11,11 @@ import {
 } from '@/apis/previousArticles/previousArticles.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
+import {
+  PREVIOUS_STRATEGY_LABELS,
+  type PreviousStrategyType,
+} from '@/types/newsletter';
+import type { PreviousArticle } from '@/apis/previousArticles/previousArticles.api';
 
 export const Route = createFileRoute(
   '/_admin/newsletters/$newsletterId/previous/',
@@ -31,6 +36,7 @@ function NewsletterPreviousArticlesPage() {
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isPolicyOpen, setIsPolicyOpen] = useState(false);
   const [editingArticleId, setEditingArticleId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -53,6 +59,13 @@ function NewsletterPreviousArticlesPage() {
       newsletterId: parsedNewsletterId,
     }),
   );
+  const strategy = resolveStrategy(newsletter.previousStrategy);
+  const exposedArticleIds = getExposedArticleIdSet({
+    articles: previousArticles,
+    strategy,
+    fixedCount: newsletter.previousFixedCount,
+    recentCount: newsletter.previousRecentCount,
+  });
 
   const handleCreateSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -208,6 +221,46 @@ function NewsletterPreviousArticlesPage() {
           </Button>
         </Header>
 
+        <PolicySection>
+          <PolicyToggleButton
+            type="button"
+            onClick={() => setIsPolicyOpen((prev) => !prev)}
+          >
+            지난 아티클 노출 정책 {isPolicyOpen ? '숨기기' : '보기'}
+          </PolicyToggleButton>
+          {isPolicyOpen && (
+            <PolicyBody>
+              <PolicyRow>
+                <PolicyLabel>현재 전략</PolicyLabel>
+                <PolicyValue>{PREVIOUS_STRATEGY_LABELS[strategy]}</PolicyValue>
+              </PolicyRow>
+              <PolicyRow>
+                <PolicyLabel>고정 아티클 노출 개수</PolicyLabel>
+                <PolicyValue>
+                  {newsletter.previousFixedCount ?? 0}개
+                </PolicyValue>
+              </PolicyRow>
+              <PolicyRow>
+                <PolicyLabel>최신 제외 자동 이동 노출 개수</PolicyLabel>
+                <PolicyValue>
+                  {newsletter.previousRecentCount ?? 0}개
+                </PolicyValue>
+              </PolicyRow>
+              <PolicyRow>
+                <PolicyLabel>노출 비율</PolicyLabel>
+                <PolicyValue>
+                  {newsletter.previousExposureRatio ?? 0}%
+                </PolicyValue>
+              </PolicyRow>
+              <PolicyHint>
+                `RECENT_ONLY`, `FIXED_WITH_RECENT`는 자동 이동 아티클 중
+                arrivedDateTime이 가장 최신인 1개를 제외하고 노출 대상을
+                계산합니다.
+              </PolicyHint>
+            </PolicyBody>
+          )}
+        </PolicySection>
+
         {previousArticles.length === 0 ? (
           <EmptyState>조회된 지난 뉴스레터가 없습니다.</EmptyState>
         ) : (
@@ -228,6 +281,11 @@ function NewsletterPreviousArticlesPage() {
                       <TypeBadge $isFixed={article.isFixed}>
                         {article.isFixed ? '고정' : '최신'}
                       </TypeBadge>
+                      <ExposureBadge
+                        $isExposed={exposedArticleIds.has(article.id)}
+                      >
+                        {exposedArticleIds.has(article.id) ? '공개' : '비공개'}
+                      </ExposureBadge>
                     </TopRow>
                     <ItemSummary>{article.contentsSummary}</ItemSummary>
                     <ItemMeta>
@@ -486,6 +544,62 @@ const Description = styled.p`
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
+const PolicySection = styled.section`
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+`;
+
+const PolicyToggleButton = styled.button`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background: ${({ theme }) => theme.colors.gray50};
+  color: ${({ theme }) => theme.colors.gray800};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  text-align: left;
+
+  cursor: pointer;
+`;
+
+const PolicyBody = styled.div`
+  padding: ${({ theme }) => theme.spacing.md};
+  border-top: 1px solid ${({ theme }) => theme.colors.gray200};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-direction: column;
+`;
+
+const PolicyRow = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
+
+  grid-template-columns: 180px 1fr;
+`;
+
+const PolicyLabel = styled.span`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const PolicyValue = styled.span`
+  color: ${({ theme }) => theme.colors.gray800};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const PolicyHint = styled.p`
+  margin: ${({ theme }) => theme.spacing.xs} 0 0;
+
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  line-height: 1.4;
+`;
+
 const List = styled.ul`
   margin: 0;
   padding: 0;
@@ -578,15 +692,25 @@ const ItemTitle = styled.h3`
 `;
 
 const TypeBadge = styled.span<{ $isFixed: boolean }>`
-  padding: 2px 8px;
+  padding: 4px 10px;
   border-radius: 9999px;
 
   background: ${({ $isFixed, theme }) =>
-    $isFixed ? theme.colors.gray100 : '#ECFDF3'};
+    $isFixed ? theme.colors.gray100 : '#EEF2FF'};
   color: ${({ $isFixed, theme }) =>
-    $isFixed ? theme.colors.gray700 : '#067647'};
+    $isFixed ? theme.colors.gray700 : '#4338CA'};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
-  font-size: ${({ theme }) => theme.fontSize.xs};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const ExposureBadge = styled.span<{ $isExposed: boolean }>`
+  padding: 4px 10px;
+  border-radius: 9999px;
+
+  background: ${({ $isExposed }) => ($isExposed ? '#ecfdf3' : '#f3f4f6')};
+  color: ${({ $isExposed }) => ($isExposed ? '#067647' : '#4b5563')};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const ItemSummary = styled.p`
@@ -718,4 +842,70 @@ const toDatetimeLocalValue = (date: Date) => {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+const resolveStrategy = (strategy?: string): PreviousStrategyType => {
+  if (
+    strategy === 'FIXED_WITH_RECENT' ||
+    strategy === 'FIXED_ONLY' ||
+    strategy === 'RECENT_ONLY' ||
+    strategy === 'INACTIVE'
+  ) {
+    return strategy;
+  }
+  return 'INACTIVE';
+};
+
+const getExposedArticleIdSet = ({
+  articles,
+  strategy,
+  fixedCount,
+  recentCount,
+}: {
+  articles: PreviousArticle[];
+  strategy: PreviousStrategyType;
+  fixedCount?: number;
+  recentCount?: number;
+}) => {
+  if (strategy === 'INACTIVE') {
+    return new Set<number>();
+  }
+
+  const normalizedFixedCount = Math.max(0, fixedCount ?? 0);
+  const normalizedRecentCount = Math.max(0, recentCount ?? 0);
+  const sorted = [...articles].sort(
+    (left, right) =>
+      new Date(right.arrivedDateTime).getTime() -
+      new Date(left.arrivedDateTime).getTime(),
+  );
+
+  const fixedArticles = sorted.filter((article) => article.isFixed);
+  const nonFixedArticles = sorted.filter((article) => !article.isFixed);
+  const latestNonFixedId = nonFixedArticles[0]?.id;
+  const recentCandidates = nonFixedArticles.filter(
+    (article) => article.id !== latestNonFixedId,
+  );
+
+  if (strategy === 'FIXED_ONLY') {
+    return new Set(
+      fixedArticles.slice(0, normalizedFixedCount).map((article) => article.id),
+    );
+  }
+
+  if (strategy === 'RECENT_ONLY') {
+    return new Set(
+      recentCandidates
+        .slice(0, normalizedRecentCount)
+        .map((article) => article.id),
+    );
+  }
+
+  const fixedIds = fixedArticles
+    .slice(0, normalizedFixedCount)
+    .map((article) => article.id);
+  const recentIds = recentCandidates
+    .slice(0, normalizedRecentCount)
+    .map((article) => article.id);
+
+  return new Set([...fixedIds, ...recentIds]);
 };
