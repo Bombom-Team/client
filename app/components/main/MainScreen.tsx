@@ -162,8 +162,6 @@ export const MainScreen = () => {
           injectedJavaScript={`
             const rootElement = document.documentElement;
             rootElement.classList.add('webview');
-            rootElement.style.setProperty('--safe-area-inset-top', '0px');
-            rootElement.style.setProperty('--safe-area-inset-bottom', '0px');
 
             const meta = document.querySelector('meta[name=viewport]');
             if (meta) {
