@@ -39,9 +39,9 @@ const Container = styled.header`
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   height: calc(
-    ${({ theme }) => theme.heights.headerMobile} + env(safe-area-inset-top)
+    ${({ theme }) => `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
   );
-  padding: calc(4px + env(safe-area-inset-top)) 8px;
+  padding: calc(4px + ${({ theme }) => theme.safeArea.top}) 8px;
   box-shadow:
     0 8px 12px -6px rgb(0 0 0 / 10%),
     0 3px 5px -4px rgb(0 0 0 / 10%);
