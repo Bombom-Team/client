@@ -27,9 +27,11 @@ const useNotification = () => {
   const { sendMessageToWeb } = useWebView();
 
   const registerFCMToken = useCallback(async () => {
-    const granted = await requestNotificationPermission();
     const memberId = await getMemberId();
-    if (!granted || !memberId) return;
+    if (!memberId) return;
+
+    const granted = await requestNotificationPermission();
+    if (!granted) return;
 
     try {
       const deviceUuid = await getDeviceUUID();
