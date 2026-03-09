@@ -160,6 +160,9 @@ export const MainScreen = () => {
           scalesPageToFit={false}
           automaticallyAdjustsScrollIndicatorInsets={false}
           injectedJavaScript={`
+            const rootElement = document.documentElement;
+            rootElement.classList.add('webview');
+
             const meta = document.querySelector('meta[name=viewport]');
             if (meta) {
               meta.setAttribute(

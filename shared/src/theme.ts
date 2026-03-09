@@ -45,6 +45,11 @@ const heights = {
   bottomNav: '64px',
 };
 
+const safeArea = {
+  top: 'var(--safe-area-inset-top)',
+  bottom: 'var(--safe-area-inset-bottom)',
+};
+
 const zIndex = {
   behind: -1, // 뒤쪽 배경 요소
   base: 0, // 기본 레벨
@@ -61,6 +66,7 @@ export const theme = {
   fonts,
   colors,
   heights,
+  safeArea,
   zIndex,
 };
 
