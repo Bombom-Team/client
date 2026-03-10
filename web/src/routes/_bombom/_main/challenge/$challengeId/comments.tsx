@@ -149,7 +149,7 @@ const FilterWrapper = styled.div<{ isMobile: boolean }>`
   position: ${({ isMobile }) => (isMobile ? 'sticky' : 'static')};
   top: ${({ isMobile, theme }) =>
     isMobile
-      ? `calc(${theme.heights.headerMobile} + env(safe-area-inset-top))`
+      ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`
       : 'auto'};
   z-index: ${({ isMobile, theme }) => (isMobile ? theme.zIndex.panel : 'auto')};
   width: 100%;

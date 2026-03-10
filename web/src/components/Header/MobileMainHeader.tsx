@@ -40,10 +40,10 @@ const Container = styled.header`
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   height: calc(
-    ${({ theme }) => theme.heights.headerMobile} + env(safe-area-inset-top)
+    ${({ theme }) => `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
   );
   padding: 8px 12px;
-  padding-top: calc(8px + env(safe-area-inset-top));
+  padding-top: calc(8px + ${({ theme }) => theme.safeArea.top});
   box-shadow:
     0 8px 12px -6px rgb(0 0 0 / 10%),
     0 3px 5px -4px rgb(0 0 0 / 10%);
