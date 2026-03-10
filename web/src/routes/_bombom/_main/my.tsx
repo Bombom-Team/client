@@ -15,6 +15,7 @@ import NotificationSettingsSection from '@/pages/MyPage/NotificationSettingsSect
 import ProfileSection from '@/pages/MyPage/ProfileSection';
 import RewardsSection from '@/pages/MyPage/RewardsSection';
 import SubscribedNewslettersSection from '@/pages/MyPage/SubscribedNewslettersSection';
+import { isIOS } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
 import AvatarIcon from '#/assets/svg/avatar.svg';
@@ -63,7 +64,7 @@ function MyPage() {
     },
   });
 
-  const tabs = [...DEFAULT_TABS, ...WEBVIEW_TABS];
+  const tabs = isIOS() ? [...DEFAULT_TABS] : [...DEFAULT_TABS, ...WEBVIEW_TABS];
 
   if (!userInfo) return null;
 
