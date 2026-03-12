@@ -7,7 +7,7 @@ import { postLogout } from '@/apis/auth/auth.api';
 import { useDevice } from '@/hooks/useDevice';
 import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { copyToClipboard } from '@/utils/copy';
-import { isWebView } from '@/utils/device';
+import { isIOS, isWebView } from '@/utils/device';
 import type { UserProfile } from '@/types/me';
 import ChatIcon from '#/assets/svg/chat.svg';
 import CopyIcon from '#/assets/svg/copy.svg';
@@ -93,7 +93,7 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
         선물함
       </MyPageButton>
 
-      {isWebView() && (
+      {isWebView() && !isIOS() && (
         <MyPageButton to="/my?tab=notification" onClick={onClose}>
           알림 설정
         </MyPageButton>
