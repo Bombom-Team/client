@@ -11,6 +11,7 @@ import AddCommentModalContent from '@/pages/challenge/comments/components/AddCom
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 import MobileCommentsContent from '@/pages/challenge/comments/components/MobileCommentsContent';
 import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsContent';
+import StreakModalContent from '@/pages/challenge/comments/components/StreakModalContent';
 import { useChallengeCommentDates } from '@/pages/challenge/comments/hooks/useChallengeCommentDates';
 import { useCommentsPagination } from '@/pages/challenge/comments/hooks/useCommentsPagination';
 
@@ -54,6 +55,12 @@ function ChallengeComments() {
   const { modalRef, openModal, closeModal, isOpen } = useModal({
     closeOnBackdropClick: false,
   });
+  const {
+    modalRef: firstCompletionModalRef,
+    openModal: openFirstCompletionModal,
+    closeModal: closeFirstCompletionModal,
+    isOpen: isFirstCompletionModalOpen,
+  } = useModal();
 
   const { baseQueryParams, changePage, page, resetPage } =
     useCommentsPagination({
@@ -127,9 +134,23 @@ function ChallengeComments() {
           <AddCommentModalContent
             closeCommentModal={closeModal}
             candidateArticles={candidateArticles}
+            onFirstCompletion={openFirstCompletionModal}
           />
         </Modal>
       )}
+
+      <Modal
+        modalRef={firstCompletionModalRef}
+        isOpen={isFirstCompletionModalOpen}
+        closeModal={closeFirstCompletionModal}
+        position={isMobile ? 'bottom' : 'center'}
+        showCloseButton={!isMobile}
+      >
+        <StreakModalContent
+          onClose={closeFirstCompletionModal}
+          challengeId={Number(challengeId)}
+        />
+      </Modal>
     </Container>
   );
 }
