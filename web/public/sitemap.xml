@@ -17,14 +17,6 @@
     <loc>https://www.bombom.news/landing</loc>
     <lastmod>2026-03-25T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-
-  <!-- 로그인 페이지 -->
-  <url>
-    <loc>https://www.bombom.news/login</loc>
-    <lastmod>2025-12-26T00:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
   </url>
 </urlset>
