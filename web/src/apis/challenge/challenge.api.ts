@@ -44,7 +44,10 @@ export const getChallengeInfo = async (challengeId: number) => {
 export type TodayTodos = components['schemas']['TodayTodoResponse'][];
 
 export type GetMemberChallengeProgressResponse =
-  components['schemas']['MemberChallengeProgressResponse'];
+  components['schemas']['MemberChallengeProgressResponse'] & {
+    streak: number;
+    shield: number;
+  };
 
 export const getMemberChallengeProgress = async (challengeId: number) => {
   return await fetcher.get<GetMemberChallengeProgressResponse>({
@@ -136,12 +139,18 @@ export const getChallengeArticleHighlights = async ({
 
 export type PostChallengeCommentParams =
   components['schemas']['ChallengeCommentRequest'];
+export interface PostChallengeCommentResponse {
+  isFirstCompletion?: boolean;
+}
 
 export const postChallengeComment = async (
   challengeId: number,
   params: PostChallengeCommentParams,
 ) => {
-  return await fetcher.post<PostChallengeCommentParams, never>({
+  return await fetcher.post<
+    PostChallengeCommentParams,
+    PostChallengeCommentResponse
+  >({
     path: `/challenges/${challengeId}/comments`,
     body: params,
   });
