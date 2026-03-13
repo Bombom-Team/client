@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import {
   Link,
   createFileRoute,
@@ -9,11 +9,11 @@ import {
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FiPlus } from 'react-icons/fi';
+import { categoriesQueries } from '@/apis/categories/categories.query';
 import { newslettersQueries } from '@/apis/newsletters/newsletters.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import {
-  NEWSLETTER_CATEGORY_LABELS,
   NEWSLETTER_DETAIL_STATUS_LABELS,
   type NewsletterDetailStatusType,
   type NewsletterStatusType,
@@ -64,6 +64,7 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
   const navigate = useNavigate();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data } = useSuspenseQuery(newslettersQueries.list(search));
+  const { data: categories = [] } = useQuery(categoriesQueries.list());
   const [keyword, setKeyword] = useState((search.keyword as string) || '');
   const [selectedCategory, setSelectedCategory] = useState(
     (search.category as string) || '',
@@ -123,12 +124,17 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
   return (
     <Container>
       <TopAction>
-        <Link to="/newsletters/new">
-          <Button>
-            <FiPlus />
-            뉴스레터 등록
-          </Button>
-        </Link>
+        <HeaderAction>
+          <Link to="/newsletters/categories">
+            <Button>카테고리 관리</Button>
+          </Link>
+          <Link to="/newsletters/new">
+            <Button>
+              <FiPlus />
+              뉴스레터 등록
+            </Button>
+          </Link>
+        </HeaderAction>
       </TopAction>
 
       <SearchSection>
@@ -160,9 +166,9 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
             }}
           >
             <option value="">카테고리 전체</option>
-            {Object.entries(NEWSLETTER_CATEGORY_LABELS).map(([key, label]) => (
-              <option key={key} value={label}>
-                {label}
+            {categories.map((category) => (
+              <option key={category.id} value={category.name}>
+                {category.name}
               </option>
             ))}
           </CategorySelect>
@@ -297,6 +303,17 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
+const HeaderAction = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
+`;
+
+const TopAction = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
 // New SearchSection to mimic the white box look
 const SearchSection = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
@@ -309,11 +326,6 @@ const SearchSection = styled.div`
   background: white;
 
   /* box-shadow: ${({ theme }) => theme.shadows.sm}; */
-`;
-
-const TopAction = styled.div`
-  display: flex;
-  justify-content: flex-end;
 `;
 
 const SearchForm = styled.form`
