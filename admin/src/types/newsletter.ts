@@ -1,30 +1,4 @@
-export type NewsletterCategoryType =
-  | 'TREND_LIFE'
-  | 'BIZ_INVESTMENT'
-  | 'LOCAL_TRAVEL'
-  | 'FOOD'
-  | 'IT_TECH'
-  | 'CURRENT_AFFAIRS_SOCIETY'
-  | 'HOBBY_SELF_DEVELOPMENT'
-  | 'CULTURE_ART'
-  | 'LIVING_INTERIOR'
-  | 'GENERAL';
-
-export const NEWSLETTER_CATEGORY_LABELS: Record<
-  NewsletterCategoryType,
-  string
-> = {
-  TREND_LIFE: '트렌드/라이프',
-  BIZ_INVESTMENT: '비즈/재테크',
-  LOCAL_TRAVEL: '지역/여행',
-  FOOD: '푸드',
-  IT_TECH: 'IT/테크',
-  CURRENT_AFFAIRS_SOCIETY: '시사/사회',
-  HOBBY_SELF_DEVELOPMENT: '취미/자기개발',
-  CULTURE_ART: '문화/예술',
-  LIVING_INTERIOR: '리빙/인테리어',
-  GENERAL: '종합',
-};
+export type NewsletterCategoryType = string;
 
 export interface Newsletter {
   id: number;
