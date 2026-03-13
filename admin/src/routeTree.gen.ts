@@ -36,8 +36,11 @@ import { Route as AdminNewslettersNewsletterIdIndexRouteImport } from './routes/
 import { Route as AdminChallengesChallengeIdIndexRouteImport } from './routes/_admin/challenges/$challengeId/index'
 import { Route as AdminResourcesUnsubscribeLambdaEditorRouteImport } from './routes/_admin/resources/unsubscribe-lambda/editor'
 import { Route as AdminNoticesNoticeIdEditRouteImport } from './routes/_admin/notices/$noticeId/edit'
+import { Route as AdminNewslettersNewsletterIdPreviousRouteImport } from './routes/_admin/newsletters/$newsletterId/previous'
 import { Route as AdminNewslettersNewsletterIdEditRouteImport } from './routes/_admin/newsletters/$newsletterId/edit'
 import { Route as AdminChallengesChallengeIdTeamsRouteImport } from './routes/_admin/challenges/$challengeId/teams'
+import { Route as AdminNewslettersNewsletterIdPreviousIndexRouteImport } from './routes/_admin/newsletters/$newsletterId/previous/index'
+import { Route as AdminNewslettersNewsletterIdPreviousArticleIdRouteImport } from './routes/_admin/newsletters/$newsletterId/previous.$articleId'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/_admin',
@@ -183,6 +186,12 @@ const AdminNoticesNoticeIdEditRoute =
     path: '/edit',
     getParentRoute: () => AdminNoticesNoticeIdRoute,
   } as any)
+const AdminNewslettersNewsletterIdPreviousRoute =
+  AdminNewslettersNewsletterIdPreviousRouteImport.update({
+    id: '/previous',
+    path: '/previous',
+    getParentRoute: () => AdminNewslettersNewsletterIdRoute,
+  } as any)
 const AdminNewslettersNewsletterIdEditRoute =
   AdminNewslettersNewsletterIdEditRouteImport.update({
     id: '/edit',
@@ -194,6 +203,18 @@ const AdminChallengesChallengeIdTeamsRoute =
     id: '/teams',
     path: '/teams',
     getParentRoute: () => AdminChallengesChallengeIdRoute,
+  } as any)
+const AdminNewslettersNewsletterIdPreviousIndexRoute =
+  AdminNewslettersNewsletterIdPreviousIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminNewslettersNewsletterIdPreviousRoute,
+  } as any)
+const AdminNewslettersNewsletterIdPreviousArticleIdRoute =
+  AdminNewslettersNewsletterIdPreviousArticleIdRouteImport.update({
+    id: '/$articleId',
+    path: '/$articleId',
+    getParentRoute: () => AdminNewslettersNewsletterIdPreviousRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -219,12 +240,15 @@ export interface FileRoutesByFullPath {
   '/resources/': typeof AdminResourcesIndexRoute
   '/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute
   '/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute
+  '/newsletters/$newsletterId/previous': typeof AdminNewslettersNewsletterIdPreviousRouteWithChildren
   '/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
   '/resources/unsubscribe-lambda/editor': typeof AdminResourcesUnsubscribeLambdaEditorRoute
   '/challenges/$challengeId/': typeof AdminChallengesChallengeIdIndexRoute
   '/newsletters/$newsletterId/': typeof AdminNewslettersNewsletterIdIndexRoute
   '/notices/$noticeId/': typeof AdminNoticesNoticeIdIndexRoute
   '/resources/unsubscribe-lambda/': typeof AdminResourcesUnsubscribeLambdaIndexRoute
+  '/newsletters/$newsletterId/previous/$articleId': typeof AdminNewslettersNewsletterIdPreviousArticleIdRoute
+  '/newsletters/$newsletterId/previous/': typeof AdminNewslettersNewsletterIdPreviousIndexRoute
 }
 export interface FileRoutesByTo {
   '/403': typeof R403Route
@@ -247,6 +271,8 @@ export interface FileRoutesByTo {
   '/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdIndexRoute
   '/notices/$noticeId': typeof AdminNoticesNoticeIdIndexRoute
   '/resources/unsubscribe-lambda': typeof AdminResourcesUnsubscribeLambdaIndexRoute
+  '/newsletters/$newsletterId/previous/$articleId': typeof AdminNewslettersNewsletterIdPreviousArticleIdRoute
+  '/newsletters/$newsletterId/previous': typeof AdminNewslettersNewsletterIdPreviousIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -273,12 +299,15 @@ export interface FileRoutesById {
   '/_admin/resources/': typeof AdminResourcesIndexRoute
   '/_admin/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute
   '/_admin/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute
+  '/_admin/newsletters/$newsletterId/previous': typeof AdminNewslettersNewsletterIdPreviousRouteWithChildren
   '/_admin/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute
   '/_admin/resources/unsubscribe-lambda/editor': typeof AdminResourcesUnsubscribeLambdaEditorRoute
   '/_admin/challenges/$challengeId/': typeof AdminChallengesChallengeIdIndexRoute
   '/_admin/newsletters/$newsletterId/': typeof AdminNewslettersNewsletterIdIndexRoute
   '/_admin/notices/$noticeId/': typeof AdminNoticesNoticeIdIndexRoute
   '/_admin/resources/unsubscribe-lambda/': typeof AdminResourcesUnsubscribeLambdaIndexRoute
+  '/_admin/newsletters/$newsletterId/previous/$articleId': typeof AdminNewslettersNewsletterIdPreviousArticleIdRoute
+  '/_admin/newsletters/$newsletterId/previous/': typeof AdminNewslettersNewsletterIdPreviousIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -305,12 +334,15 @@ export interface FileRouteTypes {
     | '/resources/'
     | '/challenges/$challengeId/teams'
     | '/newsletters/$newsletterId/edit'
+    | '/newsletters/$newsletterId/previous'
     | '/notices/$noticeId/edit'
     | '/resources/unsubscribe-lambda/editor'
     | '/challenges/$challengeId/'
     | '/newsletters/$newsletterId/'
     | '/notices/$noticeId/'
     | '/resources/unsubscribe-lambda/'
+    | '/newsletters/$newsletterId/previous/$articleId'
+    | '/newsletters/$newsletterId/previous/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/403'
@@ -333,6 +365,8 @@ export interface FileRouteTypes {
     | '/newsletters/$newsletterId'
     | '/notices/$noticeId'
     | '/resources/unsubscribe-lambda'
+    | '/newsletters/$newsletterId/previous/$articleId'
+    | '/newsletters/$newsletterId/previous'
   id:
     | '__root__'
     | '/403'
@@ -358,12 +392,15 @@ export interface FileRouteTypes {
     | '/_admin/resources/'
     | '/_admin/challenges/$challengeId/teams'
     | '/_admin/newsletters/$newsletterId/edit'
+    | '/_admin/newsletters/$newsletterId/previous'
     | '/_admin/notices/$noticeId/edit'
     | '/_admin/resources/unsubscribe-lambda/editor'
     | '/_admin/challenges/$challengeId/'
     | '/_admin/newsletters/$newsletterId/'
     | '/_admin/notices/$noticeId/'
     | '/_admin/resources/unsubscribe-lambda/'
+    | '/_admin/newsletters/$newsletterId/previous/$articleId'
+    | '/_admin/newsletters/$newsletterId/previous/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -562,6 +599,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNoticesNoticeIdEditRouteImport
       parentRoute: typeof AdminNoticesNoticeIdRoute
     }
+    '/_admin/newsletters/$newsletterId/previous': {
+      id: '/_admin/newsletters/$newsletterId/previous'
+      path: '/previous'
+      fullPath: '/newsletters/$newsletterId/previous'
+      preLoaderRoute: typeof AdminNewslettersNewsletterIdPreviousRouteImport
+      parentRoute: typeof AdminNewslettersNewsletterIdRoute
+    }
     '/_admin/newsletters/$newsletterId/edit': {
       id: '/_admin/newsletters/$newsletterId/edit'
       path: '/edit'
@@ -575,6 +619,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/challenges/$challengeId/teams'
       preLoaderRoute: typeof AdminChallengesChallengeIdTeamsRouteImport
       parentRoute: typeof AdminChallengesChallengeIdRoute
+    }
+    '/_admin/newsletters/$newsletterId/previous/': {
+      id: '/_admin/newsletters/$newsletterId/previous/'
+      path: '/'
+      fullPath: '/newsletters/$newsletterId/previous/'
+      preLoaderRoute: typeof AdminNewslettersNewsletterIdPreviousIndexRouteImport
+      parentRoute: typeof AdminNewslettersNewsletterIdPreviousRoute
+    }
+    '/_admin/newsletters/$newsletterId/previous/$articleId': {
+      id: '/_admin/newsletters/$newsletterId/previous/$articleId'
+      path: '/$articleId'
+      fullPath: '/newsletters/$newsletterId/previous/$articleId'
+      preLoaderRoute: typeof AdminNewslettersNewsletterIdPreviousArticleIdRouteImport
+      parentRoute: typeof AdminNewslettersNewsletterIdPreviousRoute
     }
   }
 }
@@ -687,8 +745,27 @@ const AdminResourcesRouteWithChildren = AdminResourcesRoute._addFileChildren(
   AdminResourcesRouteChildren,
 )
 
+interface AdminNewslettersNewsletterIdPreviousRouteChildren {
+  AdminNewslettersNewsletterIdPreviousArticleIdRoute: typeof AdminNewslettersNewsletterIdPreviousArticleIdRoute
+  AdminNewslettersNewsletterIdPreviousIndexRoute: typeof AdminNewslettersNewsletterIdPreviousIndexRoute
+}
+
+const AdminNewslettersNewsletterIdPreviousRouteChildren: AdminNewslettersNewsletterIdPreviousRouteChildren =
+  {
+    AdminNewslettersNewsletterIdPreviousArticleIdRoute:
+      AdminNewslettersNewsletterIdPreviousArticleIdRoute,
+    AdminNewslettersNewsletterIdPreviousIndexRoute:
+      AdminNewslettersNewsletterIdPreviousIndexRoute,
+  }
+
+const AdminNewslettersNewsletterIdPreviousRouteWithChildren =
+  AdminNewslettersNewsletterIdPreviousRoute._addFileChildren(
+    AdminNewslettersNewsletterIdPreviousRouteChildren,
+  )
+
 interface AdminNewslettersNewsletterIdRouteChildren {
   AdminNewslettersNewsletterIdEditRoute: typeof AdminNewslettersNewsletterIdEditRoute
+  AdminNewslettersNewsletterIdPreviousRoute: typeof AdminNewslettersNewsletterIdPreviousRouteWithChildren
   AdminNewslettersNewsletterIdIndexRoute: typeof AdminNewslettersNewsletterIdIndexRoute
 }
 
@@ -696,6 +773,8 @@ const AdminNewslettersNewsletterIdRouteChildren: AdminNewslettersNewsletterIdRou
   {
     AdminNewslettersNewsletterIdEditRoute:
       AdminNewslettersNewsletterIdEditRoute,
+    AdminNewslettersNewsletterIdPreviousRoute:
+      AdminNewslettersNewsletterIdPreviousRouteWithChildren,
     AdminNewslettersNewsletterIdIndexRoute:
       AdminNewslettersNewsletterIdIndexRoute,
   }
