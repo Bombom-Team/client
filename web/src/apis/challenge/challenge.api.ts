@@ -11,13 +11,12 @@ export const getChallenges = async () => {
   });
 };
 
-type GetChallengeSummariesParams = {
-  view: 'summary';
-};
+type GetChallengeSummariesParams =
+  operations['getChallenges']['parameters']['query'];
 
 export const getChallengeSummaries = async () => {
   const params: GetChallengeSummariesParams = {
-    view: 'summary',
+    view: 'SUMMARY',
   };
 
   return await fetcher.get<GetChallengesResponse>({
