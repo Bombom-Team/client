@@ -551,7 +551,7 @@ const ModalOverlay = styled.div`
 const ModalCard = styled.div`
   width: min(520px, calc(100vw - 32px));
   padding: ${({ theme }) => theme.spacing.xl};
-  border-radius: ${({ theme }) => theme.borderRadius.xl};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: ${({ theme }) => theme.shadows.lg};
 
   display: flex;
