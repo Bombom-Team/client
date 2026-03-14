@@ -529,7 +529,14 @@ export interface paths {
     };
     /**
      * 뉴스레터 목록 조회
-     * @description 뉴스레터 목록을 조회합니다. 기본값은 발행중(ACTIVE)만 반환하며, includeSuspended=true 시 휴재(SUSPENDED)도 포함합니다. 폐간(DISCONTINUED)은 항상 제외됩니다.
+     * @description         카테고리 목록과 뉴스레터 목록을 함께 반환합니다.
+     *             - categories: 조회 조건에 부합하는 뉴스레터가 존재하는 카테고리 목록
+     *             - newsletters: 필터링된 뉴스레터 목록
+     *             - categoryId: 특정 카테고리로 필터링합니다. 미입력 시 전체 카테고리를 반환합니다.
+     *             - includeSuspended=false: 발행중(ACTIVE) 뉴스레터만 반환합니다.
+     *             - includeSuspended=true: 발행중(ACTIVE) 및 6개월 이내 휴재(SUSPENDED) 뉴스레터를 포함합니다.
+     *             - 6개월 초과 휴재(SUSPENDED)와 폐간(DISCONTINUED)은 항상 제외됩니다.
+     *
      */
     get: operations['getNewsletters'];
     put?: never;
@@ -729,7 +736,7 @@ export interface paths {
     };
     /**
      * 챌린지 전체 목록 조회
-     * @description 진행중이거나 예정된 챌린지 전체 목록을 조회합니다. 로그인 시 참여 여부 및 상세 정보가 함께 반환됩니다.
+     * @description 진행중이거나 예정된 챌린지 전체 목록을 조회합니다. 로그인 시 참여 여부 및 상세 정보가 함께 반환됩니다. view=summary 일 때는 ONGOING이면서 참여 중인 챌린지, EARLY/LATE 신청 단계 챌린지만 조회합니다.
      */
     get: operations['getChallenges'];
     put?: never;
@@ -1403,8 +1410,13 @@ export interface components {
     };
     SortObject: {
       empty?: boolean;
-      sorted?: boolean;
       unsorted?: boolean;
+      sorted?: boolean;
+    };
+    CategoryResponse: {
+      /** Format: int64 */
+      id: number;
+      name: string;
     };
     NewsletterResponse: {
       /** Format: int64 */
@@ -1413,10 +1425,16 @@ export interface components {
       imageUrl?: string;
       description: string;
       subscribeUrl: string;
+      /** Format: int64 */
+      categoryId: number;
       category: string;
       /** @enum {string} */
       status: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
       isSubscribed: boolean;
+    };
+    NewslettersResponse: {
+      categories?: components['schemas']['CategoryResponse'][];
+      newsletters?: components['schemas']['NewsletterResponse'][];
     };
     NewsletterWithDetailResponse: {
       name: string;
@@ -3432,6 +3450,8 @@ export interface operations {
       query?: {
         /** @description 휴재 뉴스레터 포함 여부 */
         includeSuspended?: boolean;
+        /** @description 카테고리 ID (미입력 시 전체) */
+        categoryId?: number;
       };
       header?: never;
       path?: never;
@@ -3445,7 +3465,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['NewsletterResponse'][];
+          '*/*': components['schemas']['NewslettersResponse'];
         };
       };
     };
@@ -3726,7 +3746,10 @@ export interface operations {
   };
   getChallenges: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description summary 시 요약 목록(참여 중인 ONGOING, EARLY/LATE 신청 단계만) 조회 */
+        view?: 'SUMMARY' | 'DEFAULT';
+      };
       header?: never;
       path?: never;
       cookie?: never;
