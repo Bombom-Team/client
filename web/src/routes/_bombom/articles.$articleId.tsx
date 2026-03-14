@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useRef } from 'react';
@@ -10,9 +11,9 @@ import { useDevice } from '@/hooks/useDevice';
 import useScrollProgress from '@/hooks/useScrollProgress';
 import useScrollRestoration from '@/hooks/useScrollRestoration';
 import { useScrollThreshold } from '@/hooks/useScrollThreshold';
+import ArticleActionButtons from '@/pages/detail/components/ArticleActionButtons/ArticleActionButtons';
 import ArticleBody from '@/pages/detail/components/ArticleBody/ArticleBody';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
-import FloatingActionButtons from '@/pages/detail/components/FloatingActionButtons/FloatingActionButtons';
 import TodayUnreadArticlesSection from '@/pages/detail/components/TodayUnreadArticlesSection/TodayUnreadArticlesSection';
 import useArticleAsReadMutation from '@/pages/detail/hooks/useArticleAsReadMutation';
 import { useArticleBookmark } from '@/pages/detail/hooks/useArticleBookmark';
@@ -72,13 +73,23 @@ function ArticleDetailPage() {
       {device !== 'pc' && (
         <MobileDetailHeader
           right={
-            <BookmarkButton type="button" onClick={toggleBookmark}>
-              <BookmarkIcon
-                as={isBookmarked ? BookmarkActiveIcon : BookmarkInactiveIcon}
-                width={28}
-                height={28}
-              />
-            </BookmarkButton>
+            <RightActions>
+              {currentArticle.isRead && (
+                <DotLottieReact
+                  src="/assets/lottie/success-check.lottie"
+                  style={{ width: '28px', height: '28px' }}
+                  loop={false}
+                  autoplay
+                />
+              )}
+              <BookmarkButton type="button" onClick={toggleBookmark}>
+                <BookmarkIcon
+                  as={isBookmarked ? BookmarkActiveIcon : BookmarkInactiveIcon}
+                  width={28}
+                  height={28}
+                />
+              </BookmarkButton>
+            </RightActions>
           }
         />
       )}
@@ -119,6 +130,7 @@ function ArticleDetailPage() {
 
         {device === 'pc' && (
           <ArticleActionButtons
+            isRead={currentArticle.isRead}
             bookmarked={isBookmarked}
             onBookmarkClick={toggleBookmark}
           />
@@ -131,12 +143,6 @@ function ArticleDetailPage() {
 const Container = styled.div`
   position: relative;
   width: 100%;
-`;
-
-const ArticleActionButtons = styled(FloatingActionButtons)`
-  position: fixed;
-  top: 80vh;
-  left: calc(50% - (${ARTICLE_MAX_WIDTH / 2}px + 90px));
 `;
 
 const ArticleContent = styled.div<{ device: Device }>`
@@ -160,8 +166,8 @@ const ArticleProgressBar = styled(ProgressBar)<{ device: Device }>`
   position: fixed;
   top: ${({ device, theme }) =>
     device === 'pc'
-      ? `calc(${theme.heights.headerPC} + env(safe-area-inset-top))`
-      : `calc(${theme.heights.headerMobile} + env(safe-area-inset-top))`};
+      ? `calc(${theme.heights.headerPC} + ${theme.safeArea.top})`
+      : `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`};
   z-index: ${({ theme }) => theme.zIndex.floating};
   height: 4px;
 `;
@@ -179,7 +185,6 @@ const ContentDescription = styled.p`
 `;
 
 const BookmarkButton = styled.button`
-  margin-left: auto;
   padding: 8px;
 
   display: flex;
@@ -196,6 +201,12 @@ const BookmarkButton = styled.button`
   &:hover > svg {
     transform: scale(1.1);
   }
+`;
+
+const RightActions = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
 `;
 
 const BookmarkIcon = styled.svg`

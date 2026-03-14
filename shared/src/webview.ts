@@ -22,7 +22,12 @@ export type WebToRNMessage =
     }
   | { type: 'OPEN_BROWSER'; payload: { url: string } }
   | { type: 'REQUEST_DEVICE_UUID' }
-  | { type: 'CHECK_NOTIFICATION_PERMISSION'; payload: { enabled: boolean } }
+  | {
+      type: 'CHECK_NOTIFICATION_PERMISSION';
+    }
+  | {
+      type: 'SHOW_NOTIFICATION_PERMISSION_SETTING';
+    }
   | { type: 'REGISTER_FCM_TOKEN'; payload: { memberId: number } }
   | {
       type: 'SAVE_IMAGE';
@@ -61,5 +66,8 @@ export type RNToWebMessage =
       };
     }
   | {
-      type: 'REQUEST_NOTIFICATION_ACTIVE';
+      type: 'NOTIFICATION_PERMISSION';
+      payload: {
+        hasPermission: boolean;
+      };
     };

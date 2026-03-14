@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
+import EventNotificationButton from './EventNotificationButton';
 import { formatEventDateTime } from '../utils/date';
 import Flex from '@/components/Flex';
 import { useAuth } from '@/contexts/AuthContext';
@@ -111,6 +112,8 @@ const EventHero = ({ onApply }: EventHeroProps) => {
         >
           {isLoggedIn ? '선착순 경품 받기' : '로그인하고 선착순 경품 받기'}
         </EventButton>
+
+        <EventNotificationButton />
       </ContentWrapper>
     </Container>
   );
@@ -143,7 +146,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
   }};
 
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex-direction: column;
   align-items: center;
   justify-content: center;

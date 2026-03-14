@@ -529,7 +529,7 @@ export interface paths {
     };
     /**
      * 뉴스레터 목록 조회
-     * @description 모든 뉴스레터 목록을 조회합니다.
+     * @description 뉴스레터 목록을 조회합니다. 기본값은 발행중(ACTIVE)만 반환하며, includeSuspended=true 시 휴재(SUSPENDED)도 포함합니다. 폐간(DISCONTINUED)은 항상 제외됩니다.
      */
     get: operations['getNewsletters'];
     put?: never;
@@ -949,7 +949,7 @@ export interface paths {
     };
     /**
      * 챌린지 코멘트 후보 아티클 조회
-     * @description 지정한 날짜에 도착한 아티클들 중 읽은 아티클들을 조회합니다.
+     * @description 지정한 날짜에 읽은 아티클들을 조회합니다.
      */
     get: operations['getChallengeCommentCandidateArticles'];
     put?: never;
@@ -1414,6 +1414,8 @@ export interface components {
       description: string;
       subscribeUrl: string;
       category: string;
+      /** @enum {string} */
+      status: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
       isSubscribed: boolean;
     };
     NewsletterWithDetailResponse: {
@@ -1421,6 +1423,8 @@ export interface components {
       description: string;
       imageUrl: string;
       category: string;
+      /** @enum {string} */
+      status: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
       mainPageUrl: string;
       subscribeUrl: string;
       issueCycle: string;
@@ -1443,6 +1447,8 @@ export interface components {
       unsubscribeUrl?: string;
       /** @enum {string} */
       status: 'SUBSCRIBED' | 'UNSUBSCRIBING' | 'UNSUBSCRIBE_FAILED';
+      /** @enum {string} */
+      newsletterPublicationStatus: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
     };
     ReadingInformationResponse: {
       /**
@@ -1835,7 +1841,7 @@ export interface components {
       /** Format: int32 */
       likeCount: number;
       isLiked: boolean;
-      /** Format: int32 */
+      /** Format: int64 */
       replyCount: number;
     };
     PageChallengeCommentResponse: {
@@ -3423,7 +3429,10 @@ export interface operations {
   };
   getNewsletters: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 휴재 뉴스레터 포함 여부 */
+        includeSuspended?: boolean;
+      };
       header?: never;
       path?: never;
       cookie?: never;

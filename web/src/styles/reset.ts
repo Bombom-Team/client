@@ -102,12 +102,20 @@ const reset = css`
   }
 
   html {
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+
     -webkit-tap-highlight-color: rgb(0 0 0 / 0%);
 
     touch-action: pan-x pan-y;
     -webkit-touch-callout: none;
 
     user-select: none;
+  }
+
+  html.webview {
+    --safe-area-inset-top: 0px;
+    --safe-area-inset-bottom: 0px;
   }
 `;
 

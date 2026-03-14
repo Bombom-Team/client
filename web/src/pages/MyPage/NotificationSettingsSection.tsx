@@ -1,53 +1,124 @@
+import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import useNotificationMutation from './useNotificationMutation';
+import useCategoryNotificationMutation from './hooks/useCategoryNotificationMutation';
 import { queries } from '@/apis/queries';
+import Divider from '@/components/Divider/Divider';
+import ChevronIcon from '@/components/icons/ChevronIcon';
+import Text from '@/components/Text';
 import { useAuth } from '@/contexts/AuthContext';
-import { useWebViewDeviceUuid } from '@/libs/webview/useWebViewDeviceUuid';
+import { useWebViewNotificationPermission } from '@/libs/webview/useWebViewNotificationPermission';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
+import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const NotificationSettingsSection = () => {
   const { userProfile } = useAuth();
-  const deviceUuid = useWebViewDeviceUuid();
   const memberId = userProfile?.id ?? 0;
+  const { hasPermission } = useWebViewNotificationPermission();
 
-  const { data: notificationStatus } = useQuery(
-    queries.notificationStatus({
+  const { data: articleNotification } = useQuery({
+    ...queries.notificationSettings.category({
       memberId,
-      deviceUuid,
+      category: 'article',
     }),
-  );
-
-  const { mutate: updateNotificationSettings } = useNotificationMutation({
-    memberId,
-    deviceUuid,
+    enabled: !!hasPermission,
   });
 
-  const handleToggleClick = () => {
-    if (!userProfile?.id || !deviceUuid) return;
+  const { data: eventNotification } = useQuery({
+    ...queries.notificationSettings.category({
+      memberId,
+      category: 'event',
+    }),
+    enabled: !!hasPermission,
+  });
 
-    const newStatus = !notificationStatus;
-
-    sendMessageToRN({
-      type: 'CHECK_NOTIFICATION_PERMISSION',
-      payload: { enabled: newStatus },
+  const { mutate: updateCategoryNotification } =
+    useCategoryNotificationMutation({
+      memberId,
     });
 
-    updateNotificationSettings(newStatus);
+  const openSystemSettings = () => {
+    sendMessageToRN({ type: 'SHOW_NOTIFICATION_PERMISSION_SETTING' });
+  };
+
+  const toggleArticleNotification = () => {
+    if (hasPermission) {
+      updateCategoryNotification({
+        enabled: !articleNotification?.enabled,
+        category: 'article',
+      });
+    } else {
+      openSystemSettings();
+    }
+  };
+
+  const toggleEventNotification = () => {
+    if (hasPermission) {
+      updateCategoryNotification({
+        enabled: !eventNotification?.enabled,
+        category: 'event',
+      });
+    } else {
+      openSystemSettings();
+    }
   };
 
   return (
     <Container>
-      <SettingOption>
-        <SettingLabel>새로운 아티클 알림 받기</SettingLabel>
-        <ToggleWrapper type="button" onClick={handleToggleClick}>
-          <ToggleTrack enabled={notificationStatus ?? false}>
-            <ToggleThumb enabled={notificationStatus ?? false} />
-          </ToggleTrack>
-        </ToggleWrapper>
-      </SettingOption>
+      {hasPermission === false && (
+        <GoToDeviceSettingSection onClick={openSystemSettings}>
+          <InfoText>
+            <InfoIcon width={24} height={24} />
+            알림을 수신하려면 앱 설정에서 알림 권한을 허용해 주세요.
+          </InfoText>
 
-      <InfoText>알림을 수신하려면 앱 설정의 알림 권한이 필요합니다.</InfoText>
+          <SubInfoText>
+            앱 설정 열기
+            <ChevronIcon
+              direction="right"
+              width={20}
+              height={20}
+              fill={theme.colors.black}
+            />
+          </SubInfoText>
+        </GoToDeviceSettingSection>
+      )}
+
+      <SettingSection>
+        <SectionHeader>
+          <Text font="body2" color="textSecondary">
+            * 알림 설정은 계정과 연동돼요.
+          </Text>
+        </SectionHeader>
+
+        <SettingCard hasPermission={!!hasPermission}>
+          <SettingRow>
+            <SettingInfo>
+              <SettingLabel>아티클 알림</SettingLabel>
+              <SettingHint>새로운 아티클 도착 시 알림</SettingHint>
+            </SettingInfo>
+            <ToggleButton type="button" onClick={toggleArticleNotification}>
+              <ToggleTrack enabled={articleNotification?.enabled ?? false}>
+                <ToggleThumb enabled={articleNotification?.enabled ?? false} />
+              </ToggleTrack>
+            </ToggleButton>
+          </SettingRow>
+
+          <Divider />
+
+          <SettingRow>
+            <SettingInfo>
+              <SettingLabel>이벤트 알림</SettingLabel>
+              <SettingHint>이벤트 및 프로모션 알림</SettingHint>
+            </SettingInfo>
+            <ToggleButton type="button" onClick={toggleEventNotification}>
+              <ToggleTrack enabled={eventNotification?.enabled ?? false}>
+                <ToggleThumb enabled={eventNotification?.enabled ?? false} />
+              </ToggleTrack>
+            </ToggleButton>
+          </SettingRow>
+        </SettingCard>
+      </SettingSection>
     </Container>
   );
 };
@@ -62,12 +133,43 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const SettingOption = styled.div`
+const SettingSection = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: 12px;
+  flex-direction: column;
+`;
+
+const SectionHeader = styled.div`
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+`;
+
+const SettingCard = styled.div<{ hasPermission: boolean }>`
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
+
+  display: flex;
+  flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
+
+  opacity: ${({ hasPermission }) => (hasPermission ? 1 : 0.6)};
+`;
+
+const SettingRow = styled.div`
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const SettingInfo = styled.div`
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  flex-direction: column;
 `;
 
 const SettingLabel = styled.p`
@@ -75,18 +177,14 @@ const SettingLabel = styled.p`
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
-const ToggleWrapper = styled.button<{ disabled?: boolean }>`
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+const SettingHint = styled.p`
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.body3};
+`;
+
+const ToggleButton = styled.button<{ disabled?: boolean }>`
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   transition: opacity 0.2s;
-
-  &:hover:not(:disabled) {
-    opacity: 0.8;
-  }
-
-  &:active:not(:disabled) {
-    opacity: 0.6;
-  }
 `;
 
 const ToggleTrack = styled.div<{ enabled: boolean }>`
@@ -116,7 +214,33 @@ const ToggleThumb = styled.div<{ enabled: boolean }>`
   transition: transform 0.3s;
 `;
 
+const GoToDeviceSettingSection = styled.button`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid ${({ theme }) => theme.colors.primaryInfo};
+  border-radius: 8px;
+
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
+`;
+
 const InfoText = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.caption};
+  display: flex;
+  gap: 4px;
+
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.body1};
+  text-align: left;
+`;
+
+const SubInfoText = styled.span`
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body1};
 `;

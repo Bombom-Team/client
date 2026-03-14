@@ -34,10 +34,10 @@ const Container = styled.div<{ isPC: boolean }>`
       ? theme.heights.headerPC
       : theme.heights.headerMobile;
 
-    const topPadding = `calc(${headerHeight} + env(safe-area-inset-top) + ${sidePadding})`;
+    const topPadding = `calc(${headerHeight} + ${theme.safeArea.top} + ${sidePadding})`;
     const bottomPadding = isPC
-      ? `calc(env(safe-area-inset-bottom) + ${sidePadding})`
-      : `calc(${theme.heights.bottomNav} + env(safe-area-inset-bottom) + ${sidePadding})`;
+      ? `calc(${theme.safeArea.bottom} + ${sidePadding})`
+      : `calc(${theme.heights.bottomNav} + ${theme.safeArea.bottom} + ${sidePadding})`;
 
     return `${topPadding} ${sidePadding} ${bottomPadding} ${sidePadding}`;
   }};
