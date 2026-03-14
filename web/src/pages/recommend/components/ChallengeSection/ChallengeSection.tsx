@@ -4,7 +4,7 @@ import { queries } from '@/apis/queries';
 import ChallengeCard from '@/pages/challenge/index/components/ChallengeCard/ChallengeCard';
 
 const ChallengeSection = () => {
-  const { data: challenges } = useQuery(queries.challenges());
+  const { data: challenges } = useQuery(queries.challengeSummaries());
 
   return (
     <Container>
