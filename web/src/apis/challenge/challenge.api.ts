@@ -44,10 +44,7 @@ export const getChallengeInfo = async (challengeId: number) => {
 export type TodayTodos = components['schemas']['TodayTodoResponse'][];
 
 export type GetMemberChallengeProgressResponse =
-  components['schemas']['MemberChallengeProgressResponse'] & {
-    streak: number;
-    shield: number;
-  };
+  components['schemas']['MemberChallengeProgressResponse'];
 
 export const getMemberChallengeProgress = async (challengeId: number) => {
   return await fetcher.get<GetMemberChallengeProgressResponse>({

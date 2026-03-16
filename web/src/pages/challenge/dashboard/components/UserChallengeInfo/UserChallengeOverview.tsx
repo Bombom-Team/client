@@ -1,4 +1,6 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import { useEffect, useRef, useState } from 'react';
 import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
 import type {
@@ -15,15 +17,37 @@ const UserChallengeOverview = ({
   challengeInfo,
   memberChallengeProgressInfo,
 }: UserChallengeOverviewProps) => {
+  const [isStreakAnimating, setIsStreakAnimating] = useState(false);
+  const previousStreakRef = useRef<number | null>(null);
   const device = useDevice();
   const isMobile = device === 'mobile';
   const isPC = device === 'pc';
 
   const { name, generation, startDate, endDate, totalDays } = challengeInfo;
 
-  const { nickname, completedDays, isSurvived } = memberChallengeProgressInfo;
+  const { nickname, completedDays, isSurvived, streak, shield } =
+    memberChallengeProgressInfo;
 
   const completionRate = (completedDays / totalDays) * 100;
+
+  useEffect(() => {
+    const previousStreak = previousStreakRef.current;
+    previousStreakRef.current = streak;
+
+    if (previousStreak === null || previousStreak + 1 !== streak) {
+      return;
+    }
+
+    setIsStreakAnimating(true);
+
+    const timeoutId = window.setTimeout(() => {
+      setIsStreakAnimating(false);
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [streak]);
 
   return (
     <Container isMobile={isMobile}>
@@ -52,6 +76,19 @@ const UserChallengeOverview = ({
         </SummaryInfo>
         <SummaryStats isMobile={isMobile} isSurvived={isSurvived}>
           <StatBlock>
+            <ParticipationValueRow>
+              <StreakBadge isAnimating={isStreakAnimating} isMobile={isMobile}>
+                <FireIconImage
+                  src="/assets/svg/fire.svg"
+                  alt=""
+                  width={72}
+                  height={72}
+                />
+                <StreakCount isMobile={isMobile}>{streak}</StreakCount>
+              </StreakBadge>
+            </ParticipationValueRow>
+          </StatBlock>
+          <StatBlock>
             <StatValue isMobile={isMobile}>{completedDays}일</StatValue>
             <StatLabel isMobile={isMobile}>참여 중</StatLabel>
           </StatBlock>
@@ -62,6 +99,11 @@ const UserChallengeOverview = ({
             </StatValue>
             <StatLabel isMobile={isMobile}>달성률</StatLabel>
           </StatBlock>
+          <StatDivider />
+          <StatBlock>
+            <StatValue isMobile={isMobile}>{shield}개</StatValue>
+            <StatLabel isMobile={isMobile}>쉴드</StatLabel>
+          </StatBlock>
         </SummaryStats>
       </UserChallengeSummary>
     </Container>
@@ -69,6 +111,28 @@ const UserChallengeOverview = ({
 };
 
 export default UserChallengeOverview;
+
+const sway = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-6deg);
+  }
+
+  50% {
+    transform: rotate(0deg);
+  }
+
+  75% {
+    transform: rotate(6deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+`;
 
 const Container = styled.div<{ isMobile: boolean }>`
   width: 100%;
@@ -151,14 +215,56 @@ const SummaryStats = styled.div<{ isMobile: boolean; isSurvived: boolean }>`
 `;
 
 const StatBlock = styled.div`
-  width: 72px;
-  min-width: 0;
+  width: auto;
+  min-width: 72px;
+  padding: 0 6px;
 
   display: flex;
   gap: 6px;
   flex: 1;
   flex-direction: column;
   align-items: center;
+`;
+
+const ParticipationValueRow = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+const StreakBadge = styled.div<{
+  isAnimating: boolean;
+  isMobile: boolean;
+}>`
+  position: relative;
+
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  animation: ${({ isAnimating }) =>
+    isAnimating ? `${sway} 0.6s ease-in-out 5` : 'none'};
+
+  transform-origin: center bottom;
+`;
+
+const FireIconImage = styled.img`
+  display: block;
+`;
+
+const StreakCount = styled.div<{ isMobile: boolean }>`
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  z-index: 1;
+
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ theme }) => theme.fonts.heading5};
+  font-weight: 700;
+  line-height: 1;
+
+  transform: translate(-50%, -50%);
 `;
 
 const StatValue = styled.div<{ isMobile: boolean }>`
