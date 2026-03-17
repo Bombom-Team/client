@@ -4,6 +4,7 @@ import {
   getChallengeEligibility,
   getChallengeInfo,
   getMemberChallengeProgress,
+  getMemberChallengeStreak,
   getChallengeTeamsProgress,
   getChallengeTeams,
   getChallengeCommentCandidateArticles,
@@ -22,6 +23,7 @@ import type {
   GetChallengeCommentRepliesParams,
   GetChallengeArticleHighlightsParams,
   GetDailyGuideCommentsParams,
+  GetMemberChallengeStreakParams,
 } from './challenge.api';
 
 export const challengeQueries = {
@@ -45,6 +47,11 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', challengeId, 'progress', 'me'],
       queryFn: () => getMemberChallengeProgress(challengeId),
+    }),
+  memberStreak: (params: GetMemberChallengeStreakParams) =>
+    queryOptions({
+      queryKey: ['challenges', params.id, 'progress', 'me', 'streak', params],
+      queryFn: () => getMemberChallengeStreak(params),
     }),
   challengeTeams: (challengeId: number) =>
     queryOptions({

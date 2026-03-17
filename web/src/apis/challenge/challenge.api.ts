@@ -52,6 +52,23 @@ export const getMemberChallengeProgress = async (challengeId: number) => {
   });
 };
 
+export type GetMemberChallengeStreakParams =
+  operations['getMemberStreak']['parameters']['path'] &
+    operations['getMemberStreak']['parameters']['query'];
+
+export type GetMemberChallengeStreakResponse =
+  components['schemas']['ChallengeStreakResponse'];
+
+export const getMemberChallengeStreak = async ({
+  id,
+  ...params
+}: GetMemberChallengeStreakParams) => {
+  return await fetcher.get<GetMemberChallengeStreakResponse>({
+    path: `/challenges/${id}/progress/me/streak`,
+    query: params,
+  });
+};
+
 export type GetChallengeTeamsResponse =
   components['schemas']['ChallengeTeamListResponse'];
 
