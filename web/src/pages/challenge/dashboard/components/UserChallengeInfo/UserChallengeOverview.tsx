@@ -40,12 +40,12 @@ const UserChallengeOverview = ({
 
     setIsStreakAnimating(true);
 
-    const timeoutId = window.setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setIsStreakAnimating(false);
-    }, 3000);
+    }, 5000);
 
     return () => {
-      window.clearTimeout(timeoutId);
+      clearTimeout(timeoutId);
     };
   }, [streak]);
 
