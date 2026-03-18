@@ -4,12 +4,12 @@ import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback'
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 import { formatDateToKorean } from '@/utils/date';
-import type { BlogPost } from '../types/BlogPost';
+import type { Post } from '../types/post';
 import type { Device } from '@/hooks/useDevice';
 import CalendarIcon from '#/assets/svg/calendar.svg';
 
 interface PostCardProps {
-  post: BlogPost;
+  post: Post;
 }
 
 const PostCard = ({ post }: PostCardProps) => {
@@ -58,7 +58,6 @@ const PostCard = ({ post }: PostCardProps) => {
 export default PostCard;
 
 const Container = styled.a`
-  overflow: hidden;
   border-radius: 16px;
 
   display: flex;
