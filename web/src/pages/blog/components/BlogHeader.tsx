@@ -10,9 +10,10 @@ const BlogHeader = () => {
 
   return (
     <Container device={device}>
-      <HeaderWrapper>
+      <HeaderWrapper device={device}>
         <Logo
           to="/blog"
+          device={device}
           onClick={() =>
             trackEvent({
               category: 'Navigation',
@@ -21,8 +22,8 @@ const BlogHeader = () => {
             })
           }
         >
-          <LogoImage src={logo} alt="logo" />
-          <Title>봄봄 Blog</Title>
+          <LogoImage src={logo} alt="logo" device={device} />
+          <Title device={device}>봄봄 Blog</Title>
         </Logo>
 
         <GoToService device={device} to="/">
@@ -50,32 +51,33 @@ const Container = styled.header<{ device: Device }>`
   backdrop-filter: blur(6px);
 `;
 
-const HeaderWrapper = styled.div`
+const HeaderWrapper = styled.div<{ device: Device }>`
   height: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 60px;
+  padding: ${({ device }) => (device === 'mobile' ? '0 8px' : '0 60px')};
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
-const Logo = styled(Link)`
+const Logo = styled(Link)<{ device: Device }>`
   display: flex;
-  gap: 12px;
+  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
   align-items: center;
 `;
 
-const LogoImage = styled.img`
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
+const LogoImage = styled.img<{ device: Device }>`
+  width: ${({ device }) => (device === 'mobile' ? '40px' : '48px')};
+  height: ${({ device }) => (device === 'mobile' ? '40px' : '48px')};
+  border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '16px')};
 `;
 
-const Title = styled.h1`
+const Title = styled.h1<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
 `;
 
 const GoToService = styled(Link)<{ device: Device }>`
