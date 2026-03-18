@@ -1,3 +1,4 @@
+import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import Flex from '@/components/Flex';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
@@ -36,21 +37,40 @@ const PostCard = ({ post }: PostCardProps) => {
         )}
       </Thumbnail>
 
-      <Content>
-        <Flex gap={8} align="center">
-          <CalendarIcon width={14} height={14} />
-          <Text color="textTertiary">
+      <Flex direction="column" gap={12}>
+        <Title device={device}>{post.title}</Title>
+        {post.description && (
+          <Description device={device}>{post.description}</Description>
+        )}
+
+        <MetaInfo>
+          <CalendarIcon
+            width={device === 'mobile' ? 12 : 14}
+            height={device === 'mobile' ? 12 : 14}
+            color={theme.colors.textTertiary}
+          />
+          <Text
+            color="textTertiary"
+            font={device === 'mobile' ? 'body3' : 'body1'}
+          >
             <time dateTime={post.publishedAt}>
               {formatDateToKorean(new Date(post.publishedAt))}
             </time>
           </Text>
-          <Text color="textTertiary">|</Text>
-          <Text color="textTertiary">{post.categoryName}</Text>
-        </Flex>
-
-        <Title device={device}>{post.title}</Title>
-        {post.description && <Description>{post.description}</Description>}
-      </Content>
+          <Text
+            color="textTertiary"
+            font={device === 'mobile' ? 'body3' : 'body1'}
+          >
+            |
+          </Text>
+          <Text
+            color="textTertiary"
+            font={device === 'mobile' ? 'body3' : 'body1'}
+          >
+            {post.categoryName}
+          </Text>
+        </MetaInfo>
+      </Flex>
     </Container>
   );
 };
@@ -61,6 +81,7 @@ const Container = styled.a`
   border-radius: 16px;
 
   display: flex;
+  gap: 16px;
   flex-direction: column;
 
   cursor: pointer;
@@ -110,15 +131,6 @@ const NoThumbnailPlaceholder = styled.div`
   font-weight: 600;
 `;
 
-const Content = styled.div`
-  padding: 24px;
-
-  display: flex;
-  gap: 12px;
-  flex: 1;
-  flex-direction: column;
-`;
-
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
@@ -126,16 +138,24 @@ const Title = styled.h3<{ device: Device }>`
   line-height: 1.4;
 `;
 
-const Description = styled.p`
-  overflow: hidden;
-  margin: 0;
-
+const Description = styled.p<{ device: Device }>`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   text-overflow: ellipsis;
+`;
+
+const MetaInfo = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  svg {
+    margin-bottom: 1px;
+  }
 `;
