@@ -28,15 +28,15 @@ function Blog() {
   return (
     <>
       <BlogHeader />
-      <Container device={device}>
+      <Main device={device}>
         <PostList posts={BLOG_POSTS} />
-      </Container>
+      </Main>
       <BlogFooter />
     </>
   );
 }
 
-const Container = styled.main<{ device: Device }>`
+const Main = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
   max-width: ${({ device }) => {
