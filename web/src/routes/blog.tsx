@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import { BLOG_POSTS } from '@/mocks/datas/blogPosts';
-import BlogPostList from '@/pages/blog/components/BlogPostList';
+import PostList from '@/pages/blog/components/PostList';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/blog')({
@@ -25,7 +25,7 @@ function Blog() {
 
   return (
     <Container device={device}>
-      <BlogPostList posts={BLOG_POSTS} />
+      <PostList posts={BLOG_POSTS} />
     </Container>
   );
 }
