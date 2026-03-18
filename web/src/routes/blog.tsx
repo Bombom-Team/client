@@ -35,7 +35,7 @@ const Container = styled.main<{ device: Device }>`
   min-height: 100dvh;
   max-width: ${({ device }) => {
     if (device === 'mobile') return '400px';
-    return device === 'tablet' ? '760px' : '1084px';
+    return device === 'tablet' ? '760px' : '1280px';
   }};
   margin: 0 auto;
   padding: ${({ device }) =>
