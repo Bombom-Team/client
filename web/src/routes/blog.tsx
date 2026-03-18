@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import { BLOG_POSTS } from '@/mocks/datas/blogPosts';
+import BlogFooter from '@/pages/blog/components/BlogFooter';
+import BlogHeader from '@/pages/blog/components/BlogHeader';
 import PostList from '@/pages/blog/components/PostList';
 import type { Device } from '@/hooks/useDevice';
 
@@ -24,9 +26,13 @@ function Blog() {
   const device = useDevice();
 
   return (
-    <Container device={device}>
-      <PostList posts={BLOG_POSTS} />
-    </Container>
+    <>
+      <BlogHeader />
+      <Container device={device}>
+        <PostList posts={BLOG_POSTS} />
+      </Container>
+      <BlogFooter />
+    </>
   );
 }
 
