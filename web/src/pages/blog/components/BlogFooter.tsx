@@ -19,11 +19,15 @@ const BlogFooter = () => {
           </Description>
         </Flex>
 
-        <RightSection>
+        <Flex
+          gap={16}
+          direction="column"
+          align={device === 'mobile' ? 'flex-start' : 'flex-end'}
+        >
           <Flex
-            gap={device === 'mobile' ? 16 : 24}
+            gap={device === 'mobile' ? 20 : 24}
             align="center"
-            justify="center"
+            justify={device === 'mobile' ? 'flex-start' : 'center'}
           >
             <SocialLink
               href="https://bombom-newsletter.tistory.com/"
@@ -31,7 +35,10 @@ const BlogFooter = () => {
               rel="noopener noreferrer"
               aria-label="Tistory"
             >
-              <TistoryIcon width={24} height={24} />
+              <TistoryIcon
+                width={device === 'mobile' ? 20 : 24}
+                height={device === 'mobile' ? 20 : 24}
+              />
             </SocialLink>
             <SocialLink
               href="https://youtube.com/channel/UCKvpDtCispdhOXQfGopKLeQ?si=3APz7gYrHv7JQ8uX"
@@ -39,7 +46,10 @@ const BlogFooter = () => {
               rel="noopener noreferrer"
               aria-label="YouTube"
             >
-              <YoutubeIcon width={28} height={28} />
+              <YoutubeIcon
+                width={device === 'mobile' ? 24 : 28}
+                height={device === 'mobile' ? 24 : 28}
+              />
             </SocialLink>
             <SocialLink
               href="https://www.instagram.com/bombom___official"
@@ -47,11 +57,16 @@ const BlogFooter = () => {
               rel="noopener noreferrer"
               aria-label="Instagram"
             >
-              <InstagramIcon width={24} height={24} />
+              <InstagramIcon
+                width={device === 'mobile' ? 20 : 24}
+                height={device === 'mobile' ? 20 : 24}
+              />
             </SocialLink>
           </Flex>
-          <Copyright>© 2026 BOMBOM. ALL RIGHTS RESERVED.</Copyright>
-        </RightSection>
+          <Copyright device={device}>
+            © 2026 BOMBOM. ALL RIGHTS RESERVED.
+          </Copyright>
+        </Flex>
       </FooterWrapper>
     </Container>
   );
@@ -61,7 +76,7 @@ export default BlogFooter;
 
 const Container = styled.footer<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '48px 0' : '64px 0')};
+  padding: ${({ device }) => (device === 'mobile' ? '36px 0' : '64px 0')};
   border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -73,6 +88,8 @@ const FooterWrapper = styled.div<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '0 20px' : '0 60px')};
 
   display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '32px' : '0')};
+  flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
   align-items: flex-start;
   justify-content: space-between;
 `;
@@ -91,13 +108,6 @@ const Description = styled.p<{ device: Device }>`
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
   line-height: 1.75;
-`;
-
-const RightSection = styled.div`
-  display: flex;
-  gap: 16px;
-  flex-direction: column;
-  align-items: flex-end;
 `;
 
 const SocialLink = styled.a`
@@ -120,8 +130,9 @@ const SocialLink = styled.a`
   }
 `;
 
-const Copyright = styled.span`
+const Copyright = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme, device }) =>
+    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
   letter-spacing: 1px;
 `;
