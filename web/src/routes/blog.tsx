@@ -1,6 +1,9 @@
+import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
+import { useDevice } from '@/hooks/useDevice';
 import { BLOG_POSTS } from '@/mocks/datas/blogPosts';
 import BlogPostList from '@/pages/blog/components/BlogPostList';
+import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/blog')({
   head: () => ({
@@ -18,5 +21,26 @@ export const Route = createFileRoute('/blog')({
 });
 
 function Blog() {
-  return <BlogPostList posts={BLOG_POSTS} />;
+  const device = useDevice();
+
+  return (
+    <Container device={device}>
+      <BlogPostList posts={BLOG_POSTS} />
+    </Container>
+  );
 }
+
+const Container = styled.main<{ device: Device }>`
+  width: 100%;
+  min-height: 100dvh;
+  max-width: ${({ device }) => {
+    if (device === 'mobile') return '400px';
+    return device === 'tablet' ? '760px' : '1084px';
+  }};
+  margin: 0 auto;
+  padding: ${({ device }) =>
+    device === 'mobile' ? '32px 20px 80px 20px' : '48px 60px 240px 60px'};
+
+  display: flex;
+  flex-direction: column;
+`;
