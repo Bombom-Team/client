@@ -1,4 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { BLOG_POSTS } from '@/mocks/datas/blogPosts';
+import BlogPostList from '@/pages/blog/components/BlogPostList';
 
 export const Route = createFileRoute('/blog')({
   head: () => ({
@@ -16,5 +18,5 @@ export const Route = createFileRoute('/blog')({
 });
 
 function Blog() {
-  return;
+  return <BlogPostList posts={BLOG_POSTS} />;
 }
