@@ -119,7 +119,7 @@ export const challengeHandlers = [
     const url = new URL(request.url);
     const view = url.searchParams.get('view');
 
-    if (view && view !== 'summary') {
+    if (view && view !== 'SUMMARY') {
       return HttpResponse.json(
         {
           message: 'Invalid view query',
