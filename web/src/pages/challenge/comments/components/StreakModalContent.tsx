@@ -4,56 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
+import { getDisplayDays } from '@/pages/challenge/utils/streak';
 
 const STREAK_IMAGE_SRC = '/assets/png/streak.png';
-const WEEKDAY_ORDER = [
-  'MONDAY',
-  'TUESDAY',
-  'WEDNESDAY',
-  'THURSDAY',
-  'FRIDAY',
-] as const;
-const WEEKDAY_LABEL_MAP = {
-  MONDAY: 'Mon',
-  TUESDAY: 'Tue',
-  WEDNESDAY: 'Wed',
-  THURSDAY: 'Thu',
-  FRIDAY: 'Fri',
-} as const;
-
-type Weekday = (typeof WEEKDAY_ORDER)[number];
 
 interface StreakModalContentProps {
   onClose: () => void;
   challengeId: number;
 }
-
-const getDisplayDays = (
-  streakDayList: {
-    date: string;
-    dayOfWeek: string;
-  }[],
-) => {
-  const activeDays = streakDayList.slice(-WEEKDAY_ORDER.length);
-  const todayWeekday = activeDays.at(-1)?.dayOfWeek as Weekday | undefined;
-  const todayIndex = todayWeekday ? WEEKDAY_ORDER.indexOf(todayWeekday) : 0;
-  const startIndex =
-    (todayIndex - activeDays.length + 1 + WEEKDAY_ORDER.length) %
-    WEEKDAY_ORDER.length;
-
-  return Array.from({ length: WEEKDAY_ORDER.length }, (_, index) => {
-    const weekday =
-      WEEKDAY_ORDER[(startIndex + index) % WEEKDAY_ORDER.length] ?? 'MONDAY';
-    const activeDay = activeDays[index];
-
-    return {
-      key: activeDay?.date ?? `empty-${weekday}`,
-      label: WEEKDAY_LABEL_MAP[weekday],
-      isActive: !!activeDay,
-      isToday: index === activeDays.length - 1,
-    };
-  });
-};
 
 const StreakModalContent = ({
   onClose,
@@ -70,7 +28,9 @@ const StreakModalContent = ({
   });
   const streakDays = Math.max(data?.streak ?? 1, 1);
   const streakDayList = data?.streakDays ?? [];
-  const displayDays = getDisplayDays(streakDayList);
+  const displayDays = getDisplayDays({
+    streakDayList,
+  });
   const encouragementMessage =
     streakDays === 1
       ? '첫 도전을 축하해요!'
