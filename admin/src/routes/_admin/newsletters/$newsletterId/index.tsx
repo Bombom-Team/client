@@ -296,6 +296,15 @@ function NewsletterDetailView() {
 
         <Footer>
           <Link
+            to="/newsletters/$newsletterId/previous"
+            params={{ newsletterId }}
+            style={{ textDecoration: 'none' }}
+          >
+            <Button as="span" variant="secondary">
+              지난 뉴스레터 관리
+            </Button>
+          </Link>
+          <Link
             to="/newsletters/$newsletterId/edit"
             params={{ newsletterId }}
             style={{ textDecoration: 'none' }}
