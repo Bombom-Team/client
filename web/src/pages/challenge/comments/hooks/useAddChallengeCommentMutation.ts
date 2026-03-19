@@ -25,6 +25,15 @@ const useAddChallengeCommentMutation = ({
       queryClient.invalidateQueries({
         queryKey: queries.comments.all(challengeId),
       });
+      queryClient.invalidateQueries({
+        queryKey: queries.memberProgress(challengeId).queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: queries.memberStreak({
+          id: challengeId,
+          limit: 5,
+        }).queryKey,
+      });
       onSuccess?.(response);
     },
     onError: () => {
