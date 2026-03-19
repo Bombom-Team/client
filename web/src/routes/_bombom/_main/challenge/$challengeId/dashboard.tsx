@@ -91,8 +91,7 @@ function ChallengeDashboardRoute() {
           </Tabs>
         </TabsWrapper>
         <WarningMessage>
-          🚨 챌린지 기간 중 {maxAbsentDays}일(20%) 초과 결석 시 챌린지
-          탈락처리됩니다.
+          🚨 챌린지 기간 중 {maxAbsentDays}일(20%) 초과 결석 시 탈락 처리됩니다.
         </WarningMessage>
       </InfoWrapper>
       {teamChallengeProgressInfo && (
