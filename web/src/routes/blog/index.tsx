@@ -24,23 +24,12 @@ function Blog() {
   const device = useDevice();
 
   return (
-    <Main device={device}>
+    <Container device={device}>
       <PostList posts={BLOG_POST_LIST} />
-    </Main>
+    </Container>
   );
 }
 
-const Main = styled.main<{ device: Device }>`
-  width: 100%;
-  min-height: 100dvh;
-  max-width: ${({ device }) => {
-    if (device === 'mobile') return '400px';
-    return device === 'tablet' ? '760px' : '1280px';
-  }};
-  margin: 0 auto;
-  padding: ${({ device }) =>
-    device === 'mobile' ? '32px 20px 80px 20px' : '48px 60px 240px 60px'};
-
-  display: flex;
-  flex-direction: column;
+const Container = styled.div<{ device: Device }>`
+  padding-bottom: ${({ device }) => (device === 'mobile' ? '80px' : '240px')};
 `;
