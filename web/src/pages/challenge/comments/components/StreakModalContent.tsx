@@ -5,8 +5,115 @@ import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 
-const WEEKDAY_LABELS = ['Mo', 'Tu', 'We', 'Th', 'Fr'];
 const STREAK_IMAGE_SRC = '/assets/png/streak.png';
+const WEEKDAY_ORDER = [
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+] as const;
+const WEEKDAY_LABEL_MAP = {
+  MONDAY: 'Mon',
+  TUESDAY: 'Tue',
+  WEDNESDAY: 'Wed',
+  THURSDAY: 'Thu',
+  FRIDAY: 'Fri',
+} as const;
+
+type Weekday = (typeof WEEKDAY_ORDER)[number];
+
+interface StreakModalContentProps {
+  onClose: () => void;
+  challengeId: number;
+}
+
+const getDisplayDays = (
+  streakDayList: {
+    date: string;
+    dayOfWeek: string;
+  }[],
+) => {
+  const activeDays = streakDayList.slice(-WEEKDAY_ORDER.length);
+  const todayWeekday = activeDays.at(-1)?.dayOfWeek as Weekday | undefined;
+  const todayIndex = todayWeekday ? WEEKDAY_ORDER.indexOf(todayWeekday) : 0;
+  const startIndex =
+    (todayIndex - activeDays.length + 1 + WEEKDAY_ORDER.length) %
+    WEEKDAY_ORDER.length;
+
+  return Array.from({ length: WEEKDAY_ORDER.length }, (_, index) => {
+    const weekday =
+      WEEKDAY_ORDER[(startIndex + index) % WEEKDAY_ORDER.length] ?? 'MONDAY';
+    const activeDay = activeDays[index];
+
+    return {
+      key: activeDay?.date ?? `empty-${weekday}`,
+      label: WEEKDAY_LABEL_MAP[weekday],
+      isActive: !!activeDay,
+      isToday: index === activeDays.length - 1,
+    };
+  });
+};
+
+const StreakModalContent = ({
+  onClose,
+  challengeId,
+}: StreakModalContentProps) => {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+  const { data } = useQuery({
+    ...queries.memberStreak({
+      id: challengeId,
+      limit: 5,
+    }),
+    enabled: challengeId > 0,
+  });
+  const streakDays = Math.max(data?.streak ?? 1, 1);
+  const streakDayList = data?.streakDays ?? [];
+  const displayDays = getDisplayDays(streakDayList);
+  const encouragementMessage =
+    streakDays === 1
+      ? '첫 도전을 축하해요!'
+      : '잘 하고 있어요! 내일도 오실거죠?';
+
+  return (
+    <Container isMobile={isMobile}>
+      <TitleWrapper>
+        <Title isMobile={isMobile}>{`${streakDays} Day`}</Title>
+        <Subtitle isMobile={isMobile}>스트릭</Subtitle>
+      </TitleWrapper>
+      <FlameWrapper isMobile={isMobile}>
+        <Fire src={STREAK_IMAGE_SRC} alt="스트릭 불꽃" isMobile={isMobile} />
+      </FlameWrapper>
+      <WeekWrapper>
+        {displayDays.map(({ key, label, isActive, isToday }) => {
+          return (
+            <DayColumn key={key}>
+              <DayLabel isToday={isToday}>{label}</DayLabel>
+              <DayCheckBox isActive={isActive} isToday={isToday}>
+                {isActive && <CheckMark>✓</CheckMark>}
+              </DayCheckBox>
+            </DayColumn>
+          );
+        })}
+      </WeekWrapper>
+      <Description isMobile={isMobile}>
+        챌린지 기록이 꾸준히 쌓이고 있어요.
+      </Description>
+      <EncouragementText isMobile={isMobile}>
+        {encouragementMessage}
+      </EncouragementText>
+      <ButtonWrapper>
+        <ConfirmButton onClick={onClose}>
+          뉴스레터 마저 읽으러 가기
+        </ConfirmButton>
+      </ButtonWrapper>
+    </Container>
+  );
+};
+
+export default StreakModalContent;
+
 const bounce = keyframes`
   0% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -33,71 +140,6 @@ const bounce = keyframes`
     filter: drop-shadow(0 10px 18px rgb(255 153 0 / 18%));
   }
 `;
-
-interface StreakModalContentProps {
-  onClose: () => void;
-  challengeId: number;
-}
-
-const StreakModalContent = ({
-  onClose,
-  challengeId,
-}: StreakModalContentProps) => {
-  const device = useDevice();
-  const isMobile = device === 'mobile';
-  const { data } = useQuery({
-    ...queries.memberProgress(challengeId),
-    enabled: challengeId > 0,
-  });
-  const streakDays = Math.max(data?.streak ?? 1, 1);
-  const activeDays = Math.min(streakDays, WEEKDAY_LABELS.length);
-  const encouragementMessage =
-    streakDays === 1
-      ? '첫 도전을 축하해요!'
-      : '잘 하고 있어요! 내일도 오실거죠?';
-
-  return (
-    <Container isMobile={isMobile}>
-      <TitleWrapper>
-        <Title isMobile={isMobile}>{`${streakDays} Day`}</Title>
-        <Subtitle isMobile={isMobile}>스트릭</Subtitle>
-      </TitleWrapper>
-      <FlameWrapper isMobile={isMobile}>
-        <Fire src={STREAK_IMAGE_SRC} alt="스트릭 불꽃" isMobile={isMobile} />
-      </FlameWrapper>
-      <WeekWrapper>
-        {WEEKDAY_LABELS.map((label, index) => {
-          const isActive = index < activeDays;
-          const isToday = index === activeDays - 1;
-
-          return (
-            <DayColumn key={label}>
-              <DayLabel isToday={isToday}>{label}</DayLabel>
-              <DayCheckBox isActive={isActive} isToday={isToday}>
-                {isActive && <CheckMark>✓</CheckMark>}
-              </DayCheckBox>
-            </DayColumn>
-          );
-        })}
-      </WeekWrapper>
-      <Description isMobile={isMobile}>
-        {data?.nickname
-          ? `${data.nickname}님의 챌린지 기록이 꾸준히 쌓이고 있어요!`
-          : '챌린지 기록이 꾸준히 쌓이고 있어요.'}
-      </Description>
-      <EncouragementText isMobile={isMobile}>
-        {encouragementMessage}
-      </EncouragementText>
-      <ButtonWrapper>
-        <ConfirmButton onClick={onClose}>
-          뉴스레터 마저 읽으러 가기
-        </ConfirmButton>
-      </ButtonWrapper>
-    </Container>
-  );
-};
-
-export default StreakModalContent;
 
 const Container = styled.div<{ isMobile: boolean }>`
   width: ${({ isMobile }) => (isMobile ? '100%' : 'min(560px, 72vw)')};
@@ -194,7 +236,7 @@ const DayCheckBox = styled.div<{ isActive: boolean; isToday: boolean }>`
   justify-content: center;
 
   background-color: ${({ theme, isActive, isToday }) => {
-    if (isToday) return theme.colors.primaryLight;
+    if (isToday) return theme.colors.primary;
     return isActive ? theme.colors.primary : theme.colors.stroke;
   }};
   color: ${({ theme }) => theme.colors.white};
