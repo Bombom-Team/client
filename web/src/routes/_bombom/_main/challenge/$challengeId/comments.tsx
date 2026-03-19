@@ -143,7 +143,7 @@ function ChallengeComments() {
         modalRef={firstCompletionModalRef}
         isOpen={isFirstCompletionModalOpen}
         closeModal={closeFirstCompletionModal}
-        position={isMobile ? 'bottom' : 'center'}
+        position={isMobile ? 'fullscreen' : 'center'}
         showCloseButton={!isMobile}
       >
         <StreakModalContent
