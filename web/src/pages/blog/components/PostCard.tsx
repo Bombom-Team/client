@@ -1,20 +1,23 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
+import { Link } from '@tanstack/react-router';
+import { createSlug } from '../utils/slug';
 import Flex from '@/components/Flex';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 import { formatDateToKorean } from '@/utils/date';
-import type { Post } from '../types/post';
+import type { PostListItem } from '../types/post';
 import type { Device } from '@/hooks/useDevice';
 import CalendarIcon from '#/assets/svg/calendar.svg';
 
 interface PostCardProps {
-  post: Post;
+  post: PostListItem;
 }
 
 const PostCard = ({ post }: PostCardProps) => {
   const device = useDevice();
+  const slug = createSlug(post.title);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -24,6 +27,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
   return (
     <Container
+      to={`/blog/post/${post.postId}/${slug}`}
       onKeyDown={handleKeyDown}
       role="article"
       tabIndex={0}
@@ -77,14 +81,17 @@ const PostCard = ({ post }: PostCardProps) => {
 
 export default PostCard;
 
-const Container = styled.a`
+const Container = styled(Link)`
   border-radius: 16px;
 
   display: flex;
   gap: 16px;
   flex-direction: column;
 
+  color: inherit;
+
   cursor: pointer;
+  text-decoration: none;
 
   &:hover img {
     transform: scale(1.05);
