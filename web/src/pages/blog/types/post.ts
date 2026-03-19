@@ -1,5 +1,3 @@
-import type { PostContent } from './postContent';
-
 export interface PostListItem {
   postId: string;
   title: string;
@@ -12,7 +10,7 @@ export interface PostListItem {
 
 export interface PostDetail {
   title: string;
-  content: PostContent;
+  content: string;
   thumbnailImageUrl: string | null;
   categoryName: string;
   publishedAt: string;
