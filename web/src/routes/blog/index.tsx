@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
-import { BLOG_POSTS } from '@/mocks/datas/blogPosts';
+import { BLOG_POST_LIST } from '@/mocks/datas/blogPosts';
 import PostList from '@/pages/blog/components/PostList';
 import type { Device } from '@/hooks/useDevice';
 
@@ -25,7 +25,7 @@ function Blog() {
 
   return (
     <Main device={device}>
-      <PostList posts={BLOG_POSTS} />
+      <PostList posts={BLOG_POST_LIST} />
     </Main>
   );
 }

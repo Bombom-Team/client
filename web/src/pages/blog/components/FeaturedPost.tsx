@@ -3,11 +3,11 @@ import Flex from '@/components/Flex';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
-import type { Post } from '../types/post';
+import type { PostListItem } from '../types/post';
 import type { Device } from '@/hooks/useDevice';
 
 interface FeaturedPostProps {
-  post: Post;
+  post: PostListItem;
 }
 
 const FeaturedPost = ({ post }: FeaturedPostProps) => {

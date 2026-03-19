@@ -2,11 +2,11 @@ import styled from '@emotion/styled';
 import FeaturedPost from './FeaturedPost';
 import PostCard from './PostCard';
 import { useDevice } from '@/hooks/useDevice';
-import type { Post } from '../types/post';
+import type { PostListItem } from '../types/post';
 import type { Device } from '@/hooks/useDevice';
 
 interface PostListProps {
-  posts: Post[];
+  posts: PostListItem[];
 }
 
 const PostList = ({ posts }: PostListProps) => {
