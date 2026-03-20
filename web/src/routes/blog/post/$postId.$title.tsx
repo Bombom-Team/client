@@ -126,7 +126,7 @@ const ContentLayoutWrapper = styled.div<{ device: Device }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'pc' ? '920px' : '100%')};
   margin: 0 auto;
-  padding: ${({ device }) => (device === 'mobile' ? '0 20px' : '0 24px')};
+  padding: ${({ device }) => (device === 'mobile' ? '0' : '0 24px')};
 
   display: flex;
   gap: ${({ device }) => (device === 'pc' ? '40px' : '0')};
@@ -140,10 +140,12 @@ const ActionRail = styled.div`
 
 const Article = styled.article<{ device: Device }>`
   width: 100%;
+  margin-top: ${({ device }) => (device === 'mobile' ? '0' : '60px')};
 `;
 
 const GoToListButton = styled(Button)<{ device: Device }>`
   margin-bottom: ${({ device }) => (device === 'mobile' ? '20px' : '24px')};
+  padding: 0;
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme, device }) =>
