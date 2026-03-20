@@ -1,3 +1,5 @@
+import type { PostDetail } from '@/pages/blog/types/post';
+
 export const BLOG_POST_LIST = [
   {
     postId: '1',
@@ -78,7 +80,7 @@ const POST_CONTENT = `페이스페이는 우리의 일상을 바꾸고 있습니
 
 이러한 혁신은 단순히 편의성을 넘어, 우리의 생활 방식 자체를 변화시키고 있습니다. 앞으로 결제는 더욱 자연스럽고 직관적인 경험이 될 것입니다.`;
 
-export const BLOG_POST_DETAILS = {
+export const BLOG_POST_DETAILS: Record<string, PostDetail> = {
   '1': {
     title: '페이스페이가 그리는 결제의 새 얼굴',
     content: POST_CONTENT,
