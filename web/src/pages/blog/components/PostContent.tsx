@@ -19,7 +19,7 @@ const PostContent = ({ content }: PostContentProps) => {
 export default PostContent;
 
 const Container = styled.article<{ device: Device }>`
-  max-width: ${({ device }) => (device === 'mobile' ? '100%' : '720px')};
+  width: 100%;
   margin: 0 auto;
 
   color: ${({ theme }) => theme.colors.textPrimary};

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import Button from '@/components/Button/Button';
+import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import { useDevice } from '@/hooks/useDevice';
 import useScrollProgress from '@/hooks/useScrollProgress';
@@ -90,7 +91,11 @@ function PostDetailPage() {
               hashTags={post.hashTags}
             />
 
-            <Divider device={device} />
+            {post.thumbnailImageUrl && (
+              <ThumbnailBox device={device}>
+                <ThumbnailImage src={post.thumbnailImageUrl} alt={post.title} />
+              </ThumbnailBox>
+            )}
 
             <PostContent content={post.content} />
           </Article>
@@ -160,8 +165,19 @@ const Title = styled.h1<{ device: Device }>`
     device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading1};
 `;
 
-const Divider = styled.hr<{ device: Device }>`
+const ThumbnailBox = styled.div<{ device: Device }>`
+  overflow: hidden;
   margin: ${({ device }) => (device === 'mobile' ? '24px 0' : '32px 0')};
-  border: none;
-  border-top: 1px solid ${({ theme }) => theme.colors.dividers};
+  border-radius: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
+
+  background-color: ${({ theme }) => theme.colors.dividers};
+
+  aspect-ratio: 16 / 9;
+`;
+
+const ThumbnailImage = styled(ImageWithFallback)`
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
 `;
