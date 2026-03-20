@@ -72,9 +72,21 @@ const Logo = styled(Link)<{ device: Device }>`
 `;
 
 const LogoImage = styled.img<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '40px' : '48px')};
-  height: ${({ device }) => (device === 'mobile' ? '40px' : '48px')};
-  border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '16px')};
+  width: ${({ device }) => {
+    if (device === 'mobile') return '40px';
+    if (device === 'tablet') return '44px';
+    return '48px';
+  }};
+  height: ${({ device }) => {
+    if (device === 'mobile') return '40px';
+    if (device === 'tablet') return '44px';
+    return '48px';
+  }};
+  border-radius: ${({ device }) => {
+    if (device === 'mobile') return '12px';
+    if (device === 'tablet') return '14px';
+    return '16px';
+  }};
 `;
 
 const Title = styled.h1<{ device: Device }>`
