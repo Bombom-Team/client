@@ -1,7 +1,9 @@
 import styled from '@emotion/styled';
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import Button from '@/components/Button/Button';
+import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import { useDevice } from '@/hooks/useDevice';
+import useScrollProgress from '@/hooks/useScrollProgress';
 import { BLOG_POST_DETAILS } from '@/mocks/datas/blogPosts';
 import FloatingPostPanel from '@/pages/blog/components/FloatingPostPanel';
 import PostContent from '@/pages/blog/components/PostContent';
@@ -48,6 +50,7 @@ function PostDetailPage() {
   const { post } = Route.useLoaderData();
   const navigate = useRouter().navigate;
   const device = useDevice();
+  const { progressPercentage } = useScrollProgress();
 
   const goToPostList = () => {
     navigate({ to: '/blog' });
@@ -55,6 +58,12 @@ function PostDetailPage() {
 
   return (
     <>
+      <PostProgressBar
+        rate={progressPercentage}
+        transition={false}
+        variant="rectangular"
+        device={device}
+      />
       <ContentWrapper device={device}>
         <ContentLayoutWrapper device={device}>
           {device === 'pc' && (
@@ -93,6 +102,19 @@ function PostDetailPage() {
 
 const ContentWrapper = styled.div<{ device: Device }>`
   padding-bottom: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
+`;
+
+const PostProgressBar = styled(ProgressBar)<{ device: Device }>`
+  position: sticky;
+  top: ${({ device, theme }) =>
+    device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile};
+  z-index: ${({ theme }) => theme.zIndex.floating};
+  width: 100vw;
+  height: 4px;
+  max-width: 100vw;
+  margin-top: ${({ device }) => (device === 'mobile' ? '-32px' : '-48px')};
+  margin-bottom: ${({ device }) => (device === 'mobile' ? '28px' : '44px')};
+  margin-left: calc(50% - 50vw);
 `;
 
 const ContentLayoutWrapper = styled.div<{ device: Device }>`
