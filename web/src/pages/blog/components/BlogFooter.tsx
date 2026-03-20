@@ -76,7 +76,11 @@ export default BlogFooter;
 
 const Container = styled.footer<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '36px 0' : '64px 0')};
+  padding: ${({ device }) => {
+    if (device === 'mobile') return '32px 16px';
+    if (device === 'tablet') return '48px 40px';
+    return '48px 60px';
+  }};
   border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -85,7 +89,6 @@ const Container = styled.footer<{ device: Device }>`
 const FooterWrapper = styled.div<{ device: Device }>`
   max-width: 1280px;
   margin: 0 auto;
-  padding: ${({ device }) => (device === 'mobile' ? '0 20px' : '0 60px')};
 
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '32px' : '0')};

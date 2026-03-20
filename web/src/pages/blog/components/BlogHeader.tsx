@@ -43,7 +43,11 @@ const Container = styled.header<{ device: Device }>`
   width: 100%;
   height: ${({ theme, device }) =>
     device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile};
-  padding: ${({ device }) => (device === 'pc' ? '8px 16px' : '8px 12px')};
+  padding: ${({ device }) => {
+    if (device === 'mobile') return '0 16px';
+    if (device === 'tablet') return '0 40px';
+    return '0 60px';
+  }};
   border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
 
   background: rgb(255 255 255 / 80%);
@@ -55,7 +59,6 @@ const HeaderWrapper = styled.div<{ device: Device }>`
   height: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: ${({ device }) => (device === 'mobile' ? '0 8px' : '0 60px')};
 
   display: flex;
   align-items: center;
