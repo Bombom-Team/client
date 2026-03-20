@@ -37,24 +37,29 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
 
       <Content device={device}>
         <Text
-          color="textSecondary"
+          as="p"
+          color="textTertiary"
           font={device === 'mobile' ? 'body1' : 'bodyLarge'}
         >
           이 주의 콘텐츠
         </Text>
-        <Flex gap={device === 'mobile' ? 20 : 24} direction="column">
+        <Flex direction="column" gap={24}>
           <Title device={device}>{post.title}</Title>
           {post.description && (
             <Description device={device}>{post.description}</Description>
           )}
-
-          <Text
-            color="textTertiary"
-            font={device === 'mobile' ? 'body2' : 'body1'}
-          >
-            추천 콘텐츠
-          </Text>
         </Flex>
+        {device === 'mobile' ? (
+          <Flex align="center">
+            <Text color="textSecondary" font="body1">
+              {post.categoryName}
+            </Text>
+          </Flex>
+        ) : (
+          <Text color="textTertiary" font="body1">
+            {post.categoryName}
+          </Text>
+        )}
       </Content>
     </Container>
   );
@@ -66,7 +71,7 @@ const Container = styled.a<{ device: Device }>`
   border-radius: 16px;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '24px' : '40px')};
+  gap: ${({ device }) => (device === 'mobile' ? '32px' : '40px')};
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
 
   cursor: pointer;
@@ -86,7 +91,7 @@ const Thumbnail = styled.div<{ device: Device }>`
   position: relative;
   width: ${({ device }) => (device === 'mobile' ? '100%' : '50%')};
   height: ${({ device }) => (device === 'mobile' ? '240px' : '332px')};
-  border-radius: 16px;
+  border-radius: ${({ device }) => (device === 'mobile' ? '28px' : '16px')};
 
   flex-shrink: 0;
 
@@ -120,7 +125,7 @@ const NoThumbnailPlaceholder = styled.div`
 
 const Content = styled.div<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '12px' : '16px')};
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '16px')};
   flex: 1;
   flex-direction: column;
   justify-content: center;
@@ -129,12 +134,14 @@ const Content = styled.div<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading1};
-  line-height: 1.4;
+    device === 'mobile' ? theme.fonts.heading2 : theme.fonts.heading1};
+  line-height: ${({ device }) => (device === 'mobile' ? '1.18' : '1.4')};
 `;
 
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading4};
+  font-weight: 400;
+  line-height: ${({ device }) => (device === 'mobile' ? '1.7' : 'inherit')};
 `;

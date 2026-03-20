@@ -33,10 +33,10 @@ const PostList = ({ posts }: PostListProps) => {
 export default PostList;
 
 const CardWrapper = styled.section<{ device: Device }>`
-  margin-top: ${({ device }) => (device === 'mobile' ? '40px' : '80px')};
+  margin-top: ${({ device }) => (device === 'mobile' ? '56px' : '80px')};
 
   display: grid;
-  gap: ${({ device }) => (device === 'mobile' ? '32px 32px' : '64px 40px')};
+  gap: ${({ device }) => (device === 'mobile' ? '40px' : '64px 40px')};
 
   grid-template-columns: ${({ device }) =>
     device === 'mobile' ? '1fr' : 'repeat(auto-fit, minmax(320px, 1fr))'};
