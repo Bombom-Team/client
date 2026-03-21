@@ -153,9 +153,9 @@ export const getChallengeArticleHighlights = async ({
 
 export type PostChallengeCommentParams =
   components['schemas']['ChallengeCommentRequest'];
-export interface PostChallengeCommentResponse {
+export type PostChallengeCommentResponse = {
   isFirstCompletion?: boolean;
-}
+};
 
 export const postChallengeComment = async (
   challengeId: number,
