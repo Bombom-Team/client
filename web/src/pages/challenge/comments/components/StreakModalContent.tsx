@@ -49,8 +49,8 @@ const StreakModalContent = ({
         {displayDays.map(({ key, label, isActive, isToday }) => {
           return (
             <DayColumn key={key}>
-              <DayLabel isToday={isToday}>{label}</DayLabel>
-              <DayCheckBox isActive={isActive} isToday={isToday}>
+              <DayLabel isHighlighted={isToday}>{label}</DayLabel>
+              <DayCheckBox isActive={isActive} isHighlighted={isToday}>
                 {isActive && <CheckMark>✓</CheckMark>}
               </DayCheckBox>
             </DayColumn>
@@ -177,26 +177,29 @@ const DayColumn = styled.div`
   align-items: center;
 `;
 
-const DayLabel = styled.span<{ isToday: boolean }>`
-  color: ${({ theme, isToday }) =>
-    isToday ? theme.colors.primary : theme.colors.textTertiary};
+const DayLabel = styled.span<{ isHighlighted: boolean }>`
+  color: ${({ theme, isHighlighted }) =>
+    isHighlighted ? theme.colors.primary : theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.body3};
   font-weight: 700;
 `;
 
-const DayCheckBox = styled.div<{ isActive: boolean; isToday: boolean }>`
+const DayCheckBox = styled.div<{
+  isActive: boolean;
+  isHighlighted: boolean;
+}>`
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  box-shadow: ${({ isToday }) =>
-    isToday ? '0 6px 16px rgb(0 170 255 / 24%)' : 'none'};
+  box-shadow: ${({ isHighlighted }) =>
+    isHighlighted ? '0 6px 16px rgb(0 170 255 / 24%)' : 'none'};
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme, isActive, isToday }) => {
-    if (isToday) return theme.colors.primary;
+  background-color: ${({ theme, isActive, isHighlighted }) => {
+    if (isHighlighted) return theme.colors.primary;
     return isActive ? theme.colors.primary : theme.colors.stroke;
   }};
   color: ${({ theme }) => theme.colors.white};

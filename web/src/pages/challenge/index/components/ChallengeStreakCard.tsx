@@ -22,7 +22,6 @@ const ChallengeStreakCard = ({ challengeId }: ChallengeStreakCardProps) => {
   const streakDays = data?.streak ?? 0;
   const displayDays = getDisplayDays({
     streakDayList: data?.streakDays ?? [],
-    highlightTodayByCurrentDate: true,
   });
 
   if (isMobile) {
@@ -44,7 +43,7 @@ const ChallengeStreakCard = ({ challengeId }: ChallengeStreakCardProps) => {
       <WeekWrapper>
         {displayDays.map(({ key, label, isActive, isToday }) => (
           <DayColumn key={key}>
-            <DayLabel isToday={isToday}>{label}</DayLabel>
+            <DayLabel isHighlighted={isToday}>{label}</DayLabel>
             <DayCheckBox isActive={isActive}>{isActive ? '✓' : ''}</DayCheckBox>
           </DayColumn>
         ))}
@@ -128,11 +127,11 @@ const DayColumn = styled.div`
   align-items: center;
 `;
 
-const DayLabel = styled.span<{ isToday: boolean }>`
-  color: ${({ theme, isToday }) =>
-    isToday ? theme.colors.primary : theme.colors.textSecondary};
+const DayLabel = styled.span<{ isHighlighted: boolean }>`
+  color: ${({ theme, isHighlighted }) =>
+    isHighlighted ? theme.colors.primary : theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.caption};
-  font-weight: ${({ isToday }) => (isToday ? 700 : 400)};
+  font-weight: ${({ isHighlighted }) => (isHighlighted ? 700 : 400)};
 `;
 
 const DayCheckBox = styled.div<{ isActive: boolean }>`

@@ -31,13 +31,9 @@ interface StreakDay {
 
 interface GetDisplayDaysParams {
   streakDayList: StreakDay[];
-  highlightTodayByCurrentDate?: boolean;
 }
 
-export const getDisplayDays = ({
-  streakDayList,
-  highlightTodayByCurrentDate = false,
-}: GetDisplayDaysParams) => {
+export const getDisplayDays = ({ streakDayList }: GetDisplayDaysParams) => {
   const activeDays = streakDayList.slice(-WEEKDAY_ORDER.length);
   const currentWeekday =
     JS_WEEKDAY_TO_CHALLENGE_WEEKDAY[
@@ -49,7 +45,7 @@ export const getDisplayDays = ({
       key: weekday,
       label: WEEKDAY_LABEL_MAP[weekday],
       isActive: false,
-      isToday: highlightTodayByCurrentDate ? weekday === currentWeekday : false,
+      isToday: weekday === currentWeekday,
     }));
   }
 
@@ -72,9 +68,7 @@ export const getDisplayDays = ({
       key: activeDay?.date ?? `empty-${weekday}`,
       label: WEEKDAY_LABEL_MAP[weekday],
       isActive: !!activeDay,
-      isToday: highlightTodayByCurrentDate
-        ? weekday === currentWeekday
-        : index === activeDays.length - 1,
+      isToday: weekday === currentWeekday,
     };
   });
 };
