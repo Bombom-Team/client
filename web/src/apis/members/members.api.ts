@@ -89,6 +89,33 @@ export const getMyMonthlyReadingRank = async () => {
   });
 };
 
+export type StreakReadingRankItem = {
+  rank: number;
+  nickname: string;
+  streakDays: number;
+  badges?: MonthlyReadingRankItem['badges'];
+};
+
+export type GetStreakReadingRankResponse = {
+  rankingUpdatedAt: string;
+  nextRefreshAt: string;
+  serverTime: string;
+  data: StreakReadingRankItem[];
+};
+
+export type GetStreakReadingRankParams = {
+  limit: number;
+};
+
+export const getStreakReadingRank = async (
+  params: GetStreakReadingRankParams,
+) => {
+  return await fetcher.get<GetStreakReadingRankResponse>({
+    path: '/members/me/reading/streak/rank',
+    query: params,
+  });
+};
+
 export type PatchMembersInfoParams =
   components['schemas']['MemberInfoUpdateRequest'];
 

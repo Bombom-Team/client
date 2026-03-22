@@ -144,6 +144,87 @@ export const MONTHLY_READING_RANK_UPDATED = [
   },
 ];
 
+export const STREAK_READING_RANK = [
+  {
+    rank: 1,
+    nickname: '꾸준한독서가',
+    streakDays: 45,
+    badges: {
+      ranking: {
+        grade: 'gold',
+        year: 2025,
+        month: 12,
+      },
+    },
+  },
+  {
+    rank: 2,
+    nickname: '매일읽는사람',
+    streakDays: 38,
+    badges: {
+      challenge: {
+        name: '뉴스레터 한달 읽기',
+        generation: 1,
+        grade: 'gold',
+      },
+    },
+  },
+  {
+    rank: 3,
+    nickname: '독서왕김씨',
+    streakDays: 32,
+    badges: {
+      ranking: {
+        grade: 'gold',
+        year: 2025,
+        month: 12,
+      },
+      challenge: {
+        name: '뉴스레터 한달 읽기',
+        generation: 1,
+        grade: 'gold',
+      },
+    },
+  },
+  {
+    rank: 4,
+    nickname: '아침독서',
+    streakDays: 28,
+    badges: {
+      challenge: {
+        name: '뉴스레터 한달 읽기',
+        generation: 1,
+        grade: 'bronze',
+      },
+    },
+  },
+  {
+    rank: 5,
+    nickname: '뉴스레터마스터',
+    streakDays: 25,
+    badges: {
+      ranking: {
+        grade: 'silver',
+        year: 2025,
+        month: 12,
+      },
+    },
+  },
+];
+
+export const getStreakRankingMetadata = () => {
+  const INTERVAL_SECONDS = 15;
+  const INTERVAL_MS = INTERVAL_SECONDS * 1000;
+  const now = new Date();
+
+  return {
+    rankingUpdatedAt: now.toISOString(),
+    nextRefreshAt: new Date(now.getTime() + INTERVAL_MS).toISOString(),
+    serverTime: now.toISOString(),
+    data: STREAK_READING_RANK,
+  };
+};
+
 export const getRankingMetadata = () => {
   const INTERVAL_SECONDS = 15;
   const INTERVAL_MS = INTERVAL_SECONDS * 1000;
