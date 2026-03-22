@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import LeaderboardItem from './LeaderboardItem';
 import { RANKING } from './ReadingKingLeaderboard.constants';
-import ReadingKingMyRank from './ReadingKingMyRank';
+import { LeaderboardList, Divider } from './ReadingKingLeaderboard.styles';
+import StreakMyRank from './StreakMyRank';
 import { queries } from '@/apis/queries';
 import { Carousel } from '@/components/Carousel/Carousel';
 import { chunk } from '@/utils/array';
-import { LeaderboardList, Divider } from './ReadingKingLeaderboard.styles';
 
 const StreakRankingContent = () => {
   const { data: streakReadingRank } = useQuery(
@@ -49,7 +49,7 @@ const StreakRankingContent = () => {
       {streakUserRank && (
         <>
           <Divider role="separator" aria-hidden="true" />
-          <ReadingKingMyRank mode="streak" userRank={streakUserRank} />
+          <StreakMyRank userRank={streakUserRank} />
         </>
       )}
     </>

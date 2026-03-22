@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import LeaderboardItem from './LeaderboardItem';
+import MonthlyMyRank from './MonthlyMyRank';
 import {
   COUNTDOWN_UPDATE_INTERVAL_MS,
   RANKING,
 } from './ReadingKingLeaderboard.constants';
 import { LeaderboardList, Divider } from './ReadingKingLeaderboard.styles';
-import ReadingKingMyRank from './ReadingKingMyRank';
 import { queries } from '@/apis/queries';
 import { Carousel } from '@/components/Carousel/Carousel';
 import { chunk } from '@/utils/array';
@@ -70,7 +70,7 @@ const MonthlyRankingContent = ({
       {userRank && (
         <>
           <Divider role="separator" aria-hidden="true" />
-          <ReadingKingMyRank mode="monthly" userRank={userRank} />
+          <MonthlyMyRank userRank={userRank} />
         </>
       )}
     </>
