@@ -3,6 +3,7 @@ import {
   getMonthlyReadingRank,
   getMyMonthlyReadingRank,
   getStreakReadingRank,
+  getMyStreakReadingRank,
   getReadingStatus,
   getUserInfo,
   getMySubscriptions,
@@ -49,6 +50,12 @@ export const membersQueries = {
     queryOptions({
       queryKey: ['members', 'me', 'reading', 'streak', 'rank', params],
       queryFn: () => getStreakReadingRank(params),
+    }),
+
+  myStreakReadingRank: () =>
+    queryOptions({
+      queryKey: ['members', 'me', 'reading', 'streak', 'rank', 'me'],
+      queryFn: () => getMyStreakReadingRank(),
     }),
 
   mySubscriptions: () =>

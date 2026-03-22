@@ -44,30 +44,8 @@ export const patchWeeklyReadingGoal = async ({
   });
 };
 
-type MonthlyReadingBadgeGrade = 'gold' | 'silver' | 'bronze';
-
-type MonthlyReadingRankItem =
-  components['schemas']['MonthlyReadingRankResponse'] & {
-    badges: {
-      ranking: {
-        grade: MonthlyReadingBadgeGrade;
-        year: number;
-        month: number;
-      };
-      challenge: {
-        grade: MonthlyReadingBadgeGrade;
-        name: string;
-        generation: number;
-      };
-    };
-  };
-
-export type GetMonthlyReadingRankResponse = Omit<
-  components['schemas']['MonthlyReadingRankingResponse'],
-  'data'
-> & {
-  data: MonthlyReadingRankItem[];
-};
+export type GetMonthlyReadingRankResponse =
+  components['schemas']['MonthlyReadingRankingResponse'];
 export type GetMonthlyReadingRankParams =
   operations['getMonthlyReadingRank']['parameters']['query'];
 
@@ -90,16 +68,13 @@ export const getMyMonthlyReadingRank = async () => {
 };
 
 export type StreakReadingRankItem = {
-  rank: number;
   nickname: string;
-  streakDays: number;
-  badges?: MonthlyReadingRankItem['badges'];
+  rank: number;
+  dayCount: number;
+  badges?: components['schemas']['BadgesResponse'];
 };
 
 export type GetStreakReadingRankResponse = {
-  rankingUpdatedAt: string;
-  nextRefreshAt: string;
-  serverTime: string;
   data: StreakReadingRankItem[];
 };
 
@@ -113,6 +88,19 @@ export const getStreakReadingRank = async (
   return await fetcher.get<GetStreakReadingRankResponse>({
     path: '/members/me/reading/streak/rank',
     query: params,
+  });
+};
+
+export type GetMyStreakReadingRankResponse = {
+  nickname: string;
+  rank: number;
+  dayCount: number;
+  badges?: components['schemas']['BadgesResponse'];
+};
+
+export const getMyStreakReadingRank = async () => {
+  return await fetcher.get<GetMyStreakReadingRankResponse>({
+    path: '/members/me/reading/streak/rank/me',
   });
 };
 

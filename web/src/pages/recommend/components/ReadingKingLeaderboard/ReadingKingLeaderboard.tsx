@@ -38,6 +38,8 @@ const ReadingKingLeaderboard = () => {
     isFetching: isStreakFetching,
   } = useQuery(queries.streakReadingRank({ limit: RANKING.maxRank }));
 
+  const { data: streakUserRank } = useQuery(queries.myStreakReadingRank());
+
   const isLoading =
     activeTab === 'monthly' ? isMonthlyLoading : isStreakLoading;
   const isFetching =
@@ -47,7 +49,7 @@ const ReadingKingLeaderboard = () => {
     targetTime:
       (activeTab === 'monthly'
         ? monthlyReadingRank?.nextRefreshAt
-        : streakReadingRank?.nextRefreshAt) ??
+        : undefined) ??
       new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
     completeDelay: 2000,
     onComplete: () => {
@@ -165,7 +167,7 @@ const ReadingKingLeaderboard = () => {
                         key={`rank-${index}` + item.nickname}
                         rank={item.rank}
                         name={item.nickname}
-                        readCount={item.streakDays}
+                        readCount={item.dayCount}
                         readCountLabel="일 연속"
                         badges={item.badges}
                       />
@@ -182,7 +184,13 @@ const ReadingKingLeaderboard = () => {
       {activeTab === 'monthly' && userRank && (
         <>
           <Divider role="separator" aria-hidden="true" />
-          <ReadingKingMyRank userRank={userRank} />
+          <ReadingKingMyRank mode="monthly" userRank={userRank} />
+        </>
+      )}
+      {activeTab === 'streak' && streakUserRank && (
+        <>
+          <Divider role="separator" aria-hidden="true" />
+          <ReadingKingMyRank mode="streak" userRank={streakUserRank} />
         </>
       )}
     </Container>

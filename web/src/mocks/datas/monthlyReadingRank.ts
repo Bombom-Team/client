@@ -148,7 +148,7 @@ export const STREAK_READING_RANK = [
   {
     rank: 1,
     nickname: '꾸준한독서가',
-    streakDays: 45,
+    dayCount: 45,
     badges: {
       ranking: {
         grade: 'gold',
@@ -160,7 +160,7 @@ export const STREAK_READING_RANK = [
   {
     rank: 2,
     nickname: '매일읽는사람',
-    streakDays: 38,
+    dayCount: 38,
     badges: {
       challenge: {
         name: '뉴스레터 한달 읽기',
@@ -172,7 +172,7 @@ export const STREAK_READING_RANK = [
   {
     rank: 3,
     nickname: '독서왕김씨',
-    streakDays: 32,
+    dayCount: 32,
     badges: {
       ranking: {
         grade: 'gold',
@@ -189,7 +189,7 @@ export const STREAK_READING_RANK = [
   {
     rank: 4,
     nickname: '아침독서',
-    streakDays: 28,
+    dayCount: 28,
     badges: {
       challenge: {
         name: '뉴스레터 한달 읽기',
@@ -201,7 +201,7 @@ export const STREAK_READING_RANK = [
   {
     rank: 5,
     nickname: '뉴스레터마스터',
-    streakDays: 25,
+    dayCount: 25,
     badges: {
       ranking: {
         grade: 'silver',
@@ -213,14 +213,7 @@ export const STREAK_READING_RANK = [
 ];
 
 export const getStreakRankingMetadata = () => {
-  const INTERVAL_SECONDS = 15;
-  const INTERVAL_MS = INTERVAL_SECONDS * 1000;
-  const now = new Date();
-
   return {
-    rankingUpdatedAt: now.toISOString(),
-    nextRefreshAt: new Date(now.getTime() + INTERVAL_MS).toISOString(),
-    serverTime: now.toISOString(),
     data: STREAK_READING_RANK,
   };
 };

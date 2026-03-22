@@ -72,4 +72,19 @@ export const membersHandlers = [
       data: rankingData,
     });
   }),
+
+  http.get(`${baseURL}/members/me/reading/streak/rank/me`, () => {
+    return HttpResponse.json({
+      rank: 12,
+      nickname: '나',
+      dayCount: 7,
+      badges: {
+        challenge: {
+          name: '뉴스레터 한달 읽기',
+          generation: 1,
+          grade: 'bronze',
+        },
+      },
+    });
+  }),
 ];
