@@ -48,6 +48,19 @@ export const getChallengeSchedule = async (challengeId: number) => {
   });
 };
 
+export const getChallengeDailyGuideImages = async (challengeId: number) => {
+  return fetcher.get<string[]>({
+    path: `/challenges/${challengeId}/daily-guides/images`,
+  });
+};
+
+export type CreateChallengeDailyGuidePayload = {
+  dayIndex: number;
+  type: 'READ' | 'COMMENT' | 'SHARING' | 'REMIND';
+  imageUrl: string;
+  notice?: string;
+};
+
 export const getChallengeDailyGuide = async ({
   challengeId,
   dayIndex,
@@ -71,6 +84,19 @@ export const getChallengeDailyGuide = async ({
 
     throw error;
   }
+};
+
+export const createChallengeDailyGuide = async ({
+  challengeId,
+  payload,
+}: {
+  challengeId: number;
+  payload: CreateChallengeDailyGuidePayload;
+}) => {
+  return fetcher.post<CreateChallengeDailyGuidePayload, ChallengeDailyGuide>({
+    path: `/challenges/${challengeId}/daily-guides`,
+    body: payload,
+  });
 };
 
 export const getChallengeParticipants = async ({

@@ -1,10 +1,12 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import {
   getChallengeDailyGuide,
+  getChallengeDailyGuideImages,
   getChallengeDetail,
   getChallengeParticipants,
   getChallengeSchedule,
   getChallenges,
+  createChallengeDailyGuide,
   assignChallengeTeams,
   updateParticipantTeam,
   getChallengeTeams,
@@ -15,6 +17,7 @@ import {
 import type {
   AssignChallengeTeamsParams,
   CreateChallengeTeamsParams,
+  CreateChallengeDailyGuidePayload,
   DeleteChallengeTeamParams,
   GetChallengeParticipantsParams,
   GetChallengesParams,
@@ -53,6 +56,14 @@ export const challengesQueries = {
       gcTime: CHALLENGES_GC_TIME,
     }),
 
+  dailyGuideImages: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', 'daily-guide-images', challengeId] as const,
+      queryFn: () => getChallengeDailyGuideImages(challengeId),
+      staleTime: CHALLENGES_STALE_TIME,
+      gcTime: CHALLENGES_GC_TIME,
+    }),
+
   dailyGuide: (challengeId: number, dayIndex: number) =>
     queryOptions({
       queryKey: ['challenges', 'daily-guide', challengeId, dayIndex] as const,
@@ -77,6 +88,15 @@ export const challengesQueries = {
       gcTime: CHALLENGES_GC_TIME,
     }),
   mutation: {
+    createDailyGuide: () => ({
+      mutationFn: ({
+        challengeId,
+        payload,
+      }: {
+        challengeId: number;
+        payload: CreateChallengeDailyGuidePayload;
+      }) => createChallengeDailyGuide({ challengeId, payload }),
+    }),
     assignTeams: () => ({
       mutationFn: (params: AssignChallengeTeamsParams) =>
         assignChallengeTeams(params),

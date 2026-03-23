@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import { challengesQueries } from '@/apis/challenges/challenges.query';
+import { useCreateChallengeDailyGuideMutation } from '@/pages/challenges/hooks/useCreateChallengeDailyGuideMutation';
 import type {
   ChallengeDailyGuide,
   ChallengeSchedule,
@@ -140,6 +141,12 @@ const ChallengeDailyGuideModal = ({
         )}
 
         {data === null && <ModalStateText>미등록</ModalStateText>}
+        {data === null && (
+          <ChallengeDailyGuideCreateForm
+            challengeId={challengeId}
+            selectedSchedule={selectedSchedule}
+          />
+        )}
 
         {data && (
           <ChallengeDailyGuideContent
@@ -149,6 +156,215 @@ const ChallengeDailyGuideModal = ({
         )}
       </ModalCard>
     </ModalOverlay>
+  );
+};
+
+const GUIDE_TYPE_OPTIONS = [
+  { label: 'READ', value: 'READ' },
+  { label: 'COMMENT', value: 'COMMENT' },
+  { label: 'SHARING', value: 'SHARING' },
+  { label: 'REMIND', value: 'REMIND' },
+] as const;
+
+const isNoticeRequiredGuideType = (guideType: string) => {
+  return guideType === 'COMMENT' || guideType === 'REMIND';
+};
+
+const ChallengeDailyGuideCreateForm = ({
+  challengeId,
+  selectedSchedule,
+}: {
+  challengeId: number;
+  selectedSchedule: ChallengeSchedule;
+}) => {
+  const [guideType, setGuideType] = useState<
+    'READ' | 'COMMENT' | 'SHARING' | 'REMIND'
+  >('READ');
+  const [notice, setNotice] = useState('');
+  const [selectedImageUrl, setSelectedImageUrl] = useState('');
+  const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
+  const { mutate: createDailyGuide, isPending } =
+    useCreateChallengeDailyGuideMutation({
+      challengeId,
+      dayIndex: selectedSchedule.dayIndex,
+    });
+
+  const handleCreate = () => {
+    if (!selectedImageUrl) {
+      alert('생성할 이미지를 선택해주세요.');
+      return;
+    }
+
+    if (isNoticeRequiredGuideType(guideType) && !notice.trim()) {
+      alert('COMMENT, REMIND 타입은 공지 문구를 입력해주세요.');
+      return;
+    }
+
+    createDailyGuide({
+      challengeId,
+      payload: {
+        dayIndex: selectedSchedule.dayIndex,
+        type: guideType,
+        imageUrl: selectedImageUrl,
+        notice: isNoticeRequiredGuideType(guideType)
+          ? notice.trim()
+          : undefined,
+      },
+    });
+  };
+
+  return (
+    <CreateFormWrapper>
+      <CreateFormTitle>데일리 가이드 생성</CreateFormTitle>
+
+      <FormGroup>
+        <FormLabel htmlFor="daily-guide-type">타입</FormLabel>
+        <FormSelect
+          id="daily-guide-type"
+          value={guideType}
+          onChange={(event) =>
+            setGuideType(
+              event.target.value as 'READ' | 'COMMENT' | 'SHARING' | 'REMIND',
+            )
+          }
+        >
+          {GUIDE_TYPE_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </FormSelect>
+      </FormGroup>
+
+      <FormGroup>
+        <FormLabel>이미지 선택</FormLabel>
+        {selectedImageUrl ? (
+          <CreatePreviewWrapper>
+            <CreatePreviewImage
+              src={selectedImageUrl}
+              alt={`${formatDayIndexLabel(selectedSchedule.dayIndex)} 선택 이미지`}
+            />
+            <PreviewCaption>{selectedImageUrl}</PreviewCaption>
+          </CreatePreviewWrapper>
+        ) : (
+          <ModalStateText>선택된 이미지가 없습니다.</ModalStateText>
+        )}
+        <SecondaryButton
+          type="button"
+          onClick={() => setIsImageSelectorOpen(true)}
+        >
+          이미지 선택
+        </SecondaryButton>
+      </FormGroup>
+
+      {isNoticeRequiredGuideType(guideType) && (
+        <FormGroup>
+          <FormLabel htmlFor="daily-guide-notice">
+            공지 문구
+            {guideType === 'COMMENT' ? ' (필수)' : ' (선택)'}
+          </FormLabel>
+          <FormHelpText>
+            {guideType === 'COMMENT'
+              ? 'COMMENT 타입은 공지 문구 입력이 필수입니다.'
+              : 'REMIND 타입은 공지 문구를 입력하지 않아도 됩니다.'}
+          </FormHelpText>
+          <FormTextarea
+            id="daily-guide-notice"
+            value={notice}
+            onChange={(event) => setNotice(event.target.value)}
+            placeholder="공지 문구를 입력하세요"
+          />
+        </FormGroup>
+      )}
+
+      <CreateButton
+        type="button"
+        onClick={handleCreate}
+        disabled={isPending || !selectedImageUrl}
+      >
+        {isPending ? '생성 중...' : '데일리 가이드 생성'}
+      </CreateButton>
+
+      {isImageSelectorOpen && (
+        <ChallengeDailyGuideImageSelectorModal
+          challengeId={challengeId}
+          dayIndex={selectedSchedule.dayIndex}
+          selectedImageUrl={selectedImageUrl}
+          onClose={() => setIsImageSelectorOpen(false)}
+          onSelect={(imageUrl) => {
+            setSelectedImageUrl(imageUrl);
+            setIsImageSelectorOpen(false);
+          }}
+        />
+      )}
+    </CreateFormWrapper>
+  );
+};
+
+const ChallengeDailyGuideImageSelectorModal = ({
+  challengeId,
+  dayIndex,
+  selectedImageUrl,
+  onClose,
+  onSelect,
+}: {
+  challengeId: number;
+  dayIndex: number;
+  selectedImageUrl: string;
+  onClose: () => void;
+  onSelect: (imageUrl: string) => void;
+}) => {
+  const { data, isLoading, isError } = useQuery({
+    ...challengesQueries.dailyGuideImages(challengeId),
+    enabled: true,
+  });
+
+  return (
+    <SelectorOverlay onClick={onClose}>
+      <SelectorCard onClick={(event) => event.stopPropagation()}>
+        <ModalHeader>
+          <ModalTitle>{formatDayIndexLabel(dayIndex)} 이미지 선택</ModalTitle>
+          <CloseButton type="button" onClick={onClose}>
+            <FiX />
+          </CloseButton>
+        </ModalHeader>
+
+        {isLoading && (
+          <ModalStateText>이미지 목록을 불러오는 중...</ModalStateText>
+        )}
+
+        {isError && (
+          <ModalErrorText>이미지 목록을 불러오지 못했습니다.</ModalErrorText>
+        )}
+
+        {data && data.length > 0 && (
+          <ImageOptionsGrid>
+            {data.map((imageUrl) => {
+              const isSelected = selectedImageUrl === imageUrl;
+
+              return (
+                <ImageOptionButton
+                  key={imageUrl}
+                  type="button"
+                  isSelected={isSelected}
+                  onClick={() => onSelect(imageUrl)}
+                >
+                  <CreatePreviewImage
+                    src={imageUrl}
+                    alt={`${formatDayIndexLabel(dayIndex)} 선택 이미지`}
+                  />
+                  <PreviewCaption>{imageUrl}</PreviewCaption>
+                </ImageOptionButton>
+              );
+            })}
+          </ImageOptionsGrid>
+        )}
+
+        {data && data.length === 0 && (
+          <ModalStateText>선택 가능한 이미지가 없습니다.</ModalStateText>
+        )}
+      </SelectorCard>
+    </SelectorOverlay>
   );
 };
 
@@ -186,7 +402,7 @@ const ChallengeDailyGuideContent = ({
         </InfoRow>
       </InfoGrid>
 
-      {guide.type !== 'READ' && (
+      {isNoticeRequiredGuideType(guide.type) && (
         <SectionWrapper>
           <SectionTitle>공지 문구</SectionTitle>
           <NoticeBox>{guide.notice || '-'}</NoticeBox>
@@ -576,4 +792,152 @@ const ModalStateText = styled.div`
 
 const ModalErrorText = styled(ModalStateText)`
   color: ${({ theme }) => theme.colors.error};
+`;
+
+const CreateFormWrapper = styled.div`
+  padding: ${({ theme }) => theme.spacing.lg};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.gray50};
+`;
+
+const CreateFormTitle = styled.h5`
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-direction: column;
+`;
+
+const FormLabel = styled.label`
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const FormHelpText = styled.div`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+const FormSelect = styled.select`
+  min-height: 42px;
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.gray800};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const FormTextarea = styled.textarea`
+  min-height: 120px;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.gray800};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  resize: vertical;
+`;
+
+const ImageOptionsGrid = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.md};
+
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+`;
+
+const ImageOptionButton = styled.button<{ isSelected: boolean }>`
+  padding: ${({ theme }) => theme.spacing.sm};
+  border: 1px solid
+    ${({ isSelected, theme }) =>
+      isSelected ? theme.colors.primary : theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-direction: column;
+
+  background-color: ${({ isSelected, theme }) =>
+    isSelected ? theme.colors.gray50 : theme.colors.white};
+  text-align: left;
+
+  cursor: pointer;
+`;
+
+const CreatePreviewWrapper = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-direction: column;
+`;
+
+const CreatePreviewImage = styled.img`
+  width: 100%;
+  height: 120px;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
+
+  object-fit: contain;
+`;
+
+const PreviewCaption = styled.div`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+
+  overflow-wrap: anywhere;
+`;
+
+const SecondaryButton = styled.button`
+  min-height: 42px;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+`;
+
+const CreateButton = styled.button`
+  min-height: 44px;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
+const SelectorOverlay = styled(ModalOverlay)`
+  z-index: 1001;
+`;
+
+const SelectorCard = styled(ModalCard)`
+  width: min(960px, calc(100vw - 32px));
 `;
