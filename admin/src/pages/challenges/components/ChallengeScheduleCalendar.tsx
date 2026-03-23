@@ -1,0 +1,566 @@
+import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { challengesQueries } from '@/apis/challenges/challenges.query';
+import type {
+  ChallengeDailyGuide,
+  ChallengeSchedule,
+  ChallengeScheduleDayOfWeek,
+} from '@/types/challenge';
+
+type Props = {
+  challengeId: number;
+  enabled?: boolean;
+};
+
+type ChallengeScheduleMonth = {
+  key: string;
+  title: string;
+  cells: Array<ChallengeSchedule | null>;
+};
+
+type GuideTypeTone = 'neutral' | 'primary' | 'success' | 'warning' | 'error';
+
+const DAY_OF_WEEK_LABELS = ['월', '화', '수', '목', '금', '토', '일'];
+const GUIDE_TYPE_TONES: GuideTypeTone[] = [
+  'primary',
+  'success',
+  'warning',
+  'error',
+];
+
+const DAY_OF_WEEK_INDEX: Record<ChallengeScheduleDayOfWeek, number> = {
+  MONDAY: 0,
+  TUESDAY: 1,
+  WEDNESDAY: 2,
+  THURSDAY: 3,
+  FRIDAY: 4,
+  SATURDAY: 5,
+  SUNDAY: 6,
+};
+
+const buildChallengeScheduleMonths = (
+  schedules: ChallengeSchedule[],
+): ChallengeScheduleMonth[] => {
+  const monthMap = new Map<string, ChallengeSchedule[]>();
+
+  schedules.forEach((schedule) => {
+    const monthKey = schedule.date.slice(0, 7);
+    const currentMonthSchedules = monthMap.get(monthKey) ?? [];
+    currentMonthSchedules.push(schedule);
+    monthMap.set(monthKey, currentMonthSchedules);
+  });
+
+  return Array.from(monthMap.entries()).map(([monthKey, monthSchedules]) => {
+    const firstDate = monthSchedules[0];
+    const firstDateOffset = DAY_OF_WEEK_INDEX[firstDate.dayOfWeek];
+    const cells: Array<ChallengeSchedule | null> = [
+      ...Array.from({ length: firstDateOffset }, () => null),
+      ...monthSchedules,
+    ];
+
+    const remainder = cells.length % DAY_OF_WEEK_LABELS.length;
+    const trailingEmptyCount =
+      remainder === 0 ? 0 : DAY_OF_WEEK_LABELS.length - remainder;
+
+    return {
+      key: monthKey,
+      title: `${Number(monthKey.slice(0, 4))}년 ${Number(
+        monthKey.slice(5, 7),
+      )}월`,
+      cells: [
+        ...cells,
+        ...Array.from({ length: trailingEmptyCount }, () => null),
+      ],
+    };
+  });
+};
+
+const getGuideTypeTone = (dailyGuideType?: string): GuideTypeTone => {
+  if (!dailyGuideType) {
+    return 'neutral';
+  }
+
+  if (dailyGuideType === 'READ') {
+    return 'neutral';
+  }
+
+  if (dailyGuideType === 'COMMENT') {
+    return 'success';
+  }
+
+  const hash = dailyGuideType
+    .split('')
+    .reduce((total, character) => total + character.charCodeAt(0), 0);
+
+  return GUIDE_TYPE_TONES[hash % GUIDE_TYPE_TONES.length];
+};
+
+const ChallengeDailyGuideModal = ({
+  challengeId,
+  selectedSchedule,
+  onClose,
+}: {
+  challengeId: number;
+  selectedSchedule: ChallengeSchedule;
+  onClose: () => void;
+}) => {
+  const { data, error, isError, isLoading } = useQuery(
+    challengesQueries.dailyGuide(challengeId, selectedSchedule.dayIndex),
+  );
+
+  return (
+    <ModalOverlay onClick={onClose}>
+      <ModalCard onClick={(event) => event.stopPropagation()}>
+        <ModalHeader>
+          <ModalTitle>
+            {selectedSchedule.date} · {selectedSchedule.dayIndex}일차
+          </ModalTitle>
+          <CloseButton type="button" onClick={onClose}>
+            닫기
+          </CloseButton>
+        </ModalHeader>
+
+        {isLoading && (
+          <ModalStateText>가이드 정보를 불러오는 중...</ModalStateText>
+        )}
+
+        {isError && (
+          <ModalErrorText>
+            {'message' in (error as object) && typeof error.message === 'string'
+              ? error.message
+              : '가이드 정보를 불러오지 못했습니다.'}
+          </ModalErrorText>
+        )}
+
+        {data && (
+          <ChallengeDailyGuideContent
+            guide={data}
+            scheduleImageUrl={selectedSchedule.imageUrl}
+          />
+        )}
+      </ModalCard>
+    </ModalOverlay>
+  );
+};
+
+const ChallengeDailyGuideContent = ({
+  guide,
+  scheduleImageUrl,
+}: {
+  guide: ChallengeDailyGuide;
+  scheduleImageUrl?: string;
+}) => {
+  const previewImageUrl = scheduleImageUrl || guide.imageUrl;
+
+  return (
+    <ModalContentWrapper>
+      <InfoGrid>
+        <InfoRow>
+          <InfoLabel>가이드 ID</InfoLabel>
+          <InfoValue>{guide.id}</InfoValue>
+        </InfoRow>
+        <InfoRow>
+          <InfoLabel>챌린지 ID</InfoLabel>
+          <InfoValue>{guide.challengeId}</InfoValue>
+        </InfoRow>
+        <InfoRow>
+          <InfoLabel>일차</InfoLabel>
+          <InfoValue>{guide.dayIndex}일차</InfoValue>
+        </InfoRow>
+        <InfoRow>
+          <InfoLabel>타입</InfoLabel>
+          <InfoValue>{guide.type}</InfoValue>
+        </InfoRow>
+        <InfoRow>
+          <InfoLabel>댓글 허용</InfoLabel>
+          <InfoValue>{guide.commentEnabled ? '허용' : '비허용'}</InfoValue>
+        </InfoRow>
+      </InfoGrid>
+
+      {guide.type !== 'READ' && (
+        <SectionWrapper>
+          <SectionTitle>공지 문구</SectionTitle>
+          <NoticeBox>{guide.notice || '-'}</NoticeBox>
+        </SectionWrapper>
+      )}
+
+      <SectionWrapper>
+        <SectionTitle>이미지</SectionTitle>
+        {previewImageUrl ? (
+          <ImagePreview
+            src={previewImageUrl}
+            alt={`${guide.dayIndex}일차 가이드`}
+          />
+        ) : (
+          <ModalStateText>등록된 이미지가 없습니다.</ModalStateText>
+        )}
+      </SectionWrapper>
+    </ModalContentWrapper>
+  );
+};
+
+const ChallengeScheduleCalendar = ({ challengeId, enabled = true }: Props) => {
+  const [selectedSchedule, setSelectedSchedule] =
+    useState<ChallengeSchedule | null>(null);
+  const { data, isLoading, isError } = useQuery({
+    ...challengesQueries.schedule(challengeId),
+    enabled,
+  });
+
+  if (isLoading) {
+    return <StateText>챌린지 일정을 불러오는 중...</StateText>;
+  }
+
+  if (isError) {
+    return (
+      <ErrorText>
+        챌린지 일정을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
+      </ErrorText>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return <StateText>등록된 일정이 없습니다.</StateText>;
+  }
+
+  const months = buildChallengeScheduleMonths(data);
+
+  return (
+    <Container>
+      {months.map((month) => (
+        <MonthWrapper key={month.key}>
+          <MonthTitle>{month.title}</MonthTitle>
+          <WeekHeaderWrapper>
+            {DAY_OF_WEEK_LABELS.map((label) => (
+              <WeekHeaderBox key={label}>{label}</WeekHeaderBox>
+            ))}
+          </WeekHeaderWrapper>
+          <CalendarGrid>
+            {month.cells.map((schedule, index) => {
+              if (!schedule) {
+                return <EmptyDayBox key={`${month.key}-empty-${index}`} />;
+              }
+
+              return (
+                <DayButton
+                  key={schedule.date}
+                  type="button"
+                  onClick={() => setSelectedSchedule(schedule)}
+                >
+                  <DayMetaWrapper>
+                    <DateText>{Number(schedule.date.slice(8, 10))}</DateText>
+                    <DayIndexBadge isOffDay={schedule.dayIndex === 0}>
+                      {schedule.dayIndex}일차
+                    </DayIndexBadge>
+                    {schedule.dailyGuideType && (
+                      <GuideTypeBadge
+                        tone={getGuideTypeTone(schedule.dailyGuideType)}
+                      >
+                        {schedule.dailyGuideType}
+                      </GuideTypeBadge>
+                    )}
+                  </DayMetaWrapper>
+                  {schedule.imageUrl && (
+                    <DayImagePreview
+                      src={schedule.imageUrl}
+                      alt={`${schedule.dayIndex}일차 썸네일`}
+                    />
+                  )}
+                </DayButton>
+              );
+            })}
+          </CalendarGrid>
+        </MonthWrapper>
+      ))}
+      {selectedSchedule && (
+        <ChallengeDailyGuideModal
+          challengeId={challengeId}
+          selectedSchedule={selectedSchedule}
+          onClose={() => setSelectedSchedule(null)}
+        />
+      )}
+    </Container>
+  );
+};
+
+export default ChallengeScheduleCalendar;
+
+const Container = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.lg};
+  flex-direction: column;
+`;
+
+const MonthWrapper = styled.section`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-direction: column;
+`;
+
+const MonthTitle = styled.h4`
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+`;
+
+const WeekHeaderWrapper = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.xs};
+
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+`;
+
+const WeekHeaderBox = styled.div`
+  padding: ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+
+  background-color: ${({ theme }) => theme.colors.gray100};
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  text-align: center;
+`;
+
+const CalendarGrid = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.xs};
+
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+`;
+
+const DayButton = styled.button`
+  min-height: 144px;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-direction: column;
+  align-items: flex-start;
+
+  background-color: ${({ theme }) => theme.colors.white};
+  text-align: left;
+
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    box-shadow: ${({ theme }) => theme.shadows.sm};
+
+    border-color: ${({ theme }) => theme.colors.primary};
+    transform: translateY(-1px);
+  }
+`;
+
+const DayMetaWrapper = styled.div`
+  min-width: 0;
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-wrap: wrap;
+  align-items: center;
+`;
+
+const EmptyDayBox = styled.div`
+  min-height: 144px;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.gray50};
+`;
+
+const DateText = styled.div`
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.base};
+`;
+
+const DayImagePreview = styled.img`
+  width: 120px;
+  height: 88px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+
+  flex-shrink: 0;
+  align-self: center;
+
+  background-color: ${({ theme }) => theme.colors.gray100};
+
+  object-fit: contain;
+`;
+
+const DayIndexBadge = styled.div<{ isOffDay: boolean }>`
+  width: fit-content;
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border-radius: 999px;
+
+  background-color: ${({ isOffDay, theme }) =>
+    isOffDay ? theme.colors.gray200 : theme.colors.primary};
+  color: ${({ isOffDay, theme }) =>
+    isOffDay ? theme.colors.gray700 : theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+const GuideTypeBadge = styled.div<{ tone: GuideTypeTone }>`
+  width: fit-content;
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border-radius: 999px;
+
+  background-color: ${({ theme, tone }) => {
+    if (tone === 'primary') return `${theme.colors.primary}1A`;
+    if (tone === 'success') return `${theme.colors.success}1A`;
+    if (tone === 'warning') return `${theme.colors.warning}1A`;
+    if (tone === 'error') return `${theme.colors.error}1A`;
+    return theme.colors.gray100;
+  }};
+  color: ${({ theme, tone }) => {
+    if (tone === 'primary') return theme.colors.primary;
+    if (tone === 'success') return theme.colors.success;
+    if (tone === 'warning') return theme.colors.warning;
+    if (tone === 'error') return theme.colors.error;
+    return theme.colors.gray700;
+  }};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+const StateText = styled.div`
+  padding: ${({ theme }) => theme.spacing.md} 0;
+
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const ErrorText = styled(StateText)`
+  color: ${({ theme }) => theme.colors.error};
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: rgb(15 23 42 / 48%);
+
+  inset: 0;
+`;
+
+const ModalCard = styled.div`
+  width: min(720px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  padding: ${({ theme }) => theme.spacing.xl};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.lg};
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.white};
+
+  overflow-y: auto;
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const ModalTitle = styled.h4`
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.xl};
+`;
+
+const CloseButton = styled.button`
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+`;
+
+const ModalContentWrapper = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.lg};
+  flex-direction: column;
+`;
+
+const InfoGrid = styled.div`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const InfoRow = styled.div`
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.sm};
+
+  grid-template-columns: 120px minmax(0, 1fr);
+`;
+
+const InfoLabel = styled.div`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const InfoValue = styled.div`
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  overflow-wrap: anywhere;
+`;
+
+const SectionWrapper = styled.section`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-direction: column;
+`;
+
+const SectionTitle = styled.h5`
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.base};
+`;
+
+const NoticeBox = styled.div`
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.gray50};
+  color: ${({ theme }) => theme.colors.gray800};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.6;
+  white-space: pre-wrap;
+`;
+
+const ImagePreview = styled.img`
+  width: 100%;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  object-fit: cover;
+`;
+
+const ModalStateText = styled.div`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const ModalErrorText = styled(ModalStateText)`
+  color: ${({ theme }) => theme.colors.error};
+`;

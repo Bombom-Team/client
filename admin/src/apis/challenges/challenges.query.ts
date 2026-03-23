@@ -1,7 +1,9 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import {
+  getChallengeDailyGuide,
   getChallengeDetail,
   getChallengeParticipants,
+  getChallengeSchedule,
   getChallenges,
   assignChallengeTeams,
   updateParticipantTeam,
@@ -39,6 +41,22 @@ export const challengesQueries = {
     queryOptions({
       queryKey: ['challenges', 'detail', challengeId] as const,
       queryFn: () => getChallengeDetail(challengeId),
+      staleTime: CHALLENGES_STALE_TIME,
+      gcTime: CHALLENGES_GC_TIME,
+    }),
+
+  schedule: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', 'schedule', challengeId] as const,
+      queryFn: () => getChallengeSchedule(challengeId),
+      staleTime: CHALLENGES_STALE_TIME,
+      gcTime: CHALLENGES_GC_TIME,
+    }),
+
+  dailyGuide: (challengeId: number, dayIndex: number) =>
+    queryOptions({
+      queryKey: ['challenges', 'daily-guide', challengeId, dayIndex] as const,
+      queryFn: () => getChallengeDailyGuide({ challengeId, dayIndex }),
       staleTime: CHALLENGES_STALE_TIME,
       gcTime: CHALLENGES_GC_TIME,
     }),

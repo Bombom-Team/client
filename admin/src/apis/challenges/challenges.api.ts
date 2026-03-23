@@ -1,6 +1,11 @@
 import { fetcher } from '@bombom/shared/apis';
 import type { PageableResponse } from '@/apis/types/PageableResponse';
-import type { Challenge, ChallengeStatus } from '@/types/challenge';
+import type {
+  Challenge,
+  ChallengeDailyGuide,
+  ChallengeSchedule,
+  ChallengeStatus,
+} from '@/types/challenge';
 import type { ChallengeParticipant } from '@/types/challengeParticipant';
 
 export type GetChallengesParams = {
@@ -34,6 +39,24 @@ export const getChallenges = async (params: GetChallengesParams = {}) => {
 export const getChallengeDetail = async (challengeId: number) => {
   return fetcher.get<Challenge>({
     path: `/challenges/${challengeId}`,
+  });
+};
+
+export const getChallengeSchedule = async (challengeId: number) => {
+  return fetcher.get<ChallengeSchedule[]>({
+    path: `/challenges/${challengeId}/schedule`,
+  });
+};
+
+export const getChallengeDailyGuide = async ({
+  challengeId,
+  dayIndex,
+}: {
+  challengeId: number;
+  dayIndex: number;
+}) => {
+  return fetcher.get<ChallengeDailyGuide>({
+    path: `/challenges/${challengeId}/daily-guides/days/${dayIndex}`,
   });
 };
 

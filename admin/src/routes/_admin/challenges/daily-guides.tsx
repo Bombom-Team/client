@@ -17,8 +17,8 @@ import {
 
 const STATUS_OPTIONS = ['BEFORE_START', 'ONGOING', 'COMPLETED'] as const;
 
-export const Route = createFileRoute('/_admin/challenges/')({
-  component: ChallengesPage,
+export const Route = createFileRoute('/_admin/challenges/daily-guides')({
+  component: ChallengeDailyGuidesPage,
   validateSearch: (search: Record<string, unknown>) => {
     const rawStatus = typeof search.status === 'string' ? search.status : null;
     const status = STATUS_OPTIONS.includes(rawStatus as ChallengeStatus)
@@ -33,7 +33,7 @@ export const Route = createFileRoute('/_admin/challenges/')({
   },
 });
 
-function ChallengesPage() {
+function ChallengeDailyGuidesPage() {
   const search = useSearch({ from: Route.id });
   const navigate = useNavigate();
   const [totalChallenges, setTotalChallenges] = useState(0);
@@ -76,15 +76,22 @@ function ChallengesPage() {
   );
 
   return (
-    <Layout title="챌린지">
+    <Layout title="데일리 가이드 관리">
       <Container>
         <Header>
-          <Title>챌린지 ({totalChallenges}개)</Title>
+          <TitleWrapper>
+            <Title>데일리 가이드 관리 ({totalChallenges}개)</Title>
+            <Description>
+              챌린지를 펼치면 일정 조회 API를 호출해 달력을 표시합니다.
+            </Description>
+          </TitleWrapper>
           <HeaderActions>
             <Filter>
-              <FilterLabel htmlFor="challenge-status">상태</FilterLabel>
+              <FilterLabel htmlFor="challenge-daily-guide-status">
+                상태
+              </FilterLabel>
               <Select
-                id="challenge-status"
+                id="challenge-daily-guide-status"
                 value={search.status ?? 'ALL'}
                 onChange={(event) => handleStatusChange(event.target.value)}
               >
@@ -97,9 +104,10 @@ function ChallengesPage() {
               </Select>
             </Filter>
             <Button
+              variant="secondary"
               onClick={() =>
                 navigate({
-                  to: '/challenges/daily-guides',
+                  to: '/challenges',
                   search: {
                     page: 0,
                     size: 10,
@@ -108,7 +116,7 @@ function ChallengesPage() {
                 })
               }
             >
-              데일리 가이드 관리
+              챌린지 목록
             </Button>
           </HeaderActions>
         </Header>
@@ -116,6 +124,7 @@ function ChallengesPage() {
         <Table>
           <Thead>
             <Tr>
+              <Th>일정</Th>
               <Th>ID</Th>
               <Th>챌린지명</Th>
               <Th>기수</Th>
@@ -130,6 +139,7 @@ function ChallengesPage() {
                 pageSize={search.size}
                 status={search.status}
                 onDataLoaded={handleDataLoaded}
+                variant="daily-guide"
               />
             </Suspense>
           </ErrorBoundary>
@@ -168,21 +178,32 @@ const Header = styled.div`
   justify-content: space-between;
 `;
 
+const TitleWrapper = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-direction: column;
+`;
+
 const Title = styled.h3`
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   font-size: ${({ theme }) => theme.fontSize.xl};
 `;
 
-const Filter = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
-  align-items: center;
+const Description = styled.p`
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const HeaderActions = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
+`;
+
+const Filter = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
   align-items: center;
 `;
 
