@@ -1433,8 +1433,13 @@ export interface components {
     };
     SortObject: {
       empty?: boolean;
-      sorted?: boolean;
       unsorted?: boolean;
+      sorted?: boolean;
+    };
+    CategoryResponse: {
+      /** Format: int64 */
+      id: number;
+      name: string;
     };
     CategoryResponse: {
       /** Format: int64 */
