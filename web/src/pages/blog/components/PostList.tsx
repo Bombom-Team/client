@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import FeaturedPost from './FeaturedPost';
 import PostCard from './PostCard';
 import { useDevice } from '@/hooks/useDevice';
-import type { PostListItem } from '../types/post';
+import type { PostListItem } from '@/apis/blog/blog.api';
 import type { Device } from '@/hooks/useDevice';
 
 interface PostListProps {

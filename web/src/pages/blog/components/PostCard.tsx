@@ -7,7 +7,7 @@ import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback'
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 import { formatDateToKorean } from '@/utils/date';
-import type { PostListItem } from '../types/post';
+import type { PostListItem } from '@/apis/blog/blog.api';
 import type { Device } from '@/hooks/useDevice';
 import CalendarIcon from '#/assets/svg/calendar.svg';
 
