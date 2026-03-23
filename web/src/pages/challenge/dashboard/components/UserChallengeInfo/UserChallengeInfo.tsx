@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import UserChallengeOverview from './UserChallengeOverview';
+import UserChallengeSummaryCard from './UserChallengeSummaryCard';
 import UserDailyCheckList from './UserDailyCheckList';
 import { useDevice } from '@/hooks/useDevice';
 import type {
@@ -18,6 +19,8 @@ const UserChallengeInfo = ({
 }: UserChallengeInfoProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
+  const completionRate =
+    (memberChallengeProgressInfo.completedDays / challengeInfo.totalDays) * 100;
 
   return (
     <Container isMobile={isMobile}>
@@ -29,6 +32,14 @@ const UserChallengeInfo = ({
           />
         )}
       </OverviewArea>
+      {isMobile && (
+        <SummaryArea>
+          <UserChallengeSummaryCard
+            memberChallengeProgressInfo={memberChallengeProgressInfo}
+            completionRate={completionRate}
+          />
+        </SummaryArea>
+      )}
       <ChecklistArea isMobile={isMobile}>
         <UserDailyCheckList
           todayTodos={memberChallengeProgressInfo.todayTodos}
@@ -58,4 +69,8 @@ const ChecklistArea = styled.div<{ isMobile: boolean }>`
 const OverviewArea = styled.div`
   min-width: 0;
   flex: 1;
+`;
+
+const SummaryArea = styled.div`
+  width: 100%;
 `;
