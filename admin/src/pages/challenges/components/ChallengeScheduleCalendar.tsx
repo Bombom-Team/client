@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { FiX } from 'react-icons/fi';
 import { challengesQueries } from '@/apis/challenges/challenges.query';
 import type {
   ChallengeDailyGuide,
@@ -96,6 +97,10 @@ const getGuideTypeTone = (dailyGuideType?: string): GuideTypeTone => {
   return GUIDE_TYPE_TONES[hash % GUIDE_TYPE_TONES.length];
 };
 
+const formatDayIndexLabel = (dayIndex: number) => {
+  return dayIndex === 0 ? '주말(0일차)' : `${dayIndex}일차`;
+};
+
 const ChallengeDailyGuideModal = ({
   challengeId,
   selectedSchedule,
@@ -114,10 +119,11 @@ const ChallengeDailyGuideModal = ({
       <ModalCard onClick={(event) => event.stopPropagation()}>
         <ModalHeader>
           <ModalTitle>
-            {selectedSchedule.date} · {selectedSchedule.dayIndex}일차
+            {selectedSchedule.date} ·{' '}
+            {formatDayIndexLabel(selectedSchedule.dayIndex)}
           </ModalTitle>
           <CloseButton type="button" onClick={onClose}>
-            닫기
+            <FiX />
           </CloseButton>
         </ModalHeader>
 
@@ -132,6 +138,8 @@ const ChallengeDailyGuideModal = ({
               : '가이드 정보를 불러오지 못했습니다.'}
           </ModalErrorText>
         )}
+
+        {data === null && <ModalStateText>미등록</ModalStateText>}
 
         {data && (
           <ChallengeDailyGuideContent
@@ -166,7 +174,7 @@ const ChallengeDailyGuideContent = ({
         </InfoRow>
         <InfoRow>
           <InfoLabel>일차</InfoLabel>
-          <InfoValue>{guide.dayIndex}일차</InfoValue>
+          <InfoValue>{formatDayIndexLabel(guide.dayIndex)}</InfoValue>
         </InfoRow>
         <InfoRow>
           <InfoLabel>타입</InfoLabel>
@@ -190,7 +198,7 @@ const ChallengeDailyGuideContent = ({
         {previewImageUrl ? (
           <ImagePreview
             src={previewImageUrl}
-            alt={`${guide.dayIndex}일차 가이드`}
+            alt={`${formatDayIndexLabel(guide.dayIndex)} 가이드`}
           />
         ) : (
           <ModalStateText>등록된 이미지가 없습니다.</ModalStateText>
@@ -251,7 +259,7 @@ const ChallengeScheduleCalendar = ({ challengeId, enabled = true }: Props) => {
                   <DayMetaWrapper>
                     <DateText>{Number(schedule.date.slice(8, 10))}</DateText>
                     <DayIndexBadge isOffDay={schedule.dayIndex === 0}>
-                      {schedule.dayIndex}일차
+                      {formatDayIndexLabel(schedule.dayIndex)}
                     </DayIndexBadge>
                     {schedule.dailyGuideType && (
                       <GuideTypeBadge
@@ -264,7 +272,7 @@ const ChallengeScheduleCalendar = ({ challengeId, enabled = true }: Props) => {
                   {schedule.imageUrl && (
                     <DayImagePreview
                       src={schedule.imageUrl}
-                      alt={`${schedule.dayIndex}일차 썸네일`}
+                      alt={`${formatDayIndexLabel(schedule.dayIndex)} 썸네일`}
                     />
                   )}
                 </DayButton>
@@ -452,7 +460,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalCard = styled.div`
-  width: min(720px, calc(100vw - 32px));
+  width: min(880px, calc(100vw - 32px));
   max-height: calc(100vh - 48px);
   padding: ${({ theme }) => theme.spacing.xl};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
@@ -480,13 +488,18 @@ const ModalTitle = styled.h4`
 `;
 
 const CloseButton = styled.button`
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  width: 36px;
+  height: 36px;
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.gray700};
-  font-size: ${({ theme }) => theme.fontSize.sm};
+  font-size: ${({ theme }) => theme.fontSize.lg};
 
   cursor: pointer;
 `;

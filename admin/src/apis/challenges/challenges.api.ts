@@ -1,4 +1,4 @@
-import { fetcher } from '@bombom/shared/apis';
+import { ApiError, fetcher } from '@bombom/shared/apis';
 import type { PageableResponse } from '@/apis/types/PageableResponse';
 import type {
   Challenge,
@@ -55,9 +55,22 @@ export const getChallengeDailyGuide = async ({
   challengeId: number;
   dayIndex: number;
 }) => {
-  return fetcher.get<ChallengeDailyGuide>({
-    path: `/challenges/${challengeId}/daily-guides/days/${dayIndex}`,
-  });
+  try {
+    return await fetcher.get<ChallengeDailyGuide>({
+      path: `/challenges/${challengeId}/daily-guides/days/${dayIndex}`,
+    });
+  } catch (error) {
+    if (
+      error instanceof ApiError &&
+      (error.status === 404 ||
+        error.message.includes('해당 dayIndex의 가이드 없음') ||
+        error.message.includes('존재하지 않는'))
+    ) {
+      return null;
+    }
+
+    throw error;
+  }
 };
 
 export const getChallengeParticipants = async ({
