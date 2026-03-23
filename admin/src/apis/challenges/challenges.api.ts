@@ -63,6 +63,80 @@ export type CreateChallengeDailyGuideRequest = {
   notice?: string;
 };
 
+export type UpdateChallengeDailyGuideRequest = {
+  dayIndex?: number;
+  type?: 'READ' | 'COMMENT' | 'SHARING' | 'REMIND';
+  fileName?: string;
+  imageUrl?: string;
+  notice?: string;
+};
+
+const requestChallengeDailyGuide = async ({
+  url,
+  method,
+  image,
+  request,
+  defaultErrorMessage,
+}: {
+  url: URL;
+  method: 'POST' | 'PATCH';
+  image?: File;
+  request: CreateChallengeDailyGuideRequest | UpdateChallengeDailyGuideRequest;
+  defaultErrorMessage: string;
+}) => {
+  const formData = new FormData();
+
+  if (image) {
+    formData.append('image', image);
+  }
+
+  formData.append(
+    'request',
+    new Blob([JSON.stringify(request)], {
+      type: 'application/json',
+    }),
+  );
+
+  const response = await fetch(url, {
+    method,
+    credentials: 'include',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const contentType = response.headers.get('Content-Type');
+    let errorMessage = defaultErrorMessage;
+    let rawBody;
+
+    try {
+      if (contentType?.includes('application/json')) {
+        rawBody = await response.json();
+        errorMessage = rawBody.message ?? errorMessage;
+      } else {
+        rawBody = await response.text();
+        errorMessage = rawBody || errorMessage;
+      }
+    } catch {
+      errorMessage = '응답 파싱에 실패했습니다.';
+    }
+
+    throw new ApiError(response.status, errorMessage, rawBody);
+  }
+
+  const contentLength = response.headers.get('Content-Length');
+  const contentType = response.headers.get('Content-Type');
+
+  if (response.status === 204 || contentLength === '0') {
+    return null;
+  }
+
+  if (!contentType?.includes('application/json')) {
+    return null;
+  }
+
+  return response.json() as Promise<ChallengeDailyGuide | null>;
+};
+
 export const getChallengeDailyGuide = async ({
   challengeId,
   dayIndex,
@@ -97,58 +171,35 @@ export const createChallengeDailyGuide = async ({
   image?: File;
   request: CreateChallengeDailyGuideRequest;
 }) => {
-  const url = new URL(`${ENV.baseUrl}/challenges/${challengeId}/daily-guides`);
-  const formData = new FormData();
-
-  if (image) {
-    formData.append('image', image);
-  }
-
-  formData.append(
-    'request',
-    new Blob([JSON.stringify(request)], {
-      type: 'application/json',
-    }),
-  );
-
-  const response = await fetch(url, {
+  return requestChallengeDailyGuide({
+    url: new URL(`${ENV.baseUrl}/challenges/${challengeId}/daily-guides`),
     method: 'POST',
-    credentials: 'include',
-    body: formData,
+    image,
+    request,
+    defaultErrorMessage: '데일리 가이드 생성에 실패했습니다.',
   });
+};
 
-  if (!response.ok) {
-    const contentType = response.headers.get('Content-Type');
-    let errorMessage = '데일리 가이드 생성에 실패했습니다.';
-    let rawBody;
-
-    try {
-      if (contentType?.includes('application/json')) {
-        rawBody = await response.json();
-        errorMessage = rawBody.message ?? errorMessage;
-      } else {
-        rawBody = await response.text();
-        errorMessage = rawBody || errorMessage;
-      }
-    } catch {
-      errorMessage = '응답 파싱에 실패했습니다.';
-    }
-
-    throw new ApiError(response.status, errorMessage, rawBody);
-  }
-
-  const contentLength = response.headers.get('Content-Length');
-  const contentType = response.headers.get('Content-Type');
-
-  if (response.status === 204 || contentLength === '0') {
-    return null;
-  }
-
-  if (!contentType?.includes('application/json')) {
-    return null;
-  }
-
-  return response.json() as Promise<ChallengeDailyGuide | null>;
+export const updateChallengeDailyGuide = async ({
+  challengeId,
+  guideId,
+  image,
+  request,
+}: {
+  challengeId: number;
+  guideId: number;
+  image?: File;
+  request: UpdateChallengeDailyGuideRequest;
+}) => {
+  return requestChallengeDailyGuide({
+    url: new URL(
+      `${ENV.baseUrl}/challenges/${challengeId}/daily-guides/${guideId}`,
+    ),
+    method: 'PATCH',
+    image,
+    request,
+    defaultErrorMessage: '데일리 가이드 수정에 실패했습니다.',
+  });
 };
 
 export type DeleteChallengeDailyGuideParams = {

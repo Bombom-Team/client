@@ -7,6 +7,7 @@ import {
   getChallengeSchedule,
   getChallenges,
   createChallengeDailyGuide,
+  updateChallengeDailyGuide,
   deleteChallengeDailyGuide,
   assignChallengeTeams,
   updateParticipantTeam,
@@ -19,6 +20,7 @@ import type {
   AssignChallengeTeamsParams,
   CreateChallengeTeamsParams,
   CreateChallengeDailyGuideRequest,
+  UpdateChallengeDailyGuideRequest,
   DeleteChallengeDailyGuideParams,
   DeleteChallengeTeamParams,
   GetChallengeParticipantsParams,
@@ -100,6 +102,19 @@ export const challengesQueries = {
         image?: File;
         request: CreateChallengeDailyGuideRequest;
       }) => createChallengeDailyGuide({ challengeId, image, request }),
+    }),
+    updateDailyGuide: () => ({
+      mutationFn: ({
+        challengeId,
+        guideId,
+        image,
+        request,
+      }: {
+        challengeId: number;
+        guideId: number;
+        image?: File;
+        request: UpdateChallengeDailyGuideRequest;
+      }) => updateChallengeDailyGuide({ challengeId, guideId, image, request }),
     }),
     deleteDailyGuide: () => ({
       mutationFn: (params: DeleteChallengeDailyGuideParams) =>
