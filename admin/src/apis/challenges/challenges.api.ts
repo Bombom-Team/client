@@ -1,4 +1,5 @@
 import { ApiError, fetcher } from '@bombom/shared/apis';
+import { ENV } from '@bombom/shared/env';
 import type { PageableResponse } from '@/apis/types/PageableResponse';
 import type {
   Challenge,
@@ -54,10 +55,11 @@ export const getChallengeDailyGuideImages = async (challengeId: number) => {
   });
 };
 
-export type CreateChallengeDailyGuidePayload = {
+export type CreateChallengeDailyGuideRequest = {
   dayIndex: number;
   type: 'READ' | 'COMMENT' | 'SHARING' | 'REMIND';
-  imageUrl: string;
+  fileName?: string;
+  imageUrl?: string;
   notice?: string;
 };
 
@@ -88,14 +90,78 @@ export const getChallengeDailyGuide = async ({
 
 export const createChallengeDailyGuide = async ({
   challengeId,
-  payload,
+  image,
+  request,
 }: {
   challengeId: number;
-  payload: CreateChallengeDailyGuidePayload;
+  image?: File;
+  request: CreateChallengeDailyGuideRequest;
 }) => {
-  return fetcher.post<CreateChallengeDailyGuidePayload, ChallengeDailyGuide>({
-    path: `/challenges/${challengeId}/daily-guides`,
-    body: payload,
+  const url = new URL(`${ENV.baseUrl}/challenges/${challengeId}/daily-guides`);
+  const formData = new FormData();
+
+  if (image) {
+    formData.append('image', image);
+  }
+
+  formData.append(
+    'request',
+    new Blob([JSON.stringify(request)], {
+      type: 'application/json',
+    }),
+  );
+
+  const response = await fetch(url, {
+    method: 'POST',
+    credentials: 'include',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const contentType = response.headers.get('Content-Type');
+    let errorMessage = '데일리 가이드 생성에 실패했습니다.';
+    let rawBody;
+
+    try {
+      if (contentType?.includes('application/json')) {
+        rawBody = await response.json();
+        errorMessage = rawBody.message ?? errorMessage;
+      } else {
+        rawBody = await response.text();
+        errorMessage = rawBody || errorMessage;
+      }
+    } catch {
+      errorMessage = '응답 파싱에 실패했습니다.';
+    }
+
+    throw new ApiError(response.status, errorMessage, rawBody);
+  }
+
+  const contentLength = response.headers.get('Content-Length');
+  const contentType = response.headers.get('Content-Type');
+
+  if (response.status === 204 || contentLength === '0') {
+    return null;
+  }
+
+  if (!contentType?.includes('application/json')) {
+    return null;
+  }
+
+  return response.json() as Promise<ChallengeDailyGuide | null>;
+};
+
+export type DeleteChallengeDailyGuideParams = {
+  challengeId: number;
+  guideId: number;
+};
+
+export const deleteChallengeDailyGuide = async ({
+  challengeId,
+  guideId,
+}: DeleteChallengeDailyGuideParams) => {
+  return fetcher.delete<never, void>({
+    path: `/challenges/${challengeId}/daily-guides/${guideId}`,
   });
 };
 

@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiX } from 'react-icons/fi';
 import { challengesQueries } from '@/apis/challenges/challenges.query';
 import { useCreateChallengeDailyGuideMutation } from '@/pages/challenges/hooks/useCreateChallengeDailyGuideMutation';
+import { useDeleteChallengeDailyGuideMutation } from '@/pages/challenges/hooks/useDeleteChallengeDailyGuideMutation';
 import type {
   ChallengeDailyGuide,
   ChallengeSchedule,
@@ -150,8 +151,10 @@ const ChallengeDailyGuideModal = ({
 
         {data && (
           <ChallengeDailyGuideContent
+            challengeId={challengeId}
             guide={data}
             scheduleImageUrl={selectedSchedule.imageUrl}
+            onDeleted={onClose}
           />
         )}
       </ModalCard>
@@ -167,7 +170,45 @@ const GUIDE_TYPE_OPTIONS = [
 ] as const;
 
 const isNoticeRequiredGuideType = (guideType: string) => {
+  return guideType === 'COMMENT';
+};
+
+const isNoticeFieldVisibleGuideType = (guideType: string) => {
   return guideType === 'COMMENT' || guideType === 'REMIND';
+};
+
+const getDefaultUploadFileName = (fileName: string) => {
+  return fileName.replace(/\.[^/.]+$/, '');
+};
+
+const getGuideNoticeDescription = (guideType: string) => {
+  return guideType === 'COMMENT'
+    ? 'COMMENT 타입은 공지 문구 입력이 필수입니다.'
+    : 'REMIND 타입은 공지 문구를 입력하지 않아도 됩니다.';
+};
+
+const buildCreateGuideRequest = ({
+  dayIndex,
+  guideType,
+  notice,
+  selectedImageUrl,
+  selectedImageFile,
+  uploadFileName,
+}: {
+  dayIndex: number;
+  guideType: 'READ' | 'COMMENT' | 'SHARING' | 'REMIND';
+  notice: string;
+  selectedImageUrl: string;
+  selectedImageFile: File | null;
+  uploadFileName: string;
+}) => {
+  return {
+    dayIndex,
+    type: guideType,
+    fileName: selectedImageFile ? uploadFileName.trim() : undefined,
+    imageUrl: selectedImageFile ? undefined : selectedImageUrl,
+    notice: notice.trim() || undefined,
+  };
 };
 
 const ChallengeDailyGuideCreateForm = ({
@@ -182,34 +223,55 @@ const ChallengeDailyGuideCreateForm = ({
   >('READ');
   const [notice, setNotice] = useState('');
   const [selectedImageUrl, setSelectedImageUrl] = useState('');
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [uploadFileName, setUploadFileName] = useState('');
   const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const { mutate: createDailyGuide, isPending } =
     useCreateChallengeDailyGuideMutation({
       challengeId,
       dayIndex: selectedSchedule.dayIndex,
     });
 
-  const handleCreate = () => {
-    if (!selectedImageUrl) {
-      alert('생성할 이미지를 선택해주세요.');
-      return;
+  const validateCreateForm = () => {
+    if (!selectedImageUrl && !selectedImageFile) {
+      alert('기존 이미지를 선택하거나 새 이미지를 업로드해주세요.');
+      return false;
     }
 
     if (isNoticeRequiredGuideType(guideType) && !notice.trim()) {
-      alert('COMMENT, REMIND 타입은 공지 문구를 입력해주세요.');
+      alert('COMMENT 타입은 공지 문구를 입력해주세요.');
+      return false;
+    }
+
+    if (selectedImageFile && !uploadFileName.trim()) {
+      alert('업로드할 이미지 파일명을 입력해주세요.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleOpenPreview = () => {
+    if (!validateCreateForm()) {
       return;
     }
 
+    setIsPreviewOpen(true);
+  };
+
+  const handleCreate = () => {
     createDailyGuide({
       challengeId,
-      payload: {
+      image: selectedImageFile ?? undefined,
+      request: buildCreateGuideRequest({
         dayIndex: selectedSchedule.dayIndex,
-        type: guideType,
-        imageUrl: selectedImageUrl,
-        notice: isNoticeRequiredGuideType(guideType)
-          ? notice.trim()
-          : undefined,
-      },
+        guideType,
+        notice,
+        selectedImageUrl,
+        selectedImageFile,
+        uploadFileName,
+      }),
     });
   };
 
@@ -246,28 +308,68 @@ const ChallengeDailyGuideCreateForm = ({
             />
             <PreviewCaption>{selectedImageUrl}</PreviewCaption>
           </CreatePreviewWrapper>
+        ) : selectedImageFile ? (
+          <CreatePreviewWrapper>
+            <UploadInfoBox>
+              새 이미지 업로드 선택됨: {selectedImageFile.name}
+            </UploadInfoBox>
+          </CreatePreviewWrapper>
         ) : (
           <ModalStateText>선택된 이미지가 없습니다.</ModalStateText>
         )}
-        <SecondaryButton
-          type="button"
-          onClick={() => setIsImageSelectorOpen(true)}
-        >
-          이미지 선택
-        </SecondaryButton>
+        <ActionButtonsWrapper>
+          <SecondaryButton
+            type="button"
+            onClick={() => setIsImageSelectorOpen(true)}
+          >
+            기존 이미지 선택
+          </SecondaryButton>
+          <FileUploadLabel>
+            새 이미지 업로드
+            <HiddenFileInput
+              type="file"
+              accept="image/png,image/jpeg,image/gif,image/webp"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (!file) {
+                  return;
+                }
+
+                setSelectedImageFile(file);
+                setSelectedImageUrl('');
+                setUploadFileName(getDefaultUploadFileName(file.name));
+              }}
+            />
+          </FileUploadLabel>
+        </ActionButtonsWrapper>
+        <FormHelpText>
+          기존 이미지 선택 또는 새 이미지 업로드 중 하나는 반드시 필요합니다.
+        </FormHelpText>
       </FormGroup>
 
-      {isNoticeRequiredGuideType(guideType) && (
+      {selectedImageFile && (
+        <FormGroup>
+          <FormLabel htmlFor="daily-guide-file-name">업로드 파일명</FormLabel>
+          <FormInput
+            id="daily-guide-file-name"
+            type="text"
+            value={uploadFileName}
+            onChange={(event) => setUploadFileName(event.target.value)}
+            placeholder="예: day1-read-guide"
+          />
+          <FormHelpText>
+            확장자를 제외한 S3 저장 파일명을 입력합니다.
+          </FormHelpText>
+        </FormGroup>
+      )}
+
+      {isNoticeFieldVisibleGuideType(guideType) && (
         <FormGroup>
           <FormLabel htmlFor="daily-guide-notice">
             공지 문구
             {guideType === 'COMMENT' ? ' (필수)' : ' (선택)'}
           </FormLabel>
-          <FormHelpText>
-            {guideType === 'COMMENT'
-              ? 'COMMENT 타입은 공지 문구 입력이 필수입니다.'
-              : 'REMIND 타입은 공지 문구를 입력하지 않아도 됩니다.'}
-          </FormHelpText>
+          <FormHelpText>{getGuideNoticeDescription(guideType)}</FormHelpText>
           <FormTextarea
             id="daily-guide-notice"
             value={notice}
@@ -279,10 +381,10 @@ const ChallengeDailyGuideCreateForm = ({
 
       <CreateButton
         type="button"
-        onClick={handleCreate}
-        disabled={isPending || !selectedImageUrl}
+        onClick={handleOpenPreview}
+        disabled={isPending}
       >
-        {isPending ? '생성 중...' : '데일리 가이드 생성'}
+        생성 미리보기
       </CreateButton>
 
       {isImageSelectorOpen && (
@@ -293,7 +395,26 @@ const ChallengeDailyGuideCreateForm = ({
           onClose={() => setIsImageSelectorOpen(false)}
           onSelect={(imageUrl) => {
             setSelectedImageUrl(imageUrl);
+            setSelectedImageFile(null);
+            setUploadFileName('');
             setIsImageSelectorOpen(false);
+          }}
+        />
+      )}
+
+      {isPreviewOpen && (
+        <ChallengeDailyGuideCreatePreviewModal
+          selectedSchedule={selectedSchedule}
+          guideType={guideType}
+          notice={notice}
+          selectedImageUrl={selectedImageUrl}
+          selectedImageFile={selectedImageFile}
+          uploadFileName={uploadFileName}
+          isPending={isPending}
+          onClose={() => setIsPreviewOpen(false)}
+          onConfirm={() => {
+            handleCreate();
+            setIsPreviewOpen(false);
           }}
         />
       )}
@@ -368,14 +489,223 @@ const ChallengeDailyGuideImageSelectorModal = ({
   );
 };
 
-const ChallengeDailyGuideContent = ({
+const ChallengeDailyGuideCreatePreviewModal = ({
+  selectedSchedule,
+  guideType,
+  notice,
+  selectedImageUrl,
+  selectedImageFile,
+  uploadFileName,
+  isPending,
+  onClose,
+  onConfirm,
+}: {
+  selectedSchedule: ChallengeSchedule;
+  guideType: 'READ' | 'COMMENT' | 'SHARING' | 'REMIND';
+  notice: string;
+  selectedImageUrl: string;
+  selectedImageFile: File | null;
+  uploadFileName: string;
+  isPending: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}) => {
+  const [previewImageUrl, setPreviewImageUrl] = useState(selectedImageUrl);
+
+  useEffect(() => {
+    if (selectedImageUrl) {
+      setPreviewImageUrl(selectedImageUrl);
+      return;
+    }
+
+    if (!selectedImageFile) {
+      setPreviewImageUrl('');
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(selectedImageFile);
+    setPreviewImageUrl(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [selectedImageFile, selectedImageUrl]);
+
+  return (
+    <SelectorOverlay onClick={onClose}>
+      <ConfirmCard onClick={(event) => event.stopPropagation()}>
+        <ModalHeader>
+          <ModalTitle>생성 미리보기</ModalTitle>
+          <CloseButton type="button" onClick={onClose}>
+            <FiX />
+          </CloseButton>
+        </ModalHeader>
+
+        <ModalContentWrapper>
+          <InfoGrid>
+            <InfoRow>
+              <InfoLabel>일차</InfoLabel>
+              <InfoValue>
+                {formatDayIndexLabel(selectedSchedule.dayIndex)}
+              </InfoValue>
+            </InfoRow>
+            <InfoRow>
+              <InfoLabel>타입</InfoLabel>
+              <InfoValue>{guideType}</InfoValue>
+            </InfoRow>
+            <InfoRow>
+              <InfoLabel>이미지 방식</InfoLabel>
+              <InfoValue>
+                {selectedImageFile ? '새 이미지 업로드' : '기존 이미지 선택'}
+              </InfoValue>
+            </InfoRow>
+            {selectedImageFile && (
+              <InfoRow>
+                <InfoLabel>업로드 파일명</InfoLabel>
+                <InfoValue>{uploadFileName}</InfoValue>
+              </InfoRow>
+            )}
+          </InfoGrid>
+
+          {isNoticeFieldVisibleGuideType(guideType) && (
+            <SectionWrapper>
+              <SectionTitle>공지 문구</SectionTitle>
+              <NoticeBox>{notice.trim() || '-'}</NoticeBox>
+            </SectionWrapper>
+          )}
+
+          <SectionWrapper>
+            <SectionTitle>이미지 미리보기</SectionTitle>
+            {previewImageUrl ? (
+              <ImagePreview
+                src={previewImageUrl}
+                alt={`${formatDayIndexLabel(selectedSchedule.dayIndex)} 생성 미리보기`}
+              />
+            ) : (
+              <ModalStateText>선택된 이미지가 없습니다.</ModalStateText>
+            )}
+            {selectedImageFile && (
+              <FormHelpText>{selectedImageFile.name}</FormHelpText>
+            )}
+          </SectionWrapper>
+
+          <ActionButtonsWrapper>
+            <SecondaryButton
+              type="button"
+              onClick={onClose}
+              disabled={isPending}
+            >
+              수정 계속하기
+            </SecondaryButton>
+            <CreateButton
+              type="button"
+              onClick={onConfirm}
+              disabled={isPending}
+            >
+              {isPending ? '생성 중...' : '이 내용으로 생성'}
+            </CreateButton>
+          </ActionButtonsWrapper>
+        </ModalContentWrapper>
+      </ConfirmCard>
+    </SelectorOverlay>
+  );
+};
+
+const ChallengeDailyGuideDeleteConfirmModal = ({
   guide,
-  scheduleImageUrl,
+  previewImageUrl,
+  isPending,
+  onClose,
+  onConfirm,
 }: {
   guide: ChallengeDailyGuide;
+  previewImageUrl?: string;
+  isPending: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}) => {
+  return (
+    <SelectorOverlay onClick={onClose}>
+      <ConfirmCard onClick={(event) => event.stopPropagation()}>
+        <ModalHeader>
+          <ModalTitle>데일리 가이드 삭제 확인</ModalTitle>
+          <CloseButton type="button" onClick={onClose}>
+            <FiX />
+          </CloseButton>
+        </ModalHeader>
+
+        <WarningBox>
+          삭제된 가이드는 복구할 수 없습니다. S3에 저장된 이미지는 삭제되지
+          않습니다.
+        </WarningBox>
+
+        <ModalContentWrapper>
+          <InfoGrid>
+            <InfoRow>
+              <InfoLabel>가이드 ID</InfoLabel>
+              <InfoValue>{guide.id}</InfoValue>
+            </InfoRow>
+            <InfoRow>
+              <InfoLabel>일차</InfoLabel>
+              <InfoValue>{formatDayIndexLabel(guide.dayIndex)}</InfoValue>
+            </InfoRow>
+            <InfoRow>
+              <InfoLabel>타입</InfoLabel>
+              <InfoValue>{guide.type}</InfoValue>
+            </InfoRow>
+          </InfoGrid>
+
+          {previewImageUrl && (
+            <SectionWrapper>
+              <SectionTitle>삭제 대상 이미지</SectionTitle>
+              <ImagePreview
+                src={previewImageUrl}
+                alt={`${formatDayIndexLabel(guide.dayIndex)} 삭제 확인`}
+              />
+            </SectionWrapper>
+          )}
+
+          <ActionButtonsWrapper>
+            <SecondaryButton
+              type="button"
+              onClick={onClose}
+              disabled={isPending}
+            >
+              취소
+            </SecondaryButton>
+            <DangerButton
+              type="button"
+              onClick={onConfirm}
+              disabled={isPending}
+            >
+              {isPending ? '삭제 중...' : '삭제 진행'}
+            </DangerButton>
+          </ActionButtonsWrapper>
+        </ModalContentWrapper>
+      </ConfirmCard>
+    </SelectorOverlay>
+  );
+};
+
+const ChallengeDailyGuideContent = ({
+  challengeId,
+  guide,
+  scheduleImageUrl,
+  onDeleted,
+}: {
+  challengeId: number;
+  guide: ChallengeDailyGuide;
   scheduleImageUrl?: string;
+  onDeleted: () => void;
 }) => {
   const previewImageUrl = scheduleImageUrl || guide.imageUrl;
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const { mutate: deleteDailyGuide, isPending: isDeletePending } =
+    useDeleteChallengeDailyGuideMutation({
+      challengeId,
+      dayIndex: guide.dayIndex,
+      onSuccess: onDeleted,
+    });
 
   return (
     <ModalContentWrapper>
@@ -402,12 +732,20 @@ const ChallengeDailyGuideContent = ({
         </InfoRow>
       </InfoGrid>
 
-      {isNoticeRequiredGuideType(guide.type) && (
+      {isNoticeFieldVisibleGuideType(guide.type) && (
         <SectionWrapper>
           <SectionTitle>공지 문구</SectionTitle>
           <NoticeBox>{guide.notice || '-'}</NoticeBox>
         </SectionWrapper>
       )}
+
+      <DangerButton
+        type="button"
+        onClick={() => setIsDeleteConfirmOpen(true)}
+        disabled={isDeletePending}
+      >
+        {isDeletePending ? '삭제 중...' : '데일리 가이드 삭제'}
+      </DangerButton>
 
       <SectionWrapper>
         <SectionTitle>이미지</SectionTitle>
@@ -420,6 +758,22 @@ const ChallengeDailyGuideContent = ({
           <ModalStateText>등록된 이미지가 없습니다.</ModalStateText>
         )}
       </SectionWrapper>
+
+      {isDeleteConfirmOpen && (
+        <ChallengeDailyGuideDeleteConfirmModal
+          guide={guide}
+          previewImageUrl={previewImageUrl}
+          isPending={isDeletePending}
+          onClose={() => setIsDeleteConfirmOpen(false)}
+          onConfirm={() => {
+            deleteDailyGuide({
+              challengeId,
+              guideId: guide.id,
+            });
+            setIsDeleteConfirmOpen(false);
+          }}
+        />
+      )}
     </ModalContentWrapper>
   );
 };
@@ -853,6 +1207,21 @@ const FormTextarea = styled.textarea`
   resize: vertical;
 `;
 
+const FormInput = styled.input`
+  min-height: 42px;
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.gray800};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const HiddenFileInput = styled.input`
+  display: none;
+`;
+
 const ImageOptionsGrid = styled.div`
   display: grid;
   gap: ${({ theme }) => theme.spacing.md};
@@ -901,11 +1270,49 @@ const PreviewCaption = styled.div`
   overflow-wrap: anywhere;
 `;
 
+const UploadInfoBox = styled.div`
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const ActionButtonsWrapper = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-wrap: wrap;
+`;
+
 const SecondaryButton = styled.button`
   min-height: 42px;
   padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
+const FileUploadLabel = styled.label`
+  min-height: 42px;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.gray700};
@@ -934,10 +1341,43 @@ const CreateButton = styled.button`
   }
 `;
 
+const DangerButton = styled.button`
+  min-height: 44px;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.error};
+  color: ${({ theme }) => theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
 const SelectorOverlay = styled(ModalOverlay)`
   z-index: 1001;
 `;
 
 const SelectorCard = styled(ModalCard)`
   width: min(960px, calc(100vw - 32px));
+`;
+
+const ConfirmCard = styled(ModalCard)`
+  width: min(720px, calc(100vw - 32px));
+`;
+
+const WarningBox = styled.div`
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => `${theme.colors.warning}14`};
+  color: ${({ theme }) => theme.colors.gray800};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.6;
 `;

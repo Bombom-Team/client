@@ -1,23 +1,22 @@
 import { ApiError } from '@bombom/shared/apis';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { challengesQueries } from '@/apis/challenges/challenges.query';
-import type { CreateChallengeDailyGuideRequest } from '@/apis/challenges/challenges.api';
 
-type UseCreateChallengeDailyGuideMutationParams = {
+type UseDeleteChallengeDailyGuideMutationParams = {
   challengeId: number;
   dayIndex: number;
   onSuccess?: () => void;
 };
 
-export const useCreateChallengeDailyGuideMutation = ({
+export const useDeleteChallengeDailyGuideMutation = ({
   challengeId,
   dayIndex,
   onSuccess,
-}: UseCreateChallengeDailyGuideMutationParams) => {
+}: UseDeleteChallengeDailyGuideMutationParams) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    ...challengesQueries.mutation.createDailyGuide(),
+    ...challengesQueries.mutation.deleteDailyGuide(),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
@@ -28,7 +27,7 @@ export const useCreateChallengeDailyGuideMutation = ({
             .queryKey,
         }),
       ]);
-      alert('데일리 가이드가 생성되었습니다.');
+      alert('데일리 가이드가 삭제되었습니다.');
       onSuccess?.();
     },
     onError: (error) => {
@@ -36,13 +35,8 @@ export const useCreateChallengeDailyGuideMutation = ({
         alert(error.message);
         return;
       }
-      alert('데일리 가이드 생성에 실패했습니다.');
+
+      alert('데일리 가이드 삭제에 실패했습니다.');
     },
   });
-};
-
-export type CreateChallengeDailyGuideMutationParams = {
-  challengeId: number;
-  image?: File;
-  request: CreateChallengeDailyGuideRequest;
 };
