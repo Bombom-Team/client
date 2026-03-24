@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import PostContent from './PostContent';
 import PostMetadata from './PostMetadata';
-import { PostDetail } from '../types/post';
+import { PostDetail } from '@/apis/blog/blog.api';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';

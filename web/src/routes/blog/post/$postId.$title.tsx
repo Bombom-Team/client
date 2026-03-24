@@ -6,9 +6,9 @@ import Button from '@/components/Button/Button';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import { useDevice } from '@/hooks/useDevice';
 import useScrollProgress from '@/hooks/useScrollProgress';
-import FloatingPostPanel from '@/pages/blog/components/FloatingPostPanel';
-import PostDetail from '@/pages/blog/components/PostDetail';
-import PostDetailSkeleton from '@/pages/blog/components/PostDetailSkeleton';
+import FloatingPostPanel from '@/pages/blog/components/PostDetail/FloatingPostPanel';
+import PostDetail from '@/pages/blog/components/PostDetail/PostDetail';
+import PostDetailSkeleton from '@/pages/blog/components/PostDetail/PostDetailSkeleton';
 import { createBlogPostingSchema } from '@/pages/blog/utils/seo';
 import type { Device } from '@/hooks/useDevice';
 
