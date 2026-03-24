@@ -1,15 +1,13 @@
 import styled from '@emotion/styled';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import FeaturedPost from './FeaturedPost';
 import PostCard from './PostCard';
+import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
-import type { PostListItem } from '@/apis/blog/blog.api';
 import type { Device } from '@/hooks/useDevice';
 
-interface PostListProps {
-  posts: PostListItem[];
-}
-
-const PostList = ({ posts }: PostListProps) => {
+const PostList = () => {
+  const { data: posts } = useSuspenseQuery(queries.blogPosts());
   const device = useDevice();
 
   if (posts.length === 0) {
@@ -32,7 +30,7 @@ const PostList = ({ posts }: PostListProps) => {
 
 export default PostList;
 
-const CardWrapper = styled.section<{ device: Device }>`
+export const CardWrapper = styled.section<{ device: Device }>`
   margin-top: ${({ device }) => (device === 'mobile' ? '56px' : '80px')};
 
   display: grid;

@@ -2,7 +2,6 @@ import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import { createSlug } from '../utils/slug';
-import Flex from '@/components/Flex';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
@@ -41,7 +40,7 @@ const PostCard = ({ post }: PostCardProps) => {
         )}
       </Thumbnail>
 
-      <Flex direction="column" gap={12}>
+      <ContentWrapper>
         <Title device={device}>{post.title}</Title>
         {post.description && (
           <Description device={device}>{post.description}</Description>
@@ -74,14 +73,14 @@ const PostCard = ({ post }: PostCardProps) => {
             {post.categoryName}
           </Text>
         </MetaInfo>
-      </Flex>
+      </ContentWrapper>
     </Container>
   );
 };
 
 export default PostCard;
 
-const Container = styled(Link)`
+export const Container = styled(Link)`
   border-radius: 16px;
 
   display: flex;
@@ -157,7 +156,13 @@ const Description = styled.p<{ device: Device }>`
   text-overflow: ellipsis;
 `;
 
-const MetaInfo = styled.div`
+export const ContentWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+`;
+
+export const MetaInfo = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;

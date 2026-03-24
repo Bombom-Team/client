@@ -35,7 +35,7 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
         )}
       </Thumbnail>
 
-      <Content device={device}>
+      <ContentWrapper device={device}>
         <Text
           as="p"
           color="textTertiary"
@@ -43,12 +43,12 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
         >
           이 주의 콘텐츠
         </Text>
-        <Flex direction="column" gap={24}>
+        <DescriptionBox>
           <Title device={device}>{post.title}</Title>
           {post.description && (
             <Description device={device}>{post.description}</Description>
           )}
-        </Flex>
+        </DescriptionBox>
         {device === 'mobile' ? (
           <Flex align="center">
             <Text color="textSecondary" font="body1">
@@ -60,14 +60,14 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
             {post.categoryName}
           </Text>
         )}
-      </Content>
+      </ContentWrapper>
     </Container>
   );
 };
 
 export default FeaturedPost;
 
-const Container = styled.a<{ device: Device }>`
+export const Container = styled.a<{ device: Device }>`
   border-radius: 16px;
 
   display: flex;
@@ -86,7 +86,7 @@ const Container = styled.a<{ device: Device }>`
   }
 `;
 
-const Thumbnail = styled.div<{ device: Device }>`
+export const Thumbnail = styled.div<{ device: Device }>`
   overflow: hidden;
   position: relative;
   width: ${({ device }) => (device === 'mobile' ? '100%' : '50%')};
@@ -123,12 +123,18 @@ const NoThumbnailPlaceholder = styled.div`
   font-weight: 600;
 `;
 
-const Content = styled.div<{ device: Device }>`
+export const ContentWrapper = styled.div<{ device: Device }>`
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '24px' : '16px')};
   flex: 1;
   flex-direction: column;
   justify-content: center;
+`;
+
+export const DescriptionBox = styled.div`
+  display: flex;
+  gap: 24px;
+  flex-direction: column;
 `;
 
 const Title = styled.h2<{ device: Device }>`

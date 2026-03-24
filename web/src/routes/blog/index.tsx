@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
+import { Suspense } from 'react';
 import { useDevice } from '@/hooks/useDevice';
-import { BLOG_POST_LIST } from '@/mocks/datas/blogPosts';
 import PostList from '@/pages/blog/components/PostList';
+import PostListSkeleton from '@/pages/blog/components/PostListSkeleton';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/blog/')({
@@ -25,7 +26,9 @@ function Blog() {
 
   return (
     <Container device={device}>
-      <PostList posts={BLOG_POST_LIST} />
+      <Suspense fallback={<PostListSkeleton />}>
+        <PostList />
+      </Suspense>
     </Container>
   );
 }
