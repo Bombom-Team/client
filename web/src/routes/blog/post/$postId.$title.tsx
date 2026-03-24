@@ -1,24 +1,24 @@
 import styled from '@emotion/styled';
 import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { Suspense } from 'react';
+import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
-import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import { useDevice } from '@/hooks/useDevice';
 import useScrollProgress from '@/hooks/useScrollProgress';
-import { BLOG_POST_DETAILS } from '@/mocks/datas/blogPosts';
 import FloatingPostPanel from '@/pages/blog/components/FloatingPostPanel';
-import PostContent from '@/pages/blog/components/PostContent';
-import PostMetadata from '@/pages/blog/components/PostMetadata';
+import PostDetail from '@/pages/blog/components/PostDetail';
+import PostDetailSkeleton from '@/pages/blog/components/PostDetailSkeleton';
 import { createBlogPostingSchema } from '@/pages/blog/utils/seo';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/blog/post/$postId/$title')({
-  loader: ({ params }) => {
-    const postId = params.postId;
-    const post = BLOG_POST_DETAILS[postId];
-    if (!post) {
-      throw new Error('해당 글을 찾을 수 없습니다.');
-    }
+  loader: async ({ context, params }) => {
+    const post = await context.queryClient.ensureQueryData(
+      queries.blogPostDetail({
+        postId: params.postId,
+      }),
+    );
 
     return { post };
   },
@@ -44,10 +44,11 @@ export const Route = createFileRoute('/blog/post/$postId/$title')({
       ],
     };
   },
+  pendingComponent: PostDetailSkeleton,
   component: PostDetailPage,
 });
 
-function PostDetailPage() {
+const PostDetailContent = () => {
   const { post } = Route.useLoaderData();
   const navigate = useRouter().navigate;
   const device = useDevice();
@@ -81,27 +82,19 @@ function PostDetailPage() {
             >
               ← 목록으로 돌아가기
             </GoToListButton>
-
-            <Title device={device}>{post.title}</Title>
-
-            <PostMetadata
-              categoryName={post.categoryName}
-              publishedAt={post.publishedAt}
-              readingTime={post.readingTime}
-              hashTags={post.hashTags}
-            />
-
-            {post.thumbnailImageUrl && (
-              <ThumbnailBox device={device}>
-                <ThumbnailImage src={post.thumbnailImageUrl} alt={post.title} />
-              </ThumbnailBox>
-            )}
-
-            <PostContent content={post.content} />
+            <PostDetail post={post} />
           </Article>
         </ContentLayoutWrapper>
       </ContentWrapper>
     </>
+  );
+};
+
+function PostDetailPage() {
+  return (
+    <Suspense fallback={<PostDetailSkeleton />}>
+      <PostDetailContent />
+    </Suspense>
   );
 }
 
@@ -157,29 +150,4 @@ const GoToListButton = styled(Button)<{ device: Device }>`
     background-color: transparent;
     color: ${({ theme }) => theme.colors.primary};
   }
-`;
-
-const Title = styled.h1<{ device: Device }>`
-  margin-bottom: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
-
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading1};
-`;
-
-const ThumbnailBox = styled.div<{ device: Device }>`
-  overflow: hidden;
-  margin: ${({ device }) => (device === 'mobile' ? '24px 0' : '32px 0')};
-  border-radius: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
-
-  background-color: ${({ theme }) => theme.colors.dividers};
-
-  aspect-ratio: 16 / 9;
-`;
-
-const ThumbnailImage = styled(ImageWithFallback)`
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
 `;
