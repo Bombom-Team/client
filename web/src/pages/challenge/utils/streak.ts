@@ -48,6 +48,10 @@ const getFilledDisplayDays = ({
 }: GetDisplayDaysParams & {
   today: string;
 }): DisplayDay[] => {
+  if (streakDayList.length === 0) {
+    return [];
+  }
+
   if (streakDayList.length === MAX_DISPLAY_DAYS) {
     return streakDayList.map((day) => ({
       key: day.date,
@@ -59,10 +63,9 @@ const getFilledDisplayDays = ({
   }
 
   const firstDate = streakDayList[0]!.date;
-
   const streakDayMap = new Map(streakDayList.map((day) => [day.date, day]));
   const dates = [new Date(`${firstDate}T00:00:00`)];
-  let nextDate = dates[0] as Date;
+  let nextDate = dates[0]!;
 
   while (dates.length < MAX_DISPLAY_DAYS) {
     nextDate = getAdjacentWeekday(nextDate, 1);
