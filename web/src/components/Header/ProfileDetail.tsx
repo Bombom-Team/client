@@ -71,13 +71,6 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
 
       <Divider />
 
-      {isWebView() && (
-        <ChannelTalkButton type="button" onClick={showMessenger}>
-          <ChatIcon width={16} height={16} />
-          문의하기
-        </ChannelTalkButton>
-      )}
-
       <MyPageButton to="/my?tab=profile" onClick={onClose}>
         내 정보
       </MyPageButton>
@@ -94,6 +87,13 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
         <MyPageButton to="/my?tab=notification" onClick={onClose}>
           알림 설정
         </MyPageButton>
+      )}
+
+      {isWebView() && (
+        <ChannelTalkButton type="button" onClick={showMessenger}>
+          <ChatIcon width={16} height={16} />
+          문의하기
+        </ChannelTalkButton>
       )}
 
       <LogoutButton type="button" onClick={handleLogoutClick}>
