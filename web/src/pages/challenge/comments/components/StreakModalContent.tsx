@@ -48,12 +48,12 @@ const StreakModalContent = ({
       </FlameWrapper>
       <WeekWrapper>
         {displayDays.map(
-          ({ key, label, isActive, isShieldApplied, isToday }) => {
+          ({ key, label, isCompleted, isShieldApplied, isToday }) => {
             return (
               <DayColumn key={key}>
                 <DayLabel isHighlighted={isToday}>{label}</DayLabel>
                 <DayCheckBox
-                  isActive={isActive}
+                  isCompleted={isCompleted}
                   isHighlighted={isToday}
                   isShieldApplied={isShieldApplied}
                 >
@@ -66,7 +66,7 @@ const StreakModalContent = ({
                       <FreezeCheckMark>✓</FreezeCheckMark>
                     </FreezeWrapper>
                   ) : (
-                    isActive && <CheckMark>✓</CheckMark>
+                    isCompleted && <CheckMark>✓</CheckMark>
                   )}
                 </DayCheckBox>
               </DayColumn>
@@ -202,7 +202,7 @@ const DayLabel = styled.span<{ isHighlighted: boolean }>`
 `;
 
 const DayCheckBox = styled.div<{
-  isActive: boolean;
+  isCompleted: boolean;
   isHighlighted: boolean;
   isShieldApplied: boolean;
 }>`
@@ -217,10 +217,15 @@ const DayCheckBox = styled.div<{
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme, isActive, isHighlighted, isShieldApplied }) => {
+  background-color: ${({
+    theme,
+    isCompleted,
+    isHighlighted,
+    isShieldApplied,
+  }) => {
     if (isShieldApplied) return 'transparent';
     if (isHighlighted) return theme.colors.primary;
-    return isActive ? theme.colors.primary : theme.colors.stroke;
+    return isCompleted ? theme.colors.primary : theme.colors.stroke;
   }};
   color: ${({ theme }) => theme.colors.white};
 `;

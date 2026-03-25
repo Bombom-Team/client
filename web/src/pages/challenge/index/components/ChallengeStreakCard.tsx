@@ -44,11 +44,11 @@ const ChallengeStreakCard = ({ challengeId }: ChallengeStreakCardProps) => {
 
       <WeekWrapper>
         {displayDays.map(
-          ({ key, label, isActive, isShieldApplied, isToday }) => (
+          ({ key, label, isCompleted, isShieldApplied, isToday }) => (
             <DayColumn key={key}>
               <DayLabel isHighlighted={isToday}>{label}</DayLabel>
               <DayCheckBox
-                isActive={isActive}
+                isCompleted={isCompleted}
                 isShieldApplied={isShieldApplied}
               >
                 {isShieldApplied ? (
@@ -59,7 +59,7 @@ const ChallengeStreakCard = ({ challengeId }: ChallengeStreakCardProps) => {
                     />
                     <FreezeCheckMark>✓</FreezeCheckMark>
                   </FreezeWrapper>
-                ) : isActive ? (
+                ) : isCompleted ? (
                   '✓'
                 ) : (
                   ''
@@ -156,17 +156,17 @@ const DayLabel = styled.span<{ isHighlighted: boolean }>`
 `;
 
 const DayCheckBox = styled.div<{
-  isActive: boolean;
+  isCompleted: boolean;
   isShieldApplied: boolean;
 }>`
   position: relative;
   width: 24px;
   height: 24px;
   border: 1px solid
-    ${({ theme, isActive, isShieldApplied }) =>
+    ${({ theme, isCompleted, isShieldApplied }) =>
       isShieldApplied
         ? 'transparent'
-        : isActive
+        : isCompleted
           ? theme.colors.primary
           : theme.colors.stroke};
   border-radius: 50%;
@@ -175,10 +175,10 @@ const DayCheckBox = styled.div<{
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme, isActive, isShieldApplied }) =>
+  background-color: ${({ theme, isCompleted, isShieldApplied }) =>
     isShieldApplied
       ? 'transparent'
-      : isActive
+      : isCompleted
         ? theme.colors.primary
         : theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
