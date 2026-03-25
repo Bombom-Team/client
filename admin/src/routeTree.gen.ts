@@ -30,6 +30,7 @@ import { Route as AdminNewslettersNewRouteImport } from './routes/_admin/newslet
 import { Route as AdminNewslettersCategoriesRouteImport } from './routes/_admin/newsletters/categories'
 import { Route as AdminNewslettersNewsletterIdRouteImport } from './routes/_admin/newsletters/$newsletterId'
 import { Route as AdminEventsEventIdRouteImport } from './routes/_admin/events/$eventId'
+import { Route as AdminChallengesDailyGuidesRouteImport } from './routes/_admin/challenges/daily-guides'
 import { Route as AdminChallengesChallengeIdRouteImport } from './routes/_admin/challenges/$challengeId'
 import { Route as AdminResourcesUnsubscribeLambdaIndexRouteImport } from './routes/_admin/resources/unsubscribe-lambda/index'
 import { Route as AdminNoticesNoticeIdIndexRouteImport } from './routes/_admin/notices/$noticeId/index'
@@ -151,6 +152,12 @@ const AdminEventsEventIdRoute = AdminEventsEventIdRouteImport.update({
   path: '/$eventId',
   getParentRoute: () => AdminEventsRoute,
 } as any)
+const AdminChallengesDailyGuidesRoute =
+  AdminChallengesDailyGuidesRouteImport.update({
+    id: '/daily-guides',
+    path: '/daily-guides',
+    getParentRoute: () => AdminChallengesRoute,
+  } as any)
 const AdminChallengesChallengeIdRoute =
   AdminChallengesChallengeIdRouteImport.update({
     id: '/$challengeId',
@@ -233,6 +240,7 @@ export interface FileRoutesByFullPath {
   '/resources': typeof AdminResourcesRouteWithChildren
   '/': typeof AdminIndexRoute
   '/challenges/$challengeId': typeof AdminChallengesChallengeIdRouteWithChildren
+  '/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute
   '/events/$eventId': typeof AdminEventsEventIdRoute
   '/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRouteWithChildren
   '/newsletters/categories': typeof AdminNewslettersCategoriesRoute
@@ -262,6 +270,7 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route
   '/members': typeof AdminMembersRoute
   '/': typeof AdminIndexRoute
+  '/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute
   '/events/$eventId': typeof AdminEventsEventIdRoute
   '/newsletters/categories': typeof AdminNewslettersCategoriesRoute
   '/newsletters/new': typeof AdminNewslettersNewRoute
@@ -294,6 +303,7 @@ export interface FileRoutesById {
   '/_admin/resources': typeof AdminResourcesRouteWithChildren
   '/_admin/': typeof AdminIndexRoute
   '/_admin/challenges/$challengeId': typeof AdminChallengesChallengeIdRouteWithChildren
+  '/_admin/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute
   '/_admin/events/$eventId': typeof AdminEventsEventIdRoute
   '/_admin/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRouteWithChildren
   '/_admin/newsletters/categories': typeof AdminNewslettersCategoriesRoute
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/'
     | '/challenges/$challengeId'
+    | '/challenges/daily-guides'
     | '/events/$eventId'
     | '/newsletters/$newsletterId'
     | '/newsletters/categories'
@@ -359,6 +370,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/members'
     | '/'
+    | '/challenges/daily-guides'
     | '/events/$eventId'
     | '/newsletters/categories'
     | '/newsletters/new'
@@ -390,6 +402,7 @@ export interface FileRouteTypes {
     | '/_admin/resources'
     | '/_admin/'
     | '/_admin/challenges/$challengeId'
+    | '/_admin/challenges/daily-guides'
     | '/_admin/events/$eventId'
     | '/_admin/newsletters/$newsletterId'
     | '/_admin/newsletters/categories'
@@ -570,6 +583,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventsEventIdRouteImport
       parentRoute: typeof AdminEventsRoute
     }
+    '/_admin/challenges/daily-guides': {
+      id: '/_admin/challenges/daily-guides'
+      path: '/daily-guides'
+      fullPath: '/challenges/daily-guides'
+      preLoaderRoute: typeof AdminChallengesDailyGuidesRouteImport
+      parentRoute: typeof AdminChallengesRoute
+    }
     '/_admin/challenges/$challengeId': {
       id: '/_admin/challenges/$challengeId'
       path: '/$challengeId'
@@ -675,11 +695,13 @@ const AdminChallengesChallengeIdRouteWithChildren =
 
 interface AdminChallengesRouteChildren {
   AdminChallengesChallengeIdRoute: typeof AdminChallengesChallengeIdRouteWithChildren
+  AdminChallengesDailyGuidesRoute: typeof AdminChallengesDailyGuidesRoute
   AdminChallengesIndexRoute: typeof AdminChallengesIndexRoute
 }
 
 const AdminChallengesRouteChildren: AdminChallengesRouteChildren = {
   AdminChallengesChallengeIdRoute: AdminChallengesChallengeIdRouteWithChildren,
+  AdminChallengesDailyGuidesRoute: AdminChallengesDailyGuidesRoute,
   AdminChallengesIndexRoute: AdminChallengesIndexRoute,
 }
 
