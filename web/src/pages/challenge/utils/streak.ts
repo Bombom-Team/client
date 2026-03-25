@@ -48,7 +48,7 @@ const getFilledDisplayDays = ({
 }: GetDisplayDaysParams & {
   today: string;
 }): DisplayDay[] => {
-  if (streakDayList.length === 0 || streakDayList.length >= MAX_DISPLAY_DAYS) {
+  if (streakDayList.length === MAX_DISPLAY_DAYS) {
     return streakDayList.map((day) => ({
       key: day.date,
       label: getLabel(new Date(`${day.date}T00:00:00`)),
