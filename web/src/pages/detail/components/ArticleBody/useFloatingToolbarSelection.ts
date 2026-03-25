@@ -77,13 +77,19 @@ export const useFloatingToolbarSelection = ({
     [openToolbarFromHighlight, onHide],
   );
 
-  const handleSelectionComplete = useCallback(() => {
-    const selection = window.getSelection();
-    if (selection && !selection.isCollapsed && selection.rangeCount > 0) {
-      openToolbarFromSelection(selection);
-      return;
-    }
-  }, [openToolbarFromSelection]);
+  const handleSelectionComplete = useCallback(
+    (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const selection = window.getSelection();
+      if (selection && !selection.isCollapsed && selection.rangeCount > 0) {
+        openToolbarFromSelection(selection);
+        return;
+      }
+    },
+    [openToolbarFromSelection],
+  );
 
   const handleSelectionClear = useCallback(() => {
     const selection = window.getSelection();
@@ -94,6 +100,9 @@ export const useFloatingToolbarSelection = ({
 
   const handleHighlightClickOrSelection = useCallback(
     (e: PointerEvent | MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       const target = e.target as HTMLElement;
 
       if (target.tagName === 'MARK') {
