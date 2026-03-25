@@ -7,6 +7,7 @@ import { useDevice } from '@/hooks/useDevice';
 import { getDisplayDays } from '@/pages/challenge/utils/streak';
 
 const STREAK_IMAGE_SRC = '/assets/png/streak.png';
+const STREAK_FREEZE_IMAGE_SRC = '/assets/png/streak-freeze.png';
 
 interface StreakModalContentProps {
   onClose: () => void;
@@ -46,16 +47,32 @@ const StreakModalContent = ({
         <Fire src={STREAK_IMAGE_SRC} alt="스트릭 불꽃" isMobile={isMobile} />
       </FlameWrapper>
       <WeekWrapper>
-        {displayDays.map(({ key, label, isActive, isToday }) => {
-          return (
-            <DayColumn key={key}>
-              <DayLabel isHighlighted={isToday}>{label}</DayLabel>
-              <DayCheckBox isActive={isActive} isHighlighted={isToday}>
-                {isActive && <CheckMark>✓</CheckMark>}
-              </DayCheckBox>
-            </DayColumn>
-          );
-        })}
+        {displayDays.map(
+          ({ key, label, isCompleted, isShieldApplied, isToday }) => {
+            return (
+              <DayColumn key={key}>
+                <DayLabel isHighlighted={isToday}>{label}</DayLabel>
+                <DayCheckBox
+                  isCompleted={isCompleted}
+                  isHighlighted={isToday}
+                  isShieldApplied={isShieldApplied}
+                >
+                  {isShieldApplied ? (
+                    <FreezeWrapper>
+                      <FreezeImage
+                        src={STREAK_FREEZE_IMAGE_SRC}
+                        alt="스트릭 방패 적용"
+                      />
+                      <FreezeCheckMark>✓</FreezeCheckMark>
+                    </FreezeWrapper>
+                  ) : (
+                    isCompleted && <CheckMark>✓</CheckMark>
+                  )}
+                </DayCheckBox>
+              </DayColumn>
+            );
+          },
+        )}
       </WeekWrapper>
       <Description isMobile={isMobile}>
         챌린지 기록이 꾸준히 쌓이고 있어요.
@@ -185,9 +202,11 @@ const DayLabel = styled.span<{ isHighlighted: boolean }>`
 `;
 
 const DayCheckBox = styled.div<{
-  isActive: boolean;
+  isCompleted: boolean;
   isHighlighted: boolean;
+  isShieldApplied: boolean;
 }>`
+  position: relative;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -198,14 +217,56 @@ const DayCheckBox = styled.div<{
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme, isActive, isHighlighted }) => {
+  background-color: ${({
+    theme,
+    isCompleted,
+    isHighlighted,
+    isShieldApplied,
+  }) => {
+    if (isShieldApplied) return 'transparent';
     if (isHighlighted) return theme.colors.primary;
-    return isActive ? theme.colors.primary : theme.colors.stroke;
+    return isCompleted ? theme.colors.primary : theme.colors.stroke;
   }};
   color: ${({ theme }) => theme.colors.white};
 `;
 
 const CheckMark = styled.span`
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+`;
+
+const FreezeWrapper = styled.div`
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transform: translate(-50%, -50%);
+`;
+
+const FreezeImage = styled.img`
+  width: 68px;
+  height: 68px;
+
+  object-fit: contain;
+`;
+
+const FreezeCheckMark = styled.span`
+  position: absolute;
+  top: 30%;
+  left: 40%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: ${({ theme }) => theme.colors.white};
   font-weight: 700;
   font-size: 18px;
   line-height: 1;
