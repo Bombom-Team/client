@@ -4,7 +4,6 @@ import { Link } from '@tanstack/react-router';
 import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
 import { toast } from '../Toast/utils/toastActions';
 import { postLogout } from '@/apis/auth/auth.api';
-import { useDevice } from '@/hooks/useDevice';
 import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { copyToClipboard } from '@/utils/copy';
 import { isWebView } from '@/utils/device';
@@ -20,8 +19,6 @@ interface ProfileDetailProps {
 }
 
 const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
-  const deviceType = useDevice();
-
   const { mutate: mutateLogout } = useMutation({
     mutationKey: ['logout'],
     mutationFn: postLogout,
@@ -74,7 +71,7 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
 
       <Divider />
 
-      {!deviceType && (
+      {isWebView() && (
         <ChannelTalkButton type="button" onClick={showMessenger}>
           <ChatIcon width={16} height={16} />
           문의하기
