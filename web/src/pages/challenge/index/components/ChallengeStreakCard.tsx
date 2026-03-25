@@ -4,6 +4,8 @@ import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import { getDisplayDays } from '@/pages/challenge/utils/streak';
 
+const STREAK_FREEZE_IMAGE_SRC = '/assets/png/streak-freeze.png';
+
 interface ChallengeStreakCardProps {
   challengeId: number;
 }
@@ -41,12 +43,31 @@ const ChallengeStreakCard = ({ challengeId }: ChallengeStreakCardProps) => {
       </HeaderWrapper>
 
       <WeekWrapper>
-        {displayDays.map(({ key, label, isActive, isToday }) => (
-          <DayColumn key={key}>
-            <DayLabel isHighlighted={isToday}>{label}</DayLabel>
-            <DayCheckBox isActive={isActive}>{isActive ? '✓' : ''}</DayCheckBox>
-          </DayColumn>
-        ))}
+        {displayDays.map(
+          ({ key, label, isCompleted, isShieldApplied, isToday }) => (
+            <DayColumn key={key}>
+              <DayLabel isHighlighted={isToday}>{label}</DayLabel>
+              <DayCheckBox
+                isCompleted={isCompleted}
+                isShieldApplied={isShieldApplied}
+              >
+                {isShieldApplied ? (
+                  <FreezeWrapper>
+                    <FreezeImage
+                      src={STREAK_FREEZE_IMAGE_SRC}
+                      alt="스트릭 방패 적용"
+                    />
+                    <FreezeCheckMark>✓</FreezeCheckMark>
+                  </FreezeWrapper>
+                ) : isCompleted ? (
+                  '✓'
+                ) : (
+                  ''
+                )}
+              </DayCheckBox>
+            </DayColumn>
+          ),
+        )}
       </WeekWrapper>
     </Container>
   );
@@ -134,22 +155,72 @@ const DayLabel = styled.span<{ isHighlighted: boolean }>`
   font-weight: ${({ isHighlighted }) => (isHighlighted ? 700 : 400)};
 `;
 
-const DayCheckBox = styled.div<{ isActive: boolean }>`
+const DayCheckBox = styled.div<{
+  isCompleted: boolean;
+  isShieldApplied: boolean;
+}>`
+  position: relative;
   width: 24px;
   height: 24px;
   border: 1px solid
-    ${({ theme, isActive }) =>
-      isActive ? theme.colors.primary : theme.colors.stroke};
+    ${({ theme, isCompleted, isShieldApplied }) =>
+      isShieldApplied
+        ? 'transparent'
+        : isCompleted
+          ? theme.colors.primary
+          : theme.colors.stroke};
   border-radius: 50%;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme, isActive }) =>
-    isActive ? theme.colors.primary : theme.colors.white};
+  background-color: ${({ theme, isCompleted, isShieldApplied }) =>
+    isShieldApplied
+      ? 'transparent'
+      : isCompleted
+        ? theme.colors.primary
+        : theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.caption};
   font-weight: 700;
   line-height: 1;
+`;
+
+const FreezeWrapper = styled.div`
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transform: translate(-50%, -50%);
+`;
+
+const FreezeImage = styled.img`
+  width: 48px;
+  height: 48px;
+
+  object-fit: contain;
+`;
+
+const FreezeCheckMark = styled.span`
+  position: absolute;
+  top: 45%;
+  left: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ theme }) => theme.fonts.caption};
+  font-weight: 700;
+  line-height: 1;
+
+  transform: translate(-50%, -50%);
 `;
