@@ -1,15 +1,10 @@
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import type { Device } from '@/hooks/useDevice';
 import textLogo from '#/assets/avif/bombom-text-logo.avif';
 import logo from '#/assets/avif/logo.avif';
 
-interface HeaderLogoProps {
-  device: Device;
-}
-
-const HeaderLogo = ({ device }: HeaderLogoProps) => {
+const HeaderLogo = () => {
   return (
     <Container
       to="/today"
@@ -24,9 +19,6 @@ const HeaderLogo = ({ device }: HeaderLogoProps) => {
       <Logo src={logo} alt="logo" />
       <TitleBox>
         <TextLogo src={textLogo} alt="text logo" />
-        {device === 'pc' && (
-          <SubTitle>당신의 하루에 찾아오는 작은 설렘</SubTitle>
-        )}
       </TitleBox>
     </Container>
   );
@@ -36,7 +28,7 @@ export default HeaderLogo;
 
 const Container = styled(Link)`
   display: flex;
-  gap: 12px;
+  gap: 18px;
   align-items: center;
 `;
 
@@ -47,7 +39,7 @@ const Logo = styled.img`
 `;
 
 const TextLogo = styled.img`
-  width: 42px;
+  width: 44px;
 `;
 
 const TitleBox = styled.div`
@@ -55,9 +47,4 @@ const TitleBox = styled.div`
   gap: 4px;
   flex-direction: column;
   justify-content: center;
-`;
-
-const SubTitle = styled.div`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
 `;

@@ -16,11 +16,13 @@ import SparklesIcon from '#/assets/svg/sparkles.svg';
 interface AddCommentModalContentProps {
   closeCommentModal: () => void;
   candidateArticles: CandidateArticles;
+  onFirstCompletion: () => void;
 }
 
 const AddCommentModalContent = ({
   closeCommentModal,
   candidateArticles,
+  onFirstCompletion,
 }: AddCommentModalContentProps) => {
   const [selectedArticleId, setSelectedArticleId] = useState<number | null>(
     null,
@@ -52,6 +54,11 @@ const AddCommentModalContent = ({
 
   const { mutate: addChallengeComment } = useAddChallengeCommentMutation({
     challengeId: Number(challengeId),
+    onSuccess: (response) => {
+      if (response.isFirstCompletion) {
+        onFirstCompletion();
+      }
+    },
   });
 
   const selectArticle = (articleId: number) => {

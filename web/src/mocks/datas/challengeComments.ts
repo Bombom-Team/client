@@ -18,7 +18,7 @@ export const CHALLENGE_COMMENTS = [
   },
   {
     commentId: 2,
-    nickname: '이영희',
+    nickname: 'DB',
     profileImageUrl: 'https://i.pravatar.cc/150?img=2',
     newsletterName: '스타트업 인사이트',
     isSubscribed: true,
@@ -32,7 +32,7 @@ export const CHALLENGE_COMMENTS = [
   },
   {
     commentId: 3,
-    nickname: '박지민',
+    nickname: 'DB',
     profileImageUrl: 'https://i.pravatar.cc/150?img=3',
     newsletterName: '경제 브리핑',
     isSubscribed: true,

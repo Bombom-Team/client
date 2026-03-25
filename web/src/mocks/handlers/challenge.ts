@@ -4,16 +4,20 @@ import { CHALLENGE_COMMENTS } from '../datas/challengeComments';
 import { DAILY_GUIDE_COMMENTS } from '../datas/dailyGuideComments';
 import { ENV } from '@/apis/env';
 import type {
+  GetChallengeCommentCandidateArticlesResponse,
   GetChallengeCommentsResponse,
   GetChallengeCommentRepliesResponse,
   GetChallengeEligibilityResponse,
+  GetMemberChallengeProgressResponse,
   GetDailyGuideCommentsResponse,
+  PostChallengeCommentResponse,
   GetTodayDailyGuideResponse,
   GetChallengeTeamsResponse,
   GetChallengesTeamsProgressResponse,
 } from '@/apis/challenge/challenge.api';
 
 const baseURL = ENV.baseUrl;
+let isFirstChallengeCommentPending = true;
 
 const CHALLENGE_TEAMS_RESPONSE: GetChallengeTeamsResponse = {
   totalTeamCount: 3,
@@ -115,7 +119,19 @@ const buildTeamProgressResponse = (
 };
 
 export const challengeHandlers = [
-  http.get(`${baseURL}/challenges`, () => {
+  http.get(`${baseURL}/challenges`, ({ request }) => {
+    const url = new URL(request.url);
+    const view = url.searchParams.get('view');
+
+    if (view && view !== 'SUMMARY') {
+      return HttpResponse.json(
+        {
+          message: 'Invalid view query',
+        },
+        { status: 400 },
+      );
+    }
+
     return HttpResponse.json(CHALLENGES);
   }),
 
@@ -175,6 +191,46 @@ export const challengeHandlers = [
     return HttpResponse.json({ success: true });
   }),
 
+  http.get(`${baseURL}/challenges/:challengeId/progress/me`, () => {
+    const response: GetMemberChallengeProgressResponse = {
+      nickname: 'DB',
+      totalDays: 10,
+      isSurvived: true,
+      completedDays: 7,
+      streak: 7,
+      shield: 0,
+      todayTodos: [
+        {
+          challengeTodoType: 'READ',
+          challengeTodoStatus: 'COMPLETE',
+        },
+        {
+          challengeTodoType: 'COMMENT',
+          challengeTodoStatus: 'COMPLETE',
+        },
+      ],
+    };
+
+    return HttpResponse.json(response);
+  }),
+
+  http.get(`${baseURL}/challenges/comments/articles/candidates`, () => {
+    const response: GetChallengeCommentCandidateArticlesResponse = [
+      {
+        articleId: 101,
+        newsletterName: '뉴닉',
+        articleTitle: '오늘 꼭 알아야 할 경제 뉴스',
+      },
+      {
+        articleId: 102,
+        newsletterName: 'AI 뉴스레터',
+        articleTitle: '생성형 AI 최신 트렌드 정리',
+      },
+    ];
+
+    return HttpResponse.json(response);
+  }),
+
   http.get(`${baseURL}/challenges/:challengeId/comments`, ({ request }) => {
     const url = new URL(request.url);
     const start = url.searchParams.get('start') || '';
@@ -224,6 +280,39 @@ export const challengeHandlers = [
 
     return HttpResponse.json(response);
   }),
+
+  http.post(
+    `${baseURL}/challenges/:challengeId/comments`,
+    async ({ request }) => {
+      const body = (await request.json()) as {
+        comment: string;
+        quotation?: string;
+      };
+      const response: PostChallengeCommentResponse = {
+        isFirstCompletion: isFirstChallengeCommentPending,
+      };
+
+      CHALLENGE_COMMENTS.unshift({
+        commentId: Date.now(),
+        nickname: 'DB',
+        profileImageUrl: 'https://i.pravatar.cc/150?img=16',
+        newsletterName: '오늘의 뉴스레터',
+        isSubscribed: true,
+        articleTitle: '방금 작성한 코멘트',
+        createdAt: new Date().toISOString(),
+        comment: body.comment,
+        quotation: body.quotation,
+        isMyComment: true,
+        likeCount: 0,
+        isLiked: false,
+        replyCount: 0,
+      });
+
+      isFirstChallengeCommentPending = false;
+
+      return HttpResponse.json(response, { status: 201 });
+    },
+  ),
 
   http.get(
     `${baseURL}/challenges/:challengeId/comments/:commentId/replies`,

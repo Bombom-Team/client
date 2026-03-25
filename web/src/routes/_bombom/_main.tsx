@@ -34,9 +34,9 @@ const BottomNavWrapper = styled.nav`
   left: 0;
   z-index: ${({ theme }) => theme.zIndex.header};
   height: calc(
-    ${({ theme }) => theme.heights.bottomNav} + env(safe-area-inset-bottom)
+    ${({ theme }) => `${theme.heights.bottomNav} + ${theme.safeArea.bottom}`}
   );
-  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  padding: 8px 12px calc(8px + ${({ theme }) => theme.safeArea.bottom});
   border-top: 1px solid ${({ theme }) => theme.colors.stroke};
   box-shadow: 0 -8px 12px -6px rgb(0 0 0 / 10%);
 

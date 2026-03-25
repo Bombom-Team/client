@@ -15,6 +15,7 @@ import NotificationSettingsSection from '@/pages/my-page/components/Notification
 import ProfileSection from '@/pages/my-page/components/ProfileSection';
 import RewardsSection from '@/pages/my-page/components/RewardsSection';
 import SubscribedNewslettersSection from '@/pages/my-page/components/SubscribedNewslettersSection';
+import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
 import AvatarIcon from '#/assets/svg/avatar.svg';
@@ -63,7 +64,9 @@ function MyPage() {
     },
   });
 
-  const tabs = [...DEFAULT_TABS, ...WEBVIEW_TABS];
+  const tabs = isWebView()
+    ? [...DEFAULT_TABS, ...WEBVIEW_TABS]
+    : [...DEFAULT_TABS];
 
   if (!userInfo) return null;
 
