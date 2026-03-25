@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { CATEGORY } from '../../constants/notification';
-import type { Category } from '../../types/notification';
+import type { Category, NotificationSetting } from '../../types/notification';
 import type { UseQueryResult } from '@tanstack/react-query';
 
 export const NOTIFICATION_SETTINGS = [
@@ -28,7 +28,7 @@ export const NOTIFICATION_SETTINGS = [
 
 interface SettingListProps {
   hasPermission: boolean;
-  notificationsEnabled: UseQueryResult<boolean>[];
+  notificationsEnabled: UseQueryResult<NotificationSetting>[];
   onToggle: (category: Category, currentEnabled: boolean) => void;
 }
 
@@ -37,17 +37,17 @@ const SettingList = ({
   notificationsEnabled,
   onToggle,
 }: SettingListProps) => {
-  const enabledStatus = Object.fromEntries(
-    NOTIFICATION_SETTINGS.map((setting, index) => [
-      setting.category,
-      notificationsEnabled[index]?.data ?? false,
-    ]),
-  );
-
-  const settings = NOTIFICATION_SETTINGS.map((setting) => ({
-    ...setting,
-    enabled: enabledStatus[setting.category] ?? false,
-  }));
+  const settings = NOTIFICATION_SETTINGS.map((config) => {
+    const queryResult = notificationsEnabled.find(
+      ({ data }) => data?.category === config.category,
+    );
+    return {
+      category: config.category,
+      label: config.label,
+      hint: config.hint,
+      enabled: queryResult?.data?.enabled ?? false,
+    };
+  });
 
   return (
     <Container hasPermission={hasPermission}>

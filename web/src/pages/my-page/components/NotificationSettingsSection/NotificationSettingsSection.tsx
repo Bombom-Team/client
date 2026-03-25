@@ -10,7 +10,7 @@ import Text from '@/components/Text';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebViewNotificationPermission } from '@/libs/webview/useWebViewNotificationPermission';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import type { Category, NotificationSetting } from '../../types/notification';
+import type { Category } from '../../types/notification';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const NotificationSettingsSection = () => {
@@ -21,7 +21,6 @@ const NotificationSettingsSection = () => {
   const notificationsEnabled = useQueries({
     queries: Object.values(CATEGORY).map((category) => ({
       ...queries.notificationSettings.category({ memberId, category }),
-      select: (data: NotificationSetting) => data.enabled,
       enabled: !!hasPermission,
     })),
   });
