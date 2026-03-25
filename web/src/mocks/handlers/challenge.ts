@@ -1,6 +1,10 @@
 import { http, HttpResponse } from 'msw';
 import { CHALLENGES } from '../datas/challenge';
 import { CHALLENGE_COMMENTS } from '../datas/challengeComments';
+import {
+  CHALLENGE_STREAKS,
+  DEFAULT_CHALLENGE_STREAK,
+} from '../datas/challengeStreak';
 import { DAILY_GUIDE_COMMENTS } from '../datas/dailyGuideComments';
 import { ENV } from '@/apis/env';
 import type {
@@ -9,6 +13,7 @@ import type {
   GetChallengeCommentRepliesResponse,
   GetChallengeEligibilityResponse,
   GetMemberChallengeProgressResponse,
+  GetMemberChallengeStreakResponse,
   GetDailyGuideCommentsResponse,
   PostChallengeCommentResponse,
   GetTodayDailyGuideResponse,
@@ -213,6 +218,17 @@ export const challengeHandlers = [
 
     return HttpResponse.json(response);
   }),
+
+  http.get(
+    `${baseURL}/challenges/:challengeId/progress/me/streak`,
+    ({ params }) => {
+      const challengeId = Number(params.challengeId);
+      const response: GetMemberChallengeStreakResponse =
+        CHALLENGE_STREAKS[challengeId] ?? DEFAULT_CHALLENGE_STREAK;
+
+      return HttpResponse.json(response);
+    },
+  ),
 
   http.get(`${baseURL}/challenges/comments/articles/candidates`, () => {
     const response: GetChallengeCommentCandidateArticlesResponse = [
