@@ -27,6 +27,7 @@ type Weekday = (typeof WEEKDAY_ORDER)[number];
 interface StreakDay {
   date: string;
   dayOfWeek: string;
+  isShieldApplied: boolean;
 }
 
 interface GetDisplayDaysParams {
@@ -45,6 +46,7 @@ export const getDisplayDays = ({ streakDayList }: GetDisplayDaysParams) => {
       key: weekday,
       label: WEEKDAY_LABEL_MAP[weekday],
       isActive: false,
+      isShieldApplied: false,
       isToday: weekday === currentWeekday,
     }));
   }
@@ -68,6 +70,7 @@ export const getDisplayDays = ({ streakDayList }: GetDisplayDaysParams) => {
       key: activeDay?.date ?? `empty-${weekday}`,
       label: WEEKDAY_LABEL_MAP[weekday],
       isActive: !!activeDay,
+      isShieldApplied: activeDay?.isShieldApplied ?? false,
       isToday: weekday === currentWeekday,
     };
   });
