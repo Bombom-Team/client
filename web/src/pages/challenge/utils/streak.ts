@@ -75,9 +75,7 @@ const getFilledDisplayDays = ({
 
     return {
       key: dateKey,
-      label: streakDay
-        ? getLabel(new Date(`${streakDay.date}T00:00:00`))
-        : getLabel(date),
+      label: getLabel(date),
       isCompleted: streakDay?.isCompleted ?? false,
       isShieldApplied: streakDay?.isShieldApplied ?? false,
       isToday: dateKey === today,
