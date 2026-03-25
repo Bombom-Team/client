@@ -11,6 +11,20 @@ export const getChallenges = async () => {
   });
 };
 
+type GetChallengeSummariesParams =
+  operations['getChallenges']['parameters']['query'];
+
+export const getChallengeSummaries = async () => {
+  const params: GetChallengeSummariesParams = {
+    view: 'SUMMARY',
+  };
+
+  return await fetcher.get<GetChallengesResponse>({
+    path: '/challenges',
+    query: params,
+  });
+};
+
 export type GetChallengeEligibilityResponse =
   components['schemas']['ChallengeEligibilityResponse'];
 
@@ -49,6 +63,23 @@ export type GetMemberChallengeProgressResponse =
 export const getMemberChallengeProgress = async (challengeId: number) => {
   return await fetcher.get<GetMemberChallengeProgressResponse>({
     path: `/challenges/${challengeId}/progress/me`,
+  });
+};
+
+export type GetMemberChallengeStreakParams =
+  operations['getMemberStreak']['parameters']['path'] &
+    operations['getMemberStreak']['parameters']['query'];
+
+export type GetMemberChallengeStreakResponse =
+  components['schemas']['ChallengeStreakResponse'];
+
+export const getMemberChallengeStreak = async ({
+  id,
+  ...params
+}: GetMemberChallengeStreakParams) => {
+  return await fetcher.get<GetMemberChallengeStreakResponse>({
+    path: `/challenges/${id}/progress/me/streak`,
+    query: params,
   });
 };
 
@@ -136,12 +167,18 @@ export const getChallengeArticleHighlights = async ({
 
 export type PostChallengeCommentParams =
   components['schemas']['ChallengeCommentRequest'];
+export type PostChallengeCommentResponse = {
+  isFirstCompletion?: boolean;
+};
 
 export const postChallengeComment = async (
   challengeId: number,
   params: PostChallengeCommentParams,
 ) => {
-  return await fetcher.post<PostChallengeCommentParams, never>({
+  return await fetcher.post<
+    PostChallengeCommentParams,
+    PostChallengeCommentResponse
+  >({
     path: `/challenges/${challengeId}/comments`,
     body: params,
   });

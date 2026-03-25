@@ -529,7 +529,14 @@ export interface paths {
     };
     /**
      * 뉴스레터 목록 조회
-     * @description 뉴스레터 목록을 조회합니다. 기본값은 발행중(ACTIVE)만 반환하며, includeSuspended=true 시 휴재(SUSPENDED)도 포함합니다. 폐간(DISCONTINUED)은 항상 제외됩니다.
+     * @description         카테고리 목록과 뉴스레터 목록을 함께 반환합니다.
+     *             - categories: 조회 조건에 부합하는 뉴스레터가 존재하는 카테고리 목록
+     *             - newsletters: 필터링된 뉴스레터 목록
+     *             - categoryId: 특정 카테고리로 필터링합니다. 미입력 시 전체 카테고리를 반환합니다.
+     *             - includeSuspended=false: 발행중(ACTIVE) 뉴스레터만 반환합니다.
+     *             - includeSuspended=true: 발행중(ACTIVE) 및 6개월 이내 휴재(SUSPENDED) 뉴스레터를 포함합니다.
+     *             - 6개월 초과 휴재(SUSPENDED)와 폐간(DISCONTINUED)은 항상 제외됩니다.
+     *
      */
     get: operations['getNewsletters'];
     put?: never;
@@ -729,7 +736,7 @@ export interface paths {
     };
     /**
      * 챌린지 전체 목록 조회
-     * @description 진행중이거나 예정된 챌린지 전체 목록을 조회합니다. 로그인 시 참여 여부 및 상세 정보가 함께 반환됩니다.
+     * @description 진행중이거나 예정된 챌린지 전체 목록을 조회합니다. 로그인 시 참여 여부 및 상세 정보가 함께 반환됩니다. view=summary 일 때는 ONGOING이면서 참여 중인 챌린지, EARLY/LATE 신청 단계 챌린지만 조회합니다.
      */
     get: operations['getChallenges'];
     put?: never;
@@ -812,6 +819,26 @@ export interface paths {
      * @description 사용자의 챌린지 진행도(투두 완료 현황, 총일수, 완료일수)를 조회합니다.
      */
     get: operations['getMemberProgress'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{id}/progress/me/streak': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 스트릭 조회
+     * @description 사용자의 현재 스트릭 값과 스트릭을 구성하는 날짜 목록(날짜, 요일, 쉴드 적용 여부)을 조회합니다.
+     */
+    get: operations['getMemberStreak'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1275,6 +1302,9 @@ export interface components {
     DailyGuideCommentRequest: {
       content: string;
     };
+    CreateCommentResponse: {
+      isFirstCompletion?: boolean;
+    };
     ChallengeCommentRequest: {
       /** Format: int64 */
       articleId: number;
@@ -1377,14 +1407,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['NoticeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1403,8 +1433,18 @@ export interface components {
     };
     SortObject: {
       empty?: boolean;
-      sorted?: boolean;
       unsorted?: boolean;
+      sorted?: boolean;
+    };
+    CategoryResponse: {
+      /** Format: int64 */
+      id: number;
+      name: string;
+    };
+    CategoryResponse: {
+      /** Format: int64 */
+      id: number;
+      name: string;
     };
     NewsletterResponse: {
       /** Format: int64 */
@@ -1413,10 +1453,16 @@ export interface components {
       imageUrl?: string;
       description: string;
       subscribeUrl: string;
+      /** Format: int64 */
+      categoryId: number;
       category: string;
       /** @enum {string} */
       status: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
       isSubscribed: boolean;
+    };
+    NewslettersResponse: {
+      categories?: components['schemas']['CategoryResponse'][];
+      newsletters?: components['schemas']['NewsletterResponse'][];
     };
     NewsletterWithDetailResponse: {
       name: string;
@@ -1583,14 +1629,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1724,6 +1770,10 @@ export interface components {
       isSurvived: boolean;
       /** Format: int32 */
       completedDays: number;
+      /** Format: int32 */
+      streak: number;
+      /** Format: int32 */
+      shield: number;
       todayTodos: components['schemas']['TodayTodoResponse'][];
     };
     TodayTodoResponse: {
@@ -1731,6 +1781,25 @@ export interface components {
       challengeTodoType?: 'READ' | 'COMMENT' | 'MINDSET';
       /** @enum {string} */
       challengeTodoStatus?: 'COMPLETE' | 'INCOMPLETE';
+    };
+    ChallengeStreakResponse: {
+      /** Format: int32 */
+      streak: number;
+      streakDays: components['schemas']['StreakDayResponse'][];
+    };
+    StreakDayResponse: {
+      /** Format: date */
+      date: string;
+      /** @enum {string} */
+      dayOfWeek:
+        | 'MONDAY'
+        | 'TUESDAY'
+        | 'WEDNESDAY'
+        | 'THURSDAY'
+        | 'FRIDAY'
+        | 'SATURDAY'
+        | 'SUNDAY';
+      isShieldApplied: boolean;
     };
     ChallengeLandingNewsletterResponse: {
       /** Format: int64 */
@@ -1790,14 +1859,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['DailyGuideCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1849,14 +1918,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1878,14 +1947,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['CommentReplyResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1902,14 +1971,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentHighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1949,14 +2018,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2009,14 +2078,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2600,7 +2669,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          '*/*': components['schemas']['CreateCommentResponse'];
+        };
       };
       /** @description 잘못된 요청 값 */
       400: {
@@ -2702,7 +2773,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          '*/*': components['schemas']['CreateCommentResponse'];
+        };
       };
       /** @description 잘못된 요청 값 */
       400: {
@@ -3432,6 +3505,8 @@ export interface operations {
       query?: {
         /** @description 휴재 뉴스레터 포함 여부 */
         includeSuspended?: boolean;
+        /** @description 카테고리 ID (미입력 시 전체) */
+        categoryId?: number;
       };
       header?: never;
       path?: never;
@@ -3445,7 +3520,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['NewsletterResponse'][];
+          '*/*': components['schemas']['NewslettersResponse'];
         };
       };
     };
@@ -3726,7 +3801,10 @@ export interface operations {
   };
   getChallenges: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description summary 시 요약 목록(참여 중인 ONGOING, EARLY/LATE 신청 단계만) 조회 */
+        view?: 'SUMMARY' | 'DEFAULT';
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -3912,6 +3990,60 @@ export interface operations {
       };
       /** @description 챌린지 참가자에 대한 데이터 정합성 불일치 */
       500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getMemberStreak: {
+    parameters: {
+      query?: {
+        /** @description 조회할 스트릭 날짜 수 (기본값: 5) */
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 스트릭 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeStreakResponse'];
+        };
+      };
+      /** @description 잘못된 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지에 참가하지 않음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지/참가자를 찾을 수 없음 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
