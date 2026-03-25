@@ -13,7 +13,7 @@ const MobileMainHeader = () => {
 
   return (
     <Container>
-      <HeaderLogo device="mobile" />
+      <HeaderLogo />
       <UserInfoWrapper>
         <Button
           onClick={() => navigate({ to: '/notice' })}
