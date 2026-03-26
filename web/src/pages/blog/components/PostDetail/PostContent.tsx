@@ -18,7 +18,7 @@ const PostContent = ({ content }: PostContentProps) => {
 
 export default PostContent;
 
-const Container = styled.article<{ device: Device }>`
+const Container = styled.section<{ device: Device }>`
   width: 100%;
   margin: 0 auto;
 

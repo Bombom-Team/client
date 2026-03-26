@@ -11,6 +11,7 @@ import PostDetail from '@/pages/blog/components/PostDetail/PostDetail';
 import PostDetailSkeleton from '@/pages/blog/components/PostDetail/PostDetailSkeleton';
 import ShareButton from '@/pages/blog/components/PostDetail/ShareButton';
 import { createBlogPostingSchema } from '@/pages/blog/utils/seo';
+import { createSlug } from '@/pages/blog/utils/slug';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/blog/post/$postId/$title')({
@@ -23,19 +24,50 @@ export const Route = createFileRoute('/blog/post/$postId/$title')({
 
     return { post };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const post = loaderData?.post;
 
     if (!post) return { meta: [] };
 
-    const schemaJson = createBlogPostingSchema(post);
+    const description = post.content.slice(0, 50);
+    const schemaJson = createBlogPostingSchema(
+      post,
+      params.postId,
+      params.title,
+    );
+
     return {
       meta: [
         { title: post.title },
-        { property: 'og:title', content: post.title },
-        { property: 'og:image', content: post.thumbnailImageUrl || '' },
-        { property: 'og:type', content: 'article' },
+        { name: 'description', content: description },
         { name: 'robots', content: 'index, follow' },
+        { property: 'og:title', content: post.title },
+        { property: 'og:description', content: description },
+        { property: 'og:image', content: post.thumbnailImageUrl ?? '' },
+        { property: 'og:type', content: 'article' },
+        { property: 'article:published_time', content: post.publishedAt },
+        ...post.hashTags.map((tag) => ({
+          property: 'article:tag',
+          content: tag,
+        })),
+        {
+          name: 'twitter:card',
+          content: post.thumbnailImageUrl ? 'summary_large_image' : 'summary',
+        },
+        { name: 'twitter:title', content: post.title },
+        { name: 'twitter:description', content: description },
+        ...(post.thumbnailImageUrl
+          ? [
+              { name: 'twitter:image', content: post.thumbnailImageUrl },
+              { name: 'twitter:image:alt', content: post.title },
+            ]
+          : []),
+      ],
+      links: [
+        {
+          rel: 'canonical',
+          href: `https://www.bombom.news/blog/post/${params.postId}/${createSlug(post.title)}`,
+        },
       ],
       scripts: [
         {

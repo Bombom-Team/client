@@ -18,18 +18,9 @@ const PostCard = ({ post }: PostCardProps) => {
   const device = useDevice();
   const slug = createSlug(post.title);
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-    }
-  };
-
   return (
     <Container
       to={`/blog/post/${post.postId}/${slug}`}
-      onKeyDown={handleKeyDown}
-      role="article"
-      tabIndex={0}
       aria-label={`블로그 포스트: ${post.title}`}
     >
       <Thumbnail device={device}>
@@ -48,6 +39,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
         <MetaInfo>
           <CalendarIcon
+            aria-hidden="true"
             width={device === 'mobile' ? 12 : 14}
             height={device === 'mobile' ? 12 : 14}
             color={theme.colors.textTertiary}
@@ -61,6 +53,7 @@ const PostCard = ({ post }: PostCardProps) => {
             </time>
           </Text>
           <Text
+            aria-hidden="true"
             color="textTertiary"
             font={device === 'mobile' ? 'body3' : 'body1'}
           >

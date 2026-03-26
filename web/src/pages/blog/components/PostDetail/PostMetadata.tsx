@@ -28,6 +28,7 @@ const PostMetadata = ({
       <Flex gap={device === 'mobile' ? 8 : 16} align="center">
         <CategoryBadge device={device}>{categoryName}</CategoryBadge>
         <Text
+          aria-hidden="true"
           color="textTertiary"
           font={device === 'mobile' ? 'body3' : 'body1'}
         >
@@ -40,6 +41,7 @@ const PostMetadata = ({
           <time dateTime={publishedAt}>{formattedDate}</time>
         </Text>
         <Text
+          aria-hidden="true"
           color="textTertiary"
           font={device === 'mobile' ? 'body3' : 'body1'}
         >
@@ -47,6 +49,7 @@ const PostMetadata = ({
         </Text>
         <Flex gap={4} align="center">
           <ClockIcon
+            aria-hidden="true"
             width={device === 'mobile' ? 12 : 14}
             height={device === 'mobile' ? 12 : 14}
             color={theme.colors.textTertiary}

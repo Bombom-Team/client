@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import { Link } from '@tanstack/react-router';
+import { createSlug } from '../utils/slug';
 import Flex from '@/components/Flex';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Text from '@/components/Text';
@@ -12,18 +14,11 @@ interface FeaturedPostProps {
 
 const FeaturedPost = ({ post }: FeaturedPostProps) => {
   const device = useDevice();
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-    }
-  };
+  const slug = createSlug(post.title);
 
   return (
     <Container
-      onKeyDown={handleKeyDown}
-      role="article"
-      tabIndex={0}
+      to={`/blog/post/${post.postId}/${slug}`}
       aria-label={`추천 블로그 포스트: ${post.title}`}
       device={device}
     >
@@ -67,7 +62,7 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
 
 export default FeaturedPost;
 
-export const Container = styled.a<{ device: Device }>`
+export const Container = styled(Link)<{ device: Device }>`
   border-radius: 16px;
 
   display: flex;
