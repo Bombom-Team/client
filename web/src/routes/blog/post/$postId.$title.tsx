@@ -9,6 +9,7 @@ import useScrollProgress from '@/hooks/useScrollProgress';
 import FloatingPostPanel from '@/pages/blog/components/PostDetail/FloatingPostPanel';
 import PostDetail from '@/pages/blog/components/PostDetail/PostDetail';
 import PostDetailSkeleton from '@/pages/blog/components/PostDetail/PostDetailSkeleton';
+import ShareButton from '@/pages/blog/components/PostDetail/ShareButton';
 import { createBlogPostingSchema } from '@/pages/blog/utils/seo';
 import type { Device } from '@/hooks/useDevice';
 
@@ -82,7 +83,10 @@ const PostDetailContent = () => {
             >
               ← 목록으로 돌아가기
             </GoToListButton>
+
             <PostDetail post={post} />
+
+            <ShareRow>{device !== 'mobile' && <ShareButton />}</ShareRow>
           </Article>
         </ContentLayoutWrapper>
       </ContentWrapper>
@@ -150,4 +154,11 @@ const GoToListButton = styled(Button)<{ device: Device }>`
     background-color: transparent;
     color: ${({ theme }) => theme.colors.primary};
   }
+`;
+
+const ShareRow = styled.div`
+  margin-top: 48px;
+
+  display: flex;
+  justify-content: flex-end;
 `;
