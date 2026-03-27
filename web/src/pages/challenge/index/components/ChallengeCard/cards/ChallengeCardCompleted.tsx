@@ -4,7 +4,6 @@ import CardContainer from '../CardContainer';
 import { CardDetailButton, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
-import Flex from '@/components/Flex';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
@@ -40,11 +39,7 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
   return (
     <CardContainer onClick={moveToDetail}>
       <CardHeader>
-        <Flex direction="column" gap={8}>
-          <Title>{title}</Title>
-          <Tag>{generation}기</Tag>
-        </Flex>
-
+        <Tag>{generation}기</Tag>
         {participationInfo?.isSurvived && gradeConfig && (
           <GradeBadgeTopRight>
             <img src={GRADE_CONFIG[grade]} alt={`${grade} 메달`} width={48} />
@@ -52,12 +47,12 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
         )}
       </CardHeader>
 
+      <Title>{title}</Title>
+
       <CardFooter>
-        <CompletionInfo>
-          <CompletionText>
-            {participationInfo?.progress}% 달성 완료
-          </CompletionText>
-        </CompletionInfo>
+        <CompletionText>
+          {participationInfo?.progress}% 달성 완료
+        </CompletionText>
         <CardDetailButton>자세히 보기 →</CardDetailButton>
       </CardFooter>
     </CardContainer>
@@ -74,12 +69,6 @@ const GradeBadgeTopRight = styled.span`
   color: ${({ color }) => color};
   font: ${({ theme }) => theme.fonts.body3};
   font-weight: 600;
-`;
-
-const CompletionInfo = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
 `;
 
 const CompletionText = styled.p`

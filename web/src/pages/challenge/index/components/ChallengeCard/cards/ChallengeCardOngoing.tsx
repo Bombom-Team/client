@@ -11,6 +11,7 @@ import Button from '@/components/Button/Button';
 import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
+import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import useChallengeApplyMutation from '@/pages/challenge/index/hooks/useChallengeApplyMutation';
 import type { ChallengeCardProps } from '../ChallengeCard';
@@ -69,30 +70,36 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
     <>
       <CardContainer onClick={moveToDetail}>
         <CardHeader>
-          <Flex direction="column" gap={8}>
-            <Title>{title}</Title>
+          <Flex gap={8} align="center">
             <Tag>{generation}기</Tag>
-          </Flex>
-
-          <Flex align="flex-end" gap={12}>
             {participantCount > 0 && (
-              <Applicant>신청자 {participantCount}명</Applicant>
+              <Applicant>{participantCount}명</Applicant>
             )}
-            <DDay startDate={startDate} />
           </Flex>
+          <DDay startDate={startDate} />
         </CardHeader>
+
+        <Title>{title}</Title>
 
         <CardFooter>
           {shouldShowApplyButton ? (
-            <ApplyButton onClick={handleApplyClick}>
-              {applyButtonText}
-            </ApplyButton>
+            <>
+              <ApplyButton onClick={handleApplyClick}>
+                {applyButtonText}
+              </ApplyButton>
+              <CardDetailButton>자세히 보기 →</CardDetailButton>
+            </>
           ) : (
-            <ChallengeProgress>
-              {participationInfo?.progress ?? 0}% 달성 중
-            </ChallengeProgress>
+            <ProgressSection>
+              <ChallengeProgress>
+                {participationInfo?.progress ?? 0}% 달성 중
+              </ChallengeProgress>
+              <ProgressBar rate={participationInfo?.progress ?? 0} />
+              <Flex justify="flex-end">
+                <CardDetailButton>자세히 보기 →</CardDetailButton>
+              </Flex>
+            </ProgressSection>
           )}
-          <CardDetailButton>자세히 보기 →</CardDetailButton>
         </CardFooter>
       </CardContainer>
 
@@ -117,9 +124,18 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
 
 export default ChallengeCardOngoing;
 
+const ProgressSection = styled.div`
+  width: 100%;
+
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+`;
+
 const ChallengeProgress = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.body2};
+  font-weight: 600;
 `;
 
 const ApplyButton = styled(Button)`
