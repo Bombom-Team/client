@@ -21,7 +21,7 @@ const FloatingPostPanel = () => {
     }
   };
 
-  if (device === 'mobile' || device === 'tablet') {
+  if (device !== 'pc') {
     return null;
   }
 
