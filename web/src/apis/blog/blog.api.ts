@@ -4,8 +4,7 @@ import type { components, operations } from '@/types/openapi';
 export type PostListItem = components['schemas']['BlogPostResponse'];
 
 export type GetBlogPostsParams =
-  operations['getPublishedPosts']['parameters']['path'] &
-    components['schemas']['Pageable'];
+  operations['getPublishedPosts']['parameters']['query']['pageable'];
 export type GetBlogPostsResponse =
   components['schemas']['PageBlogPostResponse'];
 
