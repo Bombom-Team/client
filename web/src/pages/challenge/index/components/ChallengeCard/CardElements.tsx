@@ -53,6 +53,8 @@ export const DDay = ({ startDate, ...props }: DDayProps) => {
 export const CardDetailButton = styled.button`
   border: none;
 
+  align-self: flex-end;
+
   background-color: transparent;
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
