@@ -1,8 +1,13 @@
 import { useEffect, useCallback } from 'react';
 import * as Notifications from 'expo-notifications';
-import messaging, {
-  FirebaseMessagingTypes,
+import {
+  getMessaging,
+  getInitialNotification,
+  onTokenRefresh,
+  onMessage,
+  onNotificationOpenedApp,
 } from '@react-native-firebase/messaging';
+import type { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import {
   createAndroidChannel,
   getFCMToken,
@@ -52,7 +57,7 @@ const useNotification = () => {
   // 앱 종료 상태에서 알림을 탭한 경우
   const coldStartNotificationOpen = useCallback(async () => {
     try {
-      const message = await messaging().getInitialNotification();
+      const message = await getInitialNotification(getMessaging());
       if (!message) return;
 
       const url = getNotificationUrl(message.data ?? {});
@@ -73,7 +78,7 @@ const useNotification = () => {
     coldStartNotificationOpen();
 
     // FCM 토큰 갱신 리스너: 토큰이 변경되면 자동으로 서버에 업데이트
-    const unsubscribeTokenRefresh = messaging().onTokenRefresh(async () => {
+    const unsubscribeTokenRefresh = onTokenRefresh(getMessaging(), async () => {
       console.log('FCM 토큰이 갱신되었습니다');
       try {
         await registerFCMToken();
@@ -83,7 +88,8 @@ const useNotification = () => {
     });
 
     // FCM 포그라운드 메시지 리스너: 앱이 열려있을 때 FCM 메시지를 받으면 즉시 로컬 알림으로 표시
-    const unsubscribe = messaging().onMessage(
+    const unsubscribe = onMessage(
+      getMessaging(),
       async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
         // FCM에서 메시지를 받으면 Expo Notifications로 로컬 알림 표시
         if (remoteMessage.notification) {
@@ -100,7 +106,8 @@ const useNotification = () => {
     );
 
     // 백그라운드에서 알림을 탭한 경우
-    const unsubscribeNotificationOpened = messaging().onNotificationOpenedApp(
+    const unsubscribeNotificationOpened = onNotificationOpenedApp(
+      getMessaging(),
       (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
         const url = getNotificationUrl(remoteMessage.data ?? {});
         if (url) {
