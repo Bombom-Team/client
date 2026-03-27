@@ -156,7 +156,7 @@ export const MainScreen = () => {
         <StyledWebView
           ref={webViewRef}
           source={{ uri: ENV.webUrl }}
-          userAgent={`${navigator.userAgent} ${WEBVIEW_USER_AGENT}`}
+          applicationNameForUserAgent={WEBVIEW_USER_AGENT}
           scalesPageToFit={false}
           automaticallyAdjustsScrollIndicatorInsets={false}
           injectedJavaScript={`
