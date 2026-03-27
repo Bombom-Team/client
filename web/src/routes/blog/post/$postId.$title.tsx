@@ -16,9 +16,10 @@ import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/blog/post/$postId/$title')({
   loader: async ({ context, params }) => {
+    const postId = Number(params.postId);
     const post = await context.queryClient.ensureQueryData(
       queries.blogPostDetail({
-        postId: params.postId,
+        postId,
       }),
     );
 

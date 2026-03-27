@@ -1,37 +1,25 @@
 import { fetcher } from '@bombom/shared/apis';
+import type { components, operations } from '@/types/openapi';
 
-export type PostListItem = {
-  postId: string;
-  title: string;
-  thumbnailImageUrl: string | null;
-  categoryName: string;
-  publishedAt: string;
-  readingTime: number;
-  description?: string;
-};
+export type PostListItem = components['schemas']['BlogPostResponse'];
 
-export type PostDetail = {
-  title: string;
-  content: string;
-  thumbnailImageUrl: string | null;
-  categoryName: string;
-  publishedAt: string;
-  readingTime: number;
-  hashTags: string[];
-};
+export type GetBlogPostsParams =
+  operations['getPublishedPosts']['parameters']['path'] &
+    components['schemas']['Pageable'];
+export type GetBlogPostsResponse =
+  components['schemas']['PageBlogPostResponse'];
 
-export type GetBlogPostsResponse = PostListItem[];
-
-export const getBlogPosts = async () => {
+export const getBlogPosts = async (params: GetBlogPostsParams) => {
   return await fetcher.get<GetBlogPostsResponse>({
     path: '/blog/posts',
+    query: params,
   });
 };
 
-export type GetBlogPostDetailParams = {
-  postId: string;
-};
-export type GetBlogPostDetailResponse = PostDetail;
+export type GetBlogPostDetailParams =
+  operations['getPublishedPostDetail']['parameters']['path'];
+export type GetBlogPostDetailResponse =
+  components['schemas']['BlogPostDetailResponse'];
 
 export const getBlogPostDetail = async ({
   postId,
