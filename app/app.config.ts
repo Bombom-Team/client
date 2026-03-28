@@ -34,7 +34,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
-      buildNumber: '5',
       googleServicesFile: './GoogleService-Info.plist',
       infoPlist: {
         UIBackgroundModes: ['remote-notification'],
