@@ -44,26 +44,6 @@ const Title = styled.h1<{ device: Device }>`
     device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading1};
 `;
 
-export const ContentWrapper = styled.div<{ device: Device }>`
-  padding-bottom: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
-`;
-
-export const ContentLayoutWrapper = styled.div<{ device: Device }>`
-  width: 100%;
-  max-width: ${({ device }) => (device === 'pc' ? '920px' : '100%')};
-  margin: 0 auto;
-  padding: ${({ device }) => (device === 'mobile' ? '0' : '0 24px')};
-
-  display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '40px' : '0')};
-  align-items: flex-start;
-`;
-
-export const ActionRail = styled.div`
-  width: 56px;
-  flex-shrink: 0;
-`;
-
 export const ThumbnailBox = styled.div<{ device: Device }>`
   overflow: hidden;
   margin: ${({ device }) => (device === 'mobile' ? '24px 0' : '32px 0')};
