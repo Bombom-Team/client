@@ -1,45 +1,15 @@
 import styled from '@emotion/styled';
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
 import FeaturedPost from '../FeaturedPost';
 import PostCard from '../PostCard';
 import PostCardSkeleton from './PostCardSkeleton';
 import { CardWrapper } from './PostList';
-import { queries } from '@/apis/queries';
+import { useInfinitePostScroll } from '@/pages/blog/hooks/useInfinitePostScroll';
 
 const POSTS_PER_PAGE = 6;
 
 const MobilePostList = () => {
-  const loadMoreRef = useRef<HTMLDivElement>(null);
-
-  const {
-    data: infinitePosts,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useSuspenseInfiniteQuery(
-    queries.posts.infiniteList({ size: POSTS_PER_PAGE }),
-  );
-
-  const posts = infinitePosts.pages.flatMap((page) => page?.content ?? []);
-  const featuredPost = posts[0];
-
-  useEffect(() => {
-    if (!loadMoreRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    observer.observe(loadMoreRef.current);
-
-    return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const { posts, featuredPost, isFetchingNextPage, loadMoreRef } =
+    useInfinitePostScroll();
 
   return (
     <>
