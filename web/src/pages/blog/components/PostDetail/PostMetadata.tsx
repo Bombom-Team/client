@@ -10,7 +10,7 @@ import ClockIcon from '#/assets/svg/clock.svg';
 interface PostMetadataProps {
   categoryName: string;
   publishedAt: string;
-  readingTime: number;
+  readingTime?: number;
   hashTags: string[];
 }
 
@@ -47,20 +47,22 @@ const PostMetadata = ({
         >
           •
         </Text>
-        <Flex gap={4} align="center">
-          <ClockIcon
-            aria-hidden="true"
-            width={device === 'mobile' ? 12 : 14}
-            height={device === 'mobile' ? 12 : 14}
-            color={theme.colors.textTertiary}
-          />
-          <Text
-            color="textTertiary"
-            font={device === 'mobile' ? 'body3' : 'body1'}
-          >
-            {readingTime}분
-          </Text>
-        </Flex>
+        {readingTime && (
+          <Flex gap={4} align="center">
+            <ClockIcon
+              aria-hidden="true"
+              width={device === 'mobile' ? 12 : 14}
+              height={device === 'mobile' ? 12 : 14}
+              color={theme.colors.textTertiary}
+            />
+            <Text
+              color="textTertiary"
+              font={device === 'mobile' ? 'body3' : 'body1'}
+            >
+              {readingTime}분
+            </Text>
+          </Flex>
+        )}
       </Flex>
       {hashTags.length > 0 && (
         <Flex gap={8} wrap="wrap">
