@@ -1,9 +1,9 @@
-import type { GetBlogPostsResponse, PostListItem } from '@/apis/blog/blog.api';
+import type { PostListItem } from '@/apis/blog/blog.api';
 import type { components } from '@/types/openapi';
 
 type BlogPostDetail = components['schemas']['BlogPostDetailResponse'];
 
-const BLOG_POST_CONTENT: PostListItem[] = [
+export const BLOG_POST_CONTENT: PostListItem[] = [
   {
     postId: 1,
     title: '페이스페이가 그리는 결제의 새 얼굴',
@@ -59,11 +59,64 @@ const BLOG_POST_CONTENT: PostListItem[] = [
     publishedAt: '2026-03-05T10:00:00Z',
     description: '올해 주목할 스타트업 트렌드를 분석합니다.',
   },
+  {
+    postId: 7,
+    title: '뉴스레터 마케팅의 미래',
+    thumbnailImageUrl:
+      'https://images.unsplash.com/photo-1432888622747-4eb9a8f5a07d?w=400',
+    categoryName: '트렌드 분석',
+    publishedAt: '2026-03-03T10:00:00Z',
+    description:
+      '이메일 마케팅이 아직도 유효한 이유와 앞으로의 전략을 살펴봅니다.',
+  },
+  {
+    postId: 8,
+    title: '개발자가 읽어야 할 뉴스레터 5선',
+    thumbnailImageUrl:
+      'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400',
+    categoryName: '뉴스레터 추천',
+    publishedAt: '2026-03-01T10:00:00Z',
+    description:
+      '개발 트렌드와 기술 인사이트를 제공하는 필수 뉴스레터 목록입니다.',
+  },
+  {
+    postId: 9,
+    title: '콘텐츠 큐레이션 잘하는 법',
+    thumbnailImageUrl:
+      'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400',
+    categoryName: '추천 콘텐츠',
+    publishedAt: '2026-02-27T10:00:00Z',
+    description: '방대한 정보 속에서 가치 있는 콘텐츠를 선별하는 5가지 원칙.',
+  },
+  {
+    postId: 10,
+    title: '봄봄 2026 상반기 업데이트 미리보기',
+    thumbnailImageUrl:
+      'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400',
+    categoryName: '봄봄 소식',
+    publishedAt: '2026-02-24T10:00:00Z',
+    description: '봄봄이 준비 중인 새로운 기능들을 미리 만나보세요.',
+  },
+  {
+    postId: 11,
+    title: '읽기 습관 만들기 30일 챌린지 후기',
+    thumbnailImageUrl:
+      'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400',
+    categoryName: '구독자 인터뷰',
+    publishedAt: '2026-02-21T10:00:00Z',
+    description: '매일 뉴스레터 읽기를 30일간 실천한 구독자의 생생한 후기.',
+  },
+  {
+    postId: 12,
+    title: '좋은 뉴스레터의 조건',
+    thumbnailImageUrl:
+      'https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?w=400',
+    categoryName: '트렌드 분석',
+    publishedAt: '2026-02-18T10:00:00Z',
+    description:
+      '독자를 계속 구독하게 만드는 뉴스레터의 핵심 요소를 분석합니다.',
+  },
 ];
-
-export const BLOG_POST_LIST: GetBlogPostsResponse = {
-  content: BLOG_POST_CONTENT,
-};
 
 const POST_CONTENT = `페이스페이는 우리의 일상을 바꾸고 있습니다. 단순히 카드를 긁거나 현금을 건네는 것이 아니라, 얼굴 인식만으로 결제가 가능한 시대가 왔습니다.
 

@@ -1,15 +1,35 @@
 import { delay, http, HttpResponse } from 'msw';
-import { BLOG_POST_DETAILS, BLOG_POST_LIST } from '../datas/blogPosts';
+import { BLOG_POST_CONTENT, BLOG_POST_DETAILS } from '../datas/blogPosts';
 import { ENV } from '@/apis/env';
 
 const BLOG_MOCK_DELAY_MS = 300;
 const baseURL = ENV.baseUrl;
 
 export const blogHandlers = [
-  http.get(`${baseURL}/blog/posts`, async () => {
+  http.get(`${baseURL}/blog/posts`, async ({ request }) => {
     await delay(BLOG_MOCK_DELAY_MS);
 
-    return HttpResponse.json(BLOG_POST_LIST);
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('page') ?? 0);
+    const size = Number(url.searchParams.get('size') ?? 6);
+
+    const totalElements = BLOG_POST_CONTENT.length;
+    const totalPages = Math.ceil(totalElements / size);
+    const start = page * size;
+    const end = start + size;
+    const content = BLOG_POST_CONTENT.slice(start, end);
+
+    return HttpResponse.json({
+      content,
+      totalElements,
+      totalPages,
+      number: page,
+      size,
+      first: page === 0,
+      last: page >= totalPages - 1,
+      numberOfElements: content.length,
+      empty: content.length === 0,
+    });
   }),
 
   http.get(`${baseURL}/blog/posts/:postId`, async ({ params }) => {
