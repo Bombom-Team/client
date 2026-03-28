@@ -40,28 +40,30 @@ const PostMetadata = ({
         >
           <time dateTime={publishedAt}>{formattedDate}</time>
         </Text>
-        <Text
-          aria-hidden="true"
-          color="textTertiary"
-          font={device === 'mobile' ? 'body3' : 'body1'}
-        >
-          •
-        </Text>
         {readingTime && (
-          <Flex gap={4} align="center">
-            <ClockIcon
-              aria-hidden="true"
-              width={device === 'mobile' ? 12 : 14}
-              height={device === 'mobile' ? 12 : 14}
-              color={theme.colors.textTertiary}
-            />
+          <>
             <Text
+              aria-hidden="true"
               color="textTertiary"
               font={device === 'mobile' ? 'body3' : 'body1'}
             >
-              {readingTime}분
+              •
             </Text>
-          </Flex>
+            <Flex gap={4} align="center">
+              <ClockIcon
+                aria-hidden="true"
+                width={device === 'mobile' ? 12 : 14}
+                height={device === 'mobile' ? 12 : 14}
+                color={theme.colors.textTertiary}
+              />
+              <Text
+                color="textTertiary"
+                font={device === 'mobile' ? 'body3' : 'body1'}
+              >
+                {readingTime}분
+              </Text>
+            </Flex>
+          </>
         )}
       </Flex>
       {hashTags.length > 0 && (
