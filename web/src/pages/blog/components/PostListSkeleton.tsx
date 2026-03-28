@@ -14,7 +14,7 @@ const PostListSkeleton = () => {
 
       <CardWrapper device={device}>
         {Array.from({ length: BLOG_POST_SKELETON_COUNT }).map((_, index) => (
-          <PostCardSkeleton key={`blog-post-skeleton-${index}`} />
+          <PostCardSkeleton key={`post-card-skeleton-${index}`} />
         ))}
       </CardWrapper>
     </>

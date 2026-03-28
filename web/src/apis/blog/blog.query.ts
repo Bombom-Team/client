@@ -9,6 +9,15 @@ import {
 export const blogQueries = {
   posts: {
     all: () => ['blog', 'posts'] as const,
+    featured: () =>
+      queryOptions({
+        queryKey: [...blogQueries.posts.all(), 'featured'],
+        queryFn: () =>
+          getBlogPosts({
+            page: 0,
+            size: 1,
+          }),
+      }),
     list: (params: GetBlogPostsParams) =>
       queryOptions({
         queryKey: [...blogQueries.posts.all(), params],
