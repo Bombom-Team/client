@@ -59,5 +59,5 @@ function Blog() {
 }
 
 const Container = styled.div<{ device: Device }>`
-  padding-bottom: ${({ device }) => (device === 'mobile' ? '80px' : '240px')};
+  padding-bottom: ${({ device }) => (device === 'mobile' ? '80px' : '100px')};
 `;

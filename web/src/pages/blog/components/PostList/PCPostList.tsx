@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { usePostsPagination } from '../../hooks/usePostsPagination';
 import FeaturedPost from '../FeaturedPost';
@@ -25,13 +26,22 @@ const PCPostList = () => {
           <PostCard key={post.postId} post={post} />
         ))}
       </CardWrapper>
-      <Pagination
-        currentPage={page}
-        totalPages={postsData?.totalPages ?? 1}
-        onPageChange={changePage}
-      />
+      <PaginationWrapper>
+        <Pagination
+          currentPage={page}
+          totalPages={postsData?.totalPages ?? 1}
+          onPageChange={changePage}
+        />
+      </PaginationWrapper>
     </>
   );
 };
 
 export default PCPostList;
+
+const PaginationWrapper = styled.div`
+  margin-top: 100px;
+
+  display: flex;
+  justify-content: center;
+`;
