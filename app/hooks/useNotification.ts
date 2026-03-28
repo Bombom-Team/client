@@ -33,9 +33,9 @@ const useNotification = () => {
       return;
     }
 
-    isRegisteringRef.current = true;
-
     try {
+      isRegisteringRef.current = true;
+
       const memberId = await getMemberId();
       if (!memberId) return;
 
