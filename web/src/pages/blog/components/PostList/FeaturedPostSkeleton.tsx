@@ -4,7 +4,7 @@ import {
   ContentWrapper,
   DescriptionBox,
   Thumbnail,
-} from './FeaturedPost';
+} from '../FeaturedPost';
 import Skeleton from '@/components/Skeleton/Skeleton';
 import { useDevice } from '@/hooks/useDevice';
 

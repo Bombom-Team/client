@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
-import FeaturedPost from './FeaturedPost';
-import PostCard from './PostCard';
+import FeaturedPost from '../FeaturedPost';
+import PostCard from '../PostCard';
 import PostCardSkeleton from './PostCardSkeleton';
 import { CardWrapper } from './PostList';
 import { queries } from '@/apis/queries';

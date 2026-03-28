@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Container, ContentWrapper, MetaInfo } from './PostCard';
+import { Container, ContentWrapper, MetaInfo } from '../PostCard';
 import Skeleton from '@/components/Skeleton/Skeleton';
 import { useDevice } from '@/hooks/useDevice';
 

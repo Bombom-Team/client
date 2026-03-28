@@ -1,8 +1,8 @@
 import { useSuspenseQueries } from '@tanstack/react-query';
-import FeaturedPost from './FeaturedPost';
-import PostCard from './PostCard';
+import { usePostsPagination } from '../../hooks/usePostsPagination';
+import FeaturedPost from '../FeaturedPost';
+import PostCard from '../PostCard';
 import { CardWrapper } from './PostList';
-import { usePostsPagination } from '../hooks/usePostsPagination';
 import { queries } from '@/apis/queries';
 import Pagination from '@/components/Pagination/Pagination';
 import { useDevice } from '@/hooks/useDevice';
