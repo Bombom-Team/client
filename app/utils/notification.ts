@@ -90,8 +90,8 @@ export const goToSystemPermission = async () => {
 
 export const getFCMToken = async () => {
   try {
-    const hasPermission = await checkNotificationPermission();
-    if (!hasPermission) {
+    const isPermissionGranted = await checkNotificationPermission();
+    if (!isPermissionGranted) {
       throw new Error('푸시 알림 권한이 없습니다.');
     }
 
