@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
 import { useAuth } from '@/contexts/AuthContext';
-import useCategoryNotificationMutation from '@/pages/MyPage/hooks/useCategoryNotificationMutation';
+import useCategoryNotificationMutation from '@/pages/my-page/hooks/useCategoryNotificationMutation';
 
 const useEventNotification = () => {
   const { userProfile } = useAuth();

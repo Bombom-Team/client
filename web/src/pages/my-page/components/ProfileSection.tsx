@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, type ChangeEvent } from 'react';
-import Divider from '../../components/Divider/Divider';
 import { postWithdraw } from '@/apis/auth/auth.api';
 import { patchMemberInfo } from '@/apis/members/members.api';
 import Button from '@/components/Button/Button';
+import Divider from '@/components/Divider/Divider';
 import InputField from '@/components/InputField/InputField';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { useUserInfoValidation } from '@/hooks/useUserInfoValidation';
