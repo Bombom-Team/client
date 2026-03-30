@@ -1,5 +1,6 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import {
+  createChallenge,
   getChallengeDailyGuide,
   getChallengeDailyGuideImages,
   getChallengeDetail,
@@ -18,6 +19,7 @@ import {
 } from './challenges.api';
 import type {
   AssignChallengeTeamsParams,
+  CreateChallengePayload,
   CreateChallengeTeamsParams,
   CreateChallengeDailyGuideRequest,
   UpdateChallengeDailyGuideRequest,
@@ -92,6 +94,9 @@ export const challengesQueries = {
       gcTime: CHALLENGES_GC_TIME,
     }),
   mutation: {
+    create: () => ({
+      mutationFn: (payload: CreateChallengePayload) => createChallenge(payload),
+    }),
     createDailyGuide: () => ({
       mutationFn: ({
         challengeId,
