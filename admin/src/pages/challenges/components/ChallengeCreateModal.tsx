@@ -292,7 +292,8 @@ const Input = styled.input`
 
 const Select = styled.select`
   min-height: 48px;
-  padding: ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) =>
+    `${theme.spacing.md} ${theme.spacing.xl} ${theme.spacing.md} ${theme.spacing.md}`};
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
