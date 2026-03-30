@@ -25,6 +25,8 @@ export type CreateChallengePayload = {
   endDate: string;
 };
 
+export type UpdateChallengePayload = Partial<CreateChallengePayload>;
+
 export type GetChallengeParticipantsParams = {
   challengeTeamId?: number;
   hasTeam?: boolean;
@@ -48,6 +50,25 @@ export const createChallenge = async (payload: CreateChallengePayload) => {
   return fetcher.post<CreateChallengePayload, void>({
     path: '/challenges',
     body: payload,
+  });
+};
+
+export const updateChallenge = async ({
+  challengeId,
+  payload,
+}: {
+  challengeId: number;
+  payload: UpdateChallengePayload;
+}) => {
+  return fetcher.patch<UpdateChallengePayload, void>({
+    path: `/challenges/${challengeId}`,
+    body: payload,
+  });
+};
+
+export const deleteChallenge = async (challengeId: number) => {
+  return fetcher.delete<never, void>({
+    path: `/challenges/${challengeId}`,
   });
 };
 
