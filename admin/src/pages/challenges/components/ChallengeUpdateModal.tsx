@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { newsletterGroupsQueries } from '@/apis/newsletterGroups/newsletterGroups.query';
 import { Button } from '@/components/Button';
 import { useUpdateChallengeMutation } from '@/pages/challenges/hooks/useUpdateChallengeMutation';
 import type { Challenge } from '@/types/challenge';
@@ -14,8 +16,16 @@ const ChallengeUpdateModal = ({ challenge, onClose }: Props) => {
   const [generationInput, setGenerationInput] = useState(
     challenge.generation.toString(),
   );
+  const [newsletterGroupIdInput, setNewsletterGroupIdInput] = useState(
+    challenge.newsletterGroupId?.toString() ?? '',
+  );
   const [startDateInput, setStartDateInput] = useState(challenge.startDate);
   const [endDateInput, setEndDateInput] = useState(challenge.endDate);
+  const {
+    data: newsletterGroups,
+    isLoading: isNewsletterGroupsLoading,
+    isError: isNewsletterGroupsError,
+  } = useQuery(newsletterGroupsQueries.list());
   const { mutate: updateChallenge, isPending: isUpdating } =
     useUpdateChallengeMutation({
       challengeId: challenge.id,
@@ -69,6 +79,18 @@ const ChallengeUpdateModal = ({ challenge, onClose }: Props) => {
       return;
     }
 
+    const newsletterGroupId = newsletterGroupIdInput
+      ? Number(newsletterGroupIdInput)
+      : null;
+
+    if (
+      newsletterGroupId !== null &&
+      (!Number.isInteger(newsletterGroupId) || newsletterGroupId <= 0)
+    ) {
+      alert('유효한 뉴스레터 그룹을 선택해주세요.');
+      return;
+    }
+
     updateChallenge({
       challengeId: challenge.id,
       payload: {
@@ -76,6 +98,7 @@ const ChallengeUpdateModal = ({ challenge, onClose }: Props) => {
         generation,
         startDate: startDateInput,
         endDate: endDateInput,
+        ...(newsletterGroupId !== null ? { newsletterGroupId } : {}),
       },
     });
   };
@@ -103,6 +126,33 @@ const ChallengeUpdateModal = ({ challenge, onClose }: Props) => {
             value={generationInput}
             onChange={(event) => setGenerationInput(event.target.value)}
           />
+        </FormGroup>
+        <FormGroup>
+          <Label htmlFor="challenge-update-newsletter-group">
+            뉴스레터 그룹
+          </Label>
+          <Select
+            id="challenge-update-newsletter-group"
+            value={newsletterGroupIdInput}
+            disabled={isNewsletterGroupsLoading || isNewsletterGroupsError}
+            onChange={(event) => setNewsletterGroupIdInput(event.target.value)}
+          >
+            <option value="">
+              {isNewsletterGroupsLoading
+                ? '불러오는 중...'
+                : isNewsletterGroupsError
+                  ? '불러오기에 실패했습니다'
+                  : '선택하지 않으면 기존값을 유지합니다'}
+            </option>
+            {newsletterGroups?.map((newsletterGroup) => (
+              <option
+                key={newsletterGroup.id}
+                value={newsletterGroup.id.toString()}
+              >
+                {newsletterGroup.name}
+              </option>
+            ))}
+          </Select>
         </FormGroup>
         <DateFieldsWrapper>
           <FormGroup>
@@ -210,6 +260,22 @@ const Input = styled.input`
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.base};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const Select = styled.select`
+  min-height: 48px;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.gray700};
   font-size: ${({ theme }) => theme.fontSize.base};
 

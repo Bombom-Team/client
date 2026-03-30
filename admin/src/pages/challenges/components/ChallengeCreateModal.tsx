@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { newsletterGroupsQueries } from '@/apis/newsletterGroups/newsletterGroups.query';
 import { Button } from '@/components/Button';
 import { useCreateChallengeMutation } from '@/pages/challenges/hooks/useCreateChallengeMutation';
 
@@ -10,6 +12,7 @@ type Props = {
 const INITIAL_FORM_STATE = {
   name: '',
   generation: '',
+  newsletterGroupId: '',
   startDate: '',
   endDate: '',
 };
@@ -19,15 +22,24 @@ const ChallengeCreateModal = ({ onClose }: Props) => {
   const [generationInput, setGenerationInput] = useState(
     INITIAL_FORM_STATE.generation,
   );
+  const [newsletterGroupIdInput, setNewsletterGroupIdInput] = useState(
+    INITIAL_FORM_STATE.newsletterGroupId,
+  );
   const [startDateInput, setStartDateInput] = useState(
     INITIAL_FORM_STATE.startDate,
   );
   const [endDateInput, setEndDateInput] = useState(INITIAL_FORM_STATE.endDate);
+  const {
+    data: newsletterGroups,
+    isLoading: isNewsletterGroupsLoading,
+    isError: isNewsletterGroupsError,
+  } = useQuery(newsletterGroupsQueries.list());
   const { mutate: createChallenge, isPending: isCreating } =
     useCreateChallengeMutation({
       onSuccess: () => {
         setNameInput(INITIAL_FORM_STATE.name);
         setGenerationInput(INITIAL_FORM_STATE.generation);
+        setNewsletterGroupIdInput(INITIAL_FORM_STATE.newsletterGroupId);
         setStartDateInput(INITIAL_FORM_STATE.startDate);
         setEndDateInput(INITIAL_FORM_STATE.endDate);
         onClose();
@@ -66,6 +78,18 @@ const ChallengeCreateModal = ({ onClose }: Props) => {
       return;
     }
 
+    if (!newsletterGroupIdInput) {
+      alert('뉴스레터 그룹을 선택해주세요.');
+      return;
+    }
+
+    const newsletterGroupId = Number(newsletterGroupIdInput);
+
+    if (!Number.isInteger(newsletterGroupId) || newsletterGroupId <= 0) {
+      alert('유효한 뉴스레터 그룹을 선택해주세요.');
+      return;
+    }
+
     if (!startDateInput && endDateInput) {
       alert('종료일만 입력할 수 없습니다. 시작일도 입력해주세요.');
       return;
@@ -84,6 +108,7 @@ const ChallengeCreateModal = ({ onClose }: Props) => {
     createChallenge({
       name: nameInput.trim(),
       generation,
+      newsletterGroupId,
       ...(startDateInput && endDateInput
         ? {
             startDate: startDateInput,
@@ -117,9 +142,38 @@ const ChallengeCreateModal = ({ onClose }: Props) => {
             onChange={(event) => setGenerationInput(event.target.value)}
           />
         </FormGroup>
+        <FormGroup>
+          <Label htmlFor="challenge-create-newsletter-group">
+            뉴스레터 그룹
+          </Label>
+          <Select
+            id="challenge-create-newsletter-group"
+            value={newsletterGroupIdInput}
+            disabled={isNewsletterGroupsLoading || isNewsletterGroupsError}
+            onChange={(event) => setNewsletterGroupIdInput(event.target.value)}
+          >
+            <option value="">
+              {isNewsletterGroupsLoading
+                ? '불러오는 중...'
+                : isNewsletterGroupsError
+                  ? '불러오기에 실패했습니다'
+                  : '뉴스레터 그룹을 선택해주세요'}
+            </option>
+            {newsletterGroups?.map((newsletterGroup) => (
+              <option
+                key={newsletterGroup.id}
+                value={newsletterGroup.id.toString()}
+              >
+                {newsletterGroup.name}
+              </option>
+            ))}
+          </Select>
+        </FormGroup>
         <DateFieldsWrapper>
           <FormGroup>
-            <Label htmlFor="challenge-create-start-date">시작일</Label>
+            <Label htmlFor="challenge-create-start-date">
+              시작일 (선택, 미입력 시 coming soon)
+            </Label>
             <Input
               id="challenge-create-start-date"
               type="date"
@@ -128,7 +182,9 @@ const ChallengeCreateModal = ({ onClose }: Props) => {
             />
           </FormGroup>
           <FormGroup>
-            <Label htmlFor="challenge-create-end-date">종료일</Label>
+            <Label htmlFor="challenge-create-end-date">
+              종료일 (선택, 미입력 시 coming soon)
+            </Label>
             <Input
               id="challenge-create-end-date"
               type="date"
@@ -139,6 +195,8 @@ const ChallengeCreateModal = ({ onClose }: Props) => {
         </DateFieldsWrapper>
         <Description>
           시작일과 종료일을 비워두면 챌린지가 coming soon 상태로 노출됩니다.
+          <br />
+          날짜를 입력하면 평일 수는 서버에서 자동 계산됩니다.
         </Description>
         <ActionsWrapper>
           <Button variant="secondary" type="button" onClick={onClose}>
@@ -223,6 +281,22 @@ const Input = styled.input`
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.base};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const Select = styled.select`
+  min-height: 48px;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.gray700};
   font-size: ${({ theme }) => theme.fontSize.base};
 

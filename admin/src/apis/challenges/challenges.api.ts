@@ -21,6 +21,7 @@ export type GetChallengesResponse = PageableResponse<Challenge>;
 export type CreateChallengePayload = {
   name: string;
   generation: number;
+  newsletterGroupId: number;
   startDate?: string;
   endDate?: string;
 };
