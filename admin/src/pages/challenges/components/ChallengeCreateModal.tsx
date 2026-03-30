@@ -66,17 +66,17 @@ const ChallengeCreateModal = ({ onClose }: Props) => {
       return;
     }
 
-    if (!startDateInput) {
-      alert('시작일을 입력해주세요.');
+    if (!startDateInput && endDateInput) {
+      alert('종료일만 입력할 수 없습니다. 시작일도 입력해주세요.');
       return;
     }
 
-    if (!endDateInput) {
-      alert('종료일을 입력해주세요.');
+    if (startDateInput && !endDateInput) {
+      alert('시작일을 입력했다면 종료일도 입력해주세요.');
       return;
     }
 
-    if (startDateInput > endDateInput) {
+    if (startDateInput && endDateInput && startDateInput > endDateInput) {
       alert('종료일은 시작일보다 빠를 수 없습니다.');
       return;
     }
@@ -84,8 +84,12 @@ const ChallengeCreateModal = ({ onClose }: Props) => {
     createChallenge({
       name: nameInput.trim(),
       generation,
-      startDate: startDateInput,
-      endDate: endDateInput,
+      ...(startDateInput && endDateInput
+        ? {
+            startDate: startDateInput,
+            endDate: endDateInput,
+          }
+        : {}),
     });
   };
 
@@ -134,7 +138,7 @@ const ChallengeCreateModal = ({ onClose }: Props) => {
           </FormGroup>
         </DateFieldsWrapper>
         <Description>
-          평일 수는 서버에서 자동 계산되므로 별도 입력하지 않습니다.
+          시작일과 종료일을 비워두면 챌린지가 coming soon 상태로 노출됩니다.
         </Description>
         <ActionsWrapper>
           <Button variant="secondary" type="button" onClick={onClose}>

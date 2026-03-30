@@ -21,8 +21,8 @@ export type GetChallengesResponse = PageableResponse<Challenge>;
 export type CreateChallengePayload = {
   name: string;
   generation: number;
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 export type UpdateChallengePayload = Partial<CreateChallengePayload>;
