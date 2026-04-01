@@ -35,7 +35,7 @@ export type GetNotificationSettingParams = {
   memberId: number;
   category: string;
 };
-type GetNotificationSettingResponse = {
+export type GetNotificationSettingResponse = {
   category: string;
   enabled: boolean;
 };

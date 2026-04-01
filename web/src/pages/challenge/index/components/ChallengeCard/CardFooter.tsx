@@ -8,6 +8,8 @@ const CardFooter = ({ children }: PropsWithChildren) => {
 export default CardFooter;
 
 const Footer = styled.div`
+  margin-top: auto;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
