@@ -4,6 +4,7 @@ import {
   FiBell,
   FiCalendar,
   FiCode,
+  FiEdit,
   FiFlag,
   FiHome,
   FiMail,
@@ -45,6 +46,10 @@ export const Sidebar = () => {
         >
           <FiMail />
           <span>뉴스레터 관리</span>
+        </NavItem>
+        <NavItem to="/blog" isActive={currentPath.startsWith('/blog')}>
+          <FiEdit />
+          <span>블로그</span>
         </NavItem>
         <NavItem to="/events" isActive={currentPath.startsWith('/events')}>
           <FiCalendar />
