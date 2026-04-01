@@ -8,8 +8,10 @@ export interface BlogDraftListItem {
 export interface BlogPostListItem {
   postId: number;
   title: string;
-  publishedAt: string;
+  description: string;
+  thumbnailImageUrl: string | null;
   categoryName: string;
+  publishedAt: string;
 }
 
 export interface BlogDraftDetail {
