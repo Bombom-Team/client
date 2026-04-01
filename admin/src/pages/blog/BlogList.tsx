@@ -8,6 +8,7 @@ import {
   useCreateDraft,
   useDeleteDraft,
 } from '@/apis/blog/blog.query';
+import { Layout } from '@/components/Layout';
 
 type Tab = 'drafts' | 'published';
 
@@ -108,19 +109,18 @@ export const BlogList = () => {
     await deleteDraft.mutateAsync(postId);
   };
 
-  return (
-    <PageContainer>
-      <Header>
-        <PageTitle>블로그</PageTitle>
-        <CreateButton
-          onClick={handleCreate}
-          disabled={createDraft.isPending}
-          type="button"
-        >
-          {createDraft.isPending ? '생성 중...' : '새 글 작성'}
-        </CreateButton>
-      </Header>
+  const createButton = (
+    <CreateButton
+      onClick={handleCreate}
+      disabled={createDraft.isPending}
+      type="button"
+    >
+      {createDraft.isPending ? '생성 중...' : '새 글 작성'}
+    </CreateButton>
+  );
 
+  return (
+    <Layout title="블로그" rightAction={createButton}>
       <Tabs>
         <TabButton
           $isActive={activeTab === 'drafts'}
@@ -147,27 +147,9 @@ export const BlogList = () => {
           )}
         </Suspense>
       </ErrorBoundary>
-    </PageContainer>
+    </Layout>
   );
 };
-
-const PageContainer = styled.div`
-  padding: 24px;
-`;
-
-const Header = styled.div`
-  margin-bottom: 24px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const PageTitle = styled.h1`
-  color: ${({ theme }) => theme.colors.gray900};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
-  font-size: ${({ theme }) => theme.fontSize['2xl']};
-`;
 
 const CreateButton = styled.button`
   padding: 8px 16px;

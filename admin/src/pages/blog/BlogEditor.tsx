@@ -18,6 +18,7 @@ import {
   useUpdateVisibility,
 } from '@/apis/blog/blog.query';
 import { categoriesQueries } from '@/apis/categories/categories.query';
+import { Sidebar } from '@/components/Sidebar';
 import { Route } from '@/routes/_admin/blog/$postId';
 import type { BlogVisibility } from '@/types/blog';
 
@@ -185,60 +186,63 @@ export const BlogEditor = () => {
 
   return (
     <PageLayout>
-      <TopBar>
-        <BackButton onClick={() => navigate({ to: '/blog' })} type="button">
-          ← 블로그 목록
-        </BackButton>
-        <Actions>
-          {saveError && <ErrorText>{saveError}</ErrorText>}
-          {publishError && <ErrorText>{publishError}</ErrorText>}
-          <SaveButton
-            onClick={handleSave}
-            disabled={saveDraftMutation.isPending}
-            type="button"
-          >
-            {saveDraftMutation.isPending ? '저장 중...' : '임시저장'}
-          </SaveButton>
-          <PublishButton
-            onClick={handlePublish}
-            disabled={
-              publishDraftMutation.isPending || saveDraftMutation.isPending
-            }
-            type="button"
-          >
-            {publishDraftMutation.isPending ? '발행 중...' : '발행하기'}
-          </PublishButton>
-        </Actions>
-      </TopBar>
+      <Sidebar />
+      <EditorMain>
+        <TopBar>
+          <BackButton onClick={() => navigate({ to: '/blog' })} type="button">
+            ← 블로그 목록
+          </BackButton>
+          <Actions>
+            {saveError && <ErrorText>{saveError}</ErrorText>}
+            {publishError && <ErrorText>{publishError}</ErrorText>}
+            <SaveButton
+              onClick={handleSave}
+              disabled={saveDraftMutation.isPending}
+              type="button"
+            >
+              {saveDraftMutation.isPending ? '저장 중...' : '임시저장'}
+            </SaveButton>
+            <PublishButton
+              onClick={handlePublish}
+              disabled={
+                publishDraftMutation.isPending || saveDraftMutation.isPending
+              }
+              type="button"
+            >
+              {publishDraftMutation.isPending ? '발행 중...' : '발행하기'}
+            </PublishButton>
+          </Actions>
+        </TopBar>
 
-      <EditorLayout>
-        <EditorArea>
-          <TitleInput
-            value={title}
-            onChange={(e) => {
-              setTitle(e.target.value);
-              setIsDirty(true);
-            }}
-            placeholder="제목을 입력하세요"
+        <EditorLayout>
+          <EditorArea>
+            <TitleInput
+              value={title}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setIsDirty(true);
+              }}
+              placeholder="제목을 입력하세요"
+            />
+            <EditorToolbar editor={editor} onImageUpload={handleImageUpload} />
+            <EditorWrapper>
+              <EditorContent editor={editor} />
+            </EditorWrapper>
+          </EditorArea>
+
+          <EditorSettingsPanel
+            thumbnailUrl={thumbnailUrl}
+            categories={categories}
+            categoryId={categoryId}
+            hashTags={hashTags}
+            visibility={visibility}
+            onThumbnailUpload={handleThumbnailUpload}
+            onCategoryChange={setCategoryId}
+            onHashTagsChange={setHashTags}
+            onVisibilityChange={handleVisibilityChange}
           />
-          <EditorToolbar editor={editor} onImageUpload={handleImageUpload} />
-          <EditorWrapper>
-            <EditorContent editor={editor} />
-          </EditorWrapper>
-        </EditorArea>
-
-        <EditorSettingsPanel
-          thumbnailUrl={thumbnailUrl}
-          categories={categories}
-          categoryId={categoryId}
-          hashTags={hashTags}
-          visibility={visibility}
-          onThumbnailUpload={handleThumbnailUpload}
-          onCategoryChange={setCategoryId}
-          onHashTagsChange={setHashTags}
-          onVisibilityChange={handleVisibilityChange}
-        />
-      </EditorLayout>
+        </EditorLayout>
+      </EditorMain>
     </PageLayout>
   );
 };
@@ -248,6 +252,15 @@ const PageLayout = styled.div`
   height: 100vh;
 
   display: flex;
+  flex-direction: row;
+`;
+
+const EditorMain = styled.div`
+  overflow: hidden;
+  margin-left: 256px;
+
+  display: flex;
+  flex: 1;
   flex-direction: column;
 `;
 
