@@ -20,7 +20,7 @@ export const useInfinitePostScroll = () => {
     () => infinitePosts.pages.flatMap((page) => page?.content ?? []),
     [infinitePosts.pages],
   );
-  const featuredPost = posts[0];
+  const featuredPost = null; // 임시로 비활성화
 
   useEffect(() => {
     if (!loadMoreRef.current) return;

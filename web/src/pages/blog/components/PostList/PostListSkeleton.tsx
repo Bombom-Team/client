@@ -1,4 +1,3 @@
-import FeaturedPostSkeleton from './FeaturedPostSkeleton';
 import PostCardSkeleton from './PostCardSkeleton';
 import { CardWrapper } from './PostList';
 import { useDevice } from '@/hooks/useDevice';
@@ -10,7 +9,7 @@ const PostListSkeleton = () => {
 
   return (
     <>
-      <FeaturedPostSkeleton />
+      {/* <FeaturedPostSkeleton /> */}
 
       <CardWrapper device={device}>
         {Array.from({ length: BLOG_POST_SKELETON_COUNT }).map((_, index) => (

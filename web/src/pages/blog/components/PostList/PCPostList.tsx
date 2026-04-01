@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useSuspenseQueries } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { usePostsPagination } from '../../hooks/usePostsPagination';
 import FeaturedPost from '../FeaturedPost';
 import PostCard from '../PostCard';
@@ -12,10 +12,8 @@ const PCPostList = () => {
   const device = useDevice();
   const { page, queryParams, changePage } = usePostsPagination();
 
-  const [{ data: featuredData }, { data: postsData }] = useSuspenseQueries({
-    queries: [queries.posts.featured(), queries.posts.list(queryParams)],
-  });
-  const featuredPost = featuredData.content?.[0];
+  const { data: postsData } = useSuspenseQuery(queries.posts.list(queryParams));
+  const featuredPost = null; // 임시로 비활성화
   const posts = postsData.content ?? [];
 
   return (
