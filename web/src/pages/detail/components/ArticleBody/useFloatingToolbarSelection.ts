@@ -21,7 +21,6 @@ export const useFloatingToolbarSelection = ({
   const device = useDevice();
   const activeSelectionRangeRef = useRef<Range>(null);
   const activeHighlightIdRef = useRef<number>(null);
-  const selectionChangeStart = useRef(false);
 
   const isPC = device === 'pc';
 
@@ -78,29 +77,13 @@ export const useFloatingToolbarSelection = ({
     [openToolbarFromHighlight, onHide],
   );
 
-  const handleSelectionComplete = useCallback(
-    (e: Event) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const selection = window.getSelection();
-      if (
-        selection &&
-        !selection.isCollapsed &&
-        selection.rangeCount > 0 &&
-        selectionChangeStart.current
-      ) {
-        selectionChangeStart.current = false;
-        openToolbarFromSelection(selection);
-        return;
-      }
-    },
-    [openToolbarFromSelection],
-  );
-
-  const handleSelectionChangeStart = useCallback(() => {
-    selectionChangeStart.current = true;
-  }, []);
+  const handleSelectionComplete = useCallback(() => {
+    const selection = window.getSelection();
+    if (selection && !selection.isCollapsed && selection.rangeCount > 0) {
+      openToolbarFromSelection(selection);
+      return;
+    }
+  }, [openToolbarFromSelection]);
 
   const handleSelectionClear = useCallback(() => {
     const selection = window.getSelection();
@@ -111,9 +94,6 @@ export const useFloatingToolbarSelection = ({
 
   const handleHighlightClickOrSelection = useCallback(
     (e: PointerEvent | MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-
       const target = e.target as HTMLElement;
 
       if (target.tagName === 'MARK') {
@@ -139,7 +119,6 @@ export const useFloatingToolbarSelection = ({
     if (isIOS()) {
       contentEl.addEventListener('pointerup', handleHighlightClickOrSelection);
     } else if (isAndroid()) {
-      contentEl.addEventListener('pointercancel', handleSelectionChangeStart);
       contentEl.addEventListener('contextmenu', handleSelectionComplete);
       contentEl.addEventListener('click', handleHighlightClick);
     } else if (!isWebView()) {
@@ -156,10 +135,6 @@ export const useFloatingToolbarSelection = ({
           handleHighlightClickOrSelection,
         );
       } else if (isAndroid()) {
-        contentEl.removeEventListener(
-          'pointercancel',
-          handleSelectionChangeStart,
-        );
         contentEl.removeEventListener('contextmenu', handleSelectionComplete);
         contentEl.removeEventListener('click', handleHighlightClick);
       } else if (!isWebView()) {
@@ -174,7 +149,6 @@ export const useFloatingToolbarSelection = ({
     contentRef,
     handleHighlightClick,
     handleHighlightClickOrSelection,
-    handleSelectionChangeStart,
     handleSelectionClear,
     handleSelectionComplete,
   ]);
