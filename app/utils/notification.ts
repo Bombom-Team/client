@@ -26,8 +26,8 @@ export const requestNotificationPermission = async () => {
       const auth = await messaging().requestPermission();
 
       return (
-        auth === AuthorizationStatus.AUTHORIZED ||
-        auth === AuthorizationStatus.PROVISIONAL
+        auth === messaging.AuthorizationStatus.AUTHORIZED ||
+        auth === messaging.AuthorizationStatus.PROVISIONAL
       );
     }
 
@@ -52,8 +52,8 @@ export const checkNotificationPermission = async () => {
   if (Platform.OS === 'ios') {
     const iosGrantedStatus = await messaging().hasPermission();
     return (
-      iosGrantedStatus === AuthorizationStatus.AUTHORIZED ||
-      iosGrantedStatus === AuthorizationStatus.PROVISIONAL
+      iosGrantedStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      iosGrantedStatus === messaging.AuthorizationStatus.PROVISIONAL
     );
   }
 
@@ -86,8 +86,8 @@ export const goToSystemPermission = async () => {
 
 export const getFCMToken = async () => {
   try {
-    const isPermissionGranted = await checkNotificationPermission();
-    if (!isPermissionGranted) {
+    const hasPermission = await checkNotificationPermission();
+    if (!hasPermission) {
       throw new Error('푸시 알림 권한이 없습니다.');
     }
 
