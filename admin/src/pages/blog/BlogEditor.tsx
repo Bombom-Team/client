@@ -1,11 +1,25 @@
 import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { Node, mergeAttributes } from '@tiptap/core';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+
+// 캡션 블럭 노드 (본문보다 작은 텍스트, 이미지 설명 등)
+const Caption = Node.create({
+  name: 'caption',
+  group: 'block',
+  content: 'inline*',
+  parseHTML() {
+    return [{ tag: 'p[data-caption]' }];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ['p', mergeAttributes(HTMLAttributes, { 'data-caption': '' }), 0];
+  },
+});
 import { useEffect, useState } from 'react';
 import { EditorSettingsPanel } from './components/EditorSettingsPanel';
 import { EditorToolbar } from './components/EditorToolbar';
@@ -73,6 +87,7 @@ export const BlogEditor = () => {
       Image,
       Link.configure({ openOnClick: false }),
       Underline,
+      Caption,
     ],
     content: (() => {
       if (!draft.content) return '';
@@ -83,6 +98,30 @@ export const BlogEditor = () => {
       }
     })(),
     onUpdate: () => setIsDirty(true),
+    editorProps: {
+      // 선택 영역이 있을 때 URL 붙여넣기 → 하이퍼링크로 변환
+      handlePaste: (view, event) => {
+        const text = event.clipboardData?.getData('text/plain')?.trim() ?? '';
+        const isUrl = /^https?:\/\/\S+$/.test(text);
+        const { selection } = view.state;
+
+        if (isUrl && !selection.empty) {
+          event.preventDefault();
+          const linkMark = view.state.schema.marks.link;
+          if (linkMark) {
+            view.dispatch(
+              view.state.tr.addMark(
+                selection.from,
+                selection.to,
+                linkMark.create({ href: text }),
+              ),
+            );
+          }
+          return true;
+        }
+        return false;
+      },
+    },
   });
 
   // 미저장 데이터 보호
@@ -381,6 +420,7 @@ const EditorWrapper = styled.div`
 
   overflow-y: auto;
 
+  /* stylelint-disable-next-line selector-class-pattern */
   .ProseMirror {
     min-height: 300px;
     outline: none;
@@ -438,6 +478,55 @@ const EditorWrapper = styled.div`
       text-decoration: underline;
     }
 
+    p[data-caption] {
+      margin-bottom: 8px;
+
+      color: ${({ theme }) => theme.colors.gray400};
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    code {
+      padding: 1px 5px;
+      border-radius: 4px;
+
+      background: ${({ theme }) => theme.colors.gray100};
+      color: ${({ theme }) => theme.colors.gray700};
+      font-family: 'Courier New', Consolas, monospace;
+      font-size: 0.875em;
+    }
+
+    pre {
+      margin-bottom: 12px;
+      padding: 16px;
+      border-radius: 8px;
+
+      background: #1e1e2e;
+
+      overflow-x: auto;
+
+      code {
+        padding: 0;
+        border-radius: 0;
+
+        background: none;
+        color: #cdd6f4;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+    }
+
+    hr {
+      margin: 24px 0;
+      border: none;
+      border-top: 1px solid ${({ theme }) => theme.colors.gray200};
+    }
+
+    s {
+      color: ${({ theme }) => theme.colors.gray400};
+    }
+
+    /* stylelint-disable-next-line selector-class-pattern */
     &.ProseMirror-focused {
       outline: none;
     }
