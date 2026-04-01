@@ -46,7 +46,12 @@ const applyMarks = (
       case 'link': {
         const href = sanitizeUrl(String(mark.attrs?.href ?? '#'));
         return (
-          <a key={markKey} href={href} target="_blank" rel="noopener noreferrer">
+          <a
+            key={markKey}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {acc}
           </a>
         );
@@ -119,7 +124,9 @@ const renderNode = (node: TiptapNode, key: string): React.ReactNode => {
     case 'codeBlock':
       return (
         <pre key={key}>
-          <code>{node.content?.map((c, i) => renderNode(c, `${key}-${i}`))}</code>
+          <code>
+            {node.content?.map((c, i) => renderNode(c, `${key}-${i}`))}
+          </code>
         </pre>
       );
 
@@ -132,7 +139,7 @@ const renderNode = (node: TiptapNode, key: string): React.ReactNode => {
     case 'text': {
       const text = node.text ?? '';
       if (!node.marks?.length) {
-        return <React.Fragment key={key}>{text}</React.Fragment>;
+        return text;
       }
       return applyMarks(text, node.marks, key) as React.ReactElement;
     }
