@@ -175,7 +175,7 @@ const isNoticeRequiredGuideType = (guideType: string) => {
 };
 
 const isNoticeFieldVisibleGuideType = (guideType: string) => {
-  return guideType === 'COMMENT' || guideType === 'REMIND';
+  return Boolean(guideType);
 };
 
 const getDefaultUploadFileName = (fileName: string) => {
@@ -185,7 +185,7 @@ const getDefaultUploadFileName = (fileName: string) => {
 const getGuideNoticeDescription = (guideType: string) => {
   return guideType === 'COMMENT'
     ? 'COMMENT 타입은 공지 문구 입력이 필수입니다.'
-    : 'REMIND 타입은 공지 문구를 입력하지 않아도 됩니다.';
+    : '모든 타입에서 공지 문구를 입력할 수 있습니다.';
 };
 
 const getImagePreviewSource = ({

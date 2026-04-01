@@ -86,18 +86,16 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
     <>
       <CardContainer onClick={handleCardClick}>
         <CardHeader>
-          <Flex direction="column" gap={8}>
-            <Title>{title}</Title>
+          <Flex gap={8} align="center">
             <Tag>{generation}기</Tag>
-          </Flex>
-
-          <Flex align="flex-end" gap={12}>
             {participantCount > 0 && (
-              <Applicant>신청자 {participantCount}명</Applicant>
+              <Applicant>{participantCount}명</Applicant>
             )}
-            <DDay startDate={startDate} />
           </Flex>
+          <DDay startDate={startDate} />
         </CardHeader>
+
+        <Title>{title}</Title>
 
         <CardFooter>
           {props.participationInfo?.isJoined ? (
