@@ -1,4 +1,8 @@
-import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import {
   createDraft,
   deleteDraft,
@@ -11,7 +15,20 @@ import {
   updateVisibility,
   uploadImage,
 } from './blog.api';
-import type { SaveDraftRequest, BlogVisibility, SetThumbnailRequest } from '@/types/blog';
+import {
+  mockDrafts,
+  mockPosts,
+  mockDraftDetail,
+  mockCreateDraftResponse,
+  mockUploadImageResponse,
+} from './blog.mock';
+import type {
+  SaveDraftRequest,
+  BlogVisibility,
+  SetThumbnailRequest,
+} from '@/types/blog';
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
 
 const STALE_TIME = 1000 * 60;
 const GC_TIME = 1000 * 60 * 5;
@@ -20,7 +37,7 @@ export const blogQueries = {
   drafts: () =>
     queryOptions({
       queryKey: ['blog', 'drafts'] as const,
-      queryFn: getDrafts,
+      queryFn: USE_MOCK ? () => Promise.resolve(mockDrafts) : getDrafts,
       staleTime: STALE_TIME,
       gcTime: GC_TIME,
     }),
@@ -28,7 +45,9 @@ export const blogQueries = {
   draft: (postId: number) =>
     queryOptions({
       queryKey: ['blog', 'draft', postId] as const,
-      queryFn: () => getDraftDetail(postId),
+      queryFn: USE_MOCK
+        ? () => Promise.resolve(mockDraftDetail)
+        : () => getDraftDetail(postId),
       staleTime: STALE_TIME,
       gcTime: GC_TIME,
     }),
@@ -36,19 +55,29 @@ export const blogQueries = {
   posts: () =>
     queryOptions({
       queryKey: ['blog', 'posts'] as const,
-      queryFn: getBlogPosts,
+      queryFn: USE_MOCK ? () => Promise.resolve(mockPosts) : getBlogPosts,
       staleTime: STALE_TIME,
       gcTime: GC_TIME,
     }),
 };
 
-export const useCreateDraft = () => useMutation({ mutationFn: createDraft });
+export const useCreateDraft = () =>
+  useMutation({
+    mutationFn: USE_MOCK
+      ? () => Promise.resolve(mockCreateDraftResponse)
+      : createDraft,
+  });
 
 export const useSaveDraft = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ postId, data }: { postId: number; data: SaveDraftRequest }) =>
-      saveDraft(postId, data),
+    mutationFn: ({
+      postId,
+      data,
+    }: {
+      postId: number;
+      data: SaveDraftRequest;
+    }) => (USE_MOCK ? Promise.resolve() : saveDraft(postId, data)),
     onSuccess: (_, { postId }) => {
       queryClient.invalidateQueries({ queryKey: ['blog', 'drafts'] });
       queryClient.invalidateQueries({ queryKey: ['blog', 'draft', postId] });
@@ -59,7 +88,8 @@ export const useSaveDraft = () => {
 export const usePublishDraft = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: publishDraft,
+    mutationFn: (postId: number) =>
+      USE_MOCK ? Promise.resolve() : publishDraft(postId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blog', 'drafts'] });
       queryClient.invalidateQueries({ queryKey: ['blog', 'posts'] });
@@ -70,7 +100,8 @@ export const usePublishDraft = () => {
 export const useDeleteDraft = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: deleteDraft,
+    mutationFn: (postId: number) =>
+      USE_MOCK ? Promise.resolve() : deleteDraft(postId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blog', 'drafts'] });
       queryClient.invalidateQueries({ queryKey: ['blog', 'posts'] });
@@ -86,18 +117,25 @@ export const useUpdateVisibility = () =>
     }: {
       postId: number;
       visibility: BlogVisibility;
-    }) => updateVisibility(postId, visibility),
+    }) => (USE_MOCK ? Promise.resolve() : updateVisibility(postId, visibility)),
     // onSuccess: 에디터 로컬 상태만 업데이트 — 목록 쿼리 invalidate 불필요
   });
 
 export const useUploadImage = () =>
   useMutation({
     mutationFn: ({ postId, file }: { postId: number; file: File }) =>
-      uploadImage(postId, file),
+      USE_MOCK
+        ? Promise.resolve(mockUploadImageResponse)
+        : uploadImage(postId, file),
   });
 
 export const useSetThumbnail = () =>
   useMutation({
-    mutationFn: ({ postId, data }: { postId: number; data: SetThumbnailRequest }) =>
-      setThumbnail(postId, data),
+    mutationFn: ({
+      postId,
+      data,
+    }: {
+      postId: number;
+      data: SetThumbnailRequest;
+    }) => (USE_MOCK ? Promise.resolve() : setThumbnail(postId, data)),
   });
