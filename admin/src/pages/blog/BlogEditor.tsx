@@ -20,7 +20,7 @@ const Caption = Node.create({
     return ['p', mergeAttributes(HTMLAttributes, { 'data-caption': '' }), 0];
   },
 });
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { EditorSettingsPanel } from './components/EditorSettingsPanel';
 import { EditorToolbar } from './components/EditorToolbar';
 import {
@@ -72,6 +72,7 @@ export const BlogEditor = () => {
   );
   const [thumbnailImageId, setThumbnailImageId] = useState<number | null>(null);
   const [isDirty, setIsDirty] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [publishError, setPublishError] = useState<string | null>(null);
 
@@ -136,11 +137,12 @@ export const BlogEditor = () => {
     return () => window.removeEventListener('beforeunload', handler);
   }, [isDirty]);
 
-  const handleSave = async (): Promise<boolean> => {
+  const handleSave = useCallback(async (): Promise<boolean> => {
     if (!editor) return false;
     setSaveError(null);
-    const content = JSON.stringify(editor.getJSON());
-    const referencedImageIds = extractImageIds(editor.getJSON());
+    const json = editor.getJSON();
+    const content = JSON.stringify(json);
+    const referencedImageIds = extractImageIds(json);
     try {
       await saveDraftMutation.mutateAsync({
         postId: postIdNum,
@@ -154,12 +156,42 @@ export const BlogEditor = () => {
         },
       });
       setIsDirty(false);
+      setLastSavedAt(new Date());
       return true;
     } catch {
       setSaveError('임시저장에 실패했습니다. 다시 시도해주세요.');
       return false;
     }
-  };
+  }, [
+    editor,
+    postIdNum,
+    title,
+    thumbnailImageId,
+    categoryId,
+    hashTags,
+    saveDraftMutation,
+  ]);
+
+  // 최신 handleSave를 ref로 유지 (interval의 stale closure 방지)
+  const handleSaveRef = useRef(handleSave);
+  useEffect(() => {
+    handleSaveRef.current = handleSave;
+  });
+
+  // 10초마다 자동저장 (변경 사항이 있을 때만)
+  const isDirtyRef = useRef(isDirty);
+  useEffect(() => {
+    isDirtyRef.current = isDirty;
+  }, [isDirty]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isDirtyRef.current && !saveDraftMutation.isPending) {
+        void handleSaveRef.current();
+      }
+    }, 10_000);
+    return () => clearInterval(interval);
+  }, [saveDraftMutation.isPending]);
 
   const handlePublish = async () => {
     setPublishError(null);
@@ -232,6 +264,16 @@ export const BlogEditor = () => {
             ← 블로그 목록
           </BackButton>
           <Actions>
+            {lastSavedAt && !saveError && (
+              <SavedAt>
+                {lastSavedAt.toLocaleTimeString('ko-KR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                })}{' '}
+                자동저장됨
+              </SavedAt>
+            )}
             {saveError && <ErrorText>{saveError}</ErrorText>}
             {publishError && <ErrorText>{publishError}</ErrorText>}
             <SaveButton
@@ -333,6 +375,11 @@ const Actions = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
+`;
+
+const SavedAt = styled.span`
+  color: ${({ theme }) => theme.colors.gray400};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const ErrorText = styled.span`
