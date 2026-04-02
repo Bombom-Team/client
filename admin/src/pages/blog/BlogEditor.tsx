@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQueries } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { Node, mergeAttributes } from '@tiptap/core';
 import Image from '@tiptap/extension-image';
@@ -7,19 +7,6 @@ import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-
-// 캡션 블럭 노드 (본문보다 작은 텍스트, 이미지 설명 등)
-const Caption = Node.create({
-  name: 'caption',
-  group: 'block',
-  content: 'inline*',
-  parseHTML() {
-    return [{ tag: 'p[data-caption]' }];
-  },
-  renderHTML({ HTMLAttributes }) {
-    return ['p', mergeAttributes(HTMLAttributes, { 'data-caption': '' }), 0];
-  },
-});
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { EditorSettingsPanel } from './components/EditorSettingsPanel';
 import { EditorToolbar } from './components/EditorToolbar';
@@ -35,6 +22,19 @@ import { categoriesQueries } from '@/apis/categories/categories.query';
 import { Sidebar } from '@/components/Sidebar';
 import { Route } from '@/routes/_admin/blog/$postId';
 import type { BlogVisibility } from '@/types/blog';
+
+// 캡션 블럭 노드 (본문보다 작은 텍스트, 이미지 설명 등)
+const Caption = Node.create({
+  name: 'caption',
+  group: 'block',
+  content: 'inline*',
+  parseHTML() {
+    return [{ tag: 'p[data-caption]' }];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ['p', mergeAttributes(HTMLAttributes, { 'data-caption': '' }), 0];
+  },
+});
 
 // 에디터 JSON에서 실제 포함된 image 노드의 imageId만 추출
 const extractImageIds = (node: unknown): number[] => {
@@ -56,8 +56,9 @@ export const BlogEditor = () => {
   const postIdNum = Number(postId);
   const navigate = useNavigate();
 
-  const { data: draft } = useSuspenseQuery(blogQueries.draft(postIdNum));
-  const { data: categories } = useSuspenseQuery(categoriesQueries.list());
+  const [{ data: draft }, { data: categories }] = useSuspenseQueries({
+    queries: [blogQueries.draft(postIdNum), categoriesQueries.list()],
+  });
 
   const [title, setTitle] = useState(draft.title ?? '');
   const [categoryId, setCategoryId] = useState<number | null>(
@@ -75,12 +76,21 @@ export const BlogEditor = () => {
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [publishError, setPublishError] = useState<string | null>(null);
+  const [imageUploadError, setImageUploadError] = useState<string | null>(null);
+  const [thumbnailUploadError, setThumbnailUploadError] = useState<
+    string | null
+  >(null);
 
   const saveDraftMutation = useSaveDraft();
   const publishDraftMutation = usePublishDraft();
   const uploadImageMutation = useUploadImage();
   const setThumbnailMutation = useSetThumbnail();
   const updateVisibilityMutation = useUpdateVisibility();
+
+  // refs — 컴포넌트 상단에 모아서 선언 (stale closure 방지)
+  const isDirtyRef = useRef(isDirty);
+  const isPendingRef = useRef(saveDraftMutation.isPending);
+  const handleSaveRef = useRef<() => Promise<boolean>>(async () => false);
 
   const editor = useEditor({
     extensions: [
@@ -125,17 +135,16 @@ export const BlogEditor = () => {
     },
   });
 
-  // 미저장 데이터 보호
+  // 미저장 데이터 보호 — isDirtyRef로 최신값을 읽어 listener 재등록 방지
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (isDirty) {
+      if (isDirtyRef.current) {
         e.preventDefault();
-        e.returnValue = '';
       }
     };
     window.addEventListener('beforeunload', handler);
     return () => window.removeEventListener('beforeunload', handler);
-  }, [isDirty]);
+  }, []);
 
   const handleSave = useCallback(async (): Promise<boolean> => {
     if (!editor) return false;
@@ -158,40 +167,43 @@ export const BlogEditor = () => {
       setIsDirty(false);
       setLastSavedAt(new Date());
       return true;
-    } catch {
+    } catch (err) {
+      console.error('임시저장 실패:', err);
       setSaveError('임시저장에 실패했습니다. 다시 시도해주세요.');
       return false;
     }
   }, [
     editor,
+    saveDraftMutation.mutateAsync,
     postIdNum,
     title,
     thumbnailImageId,
     categoryId,
     hashTags,
-    saveDraftMutation,
   ]);
 
-  // 최신 handleSave를 ref로 유지 (interval의 stale closure 방지)
-  const handleSaveRef = useRef(handleSave);
+  // ref 동기화
   useEffect(() => {
     handleSaveRef.current = handleSave;
   });
 
-  // 10초마다 자동저장 (변경 사항이 있을 때만)
-  const isDirtyRef = useRef(isDirty);
   useEffect(() => {
     isDirtyRef.current = isDirty;
   }, [isDirty]);
 
   useEffect(() => {
+    isPendingRef.current = saveDraftMutation.isPending;
+  }, [saveDraftMutation.isPending]);
+
+  // 10초마다 자동저장 (변경 사항이 있을 때만) — ref로 deps 제거해 interval 재생성 방지
+  useEffect(() => {
     const interval = setInterval(() => {
-      if (isDirtyRef.current && !saveDraftMutation.isPending) {
+      if (isDirtyRef.current && !isPendingRef.current) {
         void handleSaveRef.current();
       }
     }, 10_000);
     return () => clearInterval(interval);
-  }, [saveDraftMutation.isPending]);
+  }, []);
 
   const handlePublish = async () => {
     setPublishError(null);
@@ -200,12 +212,14 @@ export const BlogEditor = () => {
     try {
       await publishDraftMutation.mutateAsync(postIdNum);
       navigate({ to: '/blog' });
-    } catch {
+    } catch (err) {
+      console.error('발행 실패:', err);
       setPublishError('발행에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
   const handleImageUpload = async (file: File) => {
+    setImageUploadError(null);
     try {
       const result = await uploadImageMutation.mutateAsync({
         postId: postIdNum,
@@ -220,12 +234,14 @@ export const BlogEditor = () => {
         })
         .run();
       setIsDirty(true);
-    } catch {
-      alert('이미지 업로드에 실패했습니다.');
+    } catch (err) {
+      console.error('이미지 업로드 실패:', err);
+      setImageUploadError('이미지 업로드에 실패했습니다.');
     }
   };
 
   const handleThumbnailUpload = async (file: File) => {
+    setThumbnailUploadError(null);
     try {
       const result = await uploadImageMutation.mutateAsync({
         postId: postIdNum,
@@ -237,8 +253,9 @@ export const BlogEditor = () => {
       });
       setThumbnailUrl(result.imageUrl);
       setThumbnailImageId(result.imageId);
-    } catch {
-      alert('썸네일 업로드에 실패했습니다.');
+    } catch (err) {
+      console.error('썸네일 업로드 실패:', err);
+      setThumbnailUploadError('썸네일 업로드에 실패했습니다.');
     }
   };
 
@@ -250,7 +267,8 @@ export const BlogEditor = () => {
         postId: postIdNum,
         visibility: newVisibility,
       });
-    } catch {
+    } catch (err) {
+      console.error('공개 범위 변경 실패:', err);
       setVisibility(previousVisibility);
     }
   };
@@ -276,12 +294,16 @@ export const BlogEditor = () => {
             )}
             {saveError && <ErrorText>{saveError}</ErrorText>}
             {publishError && <ErrorText>{publishError}</ErrorText>}
+            {imageUploadError && <ErrorText>{imageUploadError}</ErrorText>}
+            {thumbnailUploadError && (
+              <ErrorText>{thumbnailUploadError}</ErrorText>
+            )}
             <SaveButton
               onClick={handleSave}
               disabled={saveDraftMutation.isPending}
               type="button"
             >
-              {saveDraftMutation.isPending ? '저장 중...' : '임시저장'}
+              {saveDraftMutation.isPending ? '저장 중…' : '임시저장'}
             </SaveButton>
             <PublishButton
               onClick={handlePublish}
@@ -290,7 +312,7 @@ export const BlogEditor = () => {
               }
               type="button"
             >
-              {publishDraftMutation.isPending ? '발행 중...' : '발행하기'}
+              {publishDraftMutation.isPending ? '발행 중…' : '발행하기'}
             </PublishButton>
           </Actions>
         </TopBar>
@@ -383,7 +405,7 @@ const SavedAt = styled.span`
 `;
 
 const ErrorText = styled.span`
-  color: red;
+  color: ${({ theme }) => theme.colors.error ?? '#dc2626'};
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
@@ -457,6 +479,11 @@ const TitleInput = styled.input`
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.gray400};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: -2px;
   }
 `;
 

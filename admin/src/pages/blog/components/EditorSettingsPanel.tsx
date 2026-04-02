@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useRef, type ChangeEvent } from 'react';
+import { type ChangeEvent } from 'react';
 import { HashTagInput } from './HashTagInput';
 import type { BlogVisibility } from '@/types/blog';
 
@@ -20,6 +20,8 @@ interface EditorSettingsPanelProps {
   onVisibilityChange: (visibility: BlogVisibility) => void;
 }
 
+const THUMBNAIL_INPUT_ID = 'thumbnail-upload';
+
 export const EditorSettingsPanel = ({
   thumbnailUrl,
   categories,
@@ -31,8 +33,6 @@ export const EditorSettingsPanel = ({
   onHashTagsChange,
   onVisibilityChange,
 }: EditorSettingsPanelProps) => {
-  const thumbnailInputRef = useRef<HTMLInputElement>(null);
-
   const handleThumbnailChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) onThumbnailUpload(file);
@@ -44,7 +44,8 @@ export const EditorSettingsPanel = ({
 
       <Section>
         <Label>썸네일</Label>
-        <ThumbnailArea onClick={() => thumbnailInputRef.current?.click()}>
+        {/* label + htmlFor으로 시멘틱하게 input 연결 — onClick 불필요 */}
+        <ThumbnailArea htmlFor={THUMBNAIL_INPUT_ID}>
           {thumbnailUrl ? (
             <ThumbnailImage src={thumbnailUrl} alt="썸네일" />
           ) : (
@@ -52,7 +53,7 @@ export const EditorSettingsPanel = ({
           )}
         </ThumbnailArea>
         <input
-          ref={thumbnailInputRef}
+          id={THUMBNAIL_INPUT_ID}
           type="file"
           accept="image/*"
           style={{ display: 'none' }}
@@ -90,14 +91,14 @@ export const EditorSettingsPanel = ({
         <Label>공개 범위</Label>
         <VisibilityToggle>
           <VisibilityButton
-            isActive={visibility === 'PUBLIC'}
+            $isActive={visibility === 'PUBLIC'}
             onClick={() => onVisibilityChange('PUBLIC')}
             type="button"
           >
             공개
           </VisibilityButton>
           <VisibilityButton
-            isActive={visibility === 'PRIVATE'}
+            $isActive={visibility === 'PRIVATE'}
             onClick={() => onVisibilityChange('PRIVATE')}
             type="button"
           >
@@ -143,7 +144,7 @@ const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
-const ThumbnailArea = styled.div`
+const ThumbnailArea = styled.label`
   overflow: hidden;
   width: 100%;
   border: 2px dashed ${({ theme }) => theme.colors.gray300};
@@ -186,6 +187,11 @@ const Select = styled.select`
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary};
   }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 2px;
+  }
 `;
 
 const VisibilityToggle = styled.div`
@@ -196,18 +202,18 @@ const VisibilityToggle = styled.div`
   display: flex;
 `;
 
-const VisibilityButton = styled.button<{ isActive: boolean }>`
+const VisibilityButton = styled.button<{ $isActive: boolean }>`
   padding: 6px;
   border: none;
 
   flex: 1;
 
-  background: ${({ theme, isActive }) =>
-    isActive ? theme.colors.primary : 'white'};
-  color: ${({ theme, isActive }) =>
-    isActive ? 'white' : theme.colors.gray700};
+  background: ${({ theme, $isActive }) =>
+    $isActive ? theme.colors.primary : 'white'};
+  color: ${({ theme, $isActive }) =>
+    $isActive ? 'white' : theme.colors.gray700};
   font-size: ${({ theme }) => theme.fontSize.sm};
 
   cursor: pointer;
-  transition: all 0.15s;
+  transition: color 0.15s, background-color 0.15s;
 `;

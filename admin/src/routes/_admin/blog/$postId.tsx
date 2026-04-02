@@ -1,8 +1,11 @@
 import styled from '@emotion/styled';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { BlogEditor } from '@/pages/blog/BlogEditor';
+
+const BlogEditor = lazy(() =>
+  import('@/pages/blog/BlogEditor').then((m) => ({ default: m.BlogEditor })),
+);
 
 export const Route = createFileRoute('/_admin/blog/$postId')({
   component: BlogEditorPage,

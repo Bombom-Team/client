@@ -14,10 +14,16 @@ type Tab = 'drafts' | 'published';
 
 const DraftList = ({
   onEdit,
-  onDelete,
+  onDeleteRequest,
+  confirmDeleteId,
+  onConfirmDelete,
+  onCancelDelete,
 }: {
   onEdit: (postId: number) => void;
-  onDelete: (postId: number) => void;
+  onDeleteRequest: (postId: number) => void;
+  confirmDeleteId: number | null;
+  onConfirmDelete: () => void;
+  onCancelDelete: () => void;
 }) => {
   const { data: drafts } = useSuspenseQuery(blogQueries.drafts());
   if (drafts.length === 0) {
@@ -28,18 +34,30 @@ const DraftList = ({
       {drafts.map((draft) => (
         <PostItem key={draft.postId}>
           <PostTitle>{draft.title || '(제목 없음)'}</PostTitle>
-          <PostActions>
-            <ActionButton onClick={() => onEdit(draft.postId)} type="button">
-              수정
-            </ActionButton>
-            <ActionButton
-              $danger
-              onClick={() => onDelete(draft.postId)}
-              type="button"
-            >
-              삭제
-            </ActionButton>
-          </PostActions>
+          {confirmDeleteId === draft.postId ? (
+            <ConfirmActions>
+              <ConfirmText>정말 삭제할까요?</ConfirmText>
+              <ActionButton $danger onClick={onConfirmDelete} type="button">
+                확인
+              </ActionButton>
+              <ActionButton onClick={onCancelDelete} type="button">
+                취소
+              </ActionButton>
+            </ConfirmActions>
+          ) : (
+            <PostActions>
+              <ActionButton onClick={() => onEdit(draft.postId)} type="button">
+                수정
+              </ActionButton>
+              <ActionButton
+                $danger
+                onClick={() => onDeleteRequest(draft.postId)}
+                type="button"
+              >
+                삭제
+              </ActionButton>
+            </PostActions>
+          )}
         </PostItem>
       ))}
     </PostList>
@@ -48,10 +66,16 @@ const DraftList = ({
 
 const PublishedList = ({
   onEdit,
-  onDelete,
+  onDeleteRequest,
+  confirmDeleteId,
+  onConfirmDelete,
+  onCancelDelete,
 }: {
   onEdit: (postId: number) => void;
-  onDelete: (postId: number) => void;
+  onDeleteRequest: (postId: number) => void;
+  confirmDeleteId: number | null;
+  onConfirmDelete: () => void;
+  onCancelDelete: () => void;
 }) => {
   const { data: posts } = useSuspenseQuery(blogQueries.posts());
   if (posts.length === 0) {
@@ -68,18 +92,30 @@ const PublishedList = ({
               {new Date(post.publishedAt).toLocaleDateString('ko-KR')}
             </PostMeta>
           </PostInfo>
-          <PostActions>
-            <ActionButton onClick={() => onEdit(post.postId)} type="button">
-              수정
-            </ActionButton>
-            <ActionButton
-              $danger
-              onClick={() => onDelete(post.postId)}
-              type="button"
-            >
-              삭제
-            </ActionButton>
-          </PostActions>
+          {confirmDeleteId === post.postId ? (
+            <ConfirmActions>
+              <ConfirmText>정말 삭제할까요?</ConfirmText>
+              <ActionButton $danger onClick={onConfirmDelete} type="button">
+                확인
+              </ActionButton>
+              <ActionButton onClick={onCancelDelete} type="button">
+                취소
+              </ActionButton>
+            </ConfirmActions>
+          ) : (
+            <PostActions>
+              <ActionButton onClick={() => onEdit(post.postId)} type="button">
+                수정
+              </ActionButton>
+              <ActionButton
+                $danger
+                onClick={() => onDeleteRequest(post.postId)}
+                type="button"
+              >
+                삭제
+              </ActionButton>
+            </PostActions>
+          )}
         </PostItem>
       ))}
     </PostList>
@@ -88,25 +124,50 @@ const PublishedList = ({
 
 export const BlogList = () => {
   const [activeTab, setActiveTab] = useState<Tab>('drafts');
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const navigate = useNavigate();
   const createDraft = useCreateDraft();
   const deleteDraft = useDeleteDraft();
 
   const handleCreate = async () => {
-    const result = await createDraft.mutateAsync();
-    navigate({
-      to: '/blog/$postId',
-      params: { postId: String(result.postId) },
-    });
+    setCreateError(null);
+    try {
+      const result = await createDraft.mutateAsync();
+      navigate({
+        to: '/blog/$postId',
+        params: { postId: String(result.postId) },
+      });
+    } catch (err) {
+      console.error('글 생성 실패:', err);
+      setCreateError('새 글 생성에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   const handleEdit = (postId: number) => {
     navigate({ to: '/blog/$postId', params: { postId: String(postId) } });
   };
 
-  const handleDelete = async (postId: number) => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) return;
-    await deleteDraft.mutateAsync(postId);
+  const handleDeleteRequest = (postId: number) => {
+    setDeleteError(null);
+    setConfirmDeleteId(postId);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (confirmDeleteId === null) return;
+    try {
+      await deleteDraft.mutateAsync(confirmDeleteId);
+      setConfirmDeleteId(null);
+    } catch (err) {
+      console.error('글 삭제 실패:', err);
+      setDeleteError('삭제에 실패했습니다. 다시 시도해주세요.');
+      setConfirmDeleteId(null);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setConfirmDeleteId(null);
   };
 
   const createButton = (
@@ -115,12 +176,15 @@ export const BlogList = () => {
       disabled={createDraft.isPending}
       type="button"
     >
-      {createDraft.isPending ? '생성 중...' : '새 글 작성'}
+      {createDraft.isPending ? '생성 중…' : '새 글 작성'}
     </CreateButton>
   );
 
   return (
     <Layout title="블로그" rightAction={createButton}>
+      {createError && <InlineError>{createError}</InlineError>}
+      {deleteError && <InlineError>{deleteError}</InlineError>}
+
       <Tabs>
         <TabButton
           $isActive={activeTab === 'drafts'}
@@ -139,11 +203,23 @@ export const BlogList = () => {
       <ErrorBoundary
         fallback={<ErrorState>데이터를 불러오지 못했습니다.</ErrorState>}
       >
-        <Suspense fallback={<LoadingState>불러오는 중...</LoadingState>}>
+        <Suspense fallback={<LoadingState>불러오는 중…</LoadingState>}>
           {activeTab === 'drafts' ? (
-            <DraftList onEdit={handleEdit} onDelete={handleDelete} />
+            <DraftList
+              onEdit={handleEdit}
+              onDeleteRequest={handleDeleteRequest}
+              confirmDeleteId={confirmDeleteId}
+              onConfirmDelete={handleConfirmDelete}
+              onCancelDelete={handleCancelDelete}
+            />
           ) : (
-            <PublishedList onEdit={handleEdit} onDelete={handleDelete} />
+            <PublishedList
+              onEdit={handleEdit}
+              onDeleteRequest={handleDeleteRequest}
+              confirmDeleteId={confirmDeleteId}
+              onConfirmDelete={handleConfirmDelete}
+              onCancelDelete={handleCancelDelete}
+            />
           )}
         </Suspense>
       </ErrorBoundary>
@@ -173,6 +249,16 @@ const CreateButton = styled.button`
   }
 `;
 
+const InlineError = styled.p`
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
 const Tabs = styled.div`
   margin-bottom: 24px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
@@ -196,7 +282,7 @@ const TabButton = styled.button<{ $isActive: boolean }>`
   font-size: ${({ theme }) => theme.fontSize.sm};
 
   cursor: pointer;
-  transition: all 0.15s;
+  transition: color 0.15s, border-color 0.15s;
 `;
 
 const PostList = styled.ul`
@@ -245,14 +331,25 @@ const PostActions = styled.div`
   gap: 8px;
 `;
 
+const ConfirmActions = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+const ConfirmText = styled.span`
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
 const ActionButton = styled.button<{ $danger?: boolean }>`
   padding: 4px 12px;
   border: 1px solid
-    ${({ theme, $danger }) => ($danger ? 'red' : theme.colors.gray300)};
+    ${({ theme, $danger }) => ($danger ? '#dc2626' : theme.colors.gray300)};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
 
   background: white;
-  color: ${({ $danger }) => ($danger ? 'red' : 'inherit')};
+  color: ${({ $danger }) => ($danger ? '#dc2626' : 'inherit')};
   font-size: ${({ theme }) => theme.fontSize.sm};
 
   cursor: pointer;
@@ -279,6 +376,6 @@ const LoadingState = styled.p`
 const ErrorState = styled.p`
   padding: 48px;
 
-  color: red;
+  color: #dc2626;
   text-align: center;
 `;

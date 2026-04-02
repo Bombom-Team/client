@@ -60,12 +60,23 @@ const TEXT_STYLES: TextStyleOption[] = [
   },
 ];
 
+// allowlist 방식 URL 검증 — 위험 프로토콜(javascript:, vbscript: 등) 차단
+const isSafeUrl = (url: string): boolean => {
+  try {
+    const parsed = new URL(url);
+    return ['https:', 'http:', 'mailto:'].includes(parsed.protocol);
+  } catch {
+    return false;
+  }
+};
+
 export const EditorToolbar = ({
   editor,
   onImageUpload,
 }: EditorToolbarProps) => {
   const [isStyleOpen, setIsStyleOpen] = useState(false);
   const styleDropdownRef = useRef<HTMLDivElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -86,14 +97,7 @@ export const EditorToolbar = ({
     TEXT_STYLES.find((s) => s.isActive(editor)) ?? TEXT_STYLES[1]; // 기본 '본문'
 
   const handleImageClick = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) onImageUpload(file);
-    };
-    input.click();
+    imageInputRef.current?.click();
   };
 
   const handleLinkClick = () => {
@@ -104,6 +108,7 @@ export const EditorToolbar = ({
     const url = window.prompt('링크 URL을 입력하세요:');
     if (!url) return;
     const href = url.startsWith('http') ? url : `https://${url}`;
+    if (!isSafeUrl(href)) return;
     editor.chain().focus().extendMarkRange('link').setLink({ href }).run();
   };
 
@@ -114,7 +119,7 @@ export const EditorToolbar = ({
         <StyleTrigger
           type="button"
           onClick={() => setIsStyleOpen((prev) => !prev)}
-          isOpen={isStyleOpen}
+          $isOpen={isStyleOpen}
         >
           <span>{currentStyle.label}</span>
           <FiChevronDown />
@@ -128,16 +133,16 @@ export const EditorToolbar = ({
                 <StyleOption
                   key={style.label}
                   type="button"
-                  isActive={active}
+                  $isActive={active}
                   onClick={() => {
                     style.apply(editor);
                     setIsStyleOpen(false);
                   }}
                 >
-                  <StyleOptionLabel isActive={active} size={style.size}>
+                  <StyleOptionLabel $isActive={active} size={style.size}>
                     {style.label}
                   </StyleOptionLabel>
-                  <StyleOptionSize isActive={active}>
+                  <StyleOptionSize $isActive={active}>
                     {style.size}px
                   </StyleOptionSize>
                   {active && <FiCheck />}
@@ -152,7 +157,7 @@ export const EditorToolbar = ({
 
       <ToolButton
         onClick={() => editor.chain().focus().toggleBold().run()}
-        isActive={editor.isActive('bold')}
+        $isActive={editor.isActive('bold')}
         type="button"
         title="굵게 (Ctrl+B)"
       >
@@ -160,7 +165,7 @@ export const EditorToolbar = ({
       </ToolButton>
       <ToolButton
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        isActive={editor.isActive('italic')}
+        $isActive={editor.isActive('italic')}
         type="button"
         title="기울임 (Ctrl+I)"
       >
@@ -168,7 +173,7 @@ export const EditorToolbar = ({
       </ToolButton>
       <ToolButton
         onClick={() => editor.chain().focus().toggleUnderline().run()}
-        isActive={editor.isActive('underline')}
+        $isActive={editor.isActive('underline')}
         type="button"
         title="밑줄 (Ctrl+U)"
       >
@@ -176,7 +181,7 @@ export const EditorToolbar = ({
       </ToolButton>
       <ToolButton
         onClick={() => editor.chain().focus().toggleStrike().run()}
-        isActive={editor.isActive('strike')}
+        $isActive={editor.isActive('strike')}
         type="button"
         title="취소선"
       >
@@ -187,7 +192,7 @@ export const EditorToolbar = ({
 
       <ToolButton
         onClick={() => editor.chain().focus().toggleCode().run()}
-        isActive={editor.isActive('code')}
+        $isActive={editor.isActive('code')}
         type="button"
         title="인라인 코드"
       >
@@ -195,7 +200,7 @@ export const EditorToolbar = ({
       </ToolButton>
       <CodeBlockButton
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        isActive={editor.isActive('codeBlock')}
+        $isActive={editor.isActive('codeBlock')}
         type="button"
         title="코드 블럭"
       >
@@ -207,7 +212,7 @@ export const EditorToolbar = ({
 
       <ToolButton
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        isActive={editor.isActive('bulletList')}
+        $isActive={editor.isActive('bulletList')}
         type="button"
         title="불릿 리스트"
       >
@@ -215,7 +220,7 @@ export const EditorToolbar = ({
       </ToolButton>
       <ToolButton
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        isActive={editor.isActive('orderedList')}
+        $isActive={editor.isActive('orderedList')}
         type="button"
         title="번호 리스트"
       >
@@ -223,7 +228,7 @@ export const EditorToolbar = ({
       </ToolButton>
       <ToolButton
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        isActive={editor.isActive('blockquote')}
+        $isActive={editor.isActive('blockquote')}
         type="button"
         title="인용"
       >
@@ -241,7 +246,7 @@ export const EditorToolbar = ({
             editor.chain().focus().setHorizontalRule().run();
           }
         }}
-        isActive={false}
+        $isActive={false}
         type="button"
         title="구분선 (텍스트가 있으면 다음 줄에 삽입)"
       >
@@ -252,7 +257,7 @@ export const EditorToolbar = ({
 
       <ToolButton
         onClick={handleLinkClick}
-        isActive={editor.isActive('link')}
+        $isActive={editor.isActive('link')}
         type="button"
         title={
           editor.isActive('link')
@@ -264,12 +269,25 @@ export const EditorToolbar = ({
       </ToolButton>
       <ToolButton
         onClick={handleImageClick}
-        isActive={false}
+        $isActive={false}
         type="button"
         title="이미지 업로드"
       >
         <FiImage />
       </ToolButton>
+
+      {/* hidden file input — ref 방식으로 관리 */}
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onImageUpload(file);
+          e.target.value = '';
+        }}
+      />
     </Toolbar>
   );
 };
@@ -293,13 +311,13 @@ const StyleDropdownWrapper = styled.div`
   position: relative;
 `;
 
-const StyleTrigger = styled.button<{ isOpen: boolean }>`
+const StyleTrigger = styled.button<{ $isOpen: boolean }>`
   height: 32px;
   min-width: 80px;
   padding: 0 10px;
   border: 1px solid
-    ${({ theme, isOpen }) =>
-      isOpen ? theme.colors.primary : theme.colors.gray300};
+    ${({ theme, $isOpen }) =>
+      $isOpen ? theme.colors.primary : theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
 
   display: flex;
@@ -312,13 +330,17 @@ const StyleTrigger = styled.button<{ isOpen: boolean }>`
   font-size: 13px;
 
   cursor: pointer;
-  transition: all 0.15s;
+  transition:
+    color 0.15s,
+    background-color 0.15s,
+    border-color 0.15s;
 
   svg {
     color: ${({ theme }) => theme.colors.gray400};
     font-size: 12px;
 
-    transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transform: ${({ $isOpen }) =>
+      $isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
     transition: transform 0.15s;
   }
 
@@ -343,7 +365,7 @@ const StyleDropdown = styled.div`
   background: white;
 `;
 
-const StyleOption = styled.button<{ isActive: boolean }>`
+const StyleOption = styled.button<{ $isActive: boolean }>`
   width: 100%;
   padding: 8px 12px;
   border: none;
@@ -352,11 +374,11 @@ const StyleOption = styled.button<{ isActive: boolean }>`
   gap: 8px;
   align-items: center;
 
-  background: ${({ theme, isActive }) =>
-    isActive ? theme.colors.gray50 : 'transparent'};
+  background: ${({ theme, $isActive }) =>
+    $isActive ? theme.colors.gray50 : 'transparent'};
 
   cursor: pointer;
-  transition: background 0.1s;
+  transition: background-color 0.1s;
 
   &:hover {
     background: ${({ theme }) => theme.colors.gray50};
@@ -370,24 +392,24 @@ const StyleOption = styled.button<{ isActive: boolean }>`
   }
 `;
 
-const StyleOptionLabel = styled.span<{ isActive: boolean; size: number }>`
-  color: ${({ theme, isActive }) =>
-    isActive ? theme.colors.primary : theme.colors.gray800};
-  font-weight: ${({ theme, isActive }) =>
-    isActive ? theme.fontWeight.semibold : theme.fontWeight.normal};
+const StyleOptionLabel = styled.span<{ $isActive: boolean; size: number }>`
+  color: ${({ theme, $isActive }) =>
+    $isActive ? theme.colors.primary : theme.colors.gray800};
+  font-weight: ${({ theme, $isActive }) =>
+    $isActive ? theme.fontWeight.semibold : theme.fontWeight.normal};
   font-size: ${({ size }) => Math.min(size, 15)}px;
 `;
 
-const StyleOptionSize = styled.span<{ isActive: boolean }>`
+const StyleOptionSize = styled.span<{ $isActive: boolean }>`
   margin-right: 4px;
   margin-left: auto;
 
-  color: ${({ theme, isActive }) =>
-    isActive ? theme.colors.primary : theme.colors.gray400};
+  color: ${({ theme, $isActive }) =>
+    $isActive ? theme.colors.primary : theme.colors.gray400};
   font-size: 11px;
 `;
 
-const ToolButton = styled.button<{ isActive: boolean }>`
+const ToolButton = styled.button<{ $isActive: boolean }>`
   width: 32px;
   height: 32px;
   border: 1px solid ${({ theme }) => theme.colors.gray300};
@@ -403,7 +425,10 @@ const ToolButton = styled.button<{ isActive: boolean }>`
   font-size: 13px;
 
   cursor: pointer;
-  transition: all 0.15s;
+  transition:
+    color 0.15s,
+    background-color 0.15s,
+    border-color 0.15s;
 
   &:hover {
     background: ${({ theme }) => theme.colors.gray100};

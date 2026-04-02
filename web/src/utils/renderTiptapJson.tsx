@@ -18,13 +18,17 @@ export interface TiptapDoc {
   content: TiptapNode[];
 }
 
-// javascript:, data: 프로토콜 차단
+// allowlist 방식 — 허용된 프로토콜만 통과 (blocklist는 vbscript: 등 신규 프로토콜 대응 불가)
 export const sanitizeUrl = (url: string): string => {
-  const trimmed = url.trim().toLowerCase();
-  if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:')) {
-    return '#';
+  try {
+    const parsed = new URL(url, 'https://placeholder.invalid');
+    const allowed = ['https:', 'http:', 'mailto:'];
+    if (allowed.includes(parsed.protocol)) return url;
+  } catch {
+    // 상대경로 허용 (/path, #hash)
+    if (url.startsWith('/') || url.startsWith('#')) return url;
   }
-  return url;
+  return '#';
 };
 
 const applyMarks = (
@@ -43,6 +47,8 @@ const applyMarks = (
         return <u key={markKey}>{acc}</u>;
       case 'code':
         return <code key={markKey}>{acc}</code>;
+      case 'strike':
+        return <s key={markKey}>{acc}</s>;
       case 'link': {
         const href = sanitizeUrl(String(mark.attrs?.href ?? '#'));
         return (
@@ -143,6 +149,13 @@ const renderNode = (node: TiptapNode, key: string): React.ReactNode => {
       }
       return applyMarks(text, node.marks, key) as React.ReactElement;
     }
+
+    case 'caption':
+      return (
+        <p key={key} data-caption="">
+          {node.content?.map((c, i) => renderNode(c, `${key}-${i}`))}
+        </p>
+      );
 
     case 'hardBreak':
       return <br key={key} />;

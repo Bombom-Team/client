@@ -9,15 +9,26 @@ interface HashTagInputProps {
 export const HashTagInput = ({ tags, onChange }: HashTagInputProps) => {
   const [inputValue, setInputValue] = useState('');
 
+  const MAX_TAG_LENGTH = 30;
+  const MAX_TAG_COUNT = 10;
+  const VALID_TAG = /^[a-zA-Z0-9가-힣_-]+$/;
+
   const addTag = () => {
     const trimmed = inputValue.trim().replace(/^#/, '');
-    if (trimmed && !tags.includes(trimmed)) {
+    if (
+      trimmed &&
+      trimmed.length <= MAX_TAG_LENGTH &&
+      VALID_TAG.test(trimmed) &&
+      tags.length < MAX_TAG_COUNT &&
+      !tags.includes(trimmed)
+    ) {
       onChange([...tags, trimmed]);
     }
     setInputValue('');
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.nativeEvent.isComposing) return;
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
       addTag();
@@ -106,5 +117,10 @@ const Input = styled.input`
 
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 2px;
   }
 `;
