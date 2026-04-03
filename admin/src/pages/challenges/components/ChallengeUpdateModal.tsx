@@ -64,17 +64,17 @@ const ChallengeUpdateModal = ({ challenge, onClose }: Props) => {
       return;
     }
 
-    if (!startDateInput) {
-      alert('시작일을 입력해주세요.');
+    if (!startDateInput && endDateInput) {
+      alert('종료일만 입력할 수 없습니다. 시작일도 입력해주세요.');
       return;
     }
 
-    if (!endDateInput) {
-      alert('종료일을 입력해주세요.');
+    if (startDateInput && !endDateInput) {
+      alert('시작일을 입력했다면 종료일도 입력해주세요.');
       return;
     }
 
-    if (startDateInput > endDateInput) {
+    if (startDateInput && endDateInput && startDateInput > endDateInput) {
       alert('종료일은 시작일보다 빠를 수 없습니다.');
       return;
     }
