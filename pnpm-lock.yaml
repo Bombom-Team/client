@@ -53,15 +53,15 @@ importers:
       '@tiptap/core':
         specifier: ^3.22.0
         version: 3.22.0(@tiptap/pm@3.22.0)
+      '@tiptap/extension-highlight':
+        specifier: ^3.22.1
+        version: 3.22.1(@tiptap/core@3.22.0(@tiptap/pm@3.22.0))
       '@tiptap/extension-image':
         specifier: ^3.22.0
         version: 3.22.0(@tiptap/core@3.22.0(@tiptap/pm@3.22.0))
       '@tiptap/extension-link':
         specifier: ^3.22.0
         version: 3.22.0(@tiptap/core@3.22.0(@tiptap/pm@3.22.0))(@tiptap/pm@3.22.0)
-      '@tiptap/extension-text-style':
-        specifier: ^3.22.1
-        version: 3.22.1(@tiptap/core@3.22.0(@tiptap/pm@3.22.0))
       '@tiptap/extension-underline':
         specifier: ^3.22.0
         version: 3.22.0(@tiptap/core@3.22.0(@tiptap/pm@3.22.0))
@@ -3307,6 +3307,11 @@ packages:
     peerDependencies:
       '@tiptap/core': ^3.22.0
 
+  '@tiptap/extension-highlight@3.22.1':
+    resolution: {integrity: sha512-3XH0HWViJVzr+FUZY/HQn2vasOgOssVlOjdirKck9AmHoDFUceJbAygSJIdj2fZF3RQl0ohjMGi+OpGMVJ83sw==}
+    peerDependencies:
+      '@tiptap/core': ^3.22.1
+
   '@tiptap/extension-horizontal-rule@3.22.0':
     resolution: {integrity: sha512-9v08PcmJOumVmgGgcuFPZpAk+tf+m7+vaCNsNyf8Ce1i0m3GPSle1ZmxzjDU2FlpaCFrcgoUKlEjKYaFYFCJIg==}
     peerDependencies:
@@ -3359,11 +3364,6 @@ packages:
     resolution: {integrity: sha512-gCgFr1sIcqrJeV5Gdrh8KVZHA+0B1FpFBuOi6FzMyVfBB2sBBqKnjoInYTkPXXdP49Qu8L8hi4luFQtoj4zGzA==}
     peerDependencies:
       '@tiptap/core': ^3.22.0
-
-  '@tiptap/extension-text-style@3.22.1':
-    resolution: {integrity: sha512-xtUuqXFRQxJ2C0OIp4MpD+reHrULkZSec+YXbFt4SHHHluK1lquibYbZknbmd9jsagPUcv0hc7zmdkxdz83lfA==}
-    peerDependencies:
-      '@tiptap/core': ^3.22.1
 
   '@tiptap/extension-text@3.22.0':
     resolution: {integrity: sha512-FQ3lBRswZbSEbtxOnDF4T7pdsZRmKh/8q+M29zXaDHGfBc6nuGNPlNKSIy0Iryjhf/YmMVaWDpHvzk56KD7QtA==}
@@ -12714,6 +12714,10 @@ snapshots:
     dependencies:
       '@tiptap/core': 3.22.0(@tiptap/pm@3.22.0)
 
+  '@tiptap/extension-highlight@3.22.1(@tiptap/core@3.22.0(@tiptap/pm@3.22.0))':
+    dependencies:
+      '@tiptap/core': 3.22.0(@tiptap/pm@3.22.0)
+
   '@tiptap/extension-horizontal-rule@3.22.0(@tiptap/core@3.22.0(@tiptap/pm@3.22.0))(@tiptap/pm@3.22.0)':
     dependencies:
       '@tiptap/core': 3.22.0(@tiptap/pm@3.22.0)
@@ -12755,10 +12759,6 @@ snapshots:
       '@tiptap/core': 3.22.0(@tiptap/pm@3.22.0)
 
   '@tiptap/extension-strike@3.22.0(@tiptap/core@3.22.0(@tiptap/pm@3.22.0))':
-    dependencies:
-      '@tiptap/core': 3.22.0(@tiptap/pm@3.22.0)
-
-  '@tiptap/extension-text-style@3.22.1(@tiptap/core@3.22.0(@tiptap/pm@3.22.0))':
     dependencies:
       '@tiptap/core': 3.22.0(@tiptap/pm@3.22.0)
 

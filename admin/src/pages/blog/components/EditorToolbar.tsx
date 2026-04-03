@@ -187,6 +187,16 @@ export const EditorToolbar = ({
       >
         <StrikeLabel>S</StrikeLabel>
       </ToolButton>
+      <ToolButton
+        onClick={() =>
+          editor.chain().focus().toggleHighlight({ color: '#ffd6c2' }).run()
+        }
+        $isActive={editor.isActive('highlight')}
+        type="button"
+        title="하이라이트"
+      >
+        <HighlightLabel>H</HighlightLabel>
+      </ToolButton>
 
       <Divider />
 
@@ -462,6 +472,15 @@ const StrikeLabel = styled.span`
 
   text-decoration: line-through;
   text-decoration-thickness: 1.5px;
+`;
+
+const HighlightLabel = styled.span`
+  padding: 0 2px;
+  border-radius: 2px;
+
+  background: #ffd6c2;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: 13px;
 `;
 
 const Divider = styled.div`

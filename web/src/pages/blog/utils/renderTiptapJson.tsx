@@ -36,6 +36,8 @@ const convertMarks = (
         return <code key={markKey}>{acc}</code>;
       case 'strike':
         return <s key={markKey}>{acc}</s>;
+      case 'highlight':
+        return <mark key={markKey}>{acc}</mark>;
       case 'link': {
         const href = sanitizeUrl(String(mark.attrs?.href ?? '#'));
         return (

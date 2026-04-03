@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { Node, mergeAttributes } from '@tiptap/core';
+import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
@@ -98,6 +99,7 @@ export const BlogEditor = () => {
       Image,
       Link.configure({ openOnClick: false }),
       Underline,
+      Highlight.configure({ multicolor: true }),
       Caption,
     ],
     content: (() => {
