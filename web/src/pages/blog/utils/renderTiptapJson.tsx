@@ -1,16 +1,7 @@
+import { createElement } from 'react';
+import { validateUrl } from './url';
 import type { TiptapDoc, TiptapMark, TiptapNode } from '../types/post';
-
-const ALLOWED_PROTOCOL = ['https:', 'http:', 'mailto:'];
-
-export const sanitizeUrl = (url: string): string => {
-  try {
-    const parsed = new URL(url, 'https://www.example.com');
-    if (ALLOWED_PROTOCOL.includes(parsed.protocol)) return url;
-  } catch {
-    if (url.startsWith('/') || url.startsWith('#')) return url;
-  }
-  return '#';
-};
+import type { ReactNode } from 'react';
 
 const renderChildren = (node: TiptapNode, key: string) => {
   return node.content?.map((childNode, index) =>
@@ -19,10 +10,10 @@ const renderChildren = (node: TiptapNode, key: string) => {
 };
 
 const convertMarks = (
-  content: React.ReactNode,
+  content: ReactNode,
   marks: TiptapMark[],
   key: string,
-): React.ReactNode => {
+): ReactNode => {
   return marks.reduce((acc, mark, index) => {
     const markKey = `${key}-m${index}`;
     switch (mark.type) {
@@ -39,7 +30,7 @@ const convertMarks = (
       case 'highlight':
         return <mark key={markKey}>{acc}</mark>;
       case 'link': {
-        const href = sanitizeUrl(String(mark.attrs?.href ?? '#'));
+        const href = validateUrl(String(mark.attrs?.href ?? '#'));
         return (
           <a
             key={markKey}
@@ -57,7 +48,7 @@ const convertMarks = (
   }, content);
 };
 
-const renderNode = (node: TiptapNode, key: string): React.ReactNode => {
+const renderNode = (node: TiptapNode, key: string): ReactNode => {
   switch (node.type) {
     case 'paragraph':
       return <p key={key}>{renderChildren(node, key)}</p>;
@@ -65,7 +56,7 @@ const renderNode = (node: TiptapNode, key: string): React.ReactNode => {
     case 'heading': {
       const level = Math.min(Math.max(Number(node.attrs?.level ?? 1), 1), 6);
       const tag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-      return React.createElement(tag, { key }, renderChildren(node, key));
+      return createElement(tag, { key }, renderChildren(node, key));
     }
 
     case 'bulletList':
@@ -88,7 +79,7 @@ const renderNode = (node: TiptapNode, key: string): React.ReactNode => {
       );
 
     case 'image': {
-      const src = sanitizeUrl(String(node.attrs?.src ?? ''));
+      const src = validateUrl(String(node.attrs?.src ?? ''));
       const alt = String(node.attrs?.alt ?? '');
       return <img key={key} src={src} alt={alt} style={{ maxWidth: '100%' }} />;
     }
@@ -116,5 +107,5 @@ const renderNode = (node: TiptapNode, key: string): React.ReactNode => {
 
 export const renderTiptapJson = (doc: TiptapDoc) => {
   if (!doc || doc.type !== 'doc' || !Array.isArray(doc.content)) return null;
-  return doc.content.map((node, index) => renderNode(node, `n${index}`));
+  return doc.content.map((node, index) => renderNode(node, `node${index}`));
 };
