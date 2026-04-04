@@ -1,4 +1,10 @@
-import messaging from '@react-native-firebase/messaging';
+import {
+  getMessaging,
+  requestPermission,
+  hasPermission,
+  getToken,
+  AuthorizationStatus,
+} from '@react-native-firebase/messaging';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Linking, Platform } from 'react-native';
@@ -21,11 +27,11 @@ export const createAndroidChannel = async () => {
 export const requestNotificationPermission = async () => {
   try {
     if (Platform.OS === 'ios') {
-      const auth = await messaging().requestPermission();
+      const auth = await requestPermission(getMessaging());
 
       return (
-        auth === messaging.AuthorizationStatus.AUTHORIZED ||
-        auth === messaging.AuthorizationStatus.PROVISIONAL
+        auth === AuthorizationStatus.AUTHORIZED ||
+        auth === AuthorizationStatus.PROVISIONAL
       );
     }
 
@@ -48,10 +54,10 @@ export const checkNotificationPermission = async () => {
   }
 
   if (Platform.OS === 'ios') {
-    const iosGrantedStatus = await messaging().hasPermission();
+    const iosGrantedStatus = await hasPermission(getMessaging());
     return (
-      iosGrantedStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      iosGrantedStatus === messaging.AuthorizationStatus.PROVISIONAL
+      iosGrantedStatus === AuthorizationStatus.AUTHORIZED ||
+      iosGrantedStatus === AuthorizationStatus.PROVISIONAL
     );
   }
 
@@ -84,12 +90,12 @@ export const goToSystemPermission = async () => {
 
 export const getFCMToken = async () => {
   try {
-    const hasPermission = await checkNotificationPermission();
-    if (!hasPermission) {
+    const isPermissionGranted = await checkNotificationPermission();
+    if (!isPermissionGranted) {
       throw new Error('푸시 알림 권한이 없습니다.');
     }
 
-    const token = await messaging().getToken();
+    const token = await getToken(getMessaging());
     return token;
   } catch (error) {
     console.error('FCM 토큰을 가져오는데 실패했습니다.', error);

@@ -1,8 +1,17 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import {
+  createChallenge,
+  deleteChallenge,
+  getChallengeDailyGuide,
+  getChallengeDailyGuideImages,
   getChallengeDetail,
   getChallengeParticipants,
+  getChallengeSchedule,
   getChallenges,
+  updateChallenge,
+  createChallengeDailyGuide,
+  updateChallengeDailyGuide,
+  deleteChallengeDailyGuide,
   assignChallengeTeams,
   updateParticipantTeam,
   getChallengeTeams,
@@ -12,7 +21,12 @@ import {
 } from './challenges.api';
 import type {
   AssignChallengeTeamsParams,
+  CreateChallengePayload,
   CreateChallengeTeamsParams,
+  CreateChallengeDailyGuideRequest,
+  UpdateChallengePayload,
+  UpdateChallengeDailyGuideRequest,
+  DeleteChallengeDailyGuideParams,
   DeleteChallengeTeamParams,
   GetChallengeParticipantsParams,
   GetChallengesParams,
@@ -43,6 +57,30 @@ export const challengesQueries = {
       gcTime: CHALLENGES_GC_TIME,
     }),
 
+  schedule: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', 'schedule', challengeId] as const,
+      queryFn: () => getChallengeSchedule(challengeId),
+      staleTime: CHALLENGES_STALE_TIME,
+      gcTime: CHALLENGES_GC_TIME,
+    }),
+
+  dailyGuideImages: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', 'daily-guide-images', challengeId] as const,
+      queryFn: () => getChallengeDailyGuideImages(challengeId),
+      staleTime: CHALLENGES_STALE_TIME,
+      gcTime: CHALLENGES_GC_TIME,
+    }),
+
+  dailyGuide: (challengeId: number, dayIndex: number) =>
+    queryOptions({
+      queryKey: ['challenges', 'daily-guide', challengeId, dayIndex] as const,
+      queryFn: () => getChallengeDailyGuide({ challengeId, dayIndex }),
+      staleTime: CHALLENGES_STALE_TIME,
+      gcTime: CHALLENGES_GC_TIME,
+    }),
+
   participants: (challengeId: number, params: GetChallengeParticipantsParams) =>
     queryOptions({
       queryKey: ['challenges', 'participants', challengeId, params] as const,
@@ -59,6 +97,49 @@ export const challengesQueries = {
       gcTime: CHALLENGES_GC_TIME,
     }),
   mutation: {
+    create: () => ({
+      mutationFn: (payload: CreateChallengePayload) => createChallenge(payload),
+    }),
+    update: () => ({
+      mutationFn: ({
+        challengeId,
+        payload,
+      }: {
+        challengeId: number;
+        payload: UpdateChallengePayload;
+      }) => updateChallenge({ challengeId, payload }),
+    }),
+    delete: () => ({
+      mutationFn: (challengeId: number) => deleteChallenge(challengeId),
+    }),
+    createDailyGuide: () => ({
+      mutationFn: ({
+        challengeId,
+        image,
+        request,
+      }: {
+        challengeId: number;
+        image?: File;
+        request: CreateChallengeDailyGuideRequest;
+      }) => createChallengeDailyGuide({ challengeId, image, request }),
+    }),
+    updateDailyGuide: () => ({
+      mutationFn: ({
+        challengeId,
+        guideId,
+        image,
+        request,
+      }: {
+        challengeId: number;
+        guideId: number;
+        image?: File;
+        request: UpdateChallengeDailyGuideRequest;
+      }) => updateChallengeDailyGuide({ challengeId, guideId, image, request }),
+    }),
+    deleteDailyGuide: () => ({
+      mutationFn: (params: DeleteChallengeDailyGuideParams) =>
+        deleteChallengeDailyGuide(params),
+    }),
     assignTeams: () => ({
       mutationFn: (params: AssignChallengeTeamsParams) =>
         assignChallengeTeams(params),

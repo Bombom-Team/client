@@ -18,8 +18,8 @@ export const getDeviceInWebView = () => {
       : 'android';
   }
 
-  if (navigator.userAgent.includes('google')) return 'android';
-  if (navigator.userAgent.includes('Apple')) return 'ios';
+  if (navigator.userAgent.includes('android')) return 'android';
+  if (navigator.userAgent.includes('ios')) return 'ios';
   return null;
 };
 

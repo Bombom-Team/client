@@ -14,7 +14,7 @@ const LandingHeader = () => {
   return (
     <Container device={device}>
       <HeaderWrapper>
-        <HeaderLogo device={device} />
+        <HeaderLogo />
         {isLoading ? (
           <Skeleton width="100px" height="40px" borderRadius={12} />
         ) : isLoggedIn ? (
