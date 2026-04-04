@@ -45,43 +45,48 @@ const Content = styled.div`
 `;
 
 const Title = styled.h1`
-  flex: 1;
   margin: 0;
-  line-height: 1.3;
-  word-break: break-all;
+
+  flex: 1;
 
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   font-size: ${({ theme }) => theme.fontSize['2xl']};
+  line-height: 1.3;
+
+  word-break: break-all;
 `;
 
 const HeaderContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
   margin-bottom: ${({ theme }) => theme.spacing.xl};
   padding-bottom: ${({ theme }) => theme.spacing.lg};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
+
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
 `;
 
 const CategoryBadge = styled.span<{ category: string }>`
-  flex-shrink: 0;
   margin-top: 6px;
-
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: ${({ theme }) => theme.fontSize.xs};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
+
+  flex-shrink: 0;
+
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const DateText = styled.span`
-  flex-shrink: 0;
-  margin-left: auto;
   margin-top: 10px;
-  white-space: nowrap;
+  margin-left: auto;
+
+  flex-shrink: 0;
 
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.sm};
+  white-space: nowrap;
 `;

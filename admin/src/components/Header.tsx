@@ -44,8 +44,8 @@ const PageTitle = styled.h2`
 
 const RightSection = styled.div`
   display: flex;
-  align-items: center;
   gap: ${({ theme }) => theme.spacing.xl};
+  align-items: center;
 `;
 
 const ActionWrapper = styled.div`

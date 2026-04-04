@@ -76,7 +76,9 @@ export const getDrafts = async (): Promise<BlogDraftListItem[]> => {
 };
 
 // 5. 임시저장 글 상세
-export const getDraftDetail = async (postId: number): Promise<BlogDraftDetail> => {
+export const getDraftDetail = async (
+  postId: number,
+): Promise<BlogDraftDetail> => {
   return fetcher.get<BlogDraftDetail>({ path: `/blog/drafts/${postId}` });
 };
 

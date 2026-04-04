@@ -282,7 +282,9 @@ const TabButton = styled.button<{ $isActive: boolean }>`
   font-size: ${({ theme }) => theme.fontSize.sm};
 
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 `;
 
 const PostList = styled.ul`

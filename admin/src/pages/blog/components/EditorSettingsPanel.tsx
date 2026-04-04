@@ -215,5 +215,7 @@ const VisibilityButton = styled.button<{ $isActive: boolean }>`
   font-size: ${({ theme }) => theme.fontSize.sm};
 
   cursor: pointer;
-  transition: color 0.15s, background-color 0.15s;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
 `;
