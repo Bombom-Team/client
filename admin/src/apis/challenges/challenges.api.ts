@@ -18,6 +18,16 @@ export type GetChallengesParams = {
 
 export type GetChallengesResponse = PageableResponse<Challenge>;
 
+export type CreateChallengePayload = {
+  name: string;
+  generation: number;
+  newsletterGroupId: number;
+  startDate?: string;
+  endDate?: string;
+};
+
+export type UpdateChallengePayload = Partial<CreateChallengePayload>;
+
 export type GetChallengeParticipantsParams = {
   challengeTeamId?: number;
   hasTeam?: boolean;
@@ -34,6 +44,32 @@ export const getChallenges = async (params: GetChallengesParams = {}) => {
   return fetcher.get<GetChallengesResponse>({
     path: '/challenges',
     query: params,
+  });
+};
+
+export const createChallenge = async (payload: CreateChallengePayload) => {
+  return fetcher.post<CreateChallengePayload, void>({
+    path: '/challenges',
+    body: payload,
+  });
+};
+
+export const updateChallenge = async ({
+  challengeId,
+  payload,
+}: {
+  challengeId: number;
+  payload: UpdateChallengePayload;
+}) => {
+  return fetcher.patch<UpdateChallengePayload, void>({
+    path: `/challenges/${challengeId}`,
+    body: payload,
+  });
+};
+
+export const deleteChallenge = async (challengeId: number) => {
+  return fetcher.delete<never, void>({
+    path: `/challenges/${challengeId}`,
   });
 };
 
