@@ -213,7 +213,17 @@ export const STREAK_READING_RANK = [
 ];
 
 export const getStreakRankingMetadata = () => {
+  const INTERVAL_SECONDS = 15;
+  const INTERVAL_MS = INTERVAL_SECONDS * 1000;
+  const now = new Date();
+
+  const currentTimeMs = now.getTime();
+  const intervalStart = currentTimeMs - (currentTimeMs % INTERVAL_MS);
+
   return {
+    rankingUpdatedAt: new Date(intervalStart).toISOString(),
+    nextRefreshAt: new Date(intervalStart + INTERVAL_MS).toISOString(),
+    serverTime: now.toISOString(),
     data: STREAK_READING_RANK,
   };
 };

@@ -67,16 +67,11 @@ export const getMyMonthlyReadingRank = async () => {
   });
 };
 
-export type StreakReadingRankItem = {
-  nickname: string;
-  rank: number;
-  dayCount: number;
-  badges?: components['schemas']['BadgesResponse'];
-};
+export type StreakReadingRankItem =
+  components['schemas']['ContinueReadingRankResponse'];
 
-export type GetStreakReadingRankResponse = {
-  data: StreakReadingRankItem[];
-};
+export type GetStreakReadingRankResponse =
+  components['schemas']['ContinueReadingRankingResponse'];
 
 export type GetStreakReadingRankParams = {
   limit: number;
@@ -91,12 +86,8 @@ export const getStreakReadingRank = async (
   });
 };
 
-export type GetMyStreakReadingRankResponse = {
-  nickname: string;
-  rank: number;
-  dayCount: number;
-  badges?: components['schemas']['BadgesResponse'];
-};
+export type GetMyStreakReadingRankResponse =
+  components['schemas']['MemberContinueReadingRankResponse'];
 
 export const getMyStreakReadingRank = async () => {
   return await fetcher.get<GetMyStreakReadingRankResponse>({
