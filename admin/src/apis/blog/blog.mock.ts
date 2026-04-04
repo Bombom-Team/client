@@ -7,9 +7,13 @@ import type {
 } from '@/types/blog';
 
 export const mockDrafts: BlogDraftListItem[] = [
-  { postId: 1, title: '초안 글 1 - 아직 작성 중' },
-  { postId: 2, title: '' },
-  { postId: 3, title: '리액트 훅 정리' },
+  {
+    postId: 1,
+    title: '초안 글 1 - 아직 작성 중',
+    updatedAt: '2026-04-01T10:00:00Z',
+  },
+  { postId: 2, title: '', updatedAt: '2026-04-02T08:00:00Z' },
+  { postId: 3, title: '리액트 훅 정리', updatedAt: '2026-04-03T14:00:00Z' },
 ];
 
 export const mockPosts: BlogPostListItem[] = [
@@ -75,10 +79,13 @@ export const mockDraftDetail: BlogDraftDetail = {
       },
     ],
   }),
-  thumbnailImageUrl: null,
   category: { id: 1, name: '개발' },
-  publishedAt: '2026-03-20T10:00:00Z',
-  hashTags: ['TypeScript', '제네릭', '타입'],
+  updatedAt: '2026-03-20T10:00:00Z',
+  hashtags: [
+    { id: 1, name: 'TypeScript' },
+    { id: 2, name: '제네릭' },
+    { id: 3, name: '타입' },
+  ],
   visibility: 'PUBLIC',
 };
 

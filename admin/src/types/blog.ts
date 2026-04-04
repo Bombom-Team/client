@@ -1,10 +1,23 @@
-export type BlogVisibility = 'PUBLIC' | 'PRIVATE';
+import type { components } from './openapi';
 
-export interface BlogDraftListItem {
-  postId: number;
-  title: string;
-}
+export type BlogVisibility = NonNullable<
+  components['schemas']['BlogDraftDetailResponse']['visibility']
+>;
 
+export type BlogDraftListItem =
+  components['schemas']['BlogDraftListItemResponse'];
+
+export type BlogDraftDetail = components['schemas']['BlogDraftDetailResponse'];
+
+export type SaveDraftRequest = components['schemas']['UpdateBlogDraftRequest'];
+
+export type UploadImageResponse =
+  components['schemas']['UploadBlogDraftImageResponse'];
+
+export type CreateDraftResponse =
+  components['schemas']['CreateBlogDraftResponse'];
+
+// openapi에 정의되지 않은 타입들
 export interface BlogPostListItem {
   postId: number;
   title: string;
@@ -14,38 +27,6 @@ export interface BlogPostListItem {
   publishedAt: string;
 }
 
-export interface BlogDraftDetail {
-  title: string;
-  content: string; // ProseMirror JSON 문자열
-  thumbnailImageUrl: string | null;
-  category: { id: number; name: string } | null;
-  publishedAt: string;
-  hashTags: string[];
-  visibility: BlogVisibility; // 기존 공개 범위 복원용
-}
-
-export interface SaveDraftRequest {
-  title: string;
-  content: string; // JSON.stringify(editor.getJSON())
-  thumbnailImageId: number | null;
-  categoryId: number | null;
-  hashTags: string[];
-  referencedImageIds: number[];
-}
-
-export interface UploadImageResponse {
-  imageId: number;
-  imageUrl: string;
-}
-
 export interface SetThumbnailRequest {
   imageId: number;
-}
-
-export interface UpdateVisibilityRequest {
-  visibility: BlogVisibility;
-}
-
-export interface CreateDraftResponse {
-  postId: number;
 }

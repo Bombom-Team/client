@@ -46,12 +46,12 @@ const DraftList = ({
             </ConfirmActions>
           ) : (
             <PostActions>
-              <ActionButton onClick={() => onEdit(draft.postId)} type="button">
+              <ActionButton onClick={() => onEdit(draft.postId!)} type="button">
                 수정
               </ActionButton>
               <ActionButton
                 $danger
-                onClick={() => onDeleteRequest(draft.postId)}
+                onClick={() => onDeleteRequest(draft.postId!)}
                 type="button"
               >
                 삭제

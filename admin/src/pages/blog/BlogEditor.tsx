@@ -62,17 +62,19 @@ export const BlogEditor = () => {
   });
 
   const [title, setTitle] = useState(draft.title ?? '');
+  const [description, setDescription] = useState(draft.description ?? '');
   const [categoryId, setCategoryId] = useState<number | null>(
     draft.category?.id ?? null,
   );
-  const [hashTags, setHashTags] = useState<string[]>(draft.hashTags ?? []);
+  const [hashTags, setHashTags] = useState<string[]>(
+    (draft.hashtags ?? []).map((h) => h.name ?? ''),
+  );
   const [visibility, setVisibility] = useState<BlogVisibility>(
     draft.visibility ?? 'PRIVATE',
   );
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
-    draft.thumbnailImageUrl ?? null,
+    draft.thumbnailImage?.imageUrl ?? null,
   );
-  const [thumbnailImageId, setThumbnailImageId] = useState<number | null>(null);
   const [isDirty, setIsDirty] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -159,9 +161,9 @@ export const BlogEditor = () => {
         postId: postIdNum,
         data: {
           title,
+          description,
           content,
-          thumbnailImageId,
-          categoryId,
+          categoryId: categoryId ?? undefined,
           hashTags,
           referencedImageIds,
         },
@@ -174,12 +176,13 @@ export const BlogEditor = () => {
       setSaveError('임시저장에 실패했습니다. 다시 시도해주세요.');
       return false;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     editor,
     saveDraftMutation.mutateAsync,
     postIdNum,
     title,
-    thumbnailImageId,
+    description,
     categoryId,
     hashTags,
   ]);
@@ -231,7 +234,7 @@ export const BlogEditor = () => {
         ?.chain()
         .focus()
         .setImage({
-          src: result.imageUrl,
+          src: result.imageUrl ?? '',
           alt: file.name,
         })
         .run();
@@ -249,12 +252,13 @@ export const BlogEditor = () => {
         postId: postIdNum,
         file,
       });
-      await setThumbnailMutation.mutateAsync({
-        postId: postIdNum,
-        data: { imageId: result.imageId },
-      });
-      setThumbnailUrl(result.imageUrl);
-      setThumbnailImageId(result.imageId);
+      if (result.imageId != null) {
+        await setThumbnailMutation.mutateAsync({
+          postId: postIdNum,
+          data: { imageId: result.imageId },
+        });
+      }
+      setThumbnailUrl(result.imageUrl ?? null);
     } catch (err) {
       console.error('썸네일 업로드 실패:', err);
       setThumbnailUploadError('썸네일 업로드에 실패했습니다.');
@@ -328,6 +332,14 @@ export const BlogEditor = () => {
                 setIsDirty(true);
               }}
               placeholder="제목을 입력하세요"
+            />
+            <DescriptionInput
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                setIsDirty(true);
+              }}
+              placeholder="부연 설명을 입력하세요"
             />
             <EditorToolbar editor={editor} onImageUpload={handleImageUpload} />
             <EditorWrapper>
@@ -478,6 +490,25 @@ const TitleInput = styled.input`
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   font-size: ${({ theme }) => theme.fontSize['2xl']};
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.gray400};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: -2px;
+  }
+`;
+
+const DescriptionInput = styled.input`
+  padding: 10px 24px 14px;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
+
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.base};
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.gray400};
