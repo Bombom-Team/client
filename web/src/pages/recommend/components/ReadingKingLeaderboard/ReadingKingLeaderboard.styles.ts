@@ -71,6 +71,17 @@ export const TabButton = styled.button<{ active: boolean }>`
     color 0.2s;
 `;
 
+export const InfoIcon = styled.div`
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.textTertiary};
+
+  cursor: help;
+`;
+
 export const CountdownWrapper = styled.div`
   display: flex;
   gap: 8px;

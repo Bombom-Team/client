@@ -11,6 +11,7 @@ import {
   TitleIcon,
   TabToggle,
   TabButton,
+  InfoIcon,
   CountdownWrapper,
   Countdown,
   CountdownLoadingDots,
@@ -21,17 +22,20 @@ import ArrowIcon from '@/components/icons/ArrowIcon';
 import Tooltip from '@/components/Tooltip/Tooltip';
 import { useCountdown } from '@/hooks/useCountdown';
 import { padTimeDigit } from '@/utils/time';
+import HelpIcon from '#/assets/svg/help.svg';
 
 type RankingTab = 'monthly' | 'streak';
 
 const ReadingKingLeaderboard = () => {
   const [activeTab, setActiveTab] = useState<RankingTab>('monthly');
   const [rankExplainOpened, setRankExplainOpened] = useState(false);
+  const [streakInfoOpened, setStreakInfoOpened] = useState(false);
   const [nextRefreshAt, setNextRefreshAt] = useState<string>(
     new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
   );
   const [isFetching, setIsFetching] = useState(false);
   const countdownRef = useRef<HTMLDivElement>(null);
+  const streakInfoRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
   const isMonthlyTab = activeTab === 'monthly';
@@ -60,6 +64,8 @@ const ReadingKingLeaderboard = () => {
 
   const openRankExplain = () => setRankExplainOpened(true);
   const closeRankExplain = () => setRankExplainOpened(false);
+  const openStreakInfo = () => setStreakInfoOpened(true);
+  const closeStreakInfo = () => setStreakInfoOpened(false);
 
   return (
     <Container>
@@ -85,7 +91,7 @@ const ReadingKingLeaderboard = () => {
             연속 독서왕
           </TabButton>
         </TabToggle>
-        {isMonthlyTab && (
+        {isMonthlyTab ? (
           <CountdownWrapper>
             <Countdown
               ref={countdownRef}
@@ -105,6 +111,25 @@ const ReadingKingLeaderboard = () => {
             </Countdown>
             {(isFetching || isCompleting) && <CountdownLoadingDots />}
           </CountdownWrapper>
+        ) : (
+          <InfoIcon
+            ref={streakInfoRef}
+            onMouseEnter={openStreakInfo}
+            onMouseLeave={closeStreakInfo}
+            onFocus={openStreakInfo}
+            onBlur={closeStreakInfo}
+            tabIndex={0}
+            aria-label="연속 독서왕 순위 안내"
+          >
+            <HelpIcon width={20} height={20} />
+            <Tooltip
+              opened={streakInfoOpened}
+              placement="bottom"
+              anchorRef={streakInfoRef}
+            >
+              매일 자정에 업데이트됩니다.
+            </Tooltip>
+          </InfoIcon>
         )}
       </TitleWrapper>
 
