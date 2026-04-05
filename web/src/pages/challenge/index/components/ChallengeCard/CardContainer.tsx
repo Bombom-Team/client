@@ -13,7 +13,7 @@ export default CardContainer;
 const Container = styled.button`
   position: relative;
   width: 100%;
-  height: 172px;
+  height: 220px;
   min-width: 280px;
   max-width: 440px;
   padding: 20px;
@@ -21,10 +21,11 @@ const Container = styled.button`
   border-radius: 16px;
 
   display: flex;
+  gap: 16px;
   flex-direction: column;
-  justify-content: space-between;
 
   background-color: ${({ theme }) => theme.colors.white};
+  text-align: left;
 
   transition: all 0.2s ease;
 

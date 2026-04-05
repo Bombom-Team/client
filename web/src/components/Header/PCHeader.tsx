@@ -20,8 +20,7 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
   return (
     <HeaderContainer>
       <HeaderInner>
-        <HeaderLogo device="pc" />
-
+        <HeaderLogo />
         <NavWrapper>
           <HeaderNavButtons activeNav={activeNav} device="pc" />
         </NavWrapper>
@@ -86,8 +85,6 @@ const NavWrapper = styled.nav`
 `;
 
 const UserInfoWrapper = styled.div`
-  width: 300px;
-
   display: flex;
   gap: 8px;
   align-items: center;

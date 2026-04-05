@@ -3,7 +3,6 @@ import CardContainer from '../CardContainer';
 import { CardDetailButton, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
-import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { getDatesDiff } from '@/utils/date';
@@ -39,11 +38,10 @@ const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
   return (
     <CardContainer onClick={handleCardClick}>
       <CardHeader>
-        <Flex direction="column" gap={8}>
-          <Title>{title}</Title>
-          <Tag>{generation}기</Tag>
-        </Flex>
+        <Tag>{generation}기</Tag>
       </CardHeader>
+
+      <Title>{title}</Title>
 
       <CardFooter>
         <Text font="heading6">Coming Soon</Text>

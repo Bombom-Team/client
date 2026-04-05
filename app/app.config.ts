@@ -27,7 +27,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     runtimeVersion: {
       policy: 'appVersion',
     },
-    orientation: 'portrait',
+    orientation: 'default',
     icon: APP_CONFIG.icon,
     scheme: 'bombom',
     userInterfaceStyle: 'automatic',

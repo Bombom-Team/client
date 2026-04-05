@@ -6,9 +6,11 @@ import {
 } from '@tanstack/react-router';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import Pagination from '@/components/Pagination';
 import { ChallengesTableBody } from '@/pages/challenges/ChallengesTableBody';
+import ChallengeCreateModal from '@/pages/challenges/components/ChallengeCreateModal';
 import {
   CHALLENGE_STATUS_LABELS,
   type ChallengeStatus,
@@ -37,6 +39,7 @@ function ChallengesPage() {
   const navigate = useNavigate();
   const [totalChallenges, setTotalChallenges] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const statusOptions = useMemo(
     () =>
@@ -74,26 +77,53 @@ function ChallengesPage() {
     [],
   );
 
+  const handleOpenCreateModal = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
+  };
+
   return (
     <Layout title="챌린지">
       <Container>
         <Header>
           <Title>챌린지 ({totalChallenges}개)</Title>
-          <Filter>
-            <FilterLabel htmlFor="challenge-status">상태</FilterLabel>
-            <Select
-              id="challenge-status"
-              value={search.status ?? 'ALL'}
-              onChange={(event) => handleStatusChange(event.target.value)}
+          <HeaderActions>
+            <Filter>
+              <FilterLabel htmlFor="challenge-status">상태</FilterLabel>
+              <Select
+                id="challenge-status"
+                value={search.status ?? 'ALL'}
+                onChange={(event) => handleStatusChange(event.target.value)}
+              >
+                <option value="ALL">전체</option>
+                {statusOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </Select>
+            </Filter>
+            <Button type="button" onClick={handleOpenCreateModal}>
+              챌린지 생성
+            </Button>
+            <Button
+              onClick={() =>
+                navigate({
+                  to: '/challenges/daily-guides',
+                  search: {
+                    page: 0,
+                    size: 10,
+                    status: undefined,
+                  },
+                })
+              }
             >
-              <option value="ALL">전체</option>
-              {statusOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </Select>
-          </Filter>
+              데일리 가이드 관리
+            </Button>
+          </HeaderActions>
         </Header>
 
         <Table>
@@ -128,6 +158,10 @@ function ChallengesPage() {
           />
         )}
       </Container>
+
+      {isCreateModalOpen && (
+        <ChallengeCreateModal onClose={handleCloseCreateModal} />
+      )}
     </Layout>
   );
 }
@@ -160,6 +194,12 @@ const Title = styled.h3`
 const Filter = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
+`;
+
+const HeaderActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
 `;
 

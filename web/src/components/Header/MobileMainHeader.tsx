@@ -15,7 +15,7 @@ const MobileMainHeader = () => {
 
   return (
     <Container>
-      <HeaderLogo device="mobile" />
+      <HeaderLogo />
       <UserInfoWrapper>
         <NavButton
           onClick={() => navigate({ to: '/blog' })}
