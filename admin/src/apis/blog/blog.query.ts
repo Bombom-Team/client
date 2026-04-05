@@ -6,6 +6,7 @@ import {
 import {
   createDraft,
   deleteDraft,
+  getEditablePostDetail,
   getDraftDetail,
   getDrafts,
   getBlogPosts,
@@ -41,10 +42,18 @@ export const blogQueries = {
       gcTime: GC_TIME,
     }),
 
+  editablePost: (postId: number) =>
+    queryOptions({
+      queryKey: ['blog', 'editable-post', postId] as const,
+      queryFn: () => getEditablePostDetail(postId),
+      staleTime: STALE_TIME,
+      gcTime: GC_TIME,
+    }),
+
   posts: () =>
     queryOptions({
       queryKey: ['blog', 'posts'] as const,
-      queryFn: getBlogPosts,
+      queryFn: () => getBlogPosts(),
       staleTime: STALE_TIME,
       gcTime: GC_TIME,
     }),
@@ -68,6 +77,9 @@ export const useSaveDraft = () => {
     onSuccess: (_, { postId }) => {
       queryClient.invalidateQueries({ queryKey: ['blog', 'drafts'] });
       queryClient.invalidateQueries({ queryKey: ['blog', 'draft', postId] });
+      queryClient.invalidateQueries({
+        queryKey: ['blog', 'editable-post', postId],
+      });
     },
   });
 };

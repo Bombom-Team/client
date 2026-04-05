@@ -1,5 +1,6 @@
 import { fetcher, ApiError } from '@bombom/shared/apis';
 import { ENV } from '@bombom/shared/env';
+import type { PageableResponse } from '@/apis/types/PageableResponse';
 import type {
   BlogDraftListItem,
   BlogDraftDetail,
@@ -10,6 +11,55 @@ import type {
   BlogVisibility,
   CreateDraftResponse,
 } from '@/types/blog';
+
+type GetBlogPostsResponse =
+  | PageableResponse<BlogPostListItem>
+  | BlogPostListItem[];
+
+type PublicBlogPostDetailResponse = {
+  title: string;
+  content: string;
+  thumbnailImageUrl?: string;
+  categoryName: string;
+  publishedAt: string;
+  hashTags: string[];
+};
+
+type BlogEditableDetail = {
+  postId?: number;
+  title?: string;
+  description?: string;
+  content?: string;
+  status?: 'DRAFT' | 'PUBLISHED' | 'DELETED';
+  visibility?: BlogVisibility;
+  thumbnailImage?: {
+    imageId?: number;
+    imageUrl?: string;
+  };
+  category?: {
+    id?: number;
+    name?: string;
+  };
+  hashtags?: {
+    id?: number;
+    name?: string;
+  }[];
+  referenceImages?: {
+    imageId?: number;
+    imageUrl?: string;
+  }[];
+};
+
+type GetBlogPostsParams = {
+  page?: number;
+  size?: number;
+  sort?: string;
+};
+
+const PUBLIC_API_BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(
+  '/admin/api/v1',
+  '/api/v1',
+);
 
 // 1. 초안 생성
 export const createDraft = async (): Promise<CreateDraftResponse> => {
@@ -82,6 +132,58 @@ export const getDraftDetail = async (
   return fetcher.get<BlogDraftDetail>({ path: `/blog/drafts/${postId}` });
 };
 
+const getPublishedPostDetail = async (
+  postId: number,
+): Promise<PublicBlogPostDetailResponse> => {
+  return fetcher.get<PublicBlogPostDetailResponse>({
+    path: `/blog/posts/${postId}`,
+    baseUrl: PUBLIC_API_BASE_URL,
+  });
+};
+
+export const getEditablePostDetail = async (
+  postId: number,
+): Promise<BlogEditableDetail> => {
+  try {
+    return await getDraftDetail(postId);
+  } catch (error) {
+    if (
+      !(error instanceof ApiError) ||
+      (error.status !== 404 && error.status !== 409)
+    ) {
+      throw error;
+    }
+
+    const [postDetail, posts] = await Promise.all([
+      getPublishedPostDetail(postId),
+      getBlogPosts({
+        page: 0,
+        size: 1000,
+        sort: 'publishedAt,desc',
+      }),
+    ]);
+
+    const postSummary = posts.find((post) => post.postId === postId);
+
+    return {
+      postId,
+      title: postDetail.title,
+      description: postSummary?.description ?? '',
+      content: postDetail.content,
+      status: 'PUBLISHED',
+      visibility: 'PUBLIC',
+      thumbnailImage: postSummary?.thumbnailImageUrl
+        ? { imageUrl: postSummary.thumbnailImageUrl }
+        : undefined,
+      category: postDetail.categoryName
+        ? { name: postDetail.categoryName }
+        : undefined,
+      hashtags: postDetail.hashTags.map((name) => ({ name })),
+      referenceImages: [],
+    };
+  }
+};
+
 // 6. 발행
 export const publishDraft = async (postId: number): Promise<void> => {
   return fetcher.post<Record<string, never>, void>({
@@ -124,12 +226,14 @@ export const setThumbnail = async (
 };
 
 // 10. 발행된 글 목록 (admin prefix 없는 public API)
-export const getBlogPosts = async (): Promise<BlogPostListItem[]> => {
-  return fetcher.get<BlogPostListItem[]>({
+export const getBlogPosts = async (
+  params: GetBlogPostsParams = {},
+): Promise<BlogPostListItem[]> => {
+  const response = await fetcher.get<GetBlogPostsResponse>({
     path: '/blog/posts',
-    baseUrl: import.meta.env.VITE_API_BASE_URL.replace(
-      '/admin/api/v1',
-      '/api/v1',
-    ),
+    baseUrl: PUBLIC_API_BASE_URL,
+    query: params,
   });
+
+  return Array.isArray(response) ? response : (response.content ?? []);
 };

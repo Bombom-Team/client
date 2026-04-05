@@ -57,23 +57,27 @@ export const BlogEditor = () => {
   const postIdNum = Number(postId);
   const navigate = useNavigate();
 
-  const [{ data: draft }, { data: categories }] = useSuspenseQueries({
-    queries: [blogQueries.draft(postIdNum), categoriesQueries.list()],
+  const [{ data: post }, { data: categories }] = useSuspenseQueries({
+    queries: [blogQueries.editablePost(postIdNum), categoriesQueries.list()],
   });
+  const isPublishedPost = post.status === 'PUBLISHED';
 
-  const [title, setTitle] = useState(draft.title ?? '');
-  const [description, setDescription] = useState(draft.description ?? '');
+  const [title, setTitle] = useState(post.title ?? '');
+  const [description, setDescription] = useState(post.description ?? '');
   const [categoryId, setCategoryId] = useState<number | null>(
-    draft.category?.id ?? null,
+    post.category?.id ??
+      categories.find((category) => category.name === post.category?.name)
+        ?.id ??
+      null,
   );
   const [hashTags, setHashTags] = useState<string[]>(
-    (draft.hashtags ?? []).map((h) => h.name ?? ''),
+    (post.hashtags ?? []).map((h) => h.name ?? ''),
   );
   const [visibility, setVisibility] = useState<BlogVisibility>(
-    draft.visibility ?? 'PRIVATE',
+    post.visibility ?? 'PRIVATE',
   );
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
-    draft.thumbnailImage?.imageUrl ?? null,
+    post.thumbnailImage?.imageUrl ?? null,
   );
   const [isDirty, setIsDirty] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
@@ -105,11 +109,11 @@ export const BlogEditor = () => {
       Caption,
     ],
     content: (() => {
-      if (!draft.content) return '';
+      if (!post.content) return '';
       try {
-        return JSON.parse(draft.content);
+        return JSON.parse(post.content);
       } catch {
-        return draft.content;
+        return post.content;
       }
     })(),
     onUpdate: () => setIsDirty(true),
@@ -309,17 +313,23 @@ export const BlogEditor = () => {
               disabled={saveDraftMutation.isPending}
               type="button"
             >
-              {saveDraftMutation.isPending ? '저장 중…' : '임시저장'}
+              {saveDraftMutation.isPending
+                ? '저장 중…'
+                : isPublishedPost
+                  ? '저장'
+                  : '임시저장'}
             </SaveButton>
-            <PublishButton
-              onClick={handlePublish}
-              disabled={
-                publishDraftMutation.isPending || saveDraftMutation.isPending
-              }
-              type="button"
-            >
-              {publishDraftMutation.isPending ? '발행 중…' : '발행하기'}
-            </PublishButton>
+            {!isPublishedPost && (
+              <PublishButton
+                onClick={handlePublish}
+                disabled={
+                  publishDraftMutation.isPending || saveDraftMutation.isPending
+                }
+                type="button"
+              >
+                {publishDraftMutation.isPending ? '발행 중…' : '발행하기'}
+              </PublishButton>
+            )}
           </Actions>
         </TopBar>
 
