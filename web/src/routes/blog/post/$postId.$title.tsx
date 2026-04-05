@@ -11,7 +11,7 @@ import PostDetail from '@/pages/blog/components/PostDetail/PostDetail';
 import PostDetailSkeleton from '@/pages/blog/components/PostDetail/PostDetailSkeleton';
 import ShareButton from '@/pages/blog/components/PostDetail/ShareButton';
 import { createBlogPostingSchema } from '@/pages/blog/utils/seo';
-import { createSlug } from '@/pages/blog/utils/slug';
+import { createSlug } from '@/pages/blog/utils/url';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/blog/post/$postId/$title')({
