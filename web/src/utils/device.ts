@@ -1,4 +1,4 @@
-import { isAppVersionSupported } from './version';
+import { isAppVersionSupported, isExactAppVersion } from './version';
 import type { WindowWithWebkit } from '@bombom/shared/webview';
 
 export const isWebView = () => {
@@ -44,4 +44,19 @@ export const isAndroid = () => {
 
 export const isIOS = () => {
   return getDevice() === 'ios';
+};
+
+const REINSTALL_TARGET_VERSION = {
+  android: '1.1.6',
+  ios: '1.1.5',
+} as const;
+
+export const needsReinstall = (): boolean => {
+  if (!isWebView()) return false;
+
+  const device = getDeviceInWebView();
+  if (device === 'android')
+    return !isExactAppVersion(REINSTALL_TARGET_VERSION.android);
+  if (device === 'ios') return !isExactAppVersion(REINSTALL_TARGET_VERSION.ios);
+  return false;
 };

@@ -7,6 +7,7 @@ import {
   Outlet,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import ReinstallModal from '@/components/ReinstallModal/ReinstallModal';
 import Toast from '@/components/Toast/Toast';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { useChannelTalk } from '@/hooks/useChannelTalk';
@@ -34,6 +35,7 @@ const RootComponent = () => {
           <AuthProvider>
             <Outlet />
             <Toast />
+            <ReinstallModal />
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>

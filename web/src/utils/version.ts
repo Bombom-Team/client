@@ -21,3 +21,15 @@ export const isAppVersionSupported = (minVersion: string): boolean => {
 
   return gte(normalizedVersion, normalizedMinVersion);
 };
+
+export const isExactAppVersion = (targetVersion: string): boolean => {
+  const extractedVersion = extractAppVersionFromUserAgent(navigator.userAgent);
+  if (!extractedVersion) return false;
+
+  const normalizedVersion = normalizeVersion(extractedVersion);
+  const normalizedTargetVersion = normalizeVersion(targetVersion);
+
+  if (!normalizedVersion || !normalizedTargetVersion) return false;
+
+  return normalizedVersion === normalizedTargetVersion;
+};
