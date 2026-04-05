@@ -6,6 +6,8 @@ export interface Challenge {
   generation: number;
   startDate: string;
   endDate: string;
+  totalDays?: number;
+  newsletterGroupId?: number;
 }
 
 export type ChallengeScheduleDayOfWeek =

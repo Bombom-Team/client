@@ -1,11 +1,14 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import {
+  createChallenge,
+  deleteChallenge,
   getChallengeDailyGuide,
   getChallengeDailyGuideImages,
   getChallengeDetail,
   getChallengeParticipants,
   getChallengeSchedule,
   getChallenges,
+  updateChallenge,
   createChallengeDailyGuide,
   updateChallengeDailyGuide,
   deleteChallengeDailyGuide,
@@ -18,8 +21,10 @@ import {
 } from './challenges.api';
 import type {
   AssignChallengeTeamsParams,
+  CreateChallengePayload,
   CreateChallengeTeamsParams,
   CreateChallengeDailyGuideRequest,
+  UpdateChallengePayload,
   UpdateChallengeDailyGuideRequest,
   DeleteChallengeDailyGuideParams,
   DeleteChallengeTeamParams,
@@ -92,6 +97,21 @@ export const challengesQueries = {
       gcTime: CHALLENGES_GC_TIME,
     }),
   mutation: {
+    create: () => ({
+      mutationFn: (payload: CreateChallengePayload) => createChallenge(payload),
+    }),
+    update: () => ({
+      mutationFn: ({
+        challengeId,
+        payload,
+      }: {
+        challengeId: number;
+        payload: UpdateChallengePayload;
+      }) => updateChallenge({ challengeId, payload }),
+    }),
+    delete: () => ({
+      mutationFn: (challengeId: number) => deleteChallenge(challengeId),
+    }),
     createDailyGuide: () => ({
       mutationFn: ({
         challengeId,
