@@ -17,6 +17,9 @@ export type UploadImageResponse =
 export type CreateDraftResponse =
   components['schemas']['CreateBlogDraftResponse'];
 
+export type SetThumbnailRequest =
+  components['schemas']['AssignBlogPostThumbnailRequest'];
+
 // openapi에 정의되지 않은 타입들
 export interface BlogPostListItem {
   postId: number;
@@ -25,8 +28,4 @@ export interface BlogPostListItem {
   thumbnailImageUrl: string | null;
   categoryName: string;
   publishedAt: string;
-}
-
-export interface SetThumbnailRequest {
-  imageId: number;
 }

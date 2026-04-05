@@ -28,17 +28,49 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/admin/api/v1/blog/drafts/{postId}': {
+  '/admin/api/v1/blog/posts/{postId}': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['getDraft'];
-    put: operations['updateDraft'];
+    get?: never;
+    /**
+     * 블로그 글 수정
+     * @description 활성 블로그 글(DRAFT, PUBLISHED)을 수정합니다.
+     */
+    put: operations['updatePost'];
     post?: never;
-    delete?: never;
+    /**
+     * 블로그 글 삭제
+     * @description 활성 블로그 글(DRAFT, PUBLISHED)을 soft delete 합니다.
+     */
+    delete: operations['deletePost'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/blog/posts/{postId}/thumbnail': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * 블로그 글 썸네일 등록
+     * @description 활성 블로그 글(DRAFT, PUBLISHED)에 썸네일을 지정합니다.
+     */
+    put: operations['assignThumbnail'];
+    post?: never;
+    /**
+     * 블로그 글 썸네일 제거
+     * @description 활성 블로그 글(DRAFT, PUBLISHED)의 썸네일을 제거합니다.
+     */
+    delete: operations['removeThumbnail'];
     options?: never;
     head?: never;
     patch?: never;
@@ -495,6 +527,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/api/v1/blog/posts/{postId}/images': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 블로그 글 이미지 업로드
+     * @description 활성 블로그 글(DRAFT, PUBLISHED)에 이미지를 업로드합니다.
+     */
+    post: operations['uploadPostImage'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/api/v1/blog/drafts': {
     parameters: {
       query?: never;
@@ -502,8 +554,16 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    /**
+     * 블로그 초안 목록 조회
+     * @description 내 블로그 초안 목록을 조회합니다.
+     */
     get: operations['getDrafts'];
     put?: never;
+    /**
+     * 블로그 초안 생성
+     * @description 새로운 블로그 초안을 생성합니다.
+     */
     post: operations['createDraft'];
     delete?: never;
     options?: never;
@@ -520,23 +580,11 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    /**
+     * 블로그 초안 발행
+     * @description 블로그 초안을 발행합니다.
+     */
     post: operations['publishDraft'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/admin/api/v1/blog/drafts/{postId}/images': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['uploadDraftImage'];
     delete?: never;
     options?: never;
     head?: never;
@@ -939,6 +987,26 @@ export interface paths {
     patch: operations['updateCategory'];
     trace?: never;
   };
+  '/admin/api/v1/blog/posts/{postId}/visibility': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * 블로그 글 공개 범위 수정
+     * @description 활성 블로그 글(DRAFT, PUBLISHED)의 공개 범위를 수정합니다.
+     */
+    patch: operations['updatePostVisibility'];
+    trace?: never;
+  };
   '/admin/api/v1/ping': {
     parameters: {
       query?: never;
@@ -1148,6 +1216,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/api/v1/blog/drafts/{postId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 블로그 초안 상세 조회
+     * @description 내 블로그 초안 상세 정보를 조회합니다.
+     */
+    get: operations['getDraft'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/api/v1/challenges/{challengeId}/teams/{teamId}': {
     parameters: {
       query?: never;
@@ -1187,6 +1275,10 @@ export interface components {
       categoryId?: number;
       hashTags?: string[];
       referencedImageIds?: number[];
+    };
+    AssignBlogPostThumbnailRequest: {
+      /** Format: int64 */
+      imageId: number;
     };
     UnsubscribePatternRequest: {
       patternKey: string;
@@ -1288,14 +1380,14 @@ export interface components {
     CreateCategoryRequest: {
       name: string;
     };
-    CreateBlogDraftResponse: {
-      /** Format: int64 */
-      postId?: number;
-    };
     UploadBlogDraftImageResponse: {
       /** Format: int64 */
       imageId?: number;
       imageUrl?: string;
+    };
+    CreateBlogDraftResponse: {
+      /** Format: int64 */
+      postId?: number;
     };
     UnsubscribePatternUpdateRequest: {
       patternValue: string;
@@ -1390,6 +1482,10 @@ export interface components {
     UpdateCategoryRequest: {
       name: string;
     };
+    UpdateBlogPostVisibilityRequest: {
+      /** @enum {string} */
+      visibility: 'PRIVATE' | 'PUBLIC';
+    };
     UnsubscribePatternResponse: {
       /** Format: int64 */
       id?: number;
@@ -1426,17 +1522,17 @@ export interface components {
       /** Format: int64 */
       offset?: number;
       sort?: components['schemas']['SortObject'];
+      unpaged?: boolean;
       paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
       /** Format: int32 */
       pageSize?: number;
-      unpaged?: boolean;
     };
     SortObject: {
       empty?: boolean;
-      sorted?: boolean;
       unsorted?: boolean;
+      sorted?: boolean;
     };
     GetNoticeDetailResponse: {
       title?: string;
@@ -1824,29 +1920,7 @@ export interface operations {
       };
     };
   };
-  getDraft: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        postId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['BlogDraftDetailResponse'];
-        };
-      };
-    };
-  };
-  updateDraft: {
+  updatePost: {
     parameters: {
       query?: never;
       header?: never;
@@ -1861,8 +1935,163 @@ export interface operations {
       };
     };
     responses: {
-      /** @description OK */
+      /** @description 수정 성공 */
       200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 수정할 수 없는 상태 */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deletePost: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        postId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 삭제 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 삭제할 수 없는 상태 */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  assignThumbnail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        postId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AssignBlogPostThumbnailRequest'];
+      };
+    };
+    responses: {
+      /** @description 등록 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글 또는 이미지를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 등록할 수 없는 상태 */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  removeThumbnail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        postId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 제거 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 제거할 수 없는 상태 */
+      409: {
         headers: {
           [name: string]: unknown;
         };
@@ -2878,67 +3107,7 @@ export interface operations {
       };
     };
   };
-  getDrafts: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['BlogDraftListItemResponse'][];
-        };
-      };
-    };
-  };
-  createDraft: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Created */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['CreateBlogDraftResponse'];
-        };
-      };
-    };
-  };
-  publishDraft: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        postId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Created */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  uploadDraftImage: {
+  uploadPostImage: {
     parameters: {
       query?: never;
       header?: never;
@@ -2956,7 +3125,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Created */
+      /** @description 업로드 성공 */
       201: {
         headers: {
           [name: string]: unknown;
@@ -2964,6 +3133,129 @@ export interface operations {
         content: {
           '*/*': components['schemas']['UploadBlogDraftImageResponse'];
         };
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 업로드할 수 없는 상태 */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getDrafts: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BlogDraftListItemResponse'][];
+        };
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  createDraft: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 초안 생성 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CreateBlogDraftResponse'];
+        };
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  publishDraft: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        postId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 발행 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 발행할 수 없는 상태 */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -4227,6 +4519,58 @@ export interface operations {
       };
     };
   };
+  updatePostVisibility: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        postId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateBlogPostVisibilityRequest'];
+      };
+    };
+    responses: {
+      /** @description 수정 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 수정할 수 없는 상태 */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   ping: {
     parameters: {
       query?: never;
@@ -4525,6 +4869,49 @@ export interface operations {
       };
       /** @description 존재하지 않는 챌린지 또는 해당 dayIndex의 가이드 없음 */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getDraft: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        postId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BlogDraftDetailResponse'];
+        };
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 초안 상태가 아님 */
+      409: {
         headers: {
           [name: string]: unknown;
         };

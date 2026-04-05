@@ -17,13 +17,13 @@ import { Route as AdminNoticesRouteImport } from './routes/_admin/notices';
 import { Route as AdminMembersRouteImport } from './routes/_admin/members';
 import { Route as AdminEventsRouteImport } from './routes/_admin/events';
 import { Route as AdminChallengesRouteImport } from './routes/_admin/challenges';
+import { Route as AdminBlogRouteImport } from './routes/_admin/blog';
 import { Route as AdminResourcesIndexRouteImport } from './routes/_admin/resources/index';
 import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/index';
 import { Route as AdminNewslettersIndexRouteImport } from './routes/_admin/newsletters/index';
 import { Route as AdminEventsIndexRouteImport } from './routes/_admin/events/index';
-import { Route as AdminBlogIndexRouteImport } from './routes/_admin/blog/index';
-import { Route as AdminBlogPostIdRouteImport } from './routes/_admin/blog/$postId';
 import { Route as AdminChallengesIndexRouteImport } from './routes/_admin/challenges/index';
+import { Route as AdminBlogIndexRouteImport } from './routes/_admin/blog/index';
 import { Route as AdminResourcesUnsubscribePatternRouteImport } from './routes/_admin/resources/unsubscribe-pattern';
 import { Route as AdminResourcesUnsubscribeLambdaRouteImport } from './routes/_admin/resources/unsubscribe-lambda';
 import { Route as AdminNoticesNewRouteImport } from './routes/_admin/notices/new';
@@ -32,9 +32,9 @@ import { Route as AdminNewslettersNewRouteImport } from './routes/_admin/newslet
 import { Route as AdminNewslettersCategoriesRouteImport } from './routes/_admin/newsletters/categories';
 import { Route as AdminNewslettersNewsletterIdRouteImport } from './routes/_admin/newsletters/$newsletterId';
 import { Route as AdminEventsEventIdRouteImport } from './routes/_admin/events/$eventId';
-import { Route as AdminBlogRouteImport } from './routes/_admin/blog';
 import { Route as AdminChallengesDailyGuidesRouteImport } from './routes/_admin/challenges/daily-guides';
 import { Route as AdminChallengesChallengeIdRouteImport } from './routes/_admin/challenges/$challengeId';
+import { Route as AdminBlogPostIdRouteImport } from './routes/_admin/blog/$postId';
 import { Route as AdminResourcesUnsubscribeLambdaIndexRouteImport } from './routes/_admin/resources/unsubscribe-lambda/index';
 import { Route as AdminNoticesNoticeIdIndexRouteImport } from './routes/_admin/notices/$noticeId/index';
 import { Route as AdminNewslettersNewsletterIdIndexRouteImport } from './routes/_admin/newsletters/$newsletterId/index';
@@ -81,14 +81,14 @@ const AdminEventsRoute = AdminEventsRouteImport.update({
   path: '/events',
   getParentRoute: () => AdminRoute,
 } as any);
-const AdminBlogRoute = AdminBlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => AdminRoute,
-} as any);
 const AdminChallengesRoute = AdminChallengesRouteImport.update({
   id: '/challenges',
   path: '/challenges',
+  getParentRoute: () => AdminRoute,
+} as any);
+const AdminBlogRoute = AdminBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => AdminRoute,
 } as any);
 const AdminResourcesIndexRoute = AdminResourcesIndexRouteImport.update({
@@ -111,20 +111,15 @@ const AdminEventsIndexRoute = AdminEventsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminEventsRoute,
 } as any);
-const AdminBlogIndexRoute = AdminBlogIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminBlogRoute,
-} as any);
-const AdminBlogPostIdRoute = AdminBlogPostIdRouteImport.update({
-  id: '/$postId',
-  path: '/$postId',
-  getParentRoute: () => AdminBlogRoute,
-} as any);
 const AdminChallengesIndexRoute = AdminChallengesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminChallengesRoute,
+} as any);
+const AdminBlogIndexRoute = AdminBlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminBlogRoute,
 } as any);
 const AdminResourcesUnsubscribePatternRoute =
   AdminResourcesUnsubscribePatternRouteImport.update({
@@ -182,6 +177,11 @@ const AdminChallengesChallengeIdRoute =
     path: '/$challengeId',
     getParentRoute: () => AdminChallengesRoute,
   } as any);
+const AdminBlogPostIdRoute = AdminBlogPostIdRouteImport.update({
+  id: '/$postId',
+  path: '/$postId',
+  getParentRoute: () => AdminBlogRoute,
+} as any);
 const AdminResourcesUnsubscribeLambdaIndexRoute =
   AdminResourcesUnsubscribeLambdaIndexRouteImport.update({
     id: '/',
@@ -290,15 +290,15 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/403': typeof R403Route;
   '/members': typeof AdminMembersRoute;
-  '/blog/$postId': typeof AdminBlogPostIdRoute;
-  '/blog': typeof AdminBlogIndexRoute;
   '/': typeof AdminIndexRoute;
+  '/blog/$postId': typeof AdminBlogPostIdRoute;
   '/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute;
   '/events/$eventId': typeof AdminEventsEventIdRoute;
   '/newsletters/categories': typeof AdminNewslettersCategoriesRoute;
   '/newsletters/new': typeof AdminNewslettersNewRoute;
   '/notices/new': typeof AdminNoticesNewRoute;
   '/resources/unsubscribe-pattern': typeof AdminResourcesUnsubscribePatternRoute;
+  '/blog': typeof AdminBlogIndexRoute;
   '/challenges': typeof AdminChallengesIndexRoute;
   '/events': typeof AdminEventsIndexRoute;
   '/newsletters': typeof AdminNewslettersIndexRoute;
@@ -399,11 +399,14 @@ export interface FileRouteTypes {
     | '/403'
     | '/members'
     | '/'
+    | '/blog/$postId'
+    | '/challenges/daily-guides'
     | '/events/$eventId'
     | '/newsletters/categories'
     | '/newsletters/new'
     | '/notices/new'
     | '/resources/unsubscribe-pattern'
+    | '/blog'
     | '/challenges'
     | '/events'
     | '/newsletters'
@@ -516,18 +519,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventsRouteImport;
       parentRoute: typeof AdminRoute;
     };
-    '/_admin/blog': {
-      id: '/_admin/blog';
-      path: '/blog';
-      fullPath: '/blog';
-      preLoaderRoute: typeof AdminBlogRouteImport;
-      parentRoute: typeof AdminRoute;
-    };
     '/_admin/challenges': {
       id: '/_admin/challenges';
       path: '/challenges';
       fullPath: '/challenges';
       preLoaderRoute: typeof AdminChallengesRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
+    '/_admin/blog': {
+      id: '/_admin/blog';
+      path: '/blog';
+      fullPath: '/blog';
+      preLoaderRoute: typeof AdminBlogRouteImport;
       parentRoute: typeof AdminRoute;
     };
     '/_admin/resources/': {
@@ -558,26 +561,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventsIndexRouteImport;
       parentRoute: typeof AdminEventsRoute;
     };
-    '/_admin/blog/': {
-      id: '/_admin/blog/';
-      path: '/';
-      fullPath: '/blog/';
-      preLoaderRoute: typeof AdminBlogIndexRouteImport;
-      parentRoute: typeof AdminBlogRoute;
-    };
-    '/_admin/blog/$postId': {
-      id: '/_admin/blog/$postId';
-      path: '/$postId';
-      fullPath: '/blog/$postId';
-      preLoaderRoute: typeof AdminBlogPostIdRouteImport;
-      parentRoute: typeof AdminBlogRoute;
-    };
     '/_admin/challenges/': {
       id: '/_admin/challenges/';
       path: '/';
       fullPath: '/challenges/';
       preLoaderRoute: typeof AdminChallengesIndexRouteImport;
       parentRoute: typeof AdminChallengesRoute;
+    };
+    '/_admin/blog/': {
+      id: '/_admin/blog/';
+      path: '/';
+      fullPath: '/blog/';
+      preLoaderRoute: typeof AdminBlogIndexRouteImport;
+      parentRoute: typeof AdminBlogRoute;
     };
     '/_admin/resources/unsubscribe-pattern': {
       id: '/_admin/resources/unsubscribe-pattern';
@@ -648,6 +644,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/challenges/$challengeId';
       preLoaderRoute: typeof AdminChallengesChallengeIdRouteImport;
       parentRoute: typeof AdminChallengesRoute;
+    };
+    '/_admin/blog/$postId': {
+      id: '/_admin/blog/$postId';
+      path: '/$postId';
+      fullPath: '/blog/$postId';
+      preLoaderRoute: typeof AdminBlogPostIdRouteImport;
+      parentRoute: typeof AdminBlogRoute;
     };
     '/_admin/resources/unsubscribe-lambda/': {
       id: '/_admin/resources/unsubscribe-lambda/';
@@ -728,6 +731,20 @@ declare module '@tanstack/react-router' {
     };
   }
 }
+
+interface AdminBlogRouteChildren {
+  AdminBlogPostIdRoute: typeof AdminBlogPostIdRoute;
+  AdminBlogIndexRoute: typeof AdminBlogIndexRoute;
+}
+
+const AdminBlogRouteChildren: AdminBlogRouteChildren = {
+  AdminBlogPostIdRoute: AdminBlogPostIdRoute,
+  AdminBlogIndexRoute: AdminBlogIndexRoute,
+};
+
+const AdminBlogRouteWithChildren = AdminBlogRoute._addFileChildren(
+  AdminBlogRouteChildren,
+);
 
 interface AdminChallengesChallengeIdRouteChildren {
   AdminChallengesChallengeIdTeamsRoute: typeof AdminChallengesChallengeIdTeamsRoute;
@@ -877,20 +894,6 @@ const AdminNewslettersNewsletterIdRouteWithChildren =
   AdminNewslettersNewsletterIdRoute._addFileChildren(
     AdminNewslettersNewsletterIdRouteChildren,
   );
-
-interface AdminBlogRouteChildren {
-  AdminBlogPostIdRoute: typeof AdminBlogPostIdRoute;
-  AdminBlogIndexRoute: typeof AdminBlogIndexRoute;
-}
-
-const AdminBlogRouteChildren: AdminBlogRouteChildren = {
-  AdminBlogPostIdRoute: AdminBlogPostIdRoute,
-  AdminBlogIndexRoute: AdminBlogIndexRoute,
-};
-
-const AdminBlogRouteWithChildren = AdminBlogRoute._addFileChildren(
-  AdminBlogRouteChildren,
-);
 
 interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRouteWithChildren;

@@ -29,7 +29,7 @@ export const uploadImage = async (
   const formData = new FormData();
   formData.append('image', file);
 
-  const url = new URL(ENV.baseUrl + `/blog/drafts/${postId}/images`);
+  const url = new URL(ENV.baseUrl + `/blog/posts/${postId}/images`);
   const response = await fetch(url, {
     method: 'POST',
     credentials: 'include',
@@ -64,7 +64,7 @@ export const saveDraft = async (
 ): Promise<void> => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return fetcher.put<any, void>({
-    path: `/blog/drafts/${postId}`,
+    path: `/blog/posts/${postId}`,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body: data as any,
   });
@@ -93,7 +93,7 @@ export const publishDraft = async (postId: number): Promise<void> => {
 // 7. 삭제
 export const deleteDraft = async (postId: number): Promise<void> => {
   return fetcher.delete<Record<string, never>, void>({
-    path: `/blog/drafts/${postId}`,
+    path: `/blog/posts/${postId}`,
   });
 };
 
@@ -104,7 +104,7 @@ export const updateVisibility = async (
 ): Promise<void> => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return fetcher.patch<any, void>({
-    path: `/blog/drafts/${postId}/visibility`,
+    path: `/blog/posts/${postId}/visibility`,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body: { visibility } as any,
   });
@@ -116,14 +116,20 @@ export const setThumbnail = async (
   data: SetThumbnailRequest,
 ): Promise<void> => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return fetcher.post<any, void>({
-    path: `/blog/drafts/${postId}/thumbnail`,
+  return fetcher.put<any, void>({
+    path: `/blog/posts/${postId}/thumbnail`,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body: data as any,
   });
 };
 
-// 10. 발행된 글 목록 (신규 백엔드 API)
+// 10. 발행된 글 목록 (admin prefix 없는 public API)
 export const getBlogPosts = async (): Promise<BlogPostListItem[]> => {
-  return fetcher.get<BlogPostListItem[]>({ path: '/blog/posts' });
+  return fetcher.get<BlogPostListItem[]>({
+    path: '/blog/posts',
+    baseUrl: import.meta.env.VITE_API_BASE_URL.replace(
+      '/admin/api/v1',
+      '/api/v1',
+    ),
+  });
 };
