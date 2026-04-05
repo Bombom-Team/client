@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
-import { createSlug } from '../utils/slug';
+import { createSlug } from '../utils/url';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
