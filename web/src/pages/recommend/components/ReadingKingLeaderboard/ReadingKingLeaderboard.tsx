@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useRef, useState } from 'react';
+import { Suspense, useCallback, useRef, useState } from 'react';
 import MonthlyRankingContent from './MonthlyRankingContent';
 import {
   COUNTDOWN_UPDATE_INTERVAL_MS,
@@ -7,15 +7,16 @@ import {
 } from './ReadingKingLeaderboard.constants';
 import {
   Container,
-  TitleWrapper,
-  TitleIcon,
-  TabToggle,
-  TabButton,
-  InfoIcon,
-  CountdownWrapper,
   Countdown,
   CountdownLoadingDots,
+  CountdownWrapper,
+  InfoIcon,
+  TabButton,
+  TabToggle,
+  TitleIcon,
+  TitleWrapper,
 } from './ReadingKingLeaderboard.styles';
+import ReadingKingLeaderboardSkeleton from './ReadingKingLeaderboardSkeleton';
 import StreakRankingContent from './StreakRankingContent';
 import { queries } from '@/apis/queries';
 import ArrowIcon from '@/components/icons/ArrowIcon';
@@ -134,11 +135,15 @@ const ReadingKingLeaderboard = () => {
       </TitleWrapper>
 
       {isMonthlyTab ? (
-        <MonthlyRankingContent
-          onCountdownStateChange={handleCountdownStateChange}
-        />
+        <Suspense fallback={<ReadingKingLeaderboardSkeleton />}>
+          <MonthlyRankingContent
+            onCountdownStateChange={handleCountdownStateChange}
+          />
+        </Suspense>
       ) : (
-        <StreakRankingContent />
+        <Suspense fallback={<ReadingKingLeaderboardSkeleton />}>
+          <StreakRankingContent />
+        </Suspense>
       )}
     </Container>
   );

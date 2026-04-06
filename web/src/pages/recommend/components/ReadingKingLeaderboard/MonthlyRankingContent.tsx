@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import LeaderboardItem from './LeaderboardItem';
 import MonthlyMyRank from './MonthlyMyRank';
@@ -21,7 +21,7 @@ interface MonthlyRankingContentProps {
 const MonthlyRankingContent = ({
   onCountdownStateChange,
 }: MonthlyRankingContentProps) => {
-  const { data: monthlyReadingRank, isFetching } = useQuery(
+  const { data: monthlyReadingRank, isFetching } = useSuspenseQuery(
     queries.monthlyReadingRank({ limit: RANKING.maxRank }),
   );
   const { data: userRank } = useQuery(queries.myMonthlyReadingRank());

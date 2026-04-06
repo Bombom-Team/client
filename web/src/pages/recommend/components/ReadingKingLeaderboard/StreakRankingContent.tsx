@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import LeaderboardItem from './LeaderboardItem';
 import { RANKING } from './ReadingKingLeaderboard.constants';
 import { LeaderboardList, Divider } from './ReadingKingLeaderboard.styles';
@@ -8,7 +8,7 @@ import { Carousel } from '@/components/Carousel/Carousel';
 import { chunk } from '@/utils/array';
 
 const StreakRankingContent = () => {
-  const { data: streakReadingRank } = useQuery(
+  const { data: streakReadingRank } = useSuspenseQuery(
     queries.streakReadingRank({ limit: RANKING.maxRank }),
   );
   const { data: streakUserRank } = useQuery(queries.myStreakReadingRank());
