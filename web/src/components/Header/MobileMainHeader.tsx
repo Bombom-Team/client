@@ -4,8 +4,10 @@ import HeaderLogo from './HeaderLogo';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Button from '../Button/Button';
+import Text from '../Text';
 import { useAuth } from '@/contexts/AuthContext';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
+import PenIcon from '#/assets/svg/pen.svg';
 
 const MobileMainHeader = () => {
   const navigate = useNavigate();
@@ -15,12 +17,20 @@ const MobileMainHeader = () => {
     <Container>
       <HeaderLogo />
       <UserInfoWrapper>
-        <Button
-          onClick={() => navigate({ to: '/notice' })}
-          variant={'transparent'}
+        <NavButton
+          onClick={() => navigate({ to: '/blog' })}
+          variant="transparent"
         >
-          <MegaphoneIcon width={22} height={24} />
-        </Button>
+          <PenIcon width={20} height={20} />
+          <Label font="body4">블로그</Label>
+        </NavButton>
+        <NavButton
+          onClick={() => navigate({ to: '/notice' })}
+          variant="transparent"
+        >
+          <MegaphoneIcon width={20} height={20} />
+          <Label font="body4">공지사항</Label>
+        </NavButton>
         {userProfile ? (
           <HeaderProfile userProfile={userProfile} device="mobile" />
         ) : (
@@ -54,8 +64,25 @@ const Container = styled.header`
 
   background: ${({ theme }) => theme.colors.white};
 `;
+
 const UserInfoWrapper = styled.div`
   display: flex;
-  gap: 6px;
-  justify-content: flex-end;
+  gap: 12px;
+  justify-content: center;
+`;
+
+const NavButton = styled(Button)`
+  padding: 0;
+
+  display: flex;
+  gap: 0;
+  flex-direction: column;
+
+  :hover {
+    background: none;
+  }
+`;
+
+const Label = styled(Text)`
+  text-align: center;
 `;

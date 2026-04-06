@@ -1047,6 +1047,66 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/blog/posts': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 블로그 글 목록 조회
+     * @description 발행된 블로그 글 목록을 조회합니다. 공개 글은 누구나 볼 수 있고, 비공개 글은 관리자만 볼 수 있습니다.
+     */
+    get: operations['getPublishedPosts'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/blog/posts/{postId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 블로그 글 상세 조회
+     * @description 특정 블로그 글의 상세 정보를 조회합니다. 비공개 글은 관리자만 조회할 수 있습니다.
+     */
+    get: operations['getPublishedPostDetail'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/blog/categories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 블로그 카테고리 목록 조회
+     * @description 블로그 카테고리 목록을 조회합니다.
+     */
+    get: operations['getBlogCategories'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/auth/signup/check': {
     parameters: {
       query?: never;
@@ -2042,6 +2102,48 @@ export interface components {
       /** Format: int32 */
       totalCount: number;
       newsletters: components['schemas']['BookmarkCountPerNewsletterResponse'][];
+    };
+    BlogPostResponse: {
+      /** Format: int64 */
+      postId: number;
+      title: string;
+      description: string;
+      thumbnailImageUrl?: string;
+      categoryName: string;
+      /** Format: date-time */
+      publishedAt: string;
+    };
+    PageBlogPostResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['BlogPostResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    BlogPostDetailResponse: {
+      title: string;
+      content: string;
+      thumbnailImageUrl?: string;
+      categoryName: string;
+      /** Format: date-time */
+      publishedAt: string;
+      hashTags: string[];
+    };
+    BlogCategoryResponse: {
+      /** Format: int64 */
+      id: number;
+      categoryName: string;
     };
     SignupValidateRequest: {
       /** @enum {string} */
@@ -4397,6 +4499,86 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['BookmarkNewsletterStatisticsResponse'];
+        };
+      };
+    };
+  };
+  getPublishedPosts: {
+    parameters: {
+      query: {
+        /** @description 페이징 관련 요청 (예: ?page=0&size=20&sort=publishedAt,desc) */
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 블로그 글 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageBlogPostResponse'];
+        };
+      };
+    };
+  };
+  getPublishedPostDetail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 블로그 글 ID */
+        postId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 블로그 글 상세 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BlogPostDetailResponse'];
+        };
+      };
+      /** @description 블로그 글에 대한 접근 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getBlogCategories: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 블로그 카테고리 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BlogCategoryResponse'][];
         };
       };
     };
