@@ -119,7 +119,11 @@ const PostDetailContent = () => {
 
             <PostDetail post={post} />
 
-            <ShareRow>{device !== 'mobile' && <ShareButton />}</ShareRow>
+            {device !== 'pc' && (
+              <ShareRow>
+                <ShareButton />
+              </ShareRow>
+            )}
           </Article>
         </ContentLayoutWrapper>
       </ContentWrapper>
