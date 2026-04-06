@@ -4,10 +4,8 @@ import HeaderLogo from './HeaderLogo';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Button from '../Button/Button';
-import Text from '../Text';
 import { useAuth } from '@/contexts/AuthContext';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
-import PenIcon from '#/assets/svg/pen.svg';
 
 const MobileMainHeader = () => {
   const navigate = useNavigate();
@@ -18,18 +16,10 @@ const MobileMainHeader = () => {
       <HeaderLogo />
       <UserInfoWrapper>
         <NavButton
-          onClick={() => navigate({ to: '/blog' })}
-          variant="transparent"
-        >
-          <PenIcon width={20} height={20} />
-          <Label font="body4">블로그</Label>
-        </NavButton>
-        <NavButton
           onClick={() => navigate({ to: '/notice' })}
           variant="transparent"
         >
           <MegaphoneIcon width={20} height={20} />
-          <Label font="body4">공지사항</Label>
         </NavButton>
         {userProfile ? (
           <HeaderProfile userProfile={userProfile} device="mobile" />
@@ -81,8 +71,4 @@ const NavButton = styled(Button)`
   :hover {
     background: none;
   }
-`;
-
-const Label = styled(Text)`
-  text-align: center;
 `;
