@@ -3,8 +3,9 @@ import styled from '@emotion/styled';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
-import { formatDateToKorean } from '@/utils/date';
+import { formatDate } from '@/utils/date';
 import type { Device } from '@/hooks/useDevice';
+import CalendarIcon from '#/assets/svg/calendar.svg';
 import ClockIcon from '#/assets/svg/clock.svg';
 
 interface PostMetadataProps {
@@ -21,11 +22,11 @@ const PostMetadata = ({
   hashTags,
 }: PostMetadataProps) => {
   const device = useDevice();
-  const formattedDate = formatDateToKorean(new Date(publishedAt));
+  const formattedDate = formatDate(new Date(publishedAt));
 
   return (
     <Flex direction="column" gap={16}>
-      <Flex gap={device === 'mobile' ? 8 : 16} align="center">
+      <MetaWrapper gap={device === 'mobile' ? 8 : 16} align="center">
         <CategoryBadge device={device}>{categoryName}</CategoryBadge>
         <Text
           aria-hidden="true"
@@ -34,12 +35,22 @@ const PostMetadata = ({
         >
           •
         </Text>
-        <Text
-          color="textTertiary"
-          font={device === 'mobile' ? 'body3' : 'bodyLarge'}
-        >
-          <time dateTime={publishedAt}>{formattedDate}</time>
-        </Text>
+        <MetaInfo>
+          <CalendarIcon
+            aria-hidden="true"
+            width={device === 'mobile' ? 12 : 20}
+            height={device === 'mobile' ? 12 : 20}
+            color={theme.colors.textTertiary}
+          />
+          <PublishedTime
+            as="time"
+            dateTime={publishedAt}
+            color="textTertiary"
+            font={device === 'mobile' ? 'body3' : 'bodyLarge'}
+          >
+            {formattedDate}
+          </PublishedTime>
+        </MetaInfo>
         {readingTime && (
           <>
             <Text
@@ -49,7 +60,7 @@ const PostMetadata = ({
             >
               •
             </Text>
-            <Flex gap={4} align="center">
+            <MetaInfo>
               <ClockIcon
                 aria-hidden="true"
                 width={device === 'mobile' ? 12 : 20}
@@ -62,10 +73,10 @@ const PostMetadata = ({
               >
                 {readingTime}분
               </Text>
-            </Flex>
+            </MetaInfo>
           </>
         )}
-      </Flex>
+      </MetaWrapper>
       {hashTags.length > 0 && (
         <Flex gap={8} wrap="wrap">
           {hashTags.map((tag) => (
@@ -93,4 +104,27 @@ const CategoryBadge = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body4 : theme.fonts.body1};
+`;
+
+const MetaWrapper = styled(Flex)`
+  text-align: center;
+`;
+
+const PublishedTime = styled(Text)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  vertical-align: middle;
+`;
+
+const MetaInfo = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+
+  svg {
+    margin-bottom: 2px;
+  }
 `;
