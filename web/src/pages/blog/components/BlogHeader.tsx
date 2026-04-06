@@ -23,7 +23,7 @@ const BlogHeader = () => {
           }
         >
           <LogoImage src={logo} alt="logo" device={device} />
-          <Title device={device}>봄봄 Blog</Title>
+          <Title device={device}>Blog</Title>
         </Logo>
 
         <GoToService device={device} to="/">
