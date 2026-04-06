@@ -30,13 +30,13 @@ const PostMetadata = ({
         <Text
           aria-hidden="true"
           color="textTertiary"
-          font={device === 'mobile' ? 'body3' : 'body1'}
+          font={device === 'mobile' ? 'body3' : 'bodyLarge'}
         >
           •
         </Text>
         <Text
           color="textTertiary"
-          font={device === 'mobile' ? 'body3' : 'body1'}
+          font={device === 'mobile' ? 'body3' : 'bodyLarge'}
         >
           <time dateTime={publishedAt}>{formattedDate}</time>
         </Text>
@@ -45,20 +45,20 @@ const PostMetadata = ({
             <Text
               aria-hidden="true"
               color="textTertiary"
-              font={device === 'mobile' ? 'body3' : 'body1'}
+              font={device === 'mobile' ? 'body3' : 'bodyLarge'}
             >
               •
             </Text>
             <Flex gap={4} align="center">
               <ClockIcon
                 aria-hidden="true"
-                width={device === 'mobile' ? 12 : 14}
-                height={device === 'mobile' ? 12 : 14}
+                width={device === 'mobile' ? 12 : 20}
+                height={device === 'mobile' ? 12 : 20}
                 color={theme.colors.textTertiary}
               />
               <Text
                 color="textTertiary"
-                font={device === 'mobile' ? 'body3' : 'body1'}
+                font={device === 'mobile' ? 'body3' : 'bodyLarge'}
               >
                 {readingTime}분
               </Text>
@@ -72,7 +72,7 @@ const PostMetadata = ({
             <Text
               key={tag}
               color="primary"
-              font={device === 'mobile' ? 'body3' : 'body1'}
+              font={device === 'mobile' ? 'body3' : 'bodyLarge'}
             >
               #{tag}
             </Text>
@@ -92,5 +92,5 @@ const CategoryBadge = styled.span<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body2};
+    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body1};
 `;

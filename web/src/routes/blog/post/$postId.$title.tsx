@@ -174,12 +174,12 @@ const Article = styled.article<{ device: Device }>`
 `;
 
 const GoToListButton = styled(Button)<{ device: Device }>`
-  margin-bottom: ${({ device }) => (device === 'mobile' ? '20px' : '24px')};
+  margin-bottom: ${({ device }) => (device === 'mobile' ? '20px' : '40px')};
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
 
   transition: color 0.2s ease;
 

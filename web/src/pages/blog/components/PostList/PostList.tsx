@@ -22,6 +22,9 @@ export const CardWrapper = styled.section<{ device: Device }>`
   display: grid;
   gap: ${({ device }) => (device === 'mobile' ? '40px' : '64px 40px')};
 
-  grid-template-columns: ${({ device }) =>
-    device === 'mobile' ? '1fr' : 'repeat(auto-fit, minmax(320px, 1fr))'};
+  grid-template-columns: ${({ device }) => {
+    if (device === 'pc') return 'repeat(3, minmax(0, 1fr))';
+    if (device === 'tablet') return 'repeat(2, minmax(0, 1fr))';
+    return '1fr';
+  }};
 `;
