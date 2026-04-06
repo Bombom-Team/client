@@ -28,10 +28,7 @@ type GetBlogPostsParams = {
   sort?: string;
 };
 
-const PUBLIC_API_BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(
-  '/admin/api/v1',
-  '/api/v1',
-);
+const PUBLIC_API_BASE_URL = ENV.blogBaseUrl;
 
 // 1. 초안 생성
 export const createDraft = async (): Promise<CreateDraftResponse> => {
