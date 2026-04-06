@@ -20,10 +20,18 @@ export type GetBlogPostDetailParams =
 export type GetBlogPostDetailResponse =
   components['schemas']['BlogPostDetailResponse'];
 
+export type BlogCategory = components['schemas']['BlogCategoryResponse'];
+
 export const getBlogPostDetail = async ({
   postId,
 }: GetBlogPostDetailParams) => {
   return await fetcher.get<GetBlogPostDetailResponse>({
     path: `/blog/posts/${postId}`,
+  });
+};
+
+export const getBlogCategories = async () => {
+  return await fetcher.get<BlogCategory[]>({
+    path: '/blog/categories',
   });
 };

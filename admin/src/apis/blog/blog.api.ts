@@ -11,10 +11,16 @@ import type {
   BlogVisibility,
   CreateDraftResponse,
 } from '@/types/blog';
+import type { Category } from '@/types/category';
 
 type GetBlogPostsResponse =
   | PageableResponse<BlogPostListItem>
   | BlogPostListItem[];
+
+type GetBlogCategoriesResponse = Array<{
+  id: number;
+  categoryName: string;
+}>;
 
 type GetBlogPostsParams = {
   page?: number;
@@ -156,4 +162,16 @@ export const getBlogPosts = async (
   });
 
   return Array.isArray(response) ? response : (response.content ?? []);
+};
+
+export const getBlogCategories = async (): Promise<Category[]> => {
+  const response = await fetcher.get<GetBlogCategoriesResponse>({
+    path: '/blog/categories',
+    baseUrl: PUBLIC_API_BASE_URL,
+  });
+
+  return response.map((category) => ({
+    id: category.id,
+    name: category.categoryName,
+  }));
 };

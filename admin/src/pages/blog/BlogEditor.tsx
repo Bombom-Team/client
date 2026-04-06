@@ -19,7 +19,6 @@ import {
   useSetThumbnail,
   useUpdateVisibility,
 } from '@/apis/blog/blog.query';
-import { categoriesQueries } from '@/apis/categories/categories.query';
 import { Sidebar } from '@/components/Sidebar';
 import { Route } from '@/routes/_admin/blog/$postId';
 import type { BlogVisibility } from '@/types/blog';
@@ -58,7 +57,7 @@ export const BlogEditor = () => {
   const navigate = useNavigate();
 
   const [{ data: post }, { data: categories }] = useSuspenseQueries({
-    queries: [blogQueries.editablePost(postIdNum), categoriesQueries.list()],
+    queries: [blogQueries.editablePost(postIdNum), blogQueries.categories()],
   });
   const isPublishedPost = post.status === 'PUBLISHED';
 
