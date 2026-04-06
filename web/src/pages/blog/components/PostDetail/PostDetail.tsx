@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import PostContent from './PostContent';
 import PostMetadata from './PostMetadata';
+import { getReadingTimeMinutes } from '../../utils/tiptap';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
@@ -12,6 +13,7 @@ interface PostDetailProps {
 
 const PostDetail = ({ post }: PostDetailProps) => {
   const device = useDevice();
+  const readingTime = getReadingTimeMinutes(post.content);
 
   return (
     <>
@@ -20,6 +22,7 @@ const PostDetail = ({ post }: PostDetailProps) => {
       <PostMetadata
         categoryName={post.categoryName}
         publishedAt={post.publishedAt}
+        readingTime={readingTime}
         hashTags={post.hashTags}
       />
 
