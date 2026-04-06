@@ -49,7 +49,12 @@ export const EditorSettingsPanel = ({
           {thumbnailUrl ? (
             <ThumbnailImage src={thumbnailUrl} alt="썸네일" />
           ) : (
-            <ThumbnailPlaceholder>+ 이미지 업로드</ThumbnailPlaceholder>
+            <ThumbnailPlaceholder>
+              <span>+ 이미지 업로드</span>
+              <ThumbnailPlaceholderHint>
+                1280×720px 이상 (16:9) 권장
+              </ThumbnailPlaceholderHint>
+            </ThumbnailPlaceholder>
           )}
         </ThumbnailArea>
         <input
@@ -111,7 +116,7 @@ export const EditorSettingsPanel = ({
 };
 
 const Panel = styled.aside`
-  width: 220px;
+  width: 320px;
   padding: 16px;
   border-left: 1px solid ${({ theme }) => theme.colors.gray200};
 
@@ -170,8 +175,20 @@ const ThumbnailImage = styled.img`
 `;
 
 const ThumbnailPlaceholder = styled.span`
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+  align-items: center;
+
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.sm};
+  text-align: center;
+`;
+
+const ThumbnailPlaceholderHint = styled.span`
+  color: ${({ theme }) => theme.colors.gray400};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  line-height: 1.4;
 `;
 
 const Select = styled.select`
