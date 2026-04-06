@@ -9,6 +9,7 @@ import {
   getEditablePostDetail,
   getDraftDetail,
   getDrafts,
+  getBlogCategories,
   getBlogPosts,
   publishDraft,
   saveDraft,
@@ -54,6 +55,14 @@ export const blogQueries = {
     queryOptions({
       queryKey: ['blog', 'posts'] as const,
       queryFn: () => getBlogPosts(),
+      staleTime: STALE_TIME,
+      gcTime: GC_TIME,
+    }),
+
+  categories: () =>
+    queryOptions({
+      queryKey: ['blog', 'categories'] as const,
+      queryFn: getBlogCategories,
       staleTime: STALE_TIME,
       gcTime: GC_TIME,
     }),

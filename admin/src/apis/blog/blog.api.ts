@@ -11,10 +11,16 @@ import type {
   BlogVisibility,
   CreateDraftResponse,
 } from '@/types/blog';
+import type { Category } from '@/types/category';
 
 type GetBlogPostsResponse =
   | PageableResponse<BlogPostListItem>
   | BlogPostListItem[];
+
+type GetBlogCategoriesResponse = Array<{
+  id: number;
+  categoryName: string;
+}>;
 
 type GetBlogPostsParams = {
   page?: number;
@@ -22,10 +28,7 @@ type GetBlogPostsParams = {
   sort?: string;
 };
 
-const PUBLIC_API_BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(
-  '/admin/api/v1',
-  '/api/v1',
-);
+const PUBLIC_API_BASE_URL = ENV.blogBaseUrl;
 
 // 1. 초안 생성
 export const createDraft = async (): Promise<CreateDraftResponse> => {
@@ -156,4 +159,16 @@ export const getBlogPosts = async (
   });
 
   return Array.isArray(response) ? response : (response.content ?? []);
+};
+
+export const getBlogCategories = async (): Promise<Category[]> => {
+  const response = await fetcher.get<GetBlogCategoriesResponse>({
+    path: '/blog/categories',
+    baseUrl: PUBLIC_API_BASE_URL,
+  });
+
+  return response.map((category) => ({
+    id: category.id,
+    name: category.categoryName,
+  }));
 };
