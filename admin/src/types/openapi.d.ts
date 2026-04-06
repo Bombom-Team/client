@@ -1216,7 +1216,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/admin/api/v1/blog/drafts/{postId}': {
+  '/admin/api/v1/blog/posts/{postId}/edit': {
     parameters: {
       query?: never;
       header?: never;
@@ -1224,10 +1224,10 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * 블로그 초안 상세 조회
-     * @description 내 블로그 초안 상세 정보를 조회합니다.
+     * 블로그 글 수정용 상세 조회
+     * @description 수정 가능한 블로그 글(DRAFT, PUBLISHED) 상세 정보를 조회합니다.
      */
-    get: operations['getDraft'];
+    get: operations['getPostForEdit'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1825,13 +1825,6 @@ export interface components {
       id?: number;
       name?: string;
     };
-    BlogDraftListItemResponse: {
-      /** Format: int64 */
-      postId?: number;
-      title?: string;
-      /** Format: date-time */
-      updatedAt?: string;
-    };
     BlogDraftCategoryResponse: {
       /** Format: int64 */
       id?: number;
@@ -1868,6 +1861,13 @@ export interface components {
       /** Format: int64 */
       imageId?: number;
       imageUrl?: string;
+    };
+    BlogDraftListItemResponse: {
+      /** Format: int64 */
+      postId?: number;
+      title?: string;
+      /** Format: date-time */
+      updatedAt?: string;
     };
   };
   responses: never;
@@ -3243,7 +3243,7 @@ export interface operations {
         };
         content?: never;
       };
-      /** @description 블로그 글을 찾을 수 없음 */
+      /** @description 블로그 초안을 찾을 수 없음 */
       404: {
         headers: {
           [name: string]: unknown;
@@ -4876,7 +4876,7 @@ export interface operations {
       };
     };
   };
-  getDraft: {
+  getPostForEdit: {
     parameters: {
       query?: never;
       header?: never;
@@ -4910,7 +4910,7 @@ export interface operations {
         };
         content?: never;
       };
-      /** @description 초안 상태가 아님 */
+      /** @description 수정할 수 없는 상태 */
       409: {
         headers: {
           [name: string]: unknown;

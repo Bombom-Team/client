@@ -2,12 +2,12 @@ import styled from '@emotion/styled';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { Node, mergeAttributes } from '@tiptap/core';
-import Highlight from '@tiptap/extension-highlight';
-import Image from '@tiptap/extension-image';
-import Link from '@tiptap/extension-link';
-import Underline from '@tiptap/extension-underline';
+import HighlightExtension from '@tiptap/extension-highlight';
+import ImageExtension from '@tiptap/extension-image';
+import LinkExtension from '@tiptap/extension-link';
+import UnderlineExtension from '@tiptap/extension-underline';
 import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+import StarterKitExtension from '@tiptap/starter-kit';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { EditorSettingsPanel } from './components/EditorSettingsPanel';
 import { EditorToolbar } from './components/EditorToolbar';
@@ -101,11 +101,11 @@ export const BlogEditor = () => {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Image,
-      Link.configure({ openOnClick: false }),
-      Underline,
-      Highlight.configure({ multicolor: true }),
+      StarterKitExtension,
+      ImageExtension,
+      LinkExtension.configure({ openOnClick: false }),
+      UnderlineExtension,
+      HighlightExtension.configure({ multicolor: true }),
       Caption,
     ],
     content: (() => {
