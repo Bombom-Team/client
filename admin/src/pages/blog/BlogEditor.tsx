@@ -340,7 +340,7 @@ export const BlogEditor = () => {
                 setTitle(e.target.value);
                 setIsDirty(true);
               }}
-              placeholder="제목을 입력하세요"
+              placeholder="제목을 입력하세요 (12자 이하 권장)"
             />
             <DescriptionInput
               value={description}
@@ -348,7 +348,7 @@ export const BlogEditor = () => {
                 setDescription(e.target.value);
                 setIsDirty(true);
               }}
-              placeholder="부연 설명을 입력하세요"
+              placeholder="부연 설명을 입력하세요 (20자 이하 권장)"
             />
             <EditorToolbar editor={editor} onImageUpload={handleImageUpload} />
             <EditorWrapper>
