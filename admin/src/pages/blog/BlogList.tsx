@@ -12,6 +12,22 @@ import { Layout } from '@/components/Layout';
 
 type Tab = 'drafts' | 'published';
 
+const formatPostDate = (date?: string) => {
+  if (!date) return null;
+  return new Date(date).toLocaleDateString('ko-KR');
+};
+
+const formatPostMeta = (publishedAt?: string, updatedAt?: string) => {
+  const publishedDate = formatPostDate(publishedAt);
+  const updatedDate = formatPostDate(updatedAt);
+  const parts = [
+    publishedDate ? `발행 ${publishedDate}` : null,
+    updatedDate ? `수정 ${updatedDate}` : null,
+  ].filter((value): value is string => value !== null);
+
+  return parts.join(' · ') || '날짜 정보 없음';
+};
+
 const DraftList = ({
   onEdit,
   onDeleteRequest,
@@ -78,46 +94,59 @@ const PublishedList = ({
   onCancelDelete: () => void;
 }) => {
   const { data: posts } = useSuspenseQuery(blogQueries.posts());
-  if (posts.length === 0) {
+  const publishedPosts = posts.filter(
+    (post) => post.status === 'PUBLISHED' || post.status == null,
+  );
+
+  if (publishedPosts.length === 0) {
     return <EmptyState>발행된 글이 없습니다.</EmptyState>;
   }
   return (
     <PostList>
-      {posts.map((post) => (
-        <PostItem key={post.postId}>
-          <PostInfo>
-            <PostTitle>{post.title}</PostTitle>
-            <PostMeta>
-              {post.categoryName} ·{' '}
-              {new Date(post.publishedAt).toLocaleDateString('ko-KR')}
-            </PostMeta>
-          </PostInfo>
-          {confirmDeleteId === post.postId ? (
-            <ConfirmActions>
-              <ConfirmText>정말 삭제할까요?</ConfirmText>
-              <ActionButton $danger onClick={onConfirmDelete} type="button">
-                확인
-              </ActionButton>
-              <ActionButton onClick={onCancelDelete} type="button">
-                취소
-              </ActionButton>
-            </ConfirmActions>
-          ) : (
-            <PostActions>
-              <ActionButton onClick={() => onEdit(post.postId)} type="button">
-                수정
-              </ActionButton>
-              <ActionButton
-                $danger
-                onClick={() => onDeleteRequest(post.postId)}
-                type="button"
-              >
-                삭제
-              </ActionButton>
-            </PostActions>
-          )}
-        </PostItem>
-      ))}
+      {publishedPosts.map((post) => {
+        if (post.postId == null) return null;
+        const postId = post.postId;
+
+        return (
+          <PostItem key={postId}>
+            <PostInfo>
+              <PostTitleRow>
+                <PostTitle>{post.title || '(제목 없음)'}</PostTitle>
+                {post.visibility === 'PRIVATE' && (
+                  <VisibilityBadge>비공개</VisibilityBadge>
+                )}
+              </PostTitleRow>
+              <PostMeta>
+                {formatPostMeta(post.publishedAt, post.updatedAt)}
+              </PostMeta>
+            </PostInfo>
+            {confirmDeleteId === postId ? (
+              <ConfirmActions>
+                <ConfirmText>정말 삭제할까요?</ConfirmText>
+                <ActionButton $danger onClick={onConfirmDelete} type="button">
+                  확인
+                </ActionButton>
+                <ActionButton onClick={onCancelDelete} type="button">
+                  취소
+                </ActionButton>
+              </ConfirmActions>
+            ) : (
+              <PostActions>
+                <ActionButton onClick={() => onEdit(postId)} type="button">
+                  수정
+                </ActionButton>
+                <ActionButton
+                  $danger
+                  onClick={() => onDeleteRequest(postId)}
+                  type="button"
+                >
+                  삭제
+                </ActionButton>
+              </PostActions>
+            )}
+          </PostItem>
+        );
+      })}
     </PostList>
   );
 };
@@ -317,10 +346,27 @@ const PostInfo = styled.div`
   flex-direction: column;
 `;
 
+const PostTitleRow = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
 const PostTitle = styled.span`
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
   font-size: ${({ theme }) => theme.fontSize.base};
+`;
+
+const VisibilityBadge = styled.span`
+  padding: 2px 8px;
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: 999px;
+
+  background: ${({ theme }) => theme.colors.gray50};
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const PostMeta = styled.span`

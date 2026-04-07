@@ -8,6 +8,7 @@ import {
   deleteDraft,
   getEditablePostDetail,
   getDraftDetail,
+  getPostDetail,
   getDrafts,
   getBlogCategories,
   getBlogPosts,
@@ -47,6 +48,14 @@ export const blogQueries = {
     queryOptions({
       queryKey: ['blog', 'editable-post', postId] as const,
       queryFn: () => getEditablePostDetail(postId),
+      staleTime: STALE_TIME,
+      gcTime: GC_TIME,
+    }),
+
+  post: (postId: number) =>
+    queryOptions({
+      queryKey: ['blog', 'post', postId] as const,
+      queryFn: () => getPostDetail(postId),
       staleTime: STALE_TIME,
       gcTime: GC_TIME,
     }),
@@ -115,8 +124,9 @@ export const useDeleteDraft = () => {
   });
 };
 
-export const useUpdateVisibility = () =>
-  useMutation({
+export const useUpdateVisibility = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
     mutationFn: ({
       postId,
       visibility,
@@ -124,8 +134,12 @@ export const useUpdateVisibility = () =>
       postId: number;
       visibility: BlogVisibility;
     }) => updateVisibility(postId, visibility),
-    // onSuccess: 에디터 로컬 상태만 업데이트 — 목록 쿼리 invalidate 불필요
+    onSuccess: (_, { postId }) => {
+      queryClient.invalidateQueries({ queryKey: ['blog', 'posts'] });
+      queryClient.invalidateQueries({ queryKey: ['blog', 'post', postId] });
+    },
   });
+};
 
 export const useUploadImage = () =>
   useMutation({

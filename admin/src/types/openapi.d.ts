@@ -35,7 +35,11 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /**
+     * 블로그 글 상세 조회
+     * @description 블로그 글 상세 정보를 조회합니다.
+     */
+    get: operations['getPost'];
     /**
      * 블로그 글 수정
      * @description 활성 블로그 글(DRAFT, PUBLISHED)을 수정합니다.
@@ -1216,6 +1220,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/api/v1/blog/posts': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 블로그 글 목록 조회
+     * @description 작성자와 관계없이 블로그 글 목록을 조회합니다.
+     */
+    get: operations['getPosts'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/api/v1/blog/posts/{postId}/edit': {
     parameters: {
       query?: never;
@@ -1522,17 +1546,17 @@ export interface components {
       /** Format: int64 */
       offset?: number;
       sort?: components['schemas']['SortObject'];
-      unpaged?: boolean;
       paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
       /** Format: int32 */
       pageSize?: number;
+      unpaged?: boolean;
     };
     SortObject: {
       empty?: boolean;
-      unsorted?: boolean;
       sorted?: boolean;
+      unsorted?: boolean;
     };
     GetNoticeDetailResponse: {
       title?: string;
@@ -1825,6 +1849,32 @@ export interface components {
       id?: number;
       name?: string;
     };
+    BlogPostListItemResponse: {
+      /** Format: int64 */
+      postId?: number;
+      /** Format: int64 */
+      memberId?: number;
+      title?: string;
+      description?: string;
+      /** @enum {string} */
+      status?: 'DRAFT' | 'PUBLISHED' | 'DELETED';
+      /** @enum {string} */
+      visibility?: 'PRIVATE' | 'PUBLIC';
+      /** Format: date-time */
+      publishedAt?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+    };
+    BlogPostDetailResponse: {
+      title?: string;
+      description?: string;
+      content?: string;
+      thumbnailImageUrl?: string;
+      categoryName?: string;
+      /** Format: date-time */
+      publishedAt?: string;
+      hashtags?: string[];
+    };
     BlogDraftCategoryResponse: {
       /** Format: int64 */
       id?: number;
@@ -1913,6 +1963,42 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getPost: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        postId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BlogPostDetailResponse'];
+        };
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글을 찾을 수 없음 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -4869,6 +4955,35 @@ export interface operations {
       };
       /** @description 존재하지 않는 챌린지 또는 해당 dayIndex의 가이드 없음 */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getPosts: {
+    parameters: {
+      query?: {
+        visibility?: 'PRIVATE' | 'PUBLIC';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BlogPostListItemResponse'][];
+        };
+      };
+      /** @description 권한 없음 */
+      403: {
         headers: {
           [name: string]: unknown;
         };
