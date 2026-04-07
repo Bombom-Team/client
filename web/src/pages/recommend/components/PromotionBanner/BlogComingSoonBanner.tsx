@@ -8,7 +8,7 @@ const BlogComingSoonBanner = () => {
     <Container device={device}>
       <Content device={device}>
         <Title device={device}>Coming Soon</Title>
-        <Description device={device}>봄봄 블로그가 찾아옵니다</Description>
+        <Description device={device}>봄봄 블로그가 찾아옵니다.</Description>
       </Content>
     </Container>
   );
@@ -30,19 +30,6 @@ const Container = styled.section<{ device: Device }>`
   justify-content: center;
 
   background: ${({ theme }) => theme.colors.primaryInfo};
-
-  &::before {
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    width: 72px;
-    height: 2px;
-    border-radius: 999px;
-
-    background: ${({ theme }) => theme.colors.primary};
-
-    content: '';
-  }
 
   &::after {
     position: absolute;
