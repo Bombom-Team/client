@@ -4,6 +4,7 @@ import {
   FiBell,
   FiCalendar,
   FiCode,
+  FiEdit,
   FiFlag,
   FiHome,
   FiMail,
@@ -20,39 +21,43 @@ export const Sidebar = () => {
         <LogoText>BomBom Admin</LogoText>
       </Logo>
       <Nav>
-        <NavItem to="/" isActive={currentPath === '/'}>
+        <NavItem to="/" $isActive={currentPath === '/'}>
           <FiHome />
           <span>대시보드</span>
         </NavItem>
-        <NavItem to="/members" isActive={currentPath.startsWith('/members')}>
+        <NavItem to="/members" $isActive={currentPath.startsWith('/members')}>
           <FiUsers />
           <span>멤버 관리</span>
         </NavItem>
         <NavItem
           to="/challenges"
-          isActive={currentPath.startsWith('/challenges')}
+          $isActive={currentPath.startsWith('/challenges')}
         >
           <FiFlag />
           <span>챌린지</span>
         </NavItem>
-        <NavItem to="/notices" isActive={currentPath.startsWith('/notices')}>
+        <NavItem to="/notices" $isActive={currentPath.startsWith('/notices')}>
           <FiBell />
           <span>공지사항</span>
         </NavItem>
         <NavItem
           to="/newsletters"
-          isActive={currentPath.startsWith('/newsletters')}
+          $isActive={currentPath.startsWith('/newsletters')}
         >
           <FiMail />
           <span>뉴스레터 관리</span>
         </NavItem>
-        <NavItem to="/events" isActive={currentPath.startsWith('/events')}>
+        <NavItem to="/blog" $isActive={currentPath.startsWith('/blog')}>
+          <FiEdit />
+          <span>블로그</span>
+        </NavItem>
+        <NavItem to="/events" $isActive={currentPath.startsWith('/events')}>
           <FiCalendar />
           <span>이벤트 관리</span>
         </NavItem>
         <NavItem
           to="/resources"
-          isActive={currentPath.startsWith('/resources')}
+          $isActive={currentPath.startsWith('/resources')}
         >
           <FiCode />
           <span>리소스 관리</span>
@@ -93,7 +98,9 @@ const Nav = styled.nav`
   flex: 1;
 `;
 
-const NavItem = styled(Link)<{ isActive: boolean }>`
+const NavItem = styled(Link, {
+  shouldForwardProp: (prop) => prop !== '$isActive',
+})<{ $isActive: boolean }>`
   margin-bottom: ${({ theme }) => theme.spacing.sm};
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.borderRadius.md};
@@ -102,12 +109,12 @@ const NavItem = styled(Link)<{ isActive: boolean }>`
   gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
 
-  background-color: ${({ theme, isActive }) =>
-    isActive ? theme.colors.gray50 : 'transparent'};
-  color: ${({ theme, isActive }) =>
-    isActive ? theme.colors.primary : theme.colors.gray700};
-  font-weight: ${({ theme, isActive }) =>
-    isActive ? theme.fontWeight.semibold : theme.fontWeight.normal};
+  background-color: ${({ theme, $isActive }) =>
+    $isActive ? theme.colors.gray50 : 'transparent'};
+  color: ${({ theme, $isActive }) =>
+    $isActive ? theme.colors.primary : theme.colors.gray700};
+  font-weight: ${({ theme, $isActive }) =>
+    $isActive ? theme.fontWeight.semibold : theme.fontWeight.normal};
 
   transition: all 0.2s;
 

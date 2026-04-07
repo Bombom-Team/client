@@ -1,0 +1,15 @@
+import Button from '@/components/Button/Button';
+import { useSharePost } from '@/pages/blog/hooks/useSharePost';
+import ShareIcon from '#/assets/svg/share.svg';
+
+const ShareButton = () => {
+  const { copyShareLink } = useSharePost();
+
+  return (
+    <Button variant="outlined" onClick={copyShareLink}>
+      <ShareIcon width={16} height={16} />글 공유하기
+    </Button>
+  );
+};
+
+export default ShareButton;

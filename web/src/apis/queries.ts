@@ -1,5 +1,6 @@
 import { articlesQueries } from './articles/articles.query';
 import { authQueries } from './auth/auth.query';
+import { blogQueries } from './blog/blog.query';
 import { bookmarkQueries } from './bookmark/bookmark.query';
 import { challengeQueries } from './challenge/challenge.query';
 import { eventQueries } from './event/event.query';
@@ -40,6 +41,9 @@ export const queries = {
 
   // previous articles
   ...previousArticlesQueries,
+
+  // blog
+  ...blogQueries,
 
   // event
   ...eventQueries,
