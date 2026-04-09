@@ -46,11 +46,7 @@ function ChallengeLanding() {
   const challengeId = Number(stringChallengeId);
   const heroRef = useRef<HTMLDivElement>(null);
   const challengeApplySectionRef = useRef<HTMLDivElement>(null);
-  const [isHeroVisible, setIsHeroVisible] = useState(true);
-  const [isChallengeApplySectionVisible, setIsChallengeApplySectionVisible] =
-    useState(false);
-  const isFloatingApplyVisible =
-    !isHeroVisible && !isChallengeApplySectionVisible;
+  const [isFloatingApplyVisible, setIsFloatingApplyVisible] = useState(false);
 
   const { modalRef, closeModal, isOpen, openModal } = useModal();
 
@@ -83,7 +79,7 @@ function ChallengeLanding() {
       }
 
       const heroBottom = heroElement.getBoundingClientRect().bottom;
-      setIsHeroVisible(heroBottom > 0);
+      const isHeroVisible = heroBottom > 0;
 
       if (!challengeApplySectionElement) {
         return;
@@ -95,7 +91,9 @@ function ChallengeLanding() {
         challengeApplySectionRect.top < window.innerHeight &&
         challengeApplySectionRect.bottom > 0;
 
-      setIsChallengeApplySectionVisible(isSectionVisible);
+      const shouldShowFloatingApply = !isHeroVisible && !isSectionVisible;
+
+      setIsFloatingApplyVisible(shouldShowFloatingApply);
     };
 
     handleVisibility();
