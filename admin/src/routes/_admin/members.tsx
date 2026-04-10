@@ -97,7 +97,7 @@ function MembersPage() {
               <Th>이름</Th>
               <Th>이메일</Th>
               <Th>역할</Th>
-              <Th>가입일</Th>
+              <Th>관리</Th>
             </Tr>
           </Thead>
           <ErrorBoundary fallback={<MembersTableBody.Error />}>
