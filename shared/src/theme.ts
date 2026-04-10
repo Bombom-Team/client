@@ -2,12 +2,12 @@ const fontFamily =
   '"NanumGothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
 const fonts = {
-  heading1: `800 48px/60px ${fontFamily}`,
-  heading2: `800 34px/50px ${fontFamily}`,
-  heading3: `800 28px/38px ${fontFamily}`,
-  heading4: `800 24px/32px ${fontFamily}`,
-  heading5: `800 18px/28px ${fontFamily}`,
-  heading6: `800 16px/24px ${fontFamily}`,
+  heading1: `700 48px/60px ${fontFamily}`,
+  heading2: `700 34px/50px ${fontFamily}`,
+  heading3: `700 28px/38px ${fontFamily}`,
+  heading4: `700 24px/32px ${fontFamily}`,
+  heading5: `700 18px/28px ${fontFamily}`,
+  heading6: `700 16px/24px ${fontFamily}`,
   bodyLarge: `400 18px/28px ${fontFamily}`,
   body1: `400 16px/24px ${fontFamily}`,
   body2: `400 14px/22px ${fontFamily}`,
