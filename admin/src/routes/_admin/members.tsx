@@ -4,7 +4,7 @@ import {
   useNavigate,
   useSearch,
 } from '@tanstack/react-router';
-import { Suspense, useCallback, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FiSearch } from 'react-icons/fi';
 import { Layout } from '@/components/Layout';
@@ -23,6 +23,7 @@ export const Route = createFileRoute('/_admin/members')({
 });
 
 const PAGE_SIZE = 10;
+const SEARCH_DEBOUNCE_DELAY = 300;
 const getMembersSearchParams = (page: number, query?: string) => ({
   page: page > 0 ? page : undefined,
   query: query?.trim() ? query : undefined,
@@ -31,14 +32,28 @@ const getMembersSearchParams = (page: number, query?: string) => ({
 function MembersPage() {
   const search = useSearch({ from: Route.id });
   const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState(search.query ?? '');
   const [totalMembers, setTotalMembers] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const handleSearchChange = (value: string) => {
-    navigate({
-      search: getMembersSearchParams(0, value),
-    });
-  };
+  useEffect(() => {
+    setSearchInput(search.query ?? '');
+  }, [search.query]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (searchInput === (search.query ?? '')) {
+        return;
+      }
+
+      navigate({
+        search: getMembersSearchParams(0, searchInput),
+        replace: true,
+      });
+    }, SEARCH_DEBOUNCE_DELAY);
+
+    return () => window.clearTimeout(timer);
+  }, [navigate, search.query, searchInput]);
 
   const handlePageChange = (page: number) => {
     if (page < 0 || page === search.page || page >= totalPages) {
@@ -70,8 +85,8 @@ function MembersPage() {
           <SearchInput
             type="text"
             placeholder="이름 또는 이메일로 검색..."
-            value={search.query ?? ''}
-            onChange={(e) => handleSearchChange(e.target.value)}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
           />
         </SearchBar>
 
