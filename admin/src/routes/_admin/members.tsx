@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
-import { createFileRoute } from '@tanstack/react-router';
+import {
+  createFileRoute,
+  useNavigate,
+  useSearch,
+} from '@tanstack/react-router';
 import { Suspense, useCallback, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FiSearch } from 'react-icons/fi';
@@ -8,27 +12,42 @@ import Pagination from '@/components/Pagination';
 import { MembersTableBody } from '@/pages/members/MembersTableBody';
 
 export const Route = createFileRoute('/_admin/members')({
+  validateSearch: (search: Record<string, unknown>) => ({
+    page: Math.max(Number(search.page ?? 0) || 0, 0),
+    query:
+      typeof search.query === 'string' && search.query.trim()
+        ? search.query
+        : undefined,
+  }),
   component: MembersPage,
 });
 
 const PAGE_SIZE = 10;
+const getMembersSearchParams = (page: number, query?: string) => ({
+  page: page > 0 ? page : undefined,
+  query: query?.trim() ? query : undefined,
+});
 
 function MembersPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(0);
+  const search = useSearch({ from: Route.id });
+  const navigate = useNavigate();
   const [totalMembers, setTotalMembers] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    setCurrentPage(0);
+    navigate({
+      search: getMembersSearchParams(0, value),
+    });
   };
 
   const handlePageChange = (page: number) => {
-    if (page < 0 || page === currentPage || page >= totalPages) {
+    if (page < 0 || page === search.page || page >= totalPages) {
       return;
     }
-    setCurrentPage(page);
+
+    navigate({
+      search: getMembersSearchParams(page, search.query),
+    });
   };
 
   const handleDataLoaded = useCallback(
@@ -51,7 +70,7 @@ function MembersPage() {
           <SearchInput
             type="text"
             placeholder="이름 또는 이메일로 검색..."
-            value={searchQuery}
+            value={search.query ?? ''}
             onChange={(e) => handleSearchChange(e.target.value)}
           />
         </SearchBar>
@@ -69,9 +88,9 @@ function MembersPage() {
           <ErrorBoundary fallback={<MembersTableBody.Error />}>
             <Suspense fallback={<MembersTableBody.Loading />}>
               <MembersTableBody
-                currentPage={currentPage}
+                currentPage={search.page}
                 pageSize={PAGE_SIZE}
-                searchQuery={searchQuery}
+                searchQuery={search.query ?? ''}
                 onDataLoaded={handleDataLoaded}
               />
             </Suspense>
@@ -82,7 +101,7 @@ function MembersPage() {
           <Pagination
             totalCount={totalMembers}
             totalPages={totalPages}
-            currentPage={currentPage}
+            currentPage={search.page}
             onPageChange={handlePageChange}
             countUnitLabel="명"
           />

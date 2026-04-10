@@ -4,7 +4,11 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import {
+  createFileRoute,
+  useNavigate,
+  useSearch,
+} from '@tanstack/react-router';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { challengesQueries } from '@/apis/challenges/challenges.query';
@@ -18,8 +22,53 @@ import {
 } from '@/pages/challenges/ChallengeParticipantsTableBody';
 
 const PARTICIPANTS_PAGE_SIZE = 10;
+const PARTICIPANT_TEAM_FILTER_OPTIONS = ['ALL', 'YES', 'NO'] as const;
+const PARTICIPANT_SURVIVAL_FILTER_OPTIONS = [
+  'ALL',
+  'SURVIVED',
+  'FAILED',
+] as const;
+const getParticipantSearchParams = (
+  page: number,
+  teamId: string,
+  hasTeam: 'ALL' | 'YES' | 'NO',
+  survival: 'ALL' | 'SURVIVED' | 'FAILED',
+) => ({
+  page: page > 0 ? page : undefined,
+  teamId: teamId.trim() ? teamId : undefined,
+  hasTeam: hasTeam !== 'ALL' ? hasTeam : undefined,
+  survival: survival !== 'ALL' ? survival : undefined,
+});
 
 export const Route = createFileRoute('/_admin/challenges/$challengeId/teams')({
+  validateSearch: (search: Record<string, unknown>) => {
+    const rawHasTeam =
+      typeof search.hasTeam === 'string' ? search.hasTeam : 'ALL';
+    const rawSurvival =
+      typeof search.survival === 'string' ? search.survival : 'ALL';
+
+    return {
+      page: Math.max(Number(search.page ?? 0) || 0, 0),
+      teamId:
+        typeof search.teamId === 'string' && search.teamId.trim()
+          ? search.teamId
+          : undefined,
+      hasTeam: PARTICIPANT_TEAM_FILTER_OPTIONS.includes(
+        rawHasTeam as (typeof PARTICIPANT_TEAM_FILTER_OPTIONS)[number],
+      )
+        ? rawHasTeam === 'ALL'
+          ? undefined
+          : rawHasTeam
+        : undefined,
+      survival: PARTICIPANT_SURVIVAL_FILTER_OPTIONS.includes(
+        rawSurvival as (typeof PARTICIPANT_SURVIVAL_FILTER_OPTIONS)[number],
+      )
+        ? rawSurvival === 'ALL'
+          ? undefined
+          : rawSurvival
+        : undefined,
+    };
+  },
   component: ChallengeTeamsPage,
 });
 
@@ -37,18 +86,11 @@ function ChallengeTeamsPage() {
 
 function ChallengeTeamsContent() {
   const { challengeId } = Route.useParams();
+  const search = useSearch({ from: Route.id });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [participantsPage, setParticipantsPage] = useState(0);
   const [participantsTotal, setParticipantsTotal] = useState(0);
   const [participantsTotalPages, setParticipantsTotalPages] = useState(0);
-  const [teamIdInput, setTeamIdInput] = useState('');
-  const [hasTeamFilter, setHasTeamFilter] = useState<'ALL' | 'YES' | 'NO'>(
-    'ALL',
-  );
-  const [survivalFilter, setSurvivalFilter] = useState<
-    'ALL' | 'SURVIVED' | 'FAILED'
-  >('ALL');
   const [maxTeamSizeInput, setMaxTeamSizeInput] = useState('15');
   const [createCountInput, setCreateCountInput] = useState('1');
 
@@ -58,30 +100,30 @@ function ChallengeTeamsContent() {
   const { data: teams } = useSuspenseQuery(challengesQueries.teams(id));
 
   const challengeTeamId = useMemo(() => {
-    const trimmed = teamIdInput.trim();
+    const trimmed = (search.teamId ?? '').trim();
     if (!trimmed) {
       return undefined;
     }
 
     const parsed = Number(trimmed);
     return Number.isNaN(parsed) ? undefined : parsed;
-  }, [teamIdInput]);
+  }, [search.teamId]);
 
   const hasTeam = useMemo(() => {
-    if (hasTeamFilter === 'ALL') {
+    if (!search.hasTeam) {
       return undefined;
     }
 
-    return hasTeamFilter === 'YES';
-  }, [hasTeamFilter]);
+    return search.hasTeam === 'YES';
+  }, [search.hasTeam]);
 
   const isSurvived = useMemo(() => {
-    if (survivalFilter === 'ALL') {
+    if (!search.survival) {
       return undefined;
     }
 
-    return survivalFilter === 'SURVIVED';
-  }, [survivalFilter]);
+    return search.survival === 'SURVIVED';
+  }, [search.survival]);
 
   const maxTeamSize = useMemo(() => {
     const trimmed = maxTeamSizeInput.trim();
@@ -104,30 +146,51 @@ function ChallengeTeamsContent() {
   );
 
   const handleParticipantsPageChange = (page: number) => {
-    if (
-      page < 0 ||
-      page === participantsPage ||
-      page >= participantsTotalPages
-    ) {
+    if (page < 0 || page === search.page || page >= participantsTotalPages) {
       return;
     }
 
-    setParticipantsPage(page);
+    navigate({
+      search: getParticipantSearchParams(
+        page,
+        search.teamId ?? '',
+        search.hasTeam ?? 'ALL',
+        search.survival ?? 'ALL',
+      ),
+    });
   };
 
   const handleTeamIdChange = (value: string) => {
-    setTeamIdInput(value);
-    setParticipantsPage(0);
+    navigate({
+      search: getParticipantSearchParams(
+        0,
+        value,
+        search.hasTeam ?? 'ALL',
+        search.survival ?? 'ALL',
+      ),
+    });
   };
 
   const handleHasTeamChange = (value: 'ALL' | 'YES' | 'NO') => {
-    setHasTeamFilter(value);
-    setParticipantsPage(0);
+    navigate({
+      search: getParticipantSearchParams(
+        0,
+        search.teamId ?? '',
+        value,
+        search.survival ?? 'ALL',
+      ),
+    });
   };
 
   const handleSurvivalChange = (value: 'ALL' | 'SURVIVED' | 'FAILED') => {
-    setSurvivalFilter(value);
-    setParticipantsPage(0);
+    navigate({
+      search: getParticipantSearchParams(
+        0,
+        search.teamId ?? '',
+        search.hasTeam ?? 'ALL',
+        value,
+      ),
+    });
   };
 
   const { mutate: assignTeams, isPending: isAssigningTeams } = useMutation({
@@ -323,7 +386,7 @@ function ChallengeTeamsContent() {
             <FilterLabel htmlFor="participant-team-id">팀 ID</FilterLabel>
             <FilterSelect
               id="participant-team-id"
-              value={teamIdInput}
+              value={search.teamId ?? ''}
               onChange={(event) => handleTeamIdChange(event.target.value)}
             >
               <option value="">전체</option>
@@ -338,7 +401,7 @@ function ChallengeTeamsContent() {
             <FilterLabel htmlFor="participant-has-team">팀 매칭</FilterLabel>
             <FilterSelect
               id="participant-has-team"
-              value={hasTeamFilter}
+              value={search.hasTeam ?? 'ALL'}
               onChange={(event) =>
                 handleHasTeamChange(event.target.value as 'ALL' | 'YES' | 'NO')
               }
@@ -352,7 +415,7 @@ function ChallengeTeamsContent() {
             <FilterLabel htmlFor="participant-survival">상태</FilterLabel>
             <FilterSelect
               id="participant-survival"
-              value={survivalFilter}
+              value={search.survival ?? 'ALL'}
               onChange={(event) =>
                 handleSurvivalChange(
                   event.target.value as 'ALL' | 'SURVIVED' | 'FAILED',
@@ -392,7 +455,7 @@ function ChallengeTeamsContent() {
             >
               <ChallengeParticipantsTableBody
                 challengeId={id}
-                currentPage={participantsPage}
+                currentPage={search.page}
                 pageSize={PARTICIPANTS_PAGE_SIZE}
                 challengeTeamId={challengeTeamId}
                 hasTeam={hasTeam}
@@ -408,7 +471,7 @@ function ChallengeTeamsContent() {
           <Pagination
             totalCount={participantsTotal}
             totalPages={participantsTotalPages}
-            currentPage={participantsPage}
+            currentPage={search.page}
             onPageChange={handleParticipantsPageChange}
             countUnitLabel="명"
           />
