@@ -42,18 +42,26 @@ const getDateKey = (date: Date) => formatDate(date, '-');
 
 const getLabel = (date: Date) => WEEKDAY_LABELS[date.getDay() - 1]!;
 
+const filterWeekdays = (streakDayList: StreakDay[]) => {
+  return streakDayList.filter((day) =>
+    isWeekday(new Date(`${day.date}T00:00:00`)),
+  );
+};
+
 const getFilledDisplayDays = ({
   streakDayList,
   today,
 }: GetDisplayDaysParams & {
   today: string;
 }): DisplayDay[] => {
-  if (streakDayList.length === 0) {
+  const weekdayStreakDayList = filterWeekdays(streakDayList);
+
+  if (weekdayStreakDayList.length === 0) {
     return [];
   }
 
-  if (streakDayList.length === MAX_DISPLAY_DAYS) {
-    return streakDayList.map((day) => ({
+  if (weekdayStreakDayList.length === MAX_DISPLAY_DAYS) {
+    return weekdayStreakDayList.map((day) => ({
       key: day.date,
       label: getLabel(new Date(`${day.date}T00:00:00`)),
       isCompleted: day.isCompleted,
@@ -62,8 +70,10 @@ const getFilledDisplayDays = ({
     }));
   }
 
-  const firstDate = streakDayList[0]!.date;
-  const streakDayMap = new Map(streakDayList.map((day) => [day.date, day]));
+  const firstDate = weekdayStreakDayList[0]!.date;
+  const streakDayMap = new Map(
+    weekdayStreakDayList.map((day) => [day.date, day]),
+  );
   const dates = [new Date(`${firstDate}T00:00:00`)];
   let nextDate = dates[0]!;
 

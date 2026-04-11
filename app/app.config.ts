@@ -61,6 +61,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       edgeToEdgeEnabled: true,
       package: APP_CONFIG.bundleIdentifier,
       googleServicesFile: './google-services.json',
+      blockedPermissions: ['com.google.android.gms.permission.AD_ID'],
     },
     web: {
       bundler: 'metro',
