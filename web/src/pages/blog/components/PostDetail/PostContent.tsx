@@ -31,35 +31,48 @@ const Container = styled.section<{ device: Device }>`
 const Content = styled.div<{ device: Device }>`
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+  line-height: 1.7;
 
   h1,
   h2,
   h3 {
-    margin: 24px 0 12px;
     font-weight: 700;
   }
 
   h1 {
+    margin: 20px 0 8px;
     font-size: 28px;
   }
 
   h2 {
+    margin: 18px 0 8px;
     font-size: 24px;
   }
 
   h3 {
+    margin: 16px 0 8px;
     font-size: 20px;
   }
 
   p {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+
     line-height: 1.7;
+    white-space: normal;
   }
 
   ul,
   ol {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     padding-left: 24px;
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  ol {
+    list-style: decimal;
   }
 
   li {
@@ -68,36 +81,45 @@ const Content = styled.div<{ device: Device }>`
   }
 
   blockquote {
-    margin: 16px 0;
     padding-left: 16px;
-    border-left: 4px solid ${({ theme }) => theme.colors.dividers};
+    border-left: 3px solid ${({ theme }) => theme.colors.dividers};
 
     color: ${({ theme }) => theme.colors.textSecondary};
-    font-style: italic;
-  }
-
-  pre {
-    margin-bottom: 16px;
-    padding: 16px;
-    border-radius: 4px;
-
-    background: ${({ theme }) => theme.colors.backgroundHover};
-
-    overflow-x: auto;
   }
 
   code {
-    padding: 2px 4px;
-    border-radius: 2px;
+    padding: 1px 5px;
+    border-radius: 4px;
 
     background: ${({ theme }) => theme.colors.backgroundHover};
-    font-family: monospace;
-    font-size: 0.9em;
+    color: ${({ theme }) => theme.colors.textPrimary};
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 0.875em;
+  }
+
+  pre {
+    margin-bottom: 12px;
+    padding: 16px;
+    border-radius: 8px;
+
+    background: #1e1e2e;
+
+    overflow-x: auto;
+
+    code {
+      padding: 0;
+      border-radius: 0;
+
+      background: none;
+      color: #cdd6f4;
+      font-size: 14px;
+      line-height: 1.6;
+    }
   }
 
   img {
     max-width: 100%;
-    margin: 16px 0;
+    margin: 8px 0;
     border-radius: 8px;
 
     display: block;
@@ -106,6 +128,16 @@ const Content = styled.div<{ device: Device }>`
   a {
     color: ${({ theme }) => theme.colors.primary};
     text-decoration: underline;
+  }
+
+  hr {
+    margin: 24px 0;
+    border: none;
+    border-top: 1px solid ${({ theme }) => theme.colors.dividers};
+  }
+
+  s {
+    color: ${({ theme }) => theme.colors.textSecondary};
   }
 
   p[data-caption] {
