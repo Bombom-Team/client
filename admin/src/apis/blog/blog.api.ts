@@ -37,7 +37,7 @@ export const uploadImage = async (
   file: File,
 ): Promise<UploadImageResponse> => {
   const formData = new FormData();
-  formData.append('image', file);
+  formData.append('imageFile', file);
 
   const url = new URL(ENV.baseUrl + `/blog/posts/${postId}/images`);
   const response = await fetch(url, {

@@ -97,6 +97,9 @@ export const BlogEditor = () => {
   const isDirtyRef = useRef(isDirty);
   const isPendingRef = useRef(saveDraftMutation.isPending);
   const handleSaveRef = useRef<() => Promise<boolean>>(async () => false);
+  const handleImageUploadRef = useRef<(file: File) => Promise<void>>(
+    async () => {},
+  );
 
   const editor = useEditor({
     extensions: [
@@ -117,8 +120,21 @@ export const BlogEditor = () => {
     })(),
     onUpdate: () => setIsDirty(true),
     editorProps: {
-      // 선택 영역이 있을 때 URL 붙여넣기 → 하이퍼링크로 변환
       handlePaste: (view, event) => {
+        // 클립보드에 이미지 파일이 있으면 업로드
+        const files = event.clipboardData?.files;
+        if (files && files.length > 0) {
+          const imageFile = Array.from(files).find((f) =>
+            f.type.startsWith('image/'),
+          );
+          if (imageFile) {
+            event.preventDefault();
+            void handleImageUploadRef.current(imageFile);
+            return true;
+          }
+        }
+
+        // 선택 영역이 있을 때 URL 붙여넣기 → 하이퍼링크로 변환
         const text = event.clipboardData?.getData('text/plain')?.trim() ?? '';
         const isUrl = /^https?:\/\/\S+$/.test(text);
         const { selection } = view.state;
@@ -193,6 +209,7 @@ export const BlogEditor = () => {
   // ref 동기화
   useEffect(() => {
     handleSaveRef.current = handleSave;
+    handleImageUploadRef.current = handleImageUpload;
   });
 
   useEffect(() => {
