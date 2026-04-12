@@ -102,10 +102,10 @@ export const Container = styled(Link, {
 }>`
   position: relative;
   width: 100%;
-  padding: ${({ isMobile }) => (isMobile ? '0.5rem 0' : '1.25rem')};
+  padding: ${({ isMobile }) => (isMobile ? '8px 0' : '20px')};
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.5rem' : '0.75rem')};
+  gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -121,9 +121,9 @@ export const Container = styled(Link, {
   ${({ isMobile, isRead, theme }) =>
     !isMobile &&
     `
-    border-bottom: ${isRead ? '0' : '0.25rem'} solid ${theme.colors.primary};
-    border-radius: 1.25rem;
-    box-shadow: 0 1.25rem 1.5625rem -0.3125rem rgb(0 0 0 / 10%);
+    border-bottom: ${isRead ? '0' : '4px'} solid ${theme.colors.primary};
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 10%);
   `};
 
   &:hover button {
@@ -136,7 +136,7 @@ export const InfoWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.5rem' : '0.75rem')};
+  gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
   flex-direction: column;
   align-items: flex-start;
 `;
@@ -169,7 +169,7 @@ export const Description = styled.p<{ isMobile: boolean }>`
 
 export const MetaInfoRow = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.375rem' : '0.5rem')};
+  gap: ${({ isMobile }) => (isMobile ? '6px' : '8px')};
   flex-wrap: ${({ isMobile }) => (isMobile ? 'wrap' : 'nowrap')};
   align-items: center;
 `;
@@ -181,7 +181,7 @@ export const MetaInfoText = styled.span`
 
 const ReadTimeBox = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 `;
 
@@ -193,8 +193,8 @@ export const ThumbnailWrapper = styled.div<{ isMobile: boolean }>`
 export const Thumbnail = styled(ImageWithFallback, {
   shouldForwardProp: (prop) => prop !== 'isMobile',
 })<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '4rem' : '7.875rem')};
-  border-radius: ${({ isMobile }) => (isMobile ? '0.5rem' : '0.75rem')};
+  width: ${({ isMobile }) => (isMobile ? '64px' : '126px')};
+  border-radius: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
 
   flex-shrink: 0;
   align-self: stretch;
@@ -205,18 +205,17 @@ export const Thumbnail = styled(ImageWithFallback, {
 
 const ReadingBadge = styled(Badge)<{ isMobile: boolean }>`
   position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
-  padding: ${({ isMobile }) =>
-    isMobile ? '0.125rem 0.25rem' : '0.25rem 0.5rem'};
+  top: 4px;
+  right: 4px;
+  padding: ${({ isMobile }) => (isMobile ? '2px 4px' : '4px 8px')};
 `;
 
 const DeleteButton = styled.button<{ isMobile: boolean }>`
   position: absolute;
-  top: ${({ isMobile }) => (isMobile ? '1.5rem' : '2.25rem')};
-  right: ${({ isMobile }) => (isMobile ? '4.5rem' : '9.625rem')};
-  width: 1.75rem;
-  height: 1.75rem;
+  top: ${({ isMobile }) => (isMobile ? '24px' : '36px')};
+  right: ${({ isMobile }) => (isMobile ? '72px' : '154px')};
+  width: 28px;
+  height: 28px;
 
   color: ${({ theme }) => theme.colors.error};
 

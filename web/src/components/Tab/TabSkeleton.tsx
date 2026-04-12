@@ -51,5 +51,5 @@ const TabSkeleton = ({
 export default TabSkeleton;
 
 const SkeletonContainer = styled.li`
-  padding: 0.5rem 0.75rem;
+  padding: 8px 12px;
 `;

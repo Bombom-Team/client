@@ -67,8 +67,8 @@ const BadgeItem = styled.div`
 `;
 
 const Badge = styled.img`
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 36px;
+  height: 36px;
 `;
 
 export default ChallengeBadgeInfo;

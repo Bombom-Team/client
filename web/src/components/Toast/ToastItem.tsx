@@ -47,11 +47,11 @@ const ToastItem = ({ toast, isTop, duration }: ToastItemProps) => {
 export default ToastItem;
 
 const enterDown = keyframes`
-  from { transform: translateY(-0.5rem); opacity: 0; }
+  from { transform: translateY(-8px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 `;
 const enterUp = keyframes`
-  from { transform: translateY(0.5rem); opacity: 0; }
+  from { transform: translateY(8px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 `;
 
@@ -66,15 +66,15 @@ const Container = styled.div<{
 }>`
   overflow: hidden;
   position: relative;
-  width: 26.25rem;
+  width: 420px;
   max-width: calc(100vw - 32px);
-  padding: 0.75rem;
+  padding: 12px;
   border: 1px solid;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.625rem 1.875rem rgb(0 0 0 / 25%);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
 
   background-color: ${({ theme }) => theme.colors.white};
 
@@ -98,7 +98,7 @@ const ProgressBar = styled.div<{ variant: ToastVariant; duration: number }>`
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 0.25rem;
+  height: 4px;
 
   background-color: ${({ theme, variant }) => theme.colors[variant]};
 

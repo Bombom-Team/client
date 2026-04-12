@@ -44,7 +44,7 @@ const Container = styled.div`
 `;
 
 const HeaderWrapper = styled.div`
-  padding: 0.625rem;
+  padding: 10px;
 
   display: flex;
   justify-content: space-between;
@@ -53,7 +53,7 @@ const HeaderWrapper = styled.div`
 `;
 
 const ContentWrapper = styled.div<{ isOpen: boolean }>`
-  padding: ${({ isOpen }) => (isOpen ? '0.5rem 0.625rem' : '0')};
+  padding: ${({ isOpen }) => (isOpen ? '8px 10px' : '0')};
 
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
 

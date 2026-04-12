@@ -120,9 +120,9 @@ const Container = styled.div<{ opened: boolean }>`
   z-index: ${({ theme }) => theme.zIndex.elevated};
   width: max-content;
   max-width: 280px;
-  padding: 0.625rem 0.75rem;
-  border-radius: 0.625rem;
-  box-shadow: 0 0.625rem 1.25rem -0.75rem rgb(0 0 0 / 35%);
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px -12px rgb(0 0 0 / 35%);
 
   background: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};

@@ -94,37 +94,36 @@ export default StreakModalContent;
 const bounce = keyframes`
   0% {
     transform: translate3d(0, 0, 0) scale(1);
-    filter: drop-shadow(0 0.625rem 1.125rem rgb(255 153 0 / 18%));
+    filter: drop-shadow(0 10px 18px rgb(255 153 0 / 18%));
   }
   22% {
-    transform: translate3d(0, -0.375rem, 0) scale(1.04);
-    filter: drop-shadow(0 0.875rem 1.5rem rgb(255 168 0 / 24%));
+    transform: translate3d(0, -6px, 0) scale(1.04);
+    filter: drop-shadow(0 14px 24px rgb(255 168 0 / 24%));
   }
   45% {
     transform: translate3d(0, 0, 0) scale(0.98);
-    filter: drop-shadow(0 0.625rem 1.125rem rgb(255 145 0 / 18%));
+    filter: drop-shadow(0 10px 18px rgb(255 145 0 / 18%));
   }
   65% {
-    transform: translate3d(0, -0.1875rem, 0) scale(1.02);
-    filter: drop-shadow(0 0.75rem 1.25rem rgb(255 176 0 / 22%));
+    transform: translate3d(0, -3px, 0) scale(1.02);
+    filter: drop-shadow(0 12px 20px rgb(255 176 0 / 22%));
   }
   82% {
     transform: translate3d(0, 0, 0) scale(1.01);
-    filter: drop-shadow(0 0.6875rem 1.1875rem rgb(255 160 0 / 20%));
+    filter: drop-shadow(0 11px 19px rgb(255 160 0 / 20%));
   }
   100% {
     transform: translate3d(0, 0, 0) scale(1);
-    filter: drop-shadow(0 0.625rem 1.125rem rgb(255 153 0 / 18%));
+    filter: drop-shadow(0 10px 18px rgb(255 153 0 / 18%));
   }
 `;
 
 const Container = styled.div<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '100%' : 'min(35rem, 72vw)')};
-  padding: ${({ isMobile }) =>
-    isMobile ? '0.25rem 0.25rem 0' : '0.25rem 0 0'};
+  width: ${({ isMobile }) => (isMobile ? '100%' : 'min(560px, 72vw)')};
+  padding: ${({ isMobile }) => (isMobile ? '4px 4px 0' : '4px 0 0')};
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '1rem' : '1.25rem')};
+  gap: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
   flex-direction: column;
   align-items: center;
 
@@ -133,7 +132,7 @@ const Container = styled.div<{ isMobile: boolean }>`
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 0.375rem;
+  gap: 6px;
   flex-direction: column;
   align-items: center;
 `;
@@ -153,8 +152,8 @@ const Subtitle = styled.p<{ isMobile: boolean }>`
 `;
 
 const FlameWrapper = styled.div<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '10rem' : '11.75rem')};
-  height: ${({ isMobile }) => (isMobile ? '10rem' : '11.75rem')};
+  width: ${({ isMobile }) => (isMobile ? '160px' : '188px')};
+  height: ${({ isMobile }) => (isMobile ? '160px' : '188px')};
   border-radius: 50%;
 
   display: flex;
@@ -169,8 +168,8 @@ const FlameWrapper = styled.div<{ isMobile: boolean }>`
 `;
 
 const Fire = styled.img<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '7.25rem' : '9.25rem')};
-  height: ${({ isMobile }) => (isMobile ? '7.25rem' : '9.25rem')};
+  width: ${({ isMobile }) => (isMobile ? '116px' : '148px')};
+  height: ${({ isMobile }) => (isMobile ? '116px' : '148px')};
 
   animation: ${bounce} 1.9s ease-in-out infinite;
 
@@ -183,14 +182,14 @@ const WeekWrapper = styled.div`
   max-width: 360px;
 
   display: grid;
-  gap: 0.5rem;
+  gap: 8px;
 
   grid-template-columns: repeat(5, minmax(0, 1fr));
 `;
 
 const DayColumn = styled.div`
   display: flex;
-  gap: 0.375rem;
+  gap: 6px;
   flex-direction: column;
   align-items: center;
 `;
@@ -208,11 +207,11 @@ const DayCheckBox = styled.div<{
   isShieldApplied: boolean;
 }>`
   position: relative;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   box-shadow: ${({ isHighlighted }) =>
-    isHighlighted ? '0 0.375rem 1rem rgb(0 170 255 / 24%)' : 'none'};
+    isHighlighted ? '0 6px 16px rgb(0 170 255 / 24%)' : 'none'};
 
   display: flex;
   align-items: center;
@@ -241,8 +240,8 @@ const FreezeWrapper = styled.div`
   position: absolute;
   top: 60%;
   left: 50%;
-  width: 4rem;
-  height: 4rem;
+  width: 64px;
+  height: 64px;
 
   display: flex;
   align-items: center;
@@ -252,8 +251,8 @@ const FreezeWrapper = styled.div`
 `;
 
 const FreezeImage = styled.img`
-  width: 4.25rem;
-  height: 4.25rem;
+  width: 68px;
+  height: 68px;
 
   object-fit: contain;
 `;
@@ -293,8 +292,8 @@ const ButtonWrapper = styled.div`
 
 const ConfirmButton = styled(Button)`
   width: 100%;
-  min-height: 3.5rem;
-  border-radius: 1.125rem;
+  min-height: 56px;
+  border-radius: 18px;
 
   font: ${({ theme }) => theme.fonts.body1};
 `;

@@ -51,10 +51,10 @@ const Container = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
   padding: ${({ device }) =>
-    device === 'mobile' ? '0 1.25rem 5rem 1.25rem' : '0 3.75rem 15rem 3.75rem'};
+    device === 'mobile' ? '0 20px 80px 20px' : '0 60px 240px 60px'};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '5rem' : '7.5rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;

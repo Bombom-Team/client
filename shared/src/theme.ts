@@ -40,9 +40,9 @@ const colors = {
 };
 
 const heights = {
-  headerPC: '4.5rem',
-  headerMobile: '3.5rem',
-  bottomNav: '4rem',
+  headerPC: '72px',
+  headerMobile: '56px',
+  bottomNav: '64px',
 };
 
 const safeArea = {

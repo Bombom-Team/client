@@ -20,30 +20,27 @@ const NewsletterDetailSkeleton = () => {
       <FixedWrapper isMobile={isMobile}>
         <InfoWrapper isMobile={isMobile}>
           <Skeleton
-            width={isMobile ? '5.5rem' : '6.5rem'}
-            height={isMobile ? '5.5rem' : '6.5rem'}
-            borderRadius={isMobile ? '0.75rem' : '1rem'}
+            width={isMobile ? '88px' : '104px'}
+            height={isMobile ? '88px' : '104px'}
+            borderRadius={isMobile ? '12px' : '16px'}
           />
           <InfoBox>
             <TitleWrapper isMobile={isMobile}>
-              <Skeleton width="60%" height={isMobile ? '1.25rem' : '1.5rem'} />
+              <Skeleton width="60%" height={isMobile ? '20px' : '24px'} />
             </TitleWrapper>
 
             <NewsletterInfo isMobile={isMobile}>
-              <Skeleton
-                width="3.75rem"
-                height={isMobile ? '1rem' : '1.125rem'}
-              />
-              <Skeleton width="5rem" height={isMobile ? '1rem' : '1.125rem'} />
+              <Skeleton width="60px" height={isMobile ? '16px' : '18px'} />
+              <Skeleton width="80px" height={isMobile ? '16px' : '18px'} />
             </NewsletterInfo>
           </InfoBox>
         </InfoWrapper>
 
         <Skeleton
           width="60%"
-          height={isMobile ? '1.75rem' : '2.25rem'}
-          maxWidth="25rem"
-          borderRadius="0.75rem"
+          height={isMobile ? '28px' : '36px'}
+          maxWidth="400px"
+          borderRadius="12px"
           alignSelf="center"
         />
       </FixedWrapper>
@@ -51,7 +48,7 @@ const NewsletterDetailSkeleton = () => {
       <NewsletterTabs activeTab="detail" onTabChange={() => {}} />
 
       <ScrollableWrapper isMobile={isMobile}>
-        <Skeleton width="100%" height={isMobile ? '15rem' : '100%'} />
+        <Skeleton width="100%" height={isMobile ? '240px' : '100%'} />
       </ScrollableWrapper>
     </Container>
   );

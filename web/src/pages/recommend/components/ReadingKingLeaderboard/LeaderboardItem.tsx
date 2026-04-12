@@ -46,7 +46,7 @@ const LeaderboardItem = ({
 export default LeaderboardItem;
 
 export const Container = styled.div`
-  border-radius: 0.75rem;
+  border-radius: 12px;
 
   display: flex;
   align-items: center;
@@ -55,13 +55,13 @@ export const Container = styled.div`
 
 const ContentWrapper = styled.div`
   display: flex;
-  gap: 0.625rem;
+  gap: 10px;
   align-items: center;
 `;
 
 export const RankIconWrapper = styled.div`
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 24px;
+  height: 24px;
 
   display: flex;
   align-items: center;
@@ -73,7 +73,7 @@ export const RankIconWrapper = styled.div`
 
 export const UserInfoBox = styled.div`
   display: flex;
-  gap: 0.125rem;
+  gap: 2px;
   flex-direction: column;
 `;
 

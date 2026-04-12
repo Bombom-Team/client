@@ -68,10 +68,10 @@ const ArticleDeleteModal = ({
 export default ArticleDeleteModal;
 
 const Container = styled.div<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '20rem' : '27.5rem')};
+  width: ${({ isMobile }) => (isMobile ? '320px' : '440px')};
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.75rem' : '1.25rem')};
+  gap: ${({ isMobile }) => (isMobile ? '12px' : '20px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -95,8 +95,8 @@ const ModalDescription = styled.p<{ isMobile: boolean }>`
 
 const HighlightedWarning = styled.div<{ isMobile: boolean }>`
   width: 100%;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
+  padding: 12px;
+  border-radius: 8px;
 
   background-color: ${({ theme }) => `${theme.colors.error}20`};
   color: ${({ theme }) => theme.colors.error};
@@ -106,12 +106,12 @@ const HighlightedWarning = styled.div<{ isMobile: boolean }>`
 
 const ModalButtonGroup = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   justify-content: center;
 `;
 
 const ModalButton = styled(Button)<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '5rem' : '10rem')};
+  width: ${({ isMobile }) => (isMobile ? '80px' : '160px')};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;

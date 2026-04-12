@@ -13,15 +13,15 @@ export default CardContainer;
 const Container = styled.button`
   position: relative;
   width: 100%;
-  height: 13.75rem;
+  height: 220px;
   min-width: 280px;
   max-width: 440px;
-  padding: 1.25rem;
+  padding: 20px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 1rem;
+  border-radius: 16px;
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -40,10 +40,10 @@ const Container = styled.button`
   }
 
   &:hover:not(:disabled) {
-    box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 8%);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
 
     border-color: ${({ theme }) => theme.colors.primary};
 
-    transform: translateY(-0.125rem);
+    transform: translateY(-2px);
   }
 `;

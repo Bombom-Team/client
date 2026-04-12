@@ -109,7 +109,7 @@ function WeeklyGoalEditor({
 export default WeeklyGoalEditor;
 
 const Container = styled.div<{ device: Device }>`
-  margin-left: 0.25rem;
+  margin-left: 4px;
 
   display: flex;
   align-items: center;
@@ -120,10 +120,10 @@ const EditButton = styled.button<{
   isEditing?: boolean;
 }>`
   border: none;
-  border-radius: 0.1875rem;
+  border-radius: 3px;
 
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
   justify-content: center;
 
@@ -153,15 +153,15 @@ const EditButton = styled.button<{
   ${({ device, isEditing }) =>
     device === 'pc'
       ? `
-        width: ${isEditing ? 'auto' : '1.25rem'};
-        height: 1.25rem;
-        padding: ${isEditing ? '0.25rem 0.5rem' : '0.125rem'};
+        width: ${isEditing ? 'auto' : '20px'};
+        height: 20px;
+        padding: ${isEditing ? '4px 8px' : '2px'};
         min-width: ${isEditing ? '72px' : '20px'};
       `
       : `
-        width: ${isEditing ? 'auto' : '1.125rem'};
-        height: 1.125rem;
-        padding: ${isEditing ? '0.1875rem 0.375rem' : '0.125rem'};
+        width: ${isEditing ? 'auto' : '18px'};
+        height: 18px;
+        padding: ${isEditing ? '3px 6px' : '2px'};
         min-width: 18px;
       `}
 `;
@@ -174,12 +174,12 @@ const ButtonText = styled.span<{ device: Device }>`
 `;
 
 const EditInput = styled.input<{ device: Device }>`
-  width: 2.5rem;
+  width: 40px;
   height: auto;
   margin: 0;
-  padding: 0.125rem 0.25rem;
+  padding: 2px 4px;
   border: 1px solid ${({ theme }) => theme.colors.primary};
-  border-radius: 0.1875rem;
+  border-radius: 3px;
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
@@ -189,7 +189,7 @@ const EditInput = styled.input<{ device: Device }>`
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 0.0625rem ${({ theme }) => theme.colors.primary}40;
+    box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.primary}40;
   }
 
   &:disabled {

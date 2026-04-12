@@ -27,12 +27,12 @@ const Main = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
   max-width: ${({ device }) => {
-    if (device === 'mobile') return '25rem';
-    return device === 'tablet' ? '47.5rem' : '80rem';
+    if (device === 'mobile') return '400px';
+    return device === 'tablet' ? '760px' : '1280px';
   }};
   margin: 0 auto;
   padding: ${({ device }) =>
-    device === 'mobile' ? '2rem 1.25rem 0 1.25rem' : '3rem 3.75rem 0 3.75rem'};
+    device === 'mobile' ? '32px 20px 0 20px' : '48px 60px 0 60px'};
 
   display: flex;
   flex-direction: column;

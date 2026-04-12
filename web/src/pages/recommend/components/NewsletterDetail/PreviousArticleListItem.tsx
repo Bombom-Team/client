@@ -33,11 +33,11 @@ const PreviousArticleListItem = ({
 export default PreviousArticleListItem;
 
 const Container = styled.a`
-  padding: 1rem;
+  padding: 16px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 
   cursor: pointer;
@@ -50,7 +50,7 @@ const Container = styled.a`
 
 const InfoWrapper = styled.div`
   display: flex;
-  gap: 0.375rem;
+  gap: 6px;
   flex-direction: column;
 `;
 
@@ -80,7 +80,7 @@ const Description = styled.p`
 
 const MetaInfoRow = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
@@ -91,6 +91,6 @@ const MetaInfoText = styled.span`
 
 const ReadTimeBox = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 `;

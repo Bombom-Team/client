@@ -74,10 +74,10 @@ const PostCard = ({ post }: PostCardProps) => {
 export default PostCard;
 
 export const Container = styled(Link)`
-  border-radius: 1rem;
+  border-radius: 16px;
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
 
   color: inherit;
@@ -90,8 +90,8 @@ export const Container = styled(Link)`
   }
 
   &:focus-visible {
-    outline: 0.125rem solid ${({ theme }) => theme.colors.primary};
-    outline-offset: 0.125rem;
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 2px;
   }
 `;
 
@@ -99,8 +99,8 @@ const Thumbnail = styled.div<{ device: Device }>`
   overflow: hidden;
   position: relative;
   width: 100%;
-  height: ${({ device }) => (device === 'mobile' ? '11.25rem' : '13.5rem')};
-  border-radius: 1rem;
+  height: ${({ device }) => (device === 'mobile' ? '180px' : '216px')};
+  border-radius: 16px;
 
   background-color: ${({ theme }) => theme.colors.dividers};
 
@@ -151,16 +151,16 @@ const Description = styled.p<{ device: Device }>`
 
 export const ContentWrapper = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-direction: column;
 `;
 
 export const MetaInfo = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 
   svg {
-    margin-bottom: 0.0625rem;
+    margin-bottom: 1px;
   }
 `;

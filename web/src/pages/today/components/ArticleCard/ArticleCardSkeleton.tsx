@@ -15,19 +15,19 @@ const ArticleCardSkeleton = () => {
   return (
     <SkeletonContainer isMobile={isMobile} as={Container}>
       <SkeletonInfoWrapper as={InfoWrapper}>
-        <Skeleton width="85%" height={isMobile ? '1.25rem' : '1.75rem'} />
-        <Skeleton width="100%" height="1rem" />
+        <Skeleton width="85%" height={isMobile ? '20px' : '28px'} />
+        <Skeleton width="100%" height="16px" />
         <SkeletonMetaInfoRow as={MetaInfoRow}>
-          <Skeleton width="3.75rem" height="0.75rem" />
-          <Skeleton width="3.75rem" height="0.75rem" />
-          <Skeleton width="3.75rem" height="0.75rem" />
+          <Skeleton width="60px" height="12px" />
+          <Skeleton width="60px" height="12px" />
+          <Skeleton width="60px" height="12px" />
         </SkeletonMetaInfoRow>
       </SkeletonInfoWrapper>
       <SkeletonThumbnailWrapper as={ThumbnailWrapper}>
         <Skeleton
-          width={isMobile ? '4rem' : '7.875rem'}
-          height={isMobile ? '4rem' : '7.875rem'}
-          borderRadius="0.75rem"
+          width={isMobile ? '64px' : '126px'}
+          height={isMobile ? '64px' : '126px'}
+          borderRadius="12px"
         />
       </SkeletonThumbnailWrapper>
     </SkeletonContainer>

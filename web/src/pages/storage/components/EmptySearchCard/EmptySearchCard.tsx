@@ -30,14 +30,14 @@ const Container = styled.section`
   width: 100%;
 
   display: flex;
-  gap: 1.375rem;
+  gap: 22px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
 const EmptySearchIconWrapper = styled.div`
-  padding: 2.375rem;
+  padding: 38px;
 `;
 
 const EmptyTitle = styled.h2`
@@ -51,7 +51,7 @@ const EmptyTitle = styled.h2`
 
 const DescriptionWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 

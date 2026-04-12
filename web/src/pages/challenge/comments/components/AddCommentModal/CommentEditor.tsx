@@ -56,7 +56,7 @@ export default CommentEditor;
 
 const Container = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 
@@ -67,12 +67,12 @@ const Title = styled.h3<{ device: Device }>`
 `;
 
 const Comment = styled.textarea<{ device: Device; isError: boolean }>`
-  min-height: ${({ device }) => (device === 'mobile' ? '5rem' : '7.5rem')};
-  padding: ${({ device }) => (device === 'mobile' ? '0.5rem' : '0.75rem')};
+  min-height: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
+  padding: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
   border: 1px solid
     ${({ theme, isError }) =>
       isError ? theme.colors.error : theme.colors.stroke};
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
@@ -94,7 +94,7 @@ const Comment = styled.textarea<{ device: Device; isError: boolean }>`
 
 const MessageWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
 `;

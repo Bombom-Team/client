@@ -48,7 +48,7 @@ const Container = styled.section<{ device: Device }>`
   max-width: ${({ device }) => (device === 'pc' ? '1084px' : '100%')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -63,27 +63,27 @@ const Title = styled.h2<{ device: Device }>`
 
 const StepWrapper = styled.div<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '1rem' : '1.5rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '16px' : '24px')};
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
 `;
 
 const Step = styled.article<{ isVisible: boolean }>`
-  padding: 1.25rem 1.5rem;
+  padding: 20px 24px;
   border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 1rem;
-  box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 8%);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 8%);
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
 
   background: rgb(255 255 255 / 40%);
 
   animation: ${({ isVisible }) => isVisible && `fade-in-up 1s ease forwards`};
 
-  backdrop-filter: blur(1.25rem);
+  backdrop-filter: blur(20px);
   opacity: 0;
 
-  transform: translate3d(0, 2.5rem, 0);
+  transform: translate3d(0, 40px, 0);
 
   @keyframes fade-in-up {
     to {
@@ -107,7 +107,7 @@ const StepNumber = styled.span<{ device: Device }>`
 
 const StepContent = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 

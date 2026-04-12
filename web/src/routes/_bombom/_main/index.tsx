@@ -69,7 +69,7 @@ const Container = styled.div<{ device: Device }>`
 
   display: flex;
   gap: ${({ device }) =>
-    device === 'mobile' ? '1.25rem' : device === 'tablet' ? '1.5rem' : '2rem'};
+    device === 'mobile' ? '20px' : device === 'tablet' ? '24px' : '32px'};
   flex-direction: ${({ device }) =>
     device === 'mobile' ? 'column' : 'column'};
   align-items: flex-start;
@@ -79,7 +79,7 @@ const MainContent = styled.div<{ device: Device }>`
   max-width: 100%;
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
 `;
 
@@ -89,19 +89,19 @@ const MainSection = styled.section<{ device: Device }>`
   max-width: ${({ device }) => (device === 'mobile' ? 'none' : '840px')};
 
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   flex: 1;
   flex-direction: column;
 `;
 
 const SideSection = styled.div<{ device: Device }>`
   width: ${({ device }) =>
-    device === 'mobile' ? '100%' : device === 'tablet' ? '22.5rem' : '25rem'};
+    device === 'mobile' ? '100%' : device === 'tablet' ? '360px' : '400px'};
   max-width: ${({ device }) => (device === 'mobile' ? '400px' : 'none')};
   margin: ${({ device }) => (device === 'mobile' ? '0 auto' : '0')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '0.75rem' : '1.5rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
   flex-direction: column;
   flex-shrink: 0;
 `;

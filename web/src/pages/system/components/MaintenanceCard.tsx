@@ -47,7 +47,7 @@ const Container = styled.section<{ isMobile: boolean }>`
   height: 100dvh;
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.75rem' : '1rem')};
+  gap: ${({ isMobile }) => (isMobile ? '12px' : '16px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -56,8 +56,8 @@ const Container = styled.section<{ isMobile: boolean }>`
 const MaintenanceImage = styled(ImageWithFallback, {
   shouldForwardProp: (prop) => prop !== 'isMobile',
 })<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '15rem' : '17.5rem')};
-  height: ${({ isMobile }) => (isMobile ? '15rem' : '17.5rem')};
+  width: ${({ isMobile }) => (isMobile ? '240px' : '280px')};
+  height: ${({ isMobile }) => (isMobile ? '240px' : '280px')};
 `;
 
 const Title = styled.h1<{ isMobile: boolean }>`
@@ -68,7 +68,7 @@ const Title = styled.h1<{ isMobile: boolean }>`
 
 const DescriptionWrapper = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -81,13 +81,13 @@ const DescriptionWrapper = styled.div<{ isMobile: boolean }>`
 const Description = styled.p``;
 
 const ContactWrapper = styled.div<{ isMobile: boolean }>`
-  margin-top: ${({ isMobile }) => (isMobile ? '0.5rem' : '0.75rem')};
-  padding: 1.5rem;
-  border-radius: 1.25rem;
-  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 12%);
+  margin-top: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.5rem' : '0.75rem')};
+  gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -97,8 +97,8 @@ const ContactWrapper = styled.div<{ isMobile: boolean }>`
 `;
 
 const Contact = styled.a<{ isMobile: boolean }>`
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
+  padding: 8px 16px;
+  border-radius: 12px;
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>

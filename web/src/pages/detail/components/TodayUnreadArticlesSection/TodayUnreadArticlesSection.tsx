@@ -47,7 +47,7 @@ const Container = styled.section`
   width: 100%;
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-direction: column;
 `;
 
@@ -60,7 +60,7 @@ const TodayArticleTitle = styled.h3`
 
 const TodayArticleList = styled.div<{ device: Device }>`
   display: grid;
-  gap: 1.25rem;
+  gap: 20px;
   justify-items: center;
 
   grid-template-columns: ${({ device }) =>

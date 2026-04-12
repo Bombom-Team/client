@@ -119,7 +119,7 @@ const ToggleButton = styled(Button)<{ isMobile: boolean }>`
 
 const InputWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 
   @media (width <= 400px) {
@@ -130,15 +130,15 @@ const InputWrapper = styled.div`
 
 const InputGroup = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex: 1;
   align-items: center;
 `;
 
 const Input = styled.input<{ isMobile: boolean }>`
-  padding: 0.5rem 0.75rem;
+  padding: 8px 12px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 0.75rem;
+  border-radius: 12px;
 
   flex: 1;
 
@@ -157,8 +157,8 @@ const Input = styled.input<{ isMobile: boolean }>`
 `;
 
 const SubmitButton = styled(Button)`
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  padding: 8px;
+  border-radius: 8px;
 
   display: flex;
   align-items: center;

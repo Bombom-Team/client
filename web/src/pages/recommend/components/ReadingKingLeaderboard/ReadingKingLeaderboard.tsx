@@ -118,20 +118,20 @@ export default ReadingKingLeaderboard;
 export const Container = styled.section`
   width: 100%;
   max-width: 400px;
-  padding: 1.375rem;
+  padding: 22px;
   border: 1px solid ${({ theme }) => theme.colors.dividers};
-  border-radius: 1.25rem;
+  border-radius: 20px;
   box-shadow:
-    0 0.625rem 0.9375rem -0.1875rem rgb(0 0 0 / 10%),
-    0 0.25rem 0.375rem -0.25rem rgb(0 0 0 / 10%);
+    0 10px 15px -3px rgb(0 0 0 / 10%),
+    0 4px 6px -4px rgb(0 0 0 / 10%);
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
 
   background: rgb(255 255 255 / 80%);
 
-  backdrop-filter: blur(0.625rem);
+  backdrop-filter: blur(10px);
 `;
 
 export const TitleWrapper = styled.div`
@@ -139,14 +139,14 @@ export const TitleWrapper = styled.div`
   width: fit-content;
 
   display: flex;
-  gap: 0.625rem;
+  gap: 10px;
   align-items: center;
 `;
 
 export const TitleIcon = styled.div`
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 0.75rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 12px;
 
   display: flex;
   align-items: center;
@@ -162,14 +162,14 @@ export const Title = styled.h3`
 
 export const CountdownWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
   justify-content: center;
 `;
 
 const Countdown = styled.div`
   position: relative;
-  width: 2.25rem;
+  width: 36px;
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
@@ -185,7 +185,7 @@ const CountdownLoadingDots = styled.div`
       #0000
     );
 
-  width: 2.25rem;
+  width: 36px;
 
   background:
     var(--dot-gradient) 0% 50%,
@@ -225,7 +225,7 @@ export const LeaderboardList = styled.div`
   min-height: fit-content;
 
   display: flex;
-  gap: 2rem;
+  gap: 32px;
   flex-direction: column;
 `;
 

@@ -2,7 +2,7 @@ import { keyframes } from '@emotion/react';
 
 export const jumpAnimation = keyframes`
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-0.625rem); }
+  50% { transform: translateY(-10px); }
 `;
 
 export const heartAnimation = keyframes`
@@ -12,10 +12,10 @@ export const heartAnimation = keyframes`
   }
   50% { 
     opacity: 1; 
-    transform: translateY(-1.25rem) scale(1.2); 
+    transform: translateY(-20px) scale(1.2); 
   }
   100% { 
     opacity: 0; 
-    transform: translateY(-2.5rem) scale(0.8); 
+    transform: translateY(-40px) scale(0.8); 
   }
 `;

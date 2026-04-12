@@ -52,10 +52,10 @@ const Container = styled(Link)`
   overflow: hidden;
   width: 100%;
   max-width: 320px;
-  border-radius: 1.25rem;
+  border-radius: 20px;
   box-shadow:
-    0 0.25rem 0.375rem -0.0625rem rgb(0 0 0 / 10%),
-    0 0.125rem 0.25rem -0.0625rem rgb(0 0 0 / 6%);
+    0 4px 6px -1px rgb(0 0 0 / 10%),
+    0 2px 4px -1px rgb(0 0 0 / 6%);
 
   display: flex;
   flex-direction: column;
@@ -73,7 +73,7 @@ const NewsletterImage = styled(ImageWithFallback)`
 `;
 
 const ContentWrapper = styled.div`
-  padding: 1.25rem;
+  padding: 20px;
 
   display: flex;
   flex: 1;
@@ -82,12 +82,12 @@ const ContentWrapper = styled.div`
 `;
 
 const TextContent = styled.div`
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
 `;
 
 const Title = styled.h3`
   overflow: hidden;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 
   display: -webkit-box;
 
@@ -114,13 +114,13 @@ const Description = styled.p`
 
 const MetaContent = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
 const MetaInfo = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
@@ -131,7 +131,7 @@ const SourceText = styled.span`
 
 const ReadTimeBox = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 
   white-space: nowrap;

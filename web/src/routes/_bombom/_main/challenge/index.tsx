@@ -89,7 +89,7 @@ const Container = styled.div`
   margin: 0 auto;
 
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   flex-direction: column;
   align-items: flex-start;
 
@@ -98,18 +98,18 @@ const Container = styled.div`
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
   justify-content: center;
 `;
 
 const TitleIconBox = styled.div`
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
   justify-content: center;
 
@@ -124,7 +124,7 @@ const ContentWrapper = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   flex-direction: column;
   align-items: center;
   align-self: stretch;
@@ -133,10 +133,10 @@ const ContentWrapper = styled.div`
 
 const EmptyStateWrapper = styled.div`
   width: 100%;
-  min-height: 25rem;
+  min-height: 400px;
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
   align-items: center;
   justify-content: center;

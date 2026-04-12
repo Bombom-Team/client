@@ -192,17 +192,16 @@ const AddCommentModalContent = ({
 export default AddCommentModalContent;
 
 const Container = styled.div<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '100%' : '35rem')};
+  width: ${({ isMobile }) => (isMobile ? '100%' : '560px')};
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '1.5rem' : '1.75rem')};
+  gap: ${({ isMobile }) => (isMobile ? '24px' : '28px')};
   flex-direction: column;
 `;
 
 const TipSection = styled.div<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) =>
-    isMobile ? '0.25rem 0.5rem' : '0.5rem 0.75rem'};
-  border-radius: 0.5rem;
+  padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '8px 12px')};
+  border-radius: 8px;
 
   display: flex;
   flex-direction: column;
@@ -212,7 +211,7 @@ const TipSection = styled.div<{ isMobile: boolean }>`
 
 const TipTitleWrapper = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 `;
 
@@ -225,7 +224,7 @@ const TipTitle = styled.p<{ isMobile: boolean }>`
 
 const TipList = styled.ul<{ isMobile: boolean }>`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   flex-direction: column;
 
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -237,7 +236,7 @@ const TipItem = styled.li``;
 
 const ButtonWrapper = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
 `;
 
 const StyledButton = styled(Button)<{ isMobile: boolean }>`

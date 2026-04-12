@@ -70,14 +70,14 @@ export default DailyGuideCard;
 
 const RemindButton = styled(Button)`
   width: 100%;
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const FlipCard = styled.div`
   width: fit-content;
-  perspective: 62.5rem;
+  perspective: 1000px;
 `;
 
 const FlipCardInner = styled.div<{ isRemindView: boolean }>`
@@ -105,11 +105,11 @@ const FlipCardBack = styled.div<{ isMobile: boolean }>`
   left: 0;
   width: 100%;
   height: 100%;
-  padding: ${({ isMobile }) => (isMobile ? '1.5rem 1rem' : '2rem 1.5rem')};
-  border-radius: 0.5rem;
+  padding: ${({ isMobile }) => (isMobile ? '24px 16px' : '32px 24px')};
+  border-radius: 8px;
 
   display: flex;
-  gap: 1.25rem;
+  gap: 20px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -125,7 +125,7 @@ const FlipCardBack = styled.div<{ isMobile: boolean }>`
 
 const GuideImage = styled.img`
   width: 100%;
-  max-height: 37.5rem;
+  max-height: 600px;
 
   object-fit: contain;
 `;
@@ -138,8 +138,8 @@ const RemindTitle = styled.h3`
 const RemindContent = styled.p<{ isMobile: boolean }>`
   width: 100%;
   max-width: 400px;
-  padding: ${({ isMobile }) => (isMobile ? '1rem' : '1.25rem')};
-  border-radius: 0.5rem;
+  padding: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
+  border-radius: 8px;
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};

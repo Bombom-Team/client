@@ -49,7 +49,7 @@ const Container = styled.section`
   width: 100%;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 
@@ -71,19 +71,19 @@ const CouponList = styled.div`
   width: 100%;
 
   display: grid;
-  gap: 1rem;
+  gap: 16px;
 
-  grid-template-columns: repeat(auto-fill, minmax(13.75rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 `;
 
 const CouponItem = styled.div`
   width: 100%;
-  padding: 0.75rem;
+  padding: 12px;
   border: ${({ theme }) => `1px solid ${theme.colors.stroke}`};
-  border-radius: 0.75rem;
+  border-radius: 12px;
 
   display: flex;
-  gap: 0.625rem;
+  gap: 10px;
   flex-direction: column;
   align-items: center;
 `;
@@ -91,7 +91,7 @@ const CouponItem = styled.div`
 const CouponImage = styled.img`
   width: 100%;
   height: auto;
-  border-radius: 0.5rem;
+  border-radius: 8px;
 `;
 
 const IssuedAt = styled.p`

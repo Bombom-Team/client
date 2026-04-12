@@ -21,11 +21,11 @@ export default EventPrize;
 
 const Container = styled.section`
   width: 100%;
-  padding: 4rem 1.5rem 4.25rem;
-  border-bottom: 0.25rem solid ${({ theme }) => theme.colors.black};
+  padding: 64px 24px 68px;
+  border-bottom: 4px solid ${({ theme }) => theme.colors.black};
 
   display: flex;
-  gap: 2.5rem;
+  gap: 40px;
   flex-direction: column;
   align-items: center;
 
@@ -49,13 +49,13 @@ const SectionTitle = styled.h2`
 const PrizeCard = styled.div`
   width: 100%;
   max-width: 360px;
-  padding: 3.375rem 1.75rem;
-  border: 0.25rem solid ${({ theme }) => theme.colors.black};
-  border-radius: 2rem;
-  box-shadow: 0.25rem 0.25rem 0 0 ${({ theme }) => theme.colors.black};
+  padding: 54px 28px;
+  border: 4px solid ${({ theme }) => theme.colors.black};
+  border-radius: 32px;
+  box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-direction: column;
   align-items: center;
   justify-content: center;

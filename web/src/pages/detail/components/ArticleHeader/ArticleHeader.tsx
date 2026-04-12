@@ -43,10 +43,10 @@ const ArticleHeader = ({
 export default ArticleHeader;
 
 const Container = styled.div`
-  padding: 1.25rem 0;
+  padding: 20px 0;
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
@@ -56,7 +56,7 @@ const TitleRow = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: flex-start;
 `;
 
@@ -72,7 +72,7 @@ const MetaInfoRow = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
@@ -83,6 +83,6 @@ const MetaInfoText = styled.span`
 
 const ReadTimeBox = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 `;

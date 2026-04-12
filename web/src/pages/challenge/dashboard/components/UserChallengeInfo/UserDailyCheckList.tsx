@@ -58,12 +58,12 @@ export default UserDailyCheckList;
 
 const Container = styled.div<{ isMobile: boolean }>`
   width: 100%;
-  padding: 1.125rem 1.25rem;
+  padding: 18px 20px;
   border: 1px solid ${({ theme }) => theme.colors.primaryLight};
-  border-radius: 1rem;
+  border-radius: 16px;
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
 
   background: ${({ theme }) => theme.colors.white};
@@ -81,8 +81,8 @@ const Title = styled.div`
 `;
 
 const CountBadge = styled.div`
-  padding: 0.25rem 0.625rem;
-  border-radius: 62.4375rem;
+  padding: 4px 10px;
+  border-radius: 999px;
 
   background: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
@@ -92,23 +92,23 @@ const CountBadge = styled.div`
 
 const List = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-direction: column;
 `;
 
 const ListItem = styled.div`
   display: flex;
-  gap: 0.625rem;
+  gap: 10px;
   align-items: center;
 `;
 
 const StatusBox = styled.div<{ status: TodoStatus }>`
-  width: 1.125rem;
-  height: 1.125rem;
+  width: 18px;
+  height: 18px;
   border: 1px solid
     ${({ theme, status }) =>
       status === 'COMPLETE' ? theme.colors.success : theme.colors.stroke};
-  border-radius: 0.25rem;
+  border-radius: 4px;
 
   display: inline-flex;
   align-items: center;

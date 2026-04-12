@@ -57,12 +57,12 @@ const NewsletterSubscribeGuide = () => {
 export default NewsletterSubscribeGuide;
 
 const Container = styled.div`
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
   align-items: center;
 
@@ -73,7 +73,7 @@ const Container = styled.div`
 
 const SubscribeHeader = styled.div`
   width: 100%;
-  padding: 0.5rem 0;
+  padding: 8px 0;
 `;
 
 const SubscribeTitle = styled.h3`
@@ -83,20 +83,20 @@ const SubscribeTitle = styled.h3`
 
 const SubscribeContent = styled.div`
   width: 100%;
-  padding: 1rem;
+  padding: 16px;
   border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 `;
 
 const StepsWrapper = styled.div`
   position: relative;
-  padding: 1.25rem 1rem;
+  padding: 20px 16px;
 
   &::before {
     position: absolute;
-    top: 2.25rem;
-    bottom: 4.25rem;
-    left: 2rem;
-    width: 0.125rem;
+    top: 36px;
+    bottom: 68px;
+    left: 32px;
+    width: 2px;
 
     background: ${({ theme }) => theme.colors.dividers};
 
@@ -106,10 +106,10 @@ const StepsWrapper = styled.div`
 
 const StepItem = styled.div`
   position: relative;
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   align-items: flex-start;
 
   &:last-child {
@@ -119,11 +119,11 @@ const StepItem = styled.div`
 
 const StepNumber = styled.span`
   z-index: ${({ theme }) => theme.zIndex.content};
-  width: 2rem;
-  height: 2rem;
-  border: 0.125rem solid ${({ theme }) => theme.colors.white};
+  width: 32px;
+  height: 32px;
+  border: 2px solid ${({ theme }) => theme.colors.white};
   border-radius: 50%;
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 10%);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 
   display: flex;
   flex-shrink: 0;
@@ -137,7 +137,7 @@ const StepNumber = styled.span`
 
 const StepContent = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   flex-direction: column;
 `;
 

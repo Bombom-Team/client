@@ -65,7 +65,7 @@ const Container = styled.div<{ position: SlideButtonPosition }>`
   top: ${({ position }) => (position === 'middle' ? '50%' : 'auto')};
   left: 0;
   width: 100%;
-  padding: 0.75rem 0.5rem;
+  padding: 12px 8px;
 
   display: flex;
   align-items: center;
@@ -78,9 +78,9 @@ const Container = styled.div<{ position: SlideButtonPosition }>`
 `;
 
 const NavButton = styled.button`
-  width: clamp(2rem, 10%, 3rem);
+  width: clamp(32px, 10%, 48px);
   border-radius: 50%;
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
 
   display: flex;
   align-items: center;

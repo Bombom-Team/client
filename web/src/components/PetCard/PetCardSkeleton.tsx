@@ -28,15 +28,15 @@ const PetCardSkeleton = () => {
         </TitleWrapper>
       )}
       <PetImageContainer>
-        <Skeleton width="7.5rem" height="7.5rem" borderRadius="0.75rem" />
+        <Skeleton width="120px" height="120px" borderRadius="12px" />
       </PetImageContainer>
 
-      <Skeleton width="6.25rem" height="1rem" />
+      <Skeleton width="100px" height="16px" />
 
       <ProgressBarSkeleton hasCaption={true} />
 
       <AttendanceButtonWrapper device={device}>
-        <Skeleton width="100%" height="2rem" />
+        <Skeleton width="100%" height="32px" />
       </AttendanceButtonWrapper>
     </Container>
   );

@@ -43,7 +43,7 @@ export const Container = styled.div`
   padding: 0;
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: center;
 
   text-align: left;
@@ -52,10 +52,10 @@ export const Container = styled.div`
 `;
 
 const Image = styled(ImageWithFallback)`
-  width: 4rem;
-  height: 4rem;
-  border-radius: 1rem;
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 10%);
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 
   flex-shrink: 0;
 
@@ -63,10 +63,10 @@ const Image = styled(ImageWithFallback)`
 `;
 
 export const InfoBox = styled.div`
-  min-height: 4rem;
+  min-height: 64px;
 
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   flex: 1;
   flex-direction: column;
   justify-content: center;
@@ -74,7 +74,7 @@ export const InfoBox = styled.div`
 
 const TitleBox = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 

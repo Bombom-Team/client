@@ -65,7 +65,7 @@ const Container = styled.div<{ isMobile: boolean }>`
   min-width: ${({ isMobile }) => (isMobile ? '280px' : '440px')};
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.75rem' : '1.25rem')};
+  gap: ${({ isMobile }) => (isMobile ? '12px' : '20px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -89,14 +89,14 @@ const ModalButtonWrapper = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   justify-content: center;
 `;
 
 const ModalButton = styled(Button)<{ isMobile: boolean }>`
-  height: 3rem;
+  height: 48px;
   min-width: ${({ isMobile }) => (isMobile ? '120px' : '160px')};
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};

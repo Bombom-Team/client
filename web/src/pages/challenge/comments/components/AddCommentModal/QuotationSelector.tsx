@@ -80,7 +80,7 @@ export default QuotationSelector;
 
 const Container = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 
@@ -88,13 +88,13 @@ const Header = styled.div<{ isMobile: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.25rem' : '0.5rem')};
+  gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
   align-items: flex-end;
 `;
 
 const TitleBox = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.5rem' : '0.75rem')};
+  gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
   flex-wrap: wrap;
   align-items: center;
 `;
@@ -127,16 +127,16 @@ const RemoveQuotationButton = styled(Button)<{ isMobile: boolean }>`
 
 const QuotationWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
   align-items: flex-start;
 `;
 
 const QuotationList = styled.div<{ isMobile: boolean }>`
-  max-height: ${({ isMobile }) => (isMobile ? '7.5rem' : '15rem')};
+  max-height: ${({ isMobile }) => (isMobile ? '120px' : '240px')};
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 
   overflow-y: auto;
@@ -148,7 +148,7 @@ const QuotationList = styled.div<{ isMobile: boolean }>`
 `;
 
 const EmptyState = styled.div<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => (isMobile ? '1.25rem' : '2.5rem')};
+  padding: ${({ isMobile }) => (isMobile ? '20px' : '40px')};
 
   display: flex;
   align-items: center;
@@ -165,17 +165,17 @@ const QuotationItem = styled(Button)<{
   selected: boolean;
 }>`
   width: 100%;
-  padding: ${({ isMobile }) => (isMobile ? '0.5rem' : '1rem')};
+  padding: ${({ isMobile }) => (isMobile ? '8px' : '16px')};
   outline: ${({ selected, theme }) =>
-    selected ? `0.125rem solid ${theme.colors.primary}` : 'none'};
-  outline-offset: -0.125rem;
+    selected ? `2px solid ${theme.colors.primary}` : 'none'};
+  outline-offset: -2px;
   border: 1px solid
     ${({ theme, selected }) =>
       selected ? theme.colors.primary : theme.colors.stroke};
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
   align-items: flex-start;
 
@@ -191,9 +191,8 @@ const QuotationItem = styled(Button)<{
 
 const Quote = styled.div<{ isMobile: boolean }>`
   overflow: hidden;
-  padding: ${({ isMobile }) =>
-    isMobile ? '0.25rem 0.5rem' : '0.25rem 0.75rem'};
-  border-left: 0.25rem solid ${({ theme }) => theme.colors.stroke};
+  padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
+  border-left: 4px solid ${({ theme }) => theme.colors.stroke};
 
   display: -webkit-box;
   flex: 1;

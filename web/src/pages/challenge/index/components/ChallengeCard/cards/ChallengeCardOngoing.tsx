@@ -128,7 +128,7 @@ const ProgressSection = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-direction: column;
 `;
 
@@ -139,8 +139,8 @@ const ChallengeProgress = styled.p`
 `;
 
 const ApplyButton = styled(Button)`
-  padding: 0.625rem 1rem;
-  border-radius: 0.625rem;
+  padding: 10px 16px;
+  border-radius: 10px;
 
   font: ${({ theme }) => theme.fonts.body2};
   font-weight: 600;

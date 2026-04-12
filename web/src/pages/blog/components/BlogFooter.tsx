@@ -77,9 +77,9 @@ export default BlogFooter;
 const Container = styled.footer<{ device: Device }>`
   width: 100%;
   padding: ${({ device }) => {
-    if (device === 'mobile') return '2rem 1rem';
-    if (device === 'tablet') return '3rem 2.5rem';
-    return '3rem 3.75rem';
+    if (device === 'mobile') return '32px 16px';
+    if (device === 'tablet') return '48px 40px';
+    return '48px 60px';
   }};
   border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 
@@ -91,7 +91,7 @@ const FooterWrapper = styled.div<{ device: Device }>`
   margin: 0 auto;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '2rem' : '0')};
+  gap: ${({ device }) => (device === 'mobile' ? '32px' : '0')};
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
   align-items: flex-start;
   justify-content: space-between;

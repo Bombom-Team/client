@@ -143,7 +143,7 @@ const Container = styled.div`
   margin: 0 auto;
 
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   flex-direction: column;
   align-items: flex-start;
 
@@ -152,18 +152,18 @@ const Container = styled.div`
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
   justify-content: center;
 `;
 
 const TitleIconBox = styled.div`
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
   justify-content: center;
 
@@ -178,14 +178,14 @@ const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '1rem' : '1.25rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
   align-items: flex-start;
   align-self: stretch;
 `;
 
 const TabsWrapper = styled.div<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '100%' : '17.5rem')};
+  width: ${({ device }) => (device === 'mobile' ? '100%' : '280px')};
 
   display: flex;
   flex-direction: column;
@@ -201,17 +201,17 @@ const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   pc: (theme) => ({
     flexShrink: 0,
     border: `1px solid ${theme.colors.stroke}`,
-    borderRadius: '0.75rem',
-    padding: '1rem',
+    borderRadius: '12px',
+    padding: '16px',
   }),
   tablet: (theme) => ({
     flexShrink: 0,
     border: `1px solid ${theme.colors.stroke}`,
-    borderRadius: '0.75rem',
-    padding: '1rem',
+    borderRadius: '12px',
+    padding: '16px',
   }),
   mobile: () => ({
-    gap: '0.5rem',
+    gap: '8px',
     overflowX: 'auto',
     '&::-webkit-scrollbar': {
       display: 'none',
@@ -233,7 +233,7 @@ const TabPanel = styled.div<{ device: Device }>`
   @keyframes fadein {
     from {
       opacity: 0;
-      transform: translateY(-0.5rem);
+      transform: translateY(-8px);
     }
 
     to {

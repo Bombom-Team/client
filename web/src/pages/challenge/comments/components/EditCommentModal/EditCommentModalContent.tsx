@@ -93,16 +93,16 @@ const EditCommentModalContent = ({
 export default EditCommentModalContent;
 
 const Container = styled.div<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '100%' : '35rem')};
+  width: ${({ isMobile }) => (isMobile ? '100%' : '560px')};
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '1.5rem' : '1.75rem')};
+  gap: ${({ isMobile }) => (isMobile ? '24px' : '28px')};
   flex-direction: column;
 `;
 
 const SectionWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 
@@ -113,7 +113,7 @@ const SectionTitle = styled.h3<{ isMobile: boolean }>`
 `;
 
 const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
-  padding: 0.125rem 0.375rem;
+  padding: 2px 6px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
@@ -123,7 +123,7 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
 
 const ArticleTitleWrapper = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   flex-wrap: wrap;
   justify-content: flex-start;
 `;
@@ -136,7 +136,7 @@ const ArticleTitle = styled.p<{ isMobile: boolean }>`
 
 const ButtonWrapper = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
 `;
 
 const StyledButton = styled(Button)<{ isMobile: boolean }>`
@@ -147,9 +147,8 @@ const StyledButton = styled(Button)<{ isMobile: boolean }>`
 
 const Quote = styled.div<{ isMobile: boolean }>`
   overflow: hidden;
-  padding: ${({ isMobile }) =>
-    isMobile ? '0.25rem 0.5rem' : '0.25rem 0.75rem'};
-  border-left: 0.25rem solid ${({ theme }) => theme.colors.stroke};
+  padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
+  border-left: 4px solid ${({ theme }) => theme.colors.stroke};
 
   display: -webkit-box;
   flex: 1;

@@ -61,7 +61,7 @@ const Container = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-direction: column;
   align-items: center;
 `;
@@ -69,10 +69,10 @@ const Container = styled.div`
 const ContentWrapper = styled.div`
   width: 100%;
   min-width: 264px;
-  padding: 0 0.5rem;
+  padding: 0 8px;
 
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   flex-direction: column;
   align-items: center;
 `;

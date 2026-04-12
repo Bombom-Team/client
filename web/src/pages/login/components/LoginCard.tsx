@@ -62,11 +62,11 @@ const LoginCard = () => {
 export default LoginCard;
 
 const Container = styled.section<{ isMobile: boolean }>`
-  width: min(100%, 26.25rem);
-  padding: 1.75rem;
+  width: min(100%, 420px);
+  padding: 28px;
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -74,8 +74,8 @@ const Container = styled.section<{ isMobile: boolean }>`
   ${({ isMobile }) =>
     !isMobile &&
     `
-    border-radius: 1.25rem;
-    box-shadow: 0 1.5625rem 3.125rem -0.75rem rgb(0 0 0 / 25%);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
     background-color: ${theme.colors.white};
   
   `}
@@ -83,20 +83,18 @@ const Container = styled.section<{ isMobile: boolean }>`
 
 const GreetingWrapper = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '1rem' : '1.25rem')};
+  gap: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
 const IconWrapper = styled.div`
-  padding: 1.125rem;
+  padding: 18px;
   border-radius: 50%;
   box-shadow:
-    0 1.25rem 1.5625rem -0.3125rem
-      ${({ theme }) => `${theme.colors.primaryLight}40`},
-    0 0.625rem 0.625rem -0.3125rem
-      ${({ theme }) => `${theme.colors.primaryLight}20`};
+    0 20px 25px -5px ${({ theme }) => `${theme.colors.primaryLight}40`},
+    0 10px 10px -5px ${({ theme }) => `${theme.colors.primaryLight}20`};
 
   display: flex;
   align-items: center;
@@ -115,7 +113,7 @@ const GreetingTitle = styled.h2`
 `;
 
 const GreetingMessage = styled.p<{ isMobile: boolean }>`
-  margin: ${({ isMobile }) => (isMobile ? '1.5rem' : '2.125rem')};
+  margin: ${({ isMobile }) => (isMobile ? '24px' : '34px')};
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.heading5};
@@ -125,8 +123,8 @@ const GreetingMessage = styled.p<{ isMobile: boolean }>`
 
 const Divider = styled.div`
   width: 100%;
-  height: 0.125rem;
-  margin-bottom: 2.125rem;
+  height: 2px;
+  margin-bottom: 34px;
 
   background: linear-gradient(
     90deg,
@@ -138,8 +136,8 @@ const Divider = styled.div`
 
 const LoginButton = styled(Button)`
   width: 100%;
-  padding: 0.75rem;
-  box-shadow: 0 0.25rem 0.375rem -0.0625rem rgb(0 0 0 / 5%);
+  padding: 12px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 5%);
 
   font: ${({ theme }) => theme.fonts.body1};
 `;

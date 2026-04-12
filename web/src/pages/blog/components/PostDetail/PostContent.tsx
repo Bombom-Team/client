@@ -35,7 +35,7 @@ const Content = styled.div<{ device: Device }>`
   h1,
   h2,
   h3 {
-    margin: 1.5rem 0 0.75rem;
+    margin: 24px 0 12px;
     font-weight: 700;
   }
 
@@ -52,34 +52,34 @@ const Content = styled.div<{ device: Device }>`
   }
 
   p {
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
     line-height: 1.7;
   }
 
   ul,
   ol {
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
+    margin-bottom: 16px;
+    padding-left: 24px;
   }
 
   li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 8px;
     line-height: 1.7;
   }
 
   blockquote {
-    margin: 1rem 0;
-    padding-left: 1rem;
-    border-left: 0.25rem solid ${({ theme }) => theme.colors.dividers};
+    margin: 16px 0;
+    padding-left: 16px;
+    border-left: 4px solid ${({ theme }) => theme.colors.dividers};
 
     color: ${({ theme }) => theme.colors.textSecondary};
     font-style: italic;
   }
 
   pre {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border-radius: 0.25rem;
+    margin-bottom: 16px;
+    padding: 16px;
+    border-radius: 4px;
 
     background: ${({ theme }) => theme.colors.backgroundHover};
 
@@ -87,8 +87,8 @@ const Content = styled.div<{ device: Device }>`
   }
 
   code {
-    padding: 0.125rem 0.25rem;
-    border-radius: 0.125rem;
+    padding: 2px 4px;
+    border-radius: 2px;
 
     background: ${({ theme }) => theme.colors.backgroundHover};
     font-family: monospace;
@@ -97,8 +97,8 @@ const Content = styled.div<{ device: Device }>`
 
   img {
     max-width: 100%;
-    margin: 1rem 0;
-    border-radius: 0.5rem;
+    margin: 16px 0;
+    border-radius: 8px;
 
     display: block;
   }
@@ -109,7 +109,7 @@ const Content = styled.div<{ device: Device }>`
   }
 
   p[data-caption] {
-    margin-bottom: 0.5rem;
+    margin-bottom: 8px;
 
     color: ${({ theme }) => theme.colors.textSecondary};
     font-size: 0.8125rem;

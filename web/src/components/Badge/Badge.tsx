@@ -23,7 +23,7 @@ function Badge({ text, variant = 'default', icon, ...props }: BadgeProps) {
 export default Badge;
 
 const IconWrapper = styled.span`
-  margin-right: 0.25rem;
+  margin-right: 4px;
 
   display: inline-flex;
 
@@ -32,8 +32,8 @@ const IconWrapper = styled.span`
 
 const Container = styled.div<{ variant: Variant }>`
   width: fit-content;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
+  padding: 4px 8px;
+  border-radius: 8px;
 
   display: flex;
   align-items: center;
@@ -51,7 +51,7 @@ const variantStyles = {
     color: theme.colors.textPrimary,
   }),
   outlinePrimary: (theme: Theme) => ({
-    border: `0.125rem solid ${theme.colors.white}`,
+    border: `2px solid ${theme.colors.white}`,
     backgroundColor: theme.colors.primary,
     color: theme.colors.white,
     fontWeight: 600,

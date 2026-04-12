@@ -28,23 +28,23 @@ export default HeaderLogo;
 
 const Container = styled(Link)`
   display: flex;
-  gap: 1.125rem;
+  gap: 18px;
   align-items: center;
 `;
 
 const Logo = styled.img`
-  width: 3rem;
-  height: 3rem;
-  border-radius: 1rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
 `;
 
 const TextLogo = styled.img`
-  width: 2.75rem;
+  width: 44px;
 `;
 
 const TitleBox = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   flex-direction: column;
   justify-content: center;
 `;

@@ -77,11 +77,10 @@ export default ChallengeStreakCard;
 
 const Container = styled.section<{ isMobile: boolean }>`
   width: 100%;
-  padding: ${({ isMobile }) =>
-    isMobile ? '0.25rem 0.125rem 0' : '0.25rem 0 0'};
+  padding: ${({ isMobile }) => (isMobile ? '4px 2px 0' : '4px 0 0')};
 
   display: flex;
-  gap: 0.875rem;
+  gap: 14px;
   flex-direction: column;
 
   box-sizing: border-box;
@@ -89,14 +88,14 @@ const Container = styled.section<{ isMobile: boolean }>`
 
 const HeaderWrapper = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: 0.125rem;
+  gap: 2px;
   align-items: center;
 `;
 
 const FireBadge = styled.div<{ isMobile: boolean }>`
   position: relative;
-  width: ${({ isMobile }) => (isMobile ? '3.25rem' : '3.75rem')};
-  height: ${({ isMobile }) => (isMobile ? '3.25rem' : '3.75rem')};
+  width: ${({ isMobile }) => (isMobile ? '52px' : '60px')};
+  height: ${({ isMobile }) => (isMobile ? '52px' : '60px')};
 
   flex-shrink: 0;
 `;
@@ -137,14 +136,14 @@ const Title = styled.p<{ isMobile: boolean }>`
 
 const WeekWrapper = styled.div`
   display: grid;
-  gap: 0.5rem;
+  gap: 8px;
 
   grid-template-columns: repeat(5, minmax(0, 1fr));
 `;
 
 const DayColumn = styled.div`
   display: flex;
-  gap: 0.375rem;
+  gap: 6px;
   flex-direction: column;
   align-items: center;
 `;
@@ -161,8 +160,8 @@ const DayCheckBox = styled.div<{
   isShieldApplied: boolean;
 }>`
   position: relative;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 24px;
+  height: 24px;
   border: 1px solid
     ${({ theme, isCompleted, isShieldApplied }) =>
       isShieldApplied
@@ -192,8 +191,8 @@ const FreezeWrapper = styled.div`
   position: absolute;
   top: 60%;
   left: 50%;
-  width: 3rem;
-  height: 3rem;
+  width: 48px;
+  height: 48px;
 
   display: flex;
   align-items: center;
@@ -203,8 +202,8 @@ const FreezeWrapper = styled.div`
 `;
 
 const FreezeImage = styled.img`
-  width: 3rem;
-  height: 3rem;
+  width: 48px;
+  height: 48px;
 
   object-fit: contain;
 `;

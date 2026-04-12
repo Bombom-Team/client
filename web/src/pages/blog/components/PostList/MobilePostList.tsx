@@ -32,5 +32,5 @@ export default MobilePostList;
 
 const LoadMoreTrigger = styled.div`
   width: 100%;
-  height: 0.0625rem;
+  height: 1px;
 `;

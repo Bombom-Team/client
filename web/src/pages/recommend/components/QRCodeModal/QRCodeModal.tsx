@@ -89,17 +89,17 @@ const QRCodeModal = ({
 export default QRCodeModal;
 
 const Container = styled.div`
-  padding: 1.5rem 0 0;
+  padding: 24px 0 0;
 
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   flex-direction: column;
   align-items: center;
 `;
 
 const QRCodesWrapper = styled.div`
   display: flex;
-  gap: 2rem;
+  gap: 32px;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: center;
@@ -111,9 +111,9 @@ const QRModalTitle = styled.h2`
 `;
 
 const QRCodeWrapper = styled.div`
-  padding: 1rem;
+  padding: 16px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   display: flex;
   align-items: center;

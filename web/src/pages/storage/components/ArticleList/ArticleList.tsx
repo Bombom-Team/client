@@ -80,18 +80,18 @@ const Container = styled.ul<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '0' : '1rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '0' : '16px')};
   flex-direction: column;
 `;
 
 const ArticleItem = styled.li<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => isMobile && '0.5rem 0'};
+  padding: ${({ isMobile }) => isMobile && '8px 0'};
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
 
   &:not(:last-child) {
     border-bottom: ${({ theme, isMobile }) =>
-      isMobile && `0.125rem solid ${theme.colors.dividers}`};
+      isMobile && `2px solid ${theme.colors.dividers}`};
   }
 `;

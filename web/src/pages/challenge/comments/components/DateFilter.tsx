@@ -112,7 +112,7 @@ const Container = styled.div<{ device: Device }>`
 `;
 
 const NavButton = styled(Button)<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '0.375rem' : '0.5rem')};
+  padding: ${({ device }) => (device === 'mobile' ? '6px' : '8px')};
 
   color: ${({ theme }) => theme.colors.primary};
 
@@ -132,11 +132,11 @@ const DateTabsWrapper = styled.div<{ device: Device }>`
   border-right: ${({ device, theme }) =>
     device === 'mobile'
       ? 'none'
-      : `0.125rem solid ${theme.colors.disabledBackground}`};
+      : `2px solid ${theme.colors.disabledBackground}`};
   border-left: ${({ device, theme }) =>
     device === 'mobile'
       ? 'none'
-      : `0.125rem solid ${theme.colors.disabledBackground}`};
+      : `2px solid ${theme.colors.disabledBackground}`};
 
   flex: 1;
 
@@ -152,12 +152,12 @@ const DateTabsWrapper = styled.div<{ device: Device }>`
 
 const StyledTabs = styled(Tabs)<{ device: Device }>`
   display: inline-flex;
-  gap: ${({ device }) => (device === 'pc' ? '1.5rem' : '0.5rem')};
+  gap: ${({ device }) => (device === 'pc' ? '24px' : '8px')};
 `;
 
 const TodayTabWrapper = styled.div`
-  padding-left: 0.5rem;
-  border-left: 0.125rem solid ${({ theme }) => theme.colors.disabledBackground};
+  padding-left: 8px;
+  border-left: 2px solid ${({ theme }) => theme.colors.disabledBackground};
 
   display: flex;
   align-items: center;

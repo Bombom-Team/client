@@ -153,7 +153,7 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
 export default NewsletterDetail;
 
 export const Container = styled.div<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '100%' : '45rem')};
+  width: ${({ isMobile }) => (isMobile ? '100%' : '720px')};
   height: 100%;
 
   display: flex;
@@ -165,9 +165,9 @@ export const Container = styled.div<{ isMobile: boolean }>`
 const VisuallyHidden = styled.button`
   overflow: hidden;
   position: absolute;
-  width: 0.0625rem;
-  height: 0.0625rem;
-  margin: -0.0625rem;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
   padding: 0;
   border: none;
   border-width: 0;
@@ -183,17 +183,17 @@ const VisuallyHidden = styled.button`
 `;
 
 export const FixedWrapper = styled.div<{ isMobile: boolean }>`
-  padding-bottom: ${({ isMobile }) => (isMobile ? '1rem' : '1.5rem')};
+  padding-bottom: ${({ isMobile }) => (isMobile ? '16px' : '24px')};
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '1rem' : '1.5rem')};
+  gap: ${({ isMobile }) => (isMobile ? '16px' : '24px')};
   flex-direction: column;
 `;
 
 export const ScrollableWrapper = styled.div<{ isMobile: boolean }>`
-  height: ${({ isMobile }) => (isMobile ? 'auto' : '28.125rem')};
-  margin-right: -1rem;
-  padding: 0.5rem;
+  height: ${({ isMobile }) => (isMobile ? 'auto' : '450px')};
+  margin-right: -16px;
+  padding: 8px;
 
   overflow-y: auto;
   scrollbar-gutter: stable;
@@ -201,7 +201,7 @@ export const ScrollableWrapper = styled.div<{ isMobile: boolean }>`
 
 export const InfoWrapper = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.75rem' : '1rem')};
+  gap: ${({ isMobile }) => (isMobile ? '12px' : '16px')};
   align-items: center;
   justify-content: center;
 `;
@@ -209,9 +209,9 @@ export const InfoWrapper = styled.div<{ isMobile: boolean }>`
 const NewsletterImage = styled(ImageWithFallback, {
   shouldForwardProp: (prop) => prop !== 'isMobile',
 })<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '5.5rem' : '6.5rem')};
-  height: ${({ isMobile }) => (isMobile ? '5.5rem' : '6.5rem')};
-  border-radius: ${({ isMobile }) => (isMobile ? '0.75rem' : '1rem')};
+  width: ${({ isMobile }) => (isMobile ? '88px' : '104px')};
+  height: ${({ isMobile }) => (isMobile ? '88px' : '104px')};
+  border-radius: ${({ isMobile }) => (isMobile ? '12px' : '16px')};
 
   flex-shrink: 0;
 
@@ -222,13 +222,13 @@ export const InfoBox = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 
 export const TitleWrapper = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.25rem' : '0.5rem')};
+  gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
 `;
 
 const NewsletterTitle = styled.h2<{ isMobile: boolean }>`
@@ -238,25 +238,25 @@ const NewsletterTitle = styled.h2<{ isMobile: boolean }>`
 `;
 
 const StyledHomeIcon = styled(HomeIcon)<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '1.25rem' : '1.5rem')};
-  height: ${({ isMobile }) => (isMobile ? '1.25rem' : '1.5rem')};
+  width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+  height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
 
   fill: ${({ theme }) => theme.colors.primary};
 `;
 
 const StyledInfoIcon = styled(InfoIcon)<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '1.25rem' : '1.5rem')};
-  height: ${({ isMobile }) => (isMobile ? '1.25rem' : '1.5rem')};
+  width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+  height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
 
   fill: ${({ theme }) => theme.colors.primary};
 `;
 
 const SubscribeMethodInfo = styled.div<{ isMobile: boolean }>`
-  padding: 0.8rem 1rem;
-  border-radius: 1rem;
+  padding: 12.8px 16px;
+  border-radius: 16px;
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
@@ -266,7 +266,7 @@ const SubscribeMethodInfo = styled.div<{ isMobile: boolean }>`
 
 export const NewsletterInfo = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-wrap: wrap;
   align-items: center;
 
@@ -286,7 +286,7 @@ const IssueCycle = styled.p`
 
 const DetailLink = styled.button<{ isMobile: boolean }>`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};

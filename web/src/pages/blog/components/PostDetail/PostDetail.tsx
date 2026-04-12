@@ -40,7 +40,7 @@ const PostDetail = ({ post }: PostDetailProps) => {
 export default PostDetail;
 
 const Title = styled.h1<{ device: Device }>`
-  margin-bottom: ${({ device }) => (device === 'mobile' ? '1rem' : '1.25rem')};
+  margin-bottom: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
@@ -49,8 +49,8 @@ const Title = styled.h1<{ device: Device }>`
 
 export const ThumbnailBox = styled.div<{ device: Device }>`
   overflow: hidden;
-  margin: ${({ device }) => (device === 'mobile' ? '1.5rem 0' : '2rem 0')};
-  border-radius: ${({ device }) => (device === 'mobile' ? '1rem' : '1.25rem')};
+  margin: ${({ device }) => (device === 'mobile' ? '24px 0' : '32px 0')};
+  border-radius: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
 
   background-color: ${({ theme }) => theme.colors.dividers};
 

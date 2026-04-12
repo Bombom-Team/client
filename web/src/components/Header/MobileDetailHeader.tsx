@@ -41,10 +41,10 @@ const Container = styled.header`
   height: calc(
     ${({ theme }) => `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
   );
-  padding: calc(0.25rem + ${({ theme }) => theme.safeArea.top}) 0.5rem;
+  padding: calc(4px + ${({ theme }) => theme.safeArea.top}) 8px;
   box-shadow:
-    0 0.5rem 0.75rem -0.375rem rgb(0 0 0 / 10%),
-    0 0.1875rem 0.3125rem -0.25rem rgb(0 0 0 / 10%);
+    0 8px 12px -6px rgb(0 0 0 / 10%),
+    0 3px 5px -4px rgb(0 0 0 / 10%);
 
   display: flex;
   align-items: center;
@@ -54,7 +54,7 @@ const Container = styled.header`
 `;
 
 const BackButton = styled.button`
-  padding: 0.25rem;
+  padding: 4px;
 
   display: flex;
   align-items: center;
@@ -71,6 +71,6 @@ const BackButton = styled.button`
 `;
 
 const StyledChevronIcon = styled(ChevronIcon)`
-  width: 2rem;
-  height: 2rem;
+  width: 32px;
+  height: 32px;
 `;

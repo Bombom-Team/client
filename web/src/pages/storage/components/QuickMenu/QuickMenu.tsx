@@ -83,24 +83,24 @@ export default QuickMenu;
 
 const Container = styled.nav`
   width: 100%;
-  padding: 1rem;
+  padding: 16px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 1.25rem;
+  border-radius: 20px;
 
   display: flex;
-  gap: 1.25rem;
+  gap: 20px;
   flex-direction: column;
 `;
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 0.625rem;
+  gap: 10px;
   align-items: center;
   justify-content: flex-start;
 `;
 
 const QuickMenuIconWrapper = styled.div`
-  padding: 0.5rem;
+  padding: 8px;
   border-radius: 50%;
 
   display: flex;
@@ -111,8 +111,8 @@ const QuickMenuIconWrapper = styled.div`
 `;
 
 const StyledMenuIcon = styled(MenuIcon)`
-  width: 1rem;
-  height: 1rem;
+  width: 16px;
+  height: 16px;
 
   color: ${({ theme }) => theme.colors.white};
 `;
@@ -122,8 +122,8 @@ const Title = styled.h3`
 `;
 
 const StyledIcon = styled.div<{ device: Device; selected?: boolean }>`
-  width: ${({ device }) => (device === 'pc' ? '1.5rem' : '1.75rem')};
-  height: ${({ device }) => (device === 'pc' ? '1.5rem' : '1.75rem')};
+  width: ${({ device }) => (device === 'pc' ? '24px' : '28px')};
+  height: ${({ device }) => (device === 'pc' ? '24px' : '28px')};
 
   color: ${({ theme, selected = false }) =>
     selected ? theme.colors.white : theme.colors.primary};

@@ -72,7 +72,7 @@ export default SlideCardList;
 
 const Banner = styled.img`
   width: 100%;
-  height: 17.5rem;
+  height: 280px;
 
   object-fit: contain;
   object-position: center;

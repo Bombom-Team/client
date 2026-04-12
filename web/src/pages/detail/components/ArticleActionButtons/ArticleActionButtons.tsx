@@ -21,7 +21,7 @@ const ArticleActionButtons = ({
   return (
     <FloatingActionPanel
       top="80vh"
-      left={`calc(50% - (${ARTICLE_MAX_WIDTH / 2}px + 5.625rem))`}
+      left={`calc(50% - (${ARTICLE_MAX_WIDTH / 2}px + 90px))`}
       actions={[
         ...(isRead
           ? [
@@ -29,7 +29,7 @@ const ArticleActionButtons = ({
                 icon: (
                   <DotLottieReact
                     src="/assets/lottie/success-check.lottie"
-                    style={{ width: '2rem', height: '2rem' }}
+                    style={{ width: '32px', height: '32px' }}
                     loop={false}
                     autoplay
                   />

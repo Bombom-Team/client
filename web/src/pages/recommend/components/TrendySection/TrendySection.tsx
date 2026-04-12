@@ -207,38 +207,38 @@ export default TrendySection;
 
 const Container = styled.section`
   width: 100%;
-  padding: 1.5rem;
+  padding: 24px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 1.25rem;
+  border-radius: 20px;
   box-shadow:
-    0 0.625rem 0.9375rem -0.1875rem rgb(0 0 0 / 10%),
-    0 0.25rem 0.375rem -0.25rem rgb(0 0 0 / 10%);
+    0 10px 15px -3px rgb(0 0 0 / 10%),
+    0 4px 6px -4px rgb(0 0 0 / 10%);
 
   background: ${({ theme }) => theme.colors.white};
 
-  backdrop-filter: blur(0.625rem);
+  backdrop-filter: blur(10px);
 `;
 
 const SectionHeader = styled.div`
   position: relative;
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
 `;
 
 const HeaderLeft = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
 const SectionIconBox = styled.span`
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 0.75rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 12px;
 
   display: flex;
   align-items: center;
@@ -256,11 +256,11 @@ const SectionTitle = styled.h2`
 `;
 
 const SearchIconButton = styled.button`
-  width: 2rem;
-  height: 2rem;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   display: flex;
   align-items: center;
@@ -290,7 +290,7 @@ const ExpandableSearchContainer = styled.div<{ isExpanded: boolean }>`
   z-index: ${({ theme }) => theme.zIndex.elevated};
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 
   background: ${({ theme }) => theme.colors.white};
@@ -298,17 +298,17 @@ const ExpandableSearchContainer = styled.div<{ isExpanded: boolean }>`
   opacity: ${({ isExpanded }) => (isExpanded ? 1 : 0)};
   pointer-events: ${({ isExpanded }) => (isExpanded ? 'auto' : 'none')};
 
-  transform: translateX(${({ isExpanded }) => (isExpanded ? '0' : '1.25rem')});
+  transform: translateX(${({ isExpanded }) => (isExpanded ? '0' : '20px')});
 
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 const CloseButton = styled.button`
-  width: 2rem;
-  height: 2rem;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   display: flex;
   flex-shrink: 0;
@@ -331,18 +331,18 @@ const CloseButton = styled.button`
 `;
 
 const TagContainer = styled.div`
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-wrap: wrap;
 `;
 
 const TrendyGrid = styled.div<{ device: Device; hasContent: boolean }>`
-  height: ${({ device }) => (device === 'mobile' ? '25rem' : '37.5rem')};
+  height: ${({ device }) => (device === 'mobile' ? '400px' : '600px')};
 
   display: grid;
-  gap: 0.75rem;
+  gap: 12px;
 
   grid-auto-rows: min-content;
 
@@ -351,16 +351,16 @@ const TrendyGrid = styled.div<{ device: Device; hasContent: boolean }>`
   overflow-y: auto;
 
   &::-webkit-scrollbar {
-    width: 0.5rem;
+    width: 8px;
   }
 
   &::-webkit-scrollbar-track {
-    border-radius: 0.25rem;
+    border-radius: 4px;
     background: ${({ theme }) => theme.colors.dividers};
   }
 
   &::-webkit-scrollbar-thumb {
-    border-radius: 0.25rem;
+    border-radius: 4px;
     background: ${({ theme }) => theme.colors.stroke};
 
     &:hover {

@@ -42,13 +42,13 @@ export default ProgressBar;
 
 export const Container = styled.div`
   width: 100%;
-  height: 0.625rem;
+  height: 10px;
 `;
 
 const ProgressOverlay = styled.div<{ variant: 'rounded' | 'rectangular' }>`
   width: 100%;
   height: 100%;
-  border-radius: ${({ variant }) => (variant === 'rounded' ? '0.625rem' : '0')};
+  border-radius: ${({ variant }) => (variant === 'rounded' ? '10px' : '0')};
 
   background-color: ${({ theme }) => theme.colors.primaryLight};
 `;
@@ -64,7 +64,7 @@ export const ProgressGauge = styled.div<{
   max-width: 100%;
   border-radius: ${({ rate, variant }) => {
     if (variant === 'rectangular') return '0';
-    return rate >= 100 ? '0.625rem' : '0.625rem 0 0 0.625rem';
+    return rate >= 100 ? '10px' : '10px 0 0 10px';
   }};
 
   background-color: ${({ theme }) => theme.colors.primary};

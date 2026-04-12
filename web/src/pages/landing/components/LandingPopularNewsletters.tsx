@@ -103,7 +103,7 @@ const Container = styled.section<{ device: Device }>`
   max-width: ${({ device }) => (device === 'mobile' ? '400px' : '960px')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '2.5rem' : '3.75rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '40px' : '60px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -111,7 +111,7 @@ const Container = styled.section<{ device: Device }>`
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -135,7 +135,7 @@ const NewslettersGrid = styled.div<{ device: Device }>`
   width: 100%;
 
   display: grid;
-  gap: ${({ device }) => (device === 'mobile' ? '0.75rem' : '1rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '12px' : '16px')};
 
   grid-template-columns: ${({ device }) =>
     device === 'mobile' ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)'};
@@ -147,12 +147,12 @@ const NewsletterCard = styled.div<{
   index: number;
 }>`
   min-width: 0;
-  padding: ${({ device }) => (device === 'mobile' ? '1.25rem' : '1.5rem')};
-  border-radius: 1rem;
-  box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 8%);
+  padding: ${({ device }) => (device === 'mobile' ? '20px' : '24px')};
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '0.25rem' : '0.5rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '4px' : '8px')};
   flex-direction: column;
   align-items: stretch;
 
@@ -160,7 +160,7 @@ const NewsletterCard = styled.div<{
 
   opacity: 0;
 
-  transform: translate3d(0, 2.5rem, 0);
+  transform: translate3d(0, 40px, 0);
 
   ${({ isVisible, index }) =>
     isVisible &&
@@ -184,8 +184,8 @@ const NewsletterInfoHeader = styled.div`
 `;
 
 const NewsletterCategory = styled.div<{ device: Device }>`
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 12px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
@@ -194,9 +194,9 @@ const NewsletterCategory = styled.div<{ device: Device }>`
 `;
 
 const NewsletterThumbnail = styled.img<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '2.5rem' : '3rem')};
-  height: ${({ device }) => (device === 'mobile' ? '2.5rem' : '3rem')};
-  border-radius: 0.5rem;
+  width: ${({ device }) => (device === 'mobile' ? '40px' : '48px')};
+  height: ${({ device }) => (device === 'mobile' ? '40px' : '48px')};
+  border-radius: 8px;
 
   display: flex;
   align-items: center;
@@ -220,13 +220,12 @@ const NewsletterDescription = styled.p<{ device: Device }>`
 `;
 
 const RecommendPageLink = styled(Link)<{ device: Device }>`
-  padding: ${({ device }) =>
-    device === 'mobile' ? '0.75rem 1.5rem' : '1rem 2rem'};
-  border-radius: 0.75rem;
-  box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 8%);
+  padding: ${({ device }) => (device === 'mobile' ? '12px 24px' : '16px 32px')};
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
   justify-content: center;
 
@@ -243,10 +242,10 @@ const RecommendPageLink = styled(Link)<{ device: Device }>`
     background-color 0.3s ease;
 
   &:hover {
-    box-shadow: 0 0.375rem 1rem rgb(0 0 0 / 12%);
+    box-shadow: 0 6px 16px rgb(0 0 0 / 12%);
 
     background-color: ${({ theme }) => theme.colors.disabledBackground};
 
-    transform: translateY(-0.125rem);
+    transform: translateY(-2px);
   }
 `;

@@ -71,10 +71,10 @@ const Container = styled.section<{ device: Device }>`
   max-width: 1084px;
   margin: 0 auto;
   padding: ${({ device }) =>
-    device === 'mobile' ? '5rem 0.25rem 0' : '5rem 3.75rem 0'};
+    device === 'mobile' ? '80px 4px 0' : '80px 60px 0'};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
   flex-direction: column;
   align-items: center;
 `;
@@ -94,7 +94,7 @@ const CardWrapper = styled.div<{ device: Device }>`
   width: 100%;
 
   display: grid;
-  gap: ${({ device }) => (device === 'mobile' ? '1rem' : '1.25rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
 
   grid-template-columns: ${({ device }) =>
     device === 'mobile' ? '1fr' : 'repeat(3, 1fr)'};
@@ -109,12 +109,12 @@ const BenefitCard = styled.article<{
   width: 100%;
   max-width: ${({ device }) => (device === 'mobile' ? '400px' : 'none')};
   margin: ${({ device }) => (device === 'mobile' ? '0 auto' : '0')};
-  padding: ${({ device }) => (device === 'mobile' ? '1.25rem' : '1.75rem')};
-  border-radius: 1.25rem;
-  box-shadow: 0 0.625rem 1.5rem rgb(0 0 0 / 6%);
+  padding: ${({ device }) => (device === 'mobile' ? '20px' : '28px')};
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 6%);
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -126,7 +126,7 @@ const BenefitCard = styled.article<{
 
   opacity: 0;
 
-  transform: translate3d(0, 2.5rem, 0);
+  transform: translate3d(0, 40px, 0);
 
   @keyframes fade-in-up {
     to {
@@ -137,8 +137,8 @@ const BenefitCard = styled.article<{
 `;
 
 const IconBox = styled.div`
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
 
   display: flex;
@@ -149,8 +149,8 @@ const IconBox = styled.div`
   color: ${({ theme }) => theme.colors.primary};
 
   svg {
-    width: 1.125rem;
-    height: 1.125rem;
+    width: 18px;
+    height: 18px;
   }
 `;
 
@@ -162,8 +162,8 @@ const BenefitTitle = styled.h3<{ device: Device }>`
 
 const CardNumber = styled.span`
   position: absolute;
-  top: 0.75rem;
-  right: 1rem;
+  top: 12px;
+  right: 16px;
 
   display: flex;
   align-items: center;
@@ -176,7 +176,7 @@ const CardNumber = styled.span`
 `;
 
 const SubDescription = styled.p<{ device: Device }>`
-  margin-top: 2rem;
+  margin-top: 32px;
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>

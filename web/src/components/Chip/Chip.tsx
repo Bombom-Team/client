@@ -20,8 +20,8 @@ const Container = styled.button<{
   selected: boolean;
 }>`
   width: fit-content;
-  padding: 0.5rem 1rem;
-  border-radius: 1rem;
+  padding: 8px 16px;
+  border-radius: 16px;
 
   display: flex;
   align-items: center;

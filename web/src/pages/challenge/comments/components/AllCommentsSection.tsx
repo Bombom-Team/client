@@ -53,7 +53,7 @@ export default AllCommentsSection;
 
 const Container = styled.section`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-direction: column;
 `;
 
@@ -65,13 +65,13 @@ const Title = styled.h3<{ isMobile: boolean }>`
 
 const CardList = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.5rem' : '0.75rem')};
+  gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
   flex-direction: column;
 `;
 
 const EmptyState = styled.div<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => (isMobile ? '1.5rem' : '2rem')};
-  border-radius: 0.75rem;
+  padding: ${({ isMobile }) => (isMobile ? '24px' : '32px')};
+  border-radius: 12px;
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textSecondary};

@@ -104,10 +104,10 @@ export default ChallengeGuideModal;
 const Container = styled.div`
   width: 100%;
   max-width: 480px;
-  padding: 1.5rem;
+  padding: 24px;
 
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   flex-direction: column;
 
   box-sizing: border-box;
@@ -115,7 +115,7 @@ const Container = styled.div`
 
 const Header = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-direction: column;
   align-items: center;
 `;
@@ -130,13 +130,13 @@ const Title = styled.h2`
 
 const GuideList = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
 `;
 
 const GuideItem = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: flex-start;
 `;
 
@@ -149,7 +149,7 @@ const GuideIcon = styled.div`
 
 const GuideContent = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   flex: 1;
   flex-direction: column;
 `;
@@ -171,13 +171,13 @@ const GuideDescription = styled.p`
 
 const AgreementSection = styled.div`
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
+  padding: 12px 16px;
+  border-radius: 8px;
 `;
 
 const CheckboxWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
@@ -191,20 +191,20 @@ const AgreementLabel = styled.label<{ isMobile: boolean }>`
 
 const ButtonSection = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 
 const StartButton = styled(Button)`
   width: 100%;
-  padding: 0.75rem 1.5rem;
+  padding: 12px 24px;
 
   font: ${({ theme }) => theme.fonts.heading6};
 `;
 
 const IntroButton = styled(Button)`
   width: 100%;
-  padding: 0.75rem 1.5rem;
+  padding: 12px 24px;
 
   font: ${({ theme }) => theme.fonts.body1};
 `;

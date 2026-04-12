@@ -71,12 +71,12 @@ const Container = styled.div<{ isMobile: boolean; isFailed: boolean }>`
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: ${({ isMobile }) => (isMobile ? '1rem' : '1.25rem 1.5rem')};
+  padding: ${({ isMobile }) => (isMobile ? '16px' : '20px 24px')};
   border: 1px solid ${({ theme }) => theme.colors.primaryLight};
-  border-radius: 1rem;
+  border-radius: 16px;
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.75rem' : '1.5rem')};
+  gap: ${({ isMobile }) => (isMobile ? '12px' : '24px')};
   align-items: center;
   justify-content: ${({ isMobile }) => (isMobile ? 'center' : 'space-between')};
 
@@ -88,7 +88,7 @@ const SummaryInfo = styled.div`
   min-width: 0;
 
   display: flex;
-  gap: 0.375rem;
+  gap: 6px;
   flex-direction: column;
 `;
 
@@ -109,7 +109,7 @@ const SummaryStats = styled.div<{ isMobile: boolean; isSurvived: boolean }>`
   min-width: 0;
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0' : '0.375rem')};
+  gap: ${({ isMobile }) => (isMobile ? '0' : '6px')};
   align-items: center;
   justify-content: space-between;
 
@@ -119,10 +119,10 @@ const SummaryStats = styled.div<{ isMobile: boolean; isSurvived: boolean }>`
 const StatBlock = styled.div<{ isMobile: boolean }>`
   width: auto;
   min-width: ${({ isMobile }) => (isMobile ? '48px' : '72px')};
-  padding: ${({ isMobile }) => (isMobile ? '0 0.25rem' : '0 0.375rem')};
+  padding: ${({ isMobile }) => (isMobile ? '0 4px' : '0 6px')};
 
   display: flex;
-  gap: 0.375rem;
+  gap: 6px;
   flex: 1;
   flex-direction: column;
   align-items: center;
@@ -130,7 +130,7 @@ const StatBlock = styled.div<{ isMobile: boolean }>`
 
 const ParticipationValueRow = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
@@ -183,8 +183,8 @@ const StatLabel = styled.div<{ isMobile: boolean }>`
 `;
 
 const StatDivider = styled.div`
-  width: 0.0625rem;
-  height: 2rem;
+  width: 1px;
+  height: 32px;
 
   background: ${({ theme }) => theme.colors.dividers};
 `;

@@ -33,8 +33,8 @@ const TabHeader = styled.div`
 `;
 
 const TabButton = styled.button<{ isActive: boolean }>`
-  padding: 0.75rem 0;
-  border-bottom: 0.125rem solid
+  padding: 12px 0;
+  border-bottom: 2px solid
     ${({ theme, isActive }) =>
       isActive ? theme.colors.primary : 'transparent'};
 

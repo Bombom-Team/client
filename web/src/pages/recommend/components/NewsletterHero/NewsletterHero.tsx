@@ -61,7 +61,7 @@ export default NewsletterHero;
 const Container = styled.div`
   overflow: hidden;
   width: 100%;
-  border-radius: 1rem;
+  border-radius: 16px;
 
   background: transparent;
 `;
@@ -69,11 +69,11 @@ const Container = styled.div`
 const HeroContent = styled.div<{ isPC: boolean }>`
   z-index: ${({ theme }) => theme.zIndex.content};
   width: 100%;
-  height: 17.5rem;
-  padding: 3.5rem;
+  height: 280px;
+  padding: 56px;
 
   display: flex;
-  gap: ${({ isPC }) => (isPC ? '1rem' : '0.75rem')};
+  gap: ${({ isPC }) => (isPC ? '16px' : '12px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -102,9 +102,9 @@ const HeroSubtitle = styled.p<{ isPC: boolean }>`
 
 const CTAButton = styled.button<{ isPC: boolean }>`
   width: fit-content;
-  padding: 0.75rem 1.5rem;
+  padding: 12px 24px;
   border: none;
-  border-radius: 0.75rem;
+  border-radius: 12px;
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
@@ -113,7 +113,7 @@ const CTAButton = styled.button<{ isPC: boolean }>`
   transition: all 0.2s ease;
 
   &:hover {
-    box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 15%);
-    transform: translateY(-0.125rem);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+    transform: translateY(-2px);
   }
 `;

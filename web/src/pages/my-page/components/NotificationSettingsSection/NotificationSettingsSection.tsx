@@ -89,30 +89,30 @@ const Container = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   flex-direction: column;
 `;
 
 const SettingSection = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   flex-direction: column;
 `;
 
 const SectionHeader = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   flex-direction: column;
 `;
 
 const GoToDeviceSettingSection = styled.button`
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 12px 16px;
   border: 1px solid ${({ theme }) => theme.colors.primaryInfo};
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
@@ -120,7 +120,7 @@ const GoToDeviceSettingSection = styled.button`
 
 const InfoText = styled.p`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body1};

@@ -37,9 +37,8 @@ const StyledTab = styled(stringTab, {
   shouldForwardProp: (prop) => prop !== 'device',
 })<{ device: Device }>`
   min-width: ${({ device }) => (device === 'mobile' ? '52px' : 'fit-content')};
-  padding: ${({ device }) => (device === 'mobile' ? '0.5rem' : '0.75rem 1rem')};
-  border-radius: ${({ device }) =>
-    device === 'mobile' ? '0.75rem' : '1.5rem'};
+  padding: ${({ device }) => (device === 'mobile' ? '8px' : '12px 16px')};
+  border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
 
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};

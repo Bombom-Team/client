@@ -92,9 +92,9 @@ const CertificateScaler = styled.div<{ isPC: boolean }>`
 `;
 
 const DownloadButton = styled(Button)`
-  padding: 0.75rem 1rem;
+  padding: 12px 16px;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   font: ${({ theme }) => theme.fonts.caption};
   font-weight: 600;

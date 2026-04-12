@@ -88,14 +88,14 @@ const MainSection = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 1.25rem;
+  gap: 20px;
   flex-direction: column;
   align-items: flex-start;
 `;
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
@@ -113,10 +113,10 @@ const ContentWrapper = styled.div<{ isPC: boolean }>`
 `;
 
 const SidebarSection = styled.div<{ isPC: boolean }>`
-  width: ${({ isPC }) => (isPC ? '20rem' : '100%')};
+  width: ${({ isPC }) => (isPC ? '320px' : '100%')};
 
   display: flex;
-  gap: 1.25rem;
+  gap: 20px;
   flex-direction: column;
 
   order: ${({ isPC }) => (isPC ? 1 : 0)};
@@ -133,9 +133,9 @@ const MainContentSection = styled.div<{ isPC: boolean }>`
 `;
 
 const BookmarkStorageIcon = styled(MemoIcon)`
-  width: 2.25rem;
-  height: 2.25rem;
-  padding: 0.5rem;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
   border-radius: 50%;
 
   display: flex;

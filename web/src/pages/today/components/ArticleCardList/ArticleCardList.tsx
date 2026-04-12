@@ -142,7 +142,7 @@ export const Container = styled.div<{ isMobile: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   flex-direction: column;
   align-items: flex-start;
 `;
@@ -151,13 +151,13 @@ export const LettersWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 
 const ListTitleBox = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: center;
 `;
 
@@ -170,17 +170,17 @@ export const CardList = styled.ul<{ isMobile: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0' : '1rem')};
+  gap: ${({ isMobile }) => (isMobile ? '0' : '16px')};
   flex-direction: column;
 
   ${({ isMobile, theme }) =>
     isMobile &&
     `
     li {
-      padding: 0.5rem 0;
+      padding: 8px 0;
     }
     li:not(:last-child) {
-      border-bottom: 0.125rem solid ${theme.colors.dividers};
+      border-bottom: 2px solid ${theme.colors.dividers};
     }
   `}
 `;

@@ -39,15 +39,15 @@ const NewsletterFilterSkeleton = () => {
             key={index}
             StartComponentSkeleton={
               index !== TOTAL_COUNT_INDEX
-                ? { width: '1.5rem', height: '1.5rem', borderRadius: '50%' }
+                ? { width: '24px', height: '24px', borderRadius: '50%' }
                 : undefined
             }
             EndComponentSkeleton={
-              isPC ? { width: '2.25rem', height: '1.5rem' } : undefined
+              isPC ? { width: '36px', height: '24px' } : undefined
             }
             textAlign={isPC ? 'start' : 'center'}
-            width="5rem"
-            height="2.25rem"
+            width="80px"
+            height="36px"
           />
         ))}
       </StyledTabs>

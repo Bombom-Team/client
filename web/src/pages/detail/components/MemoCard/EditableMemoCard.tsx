@@ -80,13 +80,13 @@ export default EditableMemoCard;
 const Container = styled.div`
   position: relative;
   width: 100%;
-  padding: 1.25rem;
+  padding: 20px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 1rem;
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 4%);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
@@ -97,18 +97,18 @@ const Container = styled.div`
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 8%);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 8%);
 
     border-color: ${({ theme }) => theme.colors.primary};
-    transform: translateY(-0.0625rem);
+    transform: translateY(-1px);
   }
 `;
 
 const DeleteButton = styled.button`
   margin-left: auto;
-  padding: 0.5rem;
+  padding: 8px;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   background-color: transparent;
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -126,9 +126,9 @@ const DeleteButton = styled.button`
 
 const MemoContent = styled.div`
   width: 100%;
-  padding: 1rem;
+  padding: 16px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 0.75rem;
+  border-radius: 12px;
 
   background: linear-gradient(
     135deg,
@@ -151,10 +151,10 @@ const MemoContentText = styled.p`
 const NoteMemo = styled.textarea`
   width: 100%;
   height: auto;
-  padding: 1rem;
+  padding: 16px;
   outline: none;
-  border: 0.125rem solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 0.75rem;
+  border: 2px solid ${({ theme }) => theme.colors.stroke};
+  border-radius: 12px;
   box-shadow: none;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -165,7 +165,7 @@ const NoteMemo = styled.textarea`
   transition: all 0.2s ease-in-out;
 
   &:focus {
-    box-shadow: 0 0 0 0.1875rem ${({ theme }) => theme.colors.primary}20;
+    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primary}20;
     border-color: ${({ theme }) => theme.colors.primary};
   }
 

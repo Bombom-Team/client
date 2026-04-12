@@ -49,7 +49,7 @@ export const Container = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 0.875rem;
+  gap: 14px;
   flex-direction: column;
 `;
 
@@ -57,13 +57,13 @@ export const ProgressInfo = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
 const StyledIcon = styled.img`
-  width: 1rem;
-  height: 1rem;
+  width: 16px;
+  height: 16px;
 
   object-fit: cover;
   object-position: center;

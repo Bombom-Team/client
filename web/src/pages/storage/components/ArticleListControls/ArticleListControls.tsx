@@ -129,10 +129,10 @@ const ArticleListControls = ({
 export default ArticleListControls;
 
 const Container = styled.div`
-  margin-bottom: 0.125rem;
+  margin-bottom: 2px;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 
@@ -146,7 +146,7 @@ const SummaryBar = styled.div`
 
 const SummaryBox = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '0.75rem' : '1rem')};
+  gap: ${({ isMobile }) => (isMobile ? '12px' : '16px')};
   align-items: center;
 `;
 
@@ -157,7 +157,7 @@ const StorageUsageBarWrapper = styled.div`
 
 const DeleteWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
@@ -169,17 +169,17 @@ const DeleteCount = styled.p`
 `;
 
 const HorizontalDivider = styled.div`
-  width: 0.125rem;
-  height: 1rem;
+  width: 2px;
+  height: 16px;
 
   background-color: ${({ theme }) => theme.colors.stroke};
 `;
 
 const TextButton = styled.button`
-  padding-left: 0.5rem;
+  padding-left: 8px;
 
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};

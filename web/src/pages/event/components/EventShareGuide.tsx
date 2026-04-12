@@ -98,16 +98,16 @@ const Container = styled.section`
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: 4rem 1.5rem;
-  border-bottom: 0.25rem solid ${({ theme }) => theme.colors.black};
+  padding: 64px 24px;
+  border-bottom: 4px solid ${({ theme }) => theme.colors.black};
 
   background-color: #e1f5fe;
 `;
 
 const SparklesDecoration = styled.div`
   position: absolute;
-  bottom: 2.5rem;
-  left: -1.25rem;
+  bottom: 40px;
+  left: -20px;
 
   color: #bfdbfe;
 
@@ -118,16 +118,16 @@ const SparklesDecoration = styled.div`
 const HeaderWrapper = styled.div`
   position: relative;
   z-index: ${({ theme }) => theme.zIndex.content};
-  margin-bottom: 2.5rem;
+  margin-bottom: 40px;
 
   text-align: center;
 `;
 
 const BadgeBox = styled.div`
-  margin-bottom: 0.75rem;
-  padding: 0.5rem 1rem;
-  border: 0.125rem solid ${({ theme }) => theme.colors.black};
-  border-radius: 6.25rem;
+  margin-bottom: 12px;
+  padding: 8px 16px;
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 100px;
 
   display: inline-block;
 
@@ -147,7 +147,7 @@ const Title = styled.h2`
 `;
 
 const Description = styled.p`
-  margin-top: 0.5rem;
+  margin-top: 8px;
 
   color: #4b5563;
   font: ${({ theme }) => theme.fonts.heading6};
@@ -166,10 +166,10 @@ const PrizeCard = styled.div`
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: 2rem;
-  border: 0.25rem solid ${({ theme }) => theme.colors.black};
-  border-radius: 2.5rem;
-  box-shadow: 0.25rem 0.25rem 0 0 ${({ theme }) => theme.colors.black};
+  padding: 32px;
+  border: 4px solid ${({ theme }) => theme.colors.black};
+  border-radius: 40px;
+  box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
 
   background-color: ${({ theme }) => theme.colors.white};
 `;
@@ -179,19 +179,19 @@ const CountBadge = styled.div`
   top: 0;
   right: 0;
   z-index: 20;
-  padding: 1rem 1.875rem;
-  border-bottom: 0.25rem solid ${({ theme }) => theme.colors.black};
-  border-left: 0.25rem solid ${({ theme }) => theme.colors.black};
+  padding: 16px 30px;
+  border-bottom: 4px solid ${({ theme }) => theme.colors.black};
+  border-left: 4px solid ${({ theme }) => theme.colors.black};
 
   background-color: #facc15;
   color: ${({ theme }) => theme.colors.black};
   font: ${({ theme }) => theme.fonts.heading5};
 
-  border-bottom-left-radius: 2.25rem;
+  border-bottom-left-radius: 36px;
 `;
 
 const PrizeHeaderWrapper = styled.div`
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
 
   display: flex;
   flex-direction: column;
@@ -202,17 +202,17 @@ const PrizeHeaderWrapper = styled.div`
 
 const CoffeeVisualBox = styled.div`
   position: relative;
-  width: 9.375rem;
-  height: 9.375rem;
-  margin-bottom: 0.75rem;
+  width: 150px;
+  height: 150px;
+  margin-bottom: 12px;
 
   transition: transform 300ms ease;
 `;
 
 const CoffeeImage = styled.img`
-  width: 6.25rem;
+  width: 100px;
   height: auto;
-  margin-bottom: 1.25rem;
+  margin-bottom: 20px;
 `;
 
 const PrizeName = styled.h3`
@@ -222,13 +222,13 @@ const PrizeName = styled.h3`
 `;
 
 const StepWrapper = styled.div`
-  margin-bottom: 2rem;
-  padding: 1.25rem 1.5rem;
-  border: 0.125rem dashed #bfdbfe;
-  border-radius: 1.5rem;
+  margin-bottom: 32px;
+  padding: 20px 24px;
+  border: 2px dashed #bfdbfe;
+  border-radius: 24px;
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
 
   background-color: rgb(239 246 255 / 50%);
@@ -236,14 +236,14 @@ const StepWrapper = styled.div`
 
 const StepRow = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: flex-start;
 `;
 
 const StepBadge = styled.div`
-  margin-top: 0.125rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
+  margin-top: 2px;
+  padding: 4px 8px;
+  border-radius: 8px;
 
   flex-shrink: 0;
 
@@ -267,7 +267,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const TipText = styled.p`
-  margin-bottom: 1.25rem;
+  margin-bottom: 20px;
 
   color: ${({ theme }) => theme.colors.error};
   font: ${({ theme }) => theme.fonts.heading5};
@@ -276,13 +276,13 @@ const TipText = styled.p`
 
 const ShareButton = styled.a`
   width: 100%;
-  padding: 1.25rem;
-  border: 0.25rem solid ${({ theme }) => theme.colors.black};
-  border-radius: 1rem;
-  box-shadow: 0 0.125rem 0 0 ${({ theme }) => theme.colors.black};
+  padding: 20px;
+  border: 4px solid ${({ theme }) => theme.colors.black};
+  border-radius: 16px;
+  box-shadow: 0 2px 0 0 ${({ theme }) => theme.colors.black};
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: center;
   justify-content: center;
 
@@ -295,13 +295,13 @@ const ShareButton = styled.a`
 
   &:hover {
     box-shadow: none;
-    transform: translateY(0.25rem);
+    transform: translateY(4px);
   }
 `;
 
 const NoticeWrapper = styled(Flex)`
   width: 100%;
-  padding-top: 1.5rem;
+  padding-top: 24px;
 `;
 
 const NoticeText = styled.p`

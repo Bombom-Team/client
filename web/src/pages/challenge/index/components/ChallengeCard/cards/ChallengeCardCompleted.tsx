@@ -63,8 +63,8 @@ export default ChallengeCardCompleted;
 
 const GradeBadgeTopRight = styled.span`
   position: absolute;
-  top: -0.375rem;
-  right: 2rem;
+  top: -6px;
+  right: 32px;
 
   color: ${({ color }) => color};
   font: ${({ theme }) => theme.fonts.body3};

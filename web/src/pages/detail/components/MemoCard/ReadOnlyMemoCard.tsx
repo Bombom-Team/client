@@ -56,13 +56,13 @@ export default ReadOnlyMemoCard;
 
 const Container = styled.div<{ disabled: boolean }>`
   width: 100%;
-  padding: 1.25rem;
+  padding: 20px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 1rem;
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 4%);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
@@ -73,10 +73,10 @@ const Container = styled.div<{ disabled: boolean }>`
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 8%);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 8%);
 
     border-color: ${({ theme }) => theme.colors.primary};
-    transform: translateY(-0.0625rem);
+    transform: translateY(-1px);
   }
 
   &:disabled {
@@ -97,17 +97,17 @@ const HeaderWrapper = styled.div`
 `;
 
 const NewsletterImage = styled.img`
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 0.375rem;
-  box-shadow: 0 0.0625rem 0.1875rem rgb(0 0 0 / 10%);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
 
   object-fit: cover;
 `;
 
 const NewsletterMeta = styled.div`
   display: flex;
-  gap: 0.625rem;
+  gap: 10px;
   align-items: center;
 `;
 
@@ -135,13 +135,13 @@ const FooterWrapper = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: center;
   justify-content: space-between;
 `;
 
 const CreatedAtText = styled.time`
-  margin-top: 0.25rem;
+  margin-top: 4px;
 
   align-self: flex-end;
 
@@ -151,9 +151,9 @@ const CreatedAtText = styled.time`
 
 const MemoContent = styled.div`
   width: 100%;
-  padding: 1rem;
+  padding: 16px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 0.75rem;
+  border-radius: 12px;
 
   background: linear-gradient(
     135deg,
@@ -176,9 +176,9 @@ const MemoContentText = styled.p`
 const MemoText = styled.p`
   width: 100%;
   margin: 0;
-  padding: 1rem;
-  border: 0.125rem solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 0.75rem;
+  padding: 16px;
+  border: 2px solid ${({ theme }) => theme.colors.stroke};
+  border-radius: 12px;
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};

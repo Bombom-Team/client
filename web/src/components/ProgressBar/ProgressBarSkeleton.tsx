@@ -11,15 +11,15 @@ const ProgressBarSkeleton = ({ hasCaption }: ProgressBarSkeletonProps) => {
       <SkeletonBox
         width="100%"
         height="100%"
-        borderRadius="0.625rem"
+        borderRadius="10px"
         as={ProgressGauge}
       />
       {hasCaption && (
         <SkeletonBox
-          width="1.5rem"
-          height="0.75rem"
+          width="24px"
+          height="12px"
           justifySelf="flex-end"
-          marginTop="0.125rem"
+          marginTop="2px"
           as={ProgressCaption}
         />
       )}

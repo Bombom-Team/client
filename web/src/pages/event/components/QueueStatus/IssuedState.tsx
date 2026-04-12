@@ -132,7 +132,7 @@ const CouponContainer = styled.div`
 const DownloadButton = styled(Button)`
   width: 100%;
   min-width: 180px;
-  border: ${({ theme }) => `0.125rem solid ${theme.colors.black}`};
+  border: ${({ theme }) => `2px solid ${theme.colors.black}`};
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body1};

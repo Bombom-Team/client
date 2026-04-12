@@ -40,14 +40,14 @@ const Container = styled.section`
   width: 100%;
 
   display: flex;
-  gap: 1.375rem;
+  gap: 22px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
 const PostboxIconWrapper = styled.div`
-  padding: 2.875rem;
+  padding: 46px;
 `;
 
 const EmptyTitle = styled.h2`
@@ -61,7 +61,7 @@ const EmptyTitle = styled.h2`
 
 const DescriptionWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 
@@ -78,11 +78,11 @@ const Support = styled.p`
 `;
 
 const LinkButton = styled(Link)`
-  padding: 0.625rem 0.75rem;
-  border-radius: 0.75rem;
+  padding: 10px 12px;
+  border-radius: 12px;
 
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
   justify-content: center;
 
@@ -98,6 +98,6 @@ const LinkButton = styled(Link)`
 `;
 
 const StyledArrowIcon = styled(ArrowIcon)`
-  width: 1.125rem;
-  height: 1.125rem;
+  width: 18px;
+  height: 18px;
 `;

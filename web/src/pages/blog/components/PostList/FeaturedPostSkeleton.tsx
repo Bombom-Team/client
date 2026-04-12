@@ -19,24 +19,24 @@ const FeaturedPostSkeleton = () => {
 
       <SkeletonContentWrapper device={device}>
         <Skeleton
-          width={device === 'mobile' ? '7.5rem' : '9rem'}
-          height={device === 'mobile' ? '1.25rem' : '1.5rem'}
+          width={device === 'mobile' ? '120px' : '144px'}
+          height={device === 'mobile' ? '20px' : '24px'}
         />
 
         <DescriptionBox>
           <Skeleton
             width="100%"
-            height={device === 'mobile' ? '2.75rem' : '3.5rem'}
+            height={device === 'mobile' ? '44px' : '56px'}
           />
           <Skeleton
             width="72%"
-            height={device === 'mobile' ? '1.5rem' : '1.75rem'}
+            height={device === 'mobile' ? '24px' : '28px'}
           />
         </DescriptionBox>
 
         <Skeleton
-          width={device === 'mobile' ? '6rem' : '5.5rem'}
-          height={device === 'mobile' ? '1.375rem' : '1.125rem'}
+          width={device === 'mobile' ? '96px' : '88px'}
+          height={device === 'mobile' ? '22px' : '18px'}
         />
       </SkeletonContentWrapper>
     </Container>
@@ -46,5 +46,5 @@ const FeaturedPostSkeleton = () => {
 export default FeaturedPostSkeleton;
 
 const SkeletonContentWrapper = styled(ContentWrapper)`
-  gap: ${({ device }) => (device === 'mobile' ? '1rem' : '2.5rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '16px' : '40px')};
 `;

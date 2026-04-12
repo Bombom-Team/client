@@ -76,11 +76,11 @@ export default EventGuide;
 
 const Container = styled.section`
   width: 100%;
-  padding: 4rem 1.5rem 4.25rem;
-  border-bottom: 0.25rem solid ${({ theme }) => theme.colors.black};
+  padding: 64px 24px 68px;
+  border-bottom: 4px solid ${({ theme }) => theme.colors.black};
 
   display: flex;
-  gap: 2.5rem;
+  gap: 40px;
   flex-direction: column;
   align-items: center;
 
@@ -89,8 +89,8 @@ const Container = styled.section`
 
 const SectionHeader = styled.div`
   width: 100%;
-  padding-bottom: 0.75rem;
-  border-bottom: 0.25rem solid ${({ theme }) => theme.colors.black};
+  padding-bottom: 12px;
+  border-bottom: 4px solid ${({ theme }) => theme.colors.black};
 
   display: flex;
   align-items: center;
@@ -108,20 +108,20 @@ const StepWrapper = styled.div`
   max-width: 448px;
 
   display: flex;
-  gap: 2rem;
+  gap: 32px;
   flex-direction: column;
 `;
 
 const StepCard = styled.div`
   position: relative;
   width: 100%;
-  padding: 2.25rem 1.75rem 1.75rem;
-  border: 0.25rem solid ${({ theme }) => theme.colors.black};
-  border-radius: 1rem;
-  box-shadow: 0.25rem 0.25rem 0 0 ${({ theme }) => theme.colors.black};
+  padding: 36px 28px 28px;
+  border: 4px solid ${({ theme }) => theme.colors.black};
+  border-radius: 16px;
+  box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
   align-items: center;
 
@@ -130,10 +130,10 @@ const StepCard = styled.div`
 
 const StepBadge = styled.div`
   position: absolute;
-  top: -1rem;
+  top: -16px;
   left: 50%;
-  padding: 0.25rem 1rem;
-  border-radius: 2rem;
+  padding: 4px 16px;
+  border-radius: 32px;
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
@@ -152,20 +152,20 @@ const Description = styled.p<{ device: Device }>`
 `;
 
 const StepHighlight = styled.span`
-  padding: 0.125rem 0.25rem 0;
-  border-bottom: 0.125rem solid ${({ theme }) => theme.colors.black};
+  padding: 2px 4px 0;
+  border-bottom: 2px solid ${({ theme }) => theme.colors.black};
 
   background-color: #fef08a;
   text-align: center;
 `;
 
 const LoginButtonExample = styled.div`
-  padding: 0.75rem 1rem;
-  border: 0.125rem solid ${({ theme }) => theme.colors.black};
-  border-radius: 1.5rem;
+  padding: 12px 16px;
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 24px;
 
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.primary};
@@ -175,12 +175,12 @@ const LoginButtonExample = styled.div`
 `;
 
 const ApplyButtonExample = styled.div`
-  padding: 0.75rem 1.25rem;
-  border: 0.125rem solid ${({ theme }) => theme.colors.black};
-  border-radius: 1.5rem;
+  padding: 12px 20px;
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 24px;
 
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 
   background-color: #d81b60;
@@ -200,9 +200,9 @@ const StepIllustration = styled.div`
 `;
 
 const IllustrationBox = styled.div`
-  padding: 0.75rem;
-  border: 0.125rem solid ${({ theme }) => theme.colors.black};
-  border-radius: 0.75rem;
+  padding: 12px;
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 12px;
 
   display: flex;
   flex-direction: column;
@@ -213,12 +213,12 @@ const IllustrationBox = styled.div`
 `;
 
 const WhiteBox = styled.div`
-  padding: 0.75rem 1.5rem;
-  border: 0.125rem solid ${({ theme }) => theme.colors.black};
-  border-radius: 0.75rem;
+  padding: 12px 24px;
+  border: 2px solid ${({ theme }) => theme.colors.black};
+  border-radius: 12px;
 
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: center;
   justify-content: center;
 

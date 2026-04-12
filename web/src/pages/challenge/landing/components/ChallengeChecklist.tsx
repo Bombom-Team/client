@@ -64,10 +64,10 @@ export default ChallengeChecklist;
 const Container = styled.section<{ device: Device; isVisible: boolean }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'pc' ? 'min(80%, 1024px)' : '100%')};
-  padding-top: 1.5rem;
+  padding-top: 24px;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -77,7 +77,7 @@ const Container = styled.section<{ device: Device; isVisible: boolean }>`
 
   opacity: 0;
 
-  transform: translate3d(0, 2.5rem, 0);
+  transform: translate3d(0, 40px, 0);
 
   @keyframes fade-in-up {
     to {
@@ -89,17 +89,17 @@ const Container = styled.section<{ device: Device; isVisible: boolean }>`
 
 const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '0 0.5rem' : '0 3.75rem')};
+  padding: ${({ device }) => (device === 'mobile' ? '0 8px' : '0 60px')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
   flex-direction: column;
   align-items: center;
 `;
 
 const Title = styled.h2<{ device: Device }>`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textPrimary};
@@ -111,24 +111,23 @@ const Title = styled.h2<{ device: Device }>`
 
 const ChecklistCard = styled.div<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) =>
-    device === 'mobile' ? '0.75rem 0.5rem' : '1.5rem'};
+  padding: ${({ device }) => (device === 'mobile' ? '12px 8px' : '24px')};
   border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 1.25rem;
-  box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 8%);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 8%);
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '1rem' : '1.5rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '16px' : '24px')};
   flex-direction: column;
 
   background: rgb(255 255 255 / 40%);
 
-  backdrop-filter: blur(1.25rem);
+  backdrop-filter: blur(20px);
 `;
 
 const ItemNumber = styled.span<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '1.75rem' : '2rem')};
-  height: ${({ device }) => (device === 'mobile' ? '1.75rem' : '2rem')};
+  width: ${({ device }) => (device === 'mobile' ? '28px' : '32px')};
+  height: ${({ device }) => (device === 'mobile' ? '28px' : '32px')};
   border-radius: 50%;
 
   display: flex;
@@ -142,10 +141,10 @@ const ItemNumber = styled.span<{ device: Device }>`
 `;
 
 const ItemContent = styled.div`
-  padding: 0 0.5rem;
+  padding: 0 8px;
 
   display: flex;
-  gap: 0.375rem;
+  gap: 6px;
   flex-direction: column;
 `;
 

@@ -109,7 +109,7 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   min-height: fit-content;
-  padding: 0 0.75rem;
+  padding: 0 12px;
 
   background: transparent;
 `;

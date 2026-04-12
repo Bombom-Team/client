@@ -88,16 +88,16 @@ export default SubscribedNewslettersSection;
 
 const Container = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
 `;
 
 const NewsletterGrid = styled.div<{ device: Device }>`
   display: grid;
-  gap: 1rem;
+  gap: 16px;
 
   grid-template-columns: ${({ device }) =>
-    device === 'mobile' ? '1fr' : 'repeat(auto-fill, minmax(18.75rem, 1fr))'};
+    device === 'mobile' ? '1fr' : 'repeat(auto-fill, minmax(300px, 1fr))'};
 `;
 
 const EmptyMessage = styled.p`

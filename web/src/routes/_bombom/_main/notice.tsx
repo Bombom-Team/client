@@ -90,7 +90,7 @@ const Container = styled.div`
   margin: 0 auto;
 
   display: flex;
-  gap: 1.5rem;
+  gap: 24px;
   flex-direction: column;
   align-items: flex-start;
 
@@ -103,16 +103,16 @@ const StyledMenuIcon = styled(MenuIcon)`
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
   justify-content: center;
 `;
 
 const TitleIconBox = styled.div`
-  width: 1.75rem;
-  height: 1.75rem;
-  padding: 0.375rem;
-  border-radius: 0.875rem;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  border-radius: 14px;
 
   display: flex;
   align-items: center;
@@ -136,7 +136,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
 
 const HeaderTextWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 

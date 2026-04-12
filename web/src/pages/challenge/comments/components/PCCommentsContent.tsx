@@ -54,6 +54,6 @@ export default PCCommentsContent;
 
 const Container = styled.section`
   display: flex;
-  gap: 1.75rem;
+  gap: 28px;
   flex-direction: column;
 `;

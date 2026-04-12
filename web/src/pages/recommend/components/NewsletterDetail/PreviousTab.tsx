@@ -82,10 +82,10 @@ export default PreviousTab;
 const Container = styled.div`
   position: relative;
   height: 100%;
-  padding: 3rem 0;
+  padding: 48px 0;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
   align-items: center;
 
@@ -97,10 +97,10 @@ const Container = styled.div`
 
 const OpenSubscribeButton = styled.button`
   width: fit-content;
-  margin-bottom: 6.25rem;
-  padding: 0.5rem 1rem;
+  margin-bottom: 100px;
+  padding: 8px 16px;
   border: 1px solid ${({ theme }) => theme.colors.primary};
-  border-radius: 1rem;
+  border-radius: 16px;
 
   display: flex;
   align-items: center;
@@ -113,8 +113,8 @@ const OpenSubscribeButton = styled.button`
 
 const ImageWrapper = styled.div<{ isMobile: boolean }>`
   position: absolute;
-  top: ${({ isMobile }) => (isMobile ? '1.25rem' : '0')};
-  left: calc(50% + 2.5rem);
+  top: ${({ isMobile }) => (isMobile ? '20px' : '0')};
+  left: calc(50% + 40px);
 
   pointer-events: none;
 `;

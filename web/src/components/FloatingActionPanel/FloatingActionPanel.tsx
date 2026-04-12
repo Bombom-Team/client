@@ -45,14 +45,14 @@ const Container = styled.div<{ top: string; left: string }>`
   top: ${({ top }) => top};
   left: ${({ left }) => left};
   z-index: ${({ theme }) => theme.zIndex.floating};
-  width: 3.5rem;
-  padding: 0.25rem 0;
+  width: 56px;
+  padding: 4px 0;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 0.75rem;
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 5%);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 5%);
 
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
   align-items: center;
 
@@ -62,8 +62,8 @@ const Container = styled.div<{ top: string; left: string }>`
 `;
 
 const ActionButton = styled.button`
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
 
   display: flex;
@@ -82,8 +82,8 @@ const ActionButton = styled.button`
 `;
 
 const ActionItem = styled.div`
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
 
   display: flex;

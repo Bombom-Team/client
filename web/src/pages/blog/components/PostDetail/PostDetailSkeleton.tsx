@@ -13,23 +13,23 @@ const PostDetailSkeleton = () => {
       {device === 'pc' && <ActionRail />}
 
       <ArticleSkeleton device={device}>
-        <Skeleton width="8rem" height="1.125rem" />
+        <Skeleton width="128px" height="18px" />
 
         <Flex direction="column" gap={12}>
           <Skeleton
             width="100%"
-            height={device === 'mobile' ? '2.5rem' : '3.5rem'}
+            height={device === 'mobile' ? '40px' : '56px'}
           />
           <Skeleton
             width="72%"
-            height={device === 'mobile' ? '2.5rem' : '3.5rem'}
+            height={device === 'mobile' ? '40px' : '56px'}
           />
         </Flex>
 
         <Flex gap={12} align="center">
-          <Skeleton width="5.5rem" height="1.75rem" borderRadius="0.75rem" />
-          <Skeleton width="6rem" height="1.125rem" />
-          <Skeleton width="3.5rem" height="1.125rem" />
+          <Skeleton width="88px" height="28px" borderRadius="12px" />
+          <Skeleton width="96px" height="18px" />
+          <Skeleton width="56px" height="18px" />
         </Flex>
 
         <ThumbnailBox device={device}>
@@ -37,12 +37,12 @@ const PostDetailSkeleton = () => {
         </ThumbnailBox>
 
         <Flex direction="column" gap={16}>
-          <Skeleton width="100%" height="1.5rem" />
-          <Skeleton width="92%" height="1.5rem" />
-          <Skeleton width="96%" height="1.5rem" />
-          <Skeleton width="88%" height="1.5rem" />
-          <Skeleton width="100%" height="1.5rem" />
-          <Skeleton width="78%" height="1.5rem" />
+          <Skeleton width="100%" height="24px" />
+          <Skeleton width="92%" height="24px" />
+          <Skeleton width="96%" height="24px" />
+          <Skeleton width="88%" height="24px" />
+          <Skeleton width="100%" height="24px" />
+          <Skeleton width="78%" height="24px" />
         </Flex>
       </ArticleSkeleton>
     </Container>
@@ -55,24 +55,24 @@ const Container = styled.div<{ device: Device }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'pc' ? '920px' : '100%')};
   margin: 0 auto;
-  padding: ${({ device }) => (device === 'mobile' ? '0' : '0 1.5rem')};
-  padding-bottom: ${({ device }) => (device === 'mobile' ? '5rem' : '7.5rem')};
+  padding: ${({ device }) => (device === 'mobile' ? '0' : '0 24px')};
+  padding-bottom: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '2.5rem' : '0')};
+  gap: ${({ device }) => (device === 'pc' ? '40px' : '0')};
   align-items: flex-start;
 `;
 
 const ArticleSkeleton = styled.div<{ device: Device }>`
   width: 100%;
-  margin-top: ${({ device }) => (device === 'mobile' ? '0' : '3.75rem')};
+  margin-top: ${({ device }) => (device === 'mobile' ? '0' : '60px')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
+  gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
   flex-direction: column;
 `;
 
 const ActionRail = styled.div`
-  width: 3.5rem;
+  width: 56px;
   flex-shrink: 0;
 `;

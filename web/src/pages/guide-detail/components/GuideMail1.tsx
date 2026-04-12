@@ -83,30 +83,30 @@ export default function GuideMail1() {
 const Container = styled.div`
   max-width: 680px;
   margin: 0 auto;
-  padding: 1.5rem 0;
+  padding: 24px 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const HeaderBox = styled.div`
-  margin-bottom: 1.25rem;
-  padding: 1.25rem 1.125rem;
+  margin-bottom: 20px;
+  padding: 20px 18px;
   border: 1px solid #ffedd5;
-  border-radius: 1rem;
+  border-radius: 16px;
 
   background: #fff7ed;
 `;
 
 const HeaderTag = styled.div`
-  margin-bottom: 0.375rem;
+  margin-bottom: 6px;
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const HeaderTitle = styled.h1`
-  margin: 0 0 0.625rem;
+  margin: 0 0 10px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading4};
@@ -120,30 +120,30 @@ const HeaderDescription = styled.p`
 `;
 
 const SectionTitle = styled.h2`
-  margin: 1.5rem 0 0.75rem;
+  margin: 24px 0 12px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
 const TipBox = styled.div`
-  margin-bottom: 1rem;
-  padding-left: 1rem;
-  border-left: 0.25rem solid ${({ theme }) => theme.colors.primary};
+  margin-bottom: 16px;
+  padding-left: 16px;
+  border-left: 4px solid ${({ theme }) => theme.colors.primary};
 `;
 
 const TipText = styled.p`
-  margin: 0 0 0.5rem;
+  margin: 0 0 8px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const WarningBox = styled.div`
-  margin-bottom: 1rem;
-  padding: 0.75rem;
+  margin-bottom: 16px;
+  padding: 12px;
   border: 1px solid #fbbf24;
-  border-radius: 0.5rem;
+  border-radius: 8px;
 
   background: #fef3c7;
 `;
@@ -161,29 +161,29 @@ const WarningDescription = styled.span`
 `;
 
 const BodyText = styled.p`
-  margin: 0 0 0.75rem;
+  margin: 0 0 12px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const Image = styled.img`
-  width: 40rem;
+  width: 640px;
   max-width: 100%;
-  margin: 0.5rem 0 1rem;
-  border-radius: 0.25rem;
+  margin: 8px 0 16px;
+  border-radius: 4px;
 
   display: block;
 `;
 
 const ButtonWrapper = styled.div`
-  margin: 1.5rem 0 0.5rem;
+  margin: 24px 0 8px;
   text-align: center;
 `;
 
 const SubscribeLink = styled(Link)`
-  padding: 0.6875rem 1rem;
-  border-radius: 62.4375rem;
+  padding: 11px 16px;
+  border-radius: 999px;
 
   display: inline-block;
 

@@ -38,7 +38,7 @@ const PCPostList = () => {
 export default PCPostList;
 
 const PaginationWrapper = styled.div`
-  margin-top: 6.25rem;
+  margin-top: 100px;
 
   display: flex;
   justify-content: center;

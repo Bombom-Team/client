@@ -108,26 +108,26 @@ export default ProfileDetail;
 
 const Container = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
 `;
 
 const Profile = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   align-items: center;
 `;
 
 const ProfileImg = styled(ImageWithFallback)`
-  width: 2.125rem;
-  height: 2.125rem;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
 `;
 
 const Divider = styled.div`
   width: 100%;
-  height: 0.0625rem;
-  margin: 0.25rem 0;
+  height: 1px;
+  margin: 4px 0;
 
   background-color: ${({ theme }) => theme.colors.dividers};
 `;
@@ -139,21 +139,21 @@ const ProfileName = styled.div`
 
 const EmailWrapper = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-direction: column;
 `;
 
 const EmailTitleWrapper = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 
   text-align: center;
 `;
 
 const StyledMailIcon = styled(MailIcon)`
-  width: 0.875rem;
-  height: 0.875rem;
+  width: 14px;
+  height: 14px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
 `;
@@ -164,11 +164,11 @@ const EmailTitle = styled.p`
 `;
 
 const ProfileEmail = styled.button`
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
+  padding: 4px 8px;
+  border-radius: 8px;
 
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 
   background: ${({ theme }) => theme.colors.dividers};
@@ -186,7 +186,7 @@ const EmailText = styled.div`
 
 const ChannelTalkButton = styled.button`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -200,7 +200,7 @@ const ChannelTalkButton = styled.button`
 
 const MyPageButton = styled(Link)`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -216,7 +216,7 @@ const MyPageButton = styled(Link)`
 
 const LogoutButton = styled.button`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.primary};

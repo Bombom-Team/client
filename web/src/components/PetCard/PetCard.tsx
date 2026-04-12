@@ -116,11 +116,11 @@ const PetCard = ({ pet }: PetCardProps) => {
 export default PetCard;
 
 export const Container = styled.section<{ device: Device }>`
-  width: 19.375rem;
-  border-radius: 1.25rem;
+  width: 310px;
+  border-radius: 20px;
 
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-direction: column;
   flex-shrink: 0;
   align-items: center;
@@ -181,15 +181,15 @@ export const TitleWrapper = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 0.625rem;
+  gap: 10px;
   align-items: center;
 `;
 
 export const StatusIconWrapper = styled.div`
-  width: 2rem;
-  height: 2rem;
-  padding: 0.375rem;
-  border-radius: 0.875rem;
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  border-radius: 14px;
 
   display: flex;
   align-items: center;
@@ -210,9 +210,9 @@ export const AttendanceButton = styled(Button)<{ device: Device }>`
 
 const containerStyles: Record<Device, (theme: Theme) => CSSObject> = {
   pc: () => ({
-    padding: '2.125rem 1.875rem',
+    padding: '34px 30px',
     border: `1px solid ${theme.colors.white}`,
-    boxShadow: '0 1.5625rem 3.125rem -0.75rem rgb(0 0 0 / 15%)',
+    boxShadow: '0 25px 50px -12px rgb(0 0 0 / 15%)',
     backgroundColor: theme.colors.white,
   }),
   tablet: () => ({

@@ -4,10 +4,10 @@ import Skeleton from '../Skeleton/Skeleton';
 const ImageInfoCardSkeleton = () => {
   return (
     <Container>
-      <Skeleton width="4rem" height="4rem" borderRadius="1rem" />
+      <Skeleton width="64px" height="64px" borderRadius="16px" />
       <InfoBox>
-        <Skeleton width="60%" height="1.25rem" />
-        <Skeleton width="80%" height="1rem" />
+        <Skeleton width="60%" height="20px" />
+        <Skeleton width="80%" height="16px" />
       </InfoBox>
     </Container>
   );

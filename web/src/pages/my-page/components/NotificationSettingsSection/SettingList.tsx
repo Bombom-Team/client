@@ -75,9 +75,9 @@ const SettingList = ({
 export default SettingList;
 
 const Container = styled.div<{ hasPermission: boolean }>`
-  padding: 1.25rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 4%);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
   display: flex;
   flex-direction: column;
@@ -89,20 +89,20 @@ const Container = styled.div<{ hasPermission: boolean }>`
 
 const SettingRow = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   align-items: center;
   justify-content: space-between;
 
   & + & {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
+    margin-top: 12px;
+    padding-top: 12px;
     border-top: 1px solid ${({ theme }) => theme.colors.dividers};
   }
 `;
 
 const SettingInfo = styled.div`
   display: flex;
-  gap: 0.25rem;
+  gap: 4px;
   flex: 1;
   flex-direction: column;
 `;
@@ -124,9 +124,9 @@ const ToggleButton = styled.button<{ disabled?: boolean }>`
 
 const ToggleTrack = styled.div<{ enabled: boolean }>`
   position: relative;
-  width: 3.1875rem;
-  height: 1.9375rem;
-  border-radius: 1rem;
+  width: 51px;
+  height: 31px;
+  border-radius: 16px;
 
   background-color: ${({ theme, enabled }) =>
     enabled ? theme.colors.primary : theme.colors.disabledText};
@@ -136,15 +136,15 @@ const ToggleTrack = styled.div<{ enabled: boolean }>`
 
 const ToggleThumb = styled.div<{ enabled: boolean }>`
   position: absolute;
-  top: 0.1875rem;
-  left: 0.1875rem;
-  width: 1.5625rem;
-  height: 1.5625rem;
+  top: 3px;
+  left: 3px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
-  box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
 
   background-color: ${({ theme }) => theme.colors.white};
 
-  transform: translateX(${({ enabled }) => (enabled ? '1.25rem' : '0')});
+  transform: translateX(${({ enabled }) => (enabled ? '20px' : '0')});
   transition: transform 0.3s;
 `;
