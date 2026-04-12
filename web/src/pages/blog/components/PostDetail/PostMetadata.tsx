@@ -92,5 +92,5 @@ const CategoryBadge = styled.span<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body1};
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
 `;

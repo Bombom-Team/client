@@ -100,13 +100,13 @@ const ContentWrapper = styled.div<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
 `;
 
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.heading5};
+    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
   font-weight: 400;
 `;
 

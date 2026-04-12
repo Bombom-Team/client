@@ -172,7 +172,7 @@ const HeroBadge = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
   font-weight: 700;
   text-align: center;
 
@@ -265,7 +265,7 @@ const InfoValue = styled.p<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.black};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
   font-weight: 700;
   text-align: left;
 `;

@@ -277,7 +277,7 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body2};
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;
 
 const EditButton = styled(Button)<{ isMobile: boolean }>`
@@ -308,7 +308,7 @@ const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body2};
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ isMobile, expanded }) => {
@@ -326,7 +326,7 @@ const ExpandButton = styled(Button)<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body2};
+    isMobile ? theme.fonts.body3 : theme.fonts.body2};
 
   text-decoration: underline;
 

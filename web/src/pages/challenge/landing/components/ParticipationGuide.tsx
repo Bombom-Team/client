@@ -57,7 +57,7 @@ const Container = styled.section<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
   text-align: center;
 `;
 
@@ -101,7 +101,7 @@ const StepNumber = styled.span<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
   white-space: nowrap;
 `;
 
@@ -114,11 +114,11 @@ const StepContent = styled.div`
 const StepTitle = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
 `;
 
 const StepDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
 `;
