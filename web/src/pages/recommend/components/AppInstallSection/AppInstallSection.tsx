@@ -7,6 +7,7 @@ import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 import QRCodeModal from '@/pages/recommend/components/QRCodeModal/QRCodeModal';
 import { downloadApp } from '@/utils/downloadApp';
+import type { Device } from '@/hooks/useDevice';
 import type { StoreType } from '@/pages/recommend/components/PromotionBanner/PromotionBanner.types';
 import playStoreIcon from '#/assets/avif/play_store.avif';
 import AppStoreIcon from '#/assets/svg/apple.svg';
@@ -55,6 +56,7 @@ const AppInstallSection = () => {
 
           <ButtonWrapper gap={12} wrap="wrap">
             <StoreButton
+              device={device}
               onClick={() => handleStoreButtonClick('appStore')}
               variant="appStore"
             >
@@ -62,6 +64,7 @@ const AppInstallSection = () => {
               App Store
             </StoreButton>
             <StoreButton
+              device={device}
               onClick={() => handleStoreButtonClick('playStore')}
               variant="playStore"
             >
@@ -117,7 +120,10 @@ const ContentWrapper = styled(Flex)`
   text-align: center;
 `;
 
-const StoreButton = styled.button<{ variant: 'appStore' | 'playStore' }>`
+const StoreButton = styled.button<{
+  variant: 'appStore' | 'playStore';
+  device: Device;
+}>`
   min-width: 160px;
   padding: 14px 20px;
   border: ${({ variant, theme }) =>
@@ -134,7 +140,8 @@ const StoreButton = styled.button<{ variant: 'appStore' | 'playStore' }>`
     variant === 'appStore' ? theme.colors.black : theme.colors.white};
   color: ${({ variant, theme }) =>
     variant === 'appStore' ? theme.colors.white : theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
   font-weight: 600;
 
   transition: all 0.2s ease-in-out;

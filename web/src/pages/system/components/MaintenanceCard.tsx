@@ -27,7 +27,9 @@ const MaintenanceCard = () => {
       </DescriptionWrapper>
 
       <ContactWrapper>
-        <Contact href="https://e0pq0.channel.io/">💬 채널톡 바로가기</Contact>
+        <Contact isMobile={isMobile} href="https://e0pq0.channel.io/">
+          💬 채널톡 바로가기
+        </Contact>
         <ContactDescription>
           긴급한 문의사항이 있으시면
           <br />
@@ -93,12 +95,13 @@ const ContactWrapper = styled.div`
   text-align: center;
 `;
 
-const Contact = styled.a`
+const Contact = styled.a<{ isMobile: boolean }>`
   padding: 8px 16px;
   border-radius: 12px;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.heading6};
 
   text-decoration: none;
 

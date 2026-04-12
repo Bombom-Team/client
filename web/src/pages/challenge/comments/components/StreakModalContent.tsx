@@ -75,7 +75,9 @@ const StreakModalContent = ({
         )}
       </WeekWrapper>
       <Description>챌린지 기록이 꾸준히 쌓이고 있어요.</Description>
-      <EncouragementText>{encouragementMessage}</EncouragementText>
+      <EncouragementText isMobile={isMobile}>
+        {encouragementMessage}
+      </EncouragementText>
       <ButtonWrapper>
         <ConfirmButton onClick={onClose}>
           뉴스레터 마저 읽으러 가기
@@ -272,9 +274,10 @@ const Description = styled.p`
   line-height: 1.6;
 `;
 
-const EncouragementText = styled.p`
+const EncouragementText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading6};
   font-weight: 600;
 `;
 

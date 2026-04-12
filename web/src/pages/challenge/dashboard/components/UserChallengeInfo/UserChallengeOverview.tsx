@@ -30,7 +30,7 @@ const UserChallengeOverview = ({
         <ChallengeTitle>
           {name} {generation}
         </ChallengeTitle>
-        <ChallengePeriod>
+        <ChallengePeriod isMobile={isMobile}>
           {formatDate(new Date(startDate)).slice(2)} ~{' '}
           {formatDate(new Date(endDate)).slice(2)}
         </ChallengePeriod>
@@ -71,9 +71,10 @@ const ChallengeTitle = styled.span`
   font: ${({ theme }) => theme.fonts.heading4};
 `;
 
-const ChallengePeriod = styled.span`
+const ChallengePeriod = styled.span<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.disabledText};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.heading6};
 `;
 
 const SummaryWrapper = styled.div`

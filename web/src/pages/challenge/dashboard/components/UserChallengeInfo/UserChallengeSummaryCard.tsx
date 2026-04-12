@@ -21,7 +21,7 @@ const UserChallengeSummaryCard = ({
   return (
     <Container isMobile={isMobile} isFailed={!isSurvived}>
       {!isSurvived && (
-        <FailedOverlay>
+        <FailedOverlay isMobile={isMobile}>
           아쉽게도 이번 챌린지의 달성률에 도달하지 못했어요 🥲
         </FailedOverlay>
       )}
@@ -40,22 +40,24 @@ const UserChallengeSummaryCard = ({
                 width={isMobile ? 56 : 72}
                 height={isMobile ? 56 : 72}
               />
-              <StreakCount>{streak}</StreakCount>
+              <StreakCount isMobile={isMobile}>{streak}</StreakCount>
             </StreakBadge>
           </ParticipationValueRow>
         </StatBlock>
         <StatBlock isMobile={isMobile}>
-          <StatValue>{completedDays}일</StatValue>
+          <StatValue isMobile={isMobile}>{completedDays}일</StatValue>
           <StatLabel>참여 중</StatLabel>
         </StatBlock>
         <StatDivider />
         <StatBlock isMobile={isMobile}>
-          <StatValue>{completionRate.toFixed(1)}%</StatValue>
+          <StatValue isMobile={isMobile}>
+            {completionRate.toFixed(1)}%
+          </StatValue>
           <StatLabel>달성률</StatLabel>
         </StatBlock>
         <StatDivider />
         <StatBlock isMobile={isMobile}>
-          <StatValue>{shield}개</StatValue>
+          <StatValue isMobile={isMobile}>{shield}개</StatValue>
           <StatLabel>쉴드</StatLabel>
         </StatBlock>
       </SummaryStats>
@@ -92,7 +94,8 @@ const SummaryInfo = styled.div`
 
 const SummaryName = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
   ${({ isMobile }) =>
     isMobile &&
     `
@@ -146,23 +149,25 @@ const FireIconImage = styled.img`
   display: block;
 `;
 
-const StreakCount = styled.div`
+const StreakCount = styled.div<{ isMobile: boolean }>`
   position: absolute;
   top: 60%;
   left: 50%;
   z-index: 1;
 
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
   font-weight: 700;
   line-height: 1;
 
   transform: translate(-50%, -50%);
 `;
 
-const StatValue = styled.div`
+const StatValue = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
   white-space: nowrap;
 
   text-overflow: ellipsis;
@@ -183,7 +188,7 @@ const StatDivider = styled.div`
   background: ${({ theme }) => theme.colors.dividers};
 `;
 
-const FailedOverlay = styled.div`
+const FailedOverlay = styled.div<{ isMobile: boolean }>`
   position: absolute;
 
   display: flex;
@@ -192,7 +197,8 @@ const FailedOverlay = styled.div`
 
   background: rgb(255 255 255 / 70%);
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
 
   inset: 0;
   pointer-events: none;

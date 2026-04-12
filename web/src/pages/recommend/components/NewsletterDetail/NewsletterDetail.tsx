@@ -105,6 +105,7 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
         )}
 
         <SubscribeButton
+          isMobile={isMobile}
           onClick={handleSubscribeButtonClick}
           disabled={
             !isLoggedIn || (isLoggedIn && newsletterDetail.isSubscribed)
@@ -289,11 +290,12 @@ const DetailLink = styled.button`
   }
 `;
 
-const SubscribeButton = styled(Button)`
+const SubscribeButton = styled(Button)<{ isMobile: boolean }>`
   width: 100%;
   max-width: 400px;
 
   align-self: center;
 
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body2 : theme.fonts.heading6};
 `;

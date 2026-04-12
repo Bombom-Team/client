@@ -70,14 +70,16 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
               width={device === 'mobile' ? 16 : 20}
               height={device === 'mobile' ? 16 : 20}
             />
-            <OverViewText>하루 한 편과 코멘트 한 줄이면 충분해요.</OverViewText>
+            <OverViewText device={device}>
+              하루 한 편과 코멘트 한 줄이면 충분해요.
+            </OverViewText>
           </OverviewItem>
           <OverviewItem device={device}>
             <CheckIcon
               width={device === 'mobile' ? 16 : 20}
               height={device === 'mobile' ? 16 : 20}
             />
-            <OverViewText>
+            <OverViewText device={device}>
               완벽한 코멘트가 아니어도 괜찮아요! 내 마음이 남은 한 문장만
               남겨요.
             </OverViewText>
@@ -171,7 +173,7 @@ const QuoteItem = styled(Flex)<{ isVisible: boolean }>`
 const QuoteText = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading3};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading3};
   font-weight: 400;
   text-align: center;
 `;
@@ -197,7 +199,7 @@ const ClosingQuoteIcon = styled(QuoteIcon)<{ device: Device }>`
 const IntroText = styled(Text)<{ device: Device; isVisible: boolean }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
   font-weight: 400;
   text-align: center;
 
@@ -253,7 +255,7 @@ const Strong = styled.span`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
   font-weight: 400;
   line-height: 1.8;
   text-align: center;
@@ -298,9 +300,10 @@ const OverviewItem = styled.p<{ device: Device }>`
   }
 `;
 
-const OverViewText = styled.p`
+const OverViewText = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading5};
   font-weight: 400;
 `;
 
@@ -323,7 +326,7 @@ const PeriodDate = styled.span<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
   font-weight: 400;
 `;
 

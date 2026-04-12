@@ -90,17 +90,17 @@ const EventHero = ({ onApply }: EventHeroProps) => {
         <InfoCard device={device}>
           <InfoCardBadge device={device}>선착순 100% 당첨</InfoCardBadge>
           <InfoRow>
-            <InfoLabel>참여대상</InfoLabel>
+            <InfoLabel device={device}>참여대상</InfoLabel>
             <InfoValue device={device}>봄봄 회원가입 유저</InfoValue>
           </InfoRow>
           <InfoRowDivider />
           <InfoRow>
-            <InfoLabel>일정</InfoLabel>
+            <InfoLabel device={device}>일정</InfoLabel>
             <InfoValue device={device}>2월 23일(월) 오후 2시 70명</InfoValue>
           </InfoRow>
           <InfoRowDivider />
           <InfoRow>
-            <InfoLabel>당첨자 발표</InfoLabel>
+            <InfoLabel device={device}>당첨자 발표</InfoLabel>
             <InfoValue device={device}>당첨 즉시 지급</InfoValue>
           </InfoRow>
         </InfoCard>
@@ -228,7 +228,8 @@ const InfoCardBadge = styled.div<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
   font-weight: 700;
   text-align: center;
   white-space: nowrap;
@@ -250,9 +251,10 @@ const InfoRowDivider = styled.div`
   border-bottom: ${({ theme }) => `2px dashed ${theme.colors.stroke}`};
 `;
 
-const InfoLabel = styled.p`
+const InfoLabel = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.icons};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
   text-align: center;
 `;
 
@@ -283,6 +285,7 @@ const Title = styled.div<{ device: Device }>`
 
   background-color: rgb(255 255 255 / 80%);
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
   text-align: center;
 `;

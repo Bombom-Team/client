@@ -23,7 +23,7 @@ const AllCommentsSection = ({
 
   return (
     <Container>
-      <Title>전체 코멘트</Title>
+      <Title isMobile={isMobile}>전체 코멘트</Title>
 
       {isLoading ? (
         <EmptyState isMobile={isMobile}>로딩 중...</EmptyState>
@@ -57,9 +57,10 @@ const Container = styled.section`
   flex-direction: column;
 `;
 
-const Title = styled.h3`
+const Title = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading6};
 `;
 
 const CardList = styled.div<{ isMobile: boolean }>`

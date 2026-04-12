@@ -140,7 +140,8 @@ const Title = styled.h2<{ device: Device }>`
 
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading4};
   font-weight: 400;
   line-height: ${({ device }) => (device === 'mobile' ? '1.7' : 'inherit')};
 `;

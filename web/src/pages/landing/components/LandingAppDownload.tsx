@@ -106,7 +106,7 @@ const Title = styled.h2<{ device: Device }>`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.heading5};
   font-weight: 400;
 `;
 
