@@ -103,7 +103,7 @@ const reset = css`
   }
 
   html {
-    font-size: 16px;
+    font-size: 100%;
 
     --safe-area-inset-top: env(safe-area-inset-top, 0);
     --safe-area-inset-bottom: env(safe-area-inset-bottom, 0);

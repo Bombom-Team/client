@@ -1,5 +1,5 @@
 import styled from '@emotion/native';
-import { Alert } from 'react-native';
+import { Alert, PixelRatio } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
@@ -162,6 +162,8 @@ export const MainScreen = () => {
           injectedJavaScript={`
             const rootElement = document.documentElement;
             rootElement.classList.add('webview');
+
+            rootElement.style.fontSize = '${PixelRatio.getFontScale() * 100}%';
 
             const meta = document.querySelector('meta[name=viewport]');
             if (meta) {
