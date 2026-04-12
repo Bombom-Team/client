@@ -94,7 +94,8 @@ const Container = styled.section<{ device: Device; isVisible: boolean }>`
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`

@@ -146,12 +146,14 @@ const ItemContent = styled.div`
 
 const ItemTitle = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
 `;
 
 const ItemDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.bodyLarge};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
 `;
 
 const ItemNote = styled.p<{ device: Device }>`

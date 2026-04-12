@@ -62,7 +62,8 @@ const MaintenanceImage = styled(ImageWithFallback, {
 
 const Title = styled.h1<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.heading4 : theme.fonts.heading2};
 `;
 
 const DescriptionWrapper = styled.div<{ isMobile: boolean }>`

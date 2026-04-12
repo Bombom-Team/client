@@ -163,6 +163,7 @@ const CommentCard = ({
               {needExpansion &&
                 (!expanded ? (
                   <ExpandQuoteButton
+                    isMobile={isMobile}
                     variant="transparent"
                     onClick={toggleExpanded}
                   >
@@ -170,6 +171,7 @@ const CommentCard = ({
                   </ExpandQuoteButton>
                 ) : (
                   <HideQuoteButton
+                    isMobile={isMobile}
                     variant="transparent"
                     onClick={toggleExpanded}
                   >
@@ -274,7 +276,8 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body4 : theme.fonts.body2};
 `;
 
 const EditButton = styled(Button)<{ isMobile: boolean }>`
@@ -304,7 +307,8 @@ const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body4 : theme.fonts.body2};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ isMobile, expanded }) => {
@@ -314,14 +318,15 @@ const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   }};
 `;
 
-const ExpandButton = styled(Button)`
+const ExpandButton = styled(Button)<{ isMobile: boolean }>`
   padding: 0;
 
   display: inline-flex;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body4 : theme.fonts.body2};
 
   text-decoration: underline;
 

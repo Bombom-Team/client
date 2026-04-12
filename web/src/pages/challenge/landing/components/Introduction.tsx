@@ -172,7 +172,8 @@ const QuoteItem = styled(Flex)<{ isVisible: boolean }>`
 
 const QuoteText = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading3};
   font-weight: 400;
   text-align: center;
 `;
@@ -197,7 +198,8 @@ const ClosingQuoteIcon = styled(QuoteIcon)<{ device: Device }>`
 
 const IntroText = styled(Text)<{ device: Device; isVisible: boolean }>`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
   font-weight: 400;
   text-align: center;
 
@@ -236,7 +238,8 @@ const DescriptionWrapper = styled(Flex)`
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
   text-align: center;
 `;
 
@@ -251,7 +254,8 @@ const Strong = styled.span`
 
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
   font-weight: 400;
   line-height: 1.8;
   text-align: center;
@@ -320,7 +324,8 @@ const PeriodDate = styled.span<{ device: Device }>`
   align-self: flex-start;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
   font-weight: 400;
 `;
 

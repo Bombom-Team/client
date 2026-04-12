@@ -125,7 +125,8 @@ const Title = styled.h2<{ device: Device }>`
 
 const Subtitle = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.bodyLarge};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
   text-align: center;
 `;
 
