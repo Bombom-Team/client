@@ -40,7 +40,7 @@ export default function PCMemoContent({
     <>
       <SummaryBar>
         {isLoading ? (
-          <Skeleton width="80px" height="20px" />
+          <Skeleton width="5rem" height="1.25rem" />
         ) : (
           <ResultsInfo>총 {totalElements}개의 메모</ResultsInfo>
         )}
@@ -73,7 +73,7 @@ export default function PCMemoContent({
 
 const SummaryBar = styled.div`
   width: 100%;
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 
   display: flex;
   align-items: center;
@@ -87,10 +87,10 @@ const ResultsInfo = styled.div`
 
 const MemoList = styled.ul`
   width: 100%;
-  margin-bottom: 32px;
+  margin-bottom: 2rem;
 
   display: grid;
-  gap: 16px;
+  gap: 1rem;
 
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(15.625rem, 1fr));
 `;

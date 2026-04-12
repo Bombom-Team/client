@@ -131,11 +131,11 @@ export default function MobileStorageContent({
 
 const LoadMoreTrigger = styled.div`
   width: 100%;
-  height: 20px;
+  height: 1.25rem;
 `;
 
 const LoadingSpinner = styled.div`
-  padding: 20px;
+  padding: 1.25rem;
 
   display: flex;
   align-items: center;

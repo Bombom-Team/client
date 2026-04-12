@@ -141,19 +141,19 @@ function RouteComponent() {
 const Container = styled.div`
   max-width: 700px;
   margin: 0 auto;
-  padding: 28px;
+  padding: 1.75rem;
   border-right: 1px solid ${({ theme }) => theme.colors.stroke};
   border-left: 1px solid ${({ theme }) => theme.colors.stroke};
 
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   flex-direction: column;
   align-items: center;
 `;
 
 const Divider = styled.div`
   width: 100%;
-  height: 1px;
+  height: 0.0625rem;
 
   background-color: ${({ theme }) => theme.colors.dividers};
 `;
@@ -179,7 +179,7 @@ const Content = styled.div<{ showGradient: boolean }>`
     right: 0;
     bottom: 0;
     left: 0;
-    height: 200px;
+    height: 12.5rem;
 
     display: ${({ showGradient }) => (showGradient ? 'block' : 'none')};
 
@@ -211,14 +211,14 @@ const ActionButtonWrapper = styled.div`
   top: 80vh;
   left: 10%;
   z-index: ${({ theme }) => theme.zIndex.floating};
-  width: 56px;
-  padding: 4px 0;
+  width: 3.5rem;
+  padding: 0.25rem 0;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 5%);
+  border-radius: 0.75rem;
+  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 5%);
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
   align-items: center;
 
@@ -226,9 +226,9 @@ const ActionButtonWrapper = styled.div`
 `;
 
 const ActionButton = styled.button`
-  width: 44px;
-  height: 44px;
-  padding: 8px;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0.5rem;
   border-radius: 50%;
 
   display: flex;
@@ -258,12 +258,12 @@ const SubscribeButton = styled(ActionButton)`
 
 const SubscribePrompt = styled.div`
   width: 100%;
-  padding: 24px 16px;
+  padding: 1.5rem 1rem;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-direction: column;
   align-items: center;
 
@@ -280,7 +280,7 @@ const SubscribePromptText = styled.p`
 
 const SubscribePromptButton = styled(Button)`
   width: 100%;
-  padding: 12px 24px;
+  padding: 0.75rem 1.5rem;
 
   font: ${({ theme }) => theme.fonts.body1};
 `;

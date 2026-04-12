@@ -51,21 +51,21 @@ const Container = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   flex-direction: column;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   align-items: center;
 `;
 
 const LogoSection = styled.div`
   overflow: hidden;
-  width: 96px;
-  height: 96px;
-  border-radius: 24px;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 1.5rem;
 
   display: flex;
   flex-shrink: 0;
@@ -76,15 +76,15 @@ const LogoSection = styled.div`
 `;
 
 const LogoImage = styled.img`
-  width: 72px;
-  height: 72px;
+  width: 4.5rem;
+  height: 4.5rem;
 
   object-fit: contain;
 `;
 
 const TextWrapper = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   flex: 1;
   flex-direction: column;
 `;
@@ -105,7 +105,7 @@ const SubText = styled.p`
 
 const ButtonSection = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 `;
 

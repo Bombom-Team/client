@@ -140,7 +140,7 @@ function PostDetailPage() {
 }
 
 const ContentWrapper = styled.div<{ device: Device }>`
-  padding-bottom: ${({ device }) => (device === 'mobile' ? '80px' : '120px')};
+  padding-bottom: ${({ device }) => (device === 'mobile' ? '5rem' : '7.5rem')};
 `;
 
 const PostProgressBar = styled(ProgressBar)<{ device: Device }>`
@@ -149,10 +149,11 @@ const PostProgressBar = styled(ProgressBar)<{ device: Device }>`
     device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile};
   z-index: ${({ theme }) => theme.zIndex.floating};
   width: 100vw;
-  height: 4px;
+  height: 0.25rem;
   max-width: 100vw;
-  margin-top: ${({ device }) => (device === 'mobile' ? '-32px' : '-48px')};
-  margin-bottom: ${({ device }) => (device === 'mobile' ? '28px' : '44px')};
+  margin-top: ${({ device }) => (device === 'mobile' ? '-2rem' : '-3rem')};
+  margin-bottom: ${({ device }) =>
+    device === 'mobile' ? '1.75rem' : '2.75rem'};
   margin-left: calc(50% - 50vw);
 `;
 
@@ -160,25 +161,26 @@ const ContentLayoutWrapper = styled.div<{ device: Device }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'pc' ? '920px' : '100%')};
   margin: 0 auto;
-  padding: ${({ device }) => (device === 'mobile' ? '0' : '0 24px')};
+  padding: ${({ device }) => (device === 'mobile' ? '0' : '0 1.5rem')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '40px' : '0')};
+  gap: ${({ device }) => (device === 'pc' ? '2.5rem' : '0')};
   align-items: flex-start;
 `;
 
 const ActionRail = styled.div`
-  width: 56px;
+  width: 3.5rem;
   flex-shrink: 0;
 `;
 
 const Article = styled.article<{ device: Device }>`
   width: 100%;
-  margin-top: ${({ device }) => (device === 'mobile' ? '0' : '60px')};
+  margin-top: ${({ device }) => (device === 'mobile' ? '0' : '3.75rem')};
 `;
 
 const GoToListButton = styled(Button)<{ device: Device }>`
-  margin-bottom: ${({ device }) => (device === 'mobile' ? '20px' : '40px')};
+  margin-bottom: ${({ device }) =>
+    device === 'mobile' ? '1.25rem' : '2.5rem'};
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textTertiary};
@@ -194,7 +196,7 @@ const GoToListButton = styled(Button)<{ device: Device }>`
 `;
 
 const ShareRow = styled.div`
-  margin-top: 48px;
+  margin-top: 3rem;
 
   display: flex;
   justify-content: flex-end;

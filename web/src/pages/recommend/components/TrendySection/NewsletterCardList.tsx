@@ -32,9 +32,9 @@ const NewsletterCardList = ({
 export default NewsletterCardList;
 
 const NewsletterCard = styled(ImageInfoCard)`
-  height: 80px;
-  padding: 12px;
-  border-radius: 16px;
+  height: 5rem;
+  padding: 0.75rem;
+  border-radius: 1rem;
 
   cursor: pointer;
 
@@ -43,11 +43,11 @@ const NewsletterCard = styled(ImageInfoCard)`
     box-shadow 0.2s ease;
 
   &:hover {
-    box-shadow: 0 8px 25px -8px rgb(0 0 0 / 12%);
-    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1.5625rem -0.5rem rgb(0 0 0 / 12%);
+    transform: translateY(-0.125rem);
   }
 
   &:active {
-    transform: translateY(-1px);
+    transform: translateY(-0.0625rem);
   }
 `;

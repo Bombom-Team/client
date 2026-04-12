@@ -52,11 +52,11 @@ const Container = styled.header`
   height: calc(
     ${({ theme }) => `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
   );
-  padding: 8px 12px;
-  padding-top: calc(8px + ${({ theme }) => theme.safeArea.top});
+  padding: 0.5rem 0.75rem;
+  padding-top: calc(0.5rem + ${({ theme }) => theme.safeArea.top});
   box-shadow:
-    0 8px 12px -6px rgb(0 0 0 / 10%),
-    0 3px 5px -4px rgb(0 0 0 / 10%);
+    0 0.5rem 0.75rem -0.375rem rgb(0 0 0 / 10%),
+    0 0.1875rem 0.3125rem -0.25rem rgb(0 0 0 / 10%);
 
   display: flex;
   align-items: center;
@@ -67,7 +67,7 @@ const Container = styled.header`
 
 const UserInfoWrapper = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   justify-content: center;
 `;
 

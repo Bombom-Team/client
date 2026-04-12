@@ -121,7 +121,7 @@ const Container = styled.div<{ device: Device }>`
   margin: 0 auto;
 
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   flex-direction: column;
   align-items: flex-start;
 
@@ -130,18 +130,18 @@ const Container = styled.div<{ device: Device }>`
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: center;
 `;
 
 const TitleIconBox = styled.div`
-  width: 28px;
-  height: 28px;
+  width: 1.75rem;
+  height: 1.75rem;
   border-radius: 50%;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: center;
 
@@ -156,7 +156,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   flex-direction: ${({ device }) =>
     device === 'pc' ? 'row' : 'column-reverse'};
   align-items: ${({ device }) => (device === 'pc' ? 'flex-start' : 'center')};
@@ -168,7 +168,7 @@ const ReaderCompanion = styled.div<{ device: Device }>`
   min-width: 300px;
 
   display: flex;
-  gap: 36px;
+  gap: 2.25rem;
 
   box-sizing: border-box;
 
@@ -177,22 +177,22 @@ const ReaderCompanion = styled.div<{ device: Device }>`
 
 const sideCardWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   pc: (theme) => ({
-    width: '310px',
+    width: '19.375rem',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    gap: '24px',
+    gap: '1.5rem',
     border: `1px solid ${theme.colors.white}`,
   }),
   tablet: () => ({
     width: '100%',
-    maxWidth: 'calc(100% - 200px)',
+    maxWidth: 'calc(100% - 12.5rem)',
     justifyContent: 'center',
     alignItems: 'flex-start',
   }),
   mobile: () => ({
     position: 'relative',
-    paddingBottom: '44px',
+    paddingBottom: '2.75rem',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',

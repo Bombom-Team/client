@@ -78,30 +78,30 @@ export default function GuideMail2() {
 const Container = styled.div`
   max-width: 680px;
   margin: 0 auto;
-  padding: 24px 20px;
+  padding: 1.5rem 1.25rem;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const HeaderBox = styled.div`
-  margin-bottom: 20px;
-  padding: 20px 18px;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem 1.125rem;
   border: 1px solid #ffedd5;
-  border-radius: 16px;
+  border-radius: 1rem;
 
   background: #fff7ed;
 `;
 
 const HeaderTag = styled.div`
-  margin-bottom: 6px;
+  margin-bottom: 0.375rem;
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const HeaderTitle = styled.h1`
-  margin: 0 0 10px;
+  margin: 0 0 0.625rem;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading4};
@@ -115,30 +115,30 @@ const HeaderDescription = styled.p`
 `;
 
 const SectionTitle = styled.h2`
-  margin: 24px 0 12px;
+  margin: 1.5rem 0 0.75rem;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
 const BodyText = styled.p`
-  margin: 0 0 16px;
+  margin: 0 0 1rem;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const Image = styled.img`
-  width: 300px;
+  width: 18.75rem;
   max-width: 100%;
-  margin: 8px 0 16px;
-  border-radius: 4px;
+  margin: 0.5rem 0 1rem;
+  border-radius: 0.25rem;
 
   display: block;
 `;
 
 const List = styled.ul`
-  margin: 0 0 16px 18px;
+  margin: 0 0 1rem 1.125rem;
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -146,7 +146,7 @@ const List = styled.ul`
 `;
 
 const OrderedList = styled.ol`
-  margin: 0 0 16px 18px;
+  margin: 0 0 1rem 1.125rem;
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -154,7 +154,7 @@ const OrderedList = styled.ol`
 `;
 
 const ListItem = styled.li`
-  margin: 8px 0;
+  margin: 0.5rem 0;
 `;
 
 const SubText = styled.span`
@@ -163,10 +163,10 @@ const SubText = styled.span`
 `;
 
 const InfoBox = styled.div`
-  margin: 20px 0;
-  padding: 16px;
+  margin: 1.25rem 0;
+  padding: 1rem;
   border: 1px solid #bae6fd;
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   background: #f0f9ff;
 `;
@@ -179,13 +179,13 @@ const InfoText = styled.p`
 `;
 
 const ButtonWrapper = styled.div`
-  margin: 24px 0 8px;
+  margin: 1.5rem 0 0.5rem;
   text-align: center;
 `;
 
 const TodayLink = styled(Link)`
-  padding: 11px 16px;
-  border-radius: 999px;
+  padding: 0.6875rem 1rem;
+  border-radius: 62.4375rem;
 
   display: inline-block;
 

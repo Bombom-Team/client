@@ -52,10 +52,10 @@ const HeaderContainer = styled.header`
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   height: ${({ theme }) => theme.heights.headerPC};
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   box-shadow:
-    0 10px 15px -3px rgb(0 0 0 / 10%),
-    0 4px 6px -4px rgb(0 0 0 / 10%);
+    0 0.625rem 0.9375rem -0.1875rem rgb(0 0 0 / 10%),
+    0 0.25rem 0.375rem -0.25rem rgb(0 0 0 / 10%);
 
   display: flex;
   align-items: center;
@@ -74,11 +74,11 @@ const HeaderInner = styled.div`
 `;
 
 const NavWrapper = styled.nav`
-  padding: 4px;
-  border-radius: 14px;
+  padding: 0.25rem;
+  border-radius: 0.875rem;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 
   background: ${({ theme }) => theme.colors.white};
@@ -86,7 +86,7 @@ const NavWrapper = styled.nav`
 
 const UserInfoWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: flex-end;
 `;

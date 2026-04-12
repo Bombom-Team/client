@@ -77,19 +77,19 @@ export default Pagination;
 
 const Container = styled.div`
   width: 100%;
-  margin-top: 32px;
+  margin-top: 2rem;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: center;
 `;
 
 const NavigationButton = styled.button`
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 8px;
+  border-radius: 0.5rem;
 
   display: flex;
   align-items: center;
@@ -110,8 +110,8 @@ const NavigationButton = styled.button`
   }
 
   svg {
-    width: 16px;
-    height: 16px;
+    width: 1rem;
+    height: 1rem;
 
     color: ${({ theme }) => theme.colors.textPrimary};
   }
@@ -119,20 +119,20 @@ const NavigationButton = styled.button`
 
 const PageNumberButtonWrapper = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
 `;
 
 const PageNumberButton = styled.button<{
   isCurrent: boolean;
 }>`
-  height: 40px;
+  height: 2.5rem;
   min-width: 40px;
-  padding: 0 12px;
+  padding: 0 0.75rem;
   border: 1px solid
     ${({ theme, isCurrent }) =>
       isCurrent ? theme.colors.primary : theme.colors.stroke};
-  border-radius: 8px;
+  border-radius: 0.5rem;
 
   display: flex;
   align-items: center;
@@ -154,9 +154,9 @@ const PageNumberButton = styled.button<{
 `;
 
 const EllipsisText = styled.span`
-  height: 40px;
+  height: 2.5rem;
   min-width: 40px;
-  padding: 0 12px;
+  padding: 0 0.75rem;
 
   display: flex;
   align-items: center;

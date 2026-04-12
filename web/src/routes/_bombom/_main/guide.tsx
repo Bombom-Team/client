@@ -76,7 +76,7 @@ const Container = styled.div`
   max-width: 1280px;
 
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
@@ -84,7 +84,7 @@ const Container = styled.div`
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 `;
 
@@ -93,9 +93,9 @@ const Title = styled.h1`
 `;
 
 const GuideIcon = styled(HelpIcon)`
-  width: 36px;
-  height: 36px;
-  padding: 8px;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0.5rem;
   border-radius: 50%;
 
   display: flex;
@@ -111,15 +111,15 @@ const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '32px' : '20px')};
+  gap: ${({ device }) => (device === 'pc' ? '2rem' : '1.25rem')};
   flex-direction: ${({ device }) => (device === 'pc' ? 'row' : 'column')};
 `;
 
 const SidebarSection = styled.div<{ device: Device }>`
-  width: ${({ device }) => (device === 'pc' ? '320px' : '100%')};
+  width: ${({ device }) => (device === 'pc' ? '20rem' : '100%')};
 
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   flex-direction: column;
 `;
 
@@ -127,7 +127,7 @@ const ArticleList = styled.ul`
   width: 100%;
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex: 1;
   flex-direction: column;
 `;

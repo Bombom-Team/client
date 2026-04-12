@@ -40,13 +40,13 @@ const RequireLoginCard = () => {
 export default RequireLoginCard;
 
 const Container = styled.section<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '100%' : '380px')};
-  height: 500px;
+  width: ${({ isMobile }) => (isMobile ? '100%' : '23.75rem')};
+  height: 31.25rem;
   margin: auto 0;
-  padding: ${({ isMobile }) => (isMobile ? '16px' : '28px')};
+  padding: ${({ isMobile }) => (isMobile ? '1rem' : '1.75rem')};
 
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -56,15 +56,15 @@ const Container = styled.section<{ isMobile: boolean }>`
   ${({ isMobile }) =>
     !isMobile &&
     `
-    border-radius: 20px;
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
+    border-radius: 1.25rem;
+    box-shadow: 0 1.5625rem 3.125rem -0.75rem rgb(0 0 0 / 25%);
   
   `}
 `;
 
 const StyledLockIcon = styled(LockIcon)`
-  width: 52px;
-  height: 52px;
+  width: 3.25rem;
+  height: 3.25rem;
 
   color: ${({ theme }) => theme.colors.primary};
 `;
@@ -75,7 +75,7 @@ const Title = styled.h1`
 
 const DescriptionWrapper = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   flex-direction: column;
 `;
 

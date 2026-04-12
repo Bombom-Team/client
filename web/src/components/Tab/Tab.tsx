@@ -39,14 +39,14 @@ export default Tab;
 
 export const Container = styled.li<{ selected: boolean }>`
   min-width: fit-content;
-  padding: 10px 12px;
-  border: 2px solid
+  padding: 0.625rem 0.75rem;
+  border: 0.125rem solid
     ${({ selected, theme }) =>
       selected ? theme.colors.primary : 'transparent'};
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: space-between;
 

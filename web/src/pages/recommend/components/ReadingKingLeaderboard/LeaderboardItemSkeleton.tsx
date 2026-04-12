@@ -4,12 +4,12 @@ import Skeleton from '@/components/Skeleton/Skeleton';
 const LeaderboardItemSkeleton = () => (
   <Container>
     <RankIconWrapper>
-      <Skeleton width="24px" height="24px" />
+      <Skeleton width="1.5rem" height="1.5rem" />
     </RankIconWrapper>
 
     <UserInfoBox>
-      <Skeleton width="80px" height="22px" />
-      <Skeleton width="60px" height="20px" />
+      <Skeleton width="5rem" height="1.375rem" />
+      <Skeleton width="3.75rem" height="1.25rem" />
     </UserInfoBox>
   </Container>
 );

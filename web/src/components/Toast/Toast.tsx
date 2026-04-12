@@ -55,10 +55,10 @@ const mapPosition = (p: ToastPosition) => {
     right: 'auto',
     transform: '',
   };
-  if (p.startsWith('top')) base.top = '16px';
-  if (p.startsWith('bottom')) base.bottom = '16px';
-  if (p.endsWith('left')) base.left = '16px';
-  if (p.endsWith('right')) base.right = '16px';
+  if (p.startsWith('top')) base.top = '1rem';
+  if (p.startsWith('bottom')) base.bottom = '1rem';
+  if (p.endsWith('left')) base.left = '1rem';
+  if (p.endsWith('right')) base.right = '1rem';
   if (p.endsWith('center')) {
     base.left = '50%';
     base.transform = 'translateX(-50%)';
@@ -71,7 +71,7 @@ const StackWrapper = styled.div<{ position: ToastPosition }>`
 
   display: flex;
   ${({ position }) => mapPosition(position)}
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 
   pointer-events: none;

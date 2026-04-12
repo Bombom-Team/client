@@ -54,7 +54,7 @@ const FeatureItem = styled.article<{
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '32px' : '64px')};
+  gap: ${({ device }) => (device === 'mobile' ? '2rem' : '4rem')};
   flex-direction: ${({ imagePosition, device }) => {
     if (device === 'mobile') return 'column';
     return imagePosition === 'left' ? 'row' : 'row-reverse';
@@ -68,7 +68,7 @@ const FeatureItem = styled.article<{
 
   opacity: 0;
 
-  transform: translate3d(0, 40px, 0);
+  transform: translate3d(0, 2.5rem, 0);
 
   @keyframes fade-in-up {
     to {
@@ -84,7 +84,7 @@ const TextSection = styled.div<{
   max-width: ${({ device }) => (device === 'mobile' ? '88vw' : '100%')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '16px' : '24px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1rem' : '1.5rem')};
   flex-direction: column;
   align-items: flex-start;
 `;
@@ -93,7 +93,7 @@ const FeatureTitleWrapper = styled.div<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   flex-direction: ${({ device }) =>
     device === 'mobile' ? 'row-reverse' : 'row'};
   align-items: center;
@@ -130,12 +130,12 @@ const ImageSection = styled.div<{ device: Device }>`
     width: 100%;
     height: auto;
     max-width: ${({ device }) => {
-      if (device === 'mobile') return '280px';
-      return device === 'tablet' ? '320px' : '480px';
+      if (device === 'mobile') return '17.5rem';
+      return device === 'tablet' ? '20rem' : '30rem';
     }};
-    border-radius: 4px;
+    border-radius: 0.25rem;
 
-    filter: drop-shadow(0 10px 15px rgb(0 0 0 / 10%))
-      drop-shadow(0 4px 6px rgb(0 0 0 / 10%));
+    filter: drop-shadow(0 0.625rem 0.9375rem rgb(0 0 0 / 10%))
+      drop-shadow(0 0.25rem 0.375rem rgb(0 0 0 / 10%));
   }
 `;

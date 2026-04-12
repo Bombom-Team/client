@@ -42,7 +42,7 @@ const Container = styled.section<{ device: Device }>`
 
 const TitleWrapper = styled.div<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '20px' : '32px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.25rem' : '2rem')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -51,9 +51,9 @@ const TitleWrapper = styled.div<{ device: Device }>`
 `;
 
 const HeroBadge = styled.div<{ device: Device }>`
-  padding: 4px 12px;
+  padding: 0.25rem 0.75rem;
   border: 1px solid ${({ theme }) => theme.colors.primaryLight};
-  border-radius: 20px;
+  border-radius: 1.25rem;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
@@ -79,7 +79,7 @@ const Description = styled.p<{ device: Device }>`
 
 const PromptScroll = styled.div<{ device: Device }>`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
   align-items: center;
 

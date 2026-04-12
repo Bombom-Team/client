@@ -95,20 +95,20 @@ export default AppInstallSection;
 const Container = styled.section`
   width: 100%;
   max-width: 400px;
-  padding: 22px;
+  padding: 1.375rem;
   border: 1px solid ${({ theme }) => theme.colors.dividers};
-  border-radius: 20px;
+  border-radius: 1.25rem;
   box-shadow:
-    0 10px 15px -3px rgb(0 0 0 / 10%),
-    0 4px 6px -4px rgb(0 0 0 / 10%);
+    0 0.625rem 0.9375rem -0.1875rem rgb(0 0 0 / 10%),
+    0 0.25rem 0.375rem -0.25rem rgb(0 0 0 / 10%);
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-direction: column;
 
   background: rgb(255 255 255 / 80%);
 
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(0.625rem);
 `;
 
 const ButtonWrapper = styled(Flex)`
@@ -125,13 +125,15 @@ const StoreButton = styled.button<{
   variant: 'appStore' | 'playStore';
 }>`
   min-width: 160px;
-  padding: 14px 20px;
+  padding: 0.875rem 1.25rem;
   border: ${({ variant, theme }) =>
-    variant === 'playStore' ? `1px solid ${theme.colors.stroke}` : 'none'};
-  border-radius: 12px;
+    variant === 'playStore'
+      ? `0.0625rem solid ${theme.colors.stroke}`
+      : 'none'};
+  border-radius: 0.75rem;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex: 1;
   align-items: center;
   justify-content: center;
@@ -148,7 +150,7 @@ const StoreButton = styled.button<{
 
   &:hover {
     opacity: 0.8;
-    transform: translateY(-2px);
+    transform: translateY(-0.125rem);
   }
 
   &:active {

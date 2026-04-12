@@ -25,14 +25,14 @@ const Container = styled.section`
   width: 100%;
 
   display: flex;
-  gap: 22px;
+  gap: 1.375rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
 const EmptySearchIconWrapper = styled.div`
-  padding: 38px;
+  padding: 2.375rem;
 `;
 
 const EmptyTitle = styled.h3<{ isMobile: boolean }>`

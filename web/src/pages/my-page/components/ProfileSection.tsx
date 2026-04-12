@@ -245,7 +245,7 @@ const Container = styled.div`
   max-width: 400px;
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-direction: column;
 `;
 
@@ -253,7 +253,7 @@ const FieldGroup = styled.div`
   width: fit-content;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
 `;
 
@@ -278,7 +278,7 @@ const DisabledText = styled.p`
 
 const RadioGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   align-items: center;
 `;
 
@@ -298,7 +298,7 @@ const HiddenRadio = styled.input`
   pointer-events: none;
 
   &:focus-visible + label {
-    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primaryLight};
+    box-shadow: 0 0 0 0.1875rem ${({ theme }) => theme.colors.primaryLight};
   }
 `;
 
@@ -306,10 +306,10 @@ const RadioButtonLabel = styled.label<{
   selected: boolean;
 }>`
   min-width: 60px;
-  padding: 10px 12px;
-  border: 2px solid
+  padding: 0.625rem 0.75rem;
+  border: 0.125rem solid
     ${({ theme, selected }) => (selected ? 'transparent' : theme.colors.stroke)};
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   display: inline-flex;
   align-items: center;

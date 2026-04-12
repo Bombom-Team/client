@@ -55,8 +55,8 @@ const AnnounceBar = ({
         >
           {' '}
           <CloseIcon
-            width={isPC ? '24px' : '18px'}
-            height={isPC ? '24px' : '18px'}
+            width={isPC ? '1.5rem' : '1.125rem'}
+            height={isPC ? '1.5rem' : '1.125rem'}
             fill="black"
           />
         </CloseButton>
@@ -67,12 +67,12 @@ const AnnounceBar = ({
 
 const Container = styled.div<{ isPC: boolean; clickable: boolean }>`
   width: 100%;
-  margin-bottom: 8px;
-  padding: ${({ isPC }) => (isPC ? '12px 16px' : '8px 12px')};
-  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  padding: ${({ isPC }) => (isPC ? '0.75rem 1rem' : '0.5rem 0.75rem')};
+  border-radius: 0.75rem;
 
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   flex-direction: column;
   align-items: center;
 
@@ -82,10 +82,10 @@ const Container = styled.div<{ isPC: boolean; clickable: boolean }>`
 `;
 
 const ContentWrapper = styled.div<{ isPC: boolean }>`
-  padding: 4px 0;
+  padding: 0.25rem 0;
 
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   flex: 1;
   flex-direction: ${({ isPC }) => (isPC ? 'row' : 'column')};
 
@@ -101,15 +101,15 @@ const Content = styled.div<{ isPC: boolean }>`
 
 const CheckboxWrapper = styled.div<{ isPC: boolean }>`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   flex-direction: row;
   align-items: center;
 `;
 
 const CloseButton = styled(Button)`
   min-width: 32px;
-  min-height: 32px;
-  padding: 6px;
+  min-height: 2rem;
+  padding: 0.375rem;
 
   display: flex;
   align-items: center;

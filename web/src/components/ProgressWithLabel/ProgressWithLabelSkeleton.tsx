@@ -14,11 +14,11 @@ const ProgressWithLabelSkeleton = ({
   return (
     <Container>
       <ProgressInfo>
-        <Skeleton width="80px" height="16px" />
-        <Skeleton width="24px" height="16px" marginLeft="auto" />
+        <Skeleton width="5rem" height="1rem" />
+        <Skeleton width="1.5rem" height="1rem" marginLeft="auto" />
       </ProgressInfo>
       {hasShowGraph && <ProgressBarSkeleton />}
-      {hasShowDescription && <Skeleton width="100px" height="14px" />}
+      {hasShowDescription && <Skeleton width="6.25rem" height="0.875rem" />}
     </Container>
   );
 };

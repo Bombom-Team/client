@@ -22,7 +22,7 @@ export const Default: Story = {
     const [selected, setSelected] = useState<string | null>(null);
 
     return (
-      <div style={{ padding: '40px' }}>
+      <div style={{ padding: '2.5rem' }}>
         <Select
           options={fruitOptions}
           selectedValue={selected}
@@ -39,7 +39,7 @@ export const LongPlaceholder: Story = {
     const [selected, setSelected] = useState<string | null>(null);
 
     return (
-      <div style={{ padding: '40px' }}>
+      <div style={{ padding: '2.5rem' }}>
         <Select
           options={fruitOptions}
           selectedValue={selected}
@@ -56,7 +56,7 @@ export const WideWidth: Story = {
     const [selected, setSelected] = useState<string | null>(null);
 
     return (
-      <div style={{ padding: '40px' }}>
+      <div style={{ padding: '2.5rem' }}>
         <Select
           options={fruitOptions}
           selectedValue={selected}

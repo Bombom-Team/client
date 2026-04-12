@@ -116,12 +116,12 @@ const Container = styled.section`
   width: 100%;
 
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   flex-direction: column;
 `;
 
 const InfoWrapper = styled.div`
-  padding: 0 10px;
+  padding: 0 0.625rem;
 
   display: flex;
   flex-flow: row;
@@ -140,7 +140,7 @@ const WarningMessage = styled.p`
 
 const NoticeMessageWrapper = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
 `;
 
@@ -149,7 +149,7 @@ const NoticeMessage = styled.p`
 `;
 
 const TabsWrapper = styled.div<{ device: Device }>`
-  height: 36px;
+  height: 2.25rem;
 
   display: flex;
   flex-direction: row;
@@ -160,16 +160,16 @@ const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   pc: (theme) => ({
     flexShrink: 0,
     border: `1px solid ${theme.colors.stroke}`,
-    borderRadius: '12px',
-    padding: '4px 16px',
+    borderRadius: '0.75rem',
+    padding: '0.25rem 1rem',
   }),
   tablet: (theme) => ({
     flexShrink: 0,
     border: `1px solid ${theme.colors.stroke}`,
-    borderRadius: '12px',
+    borderRadius: '0.75rem',
   }),
   mobile: () => ({
-    gap: '8px',
+    gap: '0.5rem',
     overflowX: 'auto',
     '&::-webkit-scrollbar': {
       display: 'none',

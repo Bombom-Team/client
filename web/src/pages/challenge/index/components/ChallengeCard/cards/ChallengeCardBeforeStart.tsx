@@ -131,8 +131,8 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
 export default ChallengeCardBeforeStart;
 
 const ApplyButton = styled(Button)`
-  padding: 10px 16px;
-  border-radius: 10px;
+  padding: 0.625rem 1rem;
+  border-radius: 0.625rem;
 
   font: ${({ theme }) => theme.fonts.body2};
   font-weight: 600;

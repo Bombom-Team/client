@@ -57,7 +57,7 @@ const Container = styled.article<{ device: Device; isVisible: boolean }>`
 
   opacity: 0;
 
-  transform: translate3d(0, 40px, 0);
+  transform: translate3d(0, 2.5rem, 0);
 
   ${({ isVisible }) => isVisible && `animation: fade-in-up 1s ease forwards;`}
 
@@ -76,7 +76,7 @@ const ContentWrapper = styled.div<{
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '24px' : '8px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '0.5rem')};
   flex-direction: ${({ device, componentPosition }) => {
     if (device === 'mobile') return 'column';
     return componentPosition === 'left' ? 'row-reverse' : 'row';
@@ -90,7 +90,7 @@ const TextSection = styled.div<{
   componentPosition: AlignType;
 }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '16px' : '32px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1rem' : '2rem')};
   flex: 1;
   flex-direction: column;
   align-items: ${({ device, componentPosition }) => {
@@ -106,7 +106,7 @@ const TextSection = styled.div<{
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
   justify-content: center;
 
@@ -123,12 +123,12 @@ const Title = styled.h3<{ device: Device }>`
 
 const IconWrapper = styled.div<{ device: Device }>`
   width: ${({ device }) => {
-    if (device === 'mobile') return '18px';
-    return device === 'tablet' ? '24px' : '28px';
+    if (device === 'mobile') return '1.125rem';
+    return device === 'tablet' ? '1.5rem' : '1.75rem';
   }};
   height: ${({ device }) => {
-    if (device === 'mobile') return '18px';
-    return device === 'tablet' ? '24px' : '28px';
+    if (device === 'mobile') return '1.125rem';
+    return device === 'tablet' ? '1.5rem' : '1.75rem';
   }};
 
   fill: ${({ theme }) => theme.colors.primary};
@@ -139,7 +139,7 @@ const DescriptionWrapper = styled.div<{
   componentPosition: AlignType;
 }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '4px' : '8px')};
+  gap: ${({ device }) => (device === 'mobile' ? '0.25rem' : '0.5rem')};
   flex-direction: column;
   align-items: ${({ device, componentPosition }) => {
     if (device === 'mobile') return 'center';
@@ -161,13 +161,13 @@ const ImageSection = styled.div<{ device: Device }>`
 
   img {
     width: ${({ device }) => {
-      if (device === 'mobile') return '240px';
-      return device === 'tablet' ? '280px' : '380px';
+      if (device === 'mobile') return '15rem';
+      return device === 'tablet' ? '17.5rem' : '23.75rem';
     }};
     height: auto;
-    border-radius: 16px;
+    border-radius: 1rem;
 
-    filter: drop-shadow(0 10px 15px rgb(0 0 0 / 10%))
-      drop-shadow(0 4px 6px rgb(0 0 0 / 10%));
+    filter: drop-shadow(0 0.625rem 0.9375rem rgb(0 0 0 / 10%))
+      drop-shadow(0 0.25rem 0.375rem rgb(0 0 0 / 10%));
   }
 `;

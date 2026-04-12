@@ -95,7 +95,7 @@ const ModalContent = styled.div<{ isMobile: boolean }>`
   max-width: 520px;
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 
   text-align: left;
@@ -103,7 +103,7 @@ const ModalContent = styled.div<{ isMobile: boolean }>`
 
 const ModalHeader = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 `;
 
@@ -114,8 +114,8 @@ const ModalTitle = styled.h3<{ isMobile: boolean }>`
 `;
 
 const CountBadge = styled.span<{ isMobile: boolean }>`
-  padding: 2px 8px;
-  border-radius: 999px;
+  padding: 0.125rem 0.5rem;
+  border-radius: 62.4375rem;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
@@ -131,10 +131,10 @@ const ModalDescription = styled.p<{ isMobile: boolean }>`
 
 const CommentsWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
-  max-height: ${({ isMobile }) => (isMobile ? '50vh' : '360px')};
-  padding: ${({ isMobile }) => (isMobile ? '12px' : '16px')};
+  max-height: ${({ isMobile }) => (isMobile ? '50vh' : '22.5rem')};
+  padding: ${({ isMobile }) => (isMobile ? '0.75rem' : '1rem')};
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   background-color: ${({ theme }) => theme.colors.backgroundHover};
 
@@ -146,24 +146,24 @@ const CommentsList = styled.ul`
   padding: 0;
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 
   list-style: none;
 `;
 
 const CommentItem = styled.li`
-  padding: 16px;
-  border-radius: 12px;
+  padding: 1rem;
+  border-radius: 0.75rem;
 
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const CommentMeta = styled.div`
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 
   display: flex;
-  gap: 6px;
+  gap: 0.375rem;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
@@ -191,7 +191,7 @@ const CommentText = styled.p<{ isMobile: boolean }>`
 
 const StateText = styled.p<{ isMobile: boolean }>`
   width: 100%;
-  min-height: 160px;
+  min-height: 10rem;
 
   display: flex;
   align-items: center;

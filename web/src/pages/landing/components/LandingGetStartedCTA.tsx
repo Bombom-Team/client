@@ -34,20 +34,21 @@ const Container = styled.section<{ device: Device }>`
 const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'mobile' ? '400px' : '840px')};
-  padding: ${({ device }) => (device === 'mobile' ? '36px 20px' : '60px 72px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '2.25rem 1.25rem' : '3.75rem 4.5rem'};
   border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgb(0 0 0 / 8%);
+  border-radius: 1.5rem;
+  box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 8%);
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '20px' : '28px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.25rem' : '1.75rem')};
   flex-direction: column;
   align-items: center;
 
   background: rgb(255 255 255 / 40%);
   text-align: center;
 
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(1.25rem);
 `;
 
 const Title = styled.h2<{ device: Device }>`
@@ -65,9 +66,10 @@ const Description = styled.p<{ device: Device }>`
 `;
 
 const GetStartedLink = styled(Link)<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '12px 28px' : '18px 32px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0.75rem 1.75rem' : '1.125rem 2rem'};
   border: none;
-  border-radius: 8px;
+  border-radius: 0.5rem;
 
   display: flex;
   align-items: center;

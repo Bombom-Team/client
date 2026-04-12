@@ -39,17 +39,17 @@ export default FloatingActionButton;
 
 const FloatingButton = styled.button<{ device: Device }>`
   position: fixed;
-  right: 20px;
+  right: 1.25rem;
   bottom: calc(
     ${({ theme }) =>
-      `${theme.heights.bottomNav} + ${theme.safeArea.bottom} + 24px`}
+      `${theme.heights.bottomNav} + ${theme.safeArea.bottom} + 1.5rem`}
   );
   z-index: ${({ theme }) => theme.zIndex.overlay};
-  width: 56px;
-  height: 56px;
+  width: 3.5rem;
+  height: 3.5rem;
   border: none;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 15%);
 
   display: flex;
   align-items: center;
@@ -58,26 +58,26 @@ const FloatingButton = styled.button<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primary};
 
   &:hover {
-    box-shadow: 0 6px 16px rgb(0 0 0 / 20%);
+    box-shadow: 0 0.375rem 1rem rgb(0 0 0 / 20%);
   }
 `;
 
 const FloatingMenu = styled.div<{ device: Device }>`
   position: fixed;
-  right: 20px;
+  right: 1.25rem;
   bottom: calc(
     ${({ theme }) =>
-      `${theme.heights.bottomNav} + ${theme.safeArea.bottom} + 92px`}
+      `${theme.heights.bottomNav} + ${theme.safeArea.bottom} + 5.75rem`}
   );
   z-index: ${({ theme }) => theme.zIndex.floating};
   min-width: 120px;
-  padding: 12px;
+  padding: 0.75rem;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  border-radius: 0.75rem;
+  box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 15%);
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};

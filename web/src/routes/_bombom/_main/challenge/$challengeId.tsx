@@ -103,7 +103,7 @@ const Container = styled.div`
   margin: 0 auto;
 
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   flex-direction: column;
   align-items: flex-start;
 
@@ -112,18 +112,18 @@ const Container = styled.div`
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: center;
 `;
 
 const TitleIconBox = styled.div`
-  width: 28px;
-  height: 28px;
+  width: 1.75rem;
+  height: 1.75rem;
   border-radius: 50%;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: center;
 
@@ -138,23 +138,23 @@ const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '16px' : '20px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1rem' : '1.25rem')};
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
   align-items: flex-start;
   align-self: stretch;
 `;
 const UserChallengeInfoWrapper = styled.section`
   width: 100%;
-  padding: 16px;
+  padding: 1rem;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 16px;
+  border-radius: 1rem;
 `;
 
 const NavigationWrapper = styled.div<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '100%' : '220px')};
+  width: ${({ device }) => (device === 'mobile' ? '100%' : '13.75rem')};
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-direction: column;
   flex-shrink: 0;
 
@@ -177,16 +177,16 @@ const TabsWrapper = styled.div<{ device: Device }>`
 const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   pc: (theme) => ({
     border: `1px solid ${theme.colors.stroke}`,
-    borderRadius: '12px',
-    padding: '16px',
+    borderRadius: '0.75rem',
+    padding: '1rem',
   }),
   tablet: (theme) => ({
     border: `1px solid ${theme.colors.stroke}`,
-    borderRadius: '12px',
-    padding: '16px',
+    borderRadius: '0.75rem',
+    padding: '1rem',
   }),
   mobile: () => ({
-    gap: '8px',
+    gap: '0.5rem',
     overflowX: 'auto',
     '&::-webkit-scrollbar': {
       display: 'none',
@@ -200,7 +200,7 @@ const TabPanel = styled.div`
   min-width: 0;
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex: 1;
   flex-direction: column;
 `;

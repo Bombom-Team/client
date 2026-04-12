@@ -82,7 +82,7 @@ const floatAnimation = keyframes`
     transform: translateY(0) rotate(0deg);
   }
   50% {
-    transform: translateY(-20px) rotate(2deg);
+    transform: translateY(-1.25rem) rotate(2deg);
   }
 `;
 
@@ -94,13 +94,13 @@ const Container = styled.section<{ device: Device }>`
   margin-bottom: ${({ device }) => (device === 'pc' ? '16vh' : '0')};
   padding: ${({ theme, device }) => {
     if (device === 'mobile') {
-      return `calc(${theme.heights.headerMobile} + 12px) 0 0`;
+      return `calc(${theme.heights.headerMobile} + 0.75rem) 0 0`;
     }
-    return `calc(${theme.heights.headerPC} + 12px) 24px 96px`;
+    return `calc(${theme.heights.headerPC} + 0.75rem) 1.5rem 6rem`;
   }};
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -164,15 +164,15 @@ const GenerationBadge = styled.div<{ device: Device }>`
     `calc(${device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile} + 4vh)`};
   padding: ${({ device }) =>
     device === 'mobile'
-      ? 'clamp(12px, 2vw, 16px) clamp(16px, 4vw, 20px)'
-      : '16px 32px'};
+      ? 'clamp(0.75rem, 2vw, 1rem) clamp(1rem, 4vw, 1.25rem)'
+      : '1rem 2rem'};
   border-radius: ${({ device }) =>
-    device === 'mobile' ? 'clamp(20px, 5vw, 32px)' : '32px'};
+    device === 'mobile' ? 'clamp(1.25rem, 5vw, 2rem)' : '2rem'};
   box-shadow:
-    inset 0 2px 8px rgb(255 255 255 / 60%),
-    inset 0 -2px 4px rgb(255 92 0 / 10%),
-    0 8px 24px rgb(255 92 0 / 15%),
-    0 2px 8px rgb(255 92 0 / 8%);
+    inset 0 0.125rem 0.5rem rgb(255 255 255 / 60%),
+    inset 0 -0.125rem 0.25rem rgb(255 92 0 / 10%),
+    0 0.5rem 1.5rem rgb(255 92 0 / 15%),
+    0 0.125rem 0.5rem rgb(255 92 0 / 8%);
 
   background: linear-gradient(
     135deg,
@@ -186,7 +186,7 @@ const GenerationBadge = styled.div<{ device: Device }>`
 
   animation: ${floatAnimation} 6s ease-in-out infinite;
 
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(1.25rem);
   transform: translateY(0);
   transition: all 0.3s ease;
 
@@ -196,7 +196,7 @@ const GenerationBadge = styled.div<{ device: Device }>`
     left: 0;
     width: 100%;
     height: 50%;
-    border-radius: 32px 32px 0 0;
+    border-radius: 2rem 2rem 0 0;
 
     background: linear-gradient(
       180deg,
@@ -210,18 +210,18 @@ const GenerationBadge = styled.div<{ device: Device }>`
 
   &:hover {
     box-shadow:
-      inset 0 2px 8px rgb(255 255 255 / 60%),
-      inset 0 -2px 4px rgb(255 92 0 / 10%),
-      0 12px 32px rgb(255 92 0 / 20%),
-      0 4px 12px rgb(255 92 0 / 12%);
-    transform: translateY(-4px);
+      inset 0 0.125rem 0.5rem rgb(255 255 255 / 60%),
+      inset 0 -0.125rem 0.25rem rgb(255 92 0 / 10%),
+      0 0.75rem 2rem rgb(255 92 0 / 20%),
+      0 0.25rem 0.75rem rgb(255 92 0 / 12%);
+    transform: translateY(-0.25rem);
   }
 `;
 
 const Description = styled.p<{ device: Device }>`
   margin-top: ${({ device }) => {
-    if (device === 'mobile') return 'min(16px, 8vh)';
-    return device === 'tablet' ? '24vh' : 'min(600px, 54vh)';
+    if (device === 'mobile') return 'min(1rem, 8vh)';
+    return device === 'tablet' ? '24vh' : 'min(37.5rem, 54vh)';
   }};
 
   color: ${({ theme }) => theme.colors.textPrimary};
@@ -239,10 +239,10 @@ const Highlight = styled.strong`
 `;
 
 const PriceBox = styled.div<{ device: Device }>`
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  gap: ${({ device }) => (device === 'mobile' ? '0.5rem' : '0.75rem')};
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
@@ -271,8 +271,9 @@ const DiscountLabel = styled.span<{ device: Device }>`
 `;
 
 const ApplicantButton = styled(Button)<{ device: Device }>`
-  margin-top: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
-  padding: ${({ device }) => (device === 'mobile' ? '16px 24px' : '20px 36px')};
+  margin-top: ${({ device }) => (device === 'mobile' ? '0.75rem' : '1.5rem')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '1rem 1.5rem' : '1.25rem 2.25rem'};
 
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};

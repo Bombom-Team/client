@@ -72,7 +72,7 @@ const Backdrop = styled.div`
 
   background: rgb(0 0 0 / 30%);
 
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(0.125rem);
 `;
 
 const Container = styled.div<{
@@ -91,8 +91,8 @@ const Container = styled.div<{
 
 const CloseButton = styled.button<{ isMobile: boolean }>`
   position: absolute;
-  top: ${({ isMobile }) => (isMobile ? '12px' : '20px')};
-  right: ${({ isMobile }) => (isMobile ? '12px' : '20px')};
+  top: ${({ isMobile }) => (isMobile ? '0.75rem' : '1.25rem')};
+  right: ${({ isMobile }) => (isMobile ? '0.75rem' : '1.25rem')};
   border: none;
 
   display: flex;
@@ -116,8 +116,8 @@ const ContentWrapper = styled.div<{ position: Position; isMobile: boolean }>`
 const containerStyles = {
   dropdown: {
     height: 'auto',
-    borderRadius: '8px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+    borderRadius: '0.5rem',
+    boxShadow: '0 0.25rem 0.75rem rgba(0, 0, 0, 0.15)',
   },
   bottom: {
     bottom: 0,
@@ -125,7 +125,7 @@ const containerStyles = {
     right: 0,
     width: '100%',
     maxHeight: '80vh',
-    borderRadius: '12px 12px 0 0',
+    borderRadius: '0.75rem 0.75rem 0 0',
     boxShadow: 'none',
   },
   center: {
@@ -134,7 +134,7 @@ const containerStyles = {
     transform: 'translate(-50%, -50%)',
     maxWidth: '90vw',
     maxHeight: '90vh',
-    borderRadius: '12px',
+    borderRadius: '0.75rem',
     boxShadow: 'none',
   },
   fullscreen: {
@@ -152,27 +152,27 @@ const containerStyles = {
 const contentWrapperStyles = (isMobile: boolean) => ({
   dropdown: css`
     height: auto;
-    padding: 16px;
+    padding: 1rem;
 
     align-items: stretch;
   `,
   bottom: css`
     height: 100%;
-    padding: ${isMobile ? '24px 12px' : '32px'};
+    padding: ${isMobile ? '1.5rem 0.75rem' : '2rem'};
 
     align-items: center;
   `,
   center: css`
     width: 100%;
     height: 100%;
-    padding: ${isMobile ? '24px' : '36px 52px'};
+    padding: ${isMobile ? '1.5rem' : '2.25rem 3.25rem'};
 
     align-items: center;
   `,
   fullscreen: css`
     width: 100%;
     height: 100%;
-    padding: ${isMobile ? '24px 12px' : '36px 52px'};
+    padding: ${isMobile ? '1.5rem 0.75rem' : '2.25rem 3.25rem'};
 
     align-items: center;
     justify-content: center;

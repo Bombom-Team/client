@@ -103,11 +103,11 @@ const NavButton = styled(Link, {
   shouldForwardProp: (prop) => prop !== 'active' && prop !== 'isPC',
 })<{ active?: boolean; isPC: boolean }>`
   height: 100%;
-  padding: ${({ isPC }) => (isPC ? '10px 12px' : '4px 12px')};
-  border-radius: 12px;
+  padding: ${({ isPC }) => (isPC ? '0.625rem 0.75rem' : '0.25rem 0.75rem')};
+  border-radius: 0.75rem;
 
   display: flex;
-  gap: ${({ isPC }) => (isPC ? '4px' : '0')};
+  gap: ${({ isPC }) => (isPC ? '0.25rem' : '0')};
   flex: ${({ isPC }) => !isPC && '1'};
   flex-direction: ${({ isPC }) => (isPC ? 'row' : 'column')};
   align-items: center;
@@ -120,12 +120,12 @@ const NavButton = styled(Link, {
   font: ${({ isPC, theme }) => (isPC ? theme.fonts.body2 : theme.fonts.body4)};
 
   text-shadow: ${({ active }) =>
-    active ? 'none' : '0 1px 2px rgba(0, 0, 0, 0.1)'};
+    active ? 'none' : '0 0.0625rem 0.125rem rgba(0, 0, 0, 0.1)'};
   transition: all 0.2s ease;
 
   &:hover {
     background: ${({ active, theme }) =>
       active ? theme.colors.primary : theme.colors.dividers};
-    transform: translateY(-1px);
+    transform: translateY(-0.0625rem);
   }
 `;

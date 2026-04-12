@@ -99,10 +99,10 @@ export default DailyGuideComment;
 
 const CommentSection = styled.div`
   width: 100%;
-  padding-top: 8px;
+  padding-top: 0.5rem;
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 `;
 
@@ -121,16 +121,16 @@ const CommentInputWrapper = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
 `;
 
 const CommentTextarea = styled.textarea<{ isMobile: boolean }>`
   width: 100%;
-  height: 120px;
-  padding: 12px 16px;
+  height: 7.5rem;
+  padding: 0.75rem 1rem;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 8px;
+  border-radius: 0.5rem;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
@@ -154,8 +154,8 @@ const CommentInputFooter = styled.div`
 `;
 
 const SubmitButton = styled(Button)`
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
 
   align-self: flex-end;
 
@@ -169,12 +169,12 @@ const SubmittedLabel = styled.label`
 
 const SubmittedCommentBox = styled.div`
   width: 100%;
-  padding: 16px;
+  padding: 1rem;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 8px;
+  border-radius: 0.5rem;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.backgroundHover};

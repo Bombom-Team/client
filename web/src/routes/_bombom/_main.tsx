@@ -36,9 +36,9 @@ const BottomNavWrapper = styled.nav`
   height: calc(
     ${({ theme }) => `${theme.heights.bottomNav} + ${theme.safeArea.bottom}`}
   );
-  padding: 8px 12px calc(8px + ${({ theme }) => theme.safeArea.bottom});
+  padding: 0.5rem 0.75rem calc(0.5rem + ${({ theme }) => theme.safeArea.bottom});
   border-top: 1px solid ${({ theme }) => theme.colors.stroke};
-  box-shadow: 0 -8px 12px -6px rgb(0 0 0 / 10%);
+  box-shadow: 0 -0.5rem 0.75rem -0.375rem rgb(0 0 0 / 10%);
 
   display: flex;
   align-items: center;

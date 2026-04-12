@@ -90,8 +90,8 @@ const Container = styled.section<{ device: Device }>`
   position: relative;
   width: 100%;
   max-width: ${({ device }) => {
-    if (device === 'mobile') return '400px';
-    return device === 'tablet' ? '760px' : '1084px';
+    if (device === 'mobile') return '25rem';
+    return device === 'tablet' ? '47.5rem' : '67.75rem';
   }};
 
   display: flex;
@@ -100,10 +100,10 @@ const Container = styled.section<{ device: Device }>`
 
 const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '0 20px' : '0 60px')};
+  padding: ${({ device }) => (device === 'mobile' ? '0 1.25rem' : '0 3.75rem')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
   flex-direction: column;
   align-items: center;
 `;
@@ -120,7 +120,7 @@ const NewslettersGrid = styled.div<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '16px' : '24px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1rem' : '1.5rem')};
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
@@ -134,9 +134,9 @@ const NewsletterCardBox = styled.div<{
 }>`
   visibility: ${({ isSelected }) => (isSelected ? 'hidden' : 'visible')};
   width: ${({ device }) => {
-    if (device === 'mobile') return 'calc((100% - 16px) / 2)';
-    if (device === 'tablet') return 'calc((100% - 48px) / 3)';
-    return '200px';
+    if (device === 'mobile') return 'calc((100% - 1rem) / 2)';
+    if (device === 'tablet') return 'calc((100% - 3rem) / 3)';
+    return '12.5rem';
   }};
 
   flex: 0 0 auto;
@@ -151,7 +151,7 @@ const Overlay = styled.div`
   position: fixed;
   z-index: ${({ theme }) => theme.zIndex.overlay};
 
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(0.5rem);
   cursor: pointer;
 
   inset: 0;
@@ -175,9 +175,9 @@ const ModalCardWrapper = styled.div<{ device: Device }>`
   left: 50%;
   z-index: ${({ theme }) => theme.zIndex.overlay + 1};
   width: ${({ device }) => {
-    if (device === 'mobile') return 'min(80vw, 320px)';
-    if (device === 'tablet') return 'min(60vw, 360px)';
-    return 'min(40vw, 420px)';
+    if (device === 'mobile') return 'min(80vw, 20rem)';
+    if (device === 'tablet') return 'min(60vw, 22.5rem)';
+    return 'min(40vw, 26.25rem)';
   }};
 
   display: flex;

@@ -110,30 +110,30 @@ export default function GuideMail3() {
 const Container = styled.div`
   max-width: 680px;
   margin: 0 auto;
-  padding: 24px 20px;
+  padding: 1.5rem 1.25rem;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const HeaderBox = styled.div`
-  margin-bottom: 20px;
-  padding: 20px 18px;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem 1.125rem;
   border: 1px solid #ffedd5;
-  border-radius: 16px;
+  border-radius: 1rem;
 
   background: #fff7ed;
 `;
 
 const HeaderTag = styled.div`
-  margin-bottom: 6px;
+  margin-bottom: 0.375rem;
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const HeaderTitle = styled.h1`
-  margin: 0 0 10px;
+  margin: 0 0 0.625rem;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading4};
@@ -147,39 +147,39 @@ const HeaderDescription = styled.p`
 `;
 
 const SectionTitle = styled.h2`
-  margin: 24px 0 12px;
+  margin: 1.5rem 0 0.75rem;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
 const BodyText = styled.p`
-  margin: 0 0 16px;
+  margin: 0 0 1rem;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const BodyTextSub = styled.p`
-  margin: 0 0 16px;
+  margin: 0 0 1rem;
 
   color: #475569;
   font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const HighlightBox = styled.div`
-  margin-bottom: 20px;
-  padding: 20px;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   background: #f8fafc;
 `;
 
 const SuccessBox = styled.div`
-  padding: 12px;
+  padding: 0.75rem;
   border: 1px solid #bbf7d0;
-  border-radius: 8px;
+  border-radius: 0.5rem;
 
   display: flex;
   align-items: center;
@@ -189,31 +189,31 @@ const SuccessBox = styled.div`
 
 const SuccessIcon = styled.span`
   color: #059669;
-  font-size: 16px;
+  font-size: 1rem;
 `;
 
 const SuccessText = styled.span`
-  margin-left: 8px;
+  margin-left: 0.5rem;
 
   color: #065f46;
   font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const TipBox = styled.div`
-  margin-bottom: 16px;
-  padding-left: 16px;
-  border-left: 4px solid ${({ theme }) => theme.colors.primary};
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+  border-left: 0.25rem solid ${({ theme }) => theme.colors.primary};
 `;
 
 const TipText = styled.p`
-  margin: 0 0 8px;
+  margin: 0 0 0.5rem;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const List = styled.ul`
-  margin: 0 0 20px 18px;
+  margin: 0 0 1.25rem 1.125rem;
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -221,14 +221,14 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
-  margin: 8px 0;
+  margin: 0.5rem 0;
 `;
 
 const DashedBox = styled.div`
-  margin-bottom: 20px;
-  padding: 12px;
-  border: 2px dashed #cbd5e1;
-  border-radius: 8px;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem;
+  border: 0.125rem dashed #cbd5e1;
+  border-radius: 0.5rem;
 
   background: #f1f5f9;
   color: #64748b;
@@ -237,16 +237,16 @@ const DashedBox = styled.div`
 `;
 
 const InfoBox = styled.div`
-  margin: 20px 0;
-  padding: 16px;
+  margin: 1.25rem 0;
+  padding: 1rem;
   border: 1px solid #bae6fd;
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   background: #f0f9ff;
 `;
 
 const InfoTitle = styled.div`
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 
   color: #0369a1;
   font: ${({ theme }) => theme.fonts.heading6};
@@ -264,10 +264,10 @@ const Video = styled.video`
   height: auto;
   max-width: 100%;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 0.5rem;
 `;
 
 const Center = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
   text-align: center;
 `;

@@ -129,10 +129,11 @@ const Container = styled(Flex)`
 
 const IntroWrapper = styled.div<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'pc' ? '24px 60px' : '0 4px')};
+  padding: ${({ device }) =>
+    device === 'pc' ? '1.5rem 3.75rem' : '0 0.25rem'};
 
   display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '84px' : '64px')};
+  gap: ${({ device }) => (device === 'pc' ? '5.25rem' : '4rem')};
   flex-direction: column;
   align-items: center;
 `;
@@ -141,7 +142,7 @@ const QuoteItem = styled(Flex)<{ isVisible: boolean }>`
   width: 100%;
   max-width: fit-content;
 
-  gap: ${({ device }) => (device === 'mobile' ? '4px' : '8px')};
+  gap: ${({ device }) => (device === 'mobile' ? '0.25rem' : '0.5rem')};
   align-items: center;
   justify-content: center;
 
@@ -150,7 +151,7 @@ const QuoteItem = styled(Flex)<{ isVisible: boolean }>`
 
   opacity: 0;
 
-  transform: translate3d(0, 20px, 0);
+  transform: translate3d(0, 1.25rem, 0);
 
   &:first-of-type {
     align-self: flex-start;
@@ -179,17 +180,18 @@ const QuoteText = styled.p<{ device: Device }>`
 `;
 
 const OpeningQuoteIcon = styled(QuoteIcon)<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
-  height: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
-  margin-top: ${({ device }) => (device === 'mobile' ? '-12px' : '-24px')};
+  width: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
+  height: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
+  margin-top: ${({ device }) => (device === 'mobile' ? '-0.75rem' : '-1.5rem')};
 
   color: ${({ theme }) => theme.colors.primary};
 `;
 
 const ClosingQuoteIcon = styled(QuoteIcon)<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
-  height: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
-  margin-bottom: ${({ device }) => (device === 'mobile' ? '-12px' : '-24px')};
+  width: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
+  height: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
+  margin-bottom: ${({ device }) =>
+    device === 'mobile' ? '-0.75rem' : '-1.5rem'};
 
   color: ${({ theme }) => theme.colors.primary};
 
@@ -209,7 +211,7 @@ const IntroText = styled(Text)<{ device: Device; isVisible: boolean }>`
   animation-delay: 0.4s;
   opacity: 0;
 
-  transform: translate3d(0, 40px, 0);
+  transform: translate3d(0, 2.5rem, 0);
 
   @keyframes fade-in-up {
     to {
@@ -226,7 +228,7 @@ const DescriptionWrapper = styled(Flex)`
   animation-delay: 0.6s;
   opacity: 0;
 
-  transform: translate3d(0, 20px, 0);
+  transform: translate3d(0, 1.25rem, 0);
 
   @keyframes fade-in-up {
     to {
@@ -263,11 +265,12 @@ const Description = styled.p<{ device: Device }>`
 
 const InfoCard = styled.div<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '20px' : '24px 28px')};
-  border-radius: 16px;
+  padding: ${({ device }) =>
+    device === 'mobile' ? '1.25rem' : '1.5rem 1.75rem'};
+  border-radius: 1rem;
 
   display: flex;
-  gap: 32px;
+  gap: 2rem;
   flex-flow: ${({ device }) => (device === 'mobile' ? 'column' : 'row')} wrap;
   align-items: ${({ device }) => (device === 'mobile' ? 'stretch' : 'center')};
   justify-content: center;
@@ -277,7 +280,7 @@ const InfoCard = styled.div<{ device: Device }>`
 
 const Overview = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex: 1;
   flex-direction: column;
   align-items: flex-start;
@@ -285,14 +288,14 @@ const Overview = styled.div`
 
 const OverviewItem = styled.p<{ device: Device }>`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: flex-start;
   justify-content: center;
 
   svg {
-    width: ${({ device }) => (device === 'mobile' ? '18px' : '24px')};
-    height: ${({ device }) => (device === 'mobile' ? '18px' : '24px')};
-    margin-top: 2px;
+    width: ${({ device }) => (device === 'mobile' ? '1.125rem' : '1.5rem')};
+    height: ${({ device }) => (device === 'mobile' ? '1.125rem' : '1.5rem')};
+    margin-top: 0.125rem;
 
     flex-shrink: 0;
 
@@ -308,11 +311,11 @@ const OverViewText = styled.p<{ device: Device }>`
 `;
 
 const Period = styled.div`
-  padding: 16px 32px;
-  border-radius: 12px;
+  padding: 1rem 2rem;
+  border-radius: 0.75rem;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
   align-items: center;
   align-self: center;

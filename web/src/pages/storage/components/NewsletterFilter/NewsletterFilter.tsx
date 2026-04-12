@@ -98,25 +98,25 @@ export default NewsLetterFilter;
 
 export const Container = styled.nav<{ isPc: boolean }>`
   width: 100%;
-  padding: ${({ isPc }) => (isPc ? '16px' : '0')};
+  padding: ${({ isPc }) => (isPc ? '1rem' : '0')};
   border: ${({ isPc, theme }) =>
-    isPc ? `1px solid ${theme.colors.stroke}` : 'none'};
-  border-radius: 20px;
+    isPc ? `0.0625rem solid ${theme.colors.stroke}` : 'none'};
+  border-radius: 1.25rem;
 
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   flex-direction: column;
 `;
 
 export const TitleWrapper = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 0.625rem;
   align-items: center;
   justify-content: flex-start;
 `;
 
 export const IconWrapper = styled.div`
-  padding: 8px;
+  padding: 0.5rem;
   border-radius: 50%;
 
   display: flex;
@@ -131,8 +131,8 @@ export const Title = styled.h3`
 `;
 
 export const NewsLetterImage = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
 
   flex-shrink: 0;
@@ -141,11 +141,11 @@ export const NewsLetterImage = styled.img`
 `;
 
 export const StyledTabs = styled(Tabs)`
-  padding-bottom: 8px;
+  padding-bottom: 0.5rem;
   overflow-x: auto;
 
   &::-webkit-scrollbar {
-    height: 4px;
+    height: 0.25rem;
   }
 
   &::-webkit-scrollbar-track {
@@ -153,7 +153,7 @@ export const StyledTabs = styled(Tabs)`
   }
 
   &::-webkit-scrollbar-thumb {
-    border-radius: 2px;
+    border-radius: 0.125rem;
     background: ${({ theme }) => theme.colors.stroke};
   }
 `;

@@ -38,7 +38,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div style={{ padding: '20px' }}>
+      <div style={{ padding: '1.25rem' }}>
         <Story />
       </div>
     ),
@@ -51,10 +51,10 @@ type Story = StoryObj<typeof meta>;
 const Box = ({ children }: { children: React.ReactNode }) => (
   <div
     style={{
-      padding: '16px',
+      padding: '1rem',
       backgroundColor: '#FE5E04',
       color: 'white',
-      borderRadius: '8px',
+      borderRadius: '0.5rem',
     }}
   >
     {children}
@@ -78,13 +78,13 @@ export const AllJustifyOptions: Story = {
   render: () => (
     <Flex direction="column" gap={24}>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
           justify: flex-start
         </p>
         <Flex
           justify="flex-start"
           gap={8}
-          style={{ border: '1px solid #D7D7D7', padding: '12px' }}
+          style={{ border: '1px solid #D7D7D7', padding: '0.75rem' }}
         >
           <Box>1</Box>
           <Box>2</Box>
@@ -92,13 +92,13 @@ export const AllJustifyOptions: Story = {
         </Flex>
       </div>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
           justify: center
         </p>
         <Flex
           justify="center"
           gap={8}
-          style={{ border: '1px solid #D7D7D7', padding: '12px' }}
+          style={{ border: '1px solid #D7D7D7', padding: '0.75rem' }}
         >
           <Box>1</Box>
           <Box>2</Box>
@@ -106,13 +106,13 @@ export const AllJustifyOptions: Story = {
         </Flex>
       </div>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
           justify: flex-end
         </p>
         <Flex
           justify="flex-end"
           gap={8}
-          style={{ border: '1px solid #D7D7D7', padding: '12px' }}
+          style={{ border: '1px solid #D7D7D7', padding: '0.75rem' }}
         >
           <Box>1</Box>
           <Box>2</Box>
@@ -120,13 +120,13 @@ export const AllJustifyOptions: Story = {
         </Flex>
       </div>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
           justify: space-between
         </p>
         <Flex
           justify="space-between"
           gap={8}
-          style={{ border: '1px solid #D7D7D7', padding: '12px' }}
+          style={{ border: '1px solid #D7D7D7', padding: '0.75rem' }}
         >
           <Box>1</Box>
           <Box>2</Box>
@@ -134,13 +134,13 @@ export const AllJustifyOptions: Story = {
         </Flex>
       </div>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
           justify: space-around
         </p>
         <Flex
           justify="space-around"
           gap={8}
-          style={{ border: '1px solid #D7D7D7', padding: '12px' }}
+          style={{ border: '1px solid #D7D7D7', padding: '0.75rem' }}
         >
           <Box>1</Box>
           <Box>2</Box>
@@ -148,13 +148,13 @@ export const AllJustifyOptions: Story = {
         </Flex>
       </div>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
           justify: space-evenly
         </p>
         <Flex
           justify="space-evenly"
           gap={8}
-          style={{ border: '1px solid #D7D7D7', padding: '12px' }}
+          style={{ border: '1px solid #D7D7D7', padding: '0.75rem' }}
         >
           <Box>1</Box>
           <Box>2</Box>
@@ -169,7 +169,7 @@ export const AllAlignOptions: Story = {
   render: () => (
     <Flex direction="column" gap={24}>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
           align: flex-start
         </p>
         <Flex
@@ -177,8 +177,8 @@ export const AllAlignOptions: Story = {
           gap={8}
           style={{
             border: '1px solid #D7D7D7',
-            padding: '12px',
-            height: '120px',
+            padding: '0.75rem',
+            height: '7.5rem',
           }}
         >
           <Box>1</Box>
@@ -187,14 +187,16 @@ export const AllAlignOptions: Story = {
         </Flex>
       </div>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>align: center</p>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
+          align: center
+        </p>
         <Flex
           align="center"
           gap={8}
           style={{
             border: '1px solid #D7D7D7',
-            padding: '12px',
-            height: '120px',
+            padding: '0.75rem',
+            height: '7.5rem',
           }}
         >
           <Box>1</Box>
@@ -203,7 +205,7 @@ export const AllAlignOptions: Story = {
         </Flex>
       </div>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
           align: flex-end
         </p>
         <Flex
@@ -211,8 +213,8 @@ export const AllAlignOptions: Story = {
           gap={8}
           style={{
             border: '1px solid #D7D7D7',
-            padding: '12px',
-            height: '120px',
+            padding: '0.75rem',
+            height: '7.5rem',
           }}
         >
           <Box>1</Box>
@@ -221,7 +223,7 @@ export const AllAlignOptions: Story = {
         </Flex>
       </div>
       <div>
-        <p style={{ marginBottom: '8px', fontWeight: 'bold' }}>
+        <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
           align: stretch
         </p>
         <Flex
@@ -229,8 +231,8 @@ export const AllAlignOptions: Story = {
           gap={8}
           style={{
             border: '1px solid #D7D7D7',
-            padding: '12px',
-            height: '120px',
+            padding: '0.75rem',
+            height: '7.5rem',
           }}
         >
           <Box>1</Box>

@@ -53,16 +53,16 @@ export default UserChallengeInfo;
 
 const Container = styled.div<{ isMobile: boolean }>`
   width: 100%;
-  padding: 10px;
+  padding: 0.625rem;
 
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
   align-items: ${({ isMobile }) => (isMobile ? 'stretch' : 'flex-end')};
 `;
 
 const ChecklistArea = styled.div<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '100%' : '280px')};
+  width: ${({ isMobile }) => (isMobile ? '100%' : '17.5rem')};
   flex-shrink: 0;
 `;
 

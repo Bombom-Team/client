@@ -34,7 +34,7 @@ const SlideBox = ({ backgroundColor, children }: SlideBoxProps) => {
       style={{
         width: '100%',
         height: '100%',
-        padding: '52px',
+        padding: '3.25rem',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

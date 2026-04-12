@@ -36,13 +36,13 @@ export default SearchInput;
 const Container = styled.div`
   position: relative;
   width: 100%;
-  height: 32px;
+  height: 2rem;
 `;
 
 const ReadingGlassesIconWrapper = styled.div`
   position: absolute;
   top: 50%;
-  left: 12px;
+  left: 0.75rem;
 
   transform: translateY(-50%);
 `;
@@ -50,13 +50,13 @@ const ReadingGlassesIconWrapper = styled.div`
 const StyledInput = styled.input`
   width: 100%;
   height: 100%;
-  padding: 12px 42px;
+  padding: 0.75rem 2.625rem;
   outline: none;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 14px;
+  border-radius: 0.875rem;
   box-shadow:
-    0 1px 3px 0 rgb(0 0 0 / 10%),
-    0 1px 2px -1px rgb(0 0 0 / 10%);
+    0 0.0625rem 0.1875rem 0 rgb(0 0 0 / 10%),
+    0 0.0625rem 0.125rem -0.0625rem rgb(0 0 0 / 10%);
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
@@ -70,9 +70,9 @@ const StyledInput = styled.input`
 
   &:focus {
     box-shadow:
-      0 1px 3px 0 rgb(0 0 0 / 10%),
-      0 1px 2px -1px rgb(0 0 0 / 10%),
-      0 0 0 2px ${({ theme }) => theme.colors.primary}20;
+      0 0.0625rem 0.1875rem 0 rgb(0 0 0 / 10%),
+      0 0.0625rem 0.125rem -0.0625rem rgb(0 0 0 / 10%),
+      0 0 0 0.125rem ${({ theme }) => theme.colors.primary}20;
     border-color: ${({ theme }) => theme.colors.primary};
   }
 

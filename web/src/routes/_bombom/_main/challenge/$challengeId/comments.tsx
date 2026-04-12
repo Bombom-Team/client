@@ -174,19 +174,19 @@ const FilterWrapper = styled.div<{ isMobile: boolean }>`
       : 'auto'};
   z-index: ${({ isMobile, theme }) => (isMobile ? theme.zIndex.panel : 'auto')};
   width: 100%;
-  padding: ${({ isMobile }) => (isMobile ? '12px 0' : '16px')};
-  border-bottom: 2px solid ${({ theme }) => theme.colors.dividers};
+  padding: ${({ isMobile }) => (isMobile ? '0.75rem 0' : '1rem')};
+  border-bottom: 0.125rem solid ${({ theme }) => theme.colors.dividers};
 
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const ContentWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
-  padding: ${({ isMobile }) => (isMobile ? '20px 0' : '24px')};
+  padding: ${({ isMobile }) => (isMobile ? '1.25rem 0' : '1.5rem')};
   border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '32px' : '44px')};
+  gap: ${({ isMobile }) => (isMobile ? '2rem' : '2.75rem')};
   flex-direction: column;
 
   background-color: ${({ theme, isMobile }) =>
@@ -197,7 +197,7 @@ const AddCommentBox = styled.article`
   width: 100%;
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 `;
 
@@ -220,7 +220,7 @@ const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
 
 const RestDayContent = styled.section`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 `;
 
@@ -231,8 +231,8 @@ const RestDayTitle = styled.h3<{ isMobile: boolean }>`
 `;
 
 const RestDayMessage = styled.div<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => (isMobile ? '24px' : '32px')};
-  border-radius: 12px;
+  padding: ${({ isMobile }) => (isMobile ? '1.5rem' : '2rem')};
+  border-radius: 0.75rem;
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textSecondary};

@@ -19,7 +19,7 @@ const FloatingPostPanel = () => {
   return (
     <FloatingActionPanel
       top="50%"
-      left="max(12px, 4%)"
+      left="max(0.75rem, 4%)"
       actions={[
         {
           icon: <ChevronIcon direction="up" width={28} height={28} />,

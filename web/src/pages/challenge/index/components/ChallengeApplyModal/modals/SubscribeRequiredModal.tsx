@@ -55,10 +55,10 @@ const SubscribeRequiredModal = ({
 export default SubscribeRequiredModal;
 
 const SubscribeContainer = styled.div<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '320px' : '480px')};
+  width: ${({ isMobile }) => (isMobile ? '20rem' : '30rem')};
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '16px' : '24px')};
+  gap: ${({ isMobile }) => (isMobile ? '1rem' : '1.5rem')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -70,18 +70,18 @@ const NewsletterList = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 `;
 
 const NewsletterCard = styled.button`
   width: 100%;
-  padding: 12px;
+  padding: 0.75rem;
   border: none;
-  border-radius: 16px;
+  border-radius: 1rem;
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -93,20 +93,20 @@ const NewsletterCard = styled.button`
     box-shadow 0.2s ease;
 
   &:hover {
-    box-shadow: 0 8px 25px -8px rgb(0 0 0 / 12%);
-    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1.5625rem -0.5rem rgb(0 0 0 / 12%);
+    transform: translateY(-0.125rem);
   }
 
   &:active {
-    transform: translateY(-1px);
+    transform: translateY(-0.0625rem);
   }
 `;
 
 const NewsletterImage = styled.img`
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 10%);
 
   flex-shrink: 0;
 
@@ -114,7 +114,7 @@ const NewsletterImage = styled.img`
 `;
 
 const NewsletterInfo = styled.div`
-  min-height: 64px;
+  min-height: 4rem;
 
   display: flex;
   flex: 1;
@@ -133,7 +133,7 @@ const NewsletterName = styled.h3`
 
 const SubscribeAction = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.primary};

@@ -45,10 +45,10 @@ export default ChallengeApplySection;
 const Container = styled.section<{ device: Device }>`
   width: 100%;
   padding: ${({ device }) =>
-    device === 'mobile' ? '48px 12px' : '120px 60px'};
+    device === 'mobile' ? '3rem 0.75rem' : '7.5rem 3.75rem'};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -64,7 +64,8 @@ const Title = styled.h2<{ device: Device }>`
 `;
 
 const ApplicantButton = styled(Button)<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '16px 24px' : '20px 36px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '1rem 1.5rem' : '1.25rem 2.25rem'};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
 

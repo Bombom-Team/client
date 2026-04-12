@@ -10,16 +10,22 @@ const PostCardSkeleton = () => {
     <SkeletonContainer as={Container}>
       <Skeleton
         width="100%"
-        height={device === 'mobile' ? '180px' : '216px'}
-        borderRadius="16px"
+        height={device === 'mobile' ? '11.25rem' : '13.5rem'}
+        borderRadius="1rem"
       />
 
       <ContentWrapper>
-        <Skeleton width="88%" height={device === 'mobile' ? '28px' : '32px'} />
-        <Skeleton width="100%" height={device === 'mobile' ? '20px' : '24px'} />
+        <Skeleton
+          width="88%"
+          height={device === 'mobile' ? '1.75rem' : '2rem'}
+        />
+        <Skeleton
+          width="100%"
+          height={device === 'mobile' ? '1.25rem' : '1.5rem'}
+        />
         <MetaInfo>
-          <Skeleton width="72px" height="16px" />
-          <Skeleton width="56px" height="16px" />
+          <Skeleton width="4.5rem" height="1rem" />
+          <Skeleton width="3.5rem" height="1rem" />
         </MetaInfo>
       </ContentWrapper>
     </SkeletonContainer>

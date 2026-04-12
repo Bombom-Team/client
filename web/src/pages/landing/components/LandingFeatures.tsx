@@ -87,12 +87,12 @@ export default LandingFeatures;
 const Container = styled.section<{ device: Device }>`
   width: 100%;
   max-width: ${({ device }) => {
-    if (device === 'mobile') return '400px';
-    return device === 'tablet' ? '760px' : '1084px';
+    if (device === 'mobile') return '25rem';
+    return device === 'tablet' ? '47.5rem' : '67.75rem';
   }};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '84px' : '168px')};
+  gap: ${({ device }) => (device === 'mobile' ? '5.25rem' : '10.5rem')};
   flex-direction: column;
 `;
 
@@ -104,11 +104,11 @@ const CategoryImage = styled(ImageWithFallback)`
   position: absolute;
   top: 44%;
   left: 50%;
-  width: 160px;
-  border-radius: 16px;
+  width: 10rem;
+  border-radius: 1rem;
 
-  filter: drop-shadow(0 10px 15px rgb(0 0 0 / 10%))
-    drop-shadow(0 4px 6px rgb(0 0 0 / 10%));
+  filter: drop-shadow(0 0.625rem 0.9375rem rgb(0 0 0 / 10%))
+    drop-shadow(0 0.25rem 0.375rem rgb(0 0 0 / 10%));
 
   transform: translate(-50%, -50%);
 `;
@@ -117,11 +117,11 @@ const NavBarImage = styled(ImageWithFallback)`
   position: absolute;
   top: 80%;
   left: 50%;
-  width: 160px;
-  border-radius: 16px;
+  width: 10rem;
+  border-radius: 1rem;
 
-  filter: drop-shadow(0 10px 15px rgb(0 0 0 / 10%))
-    drop-shadow(0 4px 6px rgb(0 0 0 / 10%));
+  filter: drop-shadow(0 0.625rem 0.9375rem rgb(0 0 0 / 10%))
+    drop-shadow(0 0.25rem 0.375rem rgb(0 0 0 / 10%));
 
   transform: translate(-50%, -50%);
 `;

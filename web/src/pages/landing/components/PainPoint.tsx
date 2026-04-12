@@ -62,10 +62,10 @@ export default PainPoint;
 
 const Container = styled.section<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '60px 0' : '100px 0')};
+  padding: ${({ device }) => (device === 'mobile' ? '3.75rem 0' : '6.25rem 0')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '24px' : '40px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2.5rem')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -89,7 +89,7 @@ const Ellipsis = styled.div<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
-  letter-spacing: 4px;
+  letter-spacing: 0.25rem;
 `;
 
 const PainPointWrapper = styled.div<{ device: Device }>`
@@ -97,7 +97,7 @@ const PainPointWrapper = styled.div<{ device: Device }>`
   max-width: ${({ device }) => (device === 'mobile' ? '360px' : '720px')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '20px' : '44px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.25rem' : '2.75rem')};
   flex-direction: column;
   align-items: center;
 `;
@@ -110,8 +110,9 @@ const SpeechBubble = styled.div<{
 }>`
   position: relative;
   width: ${({ device }) => (device === 'mobile' ? '100%' : 'fit-content')};
-  padding: ${({ device }) => (device === 'mobile' ? '20px 24px' : '24px 32px')};
-  border-radius: 20px;
+  padding: ${({ device }) =>
+    device === 'mobile' ? '1.25rem 1.5rem' : '1.5rem 2rem'};
+  border-radius: 1.25rem;
 
   background-color: ${({ theme }) => theme.colors.primaryLight};
   color: ${({ theme }) => theme.colors.textPrimary};
@@ -121,7 +122,7 @@ const SpeechBubble = styled.div<{
 
   opacity: 0;
 
-  transform: translate3d(0, 40px, 0);
+  transform: translate3d(0, 2.5rem, 0);
 
   ${({ isVisible, index }) =>
     isVisible &&
@@ -155,11 +156,11 @@ const addSpeechBubbleTailStyle = (
     &::before {
       content: '';
       position: absolute;
-      bottom: 12px;
+      bottom: 0.75rem;
       border-style: solid;
 
-      ${isLeft ? 'left' : 'right'}: -36px;
-      border-width: ${isLeft ? '18px 48px 4px 0' : '18px 0 4px 48px'};
+      ${isLeft ? 'left' : 'right'}: -2.25rem;
+      border-width: ${isLeft ? '1.125rem 3rem 0.25rem 0' : '1.125rem 0 0.25rem 3rem'};
       border-color: ${
         isLeft
           ? `transparent ${theme.colors.primaryLight} transparent transparent`
@@ -170,10 +171,10 @@ const addSpeechBubbleTailStyle = (
 };
 
 const PromoteWrapper = styled.div<{ device: Device }>`
-  margin: ${({ device }) => (device === 'mobile' ? '16px 0' : '32px 0')};
+  margin: ${({ device }) => (device === 'mobile' ? '1rem 0' : '2rem 0')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '24px' : '48px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '3rem')};
   flex-direction: column;
   align-items: center;
 `;
@@ -181,15 +182,15 @@ const PromoteWrapper = styled.div<{ device: Device }>`
 const MailsImage = styled(ImageWithFallback)<{ device: Device }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'mobile' ? '280px' : '560px')};
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
-  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 10%))
-    drop-shadow(0 2px 4px rgb(0 0 0 / 10%));
+  filter: drop-shadow(0 0.25rem 0.375rem rgb(0 0 0 / 10%))
+    drop-shadow(0 0.125rem 0.25rem rgb(0 0 0 / 10%));
 `;
 
 const PromoteTextBox = styled.div<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  gap: ${({ device }) => (device === 'mobile' ? '0.5rem' : '0.75rem')};
   flex-direction: column;
 
   font: ${({ device, theme }) =>

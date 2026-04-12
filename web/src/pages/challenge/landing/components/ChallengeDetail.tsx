@@ -115,12 +115,12 @@ export default ChallengeDetail;
 const Container = styled.section<{ device: Device }>`
   width: 100%;
   max-width: ${({ device }) => {
-    if (device === 'mobile') return '400px';
-    return device === 'tablet' ? '760px' : '1084px';
+    if (device === 'mobile') return '25rem';
+    return device === 'tablet' ? '47.5rem' : '67.75rem';
   }};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '64px' : '84px')};
+  gap: ${({ device }) => (device === 'mobile' ? '4rem' : '5.25rem')};
   flex-direction: column;
 `;
 
@@ -141,9 +141,9 @@ const Highlight = styled.span`
 
 const CommentImageWrapper = styled.div`
   width: 100%;
-  min-height: 210px;
+  min-height: 13.125rem;
   max-width: 80%;
-  padding-top: 20px;
+  padding-top: 1.25rem;
 
   display: flex;
   flex-direction: column;
@@ -152,8 +152,8 @@ const CommentImageWrapper = styled.div`
 
 const CommentImage = styled.img<{ offset: number; isVisible: boolean }>`
   width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 10px 24px rgb(0 0 0 / 4%);
+  border-radius: 0.75rem;
+  box-shadow: 0 0.625rem 1.5rem rgb(0 0 0 / 4%);
 
   animation: ${({ isVisible }) =>
     isVisible ? 'fade-in 0.4s ease forwards' : 'none'};

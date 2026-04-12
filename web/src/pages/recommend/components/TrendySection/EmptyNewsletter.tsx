@@ -23,17 +23,17 @@ export default EmptyNewsletter;
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  padding: 60px 24px;
+  padding: 3.75rem 1.5rem;
 
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
 const EmptySearchIconWrapper = styled.div`
-  padding: 20px;
+  padding: 1.25rem;
 `;
 
 const EmptyTitle = styled.h2`
@@ -49,7 +49,7 @@ const EmptyTitle = styled.h2`
 
 const DescriptionWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
 `;
 

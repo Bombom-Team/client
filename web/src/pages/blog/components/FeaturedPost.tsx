@@ -63,10 +63,10 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
 export default FeaturedPost;
 
 export const Container = styled(Link)<{ device: Device }>`
-  border-radius: 16px;
+  border-radius: 1rem;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '32px' : '40px')};
+  gap: ${({ device }) => (device === 'mobile' ? '2rem' : '2.5rem')};
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
 
   cursor: pointer;
@@ -76,8 +76,8 @@ export const Container = styled(Link)<{ device: Device }>`
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.primary};
-    outline-offset: 2px;
+    outline: 0.125rem solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 0.125rem;
   }
 `;
 
@@ -85,8 +85,8 @@ export const Thumbnail = styled.div<{ device: Device }>`
   overflow: hidden;
   position: relative;
   width: ${({ device }) => (device === 'mobile' ? '100%' : '50%')};
-  height: ${({ device }) => (device === 'mobile' ? '240px' : '332px')};
-  border-radius: ${({ device }) => (device === 'mobile' ? '28px' : '16px')};
+  height: ${({ device }) => (device === 'mobile' ? '15rem' : '20.75rem')};
+  border-radius: ${({ device }) => (device === 'mobile' ? '1.75rem' : '1rem')};
 
   flex-shrink: 0;
 
@@ -120,7 +120,7 @@ const NoThumbnailPlaceholder = styled.div`
 
 export const ContentWrapper = styled.div<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '24px' : '16px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '1rem')};
   flex: 1;
   flex-direction: column;
   justify-content: center;
@@ -128,7 +128,7 @@ export const ContentWrapper = styled.div<{ device: Device }>`
 
 export const DescriptionBox = styled.div`
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   flex-direction: column;
 `;
 

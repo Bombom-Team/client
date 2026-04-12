@@ -46,11 +46,11 @@ const ReadingKingMyRank = ({ userRank }: ReadingKingMyRankProps) => {
 export default ReadingKingMyRank;
 
 const Container = styled.section`
-  padding: 16px;
-  border-radius: 16px;
+  padding: 1rem;
+  border-radius: 1rem;
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 
   background-color: ${({ theme }) => `${theme.colors.primary}10`};
@@ -63,7 +63,7 @@ const MyRankInfo = styled.div`
 
 const NameWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 `;
 
@@ -90,7 +90,7 @@ const MyReadValue = styled.div`
 
 const ProgressBox = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   flex-direction: column;
 `;
 

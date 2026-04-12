@@ -85,9 +85,9 @@ const Container = styled.aside<{ opened: boolean }>`
   top: 0;
   right: 0;
   z-index: ${({ theme }) => theme.zIndex.panel};
-  width: 342px;
+  width: 21.375rem;
   height: 100%;
-  padding-top: 72px;
+  padding-top: 4.5rem;
   border-left: 1px solid ${({ theme }) => theme.colors.stroke};
 
   display: flex;
@@ -103,11 +103,11 @@ const Container = styled.aside<{ opened: boolean }>`
 const ToggleButton = styled.button<{ opened: boolean }>`
   position: absolute;
   top: 80vh;
-  left: -40px;
-  width: 40px;
-  height: 80px;
+  left: -2.5rem;
+  width: 2.5rem;
+  height: 5rem;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 8px 0 0 8px;
+  border-radius: 0.5rem 0 0 0.5rem;
 
   background-color: ${({ theme }) => theme.colors.white};
 
@@ -115,7 +115,7 @@ const ToggleButton = styled.button<{ opened: boolean }>`
 `;
 
 const Header = styled.div`
-  padding: 24px;
+  padding: 1.5rem;
   border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
@@ -125,7 +125,7 @@ const Header = styled.div`
 
 const HeaderLeft = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 0.625rem;
   align-items: center;
 `;
 const HeaderTitleBox = styled.div``;
@@ -141,22 +141,22 @@ const HeaderTitleCaption = styled.h5`
 `;
 
 const IconWrapper = styled.div`
-  padding: 6px;
+  padding: 0.375rem;
   border-radius: 50%;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+  box-shadow: 0 0.0625rem 0.125rem rgb(0 0 0 / 5%);
 
   background-color: ${({ theme }) => `${theme.colors.primary}10`};
 `;
 
 const CloseButton = styled.button`
-  padding: 6px;
+  padding: 0.375rem;
 `;
 
 const NotesList = styled.div`
-  padding: 24px;
+  padding: 1.5rem;
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex: 1;
   flex-direction: column;
 
@@ -164,8 +164,8 @@ const NotesList = styled.div`
 `;
 
 const EmptyWrapper = styled.div`
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 
   display: flex;
   flex-direction: column;
@@ -174,8 +174,8 @@ const EmptyWrapper = styled.div`
 `;
 
 const EmptyIconWrapper = styled.div`
-  margin-bottom: 16px;
-  padding: 16px;
+  margin-bottom: 1rem;
+  padding: 1rem;
   border-radius: 50%;
 
   background-color: ${({ theme }) => `${theme.colors.primary}10`};

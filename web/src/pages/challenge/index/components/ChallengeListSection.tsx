@@ -34,7 +34,7 @@ const Section = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-direction: column;
 `;
 
@@ -47,8 +47,8 @@ const ChallengeGrid = styled.div<{ isMobile: boolean }>`
   width: 100%;
 
   display: grid;
-  gap: ${({ isMobile }) => (isMobile ? '16px' : '24px')};
+  gap: ${({ isMobile }) => (isMobile ? '1rem' : '1.5rem')};
 
   grid-template-columns: ${({ isMobile }) =>
-    isMobile ? '1fr' : 'repeat(auto-fill, minmax(360px, 1fr))'};
+    isMobile ? '1fr' : 'repeat(auto-fill, minmax(22.5rem, 1fr))'};
 `;

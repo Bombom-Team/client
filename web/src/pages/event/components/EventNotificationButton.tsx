@@ -90,10 +90,11 @@ export default EventNotificationButton;
 const Container = styled.button<{
   device: Device;
 }>`
-  padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '12px 20px')};
-  border: 4px solid ${({ theme }) => theme.colors.black};
-  border-radius: 24px;
-  box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0.5rem 1rem' : '0.75rem 1.25rem'};
+  border: 0.25rem solid ${({ theme }) => theme.colors.black};
+  border-radius: 1.5rem;
+  box-shadow: 0.25rem 0.25rem 0 0 ${({ theme }) => theme.colors.black};
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
@@ -107,7 +108,7 @@ const Container = styled.button<{
   }
 
   &:hover:not(:disabled) {
-    box-shadow: 6px 6px 0 0 ${({ theme }) => theme.colors.black};
-    transform: translateY(-2px);
+    box-shadow: 0.375rem 0.375rem 0 0 ${({ theme }) => theme.colors.black};
+    transform: translateY(-0.125rem);
   }
 `;

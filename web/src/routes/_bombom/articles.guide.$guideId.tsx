@@ -107,19 +107,19 @@ function GuideMailPage() {
 const Container = styled.div`
   max-width: 700px;
   margin: 0 auto;
-  padding: 28px;
+  padding: 1.75rem;
   border-right: 1px solid ${({ theme }) => theme.colors.stroke};
   border-left: 1px solid ${({ theme }) => theme.colors.stroke};
 
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   flex-direction: column;
   align-items: center;
 `;
 
 const Divider = styled.div`
   width: 100%;
-  height: 1px;
+  height: 0.0625rem;
 
   background-color: ${({ theme }) => theme.colors.dividers};
 `;

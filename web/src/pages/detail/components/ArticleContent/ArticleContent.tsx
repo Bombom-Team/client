@@ -69,7 +69,7 @@ const Container = styled.div<{ scale: number }>`
   }
 
   mark[data-highlight-id].hovered-highlight {
-    box-shadow: 0 0 6px rgb(0 0 0 / 30%);
+    box-shadow: 0 0 0.375rem rgb(0 0 0 / 30%);
     cursor: pointer;
   }
 `;

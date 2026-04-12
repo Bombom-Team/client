@@ -15,10 +15,10 @@ const meta: Meta<typeof FloatingActionButton> = {
     docs: {
       story: {
         inline: false,
-        height: '300px',
+        height: '18.75rem',
       },
       canvas: {
-        height: '300px',
+        height: '18.75rem',
       },
     },
   },
@@ -28,8 +28,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const StyledBookmarkIcon = styled(BookmarkIcon)`
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
 
   color: ${({ theme }) => theme.colors.primary};
 `;
@@ -39,18 +39,18 @@ const LinkText = styled.span`
 `;
 
 const StyledLink = styled.button`
-  padding: 8px;
-  border-radius: 8px;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
 
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
   justify-content: center;
 `;
 
 const StyledChat = styled.div`
-  width: 160px;
-  height: 120px;
+  width: 10rem;
+  height: 7.5rem;
 `;
 
 export const Default: Story = {

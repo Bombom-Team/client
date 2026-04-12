@@ -64,11 +64,11 @@ const Container = styled.div`
 `;
 
 const HeaderProfileWrapper = styled.button`
-  padding: 8px 12px;
-  border-radius: 12px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: flex-end;
 
@@ -76,14 +76,14 @@ const HeaderProfileWrapper = styled.button`
 `;
 
 const ProfileImg = styled(ImageWithFallback)`
-  width: 34px;
-  height: 34px;
+  width: 2.125rem;
+  height: 2.125rem;
   border-radius: 50%;
 `;
 
 const ProfileInfo = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   align-items: center;
   justify-content: center;
 `;

@@ -62,10 +62,10 @@ const ChallengeApplyModal = ({
 export default ChallengeApplyModal;
 
 export const Container = styled.div<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '320px' : '440px')};
+  width: ${({ isMobile }) => (isMobile ? '20rem' : '27.5rem')};
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '12px' : '20px')};
+  gap: ${({ isMobile }) => (isMobile ? '0.75rem' : '1.25rem')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -89,12 +89,12 @@ export const ModalDescription = styled.p<{ isMobile: boolean }>`
 
 export const ModalButtonGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   justify-content: center;
 `;
 
 export const ModalButton = styled(Button)<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '120px' : '160px')};
+  width: ${({ isMobile }) => (isMobile ? '7.5rem' : '10rem')};
   font: ${({ theme, isMobile }) =>
     isMobile ? theme.fonts.body3 : theme.fonts.body2};
 `;

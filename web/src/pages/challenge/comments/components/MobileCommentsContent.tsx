@@ -66,7 +66,7 @@ export default MobileCommentsContent;
 
 const Container = styled.section`
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   flex-direction: column;
 `;
 
@@ -75,7 +75,7 @@ const LoadMoreTrigger = styled.div`
 `;
 
 const LoadingMessage = styled.div`
-  padding: 20px;
+  padding: 1.25rem;
 
   display: flex;
   align-items: center;

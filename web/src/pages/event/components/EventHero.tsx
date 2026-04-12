@@ -47,30 +47,30 @@ const EventHero = ({ onApply }: EventHeroProps) => {
         <DecorativeCircle
           style={{
             backgroundColor: '#f9a8d4',
-            left: '20px',
-            top: '80px',
-            width: '80px',
-            height: '80px',
+            left: '1.25rem',
+            top: '5rem',
+            width: '5rem',
+            height: '5rem',
             opacity: 0.6,
           }}
         />
         <DecorativeCircle
           style={{
             backgroundColor: '#93c5fd',
-            right: '20px',
-            bottom: '80px',
-            width: '64px',
-            height: '64px',
+            right: '1.25rem',
+            bottom: '5rem',
+            width: '4rem',
+            height: '4rem',
             opacity: 0.6,
           }}
         />
         <DecorativeCircle
           style={{
             backgroundColor: '#c084fc',
-            right: '16px',
-            top: '160px',
-            width: '32px',
-            height: '32px',
+            right: '1rem',
+            top: '10rem',
+            width: '2rem',
+            height: '2rem',
           }}
         />
 
@@ -124,7 +124,7 @@ export default EventHero;
 const Container = styled.section<{ device: Device }>`
   z-index: ${({ theme }) => theme.zIndex.base};
   width: 100%;
-  border-bottom: 4px solid ${({ theme }) => theme.colors.black};
+  border-bottom: 0.25rem solid ${({ theme }) => theme.colors.black};
 
   display: flex;
   flex-direction: column;
@@ -140,13 +140,13 @@ const ContentWrapper = styled.div<{ device: Device }>`
   max-width: 1084px;
   padding: ${({ theme, device }) => {
     if (device === 'mobile') {
-      return `calc(${theme.heights.headerMobile} + 12px) 24px 48px`;
+      return `calc(${theme.heights.headerMobile} + 0.75rem) 1.5rem 3rem`;
     }
-    return `calc(${theme.heights.headerPC} + 12px) 24px 44px`;
+    return `calc(${theme.heights.headerPC} + 0.75rem) 1.5rem 2.75rem`;
   }};
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -155,15 +155,16 @@ const ContentWrapper = styled.div<{ device: Device }>`
 const DecorativeCircle = styled.span`
   position: absolute;
   z-index: ${({ theme }) => theme.zIndex.behind};
-  border: 2px solid ${({ theme }) => theme.colors.dividers};
+  border: 0.125rem solid ${({ theme }) => theme.colors.dividers};
   border-radius: 50%;
 `;
 
 const HeroBadge = styled.div<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '4px 12px' : '8px 14px')};
-  border: 2px solid ${({ theme }) => theme.colors.black};
-  border-radius: 32px;
-  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0.25rem 0.75rem' : '0.5rem 0.875rem'};
+  border: 0.125rem solid ${({ theme }) => theme.colors.black};
+  border-radius: 2rem;
+  box-shadow: 0.125rem 0.125rem 0 0 ${({ theme }) => theme.colors.black};
 
   display: flex;
   align-items: center;
@@ -180,10 +181,11 @@ const HeroBadge = styled.div<{ device: Device }>`
 `;
 
 const EventButton = styled.button<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '12px 20px' : '20px 44px')};
-  border: 4px solid ${({ theme }) => theme.colors.black};
-  border-radius: 24px;
-  box-shadow: 4px 4px 0 0 ${({ theme }) => theme.colors.black};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0.75rem 1.25rem' : '1.25rem 2.75rem'};
+  border: 0.25rem solid ${({ theme }) => theme.colors.black};
+  border-radius: 1.5rem;
+  box-shadow: 0.25rem 0.25rem 0 0 ${({ theme }) => theme.colors.black};
 
   background-color: #d81b60;
   color: ${({ theme }) => theme.colors.white};
@@ -191,12 +193,12 @@ const EventButton = styled.button<{ device: Device }>`
     device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
 
   &:hover {
-    box-shadow: 6px 6px 0 0 ${({ theme }) => theme.colors.black};
-    transform: translateY(-2px);
+    box-shadow: 0.375rem 0.375rem 0 0 ${({ theme }) => theme.colors.black};
+    transform: translateY(-0.125rem);
   }
 
   &:active {
-    box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+    box-shadow: 0.125rem 0.125rem 0 0 ${({ theme }) => theme.colors.black};
     transform: translateY(0);
   }
 `;
@@ -206,13 +208,13 @@ const InfoCard = styled.div<{ device: Device }>`
   width: 100%;
   max-width: 360px;
   padding: ${({ device }) =>
-    device === 'mobile' ? '32px 12px 12px' : '36px 28px 28px'};
-  border: 4px solid ${({ theme }) => theme.colors.black};
-  border-radius: 16px;
-  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+    device === 'mobile' ? '2rem 0.75rem 0.75rem' : '2.25rem 1.75rem 1.75rem'};
+  border: 0.25rem solid ${({ theme }) => theme.colors.black};
+  border-radius: 1rem;
+  box-shadow: 0.125rem 0.125rem 0 0 ${({ theme }) => theme.colors.black};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '20px' : '24px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.25rem' : '1.5rem')};
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -220,12 +222,13 @@ const InfoCard = styled.div<{ device: Device }>`
 
 const InfoCardBadge = styled.div<{ device: Device }>`
   position: absolute;
-  top: -16px;
+  top: -1rem;
   left: 50%;
-  padding: ${({ device }) => (device === 'mobile' ? '4px 12px' : '4px 16px')};
-  border: 2px solid ${({ theme }) => theme.colors.black};
-  border-radius: 32px;
-  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0.25rem 0.75rem' : '0.25rem 1rem'};
+  border: 0.125rem solid ${({ theme }) => theme.colors.black};
+  border-radius: 2rem;
+  box-shadow: 0.125rem 0.125rem 0 0 ${({ theme }) => theme.colors.black};
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
@@ -242,14 +245,14 @@ const InfoRow = styled.div`
   position: relative;
 
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
   justify-content: space-between;
 `;
 
 const InfoRowDivider = styled.div`
-  margin: -8px 0;
-  border-bottom: ${({ theme }) => `2px dashed ${theme.colors.stroke}`};
+  margin: -0.5rem 0;
+  border-bottom: ${({ theme }) => `0.125rem dashed ${theme.colors.stroke}`};
 `;
 
 const InfoLabel = styled.p<{ device: Device }>`
@@ -263,7 +266,7 @@ const InfoValue = styled.p<{ device: Device }>`
   position: relative;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.black};
@@ -279,10 +282,11 @@ const HeroImage = styled.img<{ device: Device }>`
 `;
 
 const Title = styled.div<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '10px 18px')};
-  border: 2px solid ${({ theme }) => theme.colors.black};
-  border-radius: 8px;
-  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0.5rem 1rem' : '0.625rem 1.125rem'};
+  border: 0.125rem solid ${({ theme }) => theme.colors.black};
+  border-radius: 0.5rem;
+  box-shadow: 0.125rem 0.125rem 0 0 ${({ theme }) => theme.colors.black};
 
   background-color: rgb(255 255 255 / 80%);
   color: ${({ theme }) => theme.colors.black};

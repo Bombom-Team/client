@@ -40,11 +40,11 @@ export default EventLandingHero;
 
 const Container = styled.button<{ isPC: boolean }>`
   width: 100%;
-  padding: ${({ isPC }) => (isPC ? '12px 24px' : '12px 16px')};
-  border-radius: 16px;
+  padding: ${({ isPC }) => (isPC ? '0.75rem 1.5rem' : '0.75rem 1rem')};
+  border-radius: 1rem;
 
   display: flex;
-  gap: ${({ isPC }) => (isPC ? '24px' : '8px')};
+  gap: ${({ isPC }) => (isPC ? '1.5rem' : '0.5rem')};
   align-items: center;
   justify-content: center;
 
@@ -52,10 +52,10 @@ const Container = styled.button<{ isPC: boolean }>`
 `;
 
 const HeroContent = styled.div<{ isPC: boolean }>`
-  padding: ${({ isPC }) => (isPC ? '0 24px' : '0 4px')};
+  padding: ${({ isPC }) => (isPC ? '0 1.5rem' : '0 0.25rem')};
 
   display: flex;
-  gap: ${({ isPC }) => (isPC ? '16px' : '12px')};
+  gap: ${({ isPC }) => (isPC ? '1rem' : '0.75rem')};
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
@@ -76,10 +76,10 @@ const HeroTitle = styled.p<{ isPC: boolean }>`
 `;
 
 const HeroBadge = styled.div<{ isPC: boolean }>`
-  padding: ${({ isPC }) => (isPC ? '6px 14px' : '4px 12px')};
-  border: 2px solid ${({ theme }) => theme.colors.black};
-  border-radius: 32px;
-  box-shadow: 2px 2px 0 0 ${({ theme }) => theme.colors.black};
+  padding: ${({ isPC }) => (isPC ? '0.375rem 0.875rem' : '0.25rem 0.75rem')};
+  border: 0.125rem solid ${({ theme }) => theme.colors.black};
+  border-radius: 2rem;
+  box-shadow: 0.125rem 0.125rem 0 0 ${({ theme }) => theme.colors.black};
 
   display: flex;
   align-items: center;
@@ -95,9 +95,9 @@ const HeroBadge = styled.div<{ isPC: boolean }>`
 `;
 
 const IndicateText = styled.p<{ isPC: boolean }>`
-  padding: ${({ isPC }) => (isPC ? '12px 24px' : '8px 12px')};
+  padding: ${({ isPC }) => (isPC ? '0.75rem 1.5rem' : '0.5rem 0.75rem')};
   border: none;
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};

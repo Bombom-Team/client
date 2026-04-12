@@ -117,7 +117,7 @@ const Container = styled.section`
 const TableWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.colors.dividers};
-  border-radius: ${({ isMobile }) => (isMobile ? '12px' : '0')};
+  border-radius: ${({ isMobile }) => (isMobile ? '0.75rem' : '0')};
 
   background: ${({ theme }) => theme.colors.white};
 
@@ -125,10 +125,10 @@ const TableWrapper = styled.div<{ isMobile: boolean }>`
 `;
 
 const Table = styled.table<{ isMobile: boolean }>`
-  --name-col-width: 78px;
-  --date-col-width: ${({ isMobile }) => (isMobile ? '36px' : '28px')};
-  --summary-col-width: 28px;
-  --rate-col-width: 44px;
+  --name-col-width: 4.875rem;
+  --date-col-width: ${({ isMobile }) => (isMobile ? '2.25rem' : '1.75rem')};
+  --summary-col-width: 1.75rem;
+  --rate-col-width: 2.75rem;
 
   width: 100%;
   min-width: ${({ isMobile }) => (isMobile ? '840px' : '720px')};
@@ -140,11 +140,11 @@ const HeaderRow = styled.tr``;
 
 const HeaderCell = styled.th<{ isWeekDivider?: boolean; isMobile: boolean }>`
   width: var(--date-col-width);
-  padding: 6px 4px;
+  padding: 0.375rem 0.25rem;
   border-right: ${({ isWeekDivider, theme }) =>
     isWeekDivider
-      ? `2px solid ${theme.colors.disabledText}`
-      : `1px solid ${theme.colors.dividers}`};
+      ? `0.125rem solid ${theme.colors.disabledText}`
+      : `0.0625rem solid ${theme.colors.dividers}`};
   border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
 
   background: ${({ theme, isMobile }) =>
@@ -201,34 +201,34 @@ const BodyRow = styled.tr<{ isMine: boolean; isMobile: boolean }>`
     (isMobile
       ? `
     & > td {
-      box-shadow: inset 0 2px 0 ${theme.colors.primary},
-        inset 0 -2px 0 ${theme.colors.primary};
+      box-shadow: inset 0 0.125rem 0 ${theme.colors.primary},
+        inset 0 -0.125rem 0 ${theme.colors.primary};
     }
 
     & > td:first-of-type {
-      box-shadow: inset 2px 0 0 ${theme.colors.primary},
-        inset 0 2px 0 ${theme.colors.primary},
-        inset 0 -2px 0 ${theme.colors.primary};
+      box-shadow: inset 0.125rem 0 0 ${theme.colors.primary},
+        inset 0 0.125rem 0 ${theme.colors.primary},
+        inset 0 -0.125rem 0 ${theme.colors.primary};
     }
 
     & > td:last-of-type {
-      box-shadow: inset -2px 0 0 ${theme.colors.primary},
-        inset 0 2px 0 ${theme.colors.primary},
-        inset 0 -2px 0 ${theme.colors.primary};
+      box-shadow: inset -0.125rem 0 0 ${theme.colors.primary},
+        inset 0 0.125rem 0 ${theme.colors.primary},
+        inset 0 -0.125rem 0 ${theme.colors.primary};
     }
   `
       : `
     & > td {
-      border-top: 2px solid ${theme.colors.primary};
-      border-bottom: 2px solid ${theme.colors.primary};
+      border-top: 0.125rem solid ${theme.colors.primary};
+      border-bottom: 0.125rem solid ${theme.colors.primary};
     }
 
     & > td:first-of-type {
-      border-left: 2px solid ${theme.colors.primary};
+      border-left: 0.125rem solid ${theme.colors.primary};
     }
 
     & > td:last-of-type {
-      border-right: 2px solid ${theme.colors.primary};
+      border-right: 0.125rem solid ${theme.colors.primary};
     }
   `)}
 `;
@@ -239,8 +239,8 @@ const BodyCell = styled.td<{
 }>`
   border-right: ${({ theme, isWeekDivider }) =>
     isWeekDivider
-      ? `2px solid ${theme.colors.disabledText}`
-      : `1px solid ${theme.colors.dividers}`};
+      ? `0.125rem solid ${theme.colors.disabledText}`
+      : `0.0625rem solid ${theme.colors.dividers}`};
   border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
 
   background: ${({ theme, isSurvived }) => {
@@ -259,7 +259,7 @@ const BodyCell = styled.td<{
 
 const NameCell = styled(BodyCell)<{ isMobile: boolean }>`
   width: var(--name-col-width);
-  padding: 6px;
+  padding: 0.375rem;
 
   font: ${({ theme }) => theme.fonts.body2};
 
@@ -276,7 +276,7 @@ const NameContent = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
   justify-content: center;
 

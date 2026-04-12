@@ -35,51 +35,51 @@ const Content = styled.div<{ device: Device }>`
   h1,
   h2,
   h3 {
-    margin: 24px 0 12px;
+    margin: 1.5rem 0 0.75rem;
     font-weight: 700;
   }
 
   h1 {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
 
   h2 {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
 
   h3 {
-    font-size: 20px;
+    font-size: 1.25rem;
   }
 
   p {
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
     line-height: 1.7;
   }
 
   ul,
   ol {
-    margin-bottom: 16px;
-    padding-left: 24px;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
   }
 
   li {
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
     line-height: 1.7;
   }
 
   blockquote {
-    margin: 16px 0;
-    padding-left: 16px;
-    border-left: 4px solid ${({ theme }) => theme.colors.dividers};
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 0.25rem solid ${({ theme }) => theme.colors.dividers};
 
     color: ${({ theme }) => theme.colors.textSecondary};
     font-style: italic;
   }
 
   pre {
-    margin-bottom: 16px;
-    padding: 16px;
-    border-radius: 4px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0.25rem;
 
     background: ${({ theme }) => theme.colors.backgroundHover};
 
@@ -87,8 +87,8 @@ const Content = styled.div<{ device: Device }>`
   }
 
   code {
-    padding: 2px 4px;
-    border-radius: 2px;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.125rem;
 
     background: ${({ theme }) => theme.colors.backgroundHover};
     font-family: monospace;
@@ -97,8 +97,8 @@ const Content = styled.div<{ device: Device }>`
 
   img {
     max-width: 100%;
-    margin: 16px 0;
-    border-radius: 8px;
+    margin: 1rem 0;
+    border-radius: 0.5rem;
 
     display: block;
   }
@@ -109,10 +109,10 @@ const Content = styled.div<{ device: Device }>`
   }
 
   p[data-caption] {
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
 
     color: ${({ theme }) => theme.colors.textSecondary};
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.5;
   }
 `;

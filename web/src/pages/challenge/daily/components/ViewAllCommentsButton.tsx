@@ -62,7 +62,7 @@ const StyledButton = styled(Button)<{ device: Device }>`
   padding: 0;
 
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, device }) =>

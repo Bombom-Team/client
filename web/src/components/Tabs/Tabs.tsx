@@ -22,7 +22,8 @@ export default Tabs;
 
 const Container = styled.ul<{ direction: Direction }>`
   display: flex;
-  gap: ${({ direction }) => (direction === 'horizontal' ? '12px' : '8px')};
+  gap: ${({ direction }) =>
+    direction === 'horizontal' ? '0.75rem' : '0.5rem'};
   flex-direction: ${({ direction }) =>
     direction === 'horizontal' ? 'row' : 'column'};
 `;

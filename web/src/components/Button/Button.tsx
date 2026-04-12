@@ -27,11 +27,11 @@ const Container = styled.button<{
   variant: Variant;
 }>`
   width: fit-content;
-  padding: 8px 16px;
-  border-radius: 16px;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: center;
 

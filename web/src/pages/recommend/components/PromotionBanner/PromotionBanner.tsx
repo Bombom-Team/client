@@ -41,7 +41,7 @@ export default PromotionBanner;
 
 const Container = styled.div`
   width: 100%;
-  height: 280px;
+  height: 17.5rem;
 
   display: flex;
   align-items: center;
@@ -51,8 +51,8 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  width: 560px;
-  padding: 0 10px 0 40px;
+  width: 35rem;
+  padding: 0 0.625rem 0 2.5rem;
 
   display: flex;
   align-items: center;
@@ -69,19 +69,19 @@ const Text = styled.h2`
 `;
 
 const StoreButtons = styled.div`
-  margin-top: 18px;
+  margin-top: 1.125rem;
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
 `;
 
 const StoreButton = styled.button`
-  width: 128px;
-  padding: 12px 18px;
-  border-radius: 8px;
+  width: 8rem;
+  padding: 0.75rem 1.125rem;
+  border-radius: 0.5rem;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.white};

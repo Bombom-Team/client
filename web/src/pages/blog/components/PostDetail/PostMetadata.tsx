@@ -86,8 +86,9 @@ const PostMetadata = ({
 export default PostMetadata;
 
 const CategoryBadge = styled.span<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '4px 8px' : '4px 12px')};
-  border-radius: 12px;
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0.25rem 0.5rem' : '0.25rem 0.75rem'};
+  border-radius: 0.75rem;
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};

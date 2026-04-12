@@ -54,7 +54,7 @@ export default InputField;
 
 const FieldGroup = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
 `;
 
@@ -65,12 +65,12 @@ const Label = styled.label`
 
 const Input = styled.input<{ hasSuffix: boolean }>`
   width: 100%;
-  height: 48px;
-  padding: 12px 14px;
-  padding-right: ${({ hasSuffix }) => (hasSuffix ? '148px' : undefined)};
+  height: 3rem;
+  padding: 0.75rem 0.875rem;
+  padding-right: ${({ hasSuffix }) => (hasSuffix ? '9.25rem' : undefined)};
   outline: none;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
@@ -84,9 +84,9 @@ const Input = styled.input<{ hasSuffix: boolean }>`
 
   &:focus {
     box-shadow:
-      0 1px 3px 0 rgb(0 0 0 / 10%),
-      0 1px 2px -1px rgb(0 0 0 / 10%),
-      0 0 0 2px ${({ theme }) => theme.colors.primary}20;
+      0 0.0625rem 0.1875rem 0 rgb(0 0 0 / 10%),
+      0 0.0625rem 0.125rem -0.0625rem rgb(0 0 0 / 10%),
+      0 0 0 0.125rem ${({ theme }) => theme.colors.primary}20;
     border-color: ${({ theme }) => theme.colors.primary};
   }
 
@@ -107,10 +107,10 @@ const InputRow = styled.div`
 
 const InputSuffixWrapper = styled.div`
   position: absolute;
-  top: 6px;
-  right: 10px;
+  top: 0.375rem;
+  right: 0.625rem;
   width: fit-content;
-  height: calc(100% - 12px);
+  height: calc(100% - 0.75rem);
 
   display: inline-flex;
   align-items: center;

@@ -186,7 +186,7 @@ const Container = styled.div`
   max-width: 1280px;
 
   display: flex;
-  gap: 24px;
+  gap: 1.5rem;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
@@ -194,15 +194,15 @@ const Container = styled.div`
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 `;
 
 const TitleIconBox = styled.div`
-  width: 28px;
-  height: 28px;
-  padding: 6px;
-  border-radius: 14px;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0.375rem;
+  border-radius: 0.875rem;
 
   display: flex;
   align-items: center;
@@ -220,16 +220,16 @@ const ContentWrapper = styled.div<{ isPC: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ isPC }) => (isPC ? '32px' : 0)};
+  gap: ${({ isPC }) => (isPC ? '2rem' : 0)};
   flex-direction: ${({ isPC }) => (isPC ? 'row' : 'column')};
   align-items: flex-start;
 `;
 
 const SidebarSection = styled.div<{ isPC: boolean }>`
-  width: ${({ isPC }) => (isPC ? '320px' : '100%')};
+  width: ${({ isPC }) => (isPC ? '20rem' : '100%')};
 
   display: flex;
-  gap: ${({ isPC }) => (isPC ? '20px' : '8px')};
+  gap: ${({ isPC }) => (isPC ? '1.25rem' : '0.5rem')};
   flex-direction: column;
 
   order: ${({ isPC }) => (isPC ? 2 : 0)};

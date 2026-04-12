@@ -61,12 +61,12 @@ const Container = styled.div<{ position: Position; opened: boolean }>`
   top: ${({ position }) => position.y}px;
   left: ${({ position }) => position.x}px;
   z-index: ${({ theme }) => theme.zIndex.overlay};
-  padding: 6px 10px 4px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+  padding: 0.375rem 0.625rem 0.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 20%);
 
   display: ${({ opened }) => (opened ? 'flex' : 'none')};
-  gap: 8px;
+  gap: 0.5rem;
 
   background: ${({ theme }) => theme.colors.primary};
 

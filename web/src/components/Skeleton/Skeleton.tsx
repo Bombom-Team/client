@@ -13,12 +13,12 @@ const Skeleton = ({ as, ...cssProps }: SkeletonProps) => {
 export default Skeleton;
 
 const Container = styled.div`
-  border-radius: 4px;
+  border-radius: 0.25rem;
 
   flex-shrink: 0;
 
   background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 37%, #e0e0e0 63%);
-  background-size: 400px 100%;
+  background-size: 25rem 100%;
 
   animation: ${shimmer} 1.4s ease infinite;
 `;

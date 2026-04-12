@@ -73,11 +73,11 @@ export default ReplyList;
 
 const ReplyListContainer = styled.ul`
   margin: 0;
-  padding: 0 0 0 12px;
-  border-left: 2px solid ${({ theme }) => theme.colors.stroke};
+  padding: 0 0 0 0.75rem;
+  border-left: 0.125rem solid ${({ theme }) => theme.colors.stroke};
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 `;
 

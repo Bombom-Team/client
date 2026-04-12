@@ -44,15 +44,15 @@ const Container = styled.header<{ device: Device }>`
   height: ${({ theme, device }) =>
     device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile};
   padding: ${({ device }) => {
-    if (device === 'mobile') return '0 16px';
-    if (device === 'tablet') return '0 40px';
-    return '0 60px';
+    if (device === 'mobile') return '0 1rem';
+    if (device === 'tablet') return '0 2.5rem';
+    return '0 3.75rem';
   }};
   border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
 
   background: rgb(255 255 255 / 80%);
 
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(0.375rem);
 `;
 
 const HeaderWrapper = styled.div<{ device: Device }>`
@@ -67,25 +67,25 @@ const HeaderWrapper = styled.div<{ device: Device }>`
 
 const Logo = styled(Link)<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  gap: ${({ device }) => (device === 'mobile' ? '0.5rem' : '0.75rem')};
   align-items: center;
 `;
 
 const LogoImage = styled.img<{ device: Device }>`
   width: ${({ device }) => {
-    if (device === 'mobile') return '40px';
-    if (device === 'tablet') return '44px';
-    return '48px';
+    if (device === 'mobile') return '2.5rem';
+    if (device === 'tablet') return '2.75rem';
+    return '3rem';
   }};
   height: ${({ device }) => {
-    if (device === 'mobile') return '40px';
-    if (device === 'tablet') return '44px';
-    return '48px';
+    if (device === 'mobile') return '2.5rem';
+    if (device === 'tablet') return '2.75rem';
+    return '3rem';
   }};
   border-radius: ${({ device }) => {
-    if (device === 'mobile') return '12px';
-    if (device === 'tablet') return '14px';
-    return '16px';
+    if (device === 'mobile') return '0.75rem';
+    if (device === 'tablet') return '0.875rem';
+    return '1rem';
   }};
 `;
 
@@ -96,9 +96,10 @@ const Title = styled.h1<{ device: Device }>`
 `;
 
 const GoToService = styled(Link)<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '8px 12px' : '8px 16px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0.5rem 0.75rem' : '0.5rem 1rem'};
   border: none;
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   display: flex;
   align-items: center;

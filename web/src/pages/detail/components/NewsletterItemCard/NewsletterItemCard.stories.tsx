@@ -61,7 +61,7 @@ export const ShortContent: Story = {
 
 export const MultipleArticles: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '24px' }}>
+    <div style={{ display: 'flex', gap: '1.5rem' }}>
       <NewsletterItemCard
         data={{
           ...ARTICLES[0],

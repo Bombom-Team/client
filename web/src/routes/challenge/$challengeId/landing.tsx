@@ -105,10 +105,10 @@ const Container = styled.main<{ device: Device }>`
 
 const Content = styled.div<{ device: Device }>`
   padding: ${({ device }) =>
-    device === 'mobile' ? '0 8px 80px 8px' : '0 60px 240px 60px'};
+    device === 'mobile' ? '0 0.5rem 5rem 0.5rem' : '0 3.75rem 15rem 3.75rem'};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '80px' : '180px')};
+  gap: ${({ device }) => (device === 'mobile' ? '5rem' : '11.25rem')};
   flex-direction: column;
   align-items: center;
   justify-content: center;

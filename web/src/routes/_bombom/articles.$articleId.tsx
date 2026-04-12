@@ -77,7 +77,7 @@ function ArticleDetailPage() {
               {currentArticle.isRead && (
                 <DotLottieReact
                   src="/assets/lottie/success-check.lottie"
-                  style={{ width: '28px', height: '28px' }}
+                  style={{ width: '1.75rem', height: '1.75rem' }}
                   loop={false}
                   autoplay
                 />
@@ -148,7 +148,7 @@ const Container = styled.div`
 const ArticleContent = styled.div<{ device: Device }>`
   max-width: ${ARTICLE_MAX_WIDTH}px;
   margin: 0 auto;
-  padding: ${({ device }) => (device === 'mobile' ? '0' : '0 16px')};
+  padding: ${({ device }) => (device === 'mobile' ? '0' : '0 1rem')};
   border-right: 1px solid
     ${({ theme, device }) =>
       device === 'mobile' ? 'transparent' : theme.colors.stroke};
@@ -157,7 +157,7 @@ const ArticleContent = styled.div<{ device: Device }>`
       device === 'mobile' ? 'transparent' : theme.colors.stroke};
 
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   flex-direction: column;
   align-items: center;
 `;
@@ -169,12 +169,12 @@ const ArticleProgressBar = styled(ProgressBar)<{ device: Device }>`
       ? `calc(${theme.heights.headerPC} + ${theme.safeArea.top})`
       : `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`};
   z-index: ${({ theme }) => theme.zIndex.floating};
-  height: 4px;
+  height: 0.25rem;
 `;
 
 const Divider = styled.div`
   width: 100%;
-  height: 1px;
+  height: 0.0625rem;
 
   background-color: ${({ theme }) => theme.colors.dividers};
 `;
@@ -185,7 +185,7 @@ const ContentDescription = styled.p`
 `;
 
 const BookmarkButton = styled.button`
-  padding: 8px;
+  padding: 0.5rem;
 
   display: flex;
   flex-shrink: 0;
@@ -205,7 +205,7 @@ const BookmarkButton = styled.button`
 
 const RightActions = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
 `;
 

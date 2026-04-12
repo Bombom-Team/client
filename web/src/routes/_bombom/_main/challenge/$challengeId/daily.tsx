@@ -82,7 +82,7 @@ const Container = styled.section`
   width: 100%;
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-direction: column;
   align-items: center;
 
@@ -91,8 +91,8 @@ const Container = styled.section`
 
 const DayBadge = styled.div`
   width: fit-content;
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
 
   align-self: flex-start;
 
@@ -104,12 +104,12 @@ const DayBadge = styled.div`
 
 const NoticeBox = styled.div`
   width: 100%;
-  padding: 12px 16px;
-  border-left: 4px solid ${({ theme }) => theme.colors.primary};
-  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  border-left: 0.25rem solid ${({ theme }) => theme.colors.primary};
+  border-radius: 0.5rem;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: flex-start;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};

@@ -118,9 +118,9 @@ export default Certificate;
 
 const Container = styled.div`
   position: relative;
-  width: 480px;
-  padding: 80px 60px;
-  border-radius: 10px;
+  width: 30rem;
+  padding: 5rem 3.75rem;
+  border-radius: 0.625rem;
 
   background-image: url(${certificateFrame});
   background-position: center;
@@ -137,7 +137,7 @@ const TopTitle = styled.h1`
 `;
 
 const Main = styled.div`
-  margin-top: 32px;
+  margin-top: 2rem;
 `;
 
 const UserName = styled.h2`
@@ -148,20 +148,20 @@ const UserName = styled.h2`
 `;
 
 const MedalImg = styled.img`
-  width: 140px;
-  height: 140px;
+  width: 8.75rem;
+  height: 8.75rem;
 `;
 
 const MetaLine = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const MetaLabel = styled.span`
-  width: 64px;
+  width: 4rem;
   font-weight: 600;
 `;
 
@@ -171,7 +171,7 @@ const MetaValue = styled.span`
 
 const Description = styled.p`
   max-width: 360px;
-  margin: 44px 0 0;
+  margin: 2.75rem 0 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body1};
@@ -179,9 +179,9 @@ const Description = styled.p`
 
 const Bottom = styled.div`
   position: absolute;
-  right: 44px;
-  bottom: 50px;
-  left: 44px;
+  right: 2.75rem;
+  bottom: 3.125rem;
+  left: 2.75rem;
 
   display: flex;
   align-items: flex-end;
@@ -202,12 +202,12 @@ const IssuedDate = styled.div`
 
 const BrandWrapper = styled.div`
   display: flex;
-  gap: 6px;
+  gap: 0.375rem;
   flex: 1;
   flex-direction: column;
 `;
 
 const BrandMark = styled.img`
-  width: 28px;
-  height: 28px;
+  width: 1.75rem;
+  height: 1.75rem;
 `;

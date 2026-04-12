@@ -109,7 +109,7 @@ function WeeklyGoalEditor({
 export default WeeklyGoalEditor;
 
 const Container = styled.div<{ device: Device }>`
-  margin-left: 4px;
+  margin-left: 0.25rem;
 
   display: flex;
   align-items: center;
@@ -120,10 +120,10 @@ const EditButton = styled.button<{
   isEditing?: boolean;
 }>`
   border: none;
-  border-radius: 3px;
+  border-radius: 0.1875rem;
 
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
   justify-content: center;
 
@@ -153,15 +153,15 @@ const EditButton = styled.button<{
   ${({ device, isEditing }) =>
     device === 'pc'
       ? `
-        width: ${isEditing ? 'auto' : '20px'};
-        height: 20px;
-        padding: ${isEditing ? '4px 8px' : '2px'};
+        width: ${isEditing ? 'auto' : '1.25rem'};
+        height: 1.25rem;
+        padding: ${isEditing ? '0.25rem 0.5rem' : '0.125rem'};
         min-width: ${isEditing ? '72px' : '20px'};
       `
       : `
-        width: ${isEditing ? 'auto' : '18px'};
-        height: 18px;
-        padding: ${isEditing ? '3px 6px' : '2px'};
+        width: ${isEditing ? 'auto' : '1.125rem'};
+        height: 1.125rem;
+        padding: ${isEditing ? '0.1875rem 0.375rem' : '0.125rem'};
         min-width: 18px;
       `}
 `;
@@ -169,17 +169,17 @@ const EditButton = styled.button<{
 const ButtonText = styled.span<{ device: Device }>`
   font: ${({ theme, device }) =>
     device === 'pc' ? theme.fonts.caption : theme.fonts.caption};
-  font-size: ${({ device }) => (device === 'pc' ? '11px' : '10px')};
+  font-size: ${({ device }) => (device === 'pc' ? '0.6875rem' : '0.625rem')};
   white-space: nowrap;
 `;
 
 const EditInput = styled.input<{ device: Device }>`
-  width: 40px;
+  width: 2.5rem;
   height: auto;
   margin: 0;
-  padding: 2px 4px;
+  padding: 0.125rem 0.25rem;
   border: 1px solid ${({ theme }) => theme.colors.primary};
-  border-radius: 3px;
+  border-radius: 0.1875rem;
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
@@ -189,7 +189,7 @@ const EditInput = styled.input<{ device: Device }>`
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.primary}40;
+    box-shadow: 0 0 0 0.0625rem ${({ theme }) => theme.colors.primary}40;
   }
 
   &:disabled {
@@ -199,6 +199,6 @@ const EditInput = styled.input<{ device: Device }>`
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.textTertiary};
-    font-size: 10px;
+    font-size: 0.625rem;
   }
 `;

@@ -74,8 +74,8 @@ const BadgeItem = styled.div`
 `;
 
 const Badge = styled.img`
-  width: 36px;
-  height: 36px;
+  width: 2.25rem;
+  height: 2.25rem;
 `;
 
 export default RankingBadgeInfo;

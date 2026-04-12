@@ -234,14 +234,14 @@ export default CommentCard;
 
 const Container = styled.article<{ isMobile: boolean; isMyComment: boolean }>`
   width: 100%;
-  padding: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
+  padding: ${({ isMobile }) => (isMobile ? '1rem' : '1.25rem')};
   border-bottom: ${({ theme, isMyComment }) =>
-    isMyComment ? `4px solid ${theme.colors.primaryLight}` : 'none'};
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
+    isMyComment ? `0.25rem solid ${theme.colors.primaryLight}` : 'none'};
+  border-radius: 0.75rem;
+  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 4%);
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -256,8 +256,8 @@ const LikeButton = styled(Button)<{ isMobile: boolean }>`
   align-items: center;
 
   svg {
-    width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
-    height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+    width: ${({ isMobile }) => (isMobile ? '1.25rem' : '1.5rem')};
+    height: ${({ isMobile }) => (isMobile ? '1.25rem' : '1.5rem')};
   }
 
   &:hover {
@@ -270,7 +270,7 @@ const LikeButton = styled(Button)<{ isMobile: boolean }>`
 `;
 
 const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
-  padding: 2px 6px;
+  padding: 0.125rem 0.375rem;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
@@ -282,8 +282,8 @@ const EditButton = styled(Button)<{ isMobile: boolean }>`
   padding: 0;
 
   svg {
-    width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
-    height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+    width: ${({ isMobile }) => (isMobile ? '1.25rem' : '1.5rem')};
+    height: ${({ isMobile }) => (isMobile ? '1.25rem' : '1.5rem')};
   }
 
   &:hover {
@@ -298,8 +298,9 @@ const EditButton = styled(Button)<{ isMobile: boolean }>`
 const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   overflow: hidden;
   position: relative;
-  padding: ${({ isMobile }) => (isMobile ? '4px 8px' : '4px 12px')};
-  border-left: 4px solid ${({ theme }) => theme.colors.stroke};
+  padding: ${({ isMobile }) =>
+    isMobile ? '0.25rem 0.5rem' : '0.25rem 0.75rem'};
+  border-left: 0.25rem solid ${({ theme }) => theme.colors.stroke};
 
   display: ${({ expanded }) => (expanded ? 'block' : '-webkit-box')};
   flex: 1;
@@ -332,15 +333,15 @@ const ExpandButton = styled(Button)`
 `;
 
 const HideQuoteButton = styled(ExpandButton)`
-  margin-left: 8px;
+  margin-left: 0.5rem;
 `;
 
 const ExpandQuoteButton = styled(ExpandButton)`
   position: absolute;
   right: 0;
-  bottom: 4px;
+  bottom: 0.25rem;
   z-index: ${({ theme }) => theme.zIndex.elevated};
-  padding-left: 32px;
+  padding-left: 2rem;
 
   display: block;
 
@@ -359,7 +360,7 @@ const ReplyAccordion = styled.button`
   border: none;
 
   display: inline-flex;
-  gap: 4px;
+  gap: 0.25rem;
   align-items: center;
   justify-content: flex-start;
 

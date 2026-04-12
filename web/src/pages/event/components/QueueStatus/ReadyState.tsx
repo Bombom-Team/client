@@ -119,18 +119,18 @@ const pulse = keyframes`
 `;
 
 const LoadingSpinner = styled.div<{ device: Device }>`
-  margin-top: 8px;
+  margin-top: 0.5rem;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  gap: ${({ device }) => (device === 'mobile' ? '0.5rem' : '0.75rem')};
   align-items: center;
   justify-content: center;
 `;
 
 const SpinnerDot = styled.div<{ delay: number }>`
-  width: 12px;
-  height: 12px;
-  border: 2px solid ${({ theme }) => theme.colors.black};
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 0.125rem solid ${({ theme }) => theme.colors.black};
   border-radius: 50%;
 
   background-color: ${({ theme }) => theme.colors.primary};

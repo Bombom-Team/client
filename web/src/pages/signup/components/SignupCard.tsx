@@ -208,28 +208,28 @@ const SignupCard = () => {
 export default SignupCard;
 
 const Container = styled.div<{ device: Device }>`
-  width: min(100%, 420px);
-  padding: 28px 24px;
+  width: min(100%, 26.25rem);
+  padding: 1.75rem 1.5rem;
 
   background-color: ${({ theme }) => theme.colors.white};
 
   ${({ device }) =>
     device !== 'mobile' &&
     `
-    border-radius: 20px;
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
+    border-radius: 1.25rem;
+    box-shadow: 0 1.5625rem 3.125rem -0.75rem rgb(0 0 0 / 25%);
   `}
 `;
 
 const SignupForm = styled.form`
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-direction: column;
 `;
 
 const HeaderWrapper = styled.div`
   display: flex;
-  gap: 6px;
+  gap: 0.375rem;
   flex-direction: column;
 `;
 
@@ -247,7 +247,7 @@ const FieldGroup = styled.div`
   width: fit-content;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
 `;
 
@@ -267,13 +267,13 @@ const LabelRow = styled.div`
   position: relative;
 
   display: inline-flex;
-  gap: 6px;
+  gap: 0.375rem;
   align-items: center;
 `;
 
 const TooltipButton = styled.button`
-  width: 18px;
-  height: 18px;
+  width: 1.125rem;
+  height: 1.125rem;
   padding: 0;
   border: none;
   border-radius: 50%;
@@ -289,7 +289,7 @@ const TooltipButton = styled.button`
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primaryLight};
+    box-shadow: 0 0 0 0.1875rem ${({ theme }) => theme.colors.primaryLight};
   }
 `;
 
@@ -304,9 +304,9 @@ const EmailHelpIcon = styled(HelpIcon)`
 
 const SubmitButton = styled.button`
   width: 100%;
-  height: 48px;
+  height: 3rem;
   border: none;
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
@@ -318,12 +318,12 @@ const SubmitButton = styled.button`
     filter 0.2s ease;
 
   &:hover {
-    box-shadow: 0 10px 20px -10px rgb(0 0 0 / 25%);
+    box-shadow: 0 0.625rem 1.25rem -0.625rem rgb(0 0 0 / 25%);
     filter: brightness(1.02);
   }
 
   &:active {
-    transform: translateY(1px);
+    transform: translateY(0.0625rem);
   }
 
   &:disabled {
@@ -338,7 +338,7 @@ const SubmitButton = styled.button`
 
 const RadioGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   align-items: center;
 `;
 
@@ -358,16 +358,16 @@ const HiddenRadio = styled.input`
   pointer-events: none;
 
   &:focus-visible + label {
-    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primaryLight};
+    box-shadow: 0 0 0 0.1875rem ${({ theme }) => theme.colors.primaryLight};
   }
 `;
 
 const RadioButtonLabel = styled.label<{ selected: boolean }>`
   min-width: 60px;
-  padding: 10px 12px;
-  border: 2px solid
+  padding: 0.625rem 0.75rem;
+  border: 0.125rem solid
     ${({ theme, selected }) => (selected ? 'transparent' : theme.colors.stroke)};
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   display: inline-flex;
   align-items: center;
@@ -385,7 +385,7 @@ const RadioButtonLabel = styled.label<{ selected: boolean }>`
 
 const TermsText = styled.span`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textPrimary};

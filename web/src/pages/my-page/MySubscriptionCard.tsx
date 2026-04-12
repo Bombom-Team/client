@@ -97,12 +97,12 @@ const MySubscriptionCard = ({
 export default MySubscriptionCard;
 
 const Container = styled.div`
-  padding: 16px;
+  padding: 1rem;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
 
   background: ${({ theme }) => theme.colors.white};
@@ -111,17 +111,17 @@ const Container = styled.div`
 `;
 
 const NewsletterContent = styled.div`
-  height: 72px;
+  height: 4.5rem;
 
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   justify-content: center;
 `;
 
 const NewsletterImage = styled(ImageWithFallback)`
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 0.5rem;
 
   flex-shrink: 0;
 
@@ -132,7 +132,7 @@ const NewsletterInfo = styled.div`
   overflow: hidden;
 
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   flex: 1;
   flex-direction: column;
 `;
@@ -166,7 +166,7 @@ const ActionWrapper = styled.div`
 `;
 
 const UnsubscribeInfoText = styled.p`
-  padding: 6px 10px;
+  padding: 0.375rem 0.625rem;
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.body3};
@@ -174,8 +174,8 @@ const UnsubscribeInfoText = styled.p`
 `;
 
 const ActionButton = styled(Button)`
-  padding: 6px 10px;
-  border-radius: 8px;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.5rem;
 
   font: ${({ theme }) => theme.fonts.body3};
 

@@ -71,16 +71,16 @@ function Select<T extends string | number>({
 const Container = styled.div<{ width: number | string }>`
   position: relative;
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
-  height: 36px;
+  height: 2.25rem;
 `;
 
 const SelectToggle = styled.div`
-  padding: 8px 12px;
+  padding: 0.5rem 0.75rem;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 6px;
+  border-radius: 0.375rem;
 
   display: flex;
-  gap: 10px;
+  gap: 0.625rem;
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -109,10 +109,10 @@ const SelectMenu = styled.div<{ open: boolean }>`
   left: 0;
   z-index: ${({ theme }) => theme.zIndex.elevated};
   width: 100%;
-  margin-top: 6px;
+  margin-top: 0.375rem;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 6px;
-  box-shadow: 0 4px 6px 0 rgb(0 0 0 / 9%);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.25rem 0.375rem 0 rgb(0 0 0 / 9%);
 
   display: ${({ open }) => (open ? 'block' : 'none')};
 
@@ -124,8 +124,8 @@ const SelectMenu = styled.div<{ open: boolean }>`
 
 const SelectMenuWrapper = styled.ul`
   width: 100%;
-  padding: 4px;
-  border-radius: 6px;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
 
   display: flex;
   flex-direction: column;
@@ -137,8 +137,8 @@ const SelectMenuWrapper = styled.ul`
 
 const SelectMenuItem = styled.li<{ selected: boolean; fontSize?: string }>`
   width: 100%;
-  padding: 6px 8px;
-  border-radius: 6px;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
 
   background-color: ${({ theme, selected }) =>
     selected ? theme.colors.primaryLight : theme.colors.white};

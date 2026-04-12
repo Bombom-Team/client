@@ -40,8 +40,8 @@ const CheckboxWrapper = styled.div`
 
 const HiddenCheckbox = styled.input`
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: 0.0625rem;
+  height: 0.0625rem;
   margin: 0;
   padding: 0;
   border: 0;
@@ -51,14 +51,14 @@ const HiddenCheckbox = styled.input`
   pointer-events: none;
 
   &:focus-visible + label {
-    outline: 2px solid ${({ theme }) => theme.colors.primary};
-    outline-offset: 2px;
+    outline: 0.125rem solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 0.125rem;
   }
 `;
 
 const CheckboxLabel = styled.label<{ checked: boolean }>`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 
   cursor: pointer;
@@ -66,12 +66,12 @@ const CheckboxLabel = styled.label<{ checked: boolean }>`
 `;
 
 const CheckboxSquare = styled.div<{ checked: boolean }>`
-  width: 20px;
-  height: 20px;
-  border: 2px solid
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 0.125rem solid
     ${({ theme, checked }) =>
       checked ? theme.colors.primary : theme.colors.stroke};
-  border-radius: 4px;
+  border-radius: 0.25rem;
 
   display: flex;
   align-items: center;

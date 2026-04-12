@@ -26,7 +26,7 @@ const ReadingStatusCardSkeleton = () => {
         </TitleWrapper>
       )}
 
-      <Skeleton width="120px" height="120px" borderRadius="12px" />
+      <Skeleton width="7.5rem" height="7.5rem" borderRadius="0.75rem" />
 
       <SkeletonProgressWrapper isPC={isPC}>
         <ProgressWithLabelSkeleton
@@ -49,6 +49,6 @@ const SkeletonProgressWrapper = styled.div<{ isPC: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ isPC }) => (isPC ? '50px' : '16px')};
+  gap: ${({ isPC }) => (isPC ? '3.125rem' : '1rem')};
   flex-direction: column;
 `;

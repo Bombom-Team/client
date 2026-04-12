@@ -19,10 +19,10 @@ export default EmptyUnreadCard;
 
 const Container = styled.section`
   width: 100%;
-  padding: 20px;
+  padding: 1.25rem;
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -36,7 +36,7 @@ const EmptyTitle = styled.h4`
 
 const DescriptionWrapper = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 0.25rem;
   flex-direction: column;
 `;
 

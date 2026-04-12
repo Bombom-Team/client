@@ -72,7 +72,7 @@ const Container = styled.section<{ device: Device; isVisible: boolean }>`
   max-width: ${({ device }) => (device === 'pc' ? '1084px' : '90%')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '2rem')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -82,7 +82,7 @@ const Container = styled.section<{ device: Device; isVisible: boolean }>`
 
   opacity: 0;
 
-  transform: translate3d(0, 40px, 0);
+  transform: translate3d(0, 2.5rem, 0);
 
   @keyframes fade-in-up {
     to {
@@ -102,13 +102,13 @@ const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '64px' : '72px')};
+  gap: ${({ device }) => (device === 'mobile' ? '4rem' : '4.5rem')};
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
 `;
 
 const Reward = styled.article<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '24px' : '54px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.5rem' : '3.375rem')};
   flex: 1;
   flex-direction: column;
   align-items: center;
@@ -119,7 +119,7 @@ const SubTitleBox = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
 `;
 
@@ -138,8 +138,8 @@ const RewardDescription = styled.p<{ device: Device }>`
 const BadgeBox = styled.div<{ device: Device }>`
   border-radius: 50%;
   box-shadow:
-    0 2px 8px rgb(0 0 0 / 6%),
-    0 4px 16px rgb(0 0 0 / 4%);
+    0 0.125rem 0.5rem rgb(0 0 0 / 6%),
+    0 0.25rem 1rem rgb(0 0 0 / 4%);
 
   display: flex;
   flex: 1;
@@ -163,16 +163,16 @@ const LeaderboardPreview = styled.img`
   height: auto;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-bottom: none;
-  border-radius: 24px 24px 0 0;
+  border-radius: 1.5rem 1.5rem 0 0;
 `;
 
 const CertificationBox = styled.div`
   width: 80%;
-  padding: 8px;
-  border-radius: 16px;
+  padding: 0.5rem;
+  border-radius: 1rem;
   box-shadow:
-    0 4px 8px rgb(0 0 0 / 8%),
-    0 8px 16px rgb(0 0 0 / 6%);
+    0 0.25rem 0.5rem rgb(0 0 0 / 8%),
+    0 0.5rem 1rem rgb(0 0 0 / 6%);
 
   display: flex;
   align-items: center;
@@ -185,5 +185,5 @@ const CertificationBox = styled.div`
 
 const CertificateImage = styled.img`
   width: 100%;
-  border-radius: 8px;
+  border-radius: 0.5rem;
 `;

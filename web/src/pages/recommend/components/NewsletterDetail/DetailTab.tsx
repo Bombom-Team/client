@@ -22,7 +22,7 @@ export default DetailTab;
 
 const Container = styled.div<{ isMobile: boolean }>`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '16px' : '24px')};
+  gap: ${({ isMobile }) => (isMobile ? '1rem' : '1.5rem')};
   flex-direction: column;
 `;
 

@@ -79,7 +79,7 @@ export default LandingAppDownload;
 
 const Container = styled.section<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '60px 0' : '100px 0')};
+  padding: ${({ device }) => (device === 'mobile' ? '3.75rem 0' : '6.25rem 0')};
 
   display: flex;
   justify-content: center;
@@ -90,7 +90,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
   max-width: ${({ device }) => (device === 'mobile' ? '400px' : '800px')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '20px' : '28px')};
+  gap: ${({ device }) => (device === 'mobile' ? '1.25rem' : '1.75rem')};
   flex-direction: column;
   align-items: center;
 
@@ -112,7 +112,7 @@ const Description = styled.p<{ device: Device }>`
 
 const ButtonGroup = styled.div<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '12px' : '16px')};
+  gap: ${({ device }) => (device === 'mobile' ? '0.75rem' : '1rem')};
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
   align-items: center;
   justify-content: center;
@@ -133,7 +133,8 @@ const StoreButton = styled(Button)<{ device: Device }>`
 `;
 
 const AppStoreButton = styled(StoreButton)`
-  padding: ${({ device }) => (device === 'mobile' ? '16px 28px' : '18px 32px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '1rem 1.75rem' : '1.125rem 2rem'};
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
@@ -144,8 +145,9 @@ const AppStoreButton = styled(StoreButton)`
 `;
 
 const GooglePlayStoreButton = styled(StoreButton)`
-  padding: ${({ device }) => (device === 'mobile' ? '14px 22px' : '16px 26px')};
-  border: 2px solid ${({ theme }) => theme.colors.primary};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0.875rem 1.375rem' : '1rem 1.625rem'};
+  border: 0.125rem solid ${({ theme }) => theme.colors.primary};
 
   color: ${({ theme }) => theme.colors.primary};
 `;

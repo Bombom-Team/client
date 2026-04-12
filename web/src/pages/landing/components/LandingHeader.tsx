@@ -16,7 +16,7 @@ const LandingHeader = () => {
       <HeaderWrapper>
         <HeaderLogo />
         {isLoading ? (
-          <Skeleton width="100px" height="40px" borderRadius={12} />
+          <Skeleton width="6.25rem" height="2.5rem" borderRadius={12} />
         ) : isLoggedIn ? (
           <GoToService device={device} to="/">
             서비스 이동
@@ -38,7 +38,8 @@ const Container = styled.header<{ device: Device }>`
   width: 100%;
   height: ${({ theme, device }) =>
     device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile};
-  padding: ${({ device }) => (device === 'pc' ? '8px 16px' : '8px 12px')};
+  padding: ${({ device }) =>
+    device === 'pc' ? '0.5rem 1rem' : '0.5rem 0.75rem'};
 
   display: flex;
   align-items: center;
@@ -46,7 +47,7 @@ const Container = styled.header<{ device: Device }>`
 
   background: rgb(249 248 248 / 60%);
 
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(0.625rem);
 
   transform: translateX(-50%);
 `;
@@ -61,9 +62,10 @@ const HeaderWrapper = styled.div`
 `;
 
 const GoToService = styled(Link)<{ device: Device }>`
-  padding: ${({ device }) => (device === 'mobile' ? '8px 12px' : '8px 16px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0.5rem 0.75rem' : '0.5rem 1rem'};
   border: none;
-  border-radius: 12px;
+  border-radius: 0.75rem;
 
   display: flex;
   align-items: center;

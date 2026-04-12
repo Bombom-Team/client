@@ -132,11 +132,11 @@ const ReadingStatusCard = () => {
 export default ReadingStatusCard;
 
 export const Container = styled.div<{ device: Device }>`
-  width: 310px;
-  border-radius: 20px;
+  width: 19.375rem;
+  border-radius: 1.25rem;
 
   display: flex;
-  gap: 26px;
+  gap: 1.625rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -148,15 +148,15 @@ export const TitleWrapper = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 10px;
+  gap: 0.625rem;
   align-items: center;
 `;
 
 export const StatusIconWrapper = styled.div`
-  width: 32px;
-  height: 32px;
-  padding: 6px;
-  border-radius: 14px;
+  width: 2rem;
+  height: 2rem;
+  padding: 0.375rem;
+  border-radius: 0.875rem;
 
   display: flex;
   align-items: center;
@@ -173,7 +173,7 @@ export const Title = styled.h2`
 
 const StreakWrapper = styled.div<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '8px' : '0px')};
+  gap: ${({ device }) => (device === 'pc' ? '0.5rem' : '0')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -195,7 +195,7 @@ const WeeklyProgressContainer = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 14px;
+  gap: 0.875rem;
   flex-direction: column;
 `;
 
@@ -203,13 +203,13 @@ const ProgressInfo = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 `;
 
 const StyledIcon = styled.img`
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 
   object-fit: cover;
   object-position: center;
@@ -252,19 +252,19 @@ const InputContainer = styled.div`
 
 const containerStyles: Record<Device, (theme: Theme) => CSSObject> = {
   pc: (theme) => ({
-    padding: '34px 30px',
+    padding: '2.125rem 1.875rem',
     backgroundColor: theme.colors.white,
     border: `1px solid ${theme.colors.white}`,
-    boxShadow: '0 25px 50px -12px rgb(0 0 0 / 15%)',
+    boxShadow: '0 1.5625rem 3.125rem -0.75rem rgb(0 0 0 / 15%)',
   }),
   tablet: () => ({
-    height: '200px',
+    height: '12.5rem',
     flex: '1',
-    gap: '12px',
+    gap: '0.75rem',
   }),
   mobile: () => ({
-    height: '200px',
+    height: '12.5rem',
     flex: '1',
-    gap: '12px',
+    gap: '0.75rem',
   }),
 };

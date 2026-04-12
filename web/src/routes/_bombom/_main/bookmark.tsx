@@ -82,7 +82,7 @@ function BookmarkPage() {
           <MainContentSection device={device}>
             <SummaryBar>
               {isLoading ? (
-                <Skeleton width="80px" height="20px" />
+                <Skeleton width="5rem" height="1.25rem" />
               ) : (
                 <ResultsInfo>총 {totalElements}개의 북마크</ResultsInfo>
               )}
@@ -117,14 +117,14 @@ const MainSection = styled.div`
   width: 100%;
 
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   flex-direction: column;
   align-items: flex-start;
 `;
 
 const TitleWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 `;
 
@@ -136,22 +136,22 @@ const ContentWrapper = styled.div<{ device: Device }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '32px' : '20px')};
+  gap: ${({ device }) => (device === 'pc' ? '2rem' : '1.25rem')};
   flex-direction: ${({ device }) => (device === 'pc' ? 'row' : 'column')};
   align-items: flex-start;
 `;
 
 const SidebarSection = styled.div<{ device: Device }>`
-  width: ${({ device }) => (device === 'pc' ? '320px' : '100%')};
+  width: ${({ device }) => (device === 'pc' ? '20rem' : '100%')};
 
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   flex-direction: column;
 `;
 
 const MainContentSection = styled.div<{ device: Device }>`
   display: flex;
-  gap: 20px;
+  gap: 1.25rem;
   flex: 1;
   flex-direction: column;
 
@@ -159,9 +159,9 @@ const MainContentSection = styled.div<{ device: Device }>`
 `;
 
 const BookmarkStorageIcon = styled(BookmarkIcon)`
-  width: 36px;
-  height: 36px;
-  padding: 8px;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0.5rem;
   border-radius: 50%;
 
   display: flex;
@@ -175,7 +175,7 @@ const BookmarkStorageIcon = styled(BookmarkIcon)`
 
 const SummaryBar = styled.div`
   width: 100%;
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 
   display: flex;
   align-items: center;

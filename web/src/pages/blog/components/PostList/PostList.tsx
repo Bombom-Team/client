@@ -17,10 +17,10 @@ const PostList = () => {
 export default PostList;
 
 export const CardWrapper = styled.section<{ device: Device }>`
-  margin-top: ${({ device }) => (device === 'mobile' ? '56px' : '80px')};
+  margin-top: ${({ device }) => (device === 'mobile' ? '3.5rem' : '5rem')};
 
   display: grid;
-  gap: ${({ device }) => (device === 'mobile' ? '40px' : '64px 40px')};
+  gap: ${({ device }) => (device === 'mobile' ? '2.5rem' : '4rem 2.5rem')};
 
   grid-template-columns: ${({ device }) => {
     if (device === 'pc') return 'repeat(3, minmax(0, 1fr))';

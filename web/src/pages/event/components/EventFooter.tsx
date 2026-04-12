@@ -53,17 +53,18 @@ const Container = styled.footer`
 const FooterWrapper = styled.div<{ device: Device }>`
   width: 100%;
   max-width: 1280px;
-  padding: ${({ device }) => (device === 'mobile' ? '24px 12px' : '48px 24px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '1.5rem 0.75rem' : '3rem 1.5rem'};
 
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-direction: column;
   align-items: flex-start;
 `;
 
 const FooterHeader = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 `;
 
@@ -76,14 +77,14 @@ const Title = styled.p<{ device: Device }>`
 
 const NoticeList = styled.ul`
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-direction: column;
   justify-content: center;
 `;
 
 const NoticeListItem = styled.li<{ device: Device }>`
   position: relative;
-  padding-left: 18px;
+  padding-left: 1.125rem;
 
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
@@ -92,7 +93,7 @@ const NoticeListItem = styled.li<{ device: Device }>`
 
   &::before {
     position: absolute;
-    left: 6px;
+    left: 0.375rem;
 
     content: '•';
   }

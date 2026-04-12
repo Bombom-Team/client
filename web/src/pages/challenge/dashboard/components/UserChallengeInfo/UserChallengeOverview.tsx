@@ -54,7 +54,7 @@ const Container = styled.div<{ isMobile: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '16px' : '40px')};
+  gap: ${({ isMobile }) => (isMobile ? '1rem' : '2.5rem')};
   flex-direction: ${({ isMobile }) => (isMobile ? 'row' : 'column')};
 `;
 
@@ -63,7 +63,7 @@ const ChallengeHeader = styled.div<{ isMobile: boolean }>`
   min-width: 0;
 
   display: flex;
-  gap: 6px;
+  gap: 0.375rem;
   flex-direction: column;
 `;
 

@@ -2,18 +2,18 @@ const fontFamily =
   '"NanumGothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
 const fonts = {
-  heading1: `700 48px/60px ${fontFamily}`,
-  heading2: `700 34px/50px ${fontFamily}`,
-  heading3: `700 28px/38px ${fontFamily}`,
-  heading4: `700 24px/32px ${fontFamily}`,
-  heading5: `700 18px/28px ${fontFamily}`,
-  heading6: `700 16px/24px ${fontFamily}`,
-  bodyLarge: `400 18px/28px ${fontFamily}`,
-  body1: `400 16px/24px ${fontFamily}`,
-  body2: `400 14px/22px ${fontFamily}`,
-  body3: `400 12px/20px ${fontFamily}`,
-  body4: `400 10px/18px ${fontFamily}`,
-  caption: `400 12px/18px ${fontFamily}`,
+  heading1: `700 3rem/3.75rem ${fontFamily}`,
+  heading2: `700 2.125rem/3.125rem ${fontFamily}`,
+  heading3: `700 1.75rem/2.375rem ${fontFamily}`,
+  heading4: `700 1.5rem/2rem ${fontFamily}`,
+  heading5: `700 1.125rem/1.75rem ${fontFamily}`,
+  heading6: `700 1rem/1.5rem ${fontFamily}`,
+  bodyLarge: `400 1.125rem/1.75rem ${fontFamily}`,
+  body1: `400 1rem/1.5rem ${fontFamily}`,
+  body2: `400 0.875rem/1.375rem ${fontFamily}`,
+  body3: `400 0.75rem/1.25rem ${fontFamily}`,
+  body4: `400 0.625rem/1.125rem ${fontFamily}`,
+  caption: `400 0.75rem/1.125rem ${fontFamily}`,
 };
 
 const colors = {
@@ -40,9 +40,9 @@ const colors = {
 };
 
 const heights = {
-  headerPC: '72px',
-  headerMobile: '56px',
-  bottomNav: '64px',
+  headerPC: '4.5rem',
+  headerMobile: '3.5rem',
+  bottomNav: '4rem',
 };
 
 const safeArea = {

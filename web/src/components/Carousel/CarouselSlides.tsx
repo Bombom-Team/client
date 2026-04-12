@@ -123,7 +123,7 @@ const Container = styled.ul<{
 }>`
   position: relative;
   margin: ${({ showNextSlidePart }) =>
-    showNextSlidePart ? '0 20px 0 -12px' : '0 -12px'};
+    showNextSlidePart ? '0 1.25rem 0 -0.75rem' : '0 -0.75rem'};
 
   display: flex;
 

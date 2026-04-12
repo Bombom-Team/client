@@ -11,8 +11,8 @@ export const Title = (props: ComponentProps<typeof Text>) => (
 );
 
 export const Tag = styled.span`
-  padding: 4px 10px;
-  border-radius: 999px;
+  padding: 0.25rem 0.625rem;
+  border-radius: 62.4375rem;
 
   align-self: flex-start;
 
@@ -30,8 +30,8 @@ export const Applicant = (props: ComponentProps<typeof Text>) => (
 );
 
 const ApplicantContainer = styled(Flex)`
-  padding: 4px 8px;
-  border-radius: 999px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 62.4375rem;
 
   background-color: ${({ theme }) => `${theme.colors.stroke}33`};
 `;

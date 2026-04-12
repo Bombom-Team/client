@@ -47,7 +47,7 @@ export default NewsletterSelector;
 
 const Container = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   flex-direction: column;
 `;
 

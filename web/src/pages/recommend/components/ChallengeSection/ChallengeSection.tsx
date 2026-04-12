@@ -19,7 +19,7 @@ export default ChallengeSection;
 
 const Container = styled.section`
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   flex-wrap: wrap;
 
   > * {

@@ -110,13 +110,13 @@ const Container = styled.article<{
   height: 100%;
 
   cursor: pointer;
-  perspective: 1200px;
+  perspective: 75rem;
 
   ${({ isFlipped }) =>
     !isFlipped &&
     `
     &:hover > div {
-      transform: translateY(-8px);
+      transform: translateY(-0.5rem);
     }
   `}
 `;
@@ -138,12 +138,12 @@ const CardBase = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
-  border-radius: 12px;
+  border-radius: 0.75rem;
   box-shadow:
-    0 1px 2px rgb(0 0 0 / 3%),
-    0 2px 6px rgb(0 0 0 / 5%),
-    0 8px 16px rgb(0 0 0 / 8%),
-    0 16px 32px rgb(0 0 0 / 10%);
+    0 0.0625rem 0.125rem rgb(0 0 0 / 3%),
+    0 0.125rem 0.375rem rgb(0 0 0 / 5%),
+    0 0.5rem 1rem rgb(0 0 0 / 8%),
+    0 1rem 2rem rgb(0 0 0 / 10%);
 
   backface-visibility: hidden;
   transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -151,7 +151,7 @@ const CardBase = styled.div`
   &::before {
     position: absolute;
     border: 1px solid rgb(0 0 0 / 4%);
-    border-radius: 12px;
+    border-radius: 0.75rem;
 
     content: '';
     inset: 0;
@@ -169,19 +169,19 @@ const CardFront = styled(CardBase)`
 
   article:hover & {
     box-shadow:
-      0 2px 4px rgb(0 0 0 / 4%),
-      0 4px 12px rgb(0 0 0 / 8%),
-      0 12px 24px rgb(0 0 0 / 12%),
-      0 24px 48px rgb(0 0 0 / 16%);
+      0 0.125rem 0.25rem rgb(0 0 0 / 4%),
+      0 0.25rem 0.75rem rgb(0 0 0 / 8%),
+      0 0.75rem 1.5rem rgb(0 0 0 / 12%),
+      0 1.5rem 3rem rgb(0 0 0 / 16%);
   }
 `;
 
 const CardBack = styled(CardBase)<{ device: Device }>`
   overflow: hidden;
-  padding: ${({ device }) => (device === 'mobile' ? '12px' : '32px')};
+  padding: ${({ device }) => (device === 'mobile' ? '0.75rem' : '2rem')};
 
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '8px' : '24px')};
+  gap: ${({ device }) => (device === 'mobile' ? '0.5rem' : '1.5rem')};
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
@@ -213,22 +213,22 @@ const Thumbnail = styled.img`
 
 const CategoryBadge = styled(Badge)<{ device: Device }>`
   position: absolute;
-  right: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
-  bottom: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  right: ${({ device }) => (device === 'mobile' ? '0.5rem' : '0.75rem')};
+  bottom: ${({ device }) => (device === 'mobile' ? '0.5rem' : '0.75rem')};
   z-index: ${({ theme }) => theme.zIndex.content};
-  padding: 6px 12px;
-  border-radius: 24px;
+  padding: 0.375rem 0.75rem;
+  border-radius: 1.5rem;
   box-shadow:
-    0 1px 3px rgb(0 0 0 / 6%),
-    0 2px 8px rgb(0 0 0 / 4%),
-    inset 0 0 0 1px rgb(0 0 0 / 4%);
+    0 0.0625rem 0.1875rem rgb(0 0 0 / 6%),
+    0 0.125rem 0.5rem rgb(0 0 0 / 4%),
+    inset 0 0 0 0.0625rem rgb(0 0 0 / 4%);
 
   background: rgb(255 255 255 / 92%);
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.body4 : theme.fonts.body2};
 
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(0.5rem);
 `;
 
 const NewsletterName = styled.h3<{ device: Device }>`
@@ -239,8 +239,8 @@ const NewsletterName = styled.h3<{ device: Device }>`
 
 const CloseButton = styled(Button)`
   position: fixed;
-  top: 8px;
-  right: 8px;
+  top: 0.5rem;
+  right: 0.5rem;
   padding: 0;
 `;
 
@@ -252,13 +252,13 @@ const NewsletterDescription = styled.p<{ device: Device }>`
 
 const BackContent = styled.div<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'mobile' ? '4px' : '12px')};
+  gap: ${({ device }) => (device === 'mobile' ? '0.25rem' : '0.75rem')};
   flex-direction: column;
   align-items: flex-start;
 `;
 
 const CategoryLabel = styled.span<{ device: Device }>`
-  padding: 4px 0;
+  padding: 0.25rem 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
@@ -269,12 +269,12 @@ const CategoryLabel = styled.span<{ device: Device }>`
 
 const SubscribeLink = styled(Button)<{ device: Device }>`
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '4px 0' : '12px 0')};
+  padding: ${({ device }) => (device === 'mobile' ? '0.25rem 0' : '0.75rem 0')};
   border-top: 1px solid rgb(0 0 0 / 8%);
   border-radius: 0%;
 
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: space-between;
 
@@ -291,6 +291,6 @@ const SubscribeLink = styled(Button)<{ device: Device }>`
   }
 
   &:hover span {
-    transform: translateX(4px);
+    transform: translateX(0.25rem);
   }
 `;
