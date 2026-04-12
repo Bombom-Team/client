@@ -171,8 +171,7 @@ const HeroBadge = styled.div<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, device }) =>
-    theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
   font-weight: 700;
   text-align: center;
 
@@ -187,8 +186,7 @@ const EventButton = styled.button<{ device: Device }>`
 
   background-color: #d81b60;
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme, device }) =>
-    theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
 
   &:hover {
     box-shadow: 6px 6px 0 0 ${({ theme }) => theme.colors.black};
@@ -229,8 +227,7 @@ const InfoCardBadge = styled.div<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme, device }) =>
-    theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.heading6};
   font-weight: 700;
   text-align: center;
   white-space: nowrap;
@@ -254,8 +251,7 @@ const InfoRowDivider = styled.div`
 
 const InfoLabel = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.icons};
-  font: ${({ theme, device }) =>
-    theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.heading6};
   text-align: center;
 `;
 
@@ -267,8 +263,7 @@ const InfoValue = styled.p<{ device: Device }>`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, device }) =>
-    theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
   font-weight: 700;
   text-align: left;
 `;
@@ -286,7 +281,6 @@ const Title = styled.div<{ device: Device }>`
 
   background-color: rgb(255 255 255 / 80%);
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, device }) =>
-    theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.heading6};
   text-align: center;
 `;

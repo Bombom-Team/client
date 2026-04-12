@@ -132,8 +132,7 @@ const NoThumbnailPlaceholder = styled.div`
 
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
   line-height: 1.4;
 `;
 
@@ -141,8 +140,7 @@ const Description = styled.p<{ device: Device }>`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, device }) =>
-    theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;

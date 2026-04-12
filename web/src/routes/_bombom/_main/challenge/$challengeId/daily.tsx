@@ -117,12 +117,10 @@ const NoticeBox = styled.div`
 
 const NoticeIcon = styled.span<{ isMobile: boolean }>`
   flex-shrink: 0;
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const NoticeText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 `;

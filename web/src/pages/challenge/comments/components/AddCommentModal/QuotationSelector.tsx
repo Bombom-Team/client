@@ -101,14 +101,12 @@ const TitleBox = styled.div<{ isMobile: boolean }>`
 
 const Title = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
 `;
 
 const HelpText = styled.span<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.body3};
 `;
 
 const RemoveQuotationButton = styled(Button)<{ isMobile: boolean }>`
@@ -116,8 +114,7 @@ const RemoveQuotationButton = styled(Button)<{ isMobile: boolean }>`
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.body3};
 
   &:hover {
     background-color: transparent;
@@ -155,8 +152,7 @@ const EmptyState = styled.div<{ isMobile: boolean }>`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
   text-align: center;
 `;
 
@@ -198,8 +194,7 @@ const Quote = styled.div<{ isMobile: boolean }>`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ isMobile }) =>
@@ -209,13 +204,11 @@ const Quote = styled.div<{ isMobile: boolean }>`
 
 const Memo = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const NoticeText = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.body3};
   text-align: center;
 `;

@@ -91,8 +91,7 @@ const LogoImage = styled.img<{ device: Device }>`
 
 const Title = styled.h1<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
 `;
 
 const GoToService = styled(Link)<{ device: Device }>`
@@ -106,8 +105,7 @@ const GoToService = styled(Link)<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ device, theme }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 
   cursor: pointer;
   transition: background-color 0.3s ease;

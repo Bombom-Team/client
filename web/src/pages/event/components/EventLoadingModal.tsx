@@ -46,8 +46,7 @@ const ContentWrapper = styled.div`
 
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
   text-align: center;
 `;
 

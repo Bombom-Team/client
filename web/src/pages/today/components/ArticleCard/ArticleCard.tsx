@@ -147,8 +147,7 @@ export const Title = styled.h2<{ isMobile: boolean }>`
 
   display: -webkit-box;
 
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
   font-weight: 600;
 
   -webkit-box-orient: vertical;

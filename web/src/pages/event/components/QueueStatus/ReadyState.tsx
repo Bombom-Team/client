@@ -98,8 +98,7 @@ export default ReadyState;
 
 const ReadyMessage = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, device }) =>
-    theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
   text-align: center;
 `;
 

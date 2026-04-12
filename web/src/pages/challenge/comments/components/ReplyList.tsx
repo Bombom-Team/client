@@ -83,20 +83,17 @@ const ReplyListContainer = styled.ul`
 
 const ReplyMetaText = styled.span<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const Dot = styled.span<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 `;
 
 const ReplyStatus = styled.p<{ isMobile: boolean }>`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;

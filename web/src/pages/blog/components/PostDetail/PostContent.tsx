@@ -29,8 +29,7 @@ const Container = styled.section<{ device: Device }>`
 `;
 
 const Content = styled.div<{ device: Device }>`
-  font: ${({ theme, device }) =>
-    theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
 
   h1,
   h2,

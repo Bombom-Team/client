@@ -133,8 +133,7 @@ const ItemNumber = styled.span<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme, device }) =>
-    theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
 `;
 
 const ItemContent = styled.div`
@@ -147,18 +146,15 @@ const ItemContent = styled.div`
 
 const ItemTitle = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
 `;
 
 const ItemDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ device, theme }) =>
-    theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
 `;
 
 const ItemNote = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ device, theme }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;

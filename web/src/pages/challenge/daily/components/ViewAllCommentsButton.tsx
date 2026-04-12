@@ -65,8 +65,7 @@ const StyledButton = styled(Button)<{ device: Device }>`
   gap: 4px;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, device }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 
   &:hover {
     background: none;

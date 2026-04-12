@@ -58,15 +58,13 @@ const Container = styled.section<{ device: Device }>`
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading1};
+  font: ${({ theme }) => theme.fonts.heading1};
   text-align: center;
 `;
 
 const ApplicantButton = styled(Button)<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '16px 24px' : '20px 36px')};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
 
   &:hover {
     opacity: 0.8;

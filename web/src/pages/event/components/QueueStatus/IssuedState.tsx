@@ -120,8 +120,7 @@ export default IssuedState;
 
 const CompletedMessage = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
   text-align: center;
 `;
 

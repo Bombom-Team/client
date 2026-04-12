@@ -143,13 +143,11 @@ const RemindContent = styled.p<{ isMobile: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
   text-align: left;
 `;
 
 const RemindMotivation = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;

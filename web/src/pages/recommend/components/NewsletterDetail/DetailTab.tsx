@@ -28,6 +28,5 @@ const Container = styled.div<{ isMobile: boolean }>`
 
 const Description = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ isMobile, theme }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 `;

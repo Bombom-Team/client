@@ -73,22 +73,19 @@ const Container = styled.section<{ device: Device }>`
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.heading2};
   text-align: center;
 `;
 
 const Subtitle = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ device, theme }) =>
-    theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
   text-align: center;
 `;
 
 const Ellipsis = styled.div<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ device, theme }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
   letter-spacing: 0.25rem;
 `;
 
@@ -115,8 +112,7 @@ const SpeechBubble = styled.div<{
 
   background-color: ${({ theme }) => theme.colors.primaryLight};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
   text-align: center;
 
   opacity: 0;
@@ -192,8 +188,7 @@ const PromoteTextBox = styled.div<{ device: Device }>`
   gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
   flex-direction: column;
 
-  font: ${({ device, theme }) =>
-    theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
   text-align: center;
 `;
 

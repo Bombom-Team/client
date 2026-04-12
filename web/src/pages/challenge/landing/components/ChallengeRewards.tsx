@@ -94,8 +94,7 @@ const Container = styled.section<{ device: Device; isVisible: boolean }>`
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.heading2};
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
@@ -125,14 +124,12 @@ const SubTitleBox = styled.div`
 
 const SubTitle = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
 `;
 
 const RewardDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ device, theme }) =>
-    theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
 `;
 
 const BadgeBox = styled.div<{ device: Device }>`

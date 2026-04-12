@@ -99,14 +99,12 @@ const ContentWrapper = styled.div<{ device: Device }>`
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.heading2};
 `;
 
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
   font-weight: 400;
 `;
 

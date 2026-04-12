@@ -113,8 +113,7 @@ const StreakCount = styled.span<{ isMobile: boolean }>`
   left: 50%;
 
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
   font-weight: 700;
   line-height: 1;
 
@@ -130,8 +129,7 @@ const TextWrapper = styled.div`
 
 const Title = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.heading6};
 `;
 
 const WeekWrapper = styled.div`

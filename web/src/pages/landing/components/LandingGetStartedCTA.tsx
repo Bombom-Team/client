@@ -52,8 +52,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.heading2};
 `;
 
 const Description = styled.p<{ device: Device }>`
@@ -72,8 +71,7 @@ const GetStartedLink = styled(Link)<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
 
   cursor: pointer;
   transition: background-color 0.3s ease;

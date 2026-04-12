@@ -181,8 +181,7 @@ const StreakWrapper = styled.div<{ device: Device }>`
 
 const StreakDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ device, theme }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
   text-align: center;
 `;
 

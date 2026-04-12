@@ -81,16 +81,14 @@ const Container = styled.div<{ isMobile: boolean }>`
 
 const ModalTitle = styled.h2<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
 `;
 
 const ModalDescription = styled.p<{ isMobile: boolean }>`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const HighlightedWarning = styled.div<{ isMobile: boolean }>`
@@ -100,8 +98,7 @@ const HighlightedWarning = styled.div<{ isMobile: boolean }>`
 
   background-color: ${({ theme }) => `${theme.colors.error}20`};
   color: ${({ theme }) => theme.colors.error};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const ModalButtonGroup = styled.div`
@@ -112,6 +109,5 @@ const ModalButtonGroup = styled.div`
 
 const ModalButton = styled(Button)<{ isMobile: boolean }>`
   width: ${({ isMobile }) => (isMobile ? '80px' : '160px')};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;

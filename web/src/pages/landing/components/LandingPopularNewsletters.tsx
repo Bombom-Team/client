@@ -119,15 +119,13 @@ const TitleWrapper = styled.div`
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.heading2};
   text-align: center;
 `;
 
 const Subtitle = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ device, theme }) =>
-    theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
   text-align: center;
 `;
 
@@ -189,8 +187,7 @@ const NewsletterCategory = styled.div<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ device, theme }) =>
-    theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.body3};
 `;
 
 const NewsletterThumbnail = styled.img<{ device: Device }>`
@@ -205,8 +202,7 @@ const NewsletterThumbnail = styled.img<{ device: Device }>`
 
 const NewsletterName = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
 `;
 
 const NewsletterDescription = styled.p<{ device: Device }>`
@@ -231,8 +227,7 @@ const RecommendPageLink = styled(Link)<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 
   cursor: pointer;
   text-decoration: none;

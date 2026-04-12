@@ -107,8 +107,7 @@ const ToggleButton = styled(Button)<{ isMobile: boolean }>`
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 
   text-decoration: underline;
 
@@ -143,8 +142,7 @@ const Input = styled.input<{ isMobile: boolean }>`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.textTertiary};

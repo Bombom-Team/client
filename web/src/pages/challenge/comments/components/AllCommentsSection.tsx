@@ -59,8 +59,7 @@ const Container = styled.section`
 
 const Title = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.heading6};
 `;
 
 const CardList = styled.div<{ isMobile: boolean }>`
@@ -75,7 +74,6 @@ const EmptyState = styled.div<{ isMobile: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
   text-align: center;
 `;

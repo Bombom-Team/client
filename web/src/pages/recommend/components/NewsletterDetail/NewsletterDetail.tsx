@@ -233,8 +233,7 @@ export const TitleWrapper = styled.div<{ isMobile: boolean }>`
 
 const NewsletterTitle = styled.h2<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.heading3};
 `;
 
 const StyledHomeIcon = styled(HomeIcon)<{ isMobile: boolean }>`
@@ -260,8 +259,7 @@ const SubscribeMethodInfo = styled.div<{ isMobile: boolean }>`
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;
 
 export const NewsletterInfo = styled.div<{ isMobile: boolean }>`
@@ -270,13 +268,11 @@ export const NewsletterInfo = styled.div<{ isMobile: boolean }>`
   flex-wrap: wrap;
   align-items: center;
 
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const StyledBadge = styled(Badge)<{ isMobile: boolean }>`
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const IssueCycle = styled.p`
@@ -290,8 +286,7 @@ const DetailLink = styled.button<{ isMobile: boolean }>`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 
   transition: all 0.2s ease;
 
@@ -307,6 +302,5 @@ const SubscribeButton = styled(Button)<{ isMobile: boolean }>`
 
   align-self: center;
 
-  font: ${({ theme, isMobile }) =>
-    theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.heading6};
 `;
