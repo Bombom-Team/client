@@ -1,10 +1,5 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { Suspense, useCallback, useRef, useState } from 'react';
+import { Suspense, useRef, useState } from 'react';
 import MonthlyRankingContent from './MonthlyRankingContent';
-import {
-  COUNTDOWN_UPDATE_INTERVAL_MS,
-  RANKING,
-} from './ReadingKingLeaderboard.constants';
 import {
   Container,
   Countdown,
@@ -18,10 +13,9 @@ import {
 } from './ReadingKingLeaderboard.styles';
 import ReadingKingLeaderboardSkeleton from './ReadingKingLeaderboardSkeleton';
 import StreakRankingContent from './StreakRankingContent';
-import { queries } from '@/apis/queries';
+import { useRankingCountdown } from './useRankingCountdown';
 import ArrowIcon from '@/components/icons/ArrowIcon';
 import Tooltip from '@/components/Tooltip/Tooltip';
-import { useCountdown } from '@/hooks/useCountdown';
 import { padTimeDigit } from '@/utils/time';
 import HelpIcon from '#/assets/svg/help.svg';
 
@@ -31,37 +25,11 @@ const ReadingKingLeaderboard = () => {
   const [activeTab, setActiveTab] = useState<RankingTab>('monthly');
   const [rankExplainOpened, setRankExplainOpened] = useState(false);
   const [streakInfoOpened, setStreakInfoOpened] = useState(false);
-  const [nextRefreshAt, setNextRefreshAt] = useState<string>(
-    new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
-  );
-  const [isFetching, setIsFetching] = useState(false);
   const countdownRef = useRef<HTMLDivElement>(null);
   const streakInfoRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();
 
   const isMonthlyTab = activeTab === 'monthly';
-
-  const handleCountdownStateChange = useCallback(
-    (state: { nextRefreshAt: string; isFetching: boolean }) => {
-      setNextRefreshAt(state.nextRefreshAt);
-      setIsFetching(state.isFetching);
-    },
-    [],
-  );
-
-  const { leftTime, isCompleting } = useCountdown({
-    targetTime: nextRefreshAt,
-    completeDelay: 2000,
-    onComplete: () => {
-      queryClient.invalidateQueries({
-        queryKey: queries.monthlyReadingRank({ limit: RANKING.maxRank })
-          .queryKey,
-      });
-      queryClient.invalidateQueries({
-        queryKey: queries.myMonthlyReadingRank().queryKey,
-      });
-    },
-  });
+  const { leftTime, isCompleting, isFetching } = useRankingCountdown();
 
   const openRankExplain = () => setRankExplainOpened(true);
   const closeRankExplain = () => setRankExplainOpened(false);
@@ -136,9 +104,7 @@ const ReadingKingLeaderboard = () => {
 
       {isMonthlyTab ? (
         <Suspense fallback={<ReadingKingLeaderboardSkeleton />}>
-          <MonthlyRankingContent
-            onCountdownStateChange={handleCountdownStateChange}
-          />
+          <MonthlyRankingContent />
         </Suspense>
       ) : (
         <Suspense fallback={<ReadingKingLeaderboardSkeleton />}>

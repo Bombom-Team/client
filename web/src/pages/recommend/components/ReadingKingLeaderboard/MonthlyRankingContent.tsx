@@ -1,39 +1,17 @@
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import LeaderboardItem from './LeaderboardItem';
 import MonthlyMyRank from './MonthlyMyRank';
-import {
-  COUNTDOWN_UPDATE_INTERVAL_MS,
-  RANKING,
-} from './ReadingKingLeaderboard.constants';
+import { RANKING } from './ReadingKingLeaderboard.constants';
 import { LeaderboardList, Divider } from './ReadingKingLeaderboard.styles';
 import { queries } from '@/apis/queries';
 import { Carousel } from '@/components/Carousel/Carousel';
 import { chunk } from '@/utils/array';
 
-interface MonthlyRankingContentProps {
-  onCountdownStateChange: (state: {
-    nextRefreshAt: string;
-    isFetching: boolean;
-  }) => void;
-}
-
-const MonthlyRankingContent = ({
-  onCountdownStateChange,
-}: MonthlyRankingContentProps) => {
-  const { data: monthlyReadingRank, isFetching } = useSuspenseQuery(
+const MonthlyRankingContent = () => {
+  const { data: monthlyReadingRank } = useSuspenseQuery(
     queries.monthlyReadingRank({ limit: RANKING.maxRank }),
   );
   const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
-
-  useEffect(() => {
-    onCountdownStateChange({
-      nextRefreshAt:
-        monthlyReadingRank?.nextRefreshAt ??
-        new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
-      isFetching,
-    });
-  }, [monthlyReadingRank?.nextRefreshAt, isFetching, onCountdownStateChange]);
 
   const monthlyContent = monthlyReadingRank?.data ?? [];
 
