@@ -41,17 +41,17 @@ const Content = styled.div<{ device: Device }>`
 
   h1 {
     margin: 20px 0 8px;
-    font-size: 28px;
+    font-size: 1.75rem;
   }
 
   h2 {
     margin: 18px 0 8px;
-    font-size: 24px;
+    font-size: 1.5rem;
   }
 
   h3 {
     margin: 16px 0 8px;
-    font-size: 20px;
+    font-size: 1.25rem;
   }
 
   p {
@@ -112,7 +112,7 @@ const Content = styled.div<{ device: Device }>`
 
       background: none;
       color: #cdd6f4;
-      font-size: 14px;
+      font-size: 0.875rem;
       line-height: 1.6;
     }
   }
@@ -144,7 +144,7 @@ const Content = styled.div<{ device: Device }>`
     margin-bottom: 8px;
 
     color: ${({ theme }) => theme.colors.textSecondary};
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.5;
   }
 `;
