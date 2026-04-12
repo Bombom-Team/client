@@ -181,7 +181,7 @@ const GenerationBadge = styled.div<{ device: Device }>`
   );
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body1};
+    theme.fonts.body1};
   font-weight: 700;
 
   animation: ${floatAnimation} 6s ease-in-out infinite;
@@ -225,10 +225,7 @@ const Description = styled.p<{ device: Device }>`
   }};
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) => {
-    if (device === 'mobile') return theme.fonts.body2;
-    return device === 'tablet' ? theme.fonts.bodyLarge : theme.fonts.heading3;
-  }};
+  font: ${({ theme }) => theme.fonts.heading3};
   font-weight: 500;
 
   word-break: keep-all;
@@ -251,7 +248,7 @@ const PriceBox = styled.div<{ device: Device }>`
 const OriginalPrice = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 
   opacity: 0.7;
   text-decoration: line-through;
@@ -260,13 +257,13 @@ const OriginalPrice = styled.p<{ device: Device }>`
 const FreePrice = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading2 : theme.fonts.heading1};
+    theme.fonts.heading1};
 `;
 
 const DiscountLabel = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primaryDark};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
   font-weight: 600;
 `;
 
@@ -275,5 +272,5 @@ const ApplicantButton = styled(Button)<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '16px 24px' : '20px 36px')};
 
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+    theme.fonts.heading4};
 `;

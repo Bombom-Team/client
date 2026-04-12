@@ -131,7 +131,7 @@ const ContentWrapper = styled(Flex)<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+    theme.fonts.heading2};
   text-align: center;
 `;
 

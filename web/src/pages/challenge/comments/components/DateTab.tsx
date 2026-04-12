@@ -41,5 +41,5 @@ const StyledTab = styled(stringTab, {
   border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
 
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+    theme.fonts.bodyLarge};
 `;

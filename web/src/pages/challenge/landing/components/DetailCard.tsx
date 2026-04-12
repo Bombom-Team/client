@@ -103,20 +103,14 @@ const FeatureTitleWrapper = styled.div<{ device: Device }>`
 
 const FeatureTitle = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.heading5;
-    return device === 'tablet' ? theme.fonts.heading4 : theme.fonts.heading3;
-  }};
+  font: ${({ theme }) => theme.fonts.heading3};
 `;
 
 const Description = styled.p<{
   device: Device;
 }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.body2;
-    return device === 'tablet' ? theme.fonts.body1 : theme.fonts.heading5;
-  }};
+  font: ${({ theme }) => theme.fonts.heading5};
   font-weight: 400;
   line-height: 2;
 `;

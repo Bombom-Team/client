@@ -182,7 +182,7 @@ const StreakWrapper = styled.div<{ device: Device }>`
 const StreakDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'pc' ? theme.fonts.body1 : theme.fonts.body2};
+    theme.fonts.body1};
   text-align: center;
 `;
 

@@ -98,7 +98,7 @@ const Container = styled.button<{
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+    theme.fonts.bodyLarge};
   font-weight: 600;
 
   &:disabled {

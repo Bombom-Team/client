@@ -226,7 +226,7 @@ const CategoryBadge = styled(Badge)<{ device: Device }>`
   background: rgb(255 255 255 / 92%);
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body2};
+    theme.fonts.body2};
 
   backdrop-filter: blur(8px);
 `;
@@ -234,7 +234,7 @@ const CategoryBadge = styled(Badge)<{ device: Device }>`
 const NewsletterName = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+    theme.fonts.heading4};
 `;
 
 const CloseButton = styled(Button)`
@@ -247,7 +247,7 @@ const CloseButton = styled(Button)`
 const NewsletterDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+    theme.fonts.bodyLarge};
 `;
 
 const BackContent = styled.div<{ device: Device }>`
@@ -262,7 +262,7 @@ const CategoryLabel = styled.span<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
+    theme.fonts.body1};
 
   opacity: 0.6;
 `;
@@ -280,7 +280,7 @@ const SubscribeLink = styled(Button)<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
+    theme.fonts.bodyLarge};
   text-align: left;
 
   transition: opacity 0.2s ease;

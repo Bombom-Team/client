@@ -58,13 +58,13 @@ const HeroBadge = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
 `;
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading1};
+    theme.fonts.heading1};
 `;
 
 const Highlight = styled.span`
@@ -74,7 +74,7 @@ const Highlight = styled.span`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
+    theme.fonts.bodyLarge};
 `;
 
 const PromptScroll = styled.div<{ device: Device }>`
@@ -85,5 +85,5 @@ const PromptScroll = styled.div<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.caption : theme.fonts.body2};
+    theme.fonts.body2};
 `;

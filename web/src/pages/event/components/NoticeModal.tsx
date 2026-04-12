@@ -68,7 +68,7 @@ const ContentWrapper = styled.div`
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+    theme.fonts.heading4};
   text-align: center;
 `;
 

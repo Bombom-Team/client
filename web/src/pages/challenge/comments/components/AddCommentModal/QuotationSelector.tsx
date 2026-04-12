@@ -102,13 +102,13 @@ const TitleBox = styled.div<{ isMobile: boolean }>`
 const Title = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+    theme.fonts.heading5};
 `;
 
 const HelpText = styled.span<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body3};
+    theme.fonts.body3};
 `;
 
 const RemoveQuotationButton = styled(Button)<{ isMobile: boolean }>`
@@ -117,7 +117,7 @@ const RemoveQuotationButton = styled(Button)<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body3};
+    theme.fonts.body3};
 
   &:hover {
     background-color: transparent;
@@ -156,7 +156,7 @@ const EmptyState = styled.div<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
   text-align: center;
 `;
 
@@ -199,7 +199,7 @@ const Quote = styled.div<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ isMobile }) =>
@@ -210,12 +210,12 @@ const Quote = styled.div<{ isMobile: boolean }>`
 const Memo = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 `;
 
 const NoticeText = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body3};
+    theme.fonts.body3};
   text-align: center;
 `;

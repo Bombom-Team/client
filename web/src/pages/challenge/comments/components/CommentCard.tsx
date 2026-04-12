@@ -275,7 +275,7 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body2};
+    theme.fonts.body2};
 `;
 
 const EditButton = styled(Button)<{ isMobile: boolean }>`

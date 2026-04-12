@@ -109,7 +109,7 @@ const CommentSection = styled.div`
 const CommentLabel = styled.label<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+    theme.fonts.heading5};
 `;
 
 const CharCount = styled.span`
@@ -134,7 +134,7 @@ const CommentTextarea = styled.textarea<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 
   resize: none;
 
@@ -183,7 +183,7 @@ const SubmittedCommentBox = styled.div`
 const SubmittedComment = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 
   overflow-wrap: break-word;
 `;

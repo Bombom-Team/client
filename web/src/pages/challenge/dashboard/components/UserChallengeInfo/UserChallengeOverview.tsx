@@ -69,13 +69,13 @@ const ChallengeHeader = styled.div<{ isMobile: boolean }>`
 
 const ChallengeTitle = styled.span<{ isMobile: boolean }>`
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading5 : theme.fonts.heading4};
+    theme.fonts.heading4};
 `;
 
 const ChallengePeriod = styled.span<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.disabledText};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.heading6};
+    theme.fonts.heading6};
 `;
 
 const SummaryWrapper = styled.div`

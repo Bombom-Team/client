@@ -34,7 +34,7 @@ const NewsletterSelector = ({
         onSelectOption={onArticleSelect}
         placeholder="아티클을 선택하세요"
         width="100%"
-        fontSize={device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1}
+        fontSize={theme.fonts.body1}
       />
       {showError && (
         <ErrorMessage device={device}>아티클을 선택해주세요</ErrorMessage>
@@ -54,11 +54,11 @@ const Container = styled.div`
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+    theme.fonts.heading5};
 `;
 
 const ErrorMessage = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.error};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
+    theme.fonts.body3};
 `;

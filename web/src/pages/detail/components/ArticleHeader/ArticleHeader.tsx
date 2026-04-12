@@ -65,7 +65,7 @@ const Title = styled.h2<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading3};
+    theme.fonts.heading3};
 `;
 
 const MetaInfoRow = styled.div`

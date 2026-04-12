@@ -120,14 +120,14 @@ const TitleWrapper = styled.div`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
+    theme.fonts.heading2};
   text-align: center;
 `;
 
 const Subtitle = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
+    theme.fonts.bodyLarge};
   text-align: center;
 `;
 
@@ -190,7 +190,7 @@ const NewsletterCategory = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.caption : theme.fonts.body3};
+    theme.fonts.body3};
 `;
 
 const NewsletterThumbnail = styled.img<{ device: Device }>`
@@ -206,7 +206,7 @@ const NewsletterThumbnail = styled.img<{ device: Device }>`
 const NewsletterName = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+    theme.fonts.heading5};
 `;
 
 const NewsletterDescription = styled.p<{ device: Device }>`
@@ -232,7 +232,7 @@ const RecommendPageLink = styled(Link)<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 
   cursor: pointer;
   text-decoration: none;

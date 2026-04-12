@@ -146,7 +146,7 @@ const StepBadge = styled.div`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
+    theme.fonts.heading6};
   font-weight: 700;
   text-align: center;
 `;

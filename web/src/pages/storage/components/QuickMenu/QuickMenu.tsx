@@ -131,5 +131,5 @@ const StyledIcon = styled.div<{ device: Device; selected?: boolean }>`
 
 const StyledTab = styled(Tab)<{ device: Device }>`
   font: ${({ theme, device }) =>
-    device === 'pc' ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body2};
 `;

@@ -53,15 +53,12 @@ const ContentWrapper = styled.div<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+    theme.fonts.heading2};
 `;
 
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.body3;
-    return device === 'tablet' ? theme.fonts.body1 : theme.fonts.bodyLarge;
-  }};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
 `;
 
 const GetStartedLink = styled(Link)<{ device: Device }>`
@@ -76,7 +73,7 @@ const GetStartedLink = styled(Link)<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+    theme.fonts.heading5};
 
   cursor: pointer;
   transition: background-color 0.3s ease;

@@ -63,7 +63,7 @@ const MaintenanceImage = styled(ImageWithFallback, {
 const Title = styled.h1<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading4 : theme.fonts.heading2};
+    theme.fonts.heading2};
 `;
 
 const DescriptionWrapper = styled.div<{ isMobile: boolean }>`
@@ -75,7 +75,7 @@ const DescriptionWrapper = styled.div<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 `;
 
 const Description = styled.p``;
@@ -102,7 +102,7 @@ const Contact = styled.a<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.heading6};
+    theme.fonts.heading6};
 
   text-decoration: none;
 

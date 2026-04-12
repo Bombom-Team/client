@@ -82,14 +82,14 @@ const DescriptionWrapper = styled.div`
 const Lead = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
   text-align: center;
 `;
 
 const Support = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
   text-align: center;
 `;
 

@@ -70,7 +70,7 @@ const FooterHeader = styled.div`
 const Title = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
   font-weight: 700;
 `;
 
@@ -87,7 +87,7 @@ const NoticeListItem = styled.li<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
+    theme.fonts.body3};
   line-height: 1.2;
 
   &::before {

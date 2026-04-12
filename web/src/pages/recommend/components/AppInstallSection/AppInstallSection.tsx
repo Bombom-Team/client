@@ -141,7 +141,7 @@ const StoreButton = styled.button<{
   color: ${({ variant, theme }) =>
     variant === 'appStore' ? theme.colors.white : theme.colors.textPrimary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
+    theme.fonts.heading6};
   font-weight: 600;
 
   transition: all 0.2s ease-in-out;

@@ -218,7 +218,7 @@ const TipTitleWrapper = styled.div`
 const TipTitle = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
   font-weight: 600;
 `;
 
@@ -229,7 +229,7 @@ const TipList = styled.ul<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body3};
+    theme.fonts.body3};
 `;
 
 const TipItem = styled.li``;
@@ -242,5 +242,5 @@ const ButtonWrapper = styled.div`
 const StyledButton = styled(Button)<{ isMobile: boolean }>`
   flex: 1;
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 `;

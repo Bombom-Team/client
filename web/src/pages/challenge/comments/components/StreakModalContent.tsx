@@ -140,14 +140,14 @@ const TitleWrapper = styled.div`
 const Title = styled.h2<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading3 : theme.fonts.heading2};
+    theme.fonts.heading2};
   font-weight: 800;
 `;
 
 const Subtitle = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+    theme.fonts.heading5};
   font-weight: 700;
 `;
 
@@ -275,14 +275,14 @@ const FreezeCheckMark = styled.span`
 const Description = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
   line-height: 1.6;
 `;
 
 const EncouragementText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading6};
+    theme.fonts.heading6};
   font-weight: 600;
 `;
 

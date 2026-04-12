@@ -204,13 +204,13 @@ const AddCommentBox = styled.article`
 const AddCommentTitle = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+    theme.fonts.heading5};
 `;
 
 const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
   width: 100%;
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.stroke};
@@ -227,7 +227,7 @@ const RestDayContent = styled.section`
 const RestDayTitle = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading6};
+    theme.fonts.heading6};
 `;
 
 const RestDayMessage = styled.div<{ isMobile: boolean }>`
@@ -237,6 +237,6 @@ const RestDayMessage = styled.div<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
   text-align: center;
 `;

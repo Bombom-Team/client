@@ -110,7 +110,7 @@ const ModalHeader = styled.div`
 const ModalTitle = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+    theme.fonts.heading5};
 `;
 
 const CountBadge = styled.span<{ isMobile: boolean }>`
@@ -120,13 +120,13 @@ const CountBadge = styled.span<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.caption : theme.fonts.body3};
+    theme.fonts.body3};
 `;
 
 const ModalDescription = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
 `;
 
 const CommentsWrapper = styled.div<{ isMobile: boolean }>`
@@ -172,20 +172,20 @@ const CommentMeta = styled.div`
 const Nickname = styled.span<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
   font-weight: 600;
 `;
 
 const Timestamp = styled.time<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.caption : theme.fonts.body3};
+    theme.fonts.body3};
 `;
 
 const CommentText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
   line-height: 1.6;
 `;
 
@@ -199,5 +199,5 @@ const StateText = styled.p<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 `;

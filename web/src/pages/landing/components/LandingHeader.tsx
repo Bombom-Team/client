@@ -72,7 +72,7 @@ const GoToService = styled(Link)<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.caption : theme.fonts.body2};
+    theme.fonts.body2};
 
   cursor: pointer;
   transition: background-color 0.3s ease;

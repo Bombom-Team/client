@@ -76,13 +76,13 @@ const Container = styled.div<{ isMobile: boolean }>`
 const Title = styled.h2<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading5 : theme.fonts.heading4};
+    theme.fonts.heading4};
 `;
 
 const UnsubscribeDescription = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
 `;
 
 const ModalButtonWrapper = styled.div`
@@ -99,7 +99,7 @@ const ModalButton = styled(Button)<{ isMobile: boolean }>`
   border-radius: 8px;
 
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
 
   word-break: keep-all;
 `;

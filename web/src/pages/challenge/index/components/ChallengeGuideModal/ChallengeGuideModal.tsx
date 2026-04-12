@@ -184,7 +184,7 @@ const CheckboxWrapper = styled.div`
 const AgreementLabel = styled.label<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
 
   cursor: pointer;
 `;

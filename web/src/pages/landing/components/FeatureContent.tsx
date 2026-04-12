@@ -115,10 +115,7 @@ const TitleWrapper = styled.div`
 
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.heading5;
-    return device === 'tablet' ? theme.fonts.heading4 : theme.fonts.heading3;
-  }};
+  font: ${({ theme }) => theme.fonts.heading3};
 `;
 
 const IconWrapper = styled.div<{ device: Device }>`
@@ -147,10 +144,7 @@ const DescriptionWrapper = styled.div<{
   }};
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.body3;
-    return device === 'tablet' ? theme.fonts.body1 : theme.fonts.bodyLarge;
-  }};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
 `;
 
 const ImageSection = styled.div<{ device: Device }>`

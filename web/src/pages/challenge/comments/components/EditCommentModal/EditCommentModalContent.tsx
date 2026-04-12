@@ -109,7 +109,7 @@ const SectionWrapper = styled.div`
 const SectionTitle = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+    theme.fonts.heading5};
 `;
 
 const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
@@ -118,7 +118,7 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
 `;
 
 const ArticleTitleWrapper = styled.div`
@@ -131,7 +131,7 @@ const ArticleTitleWrapper = styled.div`
 const ArticleTitle = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 `;
 
 const ButtonWrapper = styled.div`
@@ -142,7 +142,7 @@ const ButtonWrapper = styled.div`
 const StyledButton = styled(Button)<{ isMobile: boolean }>`
   flex: 1;
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 `;
 
 const Quote = styled.div<{ isMobile: boolean }>`
@@ -155,7 +155,7 @@ const Quote = styled.div<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ isMobile }) =>

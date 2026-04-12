@@ -66,7 +66,7 @@ const StyledButton = styled(Button)<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    theme.fonts.body1};
 
   &:hover {
     background: none;

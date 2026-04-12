@@ -167,9 +167,8 @@ const EditButton = styled.button<{
 `;
 
 const ButtonText = styled.span<{ device: Device }>`
-  font: ${({ theme, device }) =>
-    device === 'pc' ? theme.fonts.caption : theme.fonts.caption};
-  font-size: ${({ device }) => (device === 'pc' ? '0.6875rem' : '0.625rem')};
+  font: ${({ theme }) => theme.fonts.caption};
+  font-size: 0.6875rem;
   white-space: nowrap;
 `;
 

@@ -135,14 +135,14 @@ export const DescriptionBox = styled.div`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading2 : theme.fonts.heading1};
+    theme.fonts.heading1};
   line-height: ${({ device }) => (device === 'mobile' ? '1.18' : '1.4')};
 `;
 
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading4};
+    theme.fonts.heading4};
   font-weight: 400;
   line-height: ${({ device }) => (device === 'mobile' ? '1.7' : 'inherit')};
 `;

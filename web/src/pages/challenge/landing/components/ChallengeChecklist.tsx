@@ -103,10 +103,7 @@ const Title = styled.h2<{ device: Device }>`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.heading5;
-    return device === 'tablet' ? theme.fonts.heading3 : theme.fonts.heading2;
-  }};
+  font: ${({ theme }) => theme.fonts.heading2};
 `;
 
 const ChecklistCard = styled.div<{ device: Device }>`
@@ -137,7 +134,7 @@ const ItemNumber = styled.span<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+    theme.fonts.heading5};
 `;
 
 const ItemContent = styled.div`
@@ -151,17 +148,17 @@ const ItemContent = styled.div`
 const ItemTitle = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+    theme.fonts.heading4};
 `;
 
 const ItemDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+    theme.fonts.bodyLarge};
 `;
 
 const ItemNote = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
+    theme.fonts.body2};
 `;

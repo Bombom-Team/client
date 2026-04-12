@@ -30,7 +30,7 @@ const Container = styled.section<{ device: Device }>`
 
 const Content = styled.div<{ device: Device }>`
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+    theme.fonts.bodyLarge};
 
   h1,
   h2,

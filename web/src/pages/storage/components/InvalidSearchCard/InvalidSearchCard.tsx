@@ -39,7 +39,7 @@ const EmptyTitle = styled.h3<{ isMobile: boolean }>`
   background: linear-gradient(90deg, #181818 0%, #f96 100%);
   background-clip: text;
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading4 : theme.fonts.heading3};
+    theme.fonts.heading3};
   text-align: center;
 
   -webkit-text-fill-color: transparent;
