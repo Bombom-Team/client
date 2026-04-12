@@ -13,7 +13,6 @@ import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { isWebView } from '@/utils/device';
-import type { Device } from '@/hooks/useDevice';
 
 interface IssuedStateProps {
   onClose: () => void;
@@ -59,7 +58,7 @@ const IssuedState = ({ onClose }: IssuedStateProps) => {
   return (
     <>
       <Flex direction="column" gap={16} align="center">
-        <CompletedMessage device={device}>
+        <CompletedMessage>
           쿠폰이 성공적으로 발급되었습니다! 🎉
         </CompletedMessage>
         <CouponContainer ref={couponRef}>
@@ -118,7 +117,7 @@ const IssuedState = ({ onClose }: IssuedStateProps) => {
 
 export default IssuedState;
 
-const CompletedMessage = styled.p<{ device: Device }>`
+const CompletedMessage = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
   text-align: center;

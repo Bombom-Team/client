@@ -70,16 +70,14 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
               width={device === 'mobile' ? 16 : 20}
               height={device === 'mobile' ? 16 : 20}
             />
-            <OverViewText device={device}>
-              하루 한 편과 코멘트 한 줄이면 충분해요.
-            </OverViewText>
+            <OverViewText>하루 한 편과 코멘트 한 줄이면 충분해요.</OverViewText>
           </OverviewItem>
           <OverviewItem device={device}>
             <CheckIcon
               width={device === 'mobile' ? 16 : 20}
               height={device === 'mobile' ? 16 : 20}
             />
-            <OverViewText device={device}>
+            <OverViewText>
               완벽한 코멘트가 아니어도 괜찮아요! 내 마음이 남은 한 문장만
               남겨요.
             </OverViewText>
@@ -111,7 +109,7 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
                 </PeriodDate>
               </>
             ) : (
-              <ComingSoonText device={device}>Coming Soon</ComingSoonText>
+              <ComingSoonText>Coming Soon</ComingSoonText>
             )}
           </Flex>
         </Period>
@@ -300,7 +298,7 @@ const OverviewItem = styled.p<{ device: Device }>`
   }
 `;
 
-const OverViewText = styled.p<{ device: Device }>`
+const OverViewText = styled.p`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.heading5};
   font-weight: 400;
@@ -329,7 +327,7 @@ const PeriodDate = styled.span<{ device: Device }>`
   font-weight: 400;
 `;
 
-const ComingSoonText = styled.span<{ device: Device }>`
+const ComingSoonText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.body1};
   font-weight: 400;

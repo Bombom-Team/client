@@ -7,9 +7,9 @@ const LandingHero = () => {
   const device = useDevice();
 
   return (
-    <Container device={device}>
+    <Container>
       <TitleWrapper device={device}>
-        <HeroBadge device={device}>뉴스레터 종합 플랫폼</HeroBadge>
+        <HeroBadge>뉴스레터 종합 플랫폼</HeroBadge>
         <Title device={device}>
           모든 뉴스레터를
           <br />
@@ -20,7 +20,7 @@ const LandingHero = () => {
           <br />
           소중한 정보를 더 이상 놓치지 마세요.
         </Description>
-        <PromptScroll device={device}>
+        <PromptScroll>
           스크롤하여 더 알아보기
           <PromptScrollIcon />
         </PromptScroll>
@@ -31,7 +31,7 @@ const LandingHero = () => {
 
 export default LandingHero;
 
-const Container = styled.section<{ device: Device }>`
+const Container = styled.section`
   width: 100%;
   min-height: 100vh;
 
@@ -50,7 +50,7 @@ const TitleWrapper = styled.div<{ device: Device }>`
   text-align: center;
 `;
 
-const HeroBadge = styled.div<{ device: Device }>`
+const HeroBadge = styled.div`
   padding: 4px 12px;
   border: 1px solid ${({ theme }) => theme.colors.primaryLight};
   border-radius: 20px;
@@ -76,7 +76,7 @@ const Description = styled.p<{ device: Device }>`
     device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
 `;
 
-const PromptScroll = styled.div<{ device: Device }>`
+const PromptScroll = styled.div`
   display: flex;
   gap: 8px;
   flex-direction: column;

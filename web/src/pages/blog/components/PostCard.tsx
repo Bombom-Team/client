@@ -33,9 +33,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
       <ContentWrapper>
         <Title device={device}>{post.title}</Title>
-        {post.description && (
-          <Description device={device}>{post.description}</Description>
-        )}
+        {post.description && <Description>{post.description}</Description>}
 
         <MetaInfo>
           <CalendarIcon
@@ -137,7 +135,7 @@ const Title = styled.h3<{ device: Device }>`
   line-height: 1.4;
 `;
 
-const Description = styled.p<{ device: Device }>`
+const Description = styled.p`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textSecondary};

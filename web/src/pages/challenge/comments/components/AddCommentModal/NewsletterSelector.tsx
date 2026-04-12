@@ -1,9 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import Select from '@/components/Select/Select';
-import { useDevice } from '@/hooks/useDevice';
 import type { CandidateArticles } from '../../types/comment';
-import type { Device } from '@/hooks/useDevice';
 
 interface NewsletterSelectorProps {
   selectedArticleId: number | null;
@@ -18,8 +16,6 @@ const NewsletterSelector = ({
   articles,
   showError,
 }: NewsletterSelectorProps) => {
-  const device = useDevice();
-
   const options = articles.map((article) => ({
     label: `${article.newsletterName} (${article.articleTitle})`,
     value: article.articleId,
@@ -27,7 +23,7 @@ const NewsletterSelector = ({
 
   return (
     <Container>
-      <Title device={device}>읽은 아티클</Title>
+      <Title>읽은 아티클</Title>
       <Select
         options={options}
         selectedValue={selectedArticleId ?? null}
@@ -36,9 +32,7 @@ const NewsletterSelector = ({
         width="100%"
         fontSize={theme.fonts.body1}
       />
-      {showError && (
-        <ErrorMessage device={device}>아티클을 선택해주세요</ErrorMessage>
-      )}
+      {showError && <ErrorMessage>아티클을 선택해주세요</ErrorMessage>}
     </Container>
   );
 };
@@ -51,12 +45,12 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Title = styled.h3<{ device: Device }>`
+const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-const ErrorMessage = styled.p<{ device: Device }>`
+const ErrorMessage = styled.p`
   color: ${({ theme }) => theme.colors.error};
   font: ${({ theme }) => theme.fonts.body3};
 `;

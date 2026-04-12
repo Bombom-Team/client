@@ -52,7 +52,7 @@ const NewsletterCard = ({
   }
 
   return (
-    <Container device={device} onClick={handleCardClick} isFlipped={isFlipped}>
+    <Container onClick={handleCardClick} isFlipped={isFlipped}>
       <CardInner isFlipped={isFlipped}>
         <CardFront>
           <ThumbnailBackground>
@@ -101,10 +101,7 @@ const NewsletterCard = ({
 
 export default NewsletterCard;
 
-const Container = styled.article<{
-  device: Device;
-  isFlipped: boolean;
-}>`
+const Container = styled.article<{ isFlipped: boolean }>`
   position: relative;
   width: 100%;
   height: 100%;

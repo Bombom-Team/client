@@ -11,7 +11,7 @@ const DetailTab = ({ newsletterDescription, isMobile }: DetailTabProps) => {
   return (
     <>
       <Container isMobile={isMobile}>
-        <Description isMobile={isMobile}>{newsletterDescription}</Description>
+        <Description>{newsletterDescription}</Description>
         {!isMobile && <NewsletterSubscribeGuide />}
       </Container>
     </>
@@ -26,7 +26,7 @@ const Container = styled.div<{ isMobile: boolean }>`
   flex-direction: column;
 `;
 
-const Description = styled.p<{ isMobile: boolean }>`
+const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body1};
 `;

@@ -17,11 +17,9 @@ const AlreadyAppliedModal = ({ closeModal }: AlreadyAppliedModalProps) => {
 
   return (
     <Container isMobile={isMobile}>
-      <ModalTitle isMobile={isMobile}>이미 신청한 챌린지예요</ModalTitle>
+      <ModalTitle>이미 신청한 챌린지예요</ModalTitle>
 
-      <ModalDescription isMobile={isMobile}>
-        이미 이 챌린지에 신청하셨어요.
-      </ModalDescription>
+      <ModalDescription>이미 이 챌린지에 신청하셨어요.</ModalDescription>
 
       <ModalButtonGroup>
         <ModalButton isMobile={isMobile} onClick={closeModal}>

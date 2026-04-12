@@ -26,17 +26,16 @@ const QuotationSelector = ({
   const isMobile = device === 'mobile';
 
   return (
-    <Container isMobile={isMobile}>
+    <Container>
       <Header isMobile={isMobile}>
-        <TitleBox isMobile={isMobile}>
-          <Title isMobile={isMobile}>내 하이라이트/메모</Title>
-          <HelpText isMobile={isMobile}>클릭하여 인용하기 (선택)</HelpText>
+        <TitleBox>
+          <Title>내 하이라이트/메모</Title>
+          <HelpText>클릭하여 인용하기 (선택)</HelpText>
         </TitleBox>
         {selectedQuotationId && (
           <RemoveQuotationButton
             variant="transparent"
             onClick={onRemoveQuotation}
-            isMobile={isMobile}
           >
             인용 제거
           </RemoveQuotationButton>
@@ -57,13 +56,11 @@ const QuotationSelector = ({
                 selected={selectedQuotationId === quotation.highlightId}
               >
                 <Quote isMobile={isMobile}>{quotation.text}</Quote>
-                {quotation.memo && (
-                  <Memo isMobile={isMobile}>{quotation.memo}</Memo>
-                )}
+                {quotation.memo && <Memo>{quotation.memo}</Memo>}
               </QuotationItem>
             ))}
           </QuotationList>
-          <NoticeText isMobile={isMobile}>
+          <NoticeText>
             저작권 보호를 위해 인용구 일부가 생략될 수 있어요.
           </NoticeText>
         </QuotationWrapper>
@@ -78,7 +75,7 @@ const QuotationSelector = ({
 
 export default QuotationSelector;
 
-const Container = styled.div<{ isMobile: boolean }>`
+const Container = styled.div`
   display: flex;
   gap: 8px;
   flex-direction: column;
@@ -92,24 +89,24 @@ const Header = styled.div<{ isMobile: boolean }>`
   align-items: flex-end;
 `;
 
-const TitleBox = styled.div<{ isMobile: boolean }>`
+const TitleBox = styled.div`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
+  gap: 12px;
   flex-wrap: wrap;
   align-items: center;
 `;
 
-const Title = styled.h3<{ isMobile: boolean }>`
+const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-const HelpText = styled.span<{ isMobile: boolean }>`
+const HelpText = styled.span`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body3};
 `;
 
-const RemoveQuotationButton = styled(Button)<{ isMobile: boolean }>`
+const RemoveQuotationButton = styled(Button)`
   margin-left: auto;
   padding: 0;
 
@@ -202,12 +199,12 @@ const Quote = styled.div<{ isMobile: boolean }>`
   text-overflow: ellipsis;
 `;
 
-const Memo = styled.div<{ isMobile: boolean }>`
+const Memo = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body1};
 `;
 
-const NoticeText = styled.div<{ isMobile: boolean }>`
+const NoticeText = styled.div`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body3};
   text-align: center;

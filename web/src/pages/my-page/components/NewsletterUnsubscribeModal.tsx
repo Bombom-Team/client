@@ -33,9 +33,9 @@ const NewsletterUnsubscribeModal = ({
 
   return (
     <Container isMobile={isMobile}>
-      <Title isMobile={isMobile}>{MODAL_CONTENT[type].title}</Title>
+      <Title>{MODAL_CONTENT[type].title}</Title>
 
-      <UnsubscribeDescription isMobile={isMobile}>
+      <UnsubscribeDescription>
         {MODAL_CONTENT[type].description}
       </UnsubscribeDescription>
 
@@ -73,12 +73,12 @@ const Container = styled.div<{ isMobile: boolean }>`
   text-align: center;
 `;
 
-const Title = styled.h2<{ isMobile: boolean }>`
+const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading4};
 `;
 
-const UnsubscribeDescription = styled.p<{ isMobile: boolean }>`
+const UnsubscribeDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body2};
 `;

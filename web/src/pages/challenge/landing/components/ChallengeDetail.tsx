@@ -90,11 +90,7 @@ const ChallengeDetail = () => {
       <Title device={device}>
         챌린지, <Highlight>이렇게</Highlight> 구성돼요
       </Title>
-      <ContentWrapper
-        device={device}
-        gap={device === 'mobile' ? 84 : 210}
-        direction="column"
-      >
+      <ContentWrapper gap={device === 'mobile' ? 84 : 210} direction="column">
         {DETAILS.map((feature) => (
           <DetailCard
             key={feature.title}
@@ -124,7 +120,7 @@ const Container = styled.section<{ device: Device }>`
   flex-direction: column;
 `;
 
-const ContentWrapper = styled(Flex)<{ device: Device }>`
+const ContentWrapper = styled(Flex)`
   width: 100%;
 `;
 

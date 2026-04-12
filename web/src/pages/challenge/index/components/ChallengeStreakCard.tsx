@@ -32,13 +32,13 @@ const ChallengeStreakCard = ({ challengeId }: ChallengeStreakCardProps) => {
 
   return (
     <Container isMobile={isMobile}>
-      <HeaderWrapper isMobile={isMobile}>
+      <HeaderWrapper>
         <FireBadge isMobile={isMobile}>
           <FireImage src="/assets/svg/fire.svg" alt="스트릭 불꽃" />
-          <StreakCount isMobile={isMobile}>{streakDays}</StreakCount>
+          <StreakCount>{streakDays}</StreakCount>
         </FireBadge>
         <TextWrapper>
-          <Title isMobile={isMobile}>일 연속 참여중</Title>
+          <Title>일 연속 참여중</Title>
         </TextWrapper>
       </HeaderWrapper>
 
@@ -86,7 +86,7 @@ const Container = styled.section<{ isMobile: boolean }>`
   box-sizing: border-box;
 `;
 
-const HeaderWrapper = styled.div<{ isMobile: boolean }>`
+const HeaderWrapper = styled.div`
   display: flex;
   gap: 2px;
   align-items: center;
@@ -107,7 +107,7 @@ const FireImage = styled.img`
   display: block;
 `;
 
-const StreakCount = styled.span<{ isMobile: boolean }>`
+const StreakCount = styled.span`
   position: absolute;
   top: 58%;
   left: 50%;
@@ -127,7 +127,7 @@ const TextWrapper = styled.div`
   align-items: center;
 `;
 
-const Title = styled.p<{ isMobile: boolean }>`
+const Title = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.heading6};
 `;

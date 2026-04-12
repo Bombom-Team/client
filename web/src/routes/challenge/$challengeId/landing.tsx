@@ -55,7 +55,7 @@ function ChallengeLanding() {
 
   return (
     <>
-      <Container device={device}>
+      <Container>
         <LandingHeader />
         <Hero
           challengeName={challengeLandingInfo.name}
@@ -98,7 +98,7 @@ function ChallengeLanding() {
   );
 }
 
-const Container = styled.main<{ device: Device }>`
+const Container = styled.main`
   width: 100%;
   min-height: 100dvh;
 `;

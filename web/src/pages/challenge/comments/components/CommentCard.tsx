@@ -185,7 +185,7 @@ const CommentCard = ({
         <ReplyWriter challengeId={challengeId} commentId={commentId} />
         {hasReplies && isReplyOpen && (
           <Flex gap={isMobile ? 8 : 12} direction="column">
-            <Suspense fallback={<ReplyList.Loading isMobile={isMobile} />}>
+            <Suspense fallback={<ReplyList.Loading />}>
               <ReplyList
                 challengeId={challengeId}
                 commentId={commentId}

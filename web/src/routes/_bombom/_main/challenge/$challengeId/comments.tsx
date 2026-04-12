@@ -82,11 +82,10 @@ function ChallengeComments() {
       <ContentWrapper isMobile={isMobile}>
         {selectedDate === today && isChallengeDay(selectedDate) && (
           <AddCommentBox>
-            <AddCommentTitle isMobile={isMobile}>
+            <AddCommentTitle>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
             </AddCommentTitle>
             <AddCommentButton
-              isMobile={isMobile}
               onClick={openModal}
               disabled={isFirstDay(today) || candidateArticles.length === 0}
             >
@@ -101,7 +100,7 @@ function ChallengeComments() {
 
         {isFirstDay(selectedDate) || !isChallengeDay(selectedDate) ? (
           <RestDayContent>
-            <RestDayTitle isMobile={isMobile}>전체 코멘트</RestDayTitle>
+            <RestDayTitle>전체 코멘트</RestDayTitle>
             <RestDayMessage isMobile={isMobile}>
               {isFirstDay(selectedDate)
                 ? '첫날에는 코멘트를 작성하지 않아요!'
@@ -201,12 +200,12 @@ const AddCommentBox = styled.article`
   flex-direction: column;
 `;
 
-const AddCommentTitle = styled.h3<{ isMobile: boolean }>`
+const AddCommentTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
+const AddCommentButton = styled(Button)`
   width: 100%;
   font: ${({ theme }) => theme.fonts.body1};
 
@@ -222,7 +221,7 @@ const RestDayContent = styled.section`
   flex-direction: column;
 `;
 
-const RestDayTitle = styled.h3<{ isMobile: boolean }>`
+const RestDayTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading6};
 `;

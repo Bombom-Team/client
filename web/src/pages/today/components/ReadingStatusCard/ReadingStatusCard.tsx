@@ -76,7 +76,7 @@ const ReadingStatusCard = () => {
 
       <StreakWrapper device={device}>
         <StreakCounter streakReadDay={streakReadDay} />
-        <StreakDescription device={device}>연속 읽기 중!</StreakDescription>
+        <StreakDescription>연속 읽기 중!</StreakDescription>
       </StreakWrapper>
 
       <ProgressWithLabel
@@ -107,7 +107,6 @@ const ReadingStatusCard = () => {
                 <WeeklyGoalInput
                   goalValue={goalCount}
                   isPending={isPending}
-                  device={device}
                   onSave={handleSave}
                   onCancel={handleCancel}
                   onGoalChange={handleGoalChange}
@@ -179,7 +178,7 @@ const StreakWrapper = styled.div<{ device: Device }>`
   justify-content: center;
 `;
 
-const StreakDescription = styled.p<{ device: Device }>`
+const StreakDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body1};
   text-align: center;

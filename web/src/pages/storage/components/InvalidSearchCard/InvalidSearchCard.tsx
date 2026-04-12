@@ -1,18 +1,14 @@
 import styled from '@emotion/styled';
-import { useDevice } from '@/hooks/useDevice';
 import EmptySearchIcon from '#/assets/svg/empty-search.svg';
 
 function InvalidSearchCard() {
-  const device = useDevice();
-  const isMobile = device === 'mobile';
-
   return (
     <Container>
       <EmptySearchIconWrapper>
         <EmptySearchIcon width={100} height={100} />
       </EmptySearchIconWrapper>
 
-      <EmptyTitle isMobile={isMobile}>
+      <EmptyTitle>
         {`더 정확한 검색을 위해\n두 글자 이상 입력해주세요.`}
       </EmptyTitle>
     </Container>
@@ -35,7 +31,7 @@ const EmptySearchIconWrapper = styled.div`
   padding: 38px;
 `;
 
-const EmptyTitle = styled.h3<{ isMobile: boolean }>`
+const EmptyTitle = styled.h3`
   background: linear-gradient(90deg, #181818 0%, #f96 100%);
   background-clip: text;
   font: ${({ theme }) => theme.fonts.heading3};

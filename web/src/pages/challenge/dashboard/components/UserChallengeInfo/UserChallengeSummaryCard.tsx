@@ -21,7 +21,7 @@ const UserChallengeSummaryCard = ({
   return (
     <Container isMobile={isMobile} isFailed={!isSurvived}>
       {!isSurvived && (
-        <FailedOverlay isMobile={isMobile}>
+        <FailedOverlay>
           아쉽게도 이번 챌린지의 달성률에 도달하지 못했어요 🥲
         </FailedOverlay>
       )}
@@ -40,25 +40,23 @@ const UserChallengeSummaryCard = ({
                 width={isMobile ? 56 : 72}
                 height={isMobile ? 56 : 72}
               />
-              <StreakCount isMobile={isMobile}>{streak}</StreakCount>
+              <StreakCount>{streak}</StreakCount>
             </StreakBadge>
           </ParticipationValueRow>
         </StatBlock>
         <StatBlock isMobile={isMobile}>
-          <StatValue isMobile={isMobile}>{completedDays}일</StatValue>
-          <StatLabel isMobile={isMobile}>참여 중</StatLabel>
+          <StatValue>{completedDays}일</StatValue>
+          <StatLabel>참여 중</StatLabel>
         </StatBlock>
         <StatDivider />
         <StatBlock isMobile={isMobile}>
-          <StatValue isMobile={isMobile}>
-            {completionRate.toFixed(1)}%
-          </StatValue>
-          <StatLabel isMobile={isMobile}>달성률</StatLabel>
+          <StatValue>{completionRate.toFixed(1)}%</StatValue>
+          <StatLabel>달성률</StatLabel>
         </StatBlock>
         <StatDivider />
         <StatBlock isMobile={isMobile}>
-          <StatValue isMobile={isMobile}>{shield}개</StatValue>
-          <StatLabel isMobile={isMobile}>쉴드</StatLabel>
+          <StatValue>{shield}개</StatValue>
+          <StatLabel>쉴드</StatLabel>
         </StatBlock>
       </SummaryStats>
     </Container>
@@ -148,7 +146,7 @@ const FireIconImage = styled.img`
   display: block;
 `;
 
-const StreakCount = styled.div<{ isMobile: boolean }>`
+const StreakCount = styled.div`
   position: absolute;
   top: 60%;
   left: 50%;
@@ -162,7 +160,7 @@ const StreakCount = styled.div<{ isMobile: boolean }>`
   transform: translate(-50%, -50%);
 `;
 
-const StatValue = styled.div<{ isMobile: boolean }>`
+const StatValue = styled.div`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.heading5};
   white-space: nowrap;
@@ -170,7 +168,7 @@ const StatValue = styled.div<{ isMobile: boolean }>`
   text-overflow: ellipsis;
 `;
 
-const StatLabel = styled.div<{ isMobile: boolean }>`
+const StatLabel = styled.div`
   color: ${({ theme }) => theme.colors.disabledText};
   font: ${({ theme }) => theme.fonts.body3};
   white-space: nowrap;
@@ -185,7 +183,7 @@ const StatDivider = styled.div`
   background: ${({ theme }) => theme.colors.dividers};
 `;
 
-const FailedOverlay = styled.div<{ isMobile: boolean }>`
+const FailedOverlay = styled.div`
   position: absolute;
 
   display: flex;

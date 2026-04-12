@@ -13,10 +13,8 @@ const BlogFooter = () => {
     <Container device={device}>
       <FooterWrapper device={device}>
         <Flex gap={device === 'mobile' ? 4 : 8} direction="column">
-          <LogoText device={device}>봄봄 Blog</LogoText>
-          <Description device={device}>
-            읽고 남기고 쌓는 뉴스레터 리딩 플랫폼
-          </Description>
+          <LogoText>봄봄 Blog</LogoText>
+          <Description>읽고 남기고 쌓는 뉴스레터 리딩 플랫폼</Description>
         </Flex>
 
         <Flex
@@ -63,9 +61,7 @@ const BlogFooter = () => {
               />
             </SocialLink>
           </Flex>
-          <Copyright device={device}>
-            © 2026 BOMBOM. ALL RIGHTS RESERVED.
-          </Copyright>
+          <Copyright>© 2026 BOMBOM. ALL RIGHTS RESERVED.</Copyright>
         </Flex>
       </FooterWrapper>
     </Container>
@@ -97,13 +93,13 @@ const FooterWrapper = styled.div<{ device: Device }>`
   justify-content: space-between;
 `;
 
-const LogoText = styled.h3<{ device: Device }>`
+const LogoText = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.body1};
   font-weight: 600;
 `;
 
-const Description = styled.p<{ device: Device }>`
+const Description = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textTertiary};
@@ -131,7 +127,7 @@ const SocialLink = styled.a`
   }
 `;
 
-const Copyright = styled.span<{ device: Device }>`
+const Copyright = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.body3};
   letter-spacing: 0.0625rem;

@@ -42,7 +42,7 @@ const EventHero = ({ onApply }: EventHeroProps) => {
   };
 
   return (
-    <Container device={device}>
+    <Container>
       <ContentWrapper device={device}>
         <DecorativeCircle
           style={{
@@ -90,17 +90,17 @@ const EventHero = ({ onApply }: EventHeroProps) => {
         <InfoCard device={device}>
           <InfoCardBadge device={device}>선착순 100% 당첨</InfoCardBadge>
           <InfoRow>
-            <InfoLabel device={device}>참여대상</InfoLabel>
+            <InfoLabel>참여대상</InfoLabel>
             <InfoValue device={device}>봄봄 회원가입 유저</InfoValue>
           </InfoRow>
           <InfoRowDivider />
           <InfoRow>
-            <InfoLabel device={device}>일정</InfoLabel>
+            <InfoLabel>일정</InfoLabel>
             <InfoValue device={device}>2월 23일(월) 오후 2시 70명</InfoValue>
           </InfoRow>
           <InfoRowDivider />
           <InfoRow>
-            <InfoLabel device={device}>당첨자 발표</InfoLabel>
+            <InfoLabel>당첨자 발표</InfoLabel>
             <InfoValue device={device}>당첨 즉시 지급</InfoValue>
           </InfoRow>
         </InfoCard>
@@ -121,7 +121,7 @@ const EventHero = ({ onApply }: EventHeroProps) => {
 
 export default EventHero;
 
-const Container = styled.section<{ device: Device }>`
+const Container = styled.section`
   z-index: ${({ theme }) => theme.zIndex.base};
   width: 100%;
   border-bottom: 4px solid ${({ theme }) => theme.colors.black};
@@ -250,7 +250,7 @@ const InfoRowDivider = styled.div`
   border-bottom: ${({ theme }) => `2px dashed ${theme.colors.stroke}`};
 `;
 
-const InfoLabel = styled.p<{ device: Device }>`
+const InfoLabel = styled.p`
   color: ${({ theme }) => theme.colors.icons};
   font: ${({ theme }) => theme.fonts.heading6};
   text-align: center;

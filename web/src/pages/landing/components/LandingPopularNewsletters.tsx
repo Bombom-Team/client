@@ -59,7 +59,7 @@ const LandingPopularNewsletters = () => {
   return (
     <Container ref={visibleRef} device={device}>
       <TitleWrapper>
-        <Title device={device}>인기 뉴스레터</Title>
+        <Title>인기 뉴스레터</Title>
         <Subtitle device={device}>
           봄봄과 함께 하고 있는 다양한 분야의 뉴스레터들
         </Subtitle>
@@ -78,12 +78,10 @@ const LandingPopularNewsletters = () => {
                 alt={newsletter.name}
                 device={device}
               />
-              <NewsletterCategory device={device}>
-                {newsletter.category}
-              </NewsletterCategory>
+              <NewsletterCategory>{newsletter.category}</NewsletterCategory>
             </NewsletterInfoHeader>
-            <NewsletterName device={device}>{newsletter.name}</NewsletterName>
-            <NewsletterDescription device={device}>
+            <NewsletterName>{newsletter.name}</NewsletterName>
+            <NewsletterDescription>
               {newsletter.description}
             </NewsletterDescription>
           </NewsletterCard>
@@ -117,7 +115,7 @@ const TitleWrapper = styled.div`
   justify-content: center;
 `;
 
-const Title = styled.h2<{ device: Device }>`
+const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading2};
   text-align: center;
@@ -182,7 +180,7 @@ const NewsletterInfoHeader = styled.div`
   justify-content: space-between;
 `;
 
-const NewsletterCategory = styled.div<{ device: Device }>`
+const NewsletterCategory = styled.div`
   padding: 4px 8px;
   border-radius: 12px;
 
@@ -201,12 +199,12 @@ const NewsletterThumbnail = styled.img<{ device: Device }>`
   justify-content: center;
 `;
 
-const NewsletterName = styled.h3<{ device: Device }>`
+const NewsletterName = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-const NewsletterDescription = styled.p<{ device: Device }>`
+const NewsletterDescription = styled.p`
   overflow: hidden;
 
   color: ${({ theme }) => theme.colors.textTertiary};

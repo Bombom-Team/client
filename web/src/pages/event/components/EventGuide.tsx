@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import Text from '@/components/Text';
-import { useDevice, type Device } from '@/hooks/useDevice';
+import { useDevice } from '@/hooks/useDevice';
 import AppleIcon from '#/assets/svg/apple.svg';
 import GoogleIcon from '#/assets/svg/google.svg';
 import PointerIcon from '#/assets/svg/pointer.svg';
@@ -18,7 +18,7 @@ const EventGuide = () => {
       <StepWrapper>
         <StepCard>
           <StepBadge>STEP 1.</StepBadge>
-          <Description device={device}>
+          <Description>
             <StepHighlight>[로그인]</StepHighlight> 버튼을 눌러 회원가입 하러
             가기
           </Description>
@@ -30,7 +30,7 @@ const EventGuide = () => {
 
         <StepCard>
           <StepBadge>STEP 2.</StepBadge>
-          <Description device={device}>
+          <Description>
             <StepHighlight>[간편한 소셜 로그인으로]</StepHighlight> 회원가입
             하기
           </Description>
@@ -52,7 +52,7 @@ const EventGuide = () => {
 
         <StepCard>
           <StepBadge>STEP 3.</StepBadge>
-          <Description device={device}>
+          <Description>
             가입완료!{'\n'}이벤트 페이지 상단의{' '}
             <StepHighlight>[선착순 경품받기]</StepHighlight>
             {'\n'}
@@ -143,7 +143,7 @@ const StepBadge = styled.div`
   transform: translateX(-50%);
 `;
 
-const Description = styled.p<{ device: Device }>`
+const Description = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading6};
   font-weight: 700;

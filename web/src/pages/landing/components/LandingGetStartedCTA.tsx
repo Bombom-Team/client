@@ -7,10 +7,10 @@ const LandingGetStartedCTA = () => {
   const device = useDevice();
 
   return (
-    <Container device={device}>
+    <Container>
       <ContentWrapper device={device}>
         <Title device={device}>필요한 정보만 깔끔하게</Title>
-        <Description device={device}>
+        <Description>
           흩어진 메일은 정리하고 중요한 뉴스레터에 집중해, 매일 조금씩
           성장해보세요.
         </Description>
@@ -24,7 +24,7 @@ const LandingGetStartedCTA = () => {
 
 export default LandingGetStartedCTA;
 
-const Container = styled.section<{ device: Device }>`
+const Container = styled.section`
   width: 100%;
 
   display: flex;
@@ -56,7 +56,7 @@ const Title = styled.h2<{ device: Device }>`
     device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
 `;
 
-const Description = styled.p<{ device: Device }>`
+const Description = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.bodyLarge};
 `;

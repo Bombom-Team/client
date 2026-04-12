@@ -1,19 +1,15 @@
 import styled from '@emotion/styled';
 import Button from '@/components/Button/Button';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
 
 interface EventLoadingModalProps {
   closeModal: () => void;
 }
 
 const EventLoadingModal = ({ closeModal }: EventLoadingModalProps) => {
-  const device = useDevice();
-
   return (
     <Container>
       <ContentWrapper>
-        <Title device={device}>접속 중</Title>
+        <Title>접속 중</Title>
 
         <Description>잠시만 기다려주세요.</Description>
         <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>
@@ -44,7 +40,7 @@ const ContentWrapper = styled.div`
   align-items: center;
 `;
 
-const Title = styled.h3<{ device: Device }>`
+const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading4};
   text-align: center;

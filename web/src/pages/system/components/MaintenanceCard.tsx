@@ -17,7 +17,7 @@ const MaintenanceCard = () => {
 
       <Title isMobile={isMobile}>서비스 점검 중입니다</Title>
 
-      <DescriptionWrapper isMobile={isMobile}>
+      <DescriptionWrapper>
         <Description>
           더 나은 서비스 제공을 위해 시스템을 점검하고 있습니다.
         </Description>
@@ -26,10 +26,8 @@ const MaintenanceCard = () => {
         </Description>
       </DescriptionWrapper>
 
-      <ContactWrapper isMobile={isMobile}>
-        <Contact href="https://e0pq0.channel.io/" isMobile={isMobile}>
-          💬 채널톡 바로가기
-        </Contact>
+      <ContactWrapper>
+        <Contact href="https://e0pq0.channel.io/">💬 채널톡 바로가기</Contact>
         <ContactDescription>
           긴급한 문의사항이 있으시면
           <br />
@@ -66,7 +64,7 @@ const Title = styled.h1<{ isMobile: boolean }>`
     isMobile ? theme.fonts.heading3 : theme.fonts.heading2};
 `;
 
-const DescriptionWrapper = styled.div<{ isMobile: boolean }>`
+const DescriptionWrapper = styled.div`
   display: flex;
   gap: 4px;
   flex-direction: column;
@@ -79,14 +77,14 @@ const DescriptionWrapper = styled.div<{ isMobile: boolean }>`
 
 const Description = styled.p``;
 
-const ContactWrapper = styled.div<{ isMobile: boolean }>`
-  margin-top: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
+const ContactWrapper = styled.div`
+  margin-top: 12px;
   padding: 24px;
   border-radius: 20px;
   box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
 
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
+  gap: 12px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -95,7 +93,7 @@ const ContactWrapper = styled.div<{ isMobile: boolean }>`
   text-align: center;
 `;
 
-const Contact = styled.a<{ isMobile: boolean }>`
+const Contact = styled.a`
   padding: 8px 16px;
   border-radius: 12px;
 

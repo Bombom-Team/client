@@ -73,12 +73,12 @@ export const Container = styled.div<{ isMobile: boolean }>`
   text-align: center;
 `;
 
-export const ModalTitle = styled.h2<{ isMobile: boolean }>`
+export const ModalTitle = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading4};
 `;
 
-export const ModalDescription = styled.p<{ isMobile: boolean }>`
+export const ModalDescription = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};

@@ -23,7 +23,7 @@ const AllCommentsSection = ({
 
   return (
     <Container>
-      <Title isMobile={isMobile}>전체 코멘트</Title>
+      <Title>전체 코멘트</Title>
 
       {isLoading ? (
         <EmptyState isMobile={isMobile}>로딩 중...</EmptyState>
@@ -57,7 +57,7 @@ const Container = styled.section`
   flex-direction: column;
 `;
 
-const Title = styled.h3<{ isMobile: boolean }>`
+const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading6};
 `;

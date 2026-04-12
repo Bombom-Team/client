@@ -37,7 +37,7 @@ const Hero = ({ challengeName, generation, onApply }: HeroProps) => {
       <GenerationBadge
         device={device}
       >{`봄봄 뉴스레터 챌린지 ${generation}기`}</GenerationBadge>
-      <ContentWrapper device={device} isVisible={isVisible}>
+      <ContentWrapper isVisible={isVisible}>
         <Flex direction="column" gap={device === 'mobile' ? 24 : 60}>
           <Description device={device}>
             매일 뉴스레터 한 편을 읽고 감상을 남기는 30일의 여정.{'\n'}
@@ -53,7 +53,7 @@ const Hero = ({ challengeName, generation, onApply }: HeroProps) => {
                 width={device === 'mobile' ? 16 : 32}
                 height={device === 'mobile' ? 16 : 32}
               />
-              <FreePrice device={device}>무료</FreePrice>
+              <FreePrice>무료</FreePrice>
             </PriceBox>
             <DiscountLabel device={device}>
               {generation}기 특별 할인!
@@ -134,7 +134,7 @@ const BackgroundImage = styled.div<{ device: Device }>`
   }
 `;
 
-const ContentWrapper = styled.div<{ device: Device; isVisible: boolean }>`
+const ContentWrapper = styled.div<{ isVisible: boolean }>`
   position: relative;
   z-index: ${({ theme }) => theme.zIndex.elevated};
   width: 100%;
@@ -254,7 +254,7 @@ const OriginalPrice = styled.p<{ device: Device }>`
   text-decoration: line-through;
 `;
 
-const FreePrice = styled.span<{ device: Device }>`
+const FreePrice = styled.span`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.heading1};
 `;

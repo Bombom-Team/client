@@ -5,7 +5,6 @@ import { useAddCommentReplyMutation } from '../hooks/useAddCommentReplyMutation'
 import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import Text from '@/components/Text/Text';
-import { useDevice } from '@/hooks/useDevice';
 import SendIcon from '#/assets/svg/send.svg';
 
 interface ReplyWriterProps {
@@ -14,9 +13,6 @@ interface ReplyWriterProps {
 }
 
 const ReplyWriter = ({ challengeId, commentId }: ReplyWriterProps) => {
-  const device = useDevice();
-  const isMobile = device === 'mobile';
-
   const [isReplyInputOpen, setIsReplyInputOpen] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
@@ -50,11 +46,7 @@ const ReplyWriter = ({ challengeId, commentId }: ReplyWriterProps) => {
 
   return (
     <>
-      <ToggleButton
-        variant="transparent"
-        onClick={toggleReplyInput}
-        isMobile={isMobile}
-      >
+      <ToggleButton variant="transparent" onClick={toggleReplyInput}>
         {isReplyInputOpen ? '답글 취소' : '답글 쓰기'}
       </ToggleButton>
       {isReplyInputOpen && (
@@ -78,7 +70,6 @@ const ReplyWriter = ({ challengeId, commentId }: ReplyWriterProps) => {
                   handleReplySubmit();
                 }
               }}
-              isMobile={isMobile}
             />
             <SubmitButton
               onClick={handleReplySubmit}
@@ -103,7 +94,7 @@ const ReplyWriter = ({ challengeId, commentId }: ReplyWriterProps) => {
 
 export default ReplyWriter;
 
-const ToggleButton = styled(Button)<{ isMobile: boolean }>`
+const ToggleButton = styled(Button)`
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -134,7 +125,7 @@ const InputGroup = styled.div`
   align-items: center;
 `;
 
-const Input = styled.input<{ isMobile: boolean }>`
+const Input = styled.input`
   padding: 8px 12px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 12px;

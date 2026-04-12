@@ -45,7 +45,7 @@ const ChallengeBenefits = () => {
               <IconBox>
                 <benefit.Icon />
               </IconBox>
-              <BenefitTitle device={device}>{benefit.title}</BenefitTitle>
+              <BenefitTitle>{benefit.title}</BenefitTitle>
               <Text
                 font={device === 'mobile' ? 'body1' : 'bodyLarge'}
                 color={device === 'mobile' ? 'textSecondary' : 'textSecondary'}
@@ -154,7 +154,7 @@ const IconBox = styled.div`
   }
 `;
 
-const BenefitTitle = styled.h3<{ device: Device }>`
+const BenefitTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading4};
 `;

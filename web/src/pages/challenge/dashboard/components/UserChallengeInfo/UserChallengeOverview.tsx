@@ -26,11 +26,11 @@ const UserChallengeOverview = ({
 
   return (
     <Container isMobile={isMobile}>
-      <ChallengeHeader isMobile={isMobile}>
-        <ChallengeTitle isMobile={isMobile}>
+      <ChallengeHeader>
+        <ChallengeTitle>
           {name} {generation}
         </ChallengeTitle>
-        <ChallengePeriod isMobile={isMobile}>
+        <ChallengePeriod>
           {formatDate(new Date(startDate)).slice(2)} ~{' '}
           {formatDate(new Date(endDate)).slice(2)}
         </ChallengePeriod>
@@ -58,7 +58,7 @@ const Container = styled.div<{ isMobile: boolean }>`
   flex-direction: ${({ isMobile }) => (isMobile ? 'row' : 'column')};
 `;
 
-const ChallengeHeader = styled.div<{ isMobile: boolean }>`
+const ChallengeHeader = styled.div`
   width: 100%;
   min-width: 0;
 
@@ -67,11 +67,11 @@ const ChallengeHeader = styled.div<{ isMobile: boolean }>`
   flex-direction: column;
 `;
 
-const ChallengeTitle = styled.span<{ isMobile: boolean }>`
+const ChallengeTitle = styled.span`
   font: ${({ theme }) => theme.fonts.heading4};
 `;
 
-const ChallengePeriod = styled.span<{ isMobile: boolean }>`
+const ChallengePeriod = styled.span`
   color: ${({ theme }) => theme.colors.disabledText};
   font: ${({ theme }) => theme.fonts.heading6};
 `;

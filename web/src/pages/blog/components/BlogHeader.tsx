@@ -10,7 +10,7 @@ const BlogHeader = () => {
 
   return (
     <Container device={device}>
-      <HeaderWrapper device={device}>
+      <HeaderWrapper>
         <Logo
           to="/blog"
           device={device}
@@ -23,7 +23,7 @@ const BlogHeader = () => {
           }
         >
           <LogoImage src={logo} alt="logo" device={device} />
-          <Title device={device}>봄봄 Blog</Title>
+          <Title>봄봄 Blog</Title>
         </Logo>
 
         <GoToService device={device} to="/">
@@ -55,7 +55,7 @@ const Container = styled.header<{ device: Device }>`
   backdrop-filter: blur(6px);
 `;
 
-const HeaderWrapper = styled.div<{ device: Device }>`
+const HeaderWrapper = styled.div`
   height: 100%;
   max-width: 1280px;
   margin: 0 auto;
@@ -89,7 +89,7 @@ const LogoImage = styled.img<{ device: Device }>`
   }};
 `;
 
-const Title = styled.h1<{ device: Device }>`
+const Title = styled.h1`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading4};
 `;

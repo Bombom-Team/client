@@ -19,20 +19,20 @@ const ChallengeRewards = () => {
       <ContentWrapper device={device}>
         <Reward device={device}>
           <SubTitleBox>
-            <SubTitle device={device}>01. 예쁜 뱃지 수집</SubTitle>
-            <RewardDescription device={device}>
+            <SubTitle>01. 예쁜 뱃지 수집</SubTitle>
+            <RewardDescription>
               꾸준히 읽을수록 더 멋진 뱃지들이 모여요.
             </RewardDescription>
           </SubTitleBox>
           <Flex gap={12} align="center">
-            <BadgeBox device={device}>
-              <BadgeImage device={device} src={goldBadge} alt="골드 뱃지" />
+            <BadgeBox>
+              <BadgeImage src={goldBadge} alt="골드 뱃지" />
             </BadgeBox>
-            <BadgeBox device={device}>
-              <BadgeImage device={device} src={silverBadge} alt="실버 뱃지" />
+            <BadgeBox>
+              <BadgeImage src={silverBadge} alt="실버 뱃지" />
             </BadgeBox>
-            <BadgeBox device={device}>
-              <BadgeImage device={device} src={bronzeBadge} alt="브론즈 뱃지" />
+            <BadgeBox>
+              <BadgeImage src={bronzeBadge} alt="브론즈 뱃지" />
             </BadgeBox>
           </Flex>
           <Flex direction="column" gap={8} justify="center" align="center">
@@ -51,8 +51,8 @@ const ChallengeRewards = () => {
         </Reward>
         <Reward device={device}>
           <SubTitleBox>
-            <SubTitle device={device}>02. 자랑할 수 있는 수료증</SubTitle>
-            <RewardDescription device={device}>
+            <SubTitle>02. 자랑할 수 있는 수료증</SubTitle>
+            <RewardDescription>
               챌린지를 완주하면 멋진 수료증이 발급돼요.
             </RewardDescription>
           </SubTitleBox>
@@ -123,17 +123,17 @@ const SubTitleBox = styled.div`
   flex-direction: column;
 `;
 
-const SubTitle = styled.h3<{ device: Device }>`
+const SubTitle = styled.h3`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.heading4};
 `;
 
-const RewardDescription = styled.p<{ device: Device }>`
+const RewardDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.bodyLarge};
 `;
 
-const BadgeBox = styled.div<{ device: Device }>`
+const BadgeBox = styled.div`
   border-radius: 50%;
   box-shadow:
     0 2px 8px rgb(0 0 0 / 6%),
@@ -147,7 +147,7 @@ const BadgeBox = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const BadgeImage = styled.img<{ device: Device }>`
+const BadgeImage = styled.img`
   width: 96%;
   height: auto;
 `;

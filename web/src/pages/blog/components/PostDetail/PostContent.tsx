@@ -1,34 +1,30 @@
 import styled from '@emotion/styled';
 import { renderTiptapJson } from '../../utils/renderTiptapJson';
 import { parseTiptapDoc } from '../../utils/tiptap';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
-
 interface PostContentProps {
   content: string;
 }
 
 const PostContent = ({ content }: PostContentProps) => {
-  const device = useDevice();
   const renderedContent = renderTiptapJson(parseTiptapDoc(content));
 
   return (
-    <Container device={device}>
-      <Content device={device}>{renderedContent}</Content>
+    <Container>
+      <Content>{renderedContent}</Content>
     </Container>
   );
 };
 
 export default PostContent;
 
-const Container = styled.section<{ device: Device }>`
+const Container = styled.section`
   width: 100%;
   margin: 0 auto;
 
   color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
-const Content = styled.div<{ device: Device }>`
+const Content = styled.div`
   font: ${({ theme }) => theme.fonts.bodyLarge};
 
   h1,

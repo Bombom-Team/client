@@ -11,7 +11,7 @@ const ChallengeChecklist = () => {
 
   return (
     <Container ref={visibleRef} isVisible={isVisible} device={device}>
-      <Title device={device}>
+      <Title>
         챌린지 참여 전 체크리스트
         <CheckIcon
           width={device === 'mobile' ? 20 : 32}
@@ -32,7 +32,7 @@ const ChallengeChecklist = () => {
               가입하고 신청하기 버튼만 누르면 완료!{'\n'}
               공식스토어에서 봄봄 앱을 설치하면 더 편하게 참여할 수 있어요.
             </ItemDescription>
-            <ItemNote device={device}>* Google Play, App Store 지원</ItemNote>
+            <ItemNote>* Google Play, App Store 지원</ItemNote>
           </ItemContent>
         </ChecklistCard>
         <ChecklistCard device={device}>
@@ -48,7 +48,7 @@ const ChallengeChecklist = () => {
               구독해주세요!{'\n'}
               단, 특정일에만 발행되는 뉴스레터를 읽어도 참여로 인정돼요.
             </ItemDescription>
-            <ItemNote device={device}>
+            <ItemNote>
               * 예시: 매일/화요일마다 발행되는 뉴스레터 2개를 구독 중 → 화요일
               뉴스레터를 읽고 챌린지 참여 가능
             </ItemNote>
@@ -97,7 +97,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
   align-items: center;
 `;
 
-const Title = styled.h2<{ device: Device }>`
+const Title = styled.h2`
   display: flex;
   gap: 8px;
   align-items: center;
@@ -156,7 +156,7 @@ const ItemDescription = styled.p<{ device: Device }>`
     device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
 `;
 
-const ItemNote = styled.p<{ device: Device }>`
+const ItemNote = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.body2};
 `;
