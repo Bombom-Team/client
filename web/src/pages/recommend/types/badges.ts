@@ -4,3 +4,6 @@ export type Badges =
   components['schemas']['MonthlyReadingRankResponse']['badges'];
 
 export type MonthlyReadingBadgeGrade = 'GOLD' | 'SILVER' | 'BRONZE';
+
+export type StreakBadgeTier =
+  components['schemas']['StreakBadgeResponse']['tier'];

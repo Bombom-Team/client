@@ -1642,6 +1642,19 @@ export interface components {
       challenge?: components['schemas']['ChallengeBadgeResponse'];
       streak?: components['schemas']['StreakBadgeResponse'];
     };
+    StreakBadgeResponse: {
+      /** @enum {string} */
+      tier:
+        | 'SEVEN'
+        | 'FIFTEEN'
+        | 'THIRTY'
+        | 'FIFTY'
+        | 'HUNDRED'
+        | 'TWO_HUNDRED'
+        | 'THREE_HUNDRED'
+        | 'FOUR_HUNDRED'
+        | 'FIVE_HUNDRED';
+    };
     ChallengeBadgeResponse: {
       /** @enum {string} */
       grade: 'GOLD' | 'SILVER' | 'BRONZE';
