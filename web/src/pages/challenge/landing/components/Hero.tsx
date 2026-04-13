@@ -225,7 +225,7 @@ const Description = styled.p<{ device: Device }>`
   }};
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.heading4};
   font-weight: 500;
 
   word-break: keep-all;
