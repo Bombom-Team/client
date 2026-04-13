@@ -9,6 +9,7 @@ import {
   useDeleteDraft,
 } from '@/apis/blog/blog.query';
 import { Layout } from '@/components/Layout';
+import { Route } from '@/routes/_admin/blog/index';
 
 type Tab = 'drafts' | 'published';
 
@@ -158,13 +159,22 @@ const PublishedList = ({
 };
 
 export const BlogList = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('drafts');
+  const { tab: activeTab } = Route.useSearch();
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
   const [createError, setCreateError] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const navigate = useNavigate();
   const createDraft = useCreateDraft();
   const deleteDraft = useDeleteDraft();
+
+  const handleTabChange = (nextTab: Tab) => {
+    if (nextTab === activeTab) return;
+    navigate({
+      to: '/blog',
+      search: { tab: nextTab },
+      replace: false,
+    });
+  };
 
   const handleCreate = async () => {
     setCreateError(null);
@@ -173,7 +183,7 @@ export const BlogList = () => {
       navigate({
         to: '/blog/$postId',
         params: { postId: String(result.postId) },
-        search: { mode: 'edit' },
+        search: { mode: 'edit', tab: activeTab },
       });
     } catch (err) {
       console.error('글 생성 실패:', err);
@@ -185,7 +195,7 @@ export const BlogList = () => {
     navigate({
       to: '/blog/$postId',
       params: { postId: String(postId) },
-      search: { mode: 'edit' },
+      search: { mode: 'edit', tab: activeTab },
     });
   };
 
@@ -193,7 +203,7 @@ export const BlogList = () => {
     navigate({
       to: '/blog/$postId',
       params: { postId: String(postId) },
-      search: { mode: 'view' },
+      search: { mode: 'view', tab: activeTab },
     });
   };
 
@@ -236,13 +246,13 @@ export const BlogList = () => {
       <Tabs>
         <TabButton
           $isActive={activeTab === 'drafts'}
-          onClick={() => setActiveTab('drafts')}
+          onClick={() => handleTabChange('drafts')}
         >
           임시저장
         </TabButton>
         <TabButton
           $isActive={activeTab === 'published'}
-          onClick={() => setActiveTab('published')}
+          onClick={() => handleTabChange('published')}
         >
           발행됨
         </TabButton>

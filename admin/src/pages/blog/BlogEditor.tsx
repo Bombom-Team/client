@@ -53,6 +53,7 @@ const extractImageIds = (node: unknown): number[] => {
 
 export const BlogEditor = () => {
   const { postId } = Route.useParams();
+  const { tab } = Route.useSearch();
   const postIdNum = Number(postId);
   const navigate = useNavigate();
 
@@ -236,7 +237,7 @@ export const BlogEditor = () => {
     if (!saved) return;
     try {
       await publishDraftMutation.mutateAsync(postIdNum);
-      navigate({ to: '/blog' });
+      navigate({ to: '/blog', search: { tab: 'published' } });
     } catch (err) {
       console.error('발행 실패:', err);
       setPublishError('발행에 실패했습니다. 다시 시도해주세요.');
@@ -304,7 +305,10 @@ export const BlogEditor = () => {
       <Sidebar />
       <EditorMain>
         <TopBar>
-          <BackButton onClick={() => navigate({ to: '/blog' })} type="button">
+          <BackButton
+            onClick={() => navigate({ to: '/blog', search: { tab } })}
+            type="button"
+          >
             ← 블로그 목록
           </BackButton>
           <Actions>
