@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 const DEFAULT_MAX_VISIBLE_PAGES = 5;
@@ -20,6 +21,12 @@ const Pagination = ({
   maxVisiblePages = DEFAULT_MAX_VISIBLE_PAGES,
   countUnitLabel = '개',
 }: PaginationProps) => {
+  const [pageInput, setPageInput] = useState((currentPage + 1).toString());
+
+  useEffect(() => {
+    setPageInput((currentPage + 1).toString());
+  }, [currentPage]);
+
   if (totalPages <= 0) {
     return null;
   }
@@ -37,6 +44,25 @@ const Pagination = ({
     onPageChange(page);
   };
 
+  const handlePageJump = () => {
+    const page = Number(pageInput);
+    if (Number.isNaN(page)) {
+      setPageInput((currentPage + 1).toString());
+      return;
+    }
+
+    const nextPage = Math.min(Math.max(page, 1), totalPages) - 1;
+    handleChange(nextPage);
+    setPageInput((nextPage + 1).toString());
+  };
+
+  const showLeadingEllipsis = visiblePages[0] > 1;
+  const showTrailingEllipsis =
+    visiblePages[visiblePages.length - 1] < totalPages - 2;
+  const shouldShowFirstPage = visiblePages[0] > 0;
+  const shouldShowLastPage =
+    visiblePages[visiblePages.length - 1] < totalPages - 1;
+
   return (
     <Container>
       <PaginationInfo>
@@ -51,6 +77,12 @@ const Pagination = ({
         >
           <FiChevronLeft />
         </PaginationButton>
+        {shouldShowFirstPage && (
+          <PaginationButton type="button" onClick={() => handleChange(0)}>
+            1
+          </PaginationButton>
+        )}
+        {showLeadingEllipsis && <PaginationEllipsis>...</PaginationEllipsis>}
         {visiblePages.map((page) => (
           <PaginationButton
             key={page}
@@ -61,6 +93,15 @@ const Pagination = ({
             {page + 1}
           </PaginationButton>
         ))}
+        {showTrailingEllipsis && <PaginationEllipsis>...</PaginationEllipsis>}
+        {shouldShowLastPage && (
+          <PaginationButton
+            type="button"
+            onClick={() => handleChange(totalPages - 1)}
+          >
+            {totalPages}
+          </PaginationButton>
+        )}
         <PaginationButton
           type="button"
           onClick={() => handleChange(currentPage + 1)}
@@ -68,6 +109,24 @@ const Pagination = ({
         >
           <FiChevronRight />
         </PaginationButton>
+        <PageJumpWrapper>
+          <PageJumpInput
+            type="number"
+            min={1}
+            max={totalPages}
+            value={pageInput}
+            onChange={(event) => setPageInput(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                handlePageJump();
+              }
+            }}
+            aria-label="이동할 페이지 번호"
+          />
+          <PaginationButton type="button" onClick={handlePageJump}>
+            이동
+          </PaginationButton>
+        </PageJumpWrapper>
       </PaginationControls>
     </Container>
   );
@@ -157,4 +216,40 @@ const PaginationButton = styled.button<{ active?: boolean }>`
 const PaginationInfo = styled.span`
   color: ${({ theme }) => theme.colors.gray600};
   font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const PaginationEllipsis = styled.span`
+  min-width: 36px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const PageJumpWrapper = styled.div`
+  display: inline-flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  align-items: center;
+`;
+
+const PageJumpInput = styled.input`
+  width: 72px;
+  min-height: 32px;
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  text-align: center;
+
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
 `;

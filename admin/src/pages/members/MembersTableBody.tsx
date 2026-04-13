@@ -6,6 +6,12 @@ import { useChangeMemberRoleMutation } from './hooks/useChangeMemberRoleMutation
 import { membersQueries } from '@/apis/members/members.query';
 import { Button } from '@/components/Button';
 
+const MEMBER_ROLE_LABEL = {
+  ADMIN: '관리자',
+  USER: '일반 회원',
+  ARCHIVE: '아카이빙',
+} as const;
+
 interface MembersTableBodyProps {
   currentPage: number;
   pageSize: number;
@@ -68,7 +74,7 @@ export function MembersTableBody({
           <Td>
             <Badge variant={member.role}>
               {member.role === 'ADMIN' && <FiShield />}
-              {member.role === 'ADMIN' ? '관리자' : '일반 회원'}
+              {MEMBER_ROLE_LABEL[member.role]}
             </Badge>
           </Td>
           <Td>
@@ -95,6 +101,11 @@ export function MembersTableBody({
                   {isUpdatingRole && updatingMemberId === member.id
                     ? '변경 중...'
                     : '일반 회원 전환'}
+                </Button>
+              )}
+              {member.role === 'ARCHIVE' && (
+                <Button size="sm" variant="secondary" disabled>
+                  비활성화
                 </Button>
               )}
             </ActionButtons>
@@ -145,7 +156,7 @@ const Td = styled.td`
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
-const Badge = styled.span<{ variant: 'ADMIN' | 'USER' }>`
+const Badge = styled.span<{ variant: 'ADMIN' | 'USER' | 'ARCHIVE' }>`
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.borderRadius.full};
 
@@ -154,9 +165,17 @@ const Badge = styled.span<{ variant: 'ADMIN' | 'USER' }>`
   align-items: center;
 
   background-color: ${({ variant, theme }) =>
-    variant === 'ADMIN' ? theme.colors.primary : theme.colors.gray200};
+    variant === 'ADMIN'
+      ? theme.colors.primary
+      : variant === 'ARCHIVE'
+        ? `${theme.colors.success}24`
+        : theme.colors.gray200};
   color: ${({ variant, theme }) =>
-    variant === 'ADMIN' ? theme.colors.white : theme.colors.gray700};
+    variant === 'ADMIN'
+      ? theme.colors.white
+      : variant === 'ARCHIVE'
+        ? theme.colors.success
+        : theme.colors.gray700};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
