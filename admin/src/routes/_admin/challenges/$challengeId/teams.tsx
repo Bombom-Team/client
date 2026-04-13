@@ -4,11 +4,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import {
-  createFileRoute,
-  useNavigate,
-  useSearch,
-} from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { challengesQueries } from '@/apis/challenges/challenges.query';
@@ -31,10 +27,10 @@ const PARTICIPANT_SURVIVAL_FILTER_OPTIONS = [
 const getParticipantSearchParams = (
   page: number,
   teamId: string,
-  hasTeam: 'ALL' | 'YES' | 'NO',
-  survival: 'ALL' | 'SURVIVED' | 'FAILED',
+  hasTeam: string,
+  survival: string,
 ) => ({
-  page: page > 0 ? page : undefined,
+  page,
   teamId: teamId.trim() ? teamId : undefined,
   hasTeam: hasTeam !== 'ALL' ? hasTeam : undefined,
   survival: survival !== 'ALL' ? survival : undefined,
@@ -86,8 +82,8 @@ function ChallengeTeamsPage() {
 
 function ChallengeTeamsContent() {
   const { challengeId } = Route.useParams();
-  const search = useSearch({ from: Route.id });
-  const navigate = useNavigate();
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
   const queryClient = useQueryClient();
   const [participantsTotal, setParticipantsTotal] = useState(0);
   const [participantsTotalPages, setParticipantsTotalPages] = useState(0);
@@ -267,6 +263,12 @@ function ChallengeTeamsContent() {
     navigate({
       to: '/challenges/$challengeId',
       params: { challengeId },
+      search: getParticipantSearchParams(
+        search.page,
+        search.teamId ?? '',
+        search.hasTeam ?? 'ALL',
+        search.survival ?? 'ALL',
+      ),
     });
   };
 

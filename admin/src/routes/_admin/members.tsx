@@ -1,9 +1,5 @@
 import styled from '@emotion/styled';
-import {
-  createFileRoute,
-  useNavigate,
-  useSearch,
-} from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FiSearch } from 'react-icons/fi';
@@ -25,13 +21,13 @@ export const Route = createFileRoute('/_admin/members')({
 const PAGE_SIZE = 10;
 const SEARCH_DEBOUNCE_DELAY = 300;
 const getMembersSearchParams = (page: number, query?: string) => ({
-  page: page > 0 ? page : undefined,
+  page,
   query: query?.trim() ? query : undefined,
 });
 
 function MembersPage() {
-  const search = useSearch({ from: Route.id });
-  const navigate = useNavigate();
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
   const [searchInput, setSearchInput] = useState(search.query ?? '');
   const [totalMembers, setTotalMembers] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
