@@ -529,7 +529,14 @@ export interface paths {
     };
     /**
      * 뉴스레터 목록 조회
-     * @description 뉴스레터 목록을 조회합니다. 기본값은 발행중(ACTIVE)만 반환하며, includeSuspended=true 시 휴재(SUSPENDED)도 포함합니다. 폐간(DISCONTINUED)은 항상 제외됩니다.
+     * @description         카테고리 목록과 뉴스레터 목록을 함께 반환합니다.
+     *             - categories: 조회 조건에 부합하는 뉴스레터가 존재하는 카테고리 목록
+     *             - newsletters: 필터링된 뉴스레터 목록
+     *             - categoryId: 특정 카테고리로 필터링합니다. 미입력 시 전체 카테고리를 반환합니다.
+     *             - includeSuspended=false: 발행중(ACTIVE) 뉴스레터만 반환합니다.
+     *             - includeSuspended=true: 발행중(ACTIVE) 및 6개월 이내 휴재(SUSPENDED) 뉴스레터를 포함합니다.
+     *             - 6개월 초과 휴재(SUSPENDED)와 폐간(DISCONTINUED)은 항상 제외됩니다.
+     *
      */
     get: operations['getNewsletters'];
     put?: never;
@@ -592,6 +599,46 @@ export interface paths {
      * @description 현재 사용자의 주간/오늘/연속 읽기 정보를 조회합니다.
      */
     get: operations['getReadingInformation'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/reading/streak/rank': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 스트릭 랭킹 조회
+     * @description 연속 읽기 일수(continue_reading_realtime.day_count) 기준 내림차순 순위를 조회합니다. day_count가 0인 회원도 목록에 포함됩니다.
+     */
+    get: operations['getContinueReadingRank'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/reading/streak/rank/me': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 나의 스트릭 순위 조회
+     * @description 실시간 연속 읽기 일수 기준 나의 순위를 반환합니다. day_count가 0이면 월간 순위와 같이 최하위 구간의 공동 순위로 포함됩니다. continue_reading_snapshot 행이 없으면 404입니다.
+     */
+    get: operations['getMemberContinueReadingRank'];
     put?: never;
     post?: never;
     delete?: never;
@@ -729,7 +776,7 @@ export interface paths {
     };
     /**
      * 챌린지 전체 목록 조회
-     * @description 진행중이거나 예정된 챌린지 전체 목록을 조회합니다. 로그인 시 참여 여부 및 상세 정보가 함께 반환됩니다.
+     * @description 진행중이거나 예정된 챌린지 전체 목록을 조회합니다. 로그인 시 참여 여부 및 상세 정보가 함께 반환됩니다. view=summary 일 때는 ONGOING이면서 참여 중인 챌린지, EARLY/LATE 신청 단계 챌린지만 조회합니다.
      */
     get: operations['getChallenges'];
     put?: never;
@@ -812,6 +859,26 @@ export interface paths {
      * @description 사용자의 챌린지 진행도(투두 완료 현황, 총일수, 완료일수)를 조회합니다.
      */
     get: operations['getMemberProgress'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{id}/progress/me/streak': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 챌린지 스트릭 조회
+     * @description 사용자의 현재 스트릭 값과 스트릭을 구성하는 날짜 목록(날짜, 요일, 쉴드 적용 여부)을 조회합니다.
+     */
+    get: operations['getMemberStreak'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1012,6 +1079,66 @@ export interface paths {
      * @description 뉴스레터별 북마크 개수 정보를 조회합니다.
      */
     get: operations['getBookmarkNewsletterStatistics'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/blog/posts': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 블로그 글 목록 조회
+     * @description 발행된 블로그 글 목록을 조회합니다. 공개 글은 누구나 볼 수 있고, 비공개 글은 관리자만 볼 수 있습니다.
+     */
+    get: operations['getPublishedPosts'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/blog/posts/{postId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 블로그 글 상세 조회
+     * @description 특정 블로그 글의 상세 정보를 조회합니다. 비공개 글은 관리자만 조회할 수 있습니다.
+     */
+    get: operations['getPublishedPostDetail'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/blog/categories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 블로그 카테고리 목록 조회
+     * @description 블로그 카테고리 목록을 조회합니다.
+     */
+    get: operations['getBlogCategories'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1275,6 +1402,9 @@ export interface components {
     DailyGuideCommentRequest: {
       content: string;
     };
+    CreateCommentResponse: {
+      isFirstCompletion?: boolean;
+    };
     ChallengeCommentRequest: {
       /** Format: int64 */
       articleId: number;
@@ -1334,15 +1464,9 @@ export interface components {
       birthDate?: string;
     };
     WeeklyGoalCountResponse: {
-      /**
-       * Format: int64
-       * @description 주간 읽기 ID
-       */
+      /** Format: int64 */
       weeklyReadingId: number;
-      /**
-       * Format: int32
-       * @description 주간 목표 읽기 수
-       */
+      /** Format: int32 */
       weeklyGoalCount: number;
     };
     UpdateHighlightRequest: {
@@ -1396,15 +1520,20 @@ export interface components {
       sort?: components['schemas']['SortObject'];
       /** Format: int32 */
       pageSize?: number;
-      paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
+      paged?: boolean;
       unpaged?: boolean;
     };
     SortObject: {
       empty?: boolean;
       sorted?: boolean;
       unsorted?: boolean;
+    };
+    CategoryResponse: {
+      /** Format: int64 */
+      id: number;
+      name: string;
     };
     NewsletterResponse: {
       /** Format: int64 */
@@ -1413,10 +1542,16 @@ export interface components {
       imageUrl?: string;
       description: string;
       subscribeUrl: string;
+      /** Format: int64 */
+      categoryId: number;
       category: string;
       /** @enum {string} */
       status: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
       isSubscribed: boolean;
+    };
+    NewslettersResponse: {
+      categories?: components['schemas']['CategoryResponse'][];
+      newsletters?: components['schemas']['NewsletterResponse'][];
     };
     NewsletterWithDetailResponse: {
       name: string;
@@ -1451,45 +1586,22 @@ export interface components {
       newsletterPublicationStatus: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
     };
     ReadingInformationResponse: {
-      /**
-       * Format: int32
-       * @description 연속 읽기 일수
-       */
+      /** Format: int32 */
       streakReadDay: number;
-      /** @description 오늘 읽기 정보 */
       today: components['schemas']['TodayReadingResponse'];
-      /** @description 주간 읽기 정보 */
       weekly: components['schemas']['WeeklyReadingResponse'];
     };
-    /** @description 오늘 읽기 정보 */
     TodayReadingResponse: {
-      /**
-       * Format: int32
-       * @description 읽은 아티클 수
-       */
-      readCount: number;
-      /**
-       * Format: int32
-       * @description 전체 아티클 수
-       */
-      totalCount: number;
-    };
-    /** @description 주간 읽기 정보 */
-    WeeklyReadingResponse: {
-      /**
-       * Format: int32
-       * @description 읽은 아티클 수
-       */
-      readCount: number;
-      /**
-       * Format: int32
-       * @description 목표 읽기 수
-       */
-      goalCount: number;
-    };
-    MemberMonthlyReadingCountResponse: {
       /** Format: int32 */
       readCount: number;
+      /** Format: int32 */
+      totalCount: number;
+    };
+    WeeklyReadingResponse: {
+      /** Format: int32 */
+      readCount: number;
+      /** Format: int32 */
+      goalCount: number;
     };
     BadgesResponse: {
       ranking?: components['schemas']['RankingBadgeResponse'];
@@ -1501,6 +1613,43 @@ export interface components {
       name: string;
       /** Format: int32 */
       generation: number;
+    };
+    ContinueReadingRankResponse: {
+      nickname: string;
+      /** Format: int64 */
+      rank: number;
+      /** Format: int32 */
+      dayCount: number;
+      badges?: components['schemas']['BadgesResponse'];
+    };
+    ContinueReadingRankingResponse: {
+      /** Format: date-time */
+      rankingUpdatedAt: string;
+      /** Format: date-time */
+      nextRefreshAt: string;
+      /** Format: date-time */
+      serverTime: string;
+      data: components['schemas']['ContinueReadingRankResponse'][];
+    };
+    RankingBadgeResponse: {
+      /** @enum {string} */
+      grade: 'GOLD' | 'SILVER' | 'BRONZE';
+      /** Format: int32 */
+      year: number;
+      /** Format: int32 */
+      month: number;
+    };
+    MemberContinueReadingRankResponse: {
+      nickname: string;
+      /** Format: int64 */
+      rank: number;
+      /** Format: int32 */
+      dayCount: number;
+      badges?: components['schemas']['BadgesResponse'];
+    };
+    MemberMonthlyReadingCountResponse: {
+      /** Format: int32 */
+      readCount: number;
     };
     MonthlyReadingRankResponse: {
       nickname: string;
@@ -1518,14 +1667,6 @@ export interface components {
       /** Format: date-time */
       serverTime: string;
       data: components['schemas']['MonthlyReadingRankResponse'][];
-    };
-    RankingBadgeResponse: {
-      /** @enum {string} */
-      grade: 'GOLD' | 'SILVER' | 'BRONZE';
-      /** Format: int32 */
-      year: number;
-      /** Format: int32 */
-      month: number;
     };
     MemberMonthlyReadingRankResponse: {
       nickname: string;
@@ -1724,6 +1865,10 @@ export interface components {
       isSurvived: boolean;
       /** Format: int32 */
       completedDays: number;
+      /** Format: int32 */
+      streak: number;
+      /** Format: int32 */
+      shield: number;
       todayTodos: components['schemas']['TodayTodoResponse'][];
     };
     TodayTodoResponse: {
@@ -1731,6 +1876,26 @@ export interface components {
       challengeTodoType?: 'READ' | 'COMMENT' | 'MINDSET';
       /** @enum {string} */
       challengeTodoStatus?: 'COMPLETE' | 'INCOMPLETE';
+    };
+    ChallengeStreakResponse: {
+      /** Format: int32 */
+      streak: number;
+      streakDays: components['schemas']['StreakDayResponse'][];
+    };
+    StreakDayResponse: {
+      /** Format: date */
+      date: string;
+      /** @enum {string} */
+      dayOfWeek:
+        | 'MONDAY'
+        | 'TUESDAY'
+        | 'WEDNESDAY'
+        | 'THURSDAY'
+        | 'FRIDAY'
+        | 'SATURDAY'
+        | 'SUNDAY';
+      isCompleted: boolean;
+      isShieldApplied: boolean;
     };
     ChallengeLandingNewsletterResponse: {
       /** Format: int64 */
@@ -1977,6 +2142,48 @@ export interface components {
       /** Format: int32 */
       totalCount: number;
       newsletters: components['schemas']['BookmarkCountPerNewsletterResponse'][];
+    };
+    BlogPostResponse: {
+      /** Format: int64 */
+      postId: number;
+      title: string;
+      description: string;
+      thumbnailImageUrl?: string;
+      categoryName: string;
+      /** Format: date-time */
+      publishedAt: string;
+    };
+    PageBlogPostResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['BlogPostResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    BlogPostDetailResponse: {
+      title: string;
+      content: string;
+      thumbnailImageUrl?: string;
+      categoryName: string;
+      /** Format: date-time */
+      publishedAt: string;
+      hashTags: string[];
+    };
+    BlogCategoryResponse: {
+      /** Format: int64 */
+      id: number;
+      categoryName: string;
     };
     SignupValidateRequest: {
       /** @enum {string} */
@@ -2600,7 +2807,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          '*/*': components['schemas']['CreateCommentResponse'];
+        };
       };
       /** @description 잘못된 요청 값 */
       400: {
@@ -2702,7 +2911,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          '*/*': components['schemas']['CreateCommentResponse'];
+        };
       };
       /** @description 잘못된 요청 값 */
       400: {
@@ -3432,6 +3643,8 @@ export interface operations {
       query?: {
         /** @description 휴재 뉴스레터 포함 여부 */
         includeSuspended?: boolean;
+        /** @description 카테고리 ID (미입력 시 전체) */
+        categoryId?: number;
       };
       header?: never;
       path?: never;
@@ -3445,7 +3658,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['NewsletterResponse'][];
+          '*/*': components['schemas']['NewslettersResponse'];
         };
       };
     };
@@ -3536,6 +3749,77 @@ export interface operations {
       };
       /** @description 인증 실패 (로그인 필요) */
       401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getContinueReadingRank: {
+    parameters: {
+      query: {
+        /** @description 최대 조회 개수 (예: ?limit=10) */
+        limit: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 스트릭 랭킹 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ContinueReadingRankingResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 (limit는 1 이상의 값이어야 함) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getMemberContinueReadingRank: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 나의 스트릭 순위 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MemberContinueReadingRankResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 연속 읽기 랭킹 스냅샷 정보 없음 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -3726,7 +4010,10 @@ export interface operations {
   };
   getChallenges: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description summary 시 요약 목록(참여 중인 ONGOING, EARLY/LATE 신청 단계만) 조회 */
+        view?: 'SUMMARY' | 'DEFAULT';
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -3912,6 +4199,60 @@ export interface operations {
       };
       /** @description 챌린지 참가자에 대한 데이터 정합성 불일치 */
       500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getMemberStreak: {
+    parameters: {
+      query?: {
+        /** @description 조회할 스트릭 날짜 수 (기본값: 5) */
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 챌린지 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 스트릭 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeStreakResponse'];
+        };
+      };
+      /** @description 잘못된 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지에 참가하지 않음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지/참가자를 찾을 수 없음 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -4269,6 +4610,86 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['BookmarkNewsletterStatisticsResponse'];
+        };
+      };
+    };
+  };
+  getPublishedPosts: {
+    parameters: {
+      query: {
+        /** @description 페이징 관련 요청 (예: ?page=0&size=20&sort=publishedAt,desc) */
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 블로그 글 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageBlogPostResponse'];
+        };
+      };
+    };
+  };
+  getPublishedPostDetail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 블로그 글 ID */
+        postId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 블로그 글 상세 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BlogPostDetailResponse'];
+        };
+      };
+      /** @description 블로그 글에 대한 접근 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 블로그 글을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getBlogCategories: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 블로그 카테고리 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['BlogCategoryResponse'][];
         };
       };
     };

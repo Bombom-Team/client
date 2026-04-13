@@ -27,7 +27,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     runtimeVersion: {
       policy: 'appVersion',
     },
-    orientation: 'portrait',
+    orientation: 'default',
     icon: APP_CONFIG.icon,
     scheme: 'bombom',
     userInterfaceStyle: 'automatic',
@@ -61,6 +61,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       edgeToEdgeEnabled: true,
       package: APP_CONFIG.bundleIdentifier,
       googleServicesFile: './google-services.json',
+      blockedPermissions: ['com.google.android.gms.permission.AD_ID'],
     },
     web: {
       bundler: 'metro',

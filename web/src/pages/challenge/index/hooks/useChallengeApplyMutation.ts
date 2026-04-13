@@ -18,6 +18,9 @@ const useChallengeApplyMutation = ({
       queryClient.invalidateQueries({
         queryKey: challengeQueries.challenges().queryKey,
       });
+      queryClient.invalidateQueries({
+        queryKey: challengeQueries.challengeSummaries().queryKey,
+      });
 
       toast.success('챌린지 신청에 성공했습니다.');
     },

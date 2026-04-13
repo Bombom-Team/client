@@ -26,6 +26,12 @@ export function ChallengeDetailView({
             {challenge.startDate} ~ {challenge.endDate}
           </InfoValue>
         </InfoRow>
+        {typeof challenge.totalDays === 'number' && (
+          <InfoRow>
+            <InfoLabel>평일 수</InfoLabel>
+            <InfoValue>{challenge.totalDays}일</InfoValue>
+          </InfoRow>
+        )}
       </InfoGrid>
 
       {children}
@@ -54,8 +60,8 @@ const Header = styled.div`
 
 const TitleGroup = styled.div`
   display: inline-flex;
-  flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.sm};
+  flex-wrap: wrap;
   align-items: center;
 `;
 
@@ -73,14 +79,14 @@ const GenerationBadge = styled.span`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font-size: ${({ theme }) => theme.fontSize.sm};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const InfoGrid = styled.div`
   display: flex;
-  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.lg};
+  flex-direction: column;
 `;
 
 const InfoRow = styled.div`
@@ -98,6 +104,6 @@ const InfoLabel = styled.span`
 
 const InfoValue = styled.span`
   color: ${({ theme }) => theme.colors.gray900};
-  font-size: ${({ theme }) => theme.fontSize.base};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.base};
 `;

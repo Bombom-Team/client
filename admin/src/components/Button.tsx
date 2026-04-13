@@ -8,18 +8,22 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const StyledButton = styled.button<ButtonProps>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing.sm};
-
   padding: ${({ size, theme }) => {
     if (size === 'sm') return `${theme.spacing.sm} ${theme.spacing.md}`;
     if (size === 'lg') return `${theme.spacing.md} ${theme.spacing.xl}`;
     return `${theme.spacing.sm} ${theme.spacing.lg}`;
   }};
   border: none;
+  border: ${({ variant, theme }) => {
+    if (variant === 'outline') return `1px solid ${theme.colors.error}`;
+    return 'none';
+  }};
   border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  display: inline-flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
+  justify-content: center;
 
   background-color: ${({ variant, theme }) => {
     if (variant === 'secondary') return theme.colors.gray200;
@@ -31,10 +35,6 @@ const StyledButton = styled.button<ButtonProps>`
     if (variant === 'secondary') return theme.colors.gray700;
     if (variant === 'outline') return theme.colors.error;
     return theme.colors.white;
-  }};
-  border: ${({ variant, theme }) => {
-    if (variant === 'outline') return `1px solid ${theme.colors.error}`;
-    return 'none';
   }};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
   font-size: ${({ size, theme }) => {

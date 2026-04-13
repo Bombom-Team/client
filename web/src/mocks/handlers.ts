@@ -5,6 +5,7 @@ import {
   TRENDY_NEWSLETTERS,
 } from './datas/trendyNewsLetter';
 import { articleHandlers } from './handlers/articles';
+import { blogHandlers } from './handlers/blog';
 import { bookmarkHandlers } from './handlers/bookmark';
 import { challengeHandlers } from './handlers/challenge';
 import { membersHandlers } from './handlers/members';
@@ -146,6 +147,7 @@ export const handlers = [
     };
     return HttpResponse.json(newsletterStats);
   }),
+  ...blogHandlers,
   ...articleHandlers,
   ...newsletterDetailHandlers,
   ...bookmarkHandlers,

@@ -18,6 +18,8 @@ import {
   ChallengeParticipantsTableBodyError,
   ChallengeParticipantsTableBodyLoading,
 } from '@/pages/challenges/ChallengeParticipantsTableBody';
+import ChallengeUpdateModal from '@/pages/challenges/components/ChallengeUpdateModal';
+import { useDeleteChallengeMutation } from '@/pages/challenges/hooks/useDeleteChallengeMutation';
 
 const PARTICIPANTS_PAGE_SIZE = 10;
 
@@ -52,6 +54,7 @@ function ChallengeDetailContent() {
   >('ALL');
   const [shieldCountInput, setShieldCountInput] = useState('1');
   const [isShieldModalOpen, setIsShieldModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
   const id = Number(challengeId);
 
@@ -143,12 +146,24 @@ function ChallengeDetailContent() {
       alert('쉴드 지급에 실패했습니다.');
     },
   });
+  const { mutate: deleteChallenge, isPending: isDeletingChallenge } =
+    useDeleteChallengeMutation({
+      onSuccess: () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        navigate({ to: '/challenges', search: { page: 0, size: 10 } } as any);
+      },
+    });
 
   const handleManageTeams = () => {
     navigate({
       to: '/challenges/$challengeId/teams',
       params: { challengeId },
     });
+  };
+
+  const handleBack = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    navigate({ to: '/challenges', search: { page: 0, size: 10 } } as any);
   };
 
   const handleGrantShield = () => {
@@ -170,6 +185,26 @@ function ChallengeDetailContent() {
     setIsShieldModalOpen(false);
   };
 
+  const handleOpenUpdateModal = () => {
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setIsUpdateModalOpen(false);
+  };
+
+  const handleDeleteChallenge = () => {
+    if (
+      !confirm(
+        '정말 이 챌린지를 삭제하시겠습니까?\n참여자가 있으면 삭제할 수 없습니다.',
+      )
+    ) {
+      return;
+    }
+
+    deleteChallenge(id);
+  };
+
   if (!challenge) {
     return (
       <Container>
@@ -180,6 +215,27 @@ function ChallengeDetailContent() {
 
   return (
     <ChallengeDetailView challenge={challenge}>
+      <DetailActions>
+        <Button variant="secondary" onClick={handleOpenUpdateModal}>
+          수정
+        </Button>
+        <Button
+          variant="danger"
+          onClick={handleDeleteChallenge}
+          disabled={isDeletingChallenge}
+        >
+          {isDeletingChallenge ? '삭제 중...' : '삭제'}
+        </Button>
+        <Button onClick={handleBack}>목록</Button>
+      </DetailActions>
+
+      {isUpdateModalOpen && (
+        <ChallengeUpdateModal
+          challenge={challenge}
+          onClose={handleCloseUpdateModal}
+        />
+      )}
+
       <ParticipantsSection>
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
@@ -335,6 +391,15 @@ const ParticipantsSection = styled.section`
   margin-top: ${({ theme }) => theme.spacing.xl};
   padding-top: ${({ theme }) => theme.spacing.xl};
   border-top: 1px solid ${({ theme }) => theme.colors.gray200};
+`;
+
+const DetailActions = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.lg};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-wrap: wrap;
+  justify-content: flex-end;
 `;
 
 const ParticipantsHeader = styled.div`

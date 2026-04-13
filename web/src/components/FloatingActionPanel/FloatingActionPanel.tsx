@@ -86,9 +86,9 @@ const ActionItem = styled.div`
   height: 44px;
   border-radius: 50%;
 
-  background-color: ${({ theme }) => theme.colors.white};
-
   display: flex;
   align-items: center;
   justify-content: center;
+
+  background-color: ${({ theme }) => theme.colors.white};
 `;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useUnsubscribeNewsletterMutation } from '@/pages/MyPage/hooks/useUnsubscribeNewsletterMutation';
+import { useUnsubscribeNewsletterMutation } from '@/pages/my-page/hooks/useUnsubscribeNewsletterMutation';
 
 export const useUnsubscribe = () => {
   const [selectedNewsletterId, setSelectedNewsletterId] = useState<

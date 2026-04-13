@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
 const reset = css`
-  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css');
+  @import url('http://fonts.googleapis.com/earlyaccess/nanumgothic.css');
 
   /* Reset 기본 스타일 */
   html,
@@ -49,6 +49,7 @@ const reset = css`
 
   body {
     font-family:
+      'NanumGothic',
       'Pretendard Variable',
       Pretendard,
       -apple-system,

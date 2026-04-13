@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { formatEventDateTime } from '../event/utils/date';
 import { queries } from '@/apis/queries';
+import { formatEventDateTime } from '@/pages/event/utils/date';
 
 const COUPON_IMAGE_BASE_URL = 'https://www.bombom.news/';
 
