@@ -109,8 +109,8 @@ const reset = css`
       font-size: 100%;
     }
 
-    --safe-area-inset-top: env(safe-area-inset-top, 0);
-    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0);
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
 
     -webkit-tap-highlight-color: rgb(0 0 0 / 0%);
 
@@ -121,8 +121,8 @@ const reset = css`
   }
 
   html.webview {
-    --safe-area-inset-top: 0;
-    --safe-area-inset-bottom: 0;
+    --safe-area-inset-top: 0px;
+    --safe-area-inset-bottom: 0px;
   }
 `;
 
