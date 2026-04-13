@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
+import { Link } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 const BlogComingSoonBanner = () => {
   const device = useDevice();
 
   return (
-    <Container device={device}>
+    <Container device={device} to="/blog">
       <Content device={device}>
         <Title device={device}>Coming Soon</Title>
         <Description device={device}>봄봄 블로그가 찾아옵니다.</Description>
@@ -16,7 +17,7 @@ const BlogComingSoonBanner = () => {
 
 export default BlogComingSoonBanner;
 
-const Container = styled.section<{ device: Device }>`
+const Container = styled(Link)<{ device: Device }>`
   overflow: hidden;
   position: relative;
   width: 100%;
