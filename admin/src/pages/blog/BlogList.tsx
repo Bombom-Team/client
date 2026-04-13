@@ -82,12 +82,14 @@ const DraftList = ({
 
 const PublishedList = ({
   onEdit,
+  onView,
   onDeleteRequest,
   confirmDeleteId,
   onConfirmDelete,
   onCancelDelete,
 }: {
   onEdit: (postId: number) => void;
+  onView: (postId: number) => void;
   onDeleteRequest: (postId: number) => void;
   confirmDeleteId: number | null;
   onConfirmDelete: () => void;
@@ -109,7 +111,11 @@ const PublishedList = ({
 
         return (
           <PostItem key={postId}>
-            <PostInfo>
+            <PostInfoButton
+              aria-label={`${post.title || '(제목 없음)'} 읽기`}
+              onClick={() => onView(postId)}
+              type="button"
+            >
               <PostTitleRow>
                 <PostTitle>{post.title || '(제목 없음)'}</PostTitle>
                 {post.visibility === 'PRIVATE' && (
@@ -119,7 +125,7 @@ const PublishedList = ({
               <PostMeta>
                 {formatPostMeta(post.publishedAt, post.updatedAt)}
               </PostMeta>
-            </PostInfo>
+            </PostInfoButton>
             {confirmDeleteId === postId ? (
               <ConfirmActions>
                 <ConfirmText>정말 삭제할까요?</ConfirmText>
@@ -167,6 +173,7 @@ export const BlogList = () => {
       navigate({
         to: '/blog/$postId',
         params: { postId: String(result.postId) },
+        search: { mode: 'edit' },
       });
     } catch (err) {
       console.error('글 생성 실패:', err);
@@ -175,7 +182,19 @@ export const BlogList = () => {
   };
 
   const handleEdit = (postId: number) => {
-    navigate({ to: '/blog/$postId', params: { postId: String(postId) } });
+    navigate({
+      to: '/blog/$postId',
+      params: { postId: String(postId) },
+      search: { mode: 'edit' },
+    });
+  };
+
+  const handleView = (postId: number) => {
+    navigate({
+      to: '/blog/$postId',
+      params: { postId: String(postId) },
+      search: { mode: 'view' },
+    });
   };
 
   const handleDeleteRequest = (postId: number) => {
@@ -244,6 +263,7 @@ export const BlogList = () => {
           ) : (
             <PublishedList
               onEdit={handleEdit}
+              onView={handleView}
               onDeleteRequest={handleDeleteRequest}
               confirmDeleteId={confirmDeleteId}
               onConfirmDelete={handleConfirmDelete}
@@ -340,10 +360,19 @@ const PostItem = styled.li`
   }
 `;
 
-const PostInfo = styled.div`
+const PostInfoButton = styled.button`
+  padding: 0;
+  border: none;
+
   display: flex;
   gap: 4px;
+  flex: 1;
   flex-direction: column;
+
+  background: none;
+  text-align: left;
+
+  cursor: pointer;
 `;
 
 const PostTitleRow = styled.div`

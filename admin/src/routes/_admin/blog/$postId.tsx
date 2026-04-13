@@ -1,14 +1,22 @@
 import styled from '@emotion/styled';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import {
+  createFileRoute,
+  useNavigate,
+  useSearch,
+} from '@tanstack/react-router';
 import { lazy, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 const BlogEditor = lazy(() =>
   import('@/pages/blog/BlogEditor').then((m) => ({ default: m.BlogEditor })),
 );
+const BlogViewer = lazy(() => import('@/pages/blog/BlogViewer'));
 
 export const Route = createFileRoute('/_admin/blog/$postId')({
-  component: BlogEditorPage,
+  component: BlogPostPage,
+  validateSearch: (search: Record<string, unknown>) => ({
+    mode: search.mode === 'view' ? 'view' : 'edit',
+  }),
 });
 
 function EditorErrorFallback() {
@@ -23,11 +31,14 @@ function EditorErrorFallback() {
   );
 }
 
-function BlogEditorPage() {
+function BlogPostPage() {
+  const { mode } = useSearch({ from: Route.id });
+  const CurrentPage = mode === 'view' ? BlogViewer : BlogEditor;
+
   return (
     <ErrorBoundary FallbackComponent={EditorErrorFallback}>
       <Suspense fallback={<LoadingState>불러오는 중...</LoadingState>}>
-        <BlogEditor />
+        <CurrentPage />
       </Suspense>
     </ErrorBoundary>
   );
