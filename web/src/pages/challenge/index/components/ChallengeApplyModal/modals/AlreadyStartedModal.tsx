@@ -17,9 +17,9 @@ const AlreadyStartedModal = ({ closeModal }: AlreadyStartedModalProps) => {
 
   return (
     <Container isMobile={isMobile}>
-      <ModalTitle isMobile={isMobile}>이미 시작된 챌린지예요</ModalTitle>
+      <ModalTitle>이미 시작된 챌린지예요</ModalTitle>
 
-      <ModalDescription isMobile={isMobile}>
+      <ModalDescription>
         챌린지가 이미 시작되어 신청할 수 없어요.
       </ModalDescription>
 

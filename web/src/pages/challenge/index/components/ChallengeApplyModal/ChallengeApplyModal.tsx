@@ -73,18 +73,16 @@ export const Container = styled.div<{ isMobile: boolean }>`
   text-align: center;
 `;
 
-export const ModalTitle = styled.h2<{ isMobile: boolean }>`
+export const ModalTitle = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading5 : theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
 `;
 
-export const ModalDescription = styled.p<{ isMobile: boolean }>`
+export const ModalDescription = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;
 
 export const ModalButtonGroup = styled.div`
@@ -95,6 +93,5 @@ export const ModalButtonGroup = styled.div`
 
 export const ModalButton = styled(Button)<{ isMobile: boolean }>`
   width: ${({ isMobile }) => (isMobile ? '120px' : '160px')};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;

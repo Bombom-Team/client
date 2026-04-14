@@ -25,9 +25,9 @@ const SubscribeRequiredModal = ({
 
   return (
     <SubscribeContainer isMobile={isMobile}>
-      <ModalTitle isMobile={isMobile}>구독 후 이용할 수 있어요</ModalTitle>
+      <ModalTitle>구독 후 이용할 수 있어요</ModalTitle>
 
-      <ModalDescription isMobile={isMobile}>
+      <ModalDescription>
         아래 뉴스레터를 구독하면 챌린지 참여가 가능해요.
       </ModalDescription>
 

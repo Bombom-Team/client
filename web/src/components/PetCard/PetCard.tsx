@@ -145,7 +145,7 @@ const PetImage = styled.img<{ isAnimating: boolean }>`
 const Heart = styled.div`
   position: absolute;
 
-  font-size: 20px;
+  font-size: 1.25rem;
 
   animation: ${heartAnimation} 1s ease-out forwards;
 

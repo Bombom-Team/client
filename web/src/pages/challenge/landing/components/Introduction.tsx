@@ -111,7 +111,7 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
                 </PeriodDate>
               </>
             ) : (
-              <ComingSoonText device={device}>Coming Soon</ComingSoonText>
+              <ComingSoonText>Coming Soon</ComingSoonText>
             )}
           </Flex>
         </Period>
@@ -172,7 +172,7 @@ const QuoteItem = styled(Flex)<{ isVisible: boolean }>`
 
 const QuoteText = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, device }) =>
+  font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading3};
   font-weight: 400;
   text-align: center;
@@ -239,7 +239,7 @@ const DescriptionWrapper = styled(Flex)`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
   text-align: center;
 `;
 
@@ -326,13 +326,12 @@ const PeriodDate = styled.span<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
   font-weight: 400;
 `;
 
-const ComingSoonText = styled.span<{ device: Device }>`
+const ComingSoonText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
   font-weight: 400;
 `;

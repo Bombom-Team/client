@@ -29,7 +29,7 @@ const NewsletterDetailSkeleton = () => {
               <Skeleton width="60%" height={isMobile ? '20px' : '24px'} />
             </TitleWrapper>
 
-            <NewsletterInfo isMobile={isMobile}>
+            <NewsletterInfo>
               <Skeleton width="60px" height={isMobile ? '16px' : '18px'} />
               <Skeleton width="80px" height={isMobile ? '16px' : '18px'} />
             </NewsletterInfo>

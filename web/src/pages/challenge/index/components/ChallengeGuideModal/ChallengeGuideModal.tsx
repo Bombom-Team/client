@@ -78,7 +78,7 @@ const ChallengeGuideModal = ({ challengeId }: ChallengeGuideModalProps) => {
                 checked={isAgreed}
                 onChange={handleToggleAgreement}
               />
-              <AgreementLabel htmlFor="challenge-agreement" isMobile={isMobile}>
+              <AgreementLabel htmlFor="challenge-agreement">
                 위 내용을 모두 확인했고, 참여 기준에 동의합니다
               </AgreementLabel>
             </CheckboxWrapper>
@@ -143,7 +143,7 @@ const GuideItem = styled.div`
 const GuideIcon = styled.div`
   flex-shrink: 0;
 
-  font-size: 24px;
+  font-size: 1.5rem;
   line-height: 1.4;
 `;
 
@@ -181,10 +181,9 @@ const CheckboxWrapper = styled.div`
   align-items: center;
 `;
 
-const AgreementLabel = styled.label<{ isMobile: boolean }>`
+const AgreementLabel = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 
   cursor: pointer;
 `;

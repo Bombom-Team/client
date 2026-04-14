@@ -29,17 +29,15 @@ const ArticleDeleteModal = ({
       showCloseButton={false}
     >
       <Container isMobile={isMobile}>
-        <ModalTitle isMobile={isMobile}>
-          선택한 아티클을 삭제하시겠습니까?
-        </ModalTitle>
+        <ModalTitle>선택한 아티클을 삭제하시겠습니까?</ModalTitle>
 
         {hasBookmarkedArticles && (
-          <HighlightedWarning isMobile={isMobile}>
+          <HighlightedWarning>
             선택한 아티클 중 북마크된 항목이 포함되어 있습니다.
           </HighlightedWarning>
         )}
 
-        <ModalDescription isMobile={isMobile}>
+        <ModalDescription>
           {hasBookmarkedArticles
             ? `삭제하면 복구할 수 없으며, 북마크도 함께 사라집니다. \n 정말 삭제를 진행하시겠습니까?`
             : `삭제된 아티클은 복구할 수 없습니다. \n 삭제를 진행하시겠습니까?`}
@@ -79,29 +77,26 @@ const Container = styled.div<{ isMobile: boolean }>`
   text-align: center;
 `;
 
-const ModalTitle = styled.h2<{ isMobile: boolean }>`
+const ModalTitle = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading5 : theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
 `;
 
-const ModalDescription = styled.p<{ isMobile: boolean }>`
+const ModalDescription = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;
 
-const HighlightedWarning = styled.div<{ isMobile: boolean }>`
+const HighlightedWarning = styled.div`
   width: 100%;
   padding: 12px;
   border-radius: 8px;
 
   background-color: ${({ theme }) => `${theme.colors.error}20`};
   color: ${({ theme }) => theme.colors.error};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const ModalButtonGroup = styled.div`
@@ -112,6 +107,5 @@ const ModalButtonGroup = styled.div`
 
 const ModalButton = styled(Button)<{ isMobile: boolean }>`
   width: ${({ isMobile }) => (isMobile ? '80px' : '160px')};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;

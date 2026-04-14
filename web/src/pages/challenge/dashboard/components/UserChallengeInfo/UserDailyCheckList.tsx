@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useDevice } from '@/hooks/useDevice';
 import type { TodoStatus } from '../../types/todayTodos';
 import type { TodayTodos } from '@/apis/challenge/challenge.api';
 
@@ -23,11 +22,8 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
     (todo) => todo.challengeTodoStatus === 'COMPLETE',
   ).length;
 
-  const device = useDevice();
-  const isMobile = device === 'mobile';
-
   return (
-    <Container isMobile={isMobile}>
+    <Container>
       <Header>
         <Title>오늘의 체크 리스트</Title>
         <CountBadge>
@@ -56,7 +52,7 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
 
 export default UserDailyCheckList;
 
-const Container = styled.div<{ isMobile: boolean }>`
+const Container = styled.div`
   width: 100%;
   padding: 18px 20px;
   border: 1px solid ${({ theme }) => theme.colors.primaryLight};

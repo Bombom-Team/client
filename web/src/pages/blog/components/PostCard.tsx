@@ -33,9 +33,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
       <ContentWrapper>
         <Title device={device}>{post.title}</Title>
-        {post.description && (
-          <Description device={device}>{post.description}</Description>
-        )}
+        {post.description && <Description>{post.description}</Description>}
 
         <MetaInfo>
           <CalendarIcon
@@ -132,17 +130,16 @@ const NoThumbnailPlaceholder = styled.div`
 
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
   line-height: 1.4;
 `;
 
-const Description = styled.p<{ device: Device }>`
+const Description = styled.p`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.bodyLarge};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;

@@ -52,7 +52,7 @@ const NewsletterCard = ({
   }
 
   return (
-    <Container device={device} onClick={handleCardClick} isFlipped={isFlipped}>
+    <Container onClick={handleCardClick} isFlipped={isFlipped}>
       <CardInner isFlipped={isFlipped}>
         <CardFront>
           <ThumbnailBackground>
@@ -101,10 +101,7 @@ const NewsletterCard = ({
 
 export default NewsletterCard;
 
-const Container = styled.article<{
-  device: Device;
-  isFlipped: boolean;
-}>`
+const Container = styled.article<{ isFlipped: boolean }>`
   position: relative;
   width: 100%;
   height: 100%;
@@ -226,7 +223,7 @@ const CategoryBadge = styled(Badge)<{ device: Device }>`
   background: rgb(255 255 255 / 92%);
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body2};
+    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body2};
 
   backdrop-filter: blur(8px);
 `;
@@ -234,7 +231,7 @@ const CategoryBadge = styled(Badge)<{ device: Device }>`
 const NewsletterName = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
 `;
 
 const CloseButton = styled(Button)`
@@ -247,7 +244,7 @@ const CloseButton = styled(Button)`
 const NewsletterDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
 `;
 
 const BackContent = styled.div<{ device: Device }>`
@@ -262,7 +259,7 @@ const CategoryLabel = styled.span<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.body1};
+    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
 
   opacity: 0.6;
 `;
@@ -280,7 +277,7 @@ const SubscribeLink = styled(Button)<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
   text-align: left;
 
   transition: opacity 0.2s ease;

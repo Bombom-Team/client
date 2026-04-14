@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 import DailyGuideCard from '@/pages/challenge/daily/components/DailyGuideCard';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
 import DailyGuideCommentsModal from '@/pages/challenge/daily/components/DailyGuideCommentsModal';
@@ -26,9 +25,6 @@ function ChallengeDaily() {
     from: '/_bombom/_main/challenge/$challengeId/daily',
   });
   const challengeId = Number(stringChallengeId);
-
-  const device = useDevice();
-  const isMobile = device === 'mobile';
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const { data: dailyGuide } = useQuery(queries.todayDailyGuide(challengeId));
@@ -51,8 +47,8 @@ function ChallengeDaily() {
       />
       {dailyGuide.notice && (
         <NoticeBox>
-          <NoticeIcon isMobile={isMobile}>💡</NoticeIcon>
-          <NoticeText isMobile={isMobile}>{dailyGuide.notice}</NoticeText>
+          <NoticeIcon>💡</NoticeIcon>
+          <NoticeText>{dailyGuide.notice}</NoticeText>
         </NoticeBox>
       )}
 
@@ -115,14 +111,12 @@ const NoticeBox = styled.div`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
 `;
 
-const NoticeIcon = styled.span<{ isMobile: boolean }>`
+const NoticeIcon = styled.span`
   flex-shrink: 0;
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 `;
 
-const NoticeText = styled.p<{ isMobile: boolean }>`
+const NoticeText = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 `;

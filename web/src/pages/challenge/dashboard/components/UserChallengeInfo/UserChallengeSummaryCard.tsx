@@ -46,19 +46,19 @@ const UserChallengeSummaryCard = ({
         </StatBlock>
         <StatBlock isMobile={isMobile}>
           <StatValue isMobile={isMobile}>{completedDays}일</StatValue>
-          <StatLabel isMobile={isMobile}>참여 중</StatLabel>
+          <StatLabel>참여 중</StatLabel>
         </StatBlock>
         <StatDivider />
         <StatBlock isMobile={isMobile}>
           <StatValue isMobile={isMobile}>
             {completionRate.toFixed(1)}%
           </StatValue>
-          <StatLabel isMobile={isMobile}>달성률</StatLabel>
+          <StatLabel>달성률</StatLabel>
         </StatBlock>
         <StatDivider />
         <StatBlock isMobile={isMobile}>
           <StatValue isMobile={isMobile}>{shield}개</StatValue>
-          <StatLabel isMobile={isMobile}>쉴드</StatLabel>
+          <StatLabel>쉴드</StatLabel>
         </StatBlock>
       </SummaryStats>
     </Container>
@@ -94,8 +94,8 @@ const SummaryInfo = styled.div`
 
 const SummaryName = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
   ${({ isMobile }) =>
     isMobile &&
     `
@@ -156,8 +156,8 @@ const StreakCount = styled.div<{ isMobile: boolean }>`
   z-index: 1;
 
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
   font-weight: 700;
   line-height: 1;
 
@@ -166,17 +166,16 @@ const StreakCount = styled.div<{ isMobile: boolean }>`
 
 const StatValue = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
   white-space: nowrap;
 
   text-overflow: ellipsis;
 `;
 
-const StatLabel = styled.div<{ isMobile: boolean }>`
+const StatLabel = styled.div`
   color: ${({ theme }) => theme.colors.disabledText};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.caption : theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.body3};
   white-space: nowrap;
 
   text-overflow: ellipsis;
@@ -198,7 +197,7 @@ const FailedOverlay = styled.div<{ isMobile: boolean }>`
 
   background: rgb(255 255 255 / 70%);
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
+  font: ${({ isMobile, theme }) =>
     isMobile ? theme.fonts.body1 : theme.fonts.heading5};
 
   inset: 0;

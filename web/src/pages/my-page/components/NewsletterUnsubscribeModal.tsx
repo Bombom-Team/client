@@ -33,9 +33,9 @@ const NewsletterUnsubscribeModal = ({
 
   return (
     <Container isMobile={isMobile}>
-      <Title isMobile={isMobile}>{MODAL_CONTENT[type].title}</Title>
+      <Title>{MODAL_CONTENT[type].title}</Title>
 
-      <UnsubscribeDescription isMobile={isMobile}>
+      <UnsubscribeDescription>
         {MODAL_CONTENT[type].description}
       </UnsubscribeDescription>
 
@@ -73,16 +73,14 @@ const Container = styled.div<{ isMobile: boolean }>`
   text-align: center;
 `;
 
-const Title = styled.h2<{ isMobile: boolean }>`
+const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading5 : theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
 `;
 
-const UnsubscribeDescription = styled.p<{ isMobile: boolean }>`
+const UnsubscribeDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const ModalButtonWrapper = styled.div`
@@ -98,8 +96,7 @@ const ModalButton = styled(Button)<{ isMobile: boolean }>`
   min-width: ${({ isMobile }) => (isMobile ? '120px' : '160px')};
   border-radius: 8px;
 
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 
   word-break: keep-all;
 `;

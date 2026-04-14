@@ -82,11 +82,10 @@ function ChallengeComments() {
       <ContentWrapper isMobile={isMobile}>
         {selectedDate === today && isChallengeDay(selectedDate) && (
           <AddCommentBox>
-            <AddCommentTitle isMobile={isMobile}>
+            <AddCommentTitle>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
             </AddCommentTitle>
             <AddCommentButton
-              isMobile={isMobile}
               onClick={openModal}
               disabled={isFirstDay(today) || candidateArticles.length === 0}
             >
@@ -101,7 +100,7 @@ function ChallengeComments() {
 
         {isFirstDay(selectedDate) || !isChallengeDay(selectedDate) ? (
           <RestDayContent>
-            <RestDayTitle isMobile={isMobile}>전체 코멘트</RestDayTitle>
+            <RestDayTitle>전체 코멘트</RestDayTitle>
             <RestDayMessage isMobile={isMobile}>
               {isFirstDay(selectedDate)
                 ? '첫날에는 코멘트를 작성하지 않아요!'
@@ -201,16 +200,14 @@ const AddCommentBox = styled.article`
   flex-direction: column;
 `;
 
-const AddCommentTitle = styled.h3<{ isMobile: boolean }>`
+const AddCommentTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
+const AddCommentButton = styled(Button)`
   width: 100%;
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.stroke};
@@ -224,10 +221,9 @@ const RestDayContent = styled.section`
   flex-direction: column;
 `;
 
-const RestDayTitle = styled.h3<{ isMobile: boolean }>`
+const RestDayTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.heading6};
 `;
 
 const RestDayMessage = styled.div<{ isMobile: boolean }>`
@@ -236,7 +232,6 @@ const RestDayMessage = styled.div<{ isMobile: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
   text-align: center;
 `;

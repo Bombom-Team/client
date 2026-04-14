@@ -50,9 +50,7 @@ const ReadyState = ({ queueEntry, refetchQueueEntry }: ReadyStateProps) => {
 
   return (
     <Flex direction="column" gap={16} align="center">
-      <ReadyMessage device={device}>
-        인증 후 지금 바로 쿠폰을 발급받으세요!
-      </ReadyMessage>
+      <ReadyMessage>인증 후 지금 바로 쿠폰을 발급받으세요!</ReadyMessage>
 
       <ReCAPTCHA
         sitekey={ENV.captchaSiteKey}
@@ -96,10 +94,9 @@ const ReadyState = ({ queueEntry, refetchQueueEntry }: ReadyStateProps) => {
 
 export default ReadyState;
 
-const ReadyMessage = styled.p<{ device: Device }>`
+const ReadyMessage = styled.p`
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
   text-align: center;
 `;
 

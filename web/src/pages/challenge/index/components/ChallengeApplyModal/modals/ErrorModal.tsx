@@ -17,11 +17,9 @@ const ErrorModal = ({ closeModal }: ErrorModalProps) => {
 
   return (
     <Container isMobile={isMobile}>
-      <ModalTitle isMobile={isMobile}>일시적인 오류가 발생했어요</ModalTitle>
+      <ModalTitle>일시적인 오류가 발생했어요</ModalTitle>
 
-      <ModalDescription isMobile={isMobile}>
-        잠시 후 다시 시도해주세요.
-      </ModalDescription>
+      <ModalDescription>잠시 후 다시 시도해주세요.</ModalDescription>
 
       <ModalButtonGroup>
         <ModalButton isMobile={isMobile} onClick={closeModal}>

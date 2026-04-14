@@ -17,19 +17,19 @@ const EventGuide = () => {
 
       <StepWrapper>
         <StepCard>
-          <StepBadge>STEP 1.</StepBadge>
+          <StepBadge device={device}>STEP 1.</StepBadge>
           <Description device={device}>
             <StepHighlight>[로그인]</StepHighlight> 버튼을 눌러 회원가입 하러
             가기
           </Description>
-          <LoginButtonExample>
+          <LoginButtonExample device={device}>
             로그인{' '}
             <PointerIcon width={20} height={20} fill={theme.colors.white} />
           </LoginButtonExample>
         </StepCard>
 
         <StepCard>
-          <StepBadge>STEP 2.</StepBadge>
+          <StepBadge device={device}>STEP 2.</StepBadge>
           <Description device={device}>
             <StepHighlight>[간편한 소셜 로그인으로]</StepHighlight> 회원가입
             하기
@@ -51,7 +51,7 @@ const EventGuide = () => {
         </StepCard>
 
         <StepCard>
-          <StepBadge>STEP 3.</StepBadge>
+          <StepBadge device={device}>STEP 3.</StepBadge>
           <Description device={device}>
             가입완료!{'\n'}이벤트 페이지 상단의{' '}
             <StepHighlight>[선착순 경품받기]</StepHighlight>
@@ -62,7 +62,7 @@ const EventGuide = () => {
           <ActivationNotice color="red" font="heading6">
             * 선착순 응모는 2월 23일 오후 2시에 시작돼요.
           </ActivationNotice>
-          <ApplyButtonExample>
+          <ApplyButtonExample device={device}>
             선착순 경품 받기
             <PointerIcon width={20} height={20} fill={theme.colors.white} />
           </ApplyButtonExample>
@@ -128,7 +128,7 @@ const StepCard = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const StepBadge = styled.div`
+const StepBadge = styled.div<{ device: Device }>`
   position: absolute;
   top: -16px;
   left: 50%;
@@ -137,7 +137,8 @@ const StepBadge = styled.div`
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
   font-weight: 700;
 
   transform: translateX(-50%);
@@ -159,7 +160,7 @@ const StepHighlight = styled.span`
   text-align: center;
 `;
 
-const LoginButtonExample = styled.div`
+const LoginButtonExample = styled.div<{ device: Device }>`
   padding: 12px 16px;
   border: 2px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;
@@ -170,11 +171,12 @@ const LoginButtonExample = styled.div`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
   text-align: center;
 `;
 
-const ApplyButtonExample = styled.div`
+const ApplyButtonExample = styled.div<{ device: Device }>`
   padding: 12px 20px;
   border: 2px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;
@@ -185,7 +187,8 @@ const ApplyButtonExample = styled.div`
 
   background-color: #d81b60;
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
   text-align: center;
 
   transform: rotate(2deg);
