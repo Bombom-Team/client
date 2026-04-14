@@ -127,30 +127,32 @@ const PublishedList = ({
                 {formatPostMeta(post.publishedAt, post.updatedAt)}
               </PostMeta>
             </PostInfoButton>
-            {confirmDeleteId === postId ? (
-              <ConfirmActions>
-                <ConfirmText>정말 삭제할까요?</ConfirmText>
-                <ActionButton $danger onClick={onConfirmDelete} type="button">
-                  확인
-                </ActionButton>
-                <ActionButton onClick={onCancelDelete} type="button">
-                  취소
-                </ActionButton>
-              </ConfirmActions>
-            ) : (
-              <PostActions>
-                <ActionButton onClick={() => onEdit(postId)} type="button">
-                  수정
-                </ActionButton>
-                <ActionButton
-                  $danger
-                  onClick={() => onDeleteRequest(postId)}
-                  type="button"
-                >
-                  삭제
-                </ActionButton>
-              </PostActions>
-            )}
+            {post.isAuthor ? (
+              confirmDeleteId === postId ? (
+                <ConfirmActions>
+                  <ConfirmText>정말 삭제할까요?</ConfirmText>
+                  <ActionButton $danger onClick={onConfirmDelete} type="button">
+                    확인
+                  </ActionButton>
+                  <ActionButton onClick={onCancelDelete} type="button">
+                    취소
+                  </ActionButton>
+                </ConfirmActions>
+              ) : (
+                <PostActions>
+                  <ActionButton onClick={() => onEdit(postId)} type="button">
+                    수정
+                  </ActionButton>
+                  <ActionButton
+                    $danger
+                    onClick={() => onDeleteRequest(postId)}
+                    type="button"
+                  >
+                    삭제
+                  </ActionButton>
+                </PostActions>
+              )
+            ) : null}
           </PostItem>
         );
       })}
