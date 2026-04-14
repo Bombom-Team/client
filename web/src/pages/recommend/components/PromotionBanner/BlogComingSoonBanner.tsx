@@ -37,7 +37,7 @@ const Container = styled(Link)<{ device: Device }>`
     right: 4px;
     bottom: ${({ device }) => (device === 'pc' ? '-4px' : '0')};
 
-    color: rgb(254 94 4 / 8%);
+    color: rgb(254 94 4 / 12%);
     font-weight: 800;
     font-size: ${({ device }) => {
       if (device === 'pc') return '120px';
@@ -64,7 +64,7 @@ const Content = styled.div<{ device: Device }>`
 `;
 
 const Title = styled.h3<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.black};
   font-weight: 800;
   font-size: ${({ device }) => {
     if (device === 'pc') return '78px';
@@ -77,7 +77,7 @@ const Title = styled.h3<{ device: Device }>`
 `;
 
 const Description = styled.p<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textSecondary};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
     device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
   text-align: center;
