@@ -23,8 +23,8 @@ const ApplyConfirmModal = ({ closeModal, onApply }: ApplyConfirmModalProps) => {
 
   return (
     <Container isMobile={isMobile}>
-      <ModalTitle isMobile={isMobile}>챌린지에 참여할까요?</ModalTitle>
-      <ModalDescription isMobile={isMobile}>
+      <ModalTitle>챌린지에 참여할까요?</ModalTitle>
+      <ModalDescription>
         신청을 완료하면 챌린지에 참여할 수 있어요.
       </ModalDescription>
       <ModalButtonGroup>

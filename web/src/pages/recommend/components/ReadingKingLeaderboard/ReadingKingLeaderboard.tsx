@@ -1,53 +1,40 @@
-import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
-import LeaderboardItem from './LeaderboardItem';
-import { RANKING } from './ReadingKingLeaderboard.constants';
+import { Suspense, useRef, useState } from 'react';
+import MonthlyRankingContent from './MonthlyRankingContent';
+import {
+  Container,
+  Countdown,
+  CountdownLoadingDots,
+  CountdownWrapper,
+  InfoIcon,
+  TabButton,
+  TabToggle,
+  TitleIcon,
+  TitleWrapper,
+} from './ReadingKingLeaderboard.styles';
 import ReadingKingLeaderboardSkeleton from './ReadingKingLeaderboardSkeleton';
-import ReadingKingMyRank from './ReadingKingMyRank';
-import { queries } from '@/apis/queries';
-import { Carousel } from '@/components/Carousel/Carousel';
+import StreakRankingContent from './StreakRankingContent';
+import { useRankingCountdown } from './useRankingCountdown';
 import ArrowIcon from '@/components/icons/ArrowIcon';
 import Tooltip from '@/components/Tooltip/Tooltip';
-import { useCountdown } from '@/hooks/useCountdown';
-import { chunk } from '@/utils/array';
 import { padTimeDigit } from '@/utils/time';
+import HelpIcon from '#/assets/svg/help.svg';
 
-const COUNTDOWN_UPDATE_INTERVAL_MS = 1000 * 60 * 10;
+type RankingTab = 'monthly' | 'streak';
 
 const ReadingKingLeaderboard = () => {
+  const [activeTab, setActiveTab] = useState<RankingTab>('monthly');
   const [rankExplainOpened, setRankExplainOpened] = useState(false);
+  const [streakInfoOpened, setStreakInfoOpened] = useState(false);
   const countdownRef = useRef<HTMLDivElement>(null);
+  const streakInfoRef = useRef<HTMLDivElement>(null);
 
-  const {
-    data: monthlyReadingRank,
-    isLoading,
-    isFetching,
-    refetch: refetchMonthlyReadingRank,
-  } = useQuery(queries.monthlyReadingRank({ limit: RANKING.maxRank }));
-  const { data: userRank, refetch: refetchMyMonthlyReadingRank } = useQuery(
-    queries.myMonthlyReadingRank(),
-  );
-
-  const { leftTime, isCompleting } = useCountdown({
-    targetTime:
-      monthlyReadingRank?.nextRefreshAt ??
-      new Date(Date.now() + COUNTDOWN_UPDATE_INTERVAL_MS).toISOString(),
-    completeDelay: 2000,
-    onComplete: () => {
-      refetchMonthlyReadingRank();
-      refetchMyMonthlyReadingRank();
-    },
-  });
+  const isMonthlyTab = activeTab === 'monthly';
+  const { leftTime, isCompleting, isFetching } = useRankingCountdown();
 
   const openRankExplain = () => setRankExplainOpened(true);
   const closeRankExplain = () => setRankExplainOpened(false);
-
-  const monthlyReadingRankContent = monthlyReadingRank?.data ?? [];
-  const haveNoContent = !isLoading && monthlyReadingRankContent.length === 0;
-
-  if (!isLoading && haveNoContent) return null;
-  if (isLoading) return <ReadingKingLeaderboardSkeleton />;
+  const openStreakInfo = () => setStreakInfoOpened(true);
+  const closeStreakInfo = () => setStreakInfoOpened(false);
 
   return (
     <Container>
@@ -55,180 +42,77 @@ const ReadingKingLeaderboard = () => {
         <TitleIcon aria-hidden="true">
           <ArrowIcon width={16} height={16} direction="upRight" />
         </TitleIcon>
-        <Title>이달의 독서왕</Title>
-        <CountdownWrapper>
-          <Countdown
-            ref={countdownRef}
-            onMouseEnter={openRankExplain}
-            onMouseLeave={closeRankExplain}
-            onFocus={openRankExplain}
-            onBlur={closeRankExplain}
+        <TabToggle role="tablist" aria-label="독서왕 랭킹 유형 선택">
+          <TabButton
+            role="tab"
+            aria-selected={activeTab === 'monthly'}
+            active={activeTab === 'monthly'}
+            onClick={() => setActiveTab('monthly')}
           >
-            {`${padTimeDigit(leftTime.minutes)}:${padTimeDigit(leftTime.seconds)}`}
-            <Tooltip
-              opened={rankExplainOpened}
-              placement="bottom"
-              anchorRef={countdownRef}
+            이달의 독서왕
+          </TabButton>
+          <TabButton
+            role="tab"
+            aria-selected={activeTab === 'streak'}
+            active={activeTab === 'streak'}
+            onClick={() => setActiveTab('streak')}
+          >
+            연속 독서왕
+          </TabButton>
+        </TabToggle>
+        {isMonthlyTab ? (
+          <CountdownWrapper>
+            <Countdown
+              ref={countdownRef}
+              onMouseEnter={openRankExplain}
+              onMouseLeave={closeRankExplain}
+              onFocus={openRankExplain}
+              onBlur={closeRankExplain}
             >
-              순위는 10분마다 갱신됩니다.
+              {`${padTimeDigit(leftTime.minutes)}:${padTimeDigit(leftTime.seconds)}`}
+              <Tooltip
+                opened={rankExplainOpened}
+                placement="bottom"
+                anchorRef={countdownRef}
+              >
+                순위는 10분마다 갱신됩니다.
+              </Tooltip>
+            </Countdown>
+            {(isFetching || isCompleting) && <CountdownLoadingDots />}
+          </CountdownWrapper>
+        ) : (
+          <InfoIcon
+            ref={streakInfoRef}
+            onMouseEnter={openStreakInfo}
+            onMouseLeave={closeStreakInfo}
+            onFocus={openStreakInfo}
+            onBlur={closeStreakInfo}
+            tabIndex={0}
+            aria-label="연속 독서왕 순위 안내"
+          >
+            <HelpIcon width={20} height={20} />
+            <Tooltip
+              opened={streakInfoOpened}
+              placement="bottom"
+              anchorRef={streakInfoRef}
+            >
+              매일 자정에 업데이트됩니다.
             </Tooltip>
-          </Countdown>
-          {(isFetching || isCompleting) && <CountdownLoadingDots />}
-        </CountdownWrapper>
+          </InfoIcon>
+        )}
       </TitleWrapper>
 
-      <Carousel.Root loop>
-        <Carousel.Slides>
-          {chunk(monthlyReadingRankContent, RANKING.boardUnit).map(
-            (leaderboard, leaderboardIndex) => (
-              <Carousel.Slide key={`slide-${leaderboardIndex}`}>
-                <LeaderboardList
-                  role="list"
-                  aria-label={`이달의 독서왕 순위 ${leaderboardIndex + 1}페이지`}
-                >
-                  {leaderboard.map((item, index) => (
-                    <LeaderboardItem
-                      key={`rank-${index}` + item.nickname}
-                      rank={item.rank}
-                      name={item.nickname}
-                      readCount={item.monthlyReadCount}
-                      badges={item.badges}
-                    />
-                  ))}
-                </LeaderboardList>
-              </Carousel.Slide>
-            ),
-          )}
-        </Carousel.Slides>
-        <Carousel.NavButtons position="bottom" />
-      </Carousel.Root>
-
-      {userRank && (
-        <>
-          <Divider role="separator" aria-hidden="true" />
-          <ReadingKingMyRank userRank={userRank} />
-        </>
+      {isMonthlyTab ? (
+        <Suspense fallback={<ReadingKingLeaderboardSkeleton />}>
+          <MonthlyRankingContent />
+        </Suspense>
+      ) : (
+        <Suspense fallback={<ReadingKingLeaderboardSkeleton />}>
+          <StreakRankingContent />
+        </Suspense>
       )}
     </Container>
   );
 };
 
 export default ReadingKingLeaderboard;
-
-export const Container = styled.section`
-  width: 100%;
-  max-width: 400px;
-  padding: 22px;
-  border: 1px solid ${({ theme }) => theme.colors.dividers};
-  border-radius: 20px;
-  box-shadow:
-    0 10px 15px -3px rgb(0 0 0 / 10%),
-    0 4px 6px -4px rgb(0 0 0 / 10%);
-
-  display: flex;
-  gap: 16px;
-  flex-direction: column;
-
-  background: rgb(255 255 255 / 80%);
-
-  backdrop-filter: blur(10px);
-`;
-
-export const TitleWrapper = styled.div`
-  position: relative;
-  width: fit-content;
-
-  display: flex;
-  gap: 10px;
-  align-items: center;
-`;
-
-export const TitleIcon = styled.div`
-  width: 28px;
-  height: 28px;
-  border-radius: 12px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: ${({ theme }) => theme.colors.primary};
-`;
-
-export const Title = styled.h3`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
-`;
-
-export const CountdownWrapper = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Countdown = styled.div`
-  position: relative;
-  width: 36px;
-
-  color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
-
-  cursor: help;
-`;
-
-const CountdownLoadingDots = styled.div`
-  --dot-gradient: no-repeat
-    radial-gradient(
-      circle closest-side,
-      ${({ theme }) => theme.colors.primaryDark} 70%,
-      #0000
-    );
-
-  width: 36px;
-
-  background:
-    var(--dot-gradient) 0% 50%,
-    var(--dot-gradient) 50% 50%,
-    var(--dot-gradient) 100% 50%;
-  background-size: calc(100% / 3) 100%;
-
-  animation: l7 1s infinite linear;
-
-  aspect-ratio: 4;
-
-  @keyframes l7 {
-    33% {
-      background-size:
-        calc(100% / 3) 0%,
-        calc(100% / 3) 100%,
-        calc(100% / 3) 100%;
-    }
-
-    50% {
-      background-size:
-        calc(100% / 3) 100%,
-        calc(100% / 3) 0%,
-        calc(100% / 3) 100%;
-    }
-
-    66% {
-      background-size:
-        calc(100% / 3) 100%,
-        calc(100% / 3) 100%,
-        calc(100% / 3) 0%;
-    }
-  }
-`;
-
-export const LeaderboardList = styled.div`
-  min-height: fit-content;
-
-  display: flex;
-  gap: 32px;
-  flex-direction: column;
-`;
-
-const Divider = styled.div`
-  border-top: 1px solid ${({ theme }) => theme.colors.dividers};
-`;

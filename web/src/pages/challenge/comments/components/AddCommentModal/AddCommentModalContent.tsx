@@ -159,9 +159,9 @@ const AddCommentModalContent = ({
         <TipSection isMobile={isMobile}>
           <TipTitleWrapper>
             <SparklesIcon width={12} height={12} />
-            <TipTitle isMobile={isMobile}>팁</TipTitle>
+            <TipTitle>팁</TipTitle>
           </TipTitleWrapper>
-          <TipList isMobile={isMobile}>
+          <TipList>
             <TipItem>• 하이라이트를 클릭하면 인용구로 삽입됩니다.</TipItem>
             <TipItem>
               • 20자 이상의 메모를 코멘트로 바로 사용할 수 있어요.
@@ -173,14 +173,8 @@ const AddCommentModalContent = ({
         </TipSection>
 
         <ButtonWrapper>
-          <StyledButton onClick={handleAddCommentClick} isMobile={isMobile}>
-            등록하기
-          </StyledButton>
-          <StyledButton
-            variant="outlined"
-            onClick={closeCommentModal}
-            isMobile={isMobile}
-          >
+          <StyledButton onClick={handleAddCommentClick}>등록하기</StyledButton>
+          <StyledButton variant="outlined" onClick={closeCommentModal}>
             취소
           </StyledButton>
         </ButtonWrapper>
@@ -215,21 +209,19 @@ const TipTitleWrapper = styled.div`
   align-items: center;
 `;
 
-const TipTitle = styled.p<{ isMobile: boolean }>`
+const TipTitle = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
   font-weight: 600;
 `;
 
-const TipList = styled.ul<{ isMobile: boolean }>`
+const TipList = styled.ul`
   display: flex;
   gap: 4px;
   flex-direction: column;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.body3};
 `;
 
 const TipItem = styled.li``;
@@ -239,8 +231,7 @@ const ButtonWrapper = styled.div`
   gap: 12px;
 `;
 
-const StyledButton = styled(Button)<{ isMobile: boolean }>`
+const StyledButton = styled(Button)`
   flex: 1;
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 `;

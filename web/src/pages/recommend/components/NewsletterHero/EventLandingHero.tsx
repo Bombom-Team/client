@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import type { Device } from '@/hooks/useDevice';
 
 const EventLandingHero = () => {
   const navigate = useNavigate();
@@ -31,7 +30,7 @@ const EventLandingHero = () => {
         <HeroTitle isPC={isPC}>봄봄이{'\n'}커피 쏜다!</HeroTitle>
         <IndicateText isPC={isPC}>지금 확인하기</IndicateText>
       </HeroContent>
-      <EventImage src="/assets/png/event-logo.png" alt="" device={device} />
+      <EventImage src="/assets/png/event-logo.png" alt="" />
     </Container>
   );
 };
@@ -61,7 +60,7 @@ const HeroContent = styled.div<{ isPC: boolean }>`
   justify-content: center;
 `;
 
-const EventImage = styled.img<{ device: Device }>`
+const EventImage = styled.img`
   width: 50%;
   height: auto;
 `;

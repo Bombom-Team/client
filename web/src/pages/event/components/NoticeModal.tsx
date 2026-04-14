@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { EVENT_STATUS_TYPE } from '../constants/constants';
 import Button from '@/components/Button/Button';
-import { useDevice, type Device } from '@/hooks/useDevice';
 import type { EventErrorStatus } from '../types/event';
 
 interface NoticeModalProps {
@@ -10,8 +9,6 @@ interface NoticeModalProps {
 }
 
 const NoticeModal = ({ noticeType, closeModal }: NoticeModalProps) => {
-  const device = useDevice();
-
   const getNoticeTitle = () => {
     if (noticeType === EVENT_STATUS_TYPE.notStarted) {
       return '이벤트 기간이 아니에요.';
@@ -25,7 +22,7 @@ const NoticeModal = ({ noticeType, closeModal }: NoticeModalProps) => {
   return (
     <Container>
       <ContentWrapper>
-        <Title device={device}>{getNoticeTitle()}</Title>
+        <Title>{getNoticeTitle()}</Title>
 
         {noticeType === EVENT_STATUS_TYPE.unknownError ? (
           <Description>
@@ -65,10 +62,9 @@ const ContentWrapper = styled.div`
   align-items: center;
 `;
 
-const Title = styled.h3<{ device: Device }>`
+const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
   text-align: center;
 `;
 

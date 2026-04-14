@@ -189,7 +189,7 @@ const SuccessBox = styled.div`
 
 const SuccessIcon = styled.span`
   color: #059669;
-  font-size: 16px;
+  font-size: 1rem;
 `;
 
 const SuccessText = styled.span`

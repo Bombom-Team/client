@@ -121,8 +121,8 @@ const ContentWrapper = styled(Flex)`
 `;
 
 const StoreButton = styled.button<{
-  device: Device;
   variant: 'appStore' | 'playStore';
+  device: Device;
 }>`
   min-width: 160px;
   padding: 14px 20px;
@@ -140,7 +140,7 @@ const StoreButton = styled.button<{
     variant === 'appStore' ? theme.colors.black : theme.colors.white};
   color: ${({ variant, theme }) =>
     variant === 'appStore' ? theme.colors.white : theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
+  font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
   font-weight: 600;
 

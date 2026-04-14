@@ -41,7 +41,7 @@ const SectionLabel = styled.p`
 const SectionTitle = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading2};
-  line-height: 40px;
+  line-height: 2.5rem;
   text-align: center;
   white-space: nowrap;
 `;

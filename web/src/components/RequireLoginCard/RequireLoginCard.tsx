@@ -23,12 +23,8 @@ const RequireLoginCard = () => {
       <StyledLockIcon />
       <Title>로그인이 필요해요</Title>
       <DescriptionWrapper>
-        <Lead isMobile={isMobile}>
-          현재 페이지를 이용하시려면 먼저 로그인해 주세요
-        </Lead>
-        <Support isMobile={isMobile}>
-          봄봄에서 더 많은 특별한 기능들을 만나보실 수 있어요!
-        </Support>
+        <Lead>현재 페이지를 이용하시려면 먼저 로그인해 주세요</Lead>
+        <Support>봄봄에서 더 많은 특별한 기능들을 만나보실 수 있어요!</Support>
       </DescriptionWrapper>
       <GoToLoginButton onClick={handleLoginClick}>
         봄봄 시작하기
@@ -79,17 +75,15 @@ const DescriptionWrapper = styled.div`
   flex-direction: column;
 `;
 
-const Lead = styled.p<{ isMobile: boolean }>`
+const Lead = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
   text-align: center;
 `;
 
-const Support = styled.p<{ isMobile: boolean }>`
+const Support = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
   text-align: center;
 `;
 

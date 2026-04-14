@@ -47,9 +47,7 @@ const ArticleCard = ({
     >
       <InfoWrapper isMobile={isMobile}>
         <Title isMobile={isMobile}>{title}</Title>
-        <Description isMobile={isMobile}>
-          {contentsSummary || title}
-        </Description>
+        <Description>{contentsSummary || title}</Description>
         <MetaInfoRow isMobile={isMobile}>
           <MetaInfoText>from {newsletter?.name ?? ''}</MetaInfoText>
           <MetaInfoText>
@@ -61,7 +59,7 @@ const ArticleCard = ({
           </ReadTimeBox>
         </MetaInfoRow>
       </InfoWrapper>
-      <ThumbnailWrapper isMobile={isMobile}>
+      <ThumbnailWrapper>
         <Thumbnail
           isMobile={isMobile}
           src={thumbnailUrl ?? newsletter?.imageUrl ?? ''}
@@ -147,7 +145,7 @@ export const Title = styled.h2<{ isMobile: boolean }>`
 
   display: -webkit-box;
 
-  font: ${({ theme, isMobile }) =>
+  font: ${({ isMobile, theme }) =>
     isMobile ? theme.fonts.body1 : theme.fonts.heading4};
   font-weight: 600;
 
@@ -155,7 +153,7 @@ export const Title = styled.h2<{ isMobile: boolean }>`
   -webkit-line-clamp: 2;
 `;
 
-export const Description = styled.p<{ isMobile: boolean }>`
+export const Description = styled.p`
   overflow: hidden;
 
   display: -webkit-box;
@@ -185,7 +183,7 @@ const ReadTimeBox = styled.div`
   align-items: center;
 `;
 
-export const ThumbnailWrapper = styled.div<{ isMobile: boolean }>`
+export const ThumbnailWrapper = styled.div`
   position: relative;
   flex-shrink: 0;
 `;

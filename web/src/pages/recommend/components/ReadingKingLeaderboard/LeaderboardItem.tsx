@@ -12,6 +12,7 @@ interface LeaderboardItemProps {
   rank: number;
   name: string;
   readCount: number;
+  readCountLabel?: string;
   badges?: Badges;
 }
 
@@ -19,13 +20,14 @@ const LeaderboardItem = ({
   rank,
   name,
   readCount,
+  readCountLabel = '개 읽음',
   badges,
 }: LeaderboardItemProps) => {
   return (
     <Container
       role="listitem"
       tabIndex={0}
-      aria-label={`${rank}위: ${name}, ${readCount}개 읽음`}
+      aria-label={`${rank}위: ${name}, ${readCount}${readCountLabel}`}
     >
       <ContentWrapper>
         <RankIconWrapper aria-hidden="true">
@@ -34,7 +36,10 @@ const LeaderboardItem = ({
 
         <UserInfoBox aria-hidden="true">
           <UserName>{name}</UserName>
-          <ReadCount>{readCount}개 읽음</ReadCount>
+          <ReadCount>
+            {readCount}
+            {readCountLabel}
+          </ReadCount>
         </UserInfoBox>
       </ContentWrapper>
 

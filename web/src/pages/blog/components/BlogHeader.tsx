@@ -10,7 +10,7 @@ const BlogHeader = () => {
 
   return (
     <Container device={device}>
-      <HeaderWrapper device={device}>
+      <HeaderWrapper>
         <Logo
           to="/blog"
           device={device}
@@ -23,7 +23,7 @@ const BlogHeader = () => {
           }
         >
           <LogoImage src={logo} alt="logo" device={device} />
-          <Title device={device}>Blog</Title>
+          <Title>Blog</Title>
         </Logo>
 
         <GoToService device={device} to="/">
@@ -55,7 +55,7 @@ const Container = styled.header<{ device: Device }>`
   backdrop-filter: blur(6px);
 `;
 
-const HeaderWrapper = styled.div<{ device: Device }>`
+const HeaderWrapper = styled.div`
   height: 100%;
   max-width: 1280px;
   margin: 0 auto;
@@ -89,10 +89,9 @@ const LogoImage = styled.img<{ device: Device }>`
   }};
 `;
 
-const Title = styled.h1<{ device: Device }>`
+const Title = styled.h1`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.heading4};
 `;
 
 const GoToService = styled(Link)<{ device: Device }>`
@@ -106,8 +105,7 @@ const GoToService = styled(Link)<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.caption : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body2};
 
   cursor: pointer;
   transition: background-color 0.3s ease;

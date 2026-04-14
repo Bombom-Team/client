@@ -59,14 +59,14 @@ const Container = styled.section<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading1};
+    device === 'mobile' ? theme.fonts.heading2 : theme.fonts.heading1};
   text-align: center;
 `;
 
 const ApplicantButton = styled(Button)<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '16px 24px' : '20px 36px')};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
 
   &:hover {
     opacity: 0.8;

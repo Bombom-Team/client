@@ -124,8 +124,8 @@ const NoThumbnailPlaceholder = styled.div`
 
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
   line-height: 1.4;
 `;
 
