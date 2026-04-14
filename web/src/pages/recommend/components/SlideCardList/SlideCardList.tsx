@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import BlogComingSoonBanner from '../PromotionBanner/BlogComingSoonBanner';
 import PromotionBanner from '../PromotionBanner/PromotionBanner';
 import QRCodeModal from '../QRCodeModal/QRCodeModal';
 import { Carousel } from '@/components/Carousel/Carousel';
@@ -45,6 +46,9 @@ const SlideCardList = () => {
     <>
       <Carousel.Root loop autoPlay>
         <Carousel.Slides>
+          <Carousel.Slide>
+            <BlogComingSoonBanner />
+          </Carousel.Slide>
           {device === 'pc' && (
             <Carousel.Slide>
               <PromotionBanner openModal={handleOpenModal} />

@@ -53,6 +53,7 @@ const extractImageIds = (node: unknown): number[] => {
 
 export const BlogEditor = () => {
   const { postId } = Route.useParams();
+  const { tab } = Route.useSearch();
   const postIdNum = Number(postId);
   const navigate = useNavigate();
 
@@ -97,6 +98,9 @@ export const BlogEditor = () => {
   const isDirtyRef = useRef(isDirty);
   const isPendingRef = useRef(saveDraftMutation.isPending);
   const handleSaveRef = useRef<() => Promise<boolean>>(async () => false);
+  const handleImageUploadRef = useRef<(file: File) => Promise<void>>(
+    async () => {},
+  );
 
   const editor = useEditor({
     extensions: [
@@ -117,8 +121,21 @@ export const BlogEditor = () => {
     })(),
     onUpdate: () => setIsDirty(true),
     editorProps: {
-      // 선택 영역이 있을 때 URL 붙여넣기 → 하이퍼링크로 변환
       handlePaste: (view, event) => {
+        // 클립보드에 이미지 파일이 있으면 업로드
+        const files = event.clipboardData?.files;
+        if (files && files.length > 0) {
+          const imageFile = Array.from(files).find((f) =>
+            f.type.startsWith('image/'),
+          );
+          if (imageFile) {
+            event.preventDefault();
+            void handleImageUploadRef.current(imageFile);
+            return true;
+          }
+        }
+
+        // 선택 영역이 있을 때 URL 붙여넣기 → 하이퍼링크로 변환
         const text = event.clipboardData?.getData('text/plain')?.trim() ?? '';
         const isUrl = /^https?:\/\/\S+$/.test(text);
         const { selection } = view.state;
@@ -193,6 +210,7 @@ export const BlogEditor = () => {
   // ref 동기화
   useEffect(() => {
     handleSaveRef.current = handleSave;
+    handleImageUploadRef.current = handleImageUpload;
   });
 
   useEffect(() => {
@@ -219,7 +237,7 @@ export const BlogEditor = () => {
     if (!saved) return;
     try {
       await publishDraftMutation.mutateAsync(postIdNum);
-      navigate({ to: '/blog' });
+      navigate({ to: '/blog', search: { tab: 'published' } });
     } catch (err) {
       console.error('발행 실패:', err);
       setPublishError('발행에 실패했습니다. 다시 시도해주세요.');
@@ -287,7 +305,10 @@ export const BlogEditor = () => {
       <Sidebar />
       <EditorMain>
         <TopBar>
-          <BackButton onClick={() => navigate({ to: '/blog' })} type="button">
+          <BackButton
+            onClick={() => navigate({ to: '/blog', search: { tab } })}
+            type="button"
+          >
             ← 블로그 목록
           </BackButton>
           <Actions>
@@ -340,7 +361,7 @@ export const BlogEditor = () => {
                 setTitle(e.target.value);
                 setIsDirty(true);
               }}
-              placeholder="제목을 입력하세요"
+              placeholder="제목을 입력하세요 (12자 이하 권장)"
             />
             <DescriptionInput
               value={description}
@@ -348,7 +369,7 @@ export const BlogEditor = () => {
                 setDescription(e.target.value);
                 setIsDirty(true);
               }}
-              placeholder="부연 설명을 입력하세요"
+              placeholder="부연 설명을 입력하세요 (20자 이하 권장)"
             />
             <EditorToolbar editor={editor} onImageUpload={handleImageUpload} />
             <EditorWrapper>

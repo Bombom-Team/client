@@ -1,32 +1,23 @@
 import { fetcher, ApiError } from '@bombom/shared/apis';
 import { ENV } from '@bombom/shared/env';
-import type { PageableResponse } from '@/apis/types/PageableResponse';
 import type {
   BlogDraftListItem,
   BlogDraftDetail,
+  BlogPostDetail,
   BlogPostListItem,
   SaveDraftRequest,
   UploadImageResponse,
   SetThumbnailRequest,
   BlogVisibility,
   CreateDraftResponse,
+  GetBlogPostsParams,
 } from '@/types/blog';
 import type { Category } from '@/types/category';
-
-type GetBlogPostsResponse =
-  | PageableResponse<BlogPostListItem>
-  | BlogPostListItem[];
 
 type GetBlogCategoriesResponse = Array<{
   id: number;
   categoryName: string;
 }>;
-
-type GetBlogPostsParams = {
-  page?: number;
-  size?: number;
-  sort?: string;
-};
 
 const PUBLIC_API_BASE_URL = ENV.blogBaseUrl;
 
@@ -46,7 +37,7 @@ export const uploadImage = async (
   file: File,
 ): Promise<UploadImageResponse> => {
   const formData = new FormData();
-  formData.append('image', file);
+  formData.append('imageFile', file);
 
   const url = new URL(ENV.baseUrl + `/blog/posts/${postId}/images`);
   const response = await fetch(url, {
@@ -148,17 +139,20 @@ export const setThumbnail = async (
   });
 };
 
-// 10. 발행된 글 목록 (admin prefix 없는 public API)
+export const getPostDetail = async (
+  postId: number,
+): Promise<BlogPostDetail> => {
+  return fetcher.get<BlogPostDetail>({ path: `/blog/posts/${postId}` });
+};
+
+// 10. 발행된 글 목록
 export const getBlogPosts = async (
   params: GetBlogPostsParams = {},
 ): Promise<BlogPostListItem[]> => {
-  const response = await fetcher.get<GetBlogPostsResponse>({
+  return fetcher.get<BlogPostListItem[]>({
     path: '/blog/posts',
-    baseUrl: PUBLIC_API_BASE_URL,
     query: params,
   });
-
-  return Array.isArray(response) ? response : (response.content ?? []);
 };
 
 export const getBlogCategories = async (): Promise<Category[]> => {

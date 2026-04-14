@@ -36,4 +36,6 @@ const Main = styled.main<{ device: Device }>`
 
   display: flex;
   flex-direction: column;
+
+  word-break: keep-all;
 `;

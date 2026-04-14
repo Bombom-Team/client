@@ -27,8 +27,17 @@ const convertMarks = (
         return <code key={markKey}>{acc}</code>;
       case 'strike':
         return <s key={markKey}>{acc}</s>;
-      case 'highlight':
-        return <mark key={markKey}>{acc}</mark>;
+      case 'highlight': {
+        const color = mark.attrs?.color;
+        return (
+          <mark
+            key={markKey}
+            style={color ? { backgroundColor: String(color) } : undefined}
+          >
+            {acc}
+          </mark>
+        );
+      }
       case 'link': {
         const href = validateUrl(String(mark.attrs?.href ?? '#'));
         return (
@@ -99,6 +108,9 @@ const renderNode = (node: TiptapNode, key: string): ReactNode => {
 
     case 'hardBreak':
       return <br key={key} />;
+
+    case 'horizontalRule':
+      return <hr key={key} />;
 
     default:
       return null;

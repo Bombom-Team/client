@@ -6,14 +6,6 @@ export const formatDate = (date: Date, separator: string = '.'): string => {
   return year + separator + month + separator + day;
 };
 
-export const formatDateToKorean = (date: Date) => {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-
-  return `${year}년 ${month}월 ${day}일`;
-};
-
 export const isToday = (date: Date): boolean => {
   const today = new Date();
   return formatDate(date) === formatDate(today);

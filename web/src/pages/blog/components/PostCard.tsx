@@ -5,7 +5,7 @@ import { createSlug } from '../utils/url';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
-import { formatDateToKorean } from '@/utils/date';
+import { formatDate } from '@/utils/date';
 import type { Device } from '@/hooks/useDevice';
 import type { PostListItem } from '@/pages/blog/types/post';
 import CalendarIcon from '#/assets/svg/calendar.svg';
@@ -32,8 +32,14 @@ const PostCard = ({ post }: PostCardProps) => {
       </Thumbnail>
 
       <ContentWrapper>
+        <Text
+          color="textTertiary"
+          font={device === 'mobile' ? 'body3' : 'body1'}
+        >
+          {post.categoryName}
+        </Text>
+
         <Title device={device}>{post.title}</Title>
-        {post.description && <Description>{post.description}</Description>}
 
         <MetaInfo>
           <CalendarIcon
@@ -47,21 +53,8 @@ const PostCard = ({ post }: PostCardProps) => {
             font={device === 'mobile' ? 'body3' : 'body1'}
           >
             <time dateTime={post.publishedAt}>
-              {formatDateToKorean(new Date(post.publishedAt))}
+              {formatDate(new Date(post.publishedAt))}
             </time>
-          </Text>
-          <Text
-            aria-hidden="true"
-            color="textTertiary"
-            font={device === 'mobile' ? 'body3' : 'body1'}
-          >
-            |
-          </Text>
-          <Text
-            color="textTertiary"
-            font={device === 'mobile' ? 'body3' : 'body1'}
-          >
-            {post.categoryName}
           </Text>
         </MetaInfo>
       </ContentWrapper>
@@ -97,10 +90,11 @@ const Thumbnail = styled.div<{ device: Device }>`
   overflow: hidden;
   position: relative;
   width: 100%;
-  height: ${({ device }) => (device === 'mobile' ? '180px' : '216px')};
   border-radius: 16px;
 
   background-color: ${({ theme }) => theme.colors.dividers};
+
+  aspect-ratio: 16 / 9;
 
   img {
     transition: transform 0.3s ease;
@@ -135,17 +129,6 @@ const Title = styled.h3<{ device: Device }>`
   line-height: 1.4;
 `;
 
-const Description = styled.p`
-  display: -webkit-box;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.bodyLarge};
-
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  text-overflow: ellipsis;
-`;
-
 export const ContentWrapper = styled.div`
   display: flex;
   gap: 12px;
@@ -154,10 +137,10 @@ export const ContentWrapper = styled.div`
 
 export const MetaInfo = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
 
   svg {
-    margin-bottom: 1px;
+    margin-bottom: 2px;
   }
 `;
