@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 import EventFooter from '@/pages/event/components/EventFooter';
 import EventGuide from '@/pages/event/components/EventGuide';
 import EventHero from '@/pages/event/components/EventHero';
@@ -15,7 +14,6 @@ import { COUPON_NAME } from '@/pages/event/constants/constants';
 import { useQueueEntry } from '@/pages/event/hooks/useQueueEntry';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import type { CouponName, QueueEntry } from '@/apis/event/event.api';
-import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/event')({
   validateSearch: (search): { coupon?: CouponName } => ({
@@ -37,7 +35,6 @@ export const Route = createFileRoute('/event')({
 
 function EventPage() {
   const { coupon } = Route.useSearch();
-  const device = useDevice();
   const { modalRef, openModal, closeModal, isOpen } = useModal({
     closeOnBackdropClick: false,
   });
@@ -86,7 +83,7 @@ function EventPage() {
     return <EventLoadingModal closeModal={closeModal} />;
   };
   return (
-    <Container device={device}>
+    <Container>
       <LandingHeader />
       <EventHero onApply={applyEvent} />
       <EventPrize />
@@ -105,7 +102,7 @@ function EventPage() {
   );
 }
 
-const Container = styled.main<{ device: Device }>`
+const Container = styled.main`
   width: 100%;
   min-height: 100dvh;
   max-width: 1280px;

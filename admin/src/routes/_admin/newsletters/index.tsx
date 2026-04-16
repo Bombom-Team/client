@@ -27,6 +27,10 @@ type StatusBadgeTone =
   | 'discontinued'
   | 'unknown';
 
+const CATEGORY_BADGE_HUES = [
+  12, 28, 44, 60, 84, 108, 132, 156, 180, 208, 236, 272,
+];
+
 export const Route = createFileRoute('/_admin/newsletters/')({
   component: NewslettersPage,
   validateSearch: (search: Record<string, unknown>) => ({
@@ -105,6 +109,19 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
 
   // Normalize data: Handle both PageableResponse and flat array
   const content = Array.isArray(data) ? data : data.content || [];
+  const categoryBadgeColors = new Map(
+    categories.map((category, index) => {
+      const hue = CATEGORY_BADGE_HUES[index % CATEGORY_BADGE_HUES.length];
+
+      return [
+        category.name,
+        {
+          background: `hsl(${hue} 95% 92%)`,
+          text: `hsl(${hue} 72% 34%)`,
+        },
+      ];
+    }),
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,7 +280,18 @@ function NewsletterContent({ search }: { search: Record<string, unknown> }) {
                   <Thumbnail src={newsletter.imageUrl} alt={newsletter.name} />
                   <Info>
                     <TopMetaRow>
-                      <Category>{newsletter.categoryName}</Category>
+                      <Category
+                        $background={
+                          categoryBadgeColors.get(newsletter.categoryName)
+                            ?.background ?? '#f3f4f6'
+                        }
+                        $textColor={
+                          categoryBadgeColors.get(newsletter.categoryName)
+                            ?.text ?? '#4b5563'
+                        }
+                      >
+                        {newsletter.categoryName}
+                      </Category>
                       <StatusBadge $tone={getStatusTone(newsletter.status)}>
                         {getStatusLabel(newsletter.status)}
                       </StatusBadge>
@@ -470,17 +498,18 @@ const Info = styled.div`
   flex-direction: column;
 `;
 
-const Category = styled.span`
-  padding: 3px 8px;
-  border-radius: 4px;
+const Category = styled.span<{ $background: string; $textColor: string }>`
+  padding: 5px 10px;
+  border-radius: 6px;
 
   display: inline-block;
   align-self: flex-start;
 
-  background-color: #ffedd5;
-  color: #ea580c;
+  background-color: ${({ $background }) => $background};
+  color: ${({ $textColor }) => $textColor};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
-  font-size: 10px;
+  font-size: 12px;
+  line-height: 1.2;
 `;
 
 const TopMetaRow = styled.div`

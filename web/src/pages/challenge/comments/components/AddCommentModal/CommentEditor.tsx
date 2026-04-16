@@ -29,7 +29,7 @@ const CommentEditor = ({
 
   return (
     <Container>
-      <Title device={device}>코멘트 작성</Title>
+      <Title>코멘트 작성</Title>
       <Comment
         device={device}
         value={comment}
@@ -39,12 +39,12 @@ const CommentEditor = ({
         isError={showError}
       />
       <MessageWrapper>
-        <MinLengthMessage device={device} isError={showError}>
+        <MinLengthMessage isError={showError}>
           {showError
             ? `최소 ${minLength}자 이상 입력해주세요`
             : `최소 ${minLength}자 이상`}
         </MinLengthMessage>
-        <CharacterCount device={device} isError={showError}>
+        <CharacterCount isError={showError}>
           {comment.length}/{maxLength}
         </CharacterCount>
       </MessageWrapper>
@@ -60,10 +60,9 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Title = styled.h3<{ device: Device }>`
+const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
 `;
 
 const Comment = styled.textarea<{ device: Device; isError: boolean }>`
@@ -76,8 +75,7 @@ const Comment = styled.textarea<{ device: Device; isError: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 
   resize: vertical;
 
@@ -99,18 +97,16 @@ const MessageWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const MinLengthMessage = styled.p<{ device: Device; isError: boolean }>`
+const MinLengthMessage = styled.p<{ isError: boolean }>`
   color: ${({ theme, isError }) =>
     isError ? theme.colors.error : theme.colors.textSecondary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.body3};
 `;
 
-const CharacterCount = styled.p<{ device: Device; isError: boolean }>`
+const CharacterCount = styled.p<{ isError: boolean }>`
   margin-left: auto;
 
   color: ${({ theme, isError }) =>
     isError ? theme.colors.error : theme.colors.textSecondary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.body3};
 `;

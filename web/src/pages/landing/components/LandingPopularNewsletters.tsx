@@ -59,7 +59,7 @@ const LandingPopularNewsletters = () => {
   return (
     <Container ref={visibleRef} device={device}>
       <TitleWrapper>
-        <Title device={device}>인기 뉴스레터</Title>
+        <Title>인기 뉴스레터</Title>
         <Subtitle device={device}>
           봄봄과 함께 하고 있는 다양한 분야의 뉴스레터들
         </Subtitle>
@@ -78,12 +78,10 @@ const LandingPopularNewsletters = () => {
                 alt={newsletter.name}
                 device={device}
               />
-              <NewsletterCategory device={device}>
-                {newsletter.category}
-              </NewsletterCategory>
+              <NewsletterCategory>{newsletter.category}</NewsletterCategory>
             </NewsletterInfoHeader>
-            <NewsletterName device={device}>{newsletter.name}</NewsletterName>
-            <NewsletterDescription device={device}>
+            <NewsletterName>{newsletter.name}</NewsletterName>
+            <NewsletterDescription>
               {newsletter.description}
             </NewsletterDescription>
           </NewsletterCard>
@@ -117,17 +115,16 @@ const TitleWrapper = styled.div`
   justify-content: center;
 `;
 
-const Title = styled.h2<{ device: Device }>`
+const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.heading2};
   text-align: center;
 `;
 
 const Subtitle = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
   text-align: center;
 `;
 
@@ -183,14 +180,13 @@ const NewsletterInfoHeader = styled.div`
   justify-content: space-between;
 `;
 
-const NewsletterCategory = styled.div<{ device: Device }>`
+const NewsletterCategory = styled.div`
   padding: 4px 8px;
   border-radius: 12px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.caption : theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.body3};
 `;
 
 const NewsletterThumbnail = styled.img<{ device: Device }>`
@@ -203,13 +199,12 @@ const NewsletterThumbnail = styled.img<{ device: Device }>`
   justify-content: center;
 `;
 
-const NewsletterName = styled.h3<{ device: Device }>`
+const NewsletterName = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-const NewsletterDescription = styled.p<{ device: Device }>`
+const NewsletterDescription = styled.p`
   overflow: hidden;
 
   color: ${({ theme }) => theme.colors.textTertiary};
@@ -231,8 +226,7 @@ const RecommendPageLink = styled(Link)<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 
   cursor: pointer;
   text-decoration: none;

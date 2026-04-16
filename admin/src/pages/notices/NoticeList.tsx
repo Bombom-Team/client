@@ -144,19 +144,21 @@ const EmptyState = styled.div`
 `;
 
 const NoticeMeta = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.md};
   margin-top: ${({ theme }) => theme.spacing.sm};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
 `;
 
 const CategoryBadge = styled.span<{ category: string }>`
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: ${({ theme }) => theme.fontSize.xs};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
+
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const DateText = styled.span`

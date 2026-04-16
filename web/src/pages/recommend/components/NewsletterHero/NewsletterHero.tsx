@@ -69,8 +69,7 @@ const Container = styled.div`
 const HeroContent = styled.div<{ isPC: boolean }>`
   z-index: ${({ theme }) => theme.zIndex.content};
   width: 100%;
-  height: 280px;
-  padding: 56px;
+  height: ${({ isPC }) => (isPC ? '280px' : '200px')};
 
   display: flex;
   gap: ${({ isPC }) => (isPC ? '16px' : '12px')};

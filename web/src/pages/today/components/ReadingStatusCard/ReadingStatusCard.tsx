@@ -76,7 +76,7 @@ const ReadingStatusCard = () => {
 
       <StreakWrapper device={device}>
         <StreakCounter streakReadDay={streakReadDay} />
-        <StreakDescription device={device}>연속 읽기 중!</StreakDescription>
+        <StreakDescription>연속 읽기 중!</StreakDescription>
       </StreakWrapper>
 
       <ProgressWithLabel
@@ -107,7 +107,6 @@ const ReadingStatusCard = () => {
                 <WeeklyGoalInput
                   goalValue={goalCount}
                   isPending={isPending}
-                  device={device}
                   onSave={handleSave}
                   onCancel={handleCancel}
                   onGoalChange={handleGoalChange}
@@ -173,16 +172,15 @@ export const Title = styled.h2`
 
 const StreakWrapper = styled.div<{ device: Device }>`
   display: flex;
-  gap: ${({ device }) => (device === 'pc' ? '8px' : '0px')};
+  gap: ${({ device }) => (device === 'pc' ? '8px' : '0')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
-const StreakDescription = styled.p<{ device: Device }>`
+const StreakDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ device, theme }) =>
-    device === 'pc' ? theme.fonts.body1 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.body1};
   text-align: center;
 `;
 

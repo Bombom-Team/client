@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import * as Notifications from 'expo-notifications';
 import {
   getMessaging,
@@ -30,15 +30,23 @@ Notifications.setNotificationHandler({
 
 const useNotification = () => {
   const { sendMessageToWeb } = useWebView();
+  const isRegisteringRef = useRef(false);
 
   const registerFCMToken = useCallback(async () => {
-    const memberId = await getMemberId();
-    if (!memberId) return;
-
-    const granted = await requestNotificationPermission();
-    if (!granted) return;
+    if (isRegisteringRef.current) {
+      console.log('FCM 토큰 등록이 이미 진행 중입니다.');
+      return;
+    }
 
     try {
+      isRegisteringRef.current = true;
+
+      const memberId = await getMemberId();
+      if (!memberId) return;
+
+      const granted = await requestNotificationPermission();
+      if (!granted) return;
+
       const deviceUuid = await getDeviceUUID();
       const token = await getFCMToken();
 
@@ -53,6 +61,8 @@ const useNotification = () => {
       }
     } catch (error) {
       console.error('FCM 토큰 등록에 실패했습니다.', error);
+    } finally {
+      isRegisteringRef.current = false;
     }
   }, []);
 

@@ -10,6 +10,7 @@ import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import Pagination from '@/components/Pagination';
 import { ChallengesTableBody } from '@/pages/challenges/ChallengesTableBody';
+import ChallengeCreateModal from '@/pages/challenges/components/ChallengeCreateModal';
 import {
   CHALLENGE_STATUS_LABELS,
   type ChallengeStatus,
@@ -38,6 +39,7 @@ function ChallengesPage() {
   const navigate = useNavigate();
   const [totalChallenges, setTotalChallenges] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const statusOptions = useMemo(
     () =>
@@ -75,6 +77,14 @@ function ChallengesPage() {
     [],
   );
 
+  const handleOpenCreateModal = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
+  };
+
   return (
     <Layout title="챌린지">
       <Container>
@@ -96,6 +106,9 @@ function ChallengesPage() {
                 ))}
               </Select>
             </Filter>
+            <Button type="button" onClick={handleOpenCreateModal}>
+              챌린지 생성
+            </Button>
             <Button
               onClick={() =>
                 navigate({
@@ -145,6 +158,10 @@ function ChallengesPage() {
           />
         )}
       </Container>
+
+      {isCreateModalOpen && (
+        <ChallengeCreateModal onClose={handleCloseCreateModal} />
+      )}
     </Layout>
   );
 }

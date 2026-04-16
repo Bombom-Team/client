@@ -24,9 +24,9 @@ const LoginRequiredModal = ({ closeModal }: LoginRequiredModalProps) => {
 
   return (
     <Container isMobile={isMobile}>
-      <ModalTitle isMobile={isMobile}>로그인 후 신청할 수 있어요</ModalTitle>
+      <ModalTitle>로그인 후 신청할 수 있어요</ModalTitle>
 
-      <ModalDescription isMobile={isMobile}>
+      <ModalDescription>
         이 기능은 로그인한 사용자만 사용할 수 있어요.
       </ModalDescription>
 

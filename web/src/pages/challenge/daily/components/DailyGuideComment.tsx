@@ -3,7 +3,6 @@ import { useState } from 'react';
 import ViewAllCommentsButton from './ViewAllCommentsButton';
 import { useSubmitDailyGuideCommentMutation } from '../../index/hooks/useSubmitDailyGuideComment';
 import Button from '@/components/Button/Button';
-import { useDevice } from '@/hooks/useDevice';
 import type { components } from '@/types/openapi';
 
 type MyComment = components['schemas']['TodayDailyGuideResponse']['myComment'];
@@ -27,9 +26,6 @@ const DailyGuideComment = ({
 }: DailyGuideCommentProps) => {
   const [comment, setComment] = useState('');
 
-  const device = useDevice();
-  const isMobile = device === 'mobile';
-
   const { mutate: submitComment } = useSubmitDailyGuideCommentMutation({
     challengeId,
     dayIndex,
@@ -45,9 +41,7 @@ const DailyGuideComment = ({
       <CommentSection>
         <SubmittedLabel>제출한 답변</SubmittedLabel>
         <SubmittedCommentBox>
-          <SubmittedComment isMobile={isMobile}>
-            {myComment.content}
-          </SubmittedComment>
+          <SubmittedComment>{myComment.content}</SubmittedComment>
         </SubmittedCommentBox>
         {viewAllCommentsEnabled && (
           <ViewAllCommentsButton
@@ -61,10 +55,9 @@ const DailyGuideComment = ({
 
   return (
     <CommentSection>
-      <CommentLabel isMobile={isMobile}>답변 작성</CommentLabel>
+      <CommentLabel>답변 작성</CommentLabel>
       <CommentInputWrapper>
         <CommentTextarea
-          isMobile={isMobile}
           placeholder="데일리 가이드의 질문에 대한 답변을 입력해주세요."
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -106,10 +99,9 @@ const CommentSection = styled.div`
   flex-direction: column;
 `;
 
-const CommentLabel = styled.label<{ isMobile: boolean }>`
+const CommentLabel = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
 `;
 
 const CharCount = styled.span`
@@ -125,7 +117,7 @@ const CommentInputWrapper = styled.div`
   flex-direction: column;
 `;
 
-const CommentTextarea = styled.textarea<{ isMobile: boolean }>`
+const CommentTextarea = styled.textarea`
   width: 100%;
   height: 120px;
   padding: 12px 16px;
@@ -133,8 +125,7 @@ const CommentTextarea = styled.textarea<{ isMobile: boolean }>`
   border-radius: 8px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 
   resize: none;
 
@@ -180,10 +171,9 @@ const SubmittedCommentBox = styled.div`
   background-color: ${({ theme }) => theme.colors.backgroundHover};
 `;
 
-const SubmittedComment = styled.p<{ isMobile: boolean }>`
+const SubmittedComment = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
 
   overflow-wrap: break-word;
 `;

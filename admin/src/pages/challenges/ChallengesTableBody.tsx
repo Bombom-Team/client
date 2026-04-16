@@ -63,6 +63,12 @@ export function ChallengesTableBody({
                     navigate({
                       to: '/challenges/$challengeId',
                       params: { challengeId: challenge.id.toString() },
+                      search: {
+                        page: 0,
+                        teamId: undefined,
+                        hasTeam: undefined,
+                        survival: undefined,
+                      },
                     })
                 : undefined
             }

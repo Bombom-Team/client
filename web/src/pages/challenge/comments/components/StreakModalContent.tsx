@@ -40,8 +40,8 @@ const StreakModalContent = ({
   return (
     <Container isMobile={isMobile}>
       <TitleWrapper>
-        <Title isMobile={isMobile}>{`${streakDays} Day`}</Title>
-        <Subtitle isMobile={isMobile}>스트릭</Subtitle>
+        <Title>{`${streakDays} Day`}</Title>
+        <Subtitle>스트릭</Subtitle>
       </TitleWrapper>
       <FlameWrapper isMobile={isMobile}>
         <Fire src={STREAK_IMAGE_SRC} alt="스트릭 불꽃" isMobile={isMobile} />
@@ -74,9 +74,7 @@ const StreakModalContent = ({
           },
         )}
       </WeekWrapper>
-      <Description isMobile={isMobile}>
-        챌린지 기록이 꾸준히 쌓이고 있어요.
-      </Description>
+      <Description>챌린지 기록이 꾸준히 쌓이고 있어요.</Description>
       <EncouragementText isMobile={isMobile}>
         {encouragementMessage}
       </EncouragementText>
@@ -137,17 +135,15 @@ const TitleWrapper = styled.div`
   align-items: center;
 `;
 
-const Title = styled.h2<{ isMobile: boolean }>`
+const Title = styled.h2`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading3 : theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.heading2};
   font-weight: 800;
 `;
 
-const Subtitle = styled.p<{ isMobile: boolean }>`
+const Subtitle = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.heading5};
   font-weight: 700;
 `;
 
@@ -232,7 +228,7 @@ const DayCheckBox = styled.div<{
 
 const CheckMark = styled.span`
   font-weight: 700;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
 `;
 
@@ -268,20 +264,19 @@ const FreezeCheckMark = styled.span`
 
   color: ${({ theme }) => theme.colors.white};
   font-weight: 700;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
 `;
 
-const Description = styled.p<{ isMobile: boolean }>`
+const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.body1};
   line-height: 1.6;
 `;
 
 const EncouragementText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
+  font: ${({ isMobile, theme }) =>
     isMobile ? theme.fonts.body1 : theme.fonts.heading6};
   font-weight: 600;
 `;

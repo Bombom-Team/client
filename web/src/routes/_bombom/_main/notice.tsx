@@ -6,9 +6,7 @@ import { useEffect, useState } from 'react';
 import { queries } from '@/apis/queries';
 import Accordion from '@/components/Accordion/Accordion';
 import Badge from '@/components/Badge/Badge';
-import { useDevice } from '@/hooks/useDevice';
 import EmptyNoticeCard from '@/pages/notice/components/EmptyNoticeCard';
-import type { Device } from '@/hooks/useDevice';
 import MenuIcon from '#/assets/svg/menu.svg';
 
 export const Route = createFileRoute('/_bombom/_main/notice')({
@@ -28,7 +26,6 @@ export const Route = createFileRoute('/_bombom/_main/notice')({
 
 function NoticePage() {
   const { data: notices } = useQuery(queries.notices());
-  const device = useDevice();
 
   const [openNoticeId, setOpenNoticeId] = useState<number | null | undefined>(
     null,
@@ -53,7 +50,7 @@ function NoticePage() {
         <Title>공지사항</Title>
       </TitleWrapper>
 
-      <ContentWrapper device={device}>
+      <ContentWrapper>
         {notices?.content?.length === 0 && <EmptyNoticeCard />}
         {notices?.content?.map((content) => {
           const isOpen = openNoticeId === content.noticeId;
@@ -125,7 +122,7 @@ const Title = styled.h1`
   font: ${({ theme }) => theme.fonts.heading3};
 `;
 
-const ContentWrapper = styled.div<{ device: Device }>`
+const ContentWrapper = styled.div`
   width: 100%;
 
   display: flex;

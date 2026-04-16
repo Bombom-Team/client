@@ -103,6 +103,12 @@ const reset = css`
   }
 
   html {
+    font-size: 87.5%;
+
+    @media (min-width: 768px) {
+      font-size: 100%;
+    }
+
     --safe-area-inset-top: env(safe-area-inset-top, 0px);
     --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
 

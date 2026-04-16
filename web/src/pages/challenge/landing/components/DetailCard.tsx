@@ -34,11 +34,11 @@ const DetailCard = ({
     >
       <ImageSection device={device}>{renderedImageContent}</ImageSection>
       <TextSection device={device}>
-        <FeatureTitleWrapper device={device}>
+        <FeatureTitleWrapper>
           {icon}
-          <FeatureTitle device={device}>{title}</FeatureTitle>
+          <FeatureTitle>{title}</FeatureTitle>
         </FeatureTitleWrapper>
-        <Description device={device}>{description}</Description>
+        <Description>{description}</Description>
       </TextSection>
     </FeatureItem>
   );
@@ -89,34 +89,24 @@ const TextSection = styled.div<{
   align-items: flex-start;
 `;
 
-const FeatureTitleWrapper = styled.div<{ device: Device }>`
+const FeatureTitleWrapper = styled.div`
   width: 100%;
 
   display: flex;
   gap: 4px;
-  flex-direction: ${({ device }) =>
-    device === 'mobile' ? 'row-reverse' : 'row'};
+  flex-direction: row;
   align-items: center;
-  justify-content: ${({ device }) =>
-    device === 'mobile' ? 'center' : 'flex-start'};
+  justify-content: flex-start;
 `;
 
-const FeatureTitle = styled.h3<{ device: Device }>`
+const FeatureTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.heading5;
-    return device === 'tablet' ? theme.fonts.heading4 : theme.fonts.heading3;
-  }};
+  font: ${({ theme }) => theme.fonts.heading3};
 `;
 
-const Description = styled.p<{
-  device: Device;
-}>`
+const Description = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.body2;
-    return device === 'tablet' ? theme.fonts.body1 : theme.fonts.heading5;
-  }};
+  font: ${({ theme }) => theme.fonts.heading5};
   font-weight: 400;
   line-height: 2;
 `;

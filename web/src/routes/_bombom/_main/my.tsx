@@ -128,7 +128,6 @@ function MyPage() {
           id={`panel-${activeTabParam}`}
           role="tabpanel"
           aria-labelledby={`tab-${activeTabParam}`}
-          device={device}
         >
           {renderTabContent()}
         </TabPanel>
@@ -220,7 +219,7 @@ const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   }),
 };
 
-const TabPanel = styled.div<{ device: Device }>`
+const TabPanel = styled.div`
   width: 100%;
   min-width: 0;
 

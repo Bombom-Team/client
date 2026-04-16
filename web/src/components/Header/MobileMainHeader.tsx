@@ -15,12 +15,12 @@ const MobileMainHeader = () => {
     <Container>
       <HeaderLogo />
       <UserInfoWrapper>
-        <Button
+        <NavButton
           onClick={() => navigate({ to: '/notice' })}
-          variant={'transparent'}
+          variant="transparent"
         >
-          <MegaphoneIcon width={22} height={24} />
-        </Button>
+          <MegaphoneIcon width={20} height={20} />
+        </NavButton>
         {userProfile ? (
           <HeaderProfile userProfile={userProfile} device="mobile" />
         ) : (
@@ -54,8 +54,21 @@ const Container = styled.header`
 
   background: ${({ theme }) => theme.colors.white};
 `;
+
 const UserInfoWrapper = styled.div`
   display: flex;
-  gap: 6px;
-  justify-content: flex-end;
+  gap: 12px;
+  justify-content: center;
+`;
+
+const NavButton = styled(Button)`
+  padding: 0;
+
+  display: flex;
+  gap: 0;
+  flex-direction: column;
+
+  :hover {
+    background: none;
+  }
 `;

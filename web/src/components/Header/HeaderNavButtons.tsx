@@ -4,6 +4,7 @@ import type { Device } from '@/hooks/useDevice';
 import type { Nav } from '@/types/nav';
 import CompassIcon from '#/assets/svg/compass.svg';
 import MailIcon from '#/assets/svg/mail.svg';
+import PenIcon from '#/assets/svg/pen.svg';
 import StorageIcon from '#/assets/svg/storage.svg';
 import ChallengeIcon from '#/assets/svg/trophy.svg';
 
@@ -11,6 +12,7 @@ const NAV_LABEL = {
   today: '투데이',
   storage: '보관함',
   challenge: '챌린지',
+  blog: '블로그',
   recommend: '둘러보기',
 } as const;
 
@@ -63,6 +65,24 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
         />
         <p>{NAV_LABEL.challenge}</p>
       </NavButton>
+      {isPC && (
+        <NavButton
+          active={activeNav === 'blog'}
+          isPC={isPC}
+          to="/blog"
+          className="nav-link"
+        >
+          <PenIcon
+            width={20}
+            height={20}
+            color={activeNav === 'blog' ? 'white' : 'black'}
+          />
+          <BlogLabel>
+            <p>{NAV_LABEL.blog}</p>
+            <BetaBadge active={activeNav === 'blog'}>Beta</BetaBadge>
+          </BlogLabel>
+        </NavButton>
+      )}
       <NavButton
         active={activeNav === 'recommend'}
         isPC={isPC}
@@ -81,6 +101,25 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
 };
 
 export default HeaderNavButtons;
+
+const BlogLabel = styled.div`
+  position: relative;
+
+  display: flex;
+  align-items: center;
+`;
+
+const BetaBadge = styled.span<{ active?: boolean }>`
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  padding: 2px 4px;
+
+  background: none;
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.body4};
+  font-weight: 700;
+`;
 
 const NavButton = styled(Link, {
   shouldForwardProp: (prop) => prop !== 'active' && prop !== 'isPC',

@@ -1,6 +1,9 @@
 import { http, HttpResponse } from 'msw';
 import { ENV } from '../../apis/env';
-import { getRankingMetadata } from '../datas/monthlyReadingRank';
+import {
+  getRankingMetadata,
+  getStreakRankingMetadata,
+} from '../datas/monthlyReadingRank';
 import { TRENDY_NEWSLETTERS } from '../datas/trendyNewsLetter';
 
 const baseURL = ENV.baseUrl;
@@ -53,6 +56,35 @@ export const membersHandlers = [
     return HttpResponse.json({
       ...metaData,
       data: rankingData,
+    });
+  }),
+
+  http.get(`${baseURL}/members/me/reading/streak/rank`, ({ request }) => {
+    const url = new URL(request.url);
+    const limit = url.searchParams.get('limit');
+    const limitNumber = limit ? Number(limit) : 10;
+
+    const { data, ...metaData } = getStreakRankingMetadata();
+    const rankingData = data.slice(0, limitNumber);
+
+    return HttpResponse.json({
+      ...metaData,
+      data: rankingData,
+    });
+  }),
+
+  http.get(`${baseURL}/members/me/reading/streak/rank/me`, () => {
+    return HttpResponse.json({
+      rank: 12,
+      nickname: '나',
+      dayCount: 7,
+      badges: {
+        challenge: {
+          name: '뉴스레터 한달 읽기',
+          generation: 1,
+          grade: 'bronze',
+        },
+      },
     });
   }),
 ];

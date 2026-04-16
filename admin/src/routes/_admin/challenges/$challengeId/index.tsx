@@ -5,7 +5,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { challengesQueries } from '@/apis/challenges/challenges.query';
@@ -18,10 +18,57 @@ import {
   ChallengeParticipantsTableBodyError,
   ChallengeParticipantsTableBodyLoading,
 } from '@/pages/challenges/ChallengeParticipantsTableBody';
+import ChallengeUpdateModal from '@/pages/challenges/components/ChallengeUpdateModal';
+import { useDeleteChallengeMutation } from '@/pages/challenges/hooks/useDeleteChallengeMutation';
 
 const PARTICIPANTS_PAGE_SIZE = 10;
+const PARTICIPANT_TEAM_FILTER_OPTIONS = ['ALL', 'YES', 'NO'] as const;
+const PARTICIPANT_SURVIVAL_FILTER_OPTIONS = [
+  'ALL',
+  'SURVIVED',
+  'FAILED',
+] as const;
+const getParticipantSearchParams = (
+  page: number,
+  teamId: string,
+  hasTeam: string,
+  survival: string,
+) => ({
+  page,
+  teamId: teamId.trim() ? teamId : undefined,
+  hasTeam: hasTeam !== 'ALL' ? hasTeam : undefined,
+  survival: survival !== 'ALL' ? survival : undefined,
+});
 
 export const Route = createFileRoute('/_admin/challenges/$challengeId/')({
+  validateSearch: (search: Record<string, unknown>) => {
+    const rawHasTeam =
+      typeof search.hasTeam === 'string' ? search.hasTeam : 'ALL';
+    const rawSurvival =
+      typeof search.survival === 'string' ? search.survival : 'ALL';
+
+    return {
+      page: Math.max(Number(search.page ?? 0) || 0, 0),
+      teamId:
+        typeof search.teamId === 'string' && search.teamId.trim()
+          ? search.teamId
+          : undefined,
+      hasTeam: PARTICIPANT_TEAM_FILTER_OPTIONS.includes(
+        rawHasTeam as (typeof PARTICIPANT_TEAM_FILTER_OPTIONS)[number],
+      )
+        ? rawHasTeam === 'ALL'
+          ? undefined
+          : rawHasTeam
+        : undefined,
+      survival: PARTICIPANT_SURVIVAL_FILTER_OPTIONS.includes(
+        rawSurvival as (typeof PARTICIPANT_SURVIVAL_FILTER_OPTIONS)[number],
+      )
+        ? rawSurvival === 'ALL'
+          ? undefined
+          : rawSurvival
+        : undefined,
+    };
+  },
   component: ChallengeDetailPage,
 });
 
@@ -39,19 +86,13 @@ function ChallengeDetailPage() {
 
 function ChallengeDetailContent() {
   const { challengeId } = Route.useParams();
-  const navigate = useNavigate();
-  const [participantsPage, setParticipantsPage] = useState(0);
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
   const [participantsTotal, setParticipantsTotal] = useState(0);
   const [participantsTotalPages, setParticipantsTotalPages] = useState(0);
-  const [teamIdInput, setTeamIdInput] = useState('');
-  const [hasTeamFilter, setHasTeamFilter] = useState<'ALL' | 'YES' | 'NO'>(
-    'ALL',
-  );
-  const [survivalFilter, setSurvivalFilter] = useState<
-    'ALL' | 'SURVIVED' | 'FAILED'
-  >('ALL');
   const [shieldCountInput, setShieldCountInput] = useState('1');
   const [isShieldModalOpen, setIsShieldModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
   const id = Number(challengeId);
 
@@ -60,30 +101,30 @@ function ChallengeDetailContent() {
   const { data: teams } = useSuspenseQuery(challengesQueries.teams(id));
 
   const challengeTeamId = useMemo(() => {
-    const trimmed = teamIdInput.trim();
+    const trimmed = (search.teamId ?? '').trim();
     if (!trimmed) {
       return undefined;
     }
 
     const parsed = Number(trimmed);
     return Number.isNaN(parsed) ? undefined : parsed;
-  }, [teamIdInput]);
+  }, [search.teamId]);
 
   const hasTeam = useMemo(() => {
-    if (hasTeamFilter === 'ALL') {
+    if (!search.hasTeam) {
       return undefined;
     }
 
-    return hasTeamFilter === 'YES';
-  }, [hasTeamFilter]);
+    return search.hasTeam === 'YES';
+  }, [search.hasTeam]);
 
   const isSurvived = useMemo(() => {
-    if (survivalFilter === 'ALL') {
+    if (!search.survival) {
       return undefined;
     }
 
-    return survivalFilter === 'SURVIVED';
-  }, [survivalFilter]);
+    return search.survival === 'SURVIVED';
+  }, [search.survival]);
 
   const shieldCount = useMemo(() => {
     const trimmed = shieldCountInput.trim();
@@ -100,30 +141,51 @@ function ChallengeDetailContent() {
   );
 
   const handleParticipantsPageChange = (page: number) => {
-    if (
-      page < 0 ||
-      page === participantsPage ||
-      page >= participantsTotalPages
-    ) {
+    if (page < 0 || page === search.page || page >= participantsTotalPages) {
       return;
     }
 
-    setParticipantsPage(page);
+    navigate({
+      search: getParticipantSearchParams(
+        page,
+        search.teamId ?? '',
+        search.hasTeam ?? 'ALL',
+        search.survival ?? 'ALL',
+      ),
+    });
   };
 
   const handleTeamIdChange = (value: string) => {
-    setTeamIdInput(value);
-    setParticipantsPage(0);
+    navigate({
+      search: getParticipantSearchParams(
+        0,
+        value,
+        search.hasTeam ?? 'ALL',
+        search.survival ?? 'ALL',
+      ),
+    });
   };
 
   const handleHasTeamChange = (value: 'ALL' | 'YES' | 'NO') => {
-    setHasTeamFilter(value);
-    setParticipantsPage(0);
+    navigate({
+      search: getParticipantSearchParams(
+        0,
+        search.teamId ?? '',
+        value,
+        search.survival ?? 'ALL',
+      ),
+    });
   };
 
   const handleSurvivalChange = (value: 'ALL' | 'SURVIVED' | 'FAILED') => {
-    setSurvivalFilter(value);
-    setParticipantsPage(0);
+    navigate({
+      search: getParticipantSearchParams(
+        0,
+        search.teamId ?? '',
+        search.hasTeam ?? 'ALL',
+        value,
+      ),
+    });
   };
 
   const { mutate: grantShield, isPending: isGrantingShield } = useMutation({
@@ -143,12 +205,30 @@ function ChallengeDetailContent() {
       alert('쉴드 지급에 실패했습니다.');
     },
   });
+  const { mutate: deleteChallenge, isPending: isDeletingChallenge } =
+    useDeleteChallengeMutation({
+      onSuccess: () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        navigate({ to: '/challenges', search: { page: 0, size: 10 } } as any);
+      },
+    });
 
   const handleManageTeams = () => {
     navigate({
       to: '/challenges/$challengeId/teams',
       params: { challengeId },
+      search: getParticipantSearchParams(
+        search.page,
+        search.teamId ?? '',
+        search.hasTeam ?? 'ALL',
+        search.survival ?? 'ALL',
+      ),
     });
+  };
+
+  const handleBack = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    navigate({ to: '/challenges', search: { page: 0, size: 10 } } as any);
   };
 
   const handleGrantShield = () => {
@@ -170,6 +250,26 @@ function ChallengeDetailContent() {
     setIsShieldModalOpen(false);
   };
 
+  const handleOpenUpdateModal = () => {
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setIsUpdateModalOpen(false);
+  };
+
+  const handleDeleteChallenge = () => {
+    if (
+      !confirm(
+        '정말 이 챌린지를 삭제하시겠습니까?\n참여자가 있으면 삭제할 수 없습니다.',
+      )
+    ) {
+      return;
+    }
+
+    deleteChallenge(id);
+  };
+
   if (!challenge) {
     return (
       <Container>
@@ -180,6 +280,27 @@ function ChallengeDetailContent() {
 
   return (
     <ChallengeDetailView challenge={challenge}>
+      <DetailActions>
+        <Button variant="secondary" onClick={handleOpenUpdateModal}>
+          수정
+        </Button>
+        <Button
+          variant="danger"
+          onClick={handleDeleteChallenge}
+          disabled={isDeletingChallenge}
+        >
+          {isDeletingChallenge ? '삭제 중...' : '삭제'}
+        </Button>
+        <Button onClick={handleBack}>목록</Button>
+      </DetailActions>
+
+      {isUpdateModalOpen && (
+        <ChallengeUpdateModal
+          challenge={challenge}
+          onClose={handleCloseUpdateModal}
+        />
+      )}
+
       <ParticipantsSection>
         <ParticipantsHeader>
           <ParticipantsTitle>참여자 ({participantsTotal}명)</ParticipantsTitle>
@@ -227,7 +348,7 @@ function ChallengeDetailContent() {
             <FilterLabel htmlFor="challenge-team-id">팀 ID</FilterLabel>
             <FilterSelect
               id="challenge-team-id"
-              value={teamIdInput}
+              value={search.teamId ?? ''}
               onChange={(event) => handleTeamIdChange(event.target.value)}
             >
               <option value="">전체</option>
@@ -242,7 +363,7 @@ function ChallengeDetailContent() {
             <FilterLabel htmlFor="challenge-has-team">팀 매칭</FilterLabel>
             <FilterSelect
               id="challenge-has-team"
-              value={hasTeamFilter}
+              value={search.hasTeam ?? 'ALL'}
               onChange={(event) =>
                 handleHasTeamChange(event.target.value as 'ALL' | 'YES' | 'NO')
               }
@@ -256,7 +377,7 @@ function ChallengeDetailContent() {
             <FilterLabel htmlFor="challenge-survival">상태</FilterLabel>
             <FilterSelect
               id="challenge-survival"
-              value={survivalFilter}
+              value={search.survival ?? 'ALL'}
               onChange={(event) =>
                 handleSurvivalChange(
                   event.target.value as 'ALL' | 'SURVIVED' | 'FAILED',
@@ -295,7 +416,7 @@ function ChallengeDetailContent() {
             >
               <ChallengeParticipantsTableBody
                 challengeId={id}
-                currentPage={participantsPage}
+                currentPage={search.page}
                 pageSize={PARTICIPANTS_PAGE_SIZE}
                 challengeTeamId={challengeTeamId}
                 hasTeam={hasTeam}
@@ -311,7 +432,7 @@ function ChallengeDetailContent() {
           <Pagination
             totalCount={participantsTotal}
             totalPages={participantsTotalPages}
-            currentPage={participantsPage}
+            currentPage={search.page}
             onPageChange={handleParticipantsPageChange}
             countUnitLabel="명"
           />
@@ -335,6 +456,15 @@ const ParticipantsSection = styled.section`
   margin-top: ${({ theme }) => theme.spacing.xl};
   padding-top: ${({ theme }) => theme.spacing.xl};
   border-top: 1px solid ${({ theme }) => theme.colors.gray200};
+`;
+
+const DetailActions = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.lg};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-wrap: wrap;
+  justify-content: flex-end;
 `;
 
 const ParticipantsHeader = styled.div`

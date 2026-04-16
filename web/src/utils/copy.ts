@@ -1,3 +1,3 @@
 export const copyToClipboard = (text: string) => {
-  navigator.clipboard.writeText(text);
+  return navigator.clipboard.writeText(text);
 };
