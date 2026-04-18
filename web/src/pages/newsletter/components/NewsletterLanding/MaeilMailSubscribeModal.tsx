@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { useSubscribeNewsletterMutation } from './hooks/useSubscribeNewsletterMutation';
 import { TRACKS, WEEKLY_ISSUE_COUNTS } from '../../constants/subscribe';
+import { useSubscribeNewsletterMutation } from '../../hooks/useSubscribeNewsletterMutation';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
