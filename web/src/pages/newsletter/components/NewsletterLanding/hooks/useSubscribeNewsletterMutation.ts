@@ -1,12 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import { postNativeMaeilMailSubscription } from '@/apis/subscriptions/subscriptions.api';
 import { toast } from '@/components/Toast/utils/toastActions';
-
-const MAEIL_MAIL_WEEKLY_ISSUE_COUNT = 5;
+import type { WeeklyIssueCount } from '@/pages/newsletter/types/subscribe';
 
 interface UseSubscribeNewsletterMutationParams {
   newsletterId: number;
   onSubscribeSuccess: () => void;
+}
+
+interface SubscribeNewsletterParams {
+  tracks: string[];
+  weeklyIssueCount: WeeklyIssueCount;
 }
 
 export const useSubscribeNewsletterMutation = ({
@@ -14,11 +18,11 @@ export const useSubscribeNewsletterMutation = ({
   onSubscribeSuccess,
 }: UseSubscribeNewsletterMutationParams) => {
   return useMutation({
-    mutationFn: (tracks: string[]) =>
+    mutationFn: ({ tracks, weeklyIssueCount }: SubscribeNewsletterParams) =>
       postNativeMaeilMailSubscription({
         newsletterId,
         tracks,
-        weeklyIssueCount: MAEIL_MAIL_WEEKLY_ISSUE_COUNT,
+        weeklyIssueCount,
       }),
     onSuccess: () => {
       toast.success('사전 구독을 완료했어요!');

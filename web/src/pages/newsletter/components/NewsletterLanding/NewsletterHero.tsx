@@ -6,16 +6,16 @@ import useModal from '@/components/Modal/useModal';
 import Text from '@/components/Text';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import type { NewsletterLandingConfig } from '../../constants/newsletter';
+import type { NewsletterLandingConfig } from '../../types/subscribe';
 import logo from '#/assets/avif/logo.avif';
 import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
 
-interface Props {
+interface NewsletterHeroProps {
   config: NewsletterLandingConfig;
   newsletterId: number;
 }
 
-const NewsletterHero = ({ config, newsletterId }: Props) => {
+const NewsletterHero = ({ config, newsletterId }: NewsletterHeroProps) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { isLoggedIn, userProfile } = useAuth();
   const device = useDevice();

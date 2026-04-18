@@ -5,7 +5,7 @@ import LandingHeader from '@/pages/landing/components/LandingHeader';
 import HowSection from '@/pages/newsletter/components/NewsletterLanding/HowSection';
 import NewsletterFAQ from '@/pages/newsletter/components/NewsletterLanding/NewsletterFAQ';
 import NewsletterHero from '@/pages/newsletter/components/NewsletterLanding/NewsletterHero';
-import { NEWSLETTER_LANDING_CONFIG } from '@/pages/newsletter/constants/newsletter';
+import { NEWSLETTER_LANDING_CONFIG } from '@/pages/newsletter/constants/subscribe';
 
 export const Route = createFileRoute('/newsletter/$newsletterId/landing')({
   loader: ({ params }) => {

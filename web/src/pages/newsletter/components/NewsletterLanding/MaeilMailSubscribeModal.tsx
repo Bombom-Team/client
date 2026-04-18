@@ -1,15 +1,13 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { useSubscribeNewsletterMutation } from './hooks/useSubscribeNewsletterMutation';
+import { TRACKS, WEEKLY_ISSUE_COUNTS } from '../../constants/subscribe';
 import Checkbox from '@/components/Checkbox/Checkbox';
+import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import { useDevice } from '@/hooks/useDevice';
+import type { WeeklyIssueCount } from '../../types/subscribe';
 import type { Ref } from 'react';
-
-const TRACKS = [
-  { value: 'FE', label: '프론트엔드' },
-  { value: 'BE', label: '백엔드' },
-] as const;
 
 interface Props {
   modalRef: Ref<HTMLDivElement | null>;
@@ -28,6 +26,12 @@ const MaeilMailSubscribeModal = ({
 }: Props) => {
   const device = useDevice();
   const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
+  const [selectedWeeklyIssueCount, setSelectedWeeklyIssueCount] =
+    useState<WeeklyIssueCount | null>(null);
+  const [tracksError, setTracksError] = useState<string | null>(null);
+  const [weeklyIssueCountError, setWeeklyIssueCountError] = useState<
+    string | null
+  >(null);
 
   const { mutate: subscribeNewsletter, isPending } =
     useSubscribeNewsletterMutation({
@@ -41,11 +45,27 @@ const MaeilMailSubscribeModal = ({
         ? prev.filter((track) => track !== value)
         : [...prev, value],
     );
+    setTracksError(null);
+  };
+
+  const handleWeeklyIssueCountChange = (value: WeeklyIssueCount) => {
+    setSelectedWeeklyIssueCount(value);
+    setWeeklyIssueCountError(null);
   };
 
   const confirmSubscription = () => {
-    if (selectedTracks.length === 0) return;
-    subscribeNewsletter(selectedTracks);
+    const hasTracksError = selectedTracks.length === 0;
+    const hasWeeklyIssueCountError = selectedWeeklyIssueCount === null;
+
+    if (hasTracksError) setTracksError('분야를 선택해 주세요.');
+    if (hasWeeklyIssueCountError)
+      setWeeklyIssueCountError('발행 주기를 선택해 주세요.');
+    if (hasTracksError || hasWeeklyIssueCountError) return;
+
+    subscribeNewsletter({
+      tracks: selectedTracks,
+      weeklyIssueCount: selectedWeeklyIssueCount!,
+    });
   };
 
   return (
@@ -58,28 +78,59 @@ const MaeilMailSubscribeModal = ({
       <ModalContent>
         <Title>사전 구독</Title>
 
-        <Section>
-          <SectionLabel>분야</SectionLabel>
-          <TrackGrid>
-            {TRACKS.map(({ value, label }) => (
-              <Checkbox
-                key={value}
-                id={`track-${value}`}
-                checked={selectedTracks.includes(value)}
-                onChange={() => toggleTrack(value)}
-              >
-                {label}
-              </Checkbox>
-            ))}
-          </TrackGrid>
-          <Hint>*중복 선택 가능</Hint>
-        </Section>
+        <Flex direction="column" gap={28}>
+          <Section>
+            <Flex align="center" gap={4}>
+              <SectionLabel>
+                분야<Highlight>*</Highlight>
+              </SectionLabel>
+              <Highlight>(중복 선택 가능)</Highlight>
+            </Flex>
+            <TrackGrid>
+              {TRACKS.map(({ value, label }) => (
+                <Checkbox
+                  key={value}
+                  id={`track-${value}`}
+                  checked={selectedTracks.includes(value)}
+                  onChange={() => toggleTrack(value)}
+                >
+                  {label}
+                </Checkbox>
+              ))}
+            </TrackGrid>
+            <ErrorMessage>{tracksError}</ErrorMessage>
+          </Section>
 
-        <ConfirmButton
-          onClick={confirmSubscription}
-          disabled={selectedTracks.length === 0 || isPending}
-        >
-          {isPending ? '구독 중...' : '확인'}
+          <Section>
+            <SectionLabel>
+              발행 주기<Highlight>*</Highlight>
+            </SectionLabel>
+            <IssueCountGroup role="radiogroup" aria-label="발행 주기 선택">
+              {WEEKLY_ISSUE_COUNTS.map(({ value, label }) => (
+                <IssueCountItem key={value}>
+                  <HiddenRadio
+                    id={`weekly-issue-count-${value}`}
+                    name="weeklyIssueCount"
+                    value={value}
+                    type="radio"
+                    checked={selectedWeeklyIssueCount === value}
+                    onChange={() => handleWeeklyIssueCountChange(value)}
+                  />
+                  <IssueCountLabel
+                    selected={selectedWeeklyIssueCount === value}
+                    htmlFor={`weekly-issue-count-${value}`}
+                  >
+                    {label}
+                  </IssueCountLabel>
+                </IssueCountItem>
+              ))}
+            </IssueCountGroup>
+            <ErrorMessage>{weeklyIssueCountError}</ErrorMessage>
+          </Section>
+        </Flex>
+
+        <ConfirmButton onClick={confirmSubscription} disabled={isPending}>
+          {isPending ? '구독 중...' : '구독하기'}
         </ConfirmButton>
       </ModalContent>
     </Modal>
@@ -93,7 +144,7 @@ const ModalContent = styled.div`
   max-width: calc(90vw - 104px);
 
   display: flex;
-  gap: 28px;
+  gap: 32px;
   flex-direction: column;
 `;
 
@@ -105,17 +156,20 @@ const Title = styled.h3`
 
 const Section = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 12px;
   flex-direction: column;
 `;
 
 const SectionLabel = styled.p`
+  display: flex;
+  align-items: flex-start;
+
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.heading5};
 `;
 
-const Hint = styled.span`
-  color: ${({ theme }) => theme.colors.textTertiary};
+const Highlight = styled.span`
+  color: ${({ theme }) => theme.colors.primary};
   font: ${({ theme }) => theme.fonts.body2};
 `;
 
@@ -124,6 +178,63 @@ const TrackGrid = styled.div`
   gap: 12px;
 
   grid-template-columns: 1fr 1fr;
+`;
+
+const ErrorMessage = styled.p`
+  min-height: 2em;
+
+  color: ${({ theme }) => theme.colors.error};
+  font: ${({ theme }) => theme.fonts.body3};
+`;
+
+const IssueCountGroup = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const IssueCountItem = styled.div`
+  flex: 1;
+`;
+
+const HiddenRadio = styled.input`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  appearance: none;
+  opacity: 0;
+  pointer-events: none;
+
+  &:focus-visible + label {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 2px;
+  }
+`;
+
+const IssueCountLabel = styled.label<{ selected: boolean }>`
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid
+    ${({ theme, selected }) =>
+      selected ? theme.colors.primary : theme.colors.stroke};
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: ${({ theme, selected }) =>
+    selected ? theme.colors.primary : theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.body1};
+
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
 `;
 
 const ConfirmButton = styled.button<{ disabled: boolean }>`
