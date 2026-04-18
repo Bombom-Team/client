@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { useSubscribeNativeMaeilMailMutation } from './hooks/useSubscribeNativeMaeilMailMutation';
+import MaeilMailSubscribeModal from './MaeilMailSubscribeModal';
 import Flex from '@/components/Flex';
+import useModal from '@/components/Modal/useModal';
 import Text from '@/components/Text';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice, type Device } from '@/hooks/useDevice';
@@ -15,20 +16,19 @@ interface Props {
 }
 
 const NewsletterHero = ({ config, newsletterId }: Props) => {
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const { isLoggedIn, userProfile } = useAuth();
   const device = useDevice();
-  const [isSubscribed, setIsSubscribed] = useState(false);
-
-  const { mutate: subscribeNewsletter, isPending } =
-    useSubscribeNativeMaeilMailMutation({
-      config,
-      newsletterId,
-      onSuccess: () => setIsSubscribed(true),
-    });
+  const { modalRef, isOpen, openModal, closeModal } = useModal();
 
   const redirectLandingPage = () => {
     const redirect = encodeURIComponent(window.location.pathname);
     window.location.href = `/login?redirect=${redirect}`;
+  };
+
+  const completeSubscription = () => {
+    closeModal();
+    setIsSubscribed(true);
   };
 
   return (
@@ -47,19 +47,16 @@ const NewsletterHero = ({ config, newsletterId }: Props) => {
           <MaeilMailLogo width={device === 'mobile' ? 120 : 148} />
         </LogoRow>
 
-        <Flex
-          direction="column"
-          align="center"
-          gap={4}
-          style={{ textAlign: 'center' }}
-        >
+        <HeroTitleSection>
           <HeadlineLine device={device}>
-            이제 <BrandGreen>매일메일</BrandGreen>도
+            이제{' '}
+            <BrandGreen primaryColor={config.primaryColor}>매일메일</BrandGreen>
+            도
           </HeadlineLine>
           <HeadlineLine device={device}>
             <BrandOrange>봄봄</BrandOrange>에서
           </HeadlineLine>
-        </Flex>
+        </HeroTitleSection>
 
         <Description>
           서비스 종료로 아쉬움을 남긴 매일메일을 봄봄에서 계속 만나보세요.
@@ -70,20 +67,17 @@ const NewsletterHero = ({ config, newsletterId }: Props) => {
         <CtaArea>
           {isSubscribed ? (
             <Flex align="center" gap={10}>
-              <SuccessMark color={config.primaryColor}>✓</SuccessMark>
+              <SuccessMark primaryColor={config.primaryColor}>✓</SuccessMark>
               사전 구독 완료! 오픈 시 봄봄에서 바로 읽을 수 있어요.
             </Flex>
           ) : isLoggedIn ? (
             <>
               <Flex align="center" gap={8}>
-                <AccountDot color={config.primaryColor} />
+                <AccountDot primaryColor={config.primaryColor} />
                 <SubText>{userProfile?.email}로 구독됩니다.</SubText>
               </Flex>
-              <SubscribeButton
-                onClick={() => subscribeNewsletter()}
-                disabled={isPending}
-              >
-                {isPending ? '구독 중...' : '사전 구독하기'}
+              <SubscribeButton onClick={openModal}>
+                사전 구독하기
               </SubscribeButton>
             </>
           ) : (
@@ -98,6 +92,14 @@ const NewsletterHero = ({ config, newsletterId }: Props) => {
           <OpenDateLabel>오픈 예정</OpenDateLabel>
         </Flex>
       </Content>
+
+      <MaeilMailSubscribeModal
+        modalRef={modalRef}
+        isOpen={isOpen}
+        newsletterId={newsletterId}
+        closeModal={closeModal}
+        onSubscribeSuccess={completeSubscription}
+      />
     </Container>
   );
 };
@@ -154,12 +156,20 @@ const HeadlineLine = styled.p<{ device: Device }>`
   letter-spacing: -0.03em;
 `;
 
-const BrandGreen = styled.span`
-  color: #17c881;
+const BrandGreen = styled.span<{ primaryColor: string }>`
+  color: ${({ primaryColor }) => primaryColor};
 `;
 
 const BrandOrange = styled.span`
   color: ${({ theme }) => theme.colors.primary};
+`;
+
+const HeroTitleSection = styled(Flex)`
+  gap: 4px;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
 `;
 
 const Description = styled.p`
@@ -185,7 +195,7 @@ const CtaArea = styled.div`
   font-size: 0.9375rem;
 `;
 
-const SuccessMark = styled.span<{ color: string }>`
+const SuccessMark = styled.span<{ primaryColor: string }>`
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -195,19 +205,19 @@ const SuccessMark = styled.span<{ color: string }>`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ color }) => color};
+  background-color: ${({ primaryColor }) => primaryColor};
   color: #fff;
   font-size: 0.75rem;
 `;
 
-const AccountDot = styled.span<{ color: string }>`
+const AccountDot = styled.span<{ primaryColor: string }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
 
   flex-shrink: 0;
 
-  background-color: ${({ color }) => color};
+  background-color: ${({ primaryColor }) => primaryColor};
 `;
 
 const SubText = styled.span`

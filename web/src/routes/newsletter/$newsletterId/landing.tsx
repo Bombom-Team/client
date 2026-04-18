@@ -8,9 +8,18 @@ import NewsletterHero from '@/pages/newsletter/components/NewsletterLanding/News
 import { NEWSLETTER_LANDING_CONFIG } from '@/pages/newsletter/constants/newsletter';
 
 export const Route = createFileRoute('/newsletter/$newsletterId/landing')({
-  head: () => ({
-    meta: [{ title: '봄봄 × 매일메일 | 사전 구독' }],
-  }),
+  loader: ({ params }) => {
+    const config = NEWSLETTER_LANDING_CONFIG[Number(params.newsletterId)];
+    return { config };
+  },
+  head: ({ loaderData }) => {
+    const name = loaderData?.config?.name;
+    return {
+      meta: [
+        { title: name ? `봄봄 × ${name} | 사전 구독` : '봄봄 | 사전 구독' },
+      ],
+    };
+  },
   component: NewsletterLandingPage,
 });
 

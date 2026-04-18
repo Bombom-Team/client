@@ -1,29 +1,28 @@
 import { useMutation } from '@tanstack/react-query';
 import { postNativeMaeilMailSubscription } from '@/apis/subscriptions/subscriptions.api';
 import { toast } from '@/components/Toast/utils/toastActions';
-import type { NewsletterLandingConfig } from '../../../constants/newsletter';
 
-interface Props {
-  config: NewsletterLandingConfig;
+const MAEIL_MAIL_WEEKLY_ISSUE_COUNT = 5;
+
+interface UseSubscribeNewsletterMutationParams {
   newsletterId: number;
-  onSuccess: () => void;
+  onSubscribeSuccess: () => void;
 }
 
-export const useSubscribeNativeMaeilMailMutation = ({
-  config,
+export const useSubscribeNewsletterMutation = ({
   newsletterId,
-  onSuccess,
-}: Props) => {
+  onSubscribeSuccess,
+}: UseSubscribeNewsletterMutationParams) => {
   return useMutation({
-    mutationFn: () =>
+    mutationFn: (tracks: string[]) =>
       postNativeMaeilMailSubscription({
         newsletterId,
-        tracks: config.tracks,
-        weeklyIssueCount: config.weeklyIssueCount,
+        tracks,
+        weeklyIssueCount: MAEIL_MAIL_WEEKLY_ISSUE_COUNT,
       }),
     onSuccess: () => {
-      toast.success('사전 구독이 완료되었습니다!');
-      onSuccess();
+      toast.success('사전 구독을 완료했어요!');
+      onSubscribeSuccess();
     },
     onError: () => {
       toast.error('구독에 실패했습니다. 다시 시도해주세요.');

@@ -4,8 +4,6 @@ export interface NewsletterLandingConfig {
   name: string;
   primaryColor: string;
   launchDate: string;
-  tracks: string[];
-  weeklyIssueCount: number;
 }
 
 export const NEWSLETTER_LANDING_CONFIG: Record<
@@ -16,7 +14,5 @@ export const NEWSLETTER_LANDING_CONFIG: Record<
     name: '매일메일',
     primaryColor: '#17C881',
     launchDate: '2026.04.30',
-    tracks: ['BE', 'FE'],
-    weeklyIssueCount: 5,
   },
 };
