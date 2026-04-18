@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import type { NewsletterLandingConfig } from '../../constants/newsletter';
 import logo from '#/assets/avif/logo.avif';
-import MailMaeilLogo from '#/assets/svg/mailmaeil-logo.svg';
+import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
 
 interface Props {
   config: NewsletterLandingConfig;
@@ -44,7 +44,7 @@ const NewsletterHero = ({ config, newsletterId }: Props) => {
 
           <CrossSign>×</CrossSign>
 
-          <MailMaeilLogo width={device === 'mobile' ? 120 : 148} />
+          <MaeilMailLogo width={device === 'mobile' ? 120 : 148} />
         </LogoRow>
 
         <Flex
