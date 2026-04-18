@@ -1,20 +1,20 @@
 import styled from '@emotion/styled';
 import { createFileRoute, useParams } from '@tanstack/react-router';
+import { useDevice } from '@/hooks/useDevice';
+import LandingHeader from '@/pages/landing/components/LandingHeader';
 import HowSection from '@/pages/newsletter/components/NewsletterLanding/HowSection';
 import NewsletterFAQ from '@/pages/newsletter/components/NewsletterLanding/NewsletterFAQ';
 import NewsletterHero from '@/pages/newsletter/components/NewsletterLanding/NewsletterHero';
 import { NEWSLETTER_LANDING_CONFIG } from '@/pages/newsletter/constants/newsletter';
-import LandingHeader from '@/pages/landing/components/LandingHeader';
-import { useDevice } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/newsletter/$newsletterId/landing')({
   head: () => ({
     meta: [{ title: '봄봄 × 매일메일 | 사전 구독' }],
   }),
-  component: NewsletterLandingRoute,
+  component: NewsletterLandingPage,
 });
 
-function NewsletterLandingRoute() {
+function NewsletterLandingPage() {
   const { newsletterId } = useParams({
     from: '/newsletter/$newsletterId/landing',
   });
@@ -32,7 +32,7 @@ function NewsletterLandingRoute() {
     <>
       <LandingHeader />
       <Container>
-        <NewsletterHero config={config} />
+        <NewsletterHero config={config} newsletterId={Number(newsletterId)} />
         <InformationSection isMobile={isMobile}>
           <HowSection />
           <NewsletterFAQ />
