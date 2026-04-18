@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/jaeo/Documents/Github/client && OUT=$(npm run lint 2>&1); if [ $? -ne 0 ]; then echo \"$OUT\" | tail -80 | jq -R -s '{decision:\"block\",reason:(\"린트 실패. 아래 에러를 고친 뒤 작업을 마무리해주세요:\\n\\n\" + .)}'; fi",
+            "timeout": 300,
+            "statusMessage": "린트 실행 중..."
+          }
+        ]
+      }
+    ]
+  }
+}
