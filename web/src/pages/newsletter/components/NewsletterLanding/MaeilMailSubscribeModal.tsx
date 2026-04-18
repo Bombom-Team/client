@@ -57,9 +57,13 @@ const MaeilMailSubscribeModal = ({
     const hasTracksError = selectedTracks.length === 0;
     const hasWeeklyIssueCountError = selectedWeeklyIssueCount === null;
 
-    if (hasTracksError) setTracksError('분야를 선택해 주세요.');
-    if (hasWeeklyIssueCountError)
+    if (hasTracksError) {
+      setTracksError('분야를 선택해 주세요.');
+    }
+    if (hasWeeklyIssueCountError) {
       setWeeklyIssueCountError('발행 주기를 선택해 주세요.');
+    }
+
     if (hasTracksError || hasWeeklyIssueCountError) return;
 
     subscribeNewsletter({

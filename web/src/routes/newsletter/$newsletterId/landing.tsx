@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { createFileRoute, useParams } from '@tanstack/react-router';
+import { createFileRoute, redirect, useParams } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import HowSection from '@/pages/newsletter/components/NewsletterLanding/HowSection';
@@ -10,6 +10,7 @@ import { NEWSLETTER_LANDING_CONFIG } from '@/pages/newsletter/constants/subscrib
 export const Route = createFileRoute('/newsletter/$newsletterId/landing')({
   loader: ({ params }) => {
     const config = NEWSLETTER_LANDING_CONFIG[Number(params.newsletterId)];
+    if (!config) throw redirect({ to: '/' });
     return { config };
   },
   head: ({ loaderData }) => {
@@ -27,15 +28,9 @@ function NewsletterLandingPage() {
   const { newsletterId } = useParams({
     from: '/newsletter/$newsletterId/landing',
   });
+  const { config } = Route.useLoaderData();
   const device = useDevice();
   const isMobile = device === 'mobile';
-
-  const config = NEWSLETTER_LANDING_CONFIG[Number(newsletterId)];
-
-  if (!config) {
-    window.location.replace('/');
-    return null;
-  }
 
   return (
     <>
