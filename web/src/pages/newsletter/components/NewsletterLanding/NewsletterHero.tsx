@@ -89,7 +89,7 @@ const NewsletterHero = ({ config, newsletterId }: Props) => {
 
         <Flex align="center" gap={12}>
           <OpenDateNumber>{config.launchDate}</OpenDateNumber>
-          <OpenDateLabel>오픈 예정</OpenDateLabel>
+          <OpenDateLabel>OPEN</OpenDateLabel>
         </Flex>
       </Content>
 

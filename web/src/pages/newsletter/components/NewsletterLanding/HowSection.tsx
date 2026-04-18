@@ -17,7 +17,7 @@ const HowSection = () => {
       </HowHead>
 
       <HowSteps isMobile={isMobile}>
-        <Step>
+        <Step isMobile={isMobile}>
           <StepHeader>
             <ItemNumber isMobile={isMobile}>1</ItemNumber>
             <StepTitle>봄봄에서 구독해요</StepTitle>
@@ -28,7 +28,7 @@ const HowSection = () => {
             봄봄 유저라면 이메일을 따로 입력하지 않아도 돼요.
           </StepDescription>
         </Step>
-        <Step>
+        <Step isMobile={isMobile}>
           <StepHeader>
             <ItemNumber isMobile={isMobile}>2</ItemNumber>
             <StepTitle>봄봄이 알려드려요</StepTitle>
@@ -38,7 +38,7 @@ const HowSection = () => {
           </StepDescription>
           <Caption>* 아티클 알림을 허용한 모바일 앱 유저에 한함.</Caption>
         </Step>
-        <Step>
+        <Step isMobile={isMobile}>
           <StepHeader>
             <ItemNumber isMobile={isMobile}>3</ItemNumber>
             <StepTitle>봄봄에서 읽어요</StepTitle>
@@ -87,8 +87,8 @@ const HowSteps = styled.div<{ isMobile: boolean }>`
     isMobile ? '1fr' : '1fr 1fr 1fr'};
 `;
 
-const Step = styled.div`
-  padding: 24px;
+const Step = styled.div<{ isMobile: boolean }>`
+  padding: ${({ isMobile }) => (isMobile ? '12px' : '24px')};
   border: 1px solid rgb(255 255 255 / 60%);
   border-radius: 20px;
   box-shadow: 0 4px 16px rgb(0 0 0 / 5%);

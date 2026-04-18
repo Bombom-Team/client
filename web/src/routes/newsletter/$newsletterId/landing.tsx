@@ -69,7 +69,7 @@ const Container = styled.div`
 const InformationSection = styled.div<{ isMobile: boolean }>`
   max-width: 1120px;
   margin: 0 auto;
-  padding: ${({ isMobile }) => (isMobile ? '0 24px 64px' : '0 40px 80px')};
+  padding-bottom: ${({ isMobile }) => (isMobile ? '40px' : '56px')};
 
   display: flex;
   gap: 32px;

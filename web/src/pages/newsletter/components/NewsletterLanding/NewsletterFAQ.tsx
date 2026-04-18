@@ -1,34 +1,155 @@
 import styled from '@emotion/styled';
+import { useState } from 'react';
+import Accordion from '@/components/Accordion/Accordion';
+import { useDevice } from '@/hooks/useDevice';
+
+const FAQ_ITEMS = [
+  {
+    id: 'delivery',
+    question: '제 개인 이메일로 매일메일이 오나요?',
+    answer:
+      '아니요. 매일메일은 봄봄 서비스 안에서만 제공돼요. 봄봄에서 구독하고, 봄봄에서 읽는 방식이에요.',
+  },
+  {
+    id: 'source',
+    question: '매일메일 콘텐츠는 누가 제공하나요?',
+    answer:
+      '현재 매일메일 팀의 콘텐츠를 바탕으로 제공하고 있어요. 앞으로는 봄봄에서도 더 편하게 읽고 활용하실 수 있도록 계속 개선해갈 예정이에요.',
+  },
+  {
+    id: 'platform',
+    question: '왜 다른 이메일 주소로는 제공하지 않나요?',
+    answer:
+      '장기적으로 무료로 서비스를 제공하기 위해, 현재는 봄봄 안에서만 콘텐츠를 제공하고 있어요.',
+  },
+  {
+    id: 'free',
+    question: '매일메일은 무료인가요?',
+    answer: '네. 봄봄에서 제공되는 매일메일은 무료로 이용하실 수 있어요.',
+  },
+  {
+    id: 'unsubscribe',
+    question: '구독을 해지할 수 있나요?',
+    answer:
+      '구독 해지는 추후 지원할 예정이에요. 그전까지는 채널톡으로 문의해 주세요.',
+  },
+  {
+    id: 'support',
+    question: '구독했는데 콘텐츠가 안 보이거나 문제가 있어요.',
+    answer:
+      '이용 중 문제가 있으면 채널톡으로 문의해 주세요. 확인 후 빠르게 도와드릴게요.',
+  },
+] as const;
 
 const NewsletterFAQ = () => {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+  const [openQuestionId, setOpenQuestionId] = useState<string>(FAQ_ITEMS[0].id);
+
+  const handleToggle = (questionId: string) => {
+    setOpenQuestionId((prev) => (prev === questionId ? '' : questionId));
+  };
+
   return (
-    <Container>
-      <Question>Q. 제 개인 이메일로 매일메일이 오나요?</Question>
-      <Answer>
-        아니요. 매일메일은 <strong>봄봄 서비스 내에서만</strong> 제공돼요. 기존
-        구독자분들도 사전 구독을 하시면 봄봄에서 만나보실 수 있어요.
-      </Answer>
+    <Container isMobile={isMobile}>
+      <HeaderWrapper>
+        <Title>자주 묻는 질문</Title>
+        <Description>
+          구독 전에 많이 궁금해하시는 내용을 모아두었어요.
+        </Description>
+      </HeaderWrapper>
+
+      <AccordionList>
+        {FAQ_ITEMS.map(({ id, question, answer }) => {
+          const isOpen = openQuestionId === id;
+
+          return (
+            <Accordion key={id}>
+              <Accordion.Header
+                isOpen={isOpen}
+                onToggle={() => handleToggle(id)}
+              >
+                <QuestionWrapper>
+                  <QuestionPrefix>Q.</QuestionPrefix>
+                  <Question>{question}</Question>
+                </QuestionWrapper>
+              </Accordion.Header>
+
+              <Accordion.Content isOpen={isOpen}>
+                <Answer>{answer}</Answer>
+              </Accordion.Content>
+            </Accordion>
+          );
+        })}
+      </AccordionList>
     </Container>
   );
 };
 
 export default NewsletterFAQ;
 
-const Container = styled.aside`
-  padding: 24px 28px;
-  border: 1px solid rgb(0 0 0 / 7%);
-  border-radius: 20px;
+const Container = styled.aside<{ isMobile: boolean }>`
+  margin: 0 ${({ isMobile }) => (isMobile ? '24px' : '40px')};
 
   display: flex;
-  gap: 16px;
+  gap: 20px;
   flex-direction: column;
-
-  background: rgb(255 255 255 / 80%);
-
-  backdrop-filter: blur(12px);
 `;
 
-const Question = styled.p`
+const HeaderWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+`;
+
+const Title = styled.h3`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.heading4};
+`;
+
+const Description = styled.p`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.body2};
+`;
+
+const AccordionList = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+
+  & > div {
+    overflow: hidden;
+    border: 1px solid rgb(0 0 0 / 7%);
+    border-radius: 16px;
+
+    background: rgb(255 255 255 / 70%);
+  }
+
+  & > div > div:first-of-type {
+    padding: 18px 16px;
+    border-bottom: none;
+
+    align-items: flex-start;
+  }
+
+  & > div > div:last-of-type {
+    padding: 0 16px 18px;
+    background-color: transparent;
+  }
+`;
+
+const QuestionWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+`;
+
+const QuestionPrefix = styled.span`
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.heading6};
+`;
+
+const Question = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.heading6};
 `;
@@ -36,4 +157,5 @@ const Question = styled.p`
 const Answer = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.body2};
+  line-height: 1.8;
 `;
