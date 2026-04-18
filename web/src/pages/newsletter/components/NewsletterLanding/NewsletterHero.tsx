@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
+import { useState } from 'react';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
+import { toast } from '@/components/Toast/utils/toastActions';
+import { useAuth } from '@/contexts/AuthContext';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import type { NewsletterLandingConfig } from '../../constants/newsletter';
 import logo from '#/assets/avif/logo.avif';
@@ -8,20 +11,18 @@ import MailMaeilLogo from '#/assets/svg/mailmaeil-logo.svg';
 
 interface Props {
   config: NewsletterLandingConfig;
-  isLoggedIn: boolean;
-  userEmail?: string;
-  isSubscribed: boolean;
-  onSubscribe: () => void;
 }
 
-const NewsletterHero = ({
-  config,
-  isLoggedIn,
-  userEmail,
-  isSubscribed,
-  onSubscribe,
-}: Props) => {
+const NewsletterHero = ({ config }: Props) => {
+  const { isLoggedIn, userProfile } = useAuth();
   const device = useDevice();
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const subscribeNewsletter = () => {
+    // TODO: API 연동 - 사전 구독자 등록 엔드포인트 호출
+    setIsSubscribed(true);
+    toast.success('사전 구독이 완료되었습니다!');
+  };
 
   const redirectLandingPage = () => {
     const redirect = encodeURIComponent(window.location.pathname);
@@ -74,9 +75,9 @@ const NewsletterHero = ({
             <>
               <Flex align="center" gap={8}>
                 <AccountDot color={config.primaryColor} />
-                <SubText>{userEmail}로 구독됩니다.</SubText>
+                <SubText>{userProfile?.email}로 구독됩니다.</SubText>
               </Flex>
-              <SubscribeButton onClick={onSubscribe}>
+              <SubscribeButton onClick={subscribeNewsletter}>
                 사전 구독하기
               </SubscribeButton>
             </>

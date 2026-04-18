@@ -1,7 +1,11 @@
+import styled from '@emotion/styled';
 import { createFileRoute, useParams } from '@tanstack/react-router';
-import LandingHeader from '@/pages/landing/components/LandingHeader';
-import NewsletterLanding from '@/pages/newsletter/components/NewsletterLanding/NewsletterLanding';
+import HowSection from '@/pages/newsletter/components/NewsletterLanding/HowSection';
+import NewsletterFAQ from '@/pages/newsletter/components/NewsletterLanding/NewsletterFAQ';
+import NewsletterHero from '@/pages/newsletter/components/NewsletterLanding/NewsletterHero';
 import { NEWSLETTER_LANDING_CONFIG } from '@/pages/newsletter/constants/newsletter';
+import LandingHeader from '@/pages/landing/components/LandingHeader';
+import { useDevice } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/newsletter/$newsletterId/landing')({
   head: () => ({
@@ -14,6 +18,8 @@ function NewsletterLandingRoute() {
   const { newsletterId } = useParams({
     from: '/newsletter/$newsletterId/landing',
   });
+  const device = useDevice();
+  const isMobile = device === 'mobile';
 
   const config = NEWSLETTER_LANDING_CONFIG[Number(newsletterId)];
 
@@ -25,7 +31,38 @@ function NewsletterLandingRoute() {
   return (
     <>
       <LandingHeader />
-      <NewsletterLanding config={config} />
+      <Container>
+        <NewsletterHero config={config} />
+        <InformationSection isMobile={isMobile}>
+          <HowSection />
+          <NewsletterFAQ />
+        </InformationSection>
+      </Container>
     </>
   );
 }
+
+const Container = styled.div`
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+
+  background-color: oklch(98.5% 0.003 55deg);
+  background-image:
+    linear-gradient(rgb(0 0 0 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 0 0 / 3%) 1px, transparent 1px);
+  background-size: 40px 40px;
+
+  overflow-x: hidden;
+  word-break: keep-all;
+`;
+
+const InformationSection = styled.div<{ isMobile: boolean }>`
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: ${({ isMobile }) => (isMobile ? '0 24px 64px' : '0 40px 80px')};
+
+  display: flex;
+  gap: 32px;
+  flex-direction: column;
+`;
