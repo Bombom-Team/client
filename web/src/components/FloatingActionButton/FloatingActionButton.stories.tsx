@@ -35,7 +35,7 @@ const StyledBookmarkIcon = styled(BookmarkIcon)`
 `;
 
 const LinkText = styled.span`
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const StyledLink = styled.button`

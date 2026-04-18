@@ -103,7 +103,7 @@ const Title = styled.h2`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.t13Bold};
 `;
 
 const ChecklistCard = styled.div<{ device: Device }>`
@@ -133,7 +133,7 @@ const ItemNumber = styled.span<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const ItemContent = styled.div`
@@ -147,16 +147,16 @@ const ItemContent = styled.div`
 const ItemTitle = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.t7Bold : theme.fonts.t10Bold};
 `;
 
 const ItemDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
 `;
 
 const ItemNote = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

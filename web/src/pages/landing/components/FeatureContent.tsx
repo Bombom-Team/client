@@ -115,7 +115,7 @@ const TitleWrapper = styled.div`
 
 const Title = styled.h3`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const IconWrapper = styled.div<{ device: Device }>`
@@ -144,7 +144,7 @@ const DescriptionWrapper = styled.div<{
   }};
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.t7Regular};
 `;
 
 const ImageSection = styled.div<{ device: Device }>`

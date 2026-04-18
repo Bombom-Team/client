@@ -116,7 +116,7 @@ const StyledMenuIcon = styled(MenuIcon)`
 `;
 
 const Title = styled.h3`
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const StyledIcon = styled.div<{ device: Device; selected?: boolean }>`
@@ -128,5 +128,5 @@ const StyledIcon = styled.div<{ device: Device; selected?: boolean }>`
 `;
 
 const StyledTab = styled(Tab)`
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

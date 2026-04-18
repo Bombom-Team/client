@@ -9,13 +9,13 @@ const SoldOutState = () => {
   return (
     <Flex direction="column" gap={device === 'mobile' ? 12 : 16} align="center">
       <Text
-        font={device === 'mobile' ? 'heading4' : 'heading3'}
+        font={device === 'mobile' ? 't10Bold' : 't11Bold'}
         color="textPrimary"
       >
         이벤트 마감
       </Text>
       <Description
-        font={device === 'mobile' ? 'body1' : 'bodyLarge'}
+        font={device === 'mobile' ? 't6Regular' : 't7Regular'}
         color="textPrimary"
       >
         아쉽지만 이번 이벤트의 쿠폰이 모두 소진되었어요. 😢
@@ -28,7 +28,7 @@ const SoldOutState = () => {
         gap={device === 'mobile' ? 8 : 4}
       >
         <Caution
-          font={device === 'mobile' ? 'body2' : 'body1'}
+          font={device === 'mobile' ? 't5Regular' : 't6Regular'}
           color="textSecondary"
         >
           ※ 다음 이벤트 일정은 이벤트 페이지에서 확인해주세요.

@@ -66,7 +66,7 @@ const StyledLockIcon = styled(LockIcon)`
 `;
 
 const Title = styled.h1`
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const DescriptionWrapper = styled.div`
@@ -77,13 +77,13 @@ const DescriptionWrapper = styled.div`
 
 const Lead = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: center;
 `;
 
 const Support = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;
 
@@ -91,5 +91,5 @@ const GoToLoginButton = styled(Button)`
   width: 100%;
   max-width: 380px;
 
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;

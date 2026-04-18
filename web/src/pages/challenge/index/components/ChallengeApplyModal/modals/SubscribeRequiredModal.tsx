@@ -128,7 +128,7 @@ const NewsletterName = styled.h3`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const SubscribeAction = styled.div`
@@ -140,6 +140,6 @@ const SubscribeAction = styled.div`
 `;
 
 const SubscribeText = styled.span`
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 600;
 `;

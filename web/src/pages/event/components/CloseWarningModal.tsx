@@ -20,7 +20,7 @@ const CloseWarningModal = ({ onDownload, onClose }: CloseWarningModalProps) => {
   return (
     <Container>
       <Flex direction="column" gap={8} align="center">
-        <Text font="heading5">이미지를 저장하셨나요?</Text>
+        <Text font="t7Bold">이미지를 저장하셨나요?</Text>
         <Description>
           이벤트가 종료되면 추후 선물함에서 확인할 수 있지만,
           <br />
@@ -58,7 +58,7 @@ const ButtonGroup = styled(Flex)`
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: center;
 `;
 
@@ -70,7 +70,7 @@ const PrimaryButton = styled(Button)`
   width: 100%;
   max-width: 200px;
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   font-weight: 600;
 `;
 
@@ -78,5 +78,5 @@ const SecondaryButton = styled(Button)`
   width: 100%;
   max-width: 200px;
 
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

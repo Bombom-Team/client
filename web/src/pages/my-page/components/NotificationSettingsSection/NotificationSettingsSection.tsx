@@ -68,7 +68,7 @@ const NotificationSettingsSection = () => {
 
       <SettingSection>
         <SectionHeader>
-          <Text font="body2" color="textSecondary">
+          <Text font="t5Regular" color="textSecondary">
             * 알림 설정은 계정과 연동돼요.
           </Text>
         </SectionHeader>
@@ -123,7 +123,7 @@ const InfoText = styled.p`
   gap: 4px;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: left;
 `;
 
@@ -133,5 +133,5 @@ const SubInfoText = styled.span`
   align-self: flex-end;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

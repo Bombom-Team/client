@@ -73,7 +73,7 @@ const Header = styled.div`
 
 const Title = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const CountBadge = styled.div`
@@ -82,7 +82,7 @@ const CountBadge = styled.div`
 
   background: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 600;
 `;
 
@@ -114,11 +114,11 @@ const StatusBox = styled.div<{ status: TodoStatus }>`
     $status === 'COMPLETE' ? theme.colors.success : theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
   font-weight: 700;
-  font-size: ${({ theme }) => theme.fonts.caption};
+  font-size: ${({ theme }) => theme.fonts.t3Regular};
   line-height: 1;
 `;
 
 const TodoText = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

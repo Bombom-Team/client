@@ -75,14 +75,14 @@ export const Container = styled.div<{ isMobile: boolean }>`
 
 export const ModalTitle = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 export const ModalDescription = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 export const ModalButtonGroup = styled.div`
@@ -93,5 +93,5 @@ export const ModalButtonGroup = styled.div`
 
 export const ModalButton = styled(Button)<{ isMobile: boolean }>`
   width: ${({ isMobile }) => (isMobile ? '120px' : '160px')};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

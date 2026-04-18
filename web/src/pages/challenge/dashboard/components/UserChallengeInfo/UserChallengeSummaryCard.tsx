@@ -95,7 +95,7 @@ const SummaryInfo = styled.div`
 const SummaryName = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
+    isMobile ? theme.fonts.t6Regular : theme.fonts.t7Bold};
   ${({ isMobile }) =>
     isMobile &&
     `
@@ -157,7 +157,7 @@ const StreakCount = styled.div<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.white};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
+    isMobile ? theme.fonts.t6Regular : theme.fonts.t7Bold};
   font-weight: 700;
   line-height: 1;
 
@@ -167,7 +167,7 @@ const StreakCount = styled.div<{ isMobile: boolean }>`
 const StatValue = styled.div<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
+    isMobile ? theme.fonts.t6Regular : theme.fonts.t7Bold};
   white-space: nowrap;
 
   text-overflow: ellipsis;
@@ -175,7 +175,7 @@ const StatValue = styled.div<{ isMobile: boolean }>`
 
 const StatLabel = styled.div`
   color: ${({ theme }) => theme.colors.disabledText};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   white-space: nowrap;
 
   text-overflow: ellipsis;
@@ -198,7 +198,7 @@ const FailedOverlay = styled.div<{ isMobile: boolean }>`
   background: rgb(255 255 255 / 70%);
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading5};
+    isMobile ? theme.fonts.t6Regular : theme.fonts.t7Bold};
 
   inset: 0;
   pointer-events: none;

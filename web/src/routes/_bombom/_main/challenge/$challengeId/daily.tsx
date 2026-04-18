@@ -94,7 +94,7 @@ const DayBadge = styled.div`
 
   background-color: ${({ theme }) => theme.colors.primaryLight};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   font-weight: 600;
 `;
 
@@ -113,10 +113,10 @@ const NoticeBox = styled.div`
 
 const NoticeIcon = styled.span`
   flex-shrink: 0;
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const NoticeText = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

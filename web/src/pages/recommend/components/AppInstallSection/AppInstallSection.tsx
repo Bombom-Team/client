@@ -39,14 +39,14 @@ const AppInstallSection = () => {
             <Text
               as="h3"
               color="textPrimary"
-              font={device === 'mobile' ? 'heading6' : 'heading5'}
+              font={device === 'mobile' ? 't6Bold' : 't7Bold'}
             >
               언제 어디서나 이어지는 인사이트
             </Text>
             <Text
               as="p"
               color="textTertiary"
-              font={device === 'mobile' ? 'body3' : 'body2'}
+              font={device === 'mobile' ? 't3Regular' : 't5Regular'}
             >
               PC는 물론, 모바일 앱에서도
               {'\n'}
@@ -141,7 +141,7 @@ const StoreButton = styled.button<{
   color: ${({ variant, theme }) =>
     variant === 'appStore' ? theme.colors.white : theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
   font-weight: 600;
 
   transition: all 0.2s ease-in-out;

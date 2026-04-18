@@ -53,7 +53,7 @@ const PostboxIconWrapper = styled.div`
 const EmptyTitle = styled.h2`
   background: linear-gradient(90deg, #181818 0%, #f96 100%);
   background-clip: text;
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.t13Bold};
   text-align: center;
 
   -webkit-text-fill-color: transparent;
@@ -67,13 +67,13 @@ const DescriptionWrapper = styled.div`
 
 const Lead = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;
 
 const Support = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   text-align: center;
 `;
 
@@ -88,7 +88,7 @@ const LinkButton = styled(Link)`
 
   background: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   transition: all 0.2s ease;
 

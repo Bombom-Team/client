@@ -108,7 +108,7 @@ Components follow atomic design principles:
 
 ### Frontend Development
 
-- Use the theme object for consistent colors and typography: `theme.colors.primary`, `theme.fonts.heading1`
+- Use the theme object for consistent colors and typography: `theme.colors.primary`, `theme.fonts.t15Bold`
 - All components should include TypeScript interfaces and Storybook stories
 - MSW is configured for API mocking - add new handlers in `src/mocks/handlers.ts`
 - Router devtools are available in development mode

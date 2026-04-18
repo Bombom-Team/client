@@ -163,7 +163,7 @@ const ListTitleBox = styled.div`
 
 const ListTitle = styled.h5`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 export const CardList = styled.ul<{ isMobile: boolean }>`

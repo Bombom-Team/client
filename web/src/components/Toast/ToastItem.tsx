@@ -90,7 +90,7 @@ const Container = styled.div<{
 `;
 
 const Content = styled.div`
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ProgressBar = styled.div<{ variant: ToastVariant; duration: number }>`

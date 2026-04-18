@@ -39,7 +39,7 @@ const Container = styled.div<{ variant: Variant }>`
   align-items: center;
   justify-content: center;
 
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 
   ${({ variant, theme }) => variantStyles[variant](theme)}
 `;

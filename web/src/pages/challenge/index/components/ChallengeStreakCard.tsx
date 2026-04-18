@@ -113,7 +113,7 @@ const StreakCount = styled.span`
   left: 50%;
 
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
   font-weight: 700;
   line-height: 1;
 
@@ -129,7 +129,7 @@ const TextWrapper = styled.div`
 
 const Title = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const WeekWrapper = styled.div`
@@ -149,7 +149,7 @@ const DayColumn = styled.div`
 const DayLabel = styled.span<{ isHighlighted: boolean }>`
   color: ${({ theme, isHighlighted }) =>
     isHighlighted ? theme.colors.primary : theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: ${({ isHighlighted }) => (isHighlighted ? 700 : 400)};
 `;
 
@@ -180,7 +180,7 @@ const DayCheckBox = styled.div<{
         ? theme.colors.primary
         : theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 700;
   line-height: 1;
 `;
@@ -216,7 +216,7 @@ const FreezeCheckMark = styled.span`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 700;
   line-height: 1;
 

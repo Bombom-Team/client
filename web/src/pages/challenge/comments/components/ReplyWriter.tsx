@@ -56,7 +56,7 @@ const ReplyWriter = ({ challengeId, commentId }: ReplyWriterProps) => {
             checked={isPrivate}
             onChange={toggleIsPrivate}
           >
-            <Text color="textTertiary" font="body2">
+            <Text color="textTertiary" font="t5Regular">
               비밀답글
             </Text>
           </Checkbox>
@@ -98,7 +98,7 @@ const ToggleButton = styled(Button)`
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   text-decoration: underline;
 
@@ -133,7 +133,7 @@ const Input = styled.input`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.textTertiary};

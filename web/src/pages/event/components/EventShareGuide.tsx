@@ -136,12 +136,12 @@ const BadgeBox = styled.div`
 
 const BadgeText = styled.span`
   color: #2563eb;
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const Title = styled.h2`
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.t13Bold};
   font-weight: 900;
   line-height: 1.1;
 `;
@@ -150,7 +150,7 @@ const Description = styled.p`
   margin-top: 8px;
 
   color: #4b5563;
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
   font-weight: 700;
 `;
 
@@ -185,7 +185,7 @@ const CountBadge = styled.div`
 
   background-color: #facc15;
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 
   border-bottom-left-radius: 36px;
 `;
@@ -217,7 +217,7 @@ const CoffeeImage = styled.img`
 
 const PrizeName = styled.h3`
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
   font-weight: 900;
 `;
 
@@ -249,12 +249,12 @@ const StepBadge = styled.div`
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body4};
+  font: ${({ theme }) => theme.fonts.t1Regular};
   font-weight: 700;
 `;
 
 const StepText = styled.p`
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const StepHighlight = styled.span`
@@ -270,7 +270,7 @@ const TipText = styled.p`
   margin-bottom: 20px;
 
   color: ${({ theme }) => theme.colors.error};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
   text-align: center;
 `;
 
@@ -288,7 +288,7 @@ const ShareButton = styled.a`
 
   background-color: #2962ff;
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
   font-weight: 900;
 
   transition: all 200ms ease;
@@ -306,7 +306,7 @@ const NoticeWrapper = styled(Flex)`
 
 const NoticeText = styled.p`
   color: #9ca3af;
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   font-weight: 500;
   text-align: left;
 `;

@@ -82,5 +82,5 @@ const LoadingMessage = styled.div`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

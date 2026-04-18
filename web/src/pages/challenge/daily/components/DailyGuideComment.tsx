@@ -101,12 +101,12 @@ const CommentSection = styled.div`
 
 const CommentLabel = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const CharCount = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const CommentInputWrapper = styled.div`
@@ -125,7 +125,7 @@ const CommentTextarea = styled.textarea`
   border-radius: 8px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   resize: none;
 
@@ -150,12 +150,12 @@ const SubmitButton = styled(Button)`
 
   align-self: flex-end;
 
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const SubmittedLabel = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const SubmittedCommentBox = styled.div`
@@ -173,7 +173,7 @@ const SubmittedCommentBox = styled.div`
 
 const SubmittedComment = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   overflow-wrap: break-word;
 `;

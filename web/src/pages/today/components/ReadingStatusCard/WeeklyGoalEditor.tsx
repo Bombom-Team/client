@@ -162,7 +162,7 @@ const EditButton = styled.button<{
 `;
 
 const ButtonText = styled.span`
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-size: 0.6875rem;
   white-space: nowrap;
 `;
@@ -177,7 +177,7 @@ const EditInput = styled.input`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   line-height: 1;
   text-align: center;
 

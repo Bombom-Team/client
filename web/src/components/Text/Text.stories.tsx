@@ -32,18 +32,38 @@ const meta = {
     font: {
       control: 'select',
       options: [
-        'heading1',
-        'heading2',
-        'heading3',
-        'heading4',
-        'heading5',
-        'heading6',
-        'bodyLarge',
-        'body1',
-        'body2',
-        'body3',
-        'body4',
-        'caption',
+        't1Regular',
+        't1Bold',
+        't2Regular',
+        't2Bold',
+        't3Regular',
+        't3Bold',
+        't4Regular',
+        't4Bold',
+        't5Regular',
+        't5Bold',
+        't6Regular',
+        't6Bold',
+        't7Regular',
+        't7Bold',
+        't8Regular',
+        't8Bold',
+        't9Regular',
+        't9Bold',
+        't10Regular',
+        't10Bold',
+        't11Regular',
+        't11Bold',
+        't12Regular',
+        't12Bold',
+        't13Regular',
+        't13Bold',
+        't14Regular',
+        't14Bold',
+        't15Regular',
+        't15Bold',
+        't16Regular',
+        't16Bold',
       ],
     },
     as: {
@@ -65,18 +85,38 @@ export const Default: Story = {
 export const AllFonts: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <Text font="heading1">Heading 1 - 48px/60px</Text>
-      <Text font="heading2">Heading 2 - 34px/50px</Text>
-      <Text font="heading3">Heading 3 - 28px/38px</Text>
-      <Text font="heading4">Heading 4 - 24px/32px</Text>
-      <Text font="heading5">Heading 5 - 18px/28px</Text>
-      <Text font="heading6">Heading 6 - 16px/24px</Text>
-      <Text font="bodyLarge">Body Large - 18px/28px</Text>
-      <Text font="body1">Body 1 - 16px/24px</Text>
-      <Text font="body2">Body 2 - 14px/22px</Text>
-      <Text font="body3">Body 3 - 12px/20px</Text>
-      <Text font="body4">Body 4 - 10px/18px</Text>
-      <Text font="caption">Caption - 12px/18px</Text>
+      <Text font="t1Regular">t1 Regular - 10px/14px</Text>
+      <Text font="t1Bold">t1 Bold - 10px/14px</Text>
+      <Text font="t2Regular">t2 Regular - 11px/15px</Text>
+      <Text font="t2Bold">t2 Bold - 11px/15px</Text>
+      <Text font="t3Regular">t3 Regular - 12px/16px</Text>
+      <Text font="t3Bold">t3 Bold - 12px/16px</Text>
+      <Text font="t4Regular">t4 Regular - 13px/18px</Text>
+      <Text font="t4Bold">t4 Bold - 13px/18px</Text>
+      <Text font="t5Regular">t5 Regular - 14px/19px</Text>
+      <Text font="t5Bold">t5 Bold - 14px/19px</Text>
+      <Text font="t6Regular">t6 Regular - 16px/22px</Text>
+      <Text font="t6Bold">t6 Bold - 16px/22px</Text>
+      <Text font="t7Regular">t7 Regular - 18px/24px</Text>
+      <Text font="t7Bold">t7 Bold - 18px/24px</Text>
+      <Text font="t8Regular">t8 Regular - 20px/27px</Text>
+      <Text font="t8Bold">t8 Bold - 20px/27px</Text>
+      <Text font="t9Regular">t9 Regular - 22px/30px</Text>
+      <Text font="t9Bold">t9 Bold - 22px/30px</Text>
+      <Text font="t10Regular">t10 Regular - 24px/32px</Text>
+      <Text font="t10Bold">t10 Bold - 24px/32px</Text>
+      <Text font="t11Regular">t11 Regular - 28px/38px</Text>
+      <Text font="t11Bold">t11 Bold - 28px/38px</Text>
+      <Text font="t12Regular">t12 Regular - 30px/40px</Text>
+      <Text font="t12Bold">t12 Bold - 30px/40px</Text>
+      <Text font="t13Regular">t13 Regular - 34px/46px</Text>
+      <Text font="t13Bold">t13 Bold - 34px/46px</Text>
+      <Text font="t14Regular">t14 Regular - 40px/54px</Text>
+      <Text font="t14Bold">t14 Bold - 40px/54px</Text>
+      <Text font="t15Regular">t15 Regular - 48px/64px</Text>
+      <Text font="t15Bold">t15 Bold - 48px/64px</Text>
+      <Text font="t16Regular">t16 Regular - 56px/76px</Text>
+      <Text font="t16Bold">t16 Bold - 56px/76px</Text>
     </div>
   ),
 };

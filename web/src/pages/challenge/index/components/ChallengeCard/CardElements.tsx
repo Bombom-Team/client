@@ -7,7 +7,7 @@ import type { ComponentProps } from 'react';
 import PersonIcon from '#/assets/svg/person.svg';
 
 export const Title = (props: ComponentProps<typeof Text>) => (
-  <Text as="h3" font="heading5" color="textPrimary" {...props} />
+  <Text as="h3" font="t7Bold" color="textPrimary" {...props} />
 );
 
 export const Tag = styled.span`
@@ -18,14 +18,14 @@ export const Tag = styled.span`
 
   background-color: ${({ theme }) => `${theme.colors.primaryLight}40`};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 600;
 `;
 
 export const Applicant = (props: ComponentProps<typeof Text>) => (
   <ApplicantContainer gap={2} align="center">
     <PersonIcon width={14} height={14} color={theme.colors.textSecondary} />
-    <Text font="body3" color="textSecondary" {...props} />
+    <Text font="t3Regular" color="textSecondary" {...props} />
   </ApplicantContainer>
 );
 
@@ -44,7 +44,7 @@ export const DDay = ({ startDate, ...props }: DDayProps) => {
   const dday = getDday(startDate);
 
   return (
-    <Text font="body2" color="primary" {...props}>
+    <Text font="t5Regular" color="primary" {...props}>
       D{dday}
     </Text>
   );
@@ -57,7 +57,7 @@ export const CardDetailButton = styled.button`
 
   background-color: transparent;
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   font-weight: 600;
 
   &:hover {

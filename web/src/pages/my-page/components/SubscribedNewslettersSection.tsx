@@ -102,6 +102,6 @@ const NewsletterGrid = styled.div<{ device: Device }>`
 
 const EmptyMessage = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;

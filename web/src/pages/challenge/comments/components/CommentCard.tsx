@@ -95,7 +95,7 @@ const CommentCard = ({
         <Flex gap={12} align="center" justify="space-between">
           <Flex direction="column" gap={4}>
             <Flex gap={isMobile ? 4 : 8} wrap="wrap" align="center">
-              <Text color="textSecondary" font={isMobile ? 'body3' : 'body2'}>
+              <Text color="textSecondary" font={isMobile ? 't3Regular' : 't5Regular'}>
                 {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
               </Text>
               <NewsletterBadge
@@ -121,7 +121,7 @@ const CommentCard = ({
               <Text
                 as="p"
                 color="textTertiary"
-                font={isMobile ? 'body3' : 'body2'}
+                font={isMobile ? 't3Regular' : 't5Regular'}
               >
                 {articleTitle}
               </Text>
@@ -149,7 +149,7 @@ const CommentCard = ({
               )}
               <Text
                 color={isLiked ? 'red' : 'textSecondary'}
-                font={isMobile ? 'body3' : 'body2'}
+                font={isMobile ? 't3Regular' : 't5Regular'}
               >
                 {likeCount}
               </Text>
@@ -277,7 +277,7 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    isMobile ? theme.fonts.t3Regular : theme.fonts.t5Regular};
 `;
 
 const EditButton = styled(Button)<{ isMobile: boolean }>`
@@ -308,7 +308,7 @@ const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    isMobile ? theme.fonts.t3Regular : theme.fonts.t5Regular};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ isMobile, expanded }) => {
@@ -326,7 +326,7 @@ const ExpandButton = styled(Button)<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+    isMobile ? theme.fonts.t3Regular : theme.fonts.t5Regular};
 
   text-decoration: underline;
 

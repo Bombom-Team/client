@@ -35,7 +35,7 @@ const Container = styled.button<{
   align-items: center;
   justify-content: center;
 
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   text-align: center;
 
   ${({ variant, theme }) => variantStyles[variant](theme)}
