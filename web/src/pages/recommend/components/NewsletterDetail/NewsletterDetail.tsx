@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import DetailTab from './DetailTab';
 import { openSubscribeLink } from './NewsletterDetail.utils';
 import NewsletterTabs from './NewsletterTabs';
@@ -17,6 +18,8 @@ import type { NewsletterTab } from './NewsletterDetail.types';
 import HomeIcon from '#/assets/svg/home.svg';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
+const NEWSLETTERS_WITH_LANDING_PAGE = [57];
+
 interface NewsletterDetailProps {
   newsletterId: number;
 }
@@ -24,6 +27,7 @@ interface NewsletterDetailProps {
 const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
   const deviceType = useDevice();
   const { userProfile, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useSearchParamState<NewsletterTab>('tab', {
     defaultValue: 'detail',
   });
@@ -58,6 +62,15 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
       action: '구독하기 버튼 클릭',
       label: newsletterDetail.name,
     });
+
+    if (NEWSLETTERS_WITH_LANDING_PAGE.includes(newsletterId)) {
+      navigate({
+        to: '/newsletter/$newsletterId/landing',
+        params: { newsletterId: String(newsletterId) },
+      });
+      return;
+    }
+
     openSubscribeLink(
       newsletterDetail.subscribeUrl,
       newsletterDetail.name,
