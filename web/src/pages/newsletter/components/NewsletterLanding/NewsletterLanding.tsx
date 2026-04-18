@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
-import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import HowSection from './HowSection';
-import NewsletterFaqNote from './NewsletterFaqNote';
+import NewsletterFAQ from './NewsletterFAQ';
 import NewsletterHero from './NewsletterHero';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { useAuth } from '@/contexts/AuthContext';
@@ -15,7 +14,6 @@ interface Props {
 
 const NewsletterLanding = ({ config }: Props) => {
   const { isLoggedIn, userProfile } = useAuth();
-  const navigate = useNavigate();
   const device = useDevice();
   const isMobile = device === 'mobile';
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -26,26 +24,20 @@ const NewsletterLanding = ({ config }: Props) => {
     toast.success('사전 구독이 완료되었습니다!');
   };
 
-  const handleLoginRedirect = () => {
-    navigate({ to: '/login' });
-  };
-
   return (
     <Container>
       <NewsletterHero
         config={config}
-        device={device}
         isLoggedIn={isLoggedIn}
         userEmail={userProfile?.email}
         isSubscribed={isSubscribed}
         onSubscribe={handleSubscribe}
-        onLoginRedirect={handleLoginRedirect}
       />
 
-      <Sections isMobile={isMobile}>
-        <HowSection isMobile={isMobile} />
-        <NewsletterFaqNote />
-      </Sections>
+      <InformationSection isMobile={isMobile}>
+        <HowSection />
+        <NewsletterFAQ />
+      </InformationSection>
     </Container>
   );
 };
@@ -67,9 +59,7 @@ const Container = styled.div`
   word-break: keep-all;
 `;
 
-const Sections = styled.div<{ isMobile: boolean }>`
-  position: relative;
-  z-index: 1;
+const InformationSection = styled.div<{ isMobile: boolean }>`
   max-width: 1120px;
   margin: 0 auto;
   padding: ${({ isMobile }) => (isMobile ? '0 24px 64px' : '0 40px 80px')};

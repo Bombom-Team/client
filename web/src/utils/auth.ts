@@ -16,3 +16,9 @@ export const navigateToOAuthLogin = ({
   const query = `?redirectUrl=${encodeURIComponent(fullUrl)}`;
   window.location.href = `${ENV.baseUrl}/auth/login/${provider}${query}`;
 };
+
+export const getRedirectPathFromSearch = (search: string) => {
+  const redirectPath = new URLSearchParams(search).get('redirect');
+
+  return redirectPath ?? undefined;
+};

@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import Flex from '@/components/Flex';
+import { useDevice } from '@/hooks/useDevice';
 
-interface Props {
-  isMobile: boolean;
-}
+const HowSection = () => {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
 
-const HowSection = ({ isMobile }: Props) => {
   return (
     <Container isMobile={isMobile}>
       <HowHead>
@@ -101,7 +101,6 @@ const Step = styled.div`
 const StepHeader = styled(Flex)`
   margin-bottom: 12px;
 
-  display: flex;
   gap: 8px;
   align-items: center;
   justify-content: flex-start;

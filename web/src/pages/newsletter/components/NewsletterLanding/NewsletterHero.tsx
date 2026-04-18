@@ -1,30 +1,33 @@
 import styled from '@emotion/styled';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
+import { useDevice, type Device } from '@/hooks/useDevice';
 import type { NewsletterLandingConfig } from '../../constants/newsletter';
-import type { Device } from '@/hooks/useDevice';
 import logo from '#/assets/avif/logo.avif';
 import MailMaeilLogo from '#/assets/svg/mailmaeil-logo.svg';
 
 interface Props {
   config: NewsletterLandingConfig;
-  device: Device;
   isLoggedIn: boolean;
   userEmail?: string;
   isSubscribed: boolean;
   onSubscribe: () => void;
-  onLoginRedirect: () => void;
 }
 
 const NewsletterHero = ({
   config,
-  device,
   isLoggedIn,
   userEmail,
   isSubscribed,
   onSubscribe,
-  onLoginRedirect,
 }: Props) => {
+  const device = useDevice();
+
+  const redirectLandingPage = () => {
+    const redirect = encodeURIComponent(window.location.pathname);
+    window.location.href = `/login?redirect=${redirect}`;
+  };
+
   return (
     <Container>
       <Content device={device}>
@@ -55,7 +58,7 @@ const NewsletterHero = ({
           </HeadlineLine>
         </Flex>
 
-        <Description device={device}>
+        <Description>
           서비스 종료로 아쉬움을 남긴 매일메일을 봄봄에서 계속 만나보세요.
           <br />
           기술 면접 질문을 한곳에서 더 편하게 읽을 수 있어요.
@@ -78,7 +81,7 @@ const NewsletterHero = ({
               </SubscribeButton>
             </>
           ) : (
-            <SubscribeButton onClick={onLoginRedirect}>
+            <SubscribeButton onClick={redirectLandingPage}>
               로그인하고 구독하기
             </SubscribeButton>
           )}
@@ -153,7 +156,7 @@ const BrandOrange = styled.span`
   color: ${({ theme }) => theme.colors.primary};
 `;
 
-const Description = styled.p<{ device: Device }>`
+const Description = styled.p`
   max-width: 480px;
 
   color: ${({ theme }) => theme.colors.textSecondary};

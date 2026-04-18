@@ -2,7 +2,7 @@ import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
-import { navigateToOAuthLogin } from '@/utils/auth';
+import { getRedirectPathFromSearch, navigateToOAuthLogin } from '@/utils/auth';
 import { isIOS, isWebView } from '@/utils/device';
 import AppleIcon from '#/assets/svg/apple.svg';
 import GoogleIcon from '#/assets/svg/google.svg';
@@ -11,6 +11,7 @@ import SparklesIcon from '#/assets/svg/sparkles.svg';
 const LoginCard = () => {
   const device = useDevice();
   const isMobile = device === 'mobile';
+  const redirectPath = getRedirectPathFromSearch(window.location.search);
 
   return (
     <Container isMobile={isMobile}>
@@ -32,7 +33,7 @@ const LoginCard = () => {
       <Divider />
       <LoginButton
         onClick={() => {
-          navigateToOAuthLogin({ provider: 'google' });
+          navigateToOAuthLogin({ provider: 'google', redirectPath });
         }}
         variant="outlined"
       >
@@ -42,7 +43,7 @@ const LoginCard = () => {
       {(!isWebView() || isIOS()) && (
         <LoginButton
           onClick={() => {
-            navigateToOAuthLogin({ provider: 'apple' });
+            navigateToOAuthLogin({ provider: 'apple', redirectPath });
           }}
           variant="outlined"
         >
