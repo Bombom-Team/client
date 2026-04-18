@@ -89,7 +89,8 @@ const ContentWrapper = styled.div<{ isPC: boolean }>`
   flex: 1;
   flex-direction: ${({ isPC }) => (isPC ? 'row' : 'column')};
 
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.t6Regular : theme.fonts.t3Regular)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t6Regular : theme.fonts.t3Regular};
 `;
 
 const Content = styled.div<{ isPC: boolean }>`

@@ -95,7 +95,10 @@ const CommentCard = ({
         <Flex gap={12} align="center" justify="space-between">
           <Flex direction="column" gap={4}>
             <Flex gap={isMobile ? 4 : 8} wrap="wrap" align="center">
-              <Text color="textSecondary" font={isMobile ? 't3Regular' : 't5Regular'}>
+              <Text
+                color="textSecondary"
+                font={isMobile ? 't3Regular' : 't5Regular'}
+              >
                 {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
               </Text>
               <NewsletterBadge

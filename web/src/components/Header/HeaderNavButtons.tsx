@@ -139,7 +139,8 @@ const NavButton = styled(Link, {
     active ? theme.colors.primary : 'transparent'};
   color: ${({ active, theme }) =>
     active ? theme.colors.white : theme.colors.textPrimary};
-  font: ${({ isPC, theme }) => (isPC ? theme.fonts.t5Regular : theme.fonts.t1Regular)};
+  font: ${({ isPC, theme }) =>
+    isPC ? theme.fonts.t5Regular : theme.fonts.t1Regular};
 
   text-shadow: ${({ active }) =>
     active ? 'none' : '0 1px 2px rgba(0, 0, 0, 0.1)'};

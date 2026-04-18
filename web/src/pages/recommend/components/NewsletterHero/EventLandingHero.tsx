@@ -86,7 +86,8 @@ const HeroBadge = styled.div<{ isPC: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
   font-weight: 700;
   text-align: center;
 
@@ -100,6 +101,7 @@ const IndicateText = styled.p<{ isPC: boolean }>`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
   font-weight: 700;
 `;

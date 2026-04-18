@@ -93,7 +93,8 @@ const HeroTitle = styled.h1<{ isPC: boolean }>`
 
 const HeroSubtitle = styled.p<{ isPC: boolean }>`
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.t6Regular : theme.fonts.t5Regular)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t6Regular : theme.fonts.t5Regular};
 
   opacity: 0.9;
   word-break: keep-all;
@@ -107,7 +108,8 @@ const CTAButton = styled.button<{ isPC: boolean }>`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
 
   transition: all 0.2s ease;
 

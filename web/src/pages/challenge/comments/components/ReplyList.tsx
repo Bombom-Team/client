@@ -52,7 +52,11 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
               </>
             )}
           </Flex>
-          <Text as="p" color="textPrimary" font={isMobile ? 't5Regular' : 't6Regular'}>
+          <Text
+            as="p"
+            color="textPrimary"
+            font={isMobile ? 't5Regular' : 't6Regular'}
+          >
             {replyItem.reply}
           </Text>
         </Flex>

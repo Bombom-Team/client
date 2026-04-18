@@ -34,5 +34,6 @@ export default Text;
 const StyledText = styled.span<TextBaseProps>`
   color: ${({ theme, color }) =>
     color ? theme.colors[color] : theme.colors.textPrimary};
-  font: ${({ theme, font }) => (font ? theme.fonts[font] : theme.fonts.t6Regular)};
+  font: ${({ theme, font }) =>
+    font ? theme.fonts[font] : theme.fonts.t6Regular};
 `;
