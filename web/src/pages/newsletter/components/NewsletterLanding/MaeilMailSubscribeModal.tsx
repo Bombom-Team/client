@@ -7,6 +7,7 @@ import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import { useDevice } from '@/hooks/useDevice';
 import type { WeeklyIssueCount } from '../../types/subscribe';
+import type { Device } from '@/hooks/useDevice';
 import type { Ref } from 'react';
 
 interface Props {
@@ -24,7 +25,6 @@ const MaeilMailSubscribeModal = ({
   closeModal,
   onSubscribeSuccess,
 }: Props) => {
-  const device = useDevice();
   const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
   const [selectedWeeklyIssueCount, setSelectedWeeklyIssueCount] =
     useState<WeeklyIssueCount | null>(null);
@@ -32,6 +32,7 @@ const MaeilMailSubscribeModal = ({
   const [weeklyIssueCountError, setWeeklyIssueCountError] = useState<
     string | null
   >(null);
+  const device = useDevice();
 
   const { mutate: subscribeNewsletter, isPending } =
     useSubscribeNewsletterMutation({
@@ -79,10 +80,10 @@ const MaeilMailSubscribeModal = ({
       closeModal={closeModal}
       position={device === 'mobile' ? 'bottom' : 'center'}
     >
-      <ModalContent>
+      <ModalContent device={device}>
         <Title>사전 구독</Title>
 
-        <Flex direction="column" gap={28}>
+        <Flex direction="column" gap={device === 'mobile' ? 16 : 28}>
           <Section>
             <Flex align="center" gap={4}>
               <SectionLabel>
@@ -123,6 +124,7 @@ const MaeilMailSubscribeModal = ({
                   <IssueCountLabel
                     selected={selectedWeeklyIssueCount === value}
                     htmlFor={`weekly-issue-count-${value}`}
+                    device={device}
                   >
                     {label}
                   </IssueCountLabel>
@@ -143,12 +145,11 @@ const MaeilMailSubscribeModal = ({
 
 export default MaeilMailSubscribeModal;
 
-const ModalContent = styled.div`
-  width: 480px;
-  max-width: calc(90vw - 104px);
+const ModalContent = styled.div<{ device: Device }>`
+  width: ${({ device }) => (device === 'mobile' ? '100%' : '480px')};
 
   display: flex;
-  gap: 32px;
+  gap: ${({ device }) => (device === 'mobile' ? '20px' : '32px')};
   flex-direction: column;
 `;
 
@@ -178,10 +179,12 @@ const Highlight = styled.span`
 `;
 
 const TrackGrid = styled.div`
-  display: grid;
+  display: flex;
   gap: 12px;
 
-  grid-template-columns: 1fr 1fr;
+  & > * {
+    flex: 1;
+  }
 `;
 
 const ErrorMessage = styled.p`
@@ -218,9 +221,9 @@ const HiddenRadio = styled.input`
   }
 `;
 
-const IssueCountLabel = styled.label<{ selected: boolean }>`
+const IssueCountLabel = styled.label<{ selected: boolean; device: Device }>`
   width: 100%;
-  padding: 14px 16px;
+  padding: ${({ device }) => (device === 'mobile' ? '4px 8px' : '14px 16px')};
   border: 1px solid
     ${({ theme, selected }) =>
       selected ? theme.colors.primary : theme.colors.stroke};
