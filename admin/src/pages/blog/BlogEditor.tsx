@@ -105,7 +105,15 @@ export const BlogEditor = () => {
   const editor = useEditor({
     extensions: [
       StarterKitExtension,
-      ImageExtension,
+      ImageExtension.configure({
+        resize: {
+          enabled: true,
+          directions: ['bottom-right', 'bottom-left', 'top-right', 'top-left'],
+          minWidth: 80,
+          minHeight: 80,
+          alwaysPreserveAspectRatio: true,
+        },
+      }),
       LinkExtension.configure({ openOnClick: false }),
       UnderlineExtension,
       HighlightExtension.configure({ multicolor: true }),
@@ -608,6 +616,33 @@ const EditorWrapper = styled.div`
       max-width: 100%;
       margin: 8px 0;
       border-radius: 8px;
+    }
+
+    [data-resize-handle] {
+      width: 10px;
+      height: 10px;
+      border: 2px solid ${({ theme }) => theme.colors.primary};
+      border-radius: 50%;
+
+      background: white;
+
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    [data-resize-wrapper]:hover [data-resize-handle],
+    [data-resize-wrapper]:has(img[data-resize-state]) [data-resize-handle] {
+      opacity: 1;
+    }
+
+    [data-resize-handle='bottom-right'],
+    [data-resize-handle='top-left'] {
+      cursor: nwse-resize;
+    }
+
+    [data-resize-handle='bottom-left'],
+    [data-resize-handle='top-right'] {
+      cursor: nesw-resize;
     }
 
     a {
