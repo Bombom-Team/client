@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import Flex from '@/components/Flex';
+import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 
 const HowSection = () => {
@@ -20,32 +21,38 @@ const HowSection = () => {
         <Step isMobile={isMobile}>
           <StepHeader>
             <ItemNumber isMobile={isMobile}>1</ItemNumber>
-            <StepTitle>봄봄에서 구독해요</StepTitle>
+            <Text as="h4" color="textPrimary" font="t6Bold">
+              봄봄에서 구독해요
+            </Text>
           </StepHeader>
-          <StepDescription>
+          <Text as="p" color="textSecondary" font="t6Regular">
             봄봄 계정으로 매일메일을 구독해요.
             <br />
             봄봄 유저라면 이메일을 따로 입력하지 않아도 돼요.
-          </StepDescription>
+          </Text>
         </Step>
         <Step isMobile={isMobile}>
           <StepHeader>
             <ItemNumber isMobile={isMobile}>2</ItemNumber>
-            <StepTitle>봄봄이 알려드려요</StepTitle>
+            <Text as="h4" color="textPrimary" font="t6Bold">
+              봄봄이 알려드려요
+            </Text>
           </StepHeader>
-          <StepDescription>
+          <Text as="p" color="textSecondary" font="t6Regular">
             새 매일메일이 도착하면 놓치지 않도록 앱 알림으로 알려드려요.
-          </StepDescription>
+          </Text>
           <Caption>* 아티클 알림을 허용한 모바일 앱 유저에 한함.</Caption>
         </Step>
         <Step isMobile={isMobile}>
           <StepHeader>
             <ItemNumber isMobile={isMobile}>3</ItemNumber>
-            <StepTitle>봄봄에서 읽어요</StepTitle>
+            <Text as="h4" color="textPrimary" font="t6Bold">
+              봄봄에서 읽어요
+            </Text>
           </StepHeader>
-          <StepDescription>
+          <Text as="p" color="textSecondary" font="t6Regular">
             기존의 매일메일처럼 봄봄에서 질문을 읽고 정답을 확인할 수 있어요.
-          </StepDescription>
+          </Text>
         </Step>
       </HowSteps>
     </Container>
@@ -67,16 +74,14 @@ const HowTitle = styled.h2`
   margin: 0 0 10px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-weight: 800;
-  font-size: 1.875rem;
-  line-height: 1.4;
+  font: ${({ theme }) => theme.fonts.t12Bold};
 `;
 
 const HowDesc = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const HowSteps = styled.div<{ isMobile: boolean }>`
@@ -118,23 +123,13 @@ const ItemNumber = styled.span<{ isMobile: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading5};
-`;
-
-const StepTitle = styled.h4`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
-`;
-
-const StepDescription = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const Caption = styled.p`
   margin-top: 8px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   text-align: left;
 `;

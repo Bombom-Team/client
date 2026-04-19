@@ -37,7 +37,7 @@ const NewsletterHero = ({ config, newsletterId }: NewsletterHeroProps) => {
         <LogoRow device={device}>
           <Flex align="center" gap={10}>
             <BomBomLogo src={logo} alt="봄봄" device={device} />
-            <Text color="textPrimary" font="heading3">
+            <Text color="textPrimary" font="t11Bold">
               봄봄
             </Text>
           </Flex>
@@ -143,8 +143,7 @@ const BomBomLogo = styled.img<{ device: Device }>`
 
 const CrossSign = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font-weight: 300;
-  font-size: 1.5rem;
+  font: ${({ theme }) => theme.fonts.t10Regular};
 `;
 
 const HeadlineLine = styled.p<{ device: Device }>`
@@ -176,7 +175,7 @@ const Description = styled.p`
   max-width: 480px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   letter-spacing: -0.01em;
   text-align: center;
 `;
@@ -191,8 +190,7 @@ const CtaArea = styled.div`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-weight: 500;
-  font-size: 0.9375rem;
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const SuccessMark = styled.span<{ primaryColor: string }>`
@@ -206,8 +204,8 @@ const SuccessMark = styled.span<{ primaryColor: string }>`
   justify-content: center;
 
   background-color: ${({ primaryColor }) => primaryColor};
-  color: #fff;
-  font-size: 0.75rem;
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const AccountDot = styled.span`
@@ -222,7 +220,7 @@ const AccountDot = styled.span`
 
 const SubText = styled.span`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;
 
@@ -239,8 +237,7 @@ const SubscribeButton = styled.button`
 
   background-color: oklch(15% 0.02 55deg);
   color: #f5f0e8;
-  font-weight: 700;
-  font-size: 0.9375rem;
+  font: ${({ theme }) => theme.fonts.t6Bold};
 
   transition: background-color 150ms ease;
 
@@ -255,14 +252,12 @@ const SubscribeButton = styled.button`
 
 const OpenDateNumber = styled.span`
   color: ${({ theme }) => theme.colors.primary};
-  font-weight: 900;
-  font-size: 2.1rem;
+  font: ${({ theme }) => theme.fonts.t13Bold};
   letter-spacing: -0.02em;
 `;
 
 const OpenDateLabel = styled.span`
   color: ${({ theme }) => theme.colors.primary};
-  font-weight: 900;
-  font-size: 2.1rem;
+  font: ${({ theme }) => theme.fonts.t13Bold};
   letter-spacing: 0.04em;
 `;

@@ -5,6 +5,7 @@ import { useSubscribeNewsletterMutation } from '../../hooks/useSubscribeNewslett
 import Checkbox from '@/components/Checkbox/Checkbox';
 import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
+import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 import type { Ref } from 'react';
@@ -65,9 +66,14 @@ const MaeilMailSubscribeModal = ({
         <Section>
           <Flex align="center" gap={4}>
             <SectionLabel>
-              분야<Highlight>*</Highlight>
+              분야
+              <Text color="primary" font="t5Regular">
+                *
+              </Text>
             </SectionLabel>
-            <Highlight>(중복 선택 가능)</Highlight>
+            <Text color="primary" font="t5Regular">
+              (중복 선택 가능)
+            </Text>
           </Flex>
           <TrackGrid>
             {TRACKS.map(({ value, label }) => (
@@ -104,7 +110,7 @@ const ModalContent = styled.div<{ device: Device }>`
 
 const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
   text-align: center;
 `;
 
@@ -119,12 +125,7 @@ const SectionLabel = styled.p`
   align-items: flex-start;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
-`;
-
-const Highlight = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const TrackGrid = styled.div`
@@ -140,7 +141,7 @@ const ErrorMessage = styled.p`
   min-height: 2em;
 
   color: ${({ theme }) => theme.colors.error};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const ConfirmButton = styled.button<{ disabled: boolean }>`
@@ -152,7 +153,7 @@ const ConfirmButton = styled.button<{ disabled: boolean }>`
   background-color: ${({ theme, disabled }) =>
     disabled ? `${theme.colors.black}66` : theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   transition: background-color 150ms ease;

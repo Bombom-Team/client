@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import Accordion from '@/components/Accordion/Accordion';
+import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 
 const FAQ_ITEMS = [
@@ -53,10 +54,12 @@ const NewsletterFAQ = () => {
   return (
     <Container isMobile={isMobile}>
       <HeaderWrapper>
-        <Title>자주 묻는 질문</Title>
-        <Description>
+        <Text as="h3" color="textPrimary" font="t10Bold">
+          자주 묻는 질문
+        </Text>
+        <Text as="p" color="textSecondary" font="t5Regular">
           구독 전에 많이 궁금해하시는 내용을 모아두었어요.
-        </Description>
+        </Text>
       </HeaderWrapper>
 
       <AccordionList>
@@ -70,8 +73,12 @@ const NewsletterFAQ = () => {
                 onToggle={() => handleToggle(id)}
               >
                 <QuestionWrapper>
-                  <QuestionPrefix>Q.</QuestionPrefix>
-                  <Question>{question}</Question>
+                  <Text color="primary" font="t6Bold">
+                    Q.
+                  </Text>
+                  <Text color="textPrimary" font="t6Bold">
+                    {question}
+                  </Text>
                 </QuestionWrapper>
               </Accordion.Header>
 
@@ -100,16 +107,6 @@ const HeaderWrapper = styled.div`
   display: flex;
   gap: 8px;
   flex-direction: column;
-`;
-
-const Title = styled.h3`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
-`;
-
-const Description = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
 `;
 
 const AccordionList = styled.div`
@@ -144,18 +141,7 @@ const QuestionWrapper = styled.div`
   align-items: flex-start;
 `;
 
-const QuestionPrefix = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading6};
-`;
-
-const Question = styled.span`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
-`;
-
 const Answer = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
-  line-height: 1.8;
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
