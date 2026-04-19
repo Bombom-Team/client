@@ -81,41 +81,35 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
           />
           <InfoBox>
             <TitleWrapper isMobile={isMobile}>
-              <NewsletterTitle isMobile={isMobile}>
-                {newsletterDetail.name}
-              </NewsletterTitle>
+              <NewsletterTitle>{newsletterDetail.name}</NewsletterTitle>
               <DetailLink
                 onClick={openMainSite}
-                isMobile={isMobile}
                 aria-description="클릭 시 뉴스레터 공식 페이지로 이동합니다."
               >
                 <StyledHomeIcon isMobile={isMobile} aria-hidden="true" />
               </DetailLink>
             </TitleWrapper>
 
-            <NewsletterInfo isMobile={isMobile}>
-              <StyledBadge
-                text={newsletterDetail.category}
-                isMobile={isMobile}
-              />
+            <NewsletterInfo>
+              <StyledBadge text={newsletterDetail.category} />
               <IssueCycle>{`${newsletterDetail.issueCycle} 발행`}</IssueCycle>
             </NewsletterInfo>
           </InfoBox>
         </InfoWrapper>
 
         {newsletterDetail.subscribeMethod && (
-          <SubscribeMethodInfo isMobile={isMobile}>
+          <SubscribeMethodInfo>
             <StyledInfoIcon isMobile={isMobile} />
             {newsletterDetail.subscribeMethod}
           </SubscribeMethodInfo>
         )}
 
         <SubscribeButton
+          isMobile={isMobile}
           onClick={handleSubscribeButtonClick}
           disabled={
             !isLoggedIn || (isLoggedIn && newsletterDetail.isSubscribed)
           }
-          isMobile={isMobile}
         >
           {getSubscribeButtonText()}
         </SubscribeButton>
@@ -231,10 +225,9 @@ export const TitleWrapper = styled.div<{ isMobile: boolean }>`
   gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
 `;
 
-const NewsletterTitle = styled.h2<{ isMobile: boolean }>`
+const NewsletterTitle = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading4 : theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const StyledHomeIcon = styled(HomeIcon)<{ isMobile: boolean }>`
@@ -251,32 +244,29 @@ const StyledInfoIcon = styled(InfoIcon)<{ isMobile: boolean }>`
   fill: ${({ theme }) => theme.colors.primary};
 `;
 
-const SubscribeMethodInfo = styled.div<{ isMobile: boolean }>`
-  padding: 0.8rem 1rem;
-  border-radius: 1rem;
+const SubscribeMethodInfo = styled.div`
+  padding: 12.8px 16px;
+  border-radius: 16px;
 
   display: flex;
   gap: 12px;
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
-export const NewsletterInfo = styled.div<{ isMobile: boolean }>`
+export const NewsletterInfo = styled.div`
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
   align-items: center;
 
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
-const StyledBadge = styled(Badge)<{ isMobile: boolean }>`
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+const StyledBadge = styled(Badge)`
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const IssueCycle = styled.p`
@@ -284,14 +274,13 @@ const IssueCycle = styled.p`
   text-align: center;
 `;
 
-const DetailLink = styled.button<{ isMobile: boolean }>`
+const DetailLink = styled.button`
   display: flex;
   gap: 4px;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   transition: all 0.2s ease;
 
@@ -307,6 +296,6 @@ const SubscribeButton = styled(Button)<{ isMobile: boolean }>`
 
   align-self: center;
 
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.heading6};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.t5Regular : theme.fonts.t6Bold};
 `;

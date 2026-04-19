@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import html2canvas from 'html2canvas';
 import { useCallback, useRef } from 'react';
-import { COUPON_TYPE } from '../../constants/constants';
 import { formatEventDateTime } from '../../utils/date';
 import CloseWarningModal from '../CloseWarningModal';
 import { queries } from '@/apis/queries';
@@ -14,11 +13,12 @@ import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { isWebView } from '@/utils/device';
-import type { Device } from '@/hooks/useDevice';
 
 interface IssuedStateProps {
   onClose: () => void;
 }
+
+const COUPON_IMAGE_BASE_URL = 'https://www.bombom.news/';
 
 const IssuedState = ({ onClose }: IssuedStateProps) => {
   const device = useDevice();
@@ -58,7 +58,7 @@ const IssuedState = ({ onClose }: IssuedStateProps) => {
   return (
     <>
       <Flex direction="column" gap={16} align="center">
-        <CompletedMessage device={device}>
+        <CompletedMessage>
           쿠폰이 성공적으로 발급되었습니다! 🎉
         </CompletedMessage>
         <CouponContainer ref={couponRef}>
@@ -78,13 +78,13 @@ const IssuedState = ({ onClose }: IssuedStateProps) => {
                   justify="center"
                 >
                   <img
-                    src={coupon.imageUrl}
+                    src={`${COUPON_IMAGE_BASE_URL}${coupon.imageUrl}`}
                     alt="선착순 경품 쿠폰"
                     width="90%"
                     height="auto"
                   />
-                  <Text font={device === 'mobile' ? 'body2' : 'body1'}>
-                    {`${formatEventDateTime(new Date(coupon.issuedAt))} 발급 (${COUPON_TYPE[coupon.couponName]})`}
+                  <Text font={device === 'mobile' ? 't5Regular' : 't6Regular'}>
+                    {`${formatEventDateTime(new Date(coupon.issuedAt))} 발급`}
                   </Text>
                 </Flex>
               );
@@ -117,10 +117,9 @@ const IssuedState = ({ onClose }: IssuedStateProps) => {
 
 export default IssuedState;
 
-const CompletedMessage = styled.p<{ device: Device }>`
+const CompletedMessage = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
   text-align: center;
 `;
 
@@ -134,12 +133,12 @@ const DownloadButton = styled(Button)`
   border: ${({ theme }) => `2px solid ${theme.colors.black}`};
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const CloseButton = styled(Button)`
   width: 100%;
   min-width: 180px;
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

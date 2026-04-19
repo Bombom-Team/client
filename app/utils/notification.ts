@@ -1,9 +1,17 @@
-import messaging from '@react-native-firebase/messaging';
+import {
+  getMessaging,
+  requestPermission,
+  hasPermission,
+  getToken,
+  AuthorizationStatus,
+} from '@react-native-firebase/messaging';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { Alert, Linking, Platform } from 'react-native';
+import { Linking, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ASYNC_STORAGE_KEY } from '@/constants/asyncStorage';
+import { startActivityAsync, ActivityAction } from 'expo-intent-launcher';
+import { applicationId } from 'expo-application';
 
 // 안드로이드 알림 채널 생성
 export const createAndroidChannel = async () => {
@@ -19,11 +27,11 @@ export const createAndroidChannel = async () => {
 export const requestNotificationPermission = async () => {
   try {
     if (Platform.OS === 'ios') {
-      const auth = await messaging().requestPermission();
+      const auth = await requestPermission(getMessaging());
 
       return (
-        auth === messaging.AuthorizationStatus.AUTHORIZED ||
-        auth === messaging.AuthorizationStatus.PROVISIONAL
+        auth === AuthorizationStatus.AUTHORIZED ||
+        auth === AuthorizationStatus.PROVISIONAL
       );
     }
 
@@ -46,10 +54,10 @@ export const checkNotificationPermission = async () => {
   }
 
   if (Platform.OS === 'ios') {
-    const iosGrantedStatus = await messaging().hasPermission();
+    const iosGrantedStatus = await hasPermission(getMessaging());
     return (
-      iosGrantedStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      iosGrantedStatus === messaging.AuthorizationStatus.PROVISIONAL
+      iosGrantedStatus === AuthorizationStatus.AUTHORIZED ||
+      iosGrantedStatus === AuthorizationStatus.PROVISIONAL
     );
   }
 
@@ -61,37 +69,33 @@ export const checkNotificationPermission = async () => {
   return false;
 };
 
-export const goToSystemPermission = async (enabled: boolean) => {
+export const goToSystemPermission = async () => {
   try {
-    const hasPermission = await checkNotificationPermission();
-    if (enabled && !hasPermission) {
-      Alert.alert(
-        '알림 권한 필요',
-        '알림을 받으려면 시스템 설정에서 알림 권한을 허용해주세요.',
-        [
-          { text: '취소', style: 'cancel' },
-          {
-            text: '설정 열기',
-            onPress: () => {
-              Linking.openSettings();
-            },
-          },
-        ],
-      );
+    if (Platform.OS === 'ios') {
+      await Linking.openSettings();
+    }
+
+    if (Platform.OS === 'android') {
+      await startActivityAsync(ActivityAction.APP_NOTIFICATION_SETTINGS, {
+        extra: {
+          'android.provider.extra.APP_PACKAGE': applicationId,
+          app_package: applicationId,
+        },
+      });
     }
   } catch (error) {
-    console.error('알림 권한 확인 실패:', error);
+    console.error('알림 권한 설정을 여는데 실패했습니다. :', error);
   }
 };
 
 export const getFCMToken = async () => {
   try {
-    const hasPermission = await checkNotificationPermission();
-    if (!hasPermission) {
+    const isPermissionGranted = await checkNotificationPermission();
+    if (!isPermissionGranted) {
       throw new Error('푸시 알림 권한이 없습니다.');
     }
 
-    const token = await messaging().getToken();
+    const token = await getToken(getMessaging());
     return token;
   } catch (error) {
     console.error('FCM 토큰을 가져오는데 실패했습니다.', error);
@@ -114,5 +118,16 @@ export const getMemberId = async () => {
     return Number(memberIdString);
   } catch (error) {
     console.error('memberId 조회에 실패했습니다.', error);
+  }
+};
+
+export const getNotificationUrl = (data: Record<string, unknown>) => {
+  switch (data.notificationType) {
+    case 'ARTICLE':
+      return `/articles/${data.articleId}`;
+    case 'EVENT':
+      return '/event';
+    default:
+      return null;
   }
 };

@@ -85,7 +85,7 @@ function Index() {
   const device = useDevice();
 
   return (
-    <Container device={device}>
+    <Container>
       {device !== 'mobile' && (
         <>
           <TitleWrapper>
@@ -115,7 +115,7 @@ function Index() {
   );
 }
 
-const Container = styled.div<{ device: Device }>`
+const Container = styled.div`
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
@@ -149,7 +149,7 @@ const TitleIconBox = styled.div`
 `;
 
 const Title = styled.h1`
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`

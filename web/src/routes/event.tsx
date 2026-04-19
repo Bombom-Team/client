@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 import EventFooter from '@/pages/event/components/EventFooter';
 import EventGuide from '@/pages/event/components/EventGuide';
 import EventHero from '@/pages/event/components/EventHero';
+import EventLoadingModal from '@/pages/event/components/EventLoadingModal';
 import EventModal from '@/pages/event/components/EventModal';
 import EventPrize from '@/pages/event/components/EventPrize';
 import EventShareGuide from '@/pages/event/components/EventShareGuide';
@@ -13,8 +13,7 @@ import NoticeModal from '@/pages/event/components/NoticeModal';
 import { COUPON_NAME } from '@/pages/event/constants/constants';
 import { useQueueEntry } from '@/pages/event/hooks/useQueueEntry';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
-import type { CouponName } from '@/apis/event/event.api';
-import type { Device } from '@/hooks/useDevice';
+import type { CouponName, QueueEntry } from '@/apis/event/event.api';
 
 export const Route = createFileRoute('/event')({
   validateSearch: (search): { coupon?: CouponName } => ({
@@ -28,11 +27,14 @@ export const Route = createFileRoute('/event')({
     ],
   }),
   component: EventPage,
+
+  beforeLoad: () => {
+    throw redirect({ to: '/' });
+  },
 });
 
 function EventPage() {
   const { coupon } = Route.useSearch();
-  const device = useDevice();
   const { modalRef, openModal, closeModal, isOpen } = useModal({
     closeOnBackdropClick: false,
   });
@@ -57,8 +59,31 @@ function EventPage() {
     openModal();
   };
 
+  const getModalContent = (queueEntry: QueueEntry | undefined) => {
+    if (eventErrorStatus) {
+      return (
+        <NoticeModal
+          noticeType={eventErrorStatus}
+          closeModal={closeNoticeModal}
+        />
+      );
+    }
+
+    if (queueEntry) {
+      return (
+        <EventModal
+          queueEntry={queueEntry}
+          cancelQueueEntry={cancelQueueEntry}
+          refetchQueueEntry={refetchQueueEntry}
+          closeModal={closeModal}
+        />
+      );
+    }
+
+    return <EventLoadingModal closeModal={closeModal} />;
+  };
   return (
-    <Container device={device}>
+    <Container>
       <LandingHeader />
       <EventHero onApply={applyEvent} />
       <EventPrize />
@@ -71,25 +96,13 @@ function EventPage() {
         isOpen={isOpen}
         showCloseButton={false}
       >
-        {eventErrorStatus ? (
-          <NoticeModal
-            noticeType={eventErrorStatus}
-            closeModal={closeNoticeModal}
-          />
-        ) : (
-          <EventModal
-            queueEntry={queueEntry}
-            cancelQueueEntry={cancelQueueEntry}
-            refetchQueueEntry={refetchQueueEntry}
-            closeModal={closeModal}
-          />
-        )}
+        {getModalContent(queueEntry)}
       </Modal>
     </Container>
   );
 }
 
-const Container = styled.main<{ device: Device }>`
+const Container = styled.main`
   width: 100%;
   min-height: 100dvh;
   max-width: 1280px;

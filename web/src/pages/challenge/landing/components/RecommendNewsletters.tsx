@@ -24,9 +24,9 @@ const RecommendNewsletters = () => {
     number | null
   >(null);
 
-  const { data: newsletters } = useQuery(newslettersQueries.newsletters());
+  const { data } = useQuery(newslettersQueries.newsletters());
 
-  const recommendNewsletters = newsletters?.filter((newsletter) =>
+  const recommendNewsletters = data?.newsletters.filter((newsletter) =>
     NEWSLETTER_RECOMMENDATIONS.some(
       (newsletterName) => newsletterName === newsletter.name,
     ),
@@ -111,7 +111,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.t11Bold : theme.fonts.t13Bold};
   text-align: center;
 `;
 

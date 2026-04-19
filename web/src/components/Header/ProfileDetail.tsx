@@ -4,7 +4,6 @@ import { Link } from '@tanstack/react-router';
 import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
 import { toast } from '../Toast/utils/toastActions';
 import { postLogout } from '@/apis/auth/auth.api';
-import { useDevice } from '@/hooks/useDevice';
 import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { copyToClipboard } from '@/utils/copy';
 import { isWebView } from '@/utils/device';
@@ -20,8 +19,6 @@ interface ProfileDetailProps {
 }
 
 const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
-  const deviceType = useDevice();
-
   const { mutate: mutateLogout } = useMutation({
     mutationKey: ['logout'],
     mutationFn: postLogout,
@@ -74,13 +71,6 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
 
       <Divider />
 
-      {!deviceType && (
-        <ChannelTalkButton type="button" onClick={showMessenger}>
-          <ChatIcon width={16} height={16} />
-          문의하기
-        </ChannelTalkButton>
-      )}
-
       <MyPageButton to="/my?tab=profile" onClick={onClose}>
         내 정보
       </MyPageButton>
@@ -89,10 +79,21 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
         구독 뉴스레터
       </MyPageButton>
 
+      <MyPageButton to="/my?tab=rewards" onClick={onClose}>
+        선물함
+      </MyPageButton>
+
       {isWebView() && (
         <MyPageButton to="/my?tab=notification" onClick={onClose}>
           알림 설정
         </MyPageButton>
+      )}
+
+      {isWebView() && (
+        <ChannelTalkButton type="button" onClick={showMessenger}>
+          <ChatIcon width={16} height={16} />
+          문의하기
+        </ChannelTalkButton>
       )}
 
       <LogoutButton type="button" onClick={handleLogoutClick}>
@@ -133,7 +134,7 @@ const Divider = styled.div`
 
 const ProfileName = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const EmailWrapper = styled.div`
@@ -159,7 +160,7 @@ const StyledMailIcon = styled(MailIcon)`
 
 const EmailTitle = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ProfileEmail = styled.button`
@@ -180,7 +181,7 @@ const ProfileEmail = styled.button`
 
 const EmailText = styled.div`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ChannelTalkButton = styled.button`
@@ -189,7 +190,7 @@ const ChannelTalkButton = styled.button`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   &:hover {
     text-decoration: underline;
@@ -203,7 +204,7 @@ const MyPageButton = styled(Link)`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   text-decoration: none;
 
@@ -219,7 +220,7 @@ const LogoutButton = styled.button`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   &:hover {
     text-decoration: underline;

@@ -1,4 +1,8 @@
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import {
   createFileRoute,
   useNavigate,
@@ -18,6 +22,7 @@ import {
   Select,
   TextArea,
 } from '../NewsletterFormStyles';
+import { categoriesQueries } from '@/apis/categories/categories.query';
 import {
   newslettersQueries,
   useUpdateNewsletter,
@@ -25,7 +30,6 @@ import {
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import {
-  NEWSLETTER_CATEGORY_LABELS,
   type NewsletterCategoryType,
   PREVIOUS_STRATEGY_LABELS,
 } from '@/types/newsletter';
@@ -41,6 +45,7 @@ function NewsletterEditPage() {
   const { data: newsletter } = useSuspenseQuery(
     newslettersQueries.detail(Number(newsletterId)),
   );
+  const { data: categories = [] } = useQuery(categoriesQueries.list());
   const { mutate: updateNewsletter, isPending } = useUpdateNewsletter();
 
   const [formData, setFormData] = useState({
@@ -68,10 +73,7 @@ function NewsletterEditPage() {
         description: newsletter.description,
         imageUrl: newsletter.imageUrl,
         email: newsletter.email,
-        category:
-          (Object.entries(NEWSLETTER_CATEGORY_LABELS).find(
-            ([, label]) => label === newsletter.categoryName,
-          )?.[1] as NewsletterCategoryType) || '',
+        category: newsletter.categoryName || '',
         mainPageUrl: newsletter.mainPageUrl,
         subscribeUrl: newsletter.subscribeUrl,
         issueCycle: newsletter.issueCycle,
@@ -163,13 +165,11 @@ function NewsletterEditPage() {
                 required
               >
                 <option value="">카테고리 선택</option>
-                {Object.entries(NEWSLETTER_CATEGORY_LABELS).map(
-                  ([key, label]) => (
-                    <option key={key} value={label}>
-                      {label}
-                    </option>
-                  ),
-                )}
+                {categories.map((category) => (
+                  <option key={category.id} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
               </Select>
             </FormGroup>
             <FormGroup>

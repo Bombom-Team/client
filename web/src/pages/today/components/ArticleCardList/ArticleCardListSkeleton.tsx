@@ -8,8 +8,8 @@ const ArticleCardListSkeleton = () => {
   const isMobile = device === 'mobile';
 
   return (
-    <Container isMobile={isMobile}>
-      <LettersWrapper isMobile={isMobile}>
+    <Container>
+      <LettersWrapper>
         <CardList isMobile={isMobile}>
           {Array.from({ length: ARTICLE_SIZE }).map((_, index) => (
             <li key={`skeleton-${index}`}>

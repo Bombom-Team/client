@@ -126,7 +126,7 @@ const Container = styled.div<{ opened: boolean }>`
 
   background: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 
   opacity: 0;
   transition:

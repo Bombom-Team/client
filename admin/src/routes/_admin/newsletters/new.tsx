@@ -1,4 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import {
@@ -14,11 +14,11 @@ import {
   Select,
   TextArea,
 } from './NewsletterFormStyles';
+import { categoriesQueries } from '@/apis/categories/categories.query';
 import { useCreateNewsletter } from '@/apis/newsletters/newsletters.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import {
-  NEWSLETTER_CATEGORY_LABELS,
   type NewsletterCategoryType,
   PREVIOUS_STRATEGY_LABELS,
 } from '@/types/newsletter';
@@ -34,11 +34,13 @@ const DEFAULT_SEARCH = {
   keyword: '',
   category: '',
   previousStrategy: '',
+  status: '',
 };
 
 function NewsletterCreatePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { data: categories = [] } = useQuery(categoriesQueries.list());
   const { mutate: createNewsletter, isPending } = useCreateNewsletter();
 
   const [formData, setFormData] = useState({
@@ -132,13 +134,11 @@ function NewsletterCreatePage() {
                 required
               >
                 <option value="">카테고리 선택</option>
-                {Object.entries(NEWSLETTER_CATEGORY_LABELS).map(
-                  ([key, label]) => (
-                    <option key={key} value={label}>
-                      {label}
-                    </option>
-                  ),
-                )}
+                {categories.map((category) => (
+                  <option key={category.id} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
               </Select>
             </FormGroup>
             <FormGroup>

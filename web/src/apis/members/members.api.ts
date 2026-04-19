@@ -44,30 +44,8 @@ export const patchWeeklyReadingGoal = async ({
   });
 };
 
-type MonthlyReadingBadgeGrade = 'gold' | 'silver' | 'bronze';
-
-type MonthlyReadingRankItem =
-  components['schemas']['MonthlyReadingRankResponse'] & {
-    badges: {
-      ranking: {
-        grade: MonthlyReadingBadgeGrade;
-        year: number;
-        month: number;
-      };
-      challenge: {
-        grade: MonthlyReadingBadgeGrade;
-        name: string;
-        generation: number;
-      };
-    };
-  };
-
-export type GetMonthlyReadingRankResponse = Omit<
-  components['schemas']['MonthlyReadingRankingResponse'],
-  'data'
-> & {
-  data: MonthlyReadingRankItem[];
-};
+export type GetMonthlyReadingRankResponse =
+  components['schemas']['MonthlyReadingRankingResponse'];
 export type GetMonthlyReadingRankParams =
   operations['getMonthlyReadingRank']['parameters']['query'];
 
@@ -89,6 +67,34 @@ export const getMyMonthlyReadingRank = async () => {
   });
 };
 
+export type StreakReadingRankItem =
+  components['schemas']['ContinueReadingRankResponse'];
+
+export type GetStreakReadingRankResponse =
+  components['schemas']['ContinueReadingRankingResponse'];
+
+export type GetStreakReadingRankParams = {
+  limit: number;
+};
+
+export const getStreakReadingRank = async (
+  params: GetStreakReadingRankParams,
+) => {
+  return await fetcher.get<GetStreakReadingRankResponse>({
+    path: '/members/me/reading/streak/rank',
+    query: params,
+  });
+};
+
+export type GetMyStreakReadingRankResponse =
+  components['schemas']['MemberContinueReadingRankResponse'];
+
+export const getMyStreakReadingRank = async () => {
+  return await fetcher.get<GetMyStreakReadingRankResponse>({
+    path: '/members/me/reading/streak/rank/me',
+  });
+};
+
 export type PatchMembersInfoParams =
   components['schemas']['MemberInfoUpdateRequest'];
 
@@ -99,8 +105,9 @@ export const patchMemberInfo = async (params: PatchMembersInfoParams) => {
   });
 };
 
-export type GetMySubscriptionsResponse =
-  components['schemas']['SubscribedNewsletterResponse'][];
+export type SubscribedNewsletterResponse =
+  components['schemas']['SubscribedNewsletterResponse'];
+export type GetMySubscriptionsResponse = SubscribedNewsletterResponse[];
 
 export const getMySubscriptions = async () => {
   return await fetcher.get<GetMySubscriptionsResponse>({

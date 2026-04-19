@@ -27,7 +27,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     runtimeVersion: {
       policy: 'appVersion',
     },
-    orientation: 'portrait',
+    orientation: 'default',
     icon: APP_CONFIG.icon,
     scheme: 'bombom',
     userInterfaceStyle: 'automatic',
@@ -61,6 +61,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       edgeToEdgeEnabled: true,
       package: APP_CONFIG.bundleIdentifier,
       googleServicesFile: './google-services.json',
+      blockedPermissions: ['com.google.android.gms.permission.AD_ID'],
     },
     web: {
       bundler: 'metro',
@@ -116,6 +117,16 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         {
           icon: './app/assets/images/logo-android.png',
           color: APP_CONFIG.color,
+        },
+      ],
+      [
+        'expo-media-library',
+        {
+          photosPermission: false,
+          savePhotosPermission:
+            '다운로드한 이미지를 사진 앱에 저장하기 위해 접근 권한이 필요합니다.',
+          isAccessMediaLocationEnabled: false,
+          granularPermissions: ['photo'],
         },
       ],
       '@react-native-firebase/app',

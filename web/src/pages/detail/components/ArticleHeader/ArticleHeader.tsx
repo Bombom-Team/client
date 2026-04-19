@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
 import Chip from '@/components/Chip/Chip';
-import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
-import type { Device } from '@/hooks/useDevice';
 import ClockIcon from '#/assets/svg/clock.svg';
 
 interface ArticleHeaderProps {
@@ -20,12 +18,10 @@ const ArticleHeader = ({
   arrivedDateTime,
   expectedReadTime,
 }: ArticleHeaderProps) => {
-  const device = useDevice();
-
   return (
     <Container>
       <TitleRow>
-        <Title device={device}>{title}</Title>
+        <Title>{title}</Title>
       </TitleRow>
       <MetaInfoRow>
         <Chip text={newsletterCategory} />
@@ -60,12 +56,11 @@ const TitleRow = styled.div`
   align-items: flex-start;
 `;
 
-const Title = styled.h2<{ device: Device }>`
+const Title = styled.h2`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const MetaInfoRow = styled.div`
@@ -78,7 +73,7 @@ const MetaInfoRow = styled.div`
 
 const MetaInfoText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const ReadTimeBox = styled.div`

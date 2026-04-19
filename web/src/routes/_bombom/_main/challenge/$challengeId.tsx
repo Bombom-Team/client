@@ -8,6 +8,7 @@ import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import ChallengeGuideModal from '@/pages/challenge/index/components/ChallengeGuideModal/ChallengeGuideModal';
+import ChallengeStreakCard from '@/pages/challenge/index/components/ChallengeStreakCard';
 import { useChallengeDetailTabs } from '@/pages/challenge/index/hooks/useChallengeDetailTabs';
 import { compareDates } from '@/utils/date';
 import type { Device } from '@/hooks/useDevice';
@@ -59,21 +60,24 @@ function ChallengeDetail() {
         )}
 
         <ContentWrapper device={device}>
-          <TabsWrapper device={device}>
-            <Tabs direction={device === 'mobile' ? 'horizontal' : 'vertical'}>
-              {tabs.map((tab) => (
-                <Tab
-                  key={tab.id}
-                  value={tab.id}
-                  label={tab.label}
-                  onTabSelect={() => goToTab(tab.path)}
-                  selected={activeTabId === tab.id}
-                  aria-controls={`panel-${tab.id}`}
-                  textAlign="start"
-                />
-              ))}
-            </Tabs>
-          </TabsWrapper>
+          <NavigationWrapper device={device}>
+            <TabsWrapper device={device}>
+              <Tabs direction={device === 'mobile' ? 'horizontal' : 'vertical'}>
+                {tabs.map((tab) => (
+                  <Tab
+                    key={tab.id}
+                    value={tab.id}
+                    label={tab.label}
+                    onTabSelect={() => goToTab(tab.path)}
+                    selected={activeTabId === tab.id}
+                    aria-controls={`panel-${tab.id}`}
+                    textAlign="start"
+                  />
+                ))}
+              </Tabs>
+            </TabsWrapper>
+            <ChallengeStreakCard challengeId={Number(challengeId)} />
+          </NavigationWrapper>
 
           <TabPanel>
             {challengeInfo && memberChallengeProgressInfo && (
@@ -127,7 +131,7 @@ const TitleIconBox = styled.div`
 `;
 
 const Title = styled.h1`
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
@@ -146,8 +150,19 @@ const UserChallengeInfoWrapper = styled.section`
   border-radius: 16px;
 `;
 
-const TabsWrapper = styled.div<{ device: Device }>`
+const NavigationWrapper = styled.div<{ device: Device }>`
   width: ${({ device }) => (device === 'mobile' ? '100%' : '220px')};
+
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  flex-shrink: 0;
+
+  box-sizing: border-box;
+`;
+
+const TabsWrapper = styled.div<{ device: Device }>`
+  width: 100%;
 
   display: flex;
   flex-direction: column;
@@ -161,13 +176,11 @@ const TabsWrapper = styled.div<{ device: Device }>`
 
 const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   pc: (theme) => ({
-    flexShrink: 0,
     border: `1px solid ${theme.colors.stroke}`,
     borderRadius: '12px',
     padding: '16px',
   }),
   tablet: (theme) => ({
-    flexShrink: 0,
     border: `1px solid ${theme.colors.stroke}`,
     borderRadius: '12px',
     padding: '16px',

@@ -12,18 +12,14 @@ const ChallengeCardFailed = (props: ChallengeCardProps) => {
   return (
     <CardContainer disabled>
       <CardHeader>
-        <Flex direction="column" gap={8}>
-          <Title color="disabledText">{title}</Title>
+        <Flex gap={8} align="center">
           <Tag>{generation}기</Tag>
+          {participantCount > 0 && <Applicant>{participantCount}명</Applicant>}
         </Flex>
-
-        <Flex align="flex-end" gap={12}>
-          {participantCount > 0 && (
-            <Applicant>신청자 {participantCount}명</Applicant>
-          )}
-          <DDay startDate={startDate} color="disabledText" />
-        </Flex>
+        <DDay startDate={startDate} />
       </CardHeader>
+
+      <Title color="disabledText">{title}</Title>
 
       <CardFooter>
         <EliminatedDescription>
@@ -38,5 +34,5 @@ export default ChallengeCardFailed;
 
 const EliminatedDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

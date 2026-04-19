@@ -6,24 +6,29 @@ import {
   useNavigate,
   useSearch,
 } from '@tanstack/react-router';
+import { useRef } from 'react';
 import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
-import ProfileSection from '@/pages/MyPage/ProfileSection';
-import SubscribedNewslettersSection from '@/pages/MyPage/SubscribedNewslettersSection';
+import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection/NotificationSettingsSection';
+import ProfileSection from '@/pages/my-page/components/ProfileSection';
+import RewardsSection from '@/pages/my-page/components/RewardsSection';
+import SubscribedNewslettersSection from '@/pages/my-page/components/SubscribedNewslettersSection';
+import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
 import AvatarIcon from '#/assets/svg/avatar.svg';
 
-type MyPageTab = 'profile' | 'newsletters' | 'notification';
+type MyPageTab = 'profile' | 'newsletters' | 'notification' | 'rewards';
 
 const DEFAULT_TABS = [
   { id: 'profile', label: '내 정보' },
   { id: 'newsletters', label: '구독 뉴스레터' },
+  { id: 'rewards', label: '선물함' },
 ] as const;
 
-// const WEBVIEW_TABS = [{ id: 'notification', label: '알림 설정' }] as const;
+const WEBVIEW_TABS = [{ id: 'notification', label: '알림 설정' }] as const;
 
 export const Route = createFileRoute('/_bombom/_main/my')({
   head: () => ({
@@ -46,12 +51,22 @@ export const Route = createFileRoute('/_bombom/_main/my')({
 function MyPage() {
   const device = useDevice();
   const navigate = useNavigate();
+  const countRef = useRef(0);
   const { tab: activeTabParam } = useSearch({ from: '/_bombom/_main/my' });
 
   const { data: userInfo } = useQuery(queries.me());
-  const { data: mySubscriptions } = useQuery(queries.mySubscriptions());
+  const { data: mySubscriptions } = useQuery({
+    ...queries.mySubscriptions(),
+    refetchInterval: () => {
+      if (countRef.current >= 60) return false;
+      countRef.current += 1;
+      return 5 * 1000;
+    },
+  });
 
-  const tabs = DEFAULT_TABS;
+  const tabs = isWebView()
+    ? [...DEFAULT_TABS, ...WEBVIEW_TABS]
+    : [...DEFAULT_TABS];
 
   if (!userInfo) return null;
 
@@ -74,8 +89,10 @@ function MyPage() {
             device={device}
           />
         );
-      // case 'notification':
-      //   return <NotificationSettingsSection />;
+      case 'rewards':
+        return <RewardsSection />;
+      case 'notification':
+        return <NotificationSettingsSection />;
       default:
         return null;
     }
@@ -111,7 +128,6 @@ function MyPage() {
           id={`panel-${activeTabParam}`}
           role="tabpanel"
           aria-labelledby={`tab-${activeTabParam}`}
-          device={device}
         >
           {renderTabContent()}
         </TabPanel>
@@ -154,7 +170,7 @@ const TitleIconBox = styled.div`
 `;
 
 const Title = styled.h1`
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
@@ -203,7 +219,7 @@ const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   }),
 };
 
-const TabPanel = styled.div<{ device: Device }>`
+const TabPanel = styled.div`
   width: 100%;
   min-width: 0;
 

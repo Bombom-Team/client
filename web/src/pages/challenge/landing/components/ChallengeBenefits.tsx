@@ -45,9 +45,9 @@ const ChallengeBenefits = () => {
               <IconBox>
                 <benefit.Icon />
               </IconBox>
-              <BenefitTitle device={device}>{benefit.title}</BenefitTitle>
+              <BenefitTitle>{benefit.title}</BenefitTitle>
               <Text
-                font={device === 'mobile' ? 'body1' : 'bodyLarge'}
+                font={device === 'mobile' ? 't6Regular' : 't7Regular'}
                 color={device === 'mobile' ? 'textSecondary' : 'textSecondary'}
               >
                 {benefit.description}
@@ -82,7 +82,7 @@ const Container = styled.section<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.t11Bold : theme.fonts.t13Bold};
   text-align: center;
 `;
 
@@ -154,10 +154,9 @@ const IconBox = styled.div`
   }
 `;
 
-const BenefitTitle = styled.h3<{ device: Device }>`
+const BenefitTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const CardNumber = styled.span`
@@ -170,7 +169,7 @@ const CardNumber = styled.span`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading1};
+  font: ${({ theme }) => theme.fonts.t15Bold};
 
   opacity: 0.6;
 `;
@@ -180,6 +179,6 @@ const SubDescription = styled.p<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
   text-align: center;
 `;

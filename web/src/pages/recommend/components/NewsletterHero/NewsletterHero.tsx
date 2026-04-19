@@ -69,8 +69,7 @@ const Container = styled.div`
 const HeroContent = styled.div<{ isPC: boolean }>`
   z-index: ${({ theme }) => theme.zIndex.content};
   width: 100%;
-  height: 280px;
-  padding: 56px;
+  height: ${({ isPC }) => (isPC ? '280px' : '200px')};
 
   display: flex;
   gap: ${({ isPC }) => (isPC ? '16px' : '12px')};
@@ -87,14 +86,15 @@ const HeroIcon = styled.img``;
 const HeroTitle = styled.h1<{ isPC: boolean }>`
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme, isPC }) =>
-    isPC ? theme.fonts.heading3 : theme.fonts.heading4};
+    isPC ? theme.fonts.t11Bold : theme.fonts.t10Bold};
 
   word-break: keep-all;
 `;
 
 const HeroSubtitle = styled.p<{ isPC: boolean }>`
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.body1 : theme.fonts.body2)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t6Regular : theme.fonts.t5Regular};
 
   opacity: 0.9;
   word-break: keep-all;
@@ -108,7 +108,8 @@ const CTAButton = styled.button<{ isPC: boolean }>`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.body2 : theme.fonts.body3)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
 
   transition: all 0.2s ease;
 

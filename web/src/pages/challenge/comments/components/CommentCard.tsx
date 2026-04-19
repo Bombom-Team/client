@@ -95,7 +95,10 @@ const CommentCard = ({
         <Flex gap={12} align="center" justify="space-between">
           <Flex direction="column" gap={4}>
             <Flex gap={isMobile ? 4 : 8} wrap="wrap" align="center">
-              <Text color="textSecondary" font={isMobile ? 'body3' : 'body2'}>
+              <Text
+                color="textSecondary"
+                font={isMobile ? 't3Regular' : 't5Regular'}
+              >
                 {nickname ?? DELETED_USER_NICKNAME} · {relativeTime}
               </Text>
               <NewsletterBadge
@@ -121,7 +124,7 @@ const CommentCard = ({
               <Text
                 as="p"
                 color="textTertiary"
-                font={isMobile ? 'body3' : 'body2'}
+                font={isMobile ? 't3Regular' : 't5Regular'}
               >
                 {articleTitle}
               </Text>
@@ -149,7 +152,7 @@ const CommentCard = ({
               )}
               <Text
                 color={isLiked ? 'red' : 'textSecondary'}
-                font={isMobile ? 'body3' : 'body2'}
+                font={isMobile ? 't3Regular' : 't5Regular'}
               >
                 {likeCount}
               </Text>
@@ -163,6 +166,7 @@ const CommentCard = ({
               {needExpansion &&
                 (!expanded ? (
                   <ExpandQuoteButton
+                    isMobile={isMobile}
                     variant="transparent"
                     onClick={toggleExpanded}
                   >
@@ -170,6 +174,7 @@ const CommentCard = ({
                   </ExpandQuoteButton>
                 ) : (
                   <HideQuoteButton
+                    isMobile={isMobile}
                     variant="transparent"
                     onClick={toggleExpanded}
                   >
@@ -183,7 +188,7 @@ const CommentCard = ({
         <ReplyWriter challengeId={challengeId} commentId={commentId} />
         {hasReplies && isReplyOpen && (
           <Flex gap={isMobile ? 8 : 12} direction="column">
-            <Suspense fallback={<ReplyList.Loading isMobile={isMobile} />}>
+            <Suspense fallback={<ReplyList.Loading />}>
               <ReplyList
                 challengeId={challengeId}
                 commentId={commentId}
@@ -274,8 +279,8 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body4 : theme.fonts.body2};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.t3Regular : theme.fonts.t5Regular};
 `;
 
 const EditButton = styled(Button)<{ isMobile: boolean }>`
@@ -305,7 +310,8 @@ const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.t3Regular : theme.fonts.t5Regular};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ isMobile, expanded }) => {
@@ -315,14 +321,15 @@ const Quote = styled.div<{ isMobile: boolean; expanded: boolean }>`
   }};
 `;
 
-const ExpandButton = styled(Button)`
+const ExpandButton = styled(Button)<{ isMobile: boolean }>`
   padding: 0;
 
   display: inline-flex;
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.t3Regular : theme.fonts.t5Regular};
 
   text-decoration: underline;
 

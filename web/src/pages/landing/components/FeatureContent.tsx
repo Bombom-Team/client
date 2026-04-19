@@ -25,11 +25,11 @@ const FeatureContent = ({
   const { visibleRef, isVisible } = useScrollVisible(0.4);
 
   return (
-    <Container ref={visibleRef} isVisible={isVisible} device={device}>
+    <Container ref={visibleRef} isVisible={isVisible}>
       <ContentWrapper device={device} componentPosition={componentPosition}>
         <TextSection device={device} componentPosition={componentPosition}>
           <TitleWrapper>
-            <Title device={device}>{title}</Title>
+            <Title>{title}</Title>
             <IconWrapper device={device}>
               <Icon fill={theme.colors.primary} />
             </IconWrapper>
@@ -49,7 +49,7 @@ const FeatureContent = ({
 
 export default FeatureContent;
 
-const Container = styled.article<{ device: Device; isVisible: boolean }>`
+const Container = styled.article<{ isVisible: boolean }>`
   width: 100%;
 
   display: flex;
@@ -113,12 +113,9 @@ const TitleWrapper = styled.div`
   text-align: center;
 `;
 
-const Title = styled.h3<{ device: Device }>`
+const Title = styled.h3`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.heading5;
-    return device === 'tablet' ? theme.fonts.heading4 : theme.fonts.heading3;
-  }};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const IconWrapper = styled.div<{ device: Device }>`
@@ -147,10 +144,7 @@ const DescriptionWrapper = styled.div<{
   }};
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) => {
-    if (device === 'mobile') return theme.fonts.body3;
-    return device === 'tablet' ? theme.fonts.body1 : theme.fonts.bodyLarge;
-  }};
+  font: ${({ theme }) => theme.fonts.t7Regular};
 `;
 
 const ImageSection = styled.div<{ device: Device }>`

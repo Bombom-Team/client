@@ -1,5 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
+import Text from '@/components/Text';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import AppleIcon from '#/assets/svg/apple.svg';
 import GoogleIcon from '#/assets/svg/google.svg';
@@ -16,19 +17,19 @@ const EventGuide = () => {
 
       <StepWrapper>
         <StepCard>
-          <StepBadge>STEP 1.</StepBadge>
+          <StepBadge device={device}>STEP 1.</StepBadge>
           <Description device={device}>
             <StepHighlight>[로그인]</StepHighlight> 버튼을 눌러 회원가입 하러
             가기
           </Description>
-          <LoginButtonExample>
+          <LoginButtonExample device={device}>
             로그인{' '}
             <PointerIcon width={20} height={20} fill={theme.colors.white} />
           </LoginButtonExample>
         </StepCard>
 
         <StepCard>
-          <StepBadge>STEP 2.</StepBadge>
+          <StepBadge device={device}>STEP 2.</StepBadge>
           <Description device={device}>
             <StepHighlight>[간편한 소셜 로그인으로]</StepHighlight> 회원가입
             하기
@@ -50,14 +51,18 @@ const EventGuide = () => {
         </StepCard>
 
         <StepCard>
-          <StepBadge>STEP 3.</StepBadge>
+          <StepBadge device={device}>STEP 3.</StepBadge>
           <Description device={device}>
             가입완료!{'\n'}이벤트 페이지 상단의{' '}
             <StepHighlight>[선착순 경품받기]</StepHighlight>
             {'\n'}
             버튼을 눌러 응모하면 끝!
+            {'\n'}
           </Description>
-          <ApplyButtonExample>
+          <ActivationNotice color="red" font="t6Bold">
+            * 선착순 응모는 2월 23일 오후 2시에 시작돼요.
+          </ActivationNotice>
+          <ApplyButtonExample device={device}>
             선착순 경품 받기
             <PointerIcon width={20} height={20} fill={theme.colors.white} />
           </ApplyButtonExample>
@@ -94,7 +99,7 @@ const SectionHeader = styled.div`
 
 const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.t13Bold};
   text-align: center;
 `;
 
@@ -123,7 +128,7 @@ const StepCard = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const StepBadge = styled.div`
+const StepBadge = styled.div<{ device: Device }>`
   position: absolute;
   top: -16px;
   left: 50%;
@@ -132,7 +137,8 @@ const StepBadge = styled.div`
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
   font-weight: 700;
 
   transform: translateX(-50%);
@@ -141,7 +147,7 @@ const StepBadge = styled.div`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
   font-weight: 700;
   text-align: center;
 `;
@@ -154,7 +160,7 @@ const StepHighlight = styled.span`
   text-align: center;
 `;
 
-const LoginButtonExample = styled.div`
+const LoginButtonExample = styled.div<{ device: Device }>`
   padding: 12px 16px;
   border: 2px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;
@@ -165,11 +171,12 @@ const LoginButtonExample = styled.div`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
   text-align: center;
 `;
 
-const ApplyButtonExample = styled.div`
+const ApplyButtonExample = styled.div<{ device: Device }>`
   padding: 12px 20px;
   border: 2px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;
@@ -180,7 +187,8 @@ const ApplyButtonExample = styled.div`
 
   background-color: #d81b60;
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
   text-align: center;
 
   transform: rotate(2deg);
@@ -218,4 +226,8 @@ const WhiteBox = styled.div`
   justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const ActivationNotice = styled(Text)`
+  text-align: center;
 `;

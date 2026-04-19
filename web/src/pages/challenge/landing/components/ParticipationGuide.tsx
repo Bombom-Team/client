@@ -33,7 +33,7 @@ const ParticipationGuide = () => {
       </StepWrapper>
       <Text
         color="textPrimary"
-        font={device === 'mobile' ? 'body1' : 'bodyLarge'}
+        font={device === 'mobile' ? 't6Regular' : 't7Regular'}
       >
         챌린지 기간의 80%를 달성하면 성공!
       </Text>
@@ -57,7 +57,7 @@ const Container = styled.section<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.t11Bold : theme.fonts.t13Bold};
   text-align: center;
 `;
 
@@ -100,8 +100,8 @@ const StepNumber = styled.span<{ device: Device }>`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t7Bold : theme.fonts.t10Bold};
   white-space: nowrap;
 `;
 
@@ -114,11 +114,11 @@ const StepContent = styled.div`
 const StepTitle = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.t7Bold : theme.fonts.t10Bold};
 `;
 
 const StepDescription = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
 `;

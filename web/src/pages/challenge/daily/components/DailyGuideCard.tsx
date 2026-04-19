@@ -55,7 +55,7 @@ const DailyGuideCard = ({
               <RemindContent isMobile={isMobile}>
                 {firstDailyGuideComment.comment}
               </RemindContent>
-              <RemindMotivation isMobile={isMobile}>
+              <RemindMotivation>
                 {`처음 다짐했던 마음을 다시 떠올려보세요.\n 오늘의 한 걸음도 그 연장선에 있어요.`}
               </RemindMotivation>
             </FlipCardBack>
@@ -72,7 +72,7 @@ const RemindButton = styled(Button)`
   width: 100%;
   border-radius: 8px;
 
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const FlipCard = styled.div`
@@ -132,7 +132,7 @@ const GuideImage = styled.img`
 
 const RemindTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const RemindContent = styled.p<{ isMobile: boolean }>`
@@ -143,13 +143,11 @@ const RemindContent = styled.p<{ isMobile: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: left;
 `;
 
-const RemindMotivation = styled.p<{ isMobile: boolean }>`
+const RemindMotivation = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

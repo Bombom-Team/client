@@ -3,8 +3,6 @@ import styled from '@emotion/styled';
 import { useRef, useState } from 'react';
 import Button from '@/components/Button/Button';
 import Tooltip from '@/components/Tooltip/Tooltip';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
 import LockIcon from '#/assets/svg/lock.svg';
 
 interface ViewAllCommentsButtonProps {
@@ -18,8 +16,6 @@ const ViewAllCommentsButton = ({
 }: ViewAllCommentsButtonProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-
-  const device = useDevice();
 
   const handleViewAllCommentsClick = () => {
     if (submittedMyComment) {
@@ -38,7 +34,6 @@ const ViewAllCommentsButton = ({
         onClick={handleViewAllCommentsClick}
         onMouseEnter={() => !submittedMyComment && setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        device={device}
       >
         {!submittedMyComment && (
           <LockIcon width={16} height={16} color={theme.colors.primary} />
@@ -58,15 +53,14 @@ const Container = styled.div`
   position: relative;
 `;
 
-const StyledButton = styled(Button)<{ device: Device }>`
+const StyledButton = styled(Button)`
   padding: 0;
 
   display: flex;
   gap: 4px;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   &:hover {
     background: none;

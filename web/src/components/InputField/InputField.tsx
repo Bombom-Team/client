@@ -60,7 +60,7 @@ const FieldGroup = styled.div`
 
 const Label = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const Input = styled.input<{ hasSuffix: boolean }>`
@@ -74,7 +74,7 @@ const Input = styled.input<{ hasSuffix: boolean }>`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   transition: all 0.2s ease-in-out;
 
@@ -119,5 +119,5 @@ const InputSuffixWrapper = styled.div`
 
 const Error = styled.div`
   color: ${({ theme }) => theme.colors.error};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;

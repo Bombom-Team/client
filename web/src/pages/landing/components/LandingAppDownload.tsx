@@ -100,13 +100,13 @@ const ContentWrapper = styled.div<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.t11Bold : theme.fonts.t13Bold};
 `;
 
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.heading5};
+    device === 'mobile' ? theme.fonts.t3Regular : theme.fonts.t7Bold};
   font-weight: 400;
 `;
 
@@ -121,7 +121,7 @@ const ButtonGroup = styled.div<{ device: Device }>`
 const StoreButton = styled(Button)<{ device: Device }>`
   width: ${({ device }) => (device === 'mobile' ? '100%' : 'fit-content')};
 
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 
   box-sizing: border-box;
 

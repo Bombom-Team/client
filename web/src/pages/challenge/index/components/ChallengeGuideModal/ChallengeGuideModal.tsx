@@ -78,7 +78,7 @@ const ChallengeGuideModal = ({ challengeId }: ChallengeGuideModalProps) => {
                 checked={isAgreed}
                 onChange={handleToggleAgreement}
               />
-              <AgreementLabel htmlFor="challenge-agreement" isMobile={isMobile}>
+              <AgreementLabel htmlFor="challenge-agreement">
                 위 내용을 모두 확인했고, 참여 기준에 동의합니다
               </AgreementLabel>
             </CheckboxWrapper>
@@ -124,7 +124,7 @@ const Title = styled.h2`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
   text-align: center;
 `;
 
@@ -143,7 +143,7 @@ const GuideItem = styled.div`
 const GuideIcon = styled.div`
   flex-shrink: 0;
 
-  font-size: 24px;
+  font-size: 1.5rem;
   line-height: 1.4;
 `;
 
@@ -158,14 +158,14 @@ const GuideTitle = styled.h3`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const GuideDescription = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   line-height: 1.5;
 `;
 
@@ -181,10 +181,9 @@ const CheckboxWrapper = styled.div`
   align-items: center;
 `;
 
-const AgreementLabel = styled.label<{ isMobile: boolean }>`
+const AgreementLabel = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   cursor: pointer;
 `;
@@ -199,12 +198,12 @@ const StartButton = styled(Button)`
   width: 100%;
   padding: 12px 24px;
 
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const IntroButton = styled(Button)`
   width: 100%;
   padding: 12px 24px;
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

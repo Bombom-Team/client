@@ -7,7 +7,7 @@ import { QUEUE_STATUS_TYPE } from '../../constants/constants';
 import type { QueueEntry } from '@/apis/event/event.api';
 
 interface QueueStatusProps {
-  queueEntry: QueueEntry | undefined;
+  queueEntry: QueueEntry;
   refetchQueueEntry: () => void;
   onClose: () => void;
 }
@@ -17,10 +17,6 @@ const QueueStatus = ({
   refetchQueueEntry,
   onClose,
 }: QueueStatusProps) => {
-  if (!queueEntry) {
-    return null;
-  }
-
   switch (queueEntry.status) {
     case QUEUE_STATUS_TYPE.unregistered:
       return <UnregisteredState />;

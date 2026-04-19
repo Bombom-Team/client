@@ -5,7 +5,7 @@ import { useDevice } from '@/hooks/useDevice';
 import type { PropsWithChildren, Ref } from 'react';
 import CloseIcon from '#/assets/svg/close.svg';
 
-type Position = 'center' | 'bottom' | 'dropdown';
+type Position = 'center' | 'bottom' | 'dropdown' | 'fullscreen';
 
 interface UseModalParams extends PropsWithChildren {
   modalRef: Ref<HTMLDivElement | null>;
@@ -137,6 +137,16 @@ const containerStyles = {
     borderRadius: '12px',
     boxShadow: 'none',
   },
+  fullscreen: {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    borderRadius: 0,
+    boxShadow: 'none',
+  },
 };
 
 const contentWrapperStyles = (isMobile: boolean) => ({
@@ -158,5 +168,13 @@ const contentWrapperStyles = (isMobile: boolean) => ({
     padding: ${isMobile ? '24px' : '36px 52px'};
 
     align-items: center;
+  `,
+  fullscreen: css`
+    width: 100%;
+    height: 100%;
+    padding: ${isMobile ? '24px 12px' : '36px 52px'};
+
+    align-items: center;
+    justify-content: center;
   `,
 });

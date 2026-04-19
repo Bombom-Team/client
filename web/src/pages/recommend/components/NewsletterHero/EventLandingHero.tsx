@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import type { Device } from '@/hooks/useDevice';
 
 const EventLandingHero = () => {
   const navigate = useNavigate();
@@ -31,7 +30,7 @@ const EventLandingHero = () => {
         <HeroTitle isPC={isPC}>봄봄이{'\n'}커피 쏜다!</HeroTitle>
         <IndicateText isPC={isPC}>지금 확인하기</IndicateText>
       </HeroContent>
-      <EventImage src="/assets/png/event-logo.png" alt="" device={device} />
+      <EventImage src="/assets/png/event-logo.png" alt="" />
     </Container>
   );
 };
@@ -61,7 +60,7 @@ const HeroContent = styled.div<{ isPC: boolean }>`
   justify-content: center;
 `;
 
-const EventImage = styled.img<{ device: Device }>`
+const EventImage = styled.img`
   width: 50%;
   height: auto;
 `;
@@ -69,7 +68,7 @@ const EventImage = styled.img<{ device: Device }>`
 const HeroTitle = styled.p<{ isPC: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isPC }) =>
-    isPC ? theme.fonts.heading3 : theme.fonts.heading4};
+    isPC ? theme.fonts.t11Bold : theme.fonts.t10Bold};
   text-align: left;
 
   word-break: keep-all;
@@ -87,7 +86,8 @@ const HeroBadge = styled.div<{ isPC: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.body2 : theme.fonts.body3)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
   font-weight: 700;
   text-align: center;
 
@@ -101,6 +101,7 @@ const IndicateText = styled.p<{ isPC: boolean }>`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.body2 : theme.fonts.body3)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
   font-weight: 700;
 `;

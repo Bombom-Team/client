@@ -9,5 +9,3 @@ declare module '*.gif' {
 }
 
 declare module '*.avif';
-
-declare module '*.avif';

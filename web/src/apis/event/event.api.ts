@@ -7,7 +7,7 @@ export type QueueStatus =
   | 'ISSUED'
   | 'NOT_IN_QUEUE'
   | 'SOLD_OUT';
-export type CouponName = 'day1-coupon' | 'day2-coupon' | 'avengers';
+export type CouponName = string;
 export type QueueEntry = {
   couponName: CouponName;
   status: QueueStatus;
@@ -64,7 +64,6 @@ type GetMyCouponsResponse = IssuedCoupon[];
 export const getMyCoupons = async () => {
   return fetcher.get<GetMyCouponsResponse>({
     path: '/coupons/issues/me',
-    baseUrl: ENV.eventBaseUrl,
   });
 };
 

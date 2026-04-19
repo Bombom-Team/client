@@ -47,9 +47,7 @@ const ArticleCard = ({
     >
       <InfoWrapper isMobile={isMobile}>
         <Title isMobile={isMobile}>{title}</Title>
-        <Description isMobile={isMobile}>
-          {contentsSummary || title}
-        </Description>
+        <Description>{contentsSummary || title}</Description>
         <MetaInfoRow isMobile={isMobile}>
           <MetaInfoText>from {newsletter?.name ?? ''}</MetaInfoText>
           <MetaInfoText>
@@ -61,7 +59,7 @@ const ArticleCard = ({
           </ReadTimeBox>
         </MetaInfoRow>
       </InfoWrapper>
-      <ThumbnailWrapper isMobile={isMobile}>
+      <ThumbnailWrapper>
         <Thumbnail
           isMobile={isMobile}
           src={thumbnailUrl ?? newsletter?.imageUrl ?? ''}
@@ -147,21 +145,21 @@ export const Title = styled.h2<{ isMobile: boolean }>`
 
   display: -webkit-box;
 
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading4};
+  font: ${({ isMobile, theme }) =>
+    isMobile ? theme.fonts.t6Regular : theme.fonts.t10Bold};
   font-weight: 600;
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 `;
 
-export const Description = styled.p<{ isMobile: boolean }>`
+export const Description = styled.p`
   overflow: hidden;
 
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -176,7 +174,7 @@ export const MetaInfoRow = styled.div<{ isMobile: boolean }>`
 
 export const MetaInfoText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const ReadTimeBox = styled.div`
@@ -185,7 +183,7 @@ const ReadTimeBox = styled.div`
   align-items: center;
 `;
 
-export const ThumbnailWrapper = styled.div<{ isMobile: boolean }>`
+export const ThumbnailWrapper = styled.div`
   position: relative;
   flex-shrink: 0;
 `;

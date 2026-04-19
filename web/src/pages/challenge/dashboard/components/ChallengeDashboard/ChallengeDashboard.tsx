@@ -36,18 +36,17 @@ const ChallengeDashboard = ({ nickName, data }: ChallengeDashboardProps) => {
         <Table isMobile={isMobile}>
           <thead>
             <HeaderRow>
-              <HeaderCell isMobile={isMobile}>참가자</HeaderCell>
+              <HeaderCell>참가자</HeaderCell>
               {dateRange.map((date, index) => (
                 <HeaderCell
                   key={formatDate(date, '-')}
                   isWeekDivider={(index + 1) % 5 === 0}
-                  isMobile={isMobile}
                 >
                   {formatDate(date).split('.').slice(1).map(Number).join('/')}
                 </HeaderCell>
               ))}
-              <HeaderCell isMobile={isMobile}>합계</HeaderCell>
-              <HeaderCell isMobile={isMobile}>달성률</HeaderCell>
+              <HeaderCell>합계</HeaderCell>
+              <HeaderCell>달성률</HeaderCell>
             </HeaderRow>
           </thead>
           <tbody>
@@ -138,7 +137,7 @@ const Table = styled.table<{ isMobile: boolean }>`
 
 const HeaderRow = styled.tr``;
 
-const HeaderCell = styled.th<{ isWeekDivider?: boolean; isMobile: boolean }>`
+const HeaderCell = styled.th<{ isWeekDivider?: boolean }>`
   width: var(--date-col-width);
   padding: 6px 4px;
   border-right: ${({ isWeekDivider, theme }) =>
@@ -147,52 +146,24 @@ const HeaderCell = styled.th<{ isWeekDivider?: boolean; isMobile: boolean }>`
       : `1px solid ${theme.colors.dividers}`};
   border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
 
-  background: ${({ theme, isMobile }) =>
-    isMobile ? theme.colors.white : 'transparent'};
+  background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   text-align: center;
   white-space: nowrap;
 
-  ${({ isMobile, theme }) =>
-    isMobile
-      ? `
-    &:first-of-type {
-      position: sticky;
-      left: 0;
-      z-index: ${theme.zIndex.content};
-      width: var(--name-col-width);
-    }
+  &:first-of-type {
+    width: var(--name-col-width);
+  }
 
-    &:nth-last-of-type(2) {
-      position: sticky;
-      right: var(--rate-col-width);
-      z-index: ${theme.zIndex.content};
-      width: var(--summary-col-width);
-    }
+  &:nth-last-of-type(2) {
+    width: var(--summary-col-width);
+  }
 
-    &:last-of-type {
-      position: sticky;
-      right: 0;
-      z-index: ${theme.zIndex.content};
-      width: var(--rate-col-width);
-      border-right: none;
-    }
-  `
-      : `
-    &:first-of-type {
-      width: var(--name-col-width);
-    }
-
-    &:nth-last-of-type(2) {
-      width: var(--summary-col-width);
-    }
-
-    &:last-of-type {
-      width: var(--rate-col-width);
-      border-right: none;
-    }
-  `}
+  &:last-of-type {
+    width: var(--rate-col-width);
+    border-right: none;
+  }
 `;
 
 const BodyRow = styled.tr<{ isMine: boolean; isMobile: boolean }>`
@@ -249,7 +220,7 @@ const BodyCell = styled.td<{
   }};
   color: ${({ theme, isSurvived }) =>
     !isSurvived ? theme.colors.disabledText : theme.colors.textPrimary};
-  font-size: ${({ theme }) => theme.fonts.body4};
+  font-size: ${({ theme }) => theme.fonts.t1Regular};
   text-align: center;
 
   &:last-of-type {
@@ -261,7 +232,7 @@ const NameCell = styled(BodyCell)<{ isMobile: boolean }>`
   width: var(--name-col-width);
   padding: 6px;
 
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   ${({ isMobile, theme }) =>
     isMobile &&
@@ -297,13 +268,13 @@ const FailBadge = styled.span`
   flex-shrink: 0;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   white-space: nowrap;
 `;
 
 const SummaryCell = styled(BodyCell)<{ isMobile: boolean }>`
   width: var(--summary-col-width);
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 
   ${({ isMobile, theme }) =>
     isMobile &&
@@ -316,7 +287,7 @@ const SummaryCell = styled(BodyCell)<{ isMobile: boolean }>`
 
 const RateCell = styled(BodyCell)<{ isMobile: boolean }>`
   width: var(--rate-col-width);
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 
   ${({ isMobile, theme }) =>
     isMobile &&

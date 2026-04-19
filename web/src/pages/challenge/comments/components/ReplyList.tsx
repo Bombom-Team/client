@@ -30,7 +30,7 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
   const replies = repliesData?.content ?? [];
 
   if (replies.length === 0) {
-    return <ReplyStatus isMobile={isMobile}>답글이 없어요.</ReplyStatus>;
+    return <ReplyStatus>답글이 없어요.</ReplyStatus>;
   }
 
   return (
@@ -38,21 +38,25 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
       {replies.map((replyItem) => (
         <Flex as="li" key={replyItem.replyId} direction="column" gap={4}>
           <Flex gap={6} align="center">
-            <ReplyMetaText isMobile={isMobile}>
+            <ReplyMetaText>
               {replyItem.nickname ?? DELETED_USER_NICKNAME}
             </ReplyMetaText>
-            <Dot isMobile={isMobile}>·</Dot>
-            <ReplyMetaText isMobile={isMobile}>
+            <Dot>·</Dot>
+            <ReplyMetaText>
               {convertRelativeTime(replyItem.createdAt)}
             </ReplyMetaText>
             {replyItem.isPrivate && (
               <>
-                <Dot isMobile={isMobile}>·</Dot>
-                <ReplyMetaText isMobile={isMobile}>(비밀 답글)</ReplyMetaText>
+                <Dot>·</Dot>
+                <ReplyMetaText>(비밀 답글)</ReplyMetaText>
               </>
             )}
           </Flex>
-          <Text as="p" color="textPrimary" font={isMobile ? 'body2' : 'body1'}>
+          <Text
+            as="p"
+            color="textPrimary"
+            font={isMobile ? 't5Regular' : 't6Regular'}
+          >
             {replyItem.reply}
           </Text>
         </Flex>
@@ -61,12 +65,8 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
   );
 };
 
-ReplyList.Loading = function ReplyListLoading({
-  isMobile,
-}: {
-  isMobile: boolean;
-}) {
-  return <ReplyStatus isMobile={isMobile}>로딩 중...</ReplyStatus>;
+ReplyList.Loading = function ReplyListLoading() {
+  return <ReplyStatus>로딩 중...</ReplyStatus>;
 };
 
 export default ReplyList;
@@ -81,22 +81,19 @@ const ReplyListContainer = styled.ul`
   flex-direction: column;
 `;
 
-const ReplyMetaText = styled.span<{ isMobile: boolean }>`
+const ReplyMetaText = styled.span`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
-const Dot = styled.span<{ isMobile: boolean }>`
+const Dot = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
-const ReplyStatus = styled.p<{ isMobile: boolean }>`
+const ReplyStatus = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

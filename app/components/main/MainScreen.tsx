@@ -1,5 +1,5 @@
 import styled from '@emotion/native';
-import { Alert } from 'react-native';
+import { Alert, PixelRatio } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
@@ -23,10 +23,13 @@ import { useEffect, useRef } from 'react';
 import { useDeviceInfo } from '@/hooks/useDeviceInfo';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import ForceUpdateScreen from './ForceUpdateScreen';
+import { useNotificationPermission } from '@/hooks/useNotificationPermission';
 
 const saveImageToGallery = async (base64: string, fileName: string) => {
   try {
-    const { status } = await MediaLibrary.requestPermissionsAsync(true);
+    const { status } = await MediaLibrary.requestPermissionsAsync(true, [
+      'photo',
+    ]);
     if (status !== 'granted') {
       Alert.alert(
         '권한 필요',
@@ -65,6 +68,9 @@ export const MainScreen = () => {
   const { onNotification, registerFCMToken } = useNotification();
   const { isVersionCheckCompleted, isForceUpdateRequired, openStore } =
     useForceUpdate();
+  const { sendPermissionToWeb } = useNotificationPermission({
+    onPermissionGranted: registerFCMToken,
+  });
 
   const handleWebViewLoadEnd = () => {
     console.log('WebView 로드 완료');
@@ -120,12 +126,16 @@ export const MainScreen = () => {
         case 'REGISTER_FCM_TOKEN':
           if (message.payload.memberId) {
             updateMemberId(message.payload.memberId);
-            registerFCMToken(message.payload.memberId);
+            registerFCMToken();
           }
           break;
 
         case 'CHECK_NOTIFICATION_PERMISSION':
-          goToSystemPermission(message.payload.enabled);
+          sendPermissionToWeb();
+          break;
+
+        case 'SHOW_NOTIFICATION_PERMISSION_SETTING':
+          goToSystemPermission();
           break;
 
         case 'SAVE_IMAGE':
@@ -158,10 +168,15 @@ export const MainScreen = () => {
         <StyledWebView
           ref={webViewRef}
           source={{ uri: ENV.webUrl }}
-          userAgent={`${navigator.userAgent} ${WEBVIEW_USER_AGENT}`}
+          applicationNameForUserAgent={WEBVIEW_USER_AGENT}
           scalesPageToFit={false}
           automaticallyAdjustsScrollIndicatorInsets={false}
           injectedJavaScript={`
+            const rootElement = document.documentElement;
+            rootElement.classList.add('webview');
+
+            rootElement.style.fontSize = '${PixelRatio.getFontScale() * 100}%';
+
             const meta = document.querySelector('meta[name=viewport]');
             if (meta) {
               meta.setAttribute(

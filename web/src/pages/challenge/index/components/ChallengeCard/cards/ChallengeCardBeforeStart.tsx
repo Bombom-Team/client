@@ -86,21 +86,19 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
     <>
       <CardContainer onClick={handleCardClick}>
         <CardHeader>
-          <Flex direction="column" gap={8}>
-            <Title>{title}</Title>
+          <Flex gap={8} align="center">
             <Tag>{generation}기</Tag>
-          </Flex>
-
-          <Flex align="flex-end" gap={12}>
             {participantCount > 0 && (
-              <Applicant>신청자 {participantCount}명</Applicant>
+              <Applicant>{participantCount}명</Applicant>
             )}
-            <DDay startDate={startDate} />
           </Flex>
+          <DDay startDate={startDate} />
         </CardHeader>
 
+        <Title>{title}</Title>
+
         <CardFooter>
-          {props.detail?.isJoined ? (
+          {props.participationInfo?.isJoined ? (
             <ApplyButton variant="outlined" onClick={handleCancelClick}>
               신청취소
             </ApplyButton>
@@ -136,6 +134,6 @@ const ApplyButton = styled(Button)`
   padding: 10px 16px;
   border-radius: 10px;
 
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   font-weight: 600;
 `;

@@ -11,6 +11,7 @@ import AddCommentModalContent from '@/pages/challenge/comments/components/AddCom
 import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 import MobileCommentsContent from '@/pages/challenge/comments/components/MobileCommentsContent';
 import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsContent';
+import StreakModalContent from '@/pages/challenge/comments/components/StreakModalContent';
 import { useChallengeCommentDates } from '@/pages/challenge/comments/hooks/useChallengeCommentDates';
 import { useCommentsPagination } from '@/pages/challenge/comments/hooks/useCommentsPagination';
 
@@ -54,6 +55,12 @@ function ChallengeComments() {
   const { modalRef, openModal, closeModal, isOpen } = useModal({
     closeOnBackdropClick: false,
   });
+  const {
+    modalRef: firstCompletionModalRef,
+    openModal: openFirstCompletionModal,
+    closeModal: closeFirstCompletionModal,
+    isOpen: isFirstCompletionModalOpen,
+  } = useModal();
 
   const { baseQueryParams, changePage, page, resetPage } =
     useCommentsPagination({
@@ -75,11 +82,10 @@ function ChallengeComments() {
       <ContentWrapper isMobile={isMobile}>
         {selectedDate === today && isChallengeDay(selectedDate) && (
           <AddCommentBox>
-            <AddCommentTitle isMobile={isMobile}>
+            <AddCommentTitle>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
             </AddCommentTitle>
             <AddCommentButton
-              isMobile={isMobile}
               onClick={openModal}
               disabled={isFirstDay(today) || candidateArticles.length === 0}
             >
@@ -94,7 +100,7 @@ function ChallengeComments() {
 
         {isFirstDay(selectedDate) || !isChallengeDay(selectedDate) ? (
           <RestDayContent>
-            <RestDayTitle isMobile={isMobile}>전체 코멘트</RestDayTitle>
+            <RestDayTitle>전체 코멘트</RestDayTitle>
             <RestDayMessage isMobile={isMobile}>
               {isFirstDay(selectedDate)
                 ? '첫날에는 코멘트를 작성하지 않아요!'
@@ -127,9 +133,23 @@ function ChallengeComments() {
           <AddCommentModalContent
             closeCommentModal={closeModal}
             candidateArticles={candidateArticles}
+            onFirstCompletion={openFirstCompletionModal}
           />
         </Modal>
       )}
+
+      <Modal
+        modalRef={firstCompletionModalRef}
+        isOpen={isFirstCompletionModalOpen}
+        closeModal={closeFirstCompletionModal}
+        position={isMobile ? 'fullscreen' : 'center'}
+        showCloseButton={!isMobile}
+      >
+        <StreakModalContent
+          onClose={closeFirstCompletionModal}
+          challengeId={Number(challengeId)}
+        />
+      </Modal>
     </Container>
   );
 }
@@ -149,7 +169,7 @@ const FilterWrapper = styled.div<{ isMobile: boolean }>`
   position: ${({ isMobile }) => (isMobile ? 'sticky' : 'static')};
   top: ${({ isMobile, theme }) =>
     isMobile
-      ? `calc(${theme.heights.headerMobile} + env(safe-area-inset-top))`
+      ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`
       : 'auto'};
   z-index: ${({ isMobile, theme }) => (isMobile ? theme.zIndex.panel : 'auto')};
   width: 100%;
@@ -180,16 +200,14 @@ const AddCommentBox = styled.article`
   flex-direction: column;
 `;
 
-const AddCommentTitle = styled.h3<{ isMobile: boolean }>`
+const AddCommentTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
-const AddCommentButton = styled(Button)<{ isMobile: boolean }>`
+const AddCommentButton = styled(Button)`
   width: 100%;
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.stroke};
@@ -203,10 +221,9 @@ const RestDayContent = styled.section`
   flex-direction: column;
 `;
 
-const RestDayTitle = styled.h3<{ isMobile: boolean }>`
+const RestDayTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const RestDayMessage = styled.div<{ isMobile: boolean }>`
@@ -215,7 +232,6 @@ const RestDayMessage = styled.div<{ isMobile: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;

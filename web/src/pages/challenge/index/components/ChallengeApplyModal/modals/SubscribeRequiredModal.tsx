@@ -25,9 +25,9 @@ const SubscribeRequiredModal = ({
 
   return (
     <SubscribeContainer isMobile={isMobile}>
-      <ModalTitle isMobile={isMobile}>구독 후 이용할 수 있어요</ModalTitle>
+      <ModalTitle>구독 후 이용할 수 있어요</ModalTitle>
 
-      <ModalDescription isMobile={isMobile}>
+      <ModalDescription>
         아래 뉴스레터를 구독하면 챌린지 참여가 가능해요.
       </ModalDescription>
 
@@ -128,7 +128,7 @@ const NewsletterName = styled.h3`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const SubscribeAction = styled.div`
@@ -140,6 +140,6 @@ const SubscribeAction = styled.div`
 `;
 
 const SubscribeText = styled.span`
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 600;
 `;

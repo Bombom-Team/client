@@ -3,14 +3,17 @@ import type { PageableResponse } from '@/apis/types/PageableResponse';
 import type {
   CreateNewsletterRequest,
   Newsletter,
+  NewsletterDetailStatusType,
   NewsletterDetail,
   NewsletterSortType,
+  UpdateNewsletterStatusRequest,
   UpdateNewsletterRequest,
 } from '@/types/newsletter';
 
 export type GetNewslettersParams = {
   keyword?: string;
   category?: string;
+  status?: NewsletterDetailStatusType;
   sort?: NewsletterSortType;
   page?: number;
   size?: number;
@@ -49,6 +52,17 @@ export const updateNewsletter = async (data: UpdateNewsletterRequest) => {
   const { id, ...body } = data;
   return fetcher.patch({
     path: `/newsletters/${id}`,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    body: body as any,
+  });
+};
+
+export const updateNewsletterStatus = async (
+  data: UpdateNewsletterStatusRequest,
+) => {
+  const { id, ...body } = data;
+  return fetcher.patch({
+    path: `/newsletters/${id}/status`,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body: body as any,
   });

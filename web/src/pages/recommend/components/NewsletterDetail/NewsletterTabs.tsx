@@ -43,7 +43,7 @@ const TabButton = styled.button<{ isActive: boolean }>`
   background: none;
   color: ${({ theme, isActive }) =>
     isActive ? theme.colors.primary : theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   transition: color 0.2s;
 

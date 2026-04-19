@@ -34,14 +34,14 @@ const Container = styled.section`
 
 const SectionLabel = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
   text-align: center;
 `;
 
 const SectionTitle = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading2};
-  line-height: 40px;
+  font: ${({ theme }) => theme.fonts.t13Bold};
+  line-height: 2.5rem;
   text-align: center;
   white-space: nowrap;
 `;
@@ -70,6 +70,6 @@ const CoffeeImage = styled.img`
 
 const PrizeTitle = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
   text-align: center;
 `;

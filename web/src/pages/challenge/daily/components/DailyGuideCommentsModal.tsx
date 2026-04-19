@@ -48,21 +48,19 @@ const DailyGuideCommentsModal = ({
       position={isMobile ? 'bottom' : 'center'}
       showCloseButton={!isMobile}
     >
-      <ModalContent isMobile={isMobile}>
+      <ModalContent>
         <ModalHeader>
-          <ModalTitle isMobile={isMobile}>다른 사람들의 답변</ModalTitle>
-          <CountBadge isMobile={isMobile}>총 {totalCount}개</CountBadge>
+          <ModalTitle>다른 사람들의 답변</ModalTitle>
+          <CountBadge>총 {totalCount}개</CountBadge>
         </ModalHeader>
-        <ModalDescription isMobile={isMobile}>
+        <ModalDescription>
           같은 질문에 참여한 사람들의 답변을 모았어요.
         </ModalDescription>
         <CommentsWrapper isMobile={isMobile}>
           {isLoading ? (
-            <StateText isMobile={isMobile}>답변을 불러오는 중이에요.</StateText>
+            <StateText>답변을 불러오는 중이에요.</StateText>
           ) : !hasComments ? (
-            <StateText isMobile={isMobile}>
-              아직 작성된 답변이 없어요.
-            </StateText>
+            <StateText>아직 작성된 답변이 없어요.</StateText>
           ) : (
             <CommentsList>
               {comments.map((comment, index) => (
@@ -70,14 +68,12 @@ const DailyGuideCommentsModal = ({
                   key={`${comment.nickname}-${comment.createdAt}-${index}`}
                 >
                   <CommentMeta>
-                    <Nickname isMobile={isMobile}>{comment.nickname}</Nickname>
-                    <Timestamp isMobile={isMobile}>
+                    <Nickname>{comment.nickname}</Nickname>
+                    <Timestamp>
                       {convertRelativeTime(comment.createdAt)}
                     </Timestamp>
                   </CommentMeta>
-                  <CommentText isMobile={isMobile}>
-                    {comment.comment}
-                  </CommentText>
+                  <CommentText>{comment.comment}</CommentText>
                 </CommentItem>
               ))}
             </CommentsList>
@@ -90,7 +86,7 @@ const DailyGuideCommentsModal = ({
 
 export default DailyGuideCommentsModal;
 
-const ModalContent = styled.div<{ isMobile: boolean }>`
+const ModalContent = styled.div`
   width: 100%;
   max-width: 520px;
 
@@ -107,26 +103,23 @@ const ModalHeader = styled.div`
   align-items: center;
 `;
 
-const ModalTitle = styled.h3<{ isMobile: boolean }>`
+const ModalTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
-const CountBadge = styled.span<{ isMobile: boolean }>`
+const CountBadge = styled.span`
   padding: 2px 8px;
   border-radius: 999px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.caption : theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
-const ModalDescription = styled.p<{ isMobile: boolean }>`
+const ModalDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const CommentsWrapper = styled.div<{ isMobile: boolean }>`
@@ -169,27 +162,24 @@ const CommentMeta = styled.div`
   justify-content: space-between;
 `;
 
-const Nickname = styled.span<{ isMobile: boolean }>`
+const Nickname = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   font-weight: 600;
 `;
 
-const Timestamp = styled.time<{ isMobile: boolean }>`
+const Timestamp = styled.time`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.caption : theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
-const CommentText = styled.p<{ isMobile: boolean }>`
+const CommentText = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   line-height: 1.6;
 `;
 
-const StateText = styled.p<{ isMobile: boolean }>`
+const StateText = styled.p`
   width: 100%;
   min-height: 160px;
 
@@ -198,6 +188,5 @@ const StateText = styled.p<{ isMobile: boolean }>`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

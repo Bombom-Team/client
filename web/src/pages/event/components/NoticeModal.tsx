@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { EVENT_STATUS_TYPE } from '../constants/constants';
 import Button from '@/components/Button/Button';
-import { useDevice, type Device } from '@/hooks/useDevice';
 import type { EventErrorStatus } from '../types/event';
 
 interface NoticeModalProps {
@@ -10,23 +9,30 @@ interface NoticeModalProps {
 }
 
 const NoticeModal = ({ noticeType, closeModal }: NoticeModalProps) => {
-  const device = useDevice();
-
   const getNoticeTitle = () => {
     if (noticeType === EVENT_STATUS_TYPE.notStarted) {
       return '이벤트 기간이 아니에요.';
     }
 
     return noticeType === EVENT_STATUS_TYPE.ended
-      ? '다음 이벤트를 기대해주세요!'
+      ? '이벤트가 종료되었어요.'
       : '이벤트를 신청할 수 없습니다.';
   };
 
   return (
     <Container>
       <ContentWrapper>
-        <Title device={device}>{getNoticeTitle()}</Title>
-        <Description>자세한 내용은 이벤트 페이지를 참고해주세요.</Description>
+        <Title>{getNoticeTitle()}</Title>
+
+        {noticeType === EVENT_STATUS_TYPE.unknownError ? (
+          <Description>
+            자세한 내용은 이벤트 페이지를 참고해주세요.{' '}
+          </Description>
+        ) : (
+          <Description>
+            <HighLight>2월 23일 오후 2시</HighLight>에 이벤트가 시작돼요!{' '}
+          </Description>
+        )}
 
         <ConfirmButton onClick={closeModal}>닫기</ConfirmButton>
       </ContentWrapper>
@@ -56,16 +62,16 @@ const ContentWrapper = styled.div`
   align-items: center;
 `;
 
-const Title = styled.h3<{ device: Device }>`
+const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
   text-align: center;
 `;
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t7Bold};
+  font-weight: 400;
   text-align: center;
 `;
 
@@ -73,5 +79,9 @@ const ConfirmButton = styled(Button)`
   width: 100%;
   max-width: 200px;
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
+`;
+
+const HighLight = styled.strong`
+  color: ${({ theme }) => theme.colors.primary};
 `;

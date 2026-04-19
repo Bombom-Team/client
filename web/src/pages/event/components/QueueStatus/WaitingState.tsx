@@ -12,20 +12,29 @@ interface WaitingStateProps {
 const WaitingState = ({ queueEntry }: WaitingStateProps) => {
   const device = useDevice();
 
+  const remainingUserCount = (queueEntry.position ?? 1) - 1;
+
   return (
     <Flex direction="column" gap={device === 'mobile' ? 12 : 16} align="center">
       <Text
-        font={device === 'mobile' ? 'heading3' : 'heading2'}
+        font={device === 'mobile' ? 't11Bold' : 't13Bold'}
         color="textPrimary"
       >
         접속 대기
       </Text>
       <WaitingInfo
-        font={device === 'mobile' ? 'heading5' : 'heading4'}
+        font={device === 'mobile' ? 't7Bold' : 't10Bold'}
         color="textPrimary"
       >
-        <Highlight>{queueEntry.position}명</Highlight>이 대기 중이에요.
-        {'\n'}대기 순서에 따라 자동으로 접속돼요.
+        내 앞에 <Highlight>{remainingUserCount}명</Highlight>이 대기 중이에요.
+      </WaitingInfo>
+      <WaitingInfo
+        font={device === 'mobile' ? 't7Bold' : 't10Bold'}
+        color="textPrimary"
+      >
+        {remainingUserCount === 0
+          ? '잠시후 자동으로 접속돼요.'
+          : '대기 순서에 따라 자동으로 접속돼요.'}
       </WaitingInfo>
 
       <LoadingSpinner device={device}>
@@ -40,14 +49,14 @@ const WaitingState = ({ queueEntry }: WaitingStateProps) => {
         gap={device === 'mobile' ? 8 : 4}
       >
         <Caution
-          font={device === 'mobile' ? 'body2' : 'body1'}
+          font={device === 'mobile' ? 't5Regular' : 't6Regular'}
           color="textSecondary"
         >
           ※ 이 창을 닫거나 새로고침 또는 뒤로가기를 누를 경우 대기 시간이
           초기화돼요.
         </Caution>
         <Caution
-          font={device === 'mobile' ? 'body2' : 'body1'}
+          font={device === 'mobile' ? 't5Regular' : 't6Regular'}
           color="textSecondary"
         >
           ※ 접속 대기 중에 쿠폰이 모두 소진되면 이벤트가 조기 마감될 수 있어요.

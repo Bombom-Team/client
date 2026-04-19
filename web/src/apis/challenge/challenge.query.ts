@@ -1,9 +1,11 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import {
   getChallenges,
+  getChallengeSummaries,
   getChallengeEligibility,
   getChallengeInfo,
   getMemberChallengeProgress,
+  getMemberChallengeStreak,
   getChallengeTeamsProgress,
   getChallengeTeams,
   getChallengeCommentCandidateArticles,
@@ -14,6 +16,7 @@ import {
   getDailyGuideComments,
   getMyDailyGuideComment,
   getCertificationInfo,
+  getChallengeLanding,
 } from './challenge.api';
 import type {
   GetChallengeCommentCandidateArticlesParams,
@@ -21,6 +24,7 @@ import type {
   GetChallengeCommentRepliesParams,
   GetChallengeArticleHighlightsParams,
   GetDailyGuideCommentsParams,
+  GetMemberChallengeStreakParams,
 } from './challenge.api';
 
 export const challengeQueries = {
@@ -28,6 +32,11 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', 'list'],
       queryFn: getChallenges,
+    }),
+  challengeSummaries: () =>
+    queryOptions({
+      queryKey: ['challenges', 'list', 'summary'],
+      queryFn: getChallengeSummaries,
     }),
   eligibility: (challengeId: number) =>
     queryOptions({
@@ -44,6 +53,11 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', challengeId, 'progress', 'me'],
       queryFn: () => getMemberChallengeProgress(challengeId),
+    }),
+  memberStreak: (params: GetMemberChallengeStreakParams) =>
+    queryOptions({
+      queryKey: ['challenges', params.id, 'progress', 'me', 'streak', params],
+      queryFn: () => getMemberChallengeStreak(params),
     }),
   challengeTeams: (challengeId: number) =>
     queryOptions({
@@ -146,5 +160,10 @@ export const challengeQueries = {
     queryOptions({
       queryKey: ['challenges', challengeId, 'certification', 'info'],
       queryFn: () => getCertificationInfo(challengeId),
+    }),
+  challengeLanding: (challengeId: number) =>
+    queryOptions({
+      queryKey: ['challenges', challengeId, 'landing'],
+      queryFn: () => getChallengeLanding(challengeId),
     }),
 };

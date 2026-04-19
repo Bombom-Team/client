@@ -1,30 +1,4 @@
-export type NewsletterCategoryType =
-  | 'TREND_LIFE'
-  | 'BIZ_INVESTMENT'
-  | 'LOCAL_TRAVEL'
-  | 'FOOD'
-  | 'IT_TECH'
-  | 'CURRENT_AFFAIRS_SOCIETY'
-  | 'HOBBY_SELF_DEVELOPMENT'
-  | 'CULTURE_ART'
-  | 'LIVING_INTERIOR'
-  | 'GENERAL';
-
-export const NEWSLETTER_CATEGORY_LABELS: Record<
-  NewsletterCategoryType,
-  string
-> = {
-  TREND_LIFE: '트렌드/라이프',
-  BIZ_INVESTMENT: '비즈/재테크',
-  LOCAL_TRAVEL: '지역/여행',
-  FOOD: '푸드',
-  IT_TECH: 'IT/테크',
-  CURRENT_AFFAIRS_SOCIETY: '시사/사회',
-  HOBBY_SELF_DEVELOPMENT: '취미/자기개발',
-  CULTURE_ART: '문화/예술',
-  LIVING_INTERIOR: '리빙/인테리어',
-  GENERAL: '종합',
-};
+export type NewsletterCategoryType = string;
 
 export interface Newsletter {
   id: number;
@@ -34,6 +8,7 @@ export interface Newsletter {
   issueCycle: string;
   subscriptionCount: number;
   previousStrategy?: PreviousStrategyType;
+  status?: NewsletterStatusType | NewsletterDetailStatusType;
 }
 
 export type NewsletterSortType = 'LATEST' | 'POPULAR';
@@ -56,6 +31,30 @@ export const PREVIOUS_STRATEGY_LABELS: Record<PreviousStrategyType, string> = {
   INACTIVE: '비활성',
 };
 
+export type NewsletterStatusType = 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
+
+export type NewsletterDetailStatusType =
+  | 'ACTIVE'
+  | 'SUSPENDED_VISIBLE'
+  | 'SUSPENDED_HIDDEN'
+  | 'DISCONTINUED';
+
+export const NEWSLETTER_STATUS_LABELS: Record<NewsletterStatusType, string> = {
+  ACTIVE: '발행중',
+  SUSPENDED: '휴재',
+  DISCONTINUED: '폐간',
+};
+
+export const NEWSLETTER_DETAIL_STATUS_LABELS: Record<
+  NewsletterDetailStatusType,
+  string
+> = {
+  ACTIVE: '발행중',
+  SUSPENDED_VISIBLE: '휴재(노출)',
+  SUSPENDED_HIDDEN: '휴재(비노출)',
+  DISCONTINUED: '폐간',
+};
+
 export interface NewsletterDetail {
   id: number;
   name: string;
@@ -74,6 +73,8 @@ export interface NewsletterDetail {
   previousFixedCount: number;
   previousRecentCount: number;
   previousExposureRatio: number;
+  status: NewsletterDetailStatusType;
+  suspendedAt?: string;
 }
 
 export interface CreateNewsletterRequest {
@@ -97,4 +98,10 @@ export interface CreateNewsletterRequest {
 export interface UpdateNewsletterRequest
   extends Partial<CreateNewsletterRequest> {
   id: number;
+}
+
+export interface UpdateNewsletterStatusRequest {
+  id: number;
+  status: NewsletterStatusType;
+  suspendedAt?: string;
 }

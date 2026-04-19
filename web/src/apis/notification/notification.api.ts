@@ -1,9 +1,9 @@
 import { fetcher } from '@bombom/shared/apis';
 
-export interface GetNotificationSettingsParams {
+export type GetNotificationSettingsParams = {
   memberId: number;
   deviceUuid: string;
-}
+};
 
 export const getNotificationSettings = ({
   memberId,
@@ -14,11 +14,11 @@ export const getNotificationSettings = ({
   });
 };
 
-interface PutNotificationSettingsParams {
+type PutNotificationSettingsParams = {
   memberId: number;
   deviceUuid: string;
   enabled: boolean;
-}
+};
 
 export const putNotificationSettings = ({
   memberId,
@@ -27,6 +27,41 @@ export const putNotificationSettings = ({
 }: PutNotificationSettingsParams) => {
   return fetcher.put({
     path: `/notifications/tokens/${memberId}/${deviceUuid}/settings`,
+    body: { enabled },
+  });
+};
+
+export type GetNotificationSettingParams = {
+  memberId: number;
+  category: string;
+};
+export type GetNotificationSettingResponse = {
+  category: string;
+  enabled: boolean;
+};
+
+export const getNotificationSetting = ({
+  memberId,
+  category,
+}: GetNotificationSettingParams) => {
+  return fetcher.get<GetNotificationSettingResponse>({
+    path: `/notifications/${memberId}/settings/${category}`,
+  });
+};
+
+type PatchNotificationSettingParams = {
+  memberId: number;
+  category: string;
+  enabled: boolean;
+};
+
+export const patchNotificationSetting = ({
+  memberId,
+  category,
+  enabled,
+}: PatchNotificationSettingParams) => {
+  return fetcher.patch({
+    path: `/notifications/${memberId}/settings/${category}`,
     body: { enabled },
   });
 };

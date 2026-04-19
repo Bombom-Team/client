@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
+import EventNotificationButton from './EventNotificationButton';
 import { formatEventDateTime } from '../utils/date';
 import Flex from '@/components/Flex';
 import { useAuth } from '@/contexts/AuthContext';
@@ -26,7 +27,7 @@ const EventHero = ({ onApply }: EventHeroProps) => {
     else navigate({ to: '/login' });
   };
 
-  const handleApplyButtonClick = () => {
+  const handleEventButtonClick = () => {
     if (isLoggedIn) {
       onApply();
     } else {
@@ -41,7 +42,7 @@ const EventHero = ({ onApply }: EventHeroProps) => {
   };
 
   return (
-    <Container device={device}>
+    <Container>
       <ContentWrapper device={device}>
         <DecorativeCircle
           style={{
@@ -104,13 +105,15 @@ const EventHero = ({ onApply }: EventHeroProps) => {
           </InfoRow>
         </InfoCard>
 
-        <ApplyButton
+        <EventButton
           type="button"
           device={device}
-          onClick={handleApplyButtonClick}
+          onClick={handleEventButtonClick}
         >
           {isLoggedIn ? '선착순 경품 받기' : '로그인하고 선착순 경품 받기'}
-        </ApplyButton>
+        </EventButton>
+
+        <EventNotificationButton />
       </ContentWrapper>
     </Container>
   );
@@ -118,7 +121,7 @@ const EventHero = ({ onApply }: EventHeroProps) => {
 
 export default EventHero;
 
-const Container = styled.section<{ device: Device }>`
+const Container = styled.section`
   z-index: ${({ theme }) => theme.zIndex.base};
   width: 100%;
   border-bottom: 4px solid ${({ theme }) => theme.colors.black};
@@ -143,7 +146,7 @@ const ContentWrapper = styled.div<{ device: Device }>`
   }};
 
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -168,15 +171,15 @@ const HeroBadge = styled.div<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body3 : theme.fonts.bodyLarge};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
   font-weight: 700;
   text-align: center;
 
   transform: rotate(-2deg);
 `;
 
-const ApplyButton = styled.button<{ device: Device }>`
+const EventButton = styled.button<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '12px 20px' : '20px 44px')};
   border: 4px solid ${({ theme }) => theme.colors.black};
   border-radius: 24px;
@@ -184,8 +187,7 @@ const ApplyButton = styled.button<{ device: Device }>`
 
   background-color: #d81b60;
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 
   &:hover {
     box-shadow: 6px 6px 0 0 ${({ theme }) => theme.colors.black};
@@ -226,8 +228,8 @@ const InfoCardBadge = styled.div<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Bold};
   font-weight: 700;
   text-align: center;
   white-space: nowrap;
@@ -251,8 +253,8 @@ const InfoRowDivider = styled.div`
 
 const InfoLabel = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.icons};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Bold};
   text-align: center;
 `;
 
@@ -264,8 +266,8 @@ const InfoValue = styled.p<{ device: Device }>`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
   font-weight: 700;
   text-align: left;
 `;
@@ -283,7 +285,7 @@ const Title = styled.div<{ device: Device }>`
 
   background-color: rgb(255 255 255 / 80%);
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Bold};
   text-align: center;
 `;

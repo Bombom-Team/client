@@ -21,16 +21,12 @@ function EventFooter() {
       <FooterWrapper device={device}>
         <FooterHeader>
           <InfoIcon width={16} height={16} color={theme.colors.white} />
-          <Title device={device}>꼭 확인하세요</Title>
+          <Title>꼭 확인하세요</Title>
         </FooterHeader>
 
         <NoticeList>
           {NOTICE.map((item, index) => {
-            return (
-              <NoticeListItem key={index} device={device}>
-                {item}
-              </NoticeListItem>
-            );
+            return <NoticeListItem key={index}>{item}</NoticeListItem>;
           })}
         </NoticeList>
       </FooterWrapper>
@@ -67,10 +63,9 @@ const FooterHeader = styled.div`
   align-items: center;
 `;
 
-const Title = styled.p<{ device: Device }>`
+const Title = styled.p`
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   font-weight: 700;
 `;
 
@@ -81,13 +76,12 @@ const NoticeList = styled.ul`
   justify-content: center;
 `;
 
-const NoticeListItem = styled.li<{ device: Device }>`
+const NoticeListItem = styled.li`
   position: relative;
   padding-left: 18px;
 
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body4 : theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   line-height: 1.2;
 
   &::before {

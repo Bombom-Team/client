@@ -33,7 +33,7 @@ const ChallengeApplySection = ({
       <ApplicantButton device={device} onClick={handleApplyClick}>
         챌린지 참여하기
       </ApplicantButton>
-      <Text color="textTertiary" font="caption">
+      <Text color="textTertiary" font="t3Regular">
         © 2026 Bombom. All rights reserved.
       </Text>
     </Container>
@@ -59,14 +59,14 @@ const Container = styled.section<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading4 : theme.fonts.heading1};
+    device === 'mobile' ? theme.fonts.t13Bold : theme.fonts.t15Bold};
   text-align: center;
 `;
 
 const ApplicantButton = styled(Button)<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '16px 24px' : '20px 36px')};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.t7Bold : theme.fonts.t10Bold};
 
   &:hover {
     opacity: 0.8;

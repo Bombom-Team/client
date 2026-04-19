@@ -113,7 +113,7 @@ const NewsletterMeta = styled.div`
 
 const NewsletterName = styled.span`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const ArticleTitle = styled.h3<{ disabled: boolean }>`
@@ -121,13 +121,13 @@ const ArticleTitle = styled.h3<{ disabled: boolean }>`
 
   color: ${({ theme, disabled }) =>
     disabled ? theme.colors.disabledText : theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   font-weight: 600;
 `;
 
 const DeleteText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   white-space: nowrap;
 `;
 
@@ -146,7 +146,7 @@ const CreatedAtText = styled.time`
   align-self: flex-end;
 
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const MemoContent = styled.div`
@@ -168,7 +168,7 @@ const MemoContentText = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   word-break: break-all;
 `;
@@ -182,7 +182,7 @@ const MemoText = styled.p`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   transition: all 0.2s ease-in-out;
   word-break: break-all;

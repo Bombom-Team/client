@@ -18,7 +18,6 @@ interface WeeklyGoalEditorProps {
 interface WeeklyGoalInputProps {
   goalValue: number | null;
   isPending: boolean;
-  device: Device;
   onSave: () => void;
   onCancel: () => void;
   onGoalChange: (value: number | null) => void;
@@ -27,7 +26,6 @@ interface WeeklyGoalInputProps {
 export function WeeklyGoalInput({
   goalValue,
   isPending,
-  device,
   onSave,
   onCancel,
   onGoalChange,
@@ -49,7 +47,6 @@ export function WeeklyGoalInput({
 
   return (
     <EditInput
-      device={device}
       type="text"
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
@@ -79,7 +76,7 @@ function WeeklyGoalEditor({
   'isEditing' | 'isPending' | 'device' | 'onEditStart' | 'onSave'
 >) {
   return (
-    <Container device={device}>
+    <Container>
       <EditButton
         device={device}
         type="button"
@@ -91,9 +88,7 @@ function WeeklyGoalEditor({
         {isEditing ? (
           <>
             <CheckIcon width={12} height={12} />
-            {device === 'pc' && (
-              <ButtonText device={device}>수정 완료</ButtonText>
-            )}
+            {device === 'pc' && <ButtonText>수정 완료</ButtonText>}
           </>
         ) : (
           <EditIcon
@@ -108,7 +103,7 @@ function WeeklyGoalEditor({
 
 export default WeeklyGoalEditor;
 
-const Container = styled.div<{ device: Device }>`
+const Container = styled.div`
   margin-left: 4px;
 
   display: flex;
@@ -166,14 +161,13 @@ const EditButton = styled.button<{
       `}
 `;
 
-const ButtonText = styled.span<{ device: Device }>`
-  font: ${({ theme, device }) =>
-    device === 'pc' ? theme.fonts.caption : theme.fonts.caption};
-  font-size: ${({ device }) => (device === 'pc' ? '11px' : '10px')};
+const ButtonText = styled.span`
+  font: ${({ theme }) => theme.fonts.t3Regular};
+  font-size: 0.6875rem;
   white-space: nowrap;
 `;
 
-const EditInput = styled.input<{ device: Device }>`
+const EditInput = styled.input`
   width: 40px;
   height: auto;
   margin: 0;
@@ -183,7 +177,7 @@ const EditInput = styled.input<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   line-height: 1;
   text-align: center;
 
@@ -199,6 +193,6 @@ const EditInput = styled.input<{ device: Device }>`
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.textTertiary};
-    font-size: 10px;
+    font-size: 0.625rem;
   }
 `;

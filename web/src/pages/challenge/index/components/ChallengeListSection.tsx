@@ -40,7 +40,7 @@ const Section = styled.div`
 
 const SectionTitle = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const ChallengeGrid = styled.div<{ isMobile: boolean }>`

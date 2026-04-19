@@ -13,14 +13,14 @@ const MobileMainHeader = () => {
 
   return (
     <Container>
-      <HeaderLogo device="mobile" />
+      <HeaderLogo />
       <UserInfoWrapper>
-        <Button
+        <NavButton
           onClick={() => navigate({ to: '/notice' })}
-          variant={'transparent'}
+          variant="transparent"
         >
-          <MegaphoneIcon width={22} height={24} />
-        </Button>
+          <MegaphoneIcon width={20} height={20} />
+        </NavButton>
         {userProfile ? (
           <HeaderProfile userProfile={userProfile} device="mobile" />
         ) : (
@@ -40,10 +40,10 @@ const Container = styled.header`
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   height: calc(
-    ${({ theme }) => theme.heights.headerMobile} + env(safe-area-inset-top)
+    ${({ theme }) => `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
   );
   padding: 8px 12px;
-  padding-top: calc(8px + env(safe-area-inset-top));
+  padding-top: calc(8px + ${({ theme }) => theme.safeArea.top});
   box-shadow:
     0 8px 12px -6px rgb(0 0 0 / 10%),
     0 3px 5px -4px rgb(0 0 0 / 10%);
@@ -54,8 +54,21 @@ const Container = styled.header`
 
   background: ${({ theme }) => theme.colors.white};
 `;
+
 const UserInfoWrapper = styled.div`
   display: flex;
-  gap: 6px;
-  justify-content: flex-end;
+  gap: 12px;
+  justify-content: center;
+`;
+
+const NavButton = styled(Button)`
+  padding: 0;
+
+  display: flex;
+  gap: 0;
+  flex-direction: column;
+
+  :hover {
+    background: none;
+  }
 `;

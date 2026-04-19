@@ -100,12 +100,12 @@ const Certificate = ({
 
       <Bottom>
         <BrandWrapper>
-          <Text font="caption">뉴스레터 서비스</Text>
+          <Text font="t3Regular">뉴스레터 서비스</Text>
           <Flex align="center" gap={8}>
             <BrandMark src={logo} alt="봄봄 로고" />
-            <Text font="body1">봄봄</Text>
+            <Text font="t6Regular">봄봄</Text>
           </Flex>
-          <Text font="caption">www.bombom.news</Text>
+          <Text font="t3Regular">www.bombom.news</Text>
         </BrandWrapper>
         <IssuedDate>{formattedIssuedDate}</IssuedDate>
         <EmptyBox />
@@ -132,7 +132,7 @@ const Container = styled.div`
 
 const TopTitle = styled.h1`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.t13Bold};
   text-align: center;
 `;
 
@@ -144,7 +144,7 @@ const UserName = styled.h2`
   max-width: 260px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.t13Bold};
 `;
 
 const MedalImg = styled.img`
@@ -157,7 +157,7 @@ const MetaLine = styled.div`
   gap: 8px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const MetaLabel = styled.span`
@@ -174,7 +174,7 @@ const Description = styled.p`
   margin: 44px 0 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const Bottom = styled.div`
@@ -196,7 +196,7 @@ const IssuedDate = styled.div`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;
 

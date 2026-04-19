@@ -8,6 +8,7 @@ import {
   getNewsletters,
   type GetNewslettersParams,
   deleteNewsletter,
+  updateNewsletterStatus,
 } from './newsletters.api';
 
 const NEWSLETTERS_STALE_TIME = 1000 * 60; // 1 minute
@@ -51,5 +52,11 @@ export const useUpdateNewsletter = () => {
   return useMutation({
     mutationFn: (data: import('@/types/newsletter').UpdateNewsletterRequest) =>
       import('./newsletters.api').then((mod) => mod.updateNewsletter(data)),
+  });
+};
+
+export const useUpdateNewsletterStatusMutation = () => {
+  return useMutation({
+    mutationFn: updateNewsletterStatus,
   });
 };

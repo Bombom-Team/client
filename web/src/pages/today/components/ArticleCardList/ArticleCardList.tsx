@@ -60,8 +60,8 @@ const ArticleCardList = ({
     return <EmptyLetterCard title="새로운 뉴스레터가 없어요" />;
 
   return (
-    <Container isMobile={isMobile}>
-      <LettersWrapper isMobile={isMobile}>
+    <Container>
+      <LettersWrapper>
         <ListTitleBox>
           <LetterIcon width={32} height={32} color={theme.colors.white} />
           <ListTitle>새로운 뉴스레터 ({grouped.unread.length}개)</ListTitle>
@@ -92,7 +92,7 @@ const ArticleCardList = ({
           ))}
         </CardList>
       </LettersWrapper>
-      <LettersWrapper isMobile={isMobile}>
+      <LettersWrapper>
         {grouped.read.length > 0 && (
           <ListTitleBox>
             <CheckIcon width={32} height={32} color={theme.colors.black} />
@@ -138,7 +138,7 @@ const ArticleCardList = ({
 
 export default ArticleCardList;
 
-export const Container = styled.div<{ isMobile: boolean }>`
+export const Container = styled.div`
   width: 100%;
 
   display: flex;
@@ -147,7 +147,7 @@ export const Container = styled.div<{ isMobile: boolean }>`
   align-items: flex-start;
 `;
 
-export const LettersWrapper = styled.div<{ isMobile: boolean }>`
+export const LettersWrapper = styled.div`
   width: 100%;
 
   display: flex;
@@ -163,7 +163,7 @@ const ListTitleBox = styled.div`
 
 const ListTitle = styled.h5`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 export const CardList = styled.ul<{ isMobile: boolean }>`

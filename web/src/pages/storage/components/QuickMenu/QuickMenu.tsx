@@ -38,7 +38,6 @@ const QuickMenu = () => {
                   <StyledIcon as={Icon} selected={isSelected} device={device} />
                 }
                 textAlign="start"
-                device={device}
               />
             );
           })}
@@ -70,7 +69,6 @@ const QuickMenu = () => {
                 <StyledIcon as={Icon} selected={isSelected} device={device} />
               }
               textAlign="start"
-              device={device}
             />
           );
         })}
@@ -118,7 +116,7 @@ const StyledMenuIcon = styled(MenuIcon)`
 `;
 
 const Title = styled.h3`
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const StyledIcon = styled.div<{ device: Device; selected?: boolean }>`
@@ -129,7 +127,6 @@ const StyledIcon = styled.div<{ device: Device; selected?: boolean }>`
     selected ? theme.colors.white : theme.colors.primary};
 `;
 
-const StyledTab = styled(Tab)<{ device: Device }>`
-  font: ${({ theme, device }) =>
-    device === 'pc' ? theme.fonts.body2 : theme.fonts.body1};
+const StyledTab = styled(Tab)`
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

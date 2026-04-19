@@ -26,13 +26,17 @@ function RouteComponent() {
 
   const joinedChallenges = challenges?.filter(
     (challenge) =>
-      (challenge.detail?.isJoined && challenge.status === 'BEFORE_START') ||
-      challenge.status === 'ONGOING',
+      (challenge.participationInfo?.isJoined &&
+        challenge.status === 'BEFORE_START') ||
+      (challenge.participationInfo?.isJoined && challenge.status === 'ONGOING'),
   );
 
   const availableChallenges = challenges?.filter(
     (challenge) =>
-      (!challenge.detail?.isJoined && challenge.status === 'BEFORE_START') ||
+      (!challenge.participationInfo?.isJoined &&
+        challenge.status === 'BEFORE_START') ||
+      (!challenge.participationInfo?.isJoined &&
+        challenge.registrationPhase === 'LATE') ||
       challenge.status === 'COMING_SOON',
   );
   const completedChallenges = challenges?.filter(
@@ -113,7 +117,7 @@ const TitleIconBox = styled.div`
 `;
 
 const Title = styled.h1`
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const ContentWrapper = styled.div`
@@ -142,7 +146,7 @@ const EmptyStateTitle = styled.h2`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
   text-align: center;
 `;
 
@@ -150,6 +154,6 @@ const EmptyStateDescription = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: center;
 `;

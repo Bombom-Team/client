@@ -41,7 +41,7 @@ const EmptyTitle = styled.h2`
 
   background: linear-gradient(90deg, #181818 0%, #f96 100%);
   background-clip: text;
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
   text-align: center;
 
   -webkit-text-fill-color: transparent;
@@ -57,6 +57,6 @@ const Lead = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: center;
 `;

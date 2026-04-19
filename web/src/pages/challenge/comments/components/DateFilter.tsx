@@ -38,7 +38,7 @@ const DateFilter = ({
       : displayDates.slice(weekStartIndex, weekEndIndex + 1);
 
   return (
-    <Container device={device}>
+    <Container>
       {device !== 'mobile' && (
         <NavButton
           variant="transparent"
@@ -103,7 +103,7 @@ const DateFilter = ({
 
 export default DateFilter;
 
-const Container = styled.div<{ device: Device }>`
+const Container = styled.div`
   width: 100%;
 
   display: flex;

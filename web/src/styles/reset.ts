@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
 const reset = css`
-  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css');
+  @import url('http://fonts.googleapis.com/earlyaccess/nanumgothic.css');
 
   /* Reset 기본 스타일 */
   html,
@@ -49,6 +49,7 @@ const reset = css`
 
   body {
     font-family:
+      'NanumGothic',
       'Pretendard Variable',
       Pretendard,
       -apple-system,
@@ -102,12 +103,26 @@ const reset = css`
   }
 
   html {
+    font-size: 87.5%;
+
+    @media (min-width: 768px) {
+      font-size: 100%;
+    }
+
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+
     -webkit-tap-highlight-color: rgb(0 0 0 / 0%);
 
     touch-action: pan-x pan-y;
     -webkit-touch-callout: none;
 
     user-select: none;
+  }
+
+  html.webview {
+    --safe-area-inset-top: 0px;
+    --safe-area-inset-bottom: 0px;
   }
 `;
 

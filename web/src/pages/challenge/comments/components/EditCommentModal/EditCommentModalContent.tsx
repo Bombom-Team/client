@@ -52,16 +52,16 @@ const EditCommentModalContent = ({
   return (
     <Container isMobile={isMobile}>
       <SectionWrapper>
-        <SectionTitle isMobile={isMobile}>읽은 아티클</SectionTitle>
+        <SectionTitle>읽은 아티클</SectionTitle>
         <ArticleTitleWrapper>
-          <NewsletterBadge isMobile={isMobile} text={newsletterName} />
-          <ArticleTitle isMobile={isMobile}>{articleTitle}</ArticleTitle>
+          <NewsletterBadge text={newsletterName} />
+          <ArticleTitle>{articleTitle}</ArticleTitle>
         </ArticleTitleWrapper>
       </SectionWrapper>
 
       {quotation && (
         <SectionWrapper>
-          <SectionTitle isMobile={isMobile}>내 하이라이트/메모</SectionTitle>
+          <SectionTitle>내 하이라이트/메모</SectionTitle>
           <Quote isMobile={isMobile}>{quotation}</Quote>
         </SectionWrapper>
       )}
@@ -75,14 +75,8 @@ const EditCommentModalContent = ({
       />
 
       <ButtonWrapper>
-        <StyledButton onClick={handleEditCommentClick} isMobile={isMobile}>
-          수정하기
-        </StyledButton>
-        <StyledButton
-          variant="outlined"
-          onClick={closeModal}
-          isMobile={isMobile}
-        >
+        <StyledButton onClick={handleEditCommentClick}>수정하기</StyledButton>
+        <StyledButton variant="outlined" onClick={closeModal}>
           취소
         </StyledButton>
       </ButtonWrapper>
@@ -106,19 +100,17 @@ const SectionWrapper = styled.div`
   flex-direction: column;
 `;
 
-const SectionTitle = styled.h3<{ isMobile: boolean }>`
+const SectionTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.heading6 : theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
-const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
+const NewsletterBadge = styled(Badge)`
   padding: 2px 6px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body3 : theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ArticleTitleWrapper = styled.div`
@@ -128,10 +120,9 @@ const ArticleTitleWrapper = styled.div`
   justify-content: flex-start;
 `;
 
-const ArticleTitle = styled.p<{ isMobile: boolean }>`
+const ArticleTitle = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const ButtonWrapper = styled.div`
@@ -139,10 +130,9 @@ const ButtonWrapper = styled.div`
   gap: 12px;
 `;
 
-const StyledButton = styled(Button)<{ isMobile: boolean }>`
+const StyledButton = styled(Button)`
   flex: 1;
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const Quote = styled.div<{ isMobile: boolean }>`
@@ -154,8 +144,7 @@ const Quote = styled.div<{ isMobile: boolean }>`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ isMobile }) =>

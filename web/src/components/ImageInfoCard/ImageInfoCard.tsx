@@ -82,7 +82,7 @@ const Title = styled.h3`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
   line-height: 1;
 `;
 
@@ -93,7 +93,7 @@ const Description = styled.p`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;

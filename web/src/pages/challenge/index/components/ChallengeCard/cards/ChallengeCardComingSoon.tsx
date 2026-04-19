@@ -3,7 +3,6 @@ import CardContainer from '../CardContainer';
 import { CardDetailButton, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
-import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { getDatesDiff } from '@/utils/date';
@@ -24,7 +23,7 @@ const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
       label: title,
     });
 
-    if (isWeeklyChallenge) {
+    if (startDate && endDate && isWeeklyChallenge) {
       openExternalLink(
         'https://maroon-geranium-880.notion.site/1-2fb03dcf20568089a20ad05cd3de78fe?pvs=74',
       );
@@ -39,14 +38,13 @@ const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
   return (
     <CardContainer onClick={handleCardClick}>
       <CardHeader>
-        <Flex direction="column" gap={8}>
-          <Title>{title}</Title>
-          <Tag>{generation}기</Tag>
-        </Flex>
+        <Tag>{generation}기</Tag>
       </CardHeader>
 
+      <Title>{title}</Title>
+
       <CardFooter>
-        <Text font="heading6">Coming Soon</Text>
+        <Text font="t6Bold">Coming Soon</Text>
         <CardDetailButton>자세히 보기 →</CardDetailButton>
       </CardFooter>
     </CardContainer>

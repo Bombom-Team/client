@@ -12,6 +12,7 @@ interface LeaderboardItemProps {
   rank: number;
   name: string;
   readCount: number;
+  readCountLabel?: string;
   badges?: Badges;
 }
 
@@ -19,13 +20,14 @@ const LeaderboardItem = ({
   rank,
   name,
   readCount,
+  readCountLabel = '개 읽음',
   badges,
 }: LeaderboardItemProps) => {
   return (
     <Container
       role="listitem"
       tabIndex={0}
-      aria-label={`${rank}위: ${name}, ${readCount}개 읽음`}
+      aria-label={`${rank}위: ${name}, ${readCount}${readCountLabel}`}
     >
       <ContentWrapper>
         <RankIconWrapper aria-hidden="true">
@@ -34,7 +36,10 @@ const LeaderboardItem = ({
 
         <UserInfoBox aria-hidden="true">
           <UserName>{name}</UserName>
-          <ReadCount>{readCount}개 읽음</ReadCount>
+          <ReadCount>
+            {readCount}
+            {readCountLabel}
+          </ReadCount>
         </UserInfoBox>
       </ContentWrapper>
 
@@ -68,7 +73,7 @@ export const RankIconWrapper = styled.div`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 export const UserInfoBox = styled.div`
@@ -79,10 +84,10 @@ export const UserInfoBox = styled.div`
 
 const UserName = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ReadCount = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;

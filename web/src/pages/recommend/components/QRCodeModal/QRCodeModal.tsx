@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import type { StoreType } from '../PromotionBanner/PromotionBanner.types';
 import appStoreQRCodeIcon from '#/assets/avif/app_store_qr_code.avif';
@@ -33,18 +34,53 @@ const QRCodeModal = ({
       closeModal={onClose}
     >
       <Container>
-        <QRModalTitle>{storeInfo.title}</QRModalTitle>
-        <QRCodeWrapper>
-          <img
-            src={storeInfo.src}
-            width={256}
-            height={256}
-            alt={storeInfo.alt}
-          />
-        </QRCodeWrapper>
-        <QRModalDescription>
-          QR 코드를 스캔하여 앱을 설치하세요
-        </QRModalDescription>
+        {storeType === 'all' ? (
+          <>
+            <QRCodesWrapper>
+              <Flex direction="column" gap={16} align="center">
+                <QRModalTitle>App Store</QRModalTitle>
+                <QRCodeWrapper>
+                  <img
+                    src={appStoreQRCodeIcon}
+                    width={200}
+                    height={200}
+                    alt="App Store QR Code"
+                  />
+                </QRCodeWrapper>
+              </Flex>
+
+              <Flex direction="column" gap={16} align="center">
+                <QRModalTitle>Google Play</QRModalTitle>
+                <QRCodeWrapper>
+                  <img
+                    src={playStoreQRCodeIcon}
+                    width={200}
+                    height={200}
+                    alt="Google Play QR Code"
+                  />
+                </QRCodeWrapper>
+              </Flex>
+            </QRCodesWrapper>
+            <QRModalDescription>
+              QR 코드를 스캔하여 앱을 설치하세요
+            </QRModalDescription>
+          </>
+        ) : (
+          <>
+            <QRModalTitle>{storeInfo.title}</QRModalTitle>
+            <QRCodeWrapper>
+              <img
+                src={storeInfo.src}
+                width={256}
+                height={256}
+                alt={storeInfo.alt}
+              />
+            </QRCodeWrapper>
+            <QRModalDescription>
+              QR 코드를 스캔하여 앱을 설치하세요
+            </QRModalDescription>
+          </>
+        )}
       </Container>
     </Modal>
   );
@@ -61,9 +97,17 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const QRCodesWrapper = styled.div`
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+`;
+
 const QRModalTitle = styled.h2`
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const QRCodeWrapper = styled.div`
@@ -80,5 +124,5 @@ const QRCodeWrapper = styled.div`
 
 const QRModalDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

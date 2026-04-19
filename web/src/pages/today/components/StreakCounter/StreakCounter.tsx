@@ -24,7 +24,7 @@ const CircleIcon = styled.span`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 
   &::before {
     position: absolute;

@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useDevice } from '@/hooks/useDevice';
 import type { TodoStatus } from '../../types/todayTodos';
 import type { TodayTodos } from '@/apis/challenge/challenge.api';
 
@@ -8,7 +7,7 @@ interface UserDailyCheckListProps {
 }
 
 const todoLabels = {
-  READ: '오늘 도착한 뉴스레터를 읽었나요?',
+  READ: '뉴스레터를 읽었나요?',
   COMMENT: '오늘의 코멘트를 작성했나요?',
   MINDSET: '첫 날 각오를 작성했나요?',
 };
@@ -23,11 +22,8 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
     (todo) => todo.challengeTodoStatus === 'COMPLETE',
   ).length;
 
-  const device = useDevice();
-  const isMobile = device === 'mobile';
-
   return (
-    <Container isMobile={isMobile}>
+    <Container>
       <Header>
         <Title>오늘의 체크 리스트</Title>
         <CountBadge>
@@ -56,7 +52,7 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
 
 export default UserDailyCheckList;
 
-const Container = styled.div<{ isMobile: boolean }>`
+const Container = styled.div`
   width: 100%;
   padding: 18px 20px;
   border: 1px solid ${({ theme }) => theme.colors.primaryLight};
@@ -77,7 +73,7 @@ const Header = styled.div`
 
 const Title = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const CountBadge = styled.div`
@@ -86,7 +82,7 @@ const CountBadge = styled.div`
 
   background: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 600;
 `;
 
@@ -118,11 +114,11 @@ const StatusBox = styled.div<{ status: TodoStatus }>`
     $status === 'COMPLETE' ? theme.colors.success : theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
   font-weight: 700;
-  font-size: ${({ theme }) => theme.fonts.caption};
+  font-size: ${({ theme }) => theme.fonts.t3Regular};
   line-height: 1;
 `;
 
 const TodoText = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

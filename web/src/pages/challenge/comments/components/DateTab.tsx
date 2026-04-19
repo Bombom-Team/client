@@ -40,6 +40,6 @@ const StyledTab = styled(stringTab, {
   padding: ${({ device }) => (device === 'mobile' ? '8px' : '12px 16px')};
   border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
 
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.bodyLarge};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
 `;
