@@ -113,7 +113,7 @@ const Container = styled.div`
   padding: 24px 20px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const HeaderBox = styled.div`
@@ -129,42 +129,42 @@ const HeaderTag = styled.div`
   margin-bottom: 6px;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const HeaderTitle = styled.h1`
   margin: 0 0 10px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const HeaderDescription = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const SectionTitle = styled.h2`
   margin: 24px 0 12px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const BodyText = styled.p`
   margin: 0 0 16px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const BodyTextSub = styled.p`
   margin: 0 0 16px;
 
   color: #475569;
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const HighlightBox = styled.div`
@@ -196,7 +196,7 @@ const SuccessText = styled.span`
   margin-left: 8px;
 
   color: #065f46;
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const TipBox = styled.div`
@@ -209,7 +209,7 @@ const TipText = styled.p`
   margin: 0 0 8px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const List = styled.ul`
@@ -217,7 +217,7 @@ const List = styled.ul`
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const ListItem = styled.li`
@@ -232,7 +232,7 @@ const DashedBox = styled.div`
 
   background: #f1f5f9;
   color: #64748b;
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;
 
@@ -249,14 +249,14 @@ const InfoTitle = styled.div`
   margin-bottom: 8px;
 
   color: #0369a1;
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const InfoText = styled.p`
   margin: 0;
 
   color: #0284c7;
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const Video = styled.video`

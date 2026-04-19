@@ -34,5 +34,5 @@ export default ChallengeCardFailed;
 
 const EliminatedDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

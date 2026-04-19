@@ -90,7 +90,7 @@ const Container = styled.div`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 
   overflow-x: hidden;
 `;
@@ -108,7 +108,7 @@ const OpenSubscribeButton = styled.button`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ImageWrapper = styled.div<{ isMobile: boolean }>`

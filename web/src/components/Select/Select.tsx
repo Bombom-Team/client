@@ -97,7 +97,7 @@ const SelectText = styled.p<{ selected: boolean; fontSize?: string }>`
 
   color: ${({ theme, selected }) =>
     selected ? theme.colors.textPrimary : theme.colors.textTertiary};
-  font: ${({ theme, fontSize }) => fontSize || theme.fonts.caption};
+  font: ${({ theme, fontSize }) => fontSize || theme.fonts.t3Regular};
   white-space: nowrap;
 
   text-overflow: ellipsis;
@@ -142,7 +142,7 @@ const SelectMenuItem = styled.li<{ selected: boolean; fontSize?: string }>`
 
   background-color: ${({ theme, selected }) =>
     selected ? theme.colors.primaryLight : theme.colors.white};
-  font: ${({ theme, fontSize }) => fontSize || theme.fonts.caption};
+  font: ${({ theme, fontSize }) => fontSize || theme.fonts.t3Regular};
 
   cursor: pointer;
 

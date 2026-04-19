@@ -39,7 +39,7 @@ const SlideBox = ({ backgroundColor, children }: SlideBoxProps) => {
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: theme.colors[backgroundColor],
-        font: theme.fonts.heading2,
+        font: theme.fonts.t13Bold,
       }}
     >
       {children}

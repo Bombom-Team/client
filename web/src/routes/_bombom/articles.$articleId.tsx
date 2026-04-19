@@ -181,7 +181,7 @@ const Divider = styled.div`
 
 const ContentDescription = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const BookmarkButton = styled.button`

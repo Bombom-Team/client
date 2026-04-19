@@ -238,7 +238,7 @@ const FloatingApplyButton = styled(Button)<{
   box-shadow: 0 10px 28px rgb(0 0 0 / 20%);
 
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading6 : theme.fonts.heading5};
+    device === 'mobile' ? theme.fonts.t6Bold : theme.fonts.t7Bold};
 
   animation: ${({ isVisible }) =>
     isVisible ? `${floatingMotion} 2.2s ease-in-out infinite` : 'none'};

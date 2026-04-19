@@ -44,7 +44,7 @@ const Title = styled.h1<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading2 : theme.fonts.heading1};
+    device === 'mobile' ? theme.fonts.t13Bold : theme.fonts.t15Bold};
 `;
 
 export const ThumbnailBox = styled.div<{ device: Device }>`

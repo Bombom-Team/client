@@ -74,21 +74,21 @@ const Container = styled.section<{ device: Device }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.t11Bold : theme.fonts.t13Bold};
   text-align: center;
 `;
 
 const Subtitle = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
   text-align: center;
 `;
 
 const Ellipsis = styled.div<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Regular};
   letter-spacing: 0.25rem;
 `;
 
@@ -116,7 +116,7 @@ const SpeechBubble = styled.div<{
   background-color: ${({ theme }) => theme.colors.primaryLight};
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Regular};
   text-align: center;
 
   opacity: 0;
@@ -193,7 +193,7 @@ const PromoteTextBox = styled.div<{ device: Device }>`
   flex-direction: column;
 
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.t7Bold : theme.fonts.t10Bold};
   text-align: center;
 `;
 

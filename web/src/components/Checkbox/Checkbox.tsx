@@ -85,5 +85,5 @@ const CheckboxSquare = styled.div<{ checked: boolean }>`
 
 const CheckMark = styled.span`
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

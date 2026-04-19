@@ -148,7 +148,7 @@ const HeaderCell = styled.th<{ isWeekDivider?: boolean }>`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   text-align: center;
   white-space: nowrap;
 
@@ -220,7 +220,7 @@ const BodyCell = styled.td<{
   }};
   color: ${({ theme, isSurvived }) =>
     !isSurvived ? theme.colors.disabledText : theme.colors.textPrimary};
-  font-size: ${({ theme }) => theme.fonts.body4};
+  font-size: ${({ theme }) => theme.fonts.t1Regular};
   text-align: center;
 
   &:last-of-type {
@@ -232,7 +232,7 @@ const NameCell = styled(BodyCell)<{ isMobile: boolean }>`
   width: var(--name-col-width);
   padding: 6px;
 
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   ${({ isMobile, theme }) =>
     isMobile &&
@@ -268,13 +268,13 @@ const FailBadge = styled.span`
   flex-shrink: 0;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   white-space: nowrap;
 `;
 
 const SummaryCell = styled(BodyCell)<{ isMobile: boolean }>`
   width: var(--summary-col-width);
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 
   ${({ isMobile, theme }) =>
     isMobile &&
@@ -287,7 +287,7 @@ const SummaryCell = styled(BodyCell)<{ isMobile: boolean }>`
 
 const RateCell = styled(BodyCell)<{ isMobile: boolean }>`
   width: var(--rate-col-width);
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 
   ${({ isMobile, theme }) =>
     isMobile &&

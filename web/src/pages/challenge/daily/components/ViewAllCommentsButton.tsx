@@ -60,7 +60,7 @@ const StyledButton = styled(Button)`
   gap: 4px;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   &:hover {
     background: none;

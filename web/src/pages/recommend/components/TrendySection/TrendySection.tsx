@@ -245,14 +245,14 @@ const SectionIconBox = styled.span`
   justify-content: center;
 
   background: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const SectionTitle = styled.h2`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const SearchIconButton = styled.button`

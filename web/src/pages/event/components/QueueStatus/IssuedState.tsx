@@ -83,7 +83,7 @@ const IssuedState = ({ onClose }: IssuedStateProps) => {
                     width="90%"
                     height="auto"
                   />
-                  <Text font={device === 'mobile' ? 'body2' : 'body1'}>
+                  <Text font={device === 'mobile' ? 't5Regular' : 't6Regular'}>
                     {`${formatEventDateTime(new Date(coupon.issuedAt))} 발급`}
                   </Text>
                 </Flex>
@@ -119,7 +119,7 @@ export default IssuedState;
 
 const CompletedMessage = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
   text-align: center;
 `;
 
@@ -133,12 +133,12 @@ const DownloadButton = styled(Button)`
   border: ${({ theme }) => `2px solid ${theme.colors.black}`};
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const CloseButton = styled(Button)`
   width: 100%;
   min-width: 180px;
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

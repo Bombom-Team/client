@@ -38,7 +38,7 @@ const ChallengeRewards = () => {
           <Flex direction="column" gap={8} justify="center" align="center">
             <Text
               color="textSecondary"
-              font={device === 'mobile' ? 'body2' : 'body1'}
+              font={device === 'mobile' ? 't5Regular' : 't6Regular'}
             >
               <HighLight>*</HighLight> 획득한 뱃지는 이달의 독서왕에서도 확인할
               수 있어요!
@@ -95,7 +95,7 @@ const Container = styled.section<{ device: Device; isVisible: boolean }>`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.t11Bold : theme.fonts.t13Bold};
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
@@ -125,12 +125,12 @@ const SubTitleBox = styled.div`
 
 const SubTitle = styled.h3`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const RewardDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.t7Regular};
 `;
 
 const BadgeBox = styled.div`

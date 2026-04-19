@@ -59,7 +59,7 @@ const EventGuide = () => {
             버튼을 눌러 응모하면 끝!
             {'\n'}
           </Description>
-          <ActivationNotice color="red" font="heading6">
+          <ActivationNotice color="red" font="t6Bold">
             * 선착순 응모는 2월 23일 오후 2시에 시작돼요.
           </ActivationNotice>
           <ApplyButtonExample device={device}>
@@ -99,7 +99,7 @@ const SectionHeader = styled.div`
 
 const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.t13Bold};
   text-align: center;
 `;
 
@@ -138,7 +138,7 @@ const StepBadge = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
   font-weight: 700;
 
   transform: translateX(-50%);
@@ -147,7 +147,7 @@ const StepBadge = styled.div<{ device: Device }>`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
   font-weight: 700;
   text-align: center;
 `;
@@ -172,7 +172,7 @@ const LoginButtonExample = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
   text-align: center;
 `;
 
@@ -188,7 +188,7 @@ const ApplyButtonExample = styled.div<{ device: Device }>`
   background-color: #d81b60;
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading6};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
   text-align: center;
 
   transform: rotate(2deg);

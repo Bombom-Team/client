@@ -42,7 +42,7 @@ export const TitleIcon = styled.div`
 
 export const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 export const TabToggle = styled.div`
@@ -61,7 +61,7 @@ export const TabButton = styled.button<{ active: boolean }>`
 
   color: ${({ theme, active }) =>
     active ? theme.colors.textPrimary : theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   background-color: ${({ active }) => (active ? '#fff' : 'transparent')};
 
@@ -94,7 +94,7 @@ export const Countdown = styled.div`
   width: 36px;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   cursor: help;
 `;

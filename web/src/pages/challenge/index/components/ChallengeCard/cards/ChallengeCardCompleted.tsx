@@ -67,11 +67,11 @@ const GradeBadgeTopRight = styled.span`
   right: 32px;
 
   color: ${({ color }) => color};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 600;
 `;
 
 const CompletionText = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;

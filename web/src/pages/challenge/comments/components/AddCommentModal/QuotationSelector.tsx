@@ -98,12 +98,12 @@ const TitleBox = styled.div`
 
 const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const HelpText = styled.span`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const RemoveQuotationButton = styled(Button)`
@@ -111,7 +111,7 @@ const RemoveQuotationButton = styled(Button)`
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 
   &:hover {
     background-color: transparent;
@@ -149,7 +149,7 @@ const EmptyState = styled.div<{ isMobile: boolean }>`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;
 
@@ -191,7 +191,7 @@ const Quote = styled.div<{ isMobile: boolean }>`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: ${({ isMobile }) =>
@@ -201,11 +201,11 @@ const Quote = styled.div<{ isMobile: boolean }>`
 
 const Memo = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const NoticeText = styled.div`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   text-align: center;
 `;

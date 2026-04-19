@@ -124,7 +124,7 @@ const Title = styled.h2`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
   text-align: center;
 `;
 
@@ -158,14 +158,14 @@ const GuideTitle = styled.h3`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const GuideDescription = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   line-height: 1.5;
 `;
 
@@ -183,7 +183,7 @@ const CheckboxWrapper = styled.div`
 
 const AgreementLabel = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   cursor: pointer;
 `;
@@ -198,12 +198,12 @@ const StartButton = styled(Button)`
   width: 100%;
   padding: 12px 24px;
 
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const IntroButton = styled(Button)`
   width: 100%;
   padding: 12px 24px;
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

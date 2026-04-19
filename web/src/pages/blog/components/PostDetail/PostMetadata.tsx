@@ -31,7 +31,7 @@ const PostMetadata = ({
         <Text
           aria-hidden="true"
           color="textTertiary"
-          font={device === 'mobile' ? 'body3' : 'bodyLarge'}
+          font={device === 'mobile' ? 't3Regular' : 't7Regular'}
         >
           •
         </Text>
@@ -46,7 +46,7 @@ const PostMetadata = ({
             as="time"
             dateTime={publishedAt}
             color="textTertiary"
-            font={device === 'mobile' ? 'body3' : 'bodyLarge'}
+            font={device === 'mobile' ? 't3Regular' : 't7Regular'}
           >
             {formattedDate}
           </PublishedTime>
@@ -56,7 +56,7 @@ const PostMetadata = ({
             <Text
               aria-hidden="true"
               color="textTertiary"
-              font={device === 'mobile' ? 'body3' : 'bodyLarge'}
+              font={device === 'mobile' ? 't3Regular' : 't7Regular'}
             >
               •
             </Text>
@@ -69,7 +69,7 @@ const PostMetadata = ({
               />
               <Text
                 color="textTertiary"
-                font={device === 'mobile' ? 'body3' : 'bodyLarge'}
+                font={device === 'mobile' ? 't3Regular' : 't7Regular'}
               >
                 {readingTime}분
               </Text>
@@ -83,7 +83,7 @@ const PostMetadata = ({
             <Text
               key={tag}
               color="primary"
-              font={device === 'mobile' ? 'body3' : 'bodyLarge'}
+              font={device === 'mobile' ? 't3Regular' : 't7Regular'}
             >
               #{tag}
             </Text>
@@ -103,7 +103,7 @@ const CategoryBadge = styled.span<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.body1};
+    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Regular};
 `;
 
 const MetaWrapper = styled(Flex)`
