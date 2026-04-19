@@ -44,10 +44,10 @@ const FAQ_ITEMS = [
 const NewsletterFAQ = () => {
   const device = useDevice();
   const isMobile = device === 'mobile';
-  const [openQuestionId, setOpenQuestionId] = useState<string>(FAQ_ITEMS[0].id);
+  const [openQuestionId, setOpenQuestionId] = useState<string | null>(null);
 
   const handleToggle = (questionId: string) => {
-    setOpenQuestionId((prev) => (prev === questionId ? '' : questionId));
+    setOpenQuestionId((prev) => (prev === questionId ? null : questionId));
   };
 
   return (
