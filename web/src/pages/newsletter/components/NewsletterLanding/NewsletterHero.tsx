@@ -58,6 +58,11 @@ const NewsletterHero = ({ config, newsletterId }: NewsletterHeroProps) => {
           </HeadlineLine>
         </HeroTitleSection>
 
+        <Flex align="center" gap={12}>
+          <OpenDateNumber>{config.launchDate}</OpenDateNumber>
+          <OpenDateLabel>OPEN</OpenDateLabel>
+        </Flex>
+
         <Description>
           서비스 종료로 아쉬움을 남긴 매일메일을 봄봄에서 계속 만나보세요.
           <br />
@@ -86,11 +91,6 @@ const NewsletterHero = ({ config, newsletterId }: NewsletterHeroProps) => {
             </SubscribeButton>
           )}
         </CtaArea>
-
-        <Flex align="center" gap={12}>
-          <OpenDateNumber>{config.launchDate}</OpenDateNumber>
-          <OpenDateLabel>OPEN</OpenDateLabel>
-        </Flex>
       </Content>
 
       <MaeilMailSubscribeModal
