@@ -1,12 +1,11 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { TRACKS, WEEKLY_ISSUE_COUNTS } from '../../constants/subscribe';
+import { TRACKS } from '../../constants/subscribe';
 import { useSubscribeNewsletterMutation } from '../../hooks/useSubscribeNewsletterMutation';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import { useDevice } from '@/hooks/useDevice';
-import type { WeeklyIssueCount } from '../../types/subscribe';
 import type { Device } from '@/hooks/useDevice';
 import type { Ref } from 'react';
 
@@ -26,12 +25,7 @@ const MaeilMailSubscribeModal = ({
   onSubscribeSuccess,
 }: Props) => {
   const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
-  const [selectedWeeklyIssueCount, setSelectedWeeklyIssueCount] =
-    useState<WeeklyIssueCount | null>(null);
   const [tracksError, setTracksError] = useState<string | null>(null);
-  const [weeklyIssueCountError, setWeeklyIssueCountError] = useState<
-    string | null
-  >(null);
   const device = useDevice();
 
   const { mutate: subscribeNewsletter, isPending } =
@@ -49,28 +43,13 @@ const MaeilMailSubscribeModal = ({
     setTracksError(null);
   };
 
-  const handleWeeklyIssueCountChange = (value: WeeklyIssueCount) => {
-    setSelectedWeeklyIssueCount(value);
-    setWeeklyIssueCountError(null);
-  };
-
   const confirmSubscription = () => {
-    const hasTracksError = selectedTracks.length === 0;
-    const hasWeeklyIssueCountError = selectedWeeklyIssueCount === null;
-
-    if (hasTracksError) {
+    if (selectedTracks.length === 0) {
       setTracksError('분야를 선택해 주세요.');
-    }
-    if (hasWeeklyIssueCountError) {
-      setWeeklyIssueCountError('발행 주기를 선택해 주세요.');
+      return;
     }
 
-    if (hasTracksError || hasWeeklyIssueCountError) return;
-
-    subscribeNewsletter({
-      tracks: selectedTracks,
-      weeklyIssueCount: selectedWeeklyIssueCount!,
-    });
+    subscribeNewsletter({ tracks: selectedTracks });
   };
 
   return (
@@ -83,57 +62,27 @@ const MaeilMailSubscribeModal = ({
       <ModalContent device={device}>
         <Title>사전 구독</Title>
 
-        <Flex direction="column" gap={device === 'mobile' ? 16 : 28}>
-          <Section>
-            <Flex align="center" gap={4}>
-              <SectionLabel>
-                분야<Highlight>*</Highlight>
-              </SectionLabel>
-              <Highlight>(중복 선택 가능)</Highlight>
-            </Flex>
-            <TrackGrid>
-              {TRACKS.map(({ value, label }) => (
-                <Checkbox
-                  key={value}
-                  id={`track-${value}`}
-                  checked={selectedTracks.includes(value)}
-                  onChange={() => toggleTrack(value)}
-                >
-                  {label}
-                </Checkbox>
-              ))}
-            </TrackGrid>
-            <ErrorMessage>{tracksError}</ErrorMessage>
-          </Section>
-
-          <Section>
+        <Section>
+          <Flex align="center" gap={4}>
             <SectionLabel>
-              발행 주기<Highlight>*</Highlight>
+              분야<Highlight>*</Highlight>
             </SectionLabel>
-            <IssueCountGroup role="radiogroup" aria-label="발행 주기 선택">
-              {WEEKLY_ISSUE_COUNTS.map(({ value, label }) => (
-                <IssueCountItem key={value}>
-                  <HiddenRadio
-                    id={`weekly-issue-count-${value}`}
-                    name="weeklyIssueCount"
-                    value={value}
-                    type="radio"
-                    checked={selectedWeeklyIssueCount === value}
-                    onChange={() => handleWeeklyIssueCountChange(value)}
-                  />
-                  <IssueCountLabel
-                    selected={selectedWeeklyIssueCount === value}
-                    htmlFor={`weekly-issue-count-${value}`}
-                    device={device}
-                  >
-                    {label}
-                  </IssueCountLabel>
-                </IssueCountItem>
-              ))}
-            </IssueCountGroup>
-            <ErrorMessage>{weeklyIssueCountError}</ErrorMessage>
-          </Section>
-        </Flex>
+            <Highlight>(중복 선택 가능)</Highlight>
+          </Flex>
+          <TrackGrid>
+            {TRACKS.map(({ value, label }) => (
+              <Checkbox
+                key={value}
+                id={`track-${value}`}
+                checked={selectedTracks.includes(value)}
+                onChange={() => toggleTrack(value)}
+              >
+                {label}
+              </Checkbox>
+            ))}
+          </TrackGrid>
+          <ErrorMessage>{tracksError}</ErrorMessage>
+        </Section>
 
         <ConfirmButton onClick={confirmSubscription} disabled={isPending}>
           {isPending ? '구독 중...' : '구독하기'}
@@ -192,56 +141,6 @@ const ErrorMessage = styled.p`
 
   color: ${({ theme }) => theme.colors.error};
   font: ${({ theme }) => theme.fonts.body3};
-`;
-
-const IssueCountGroup = styled.div`
-  display: flex;
-  gap: 12px;
-`;
-
-const IssueCountItem = styled.div`
-  flex: 1;
-`;
-
-const HiddenRadio = styled.input`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-
-  appearance: none;
-  opacity: 0;
-  pointer-events: none;
-
-  &:focus-visible + label {
-    outline: 2px solid ${({ theme }) => theme.colors.primary};
-    outline-offset: 2px;
-  }
-`;
-
-const IssueCountLabel = styled.label<{ selected: boolean; device: Device }>`
-  width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '4px 8px' : '14px 16px')};
-  border: 1px solid
-    ${({ theme, selected }) =>
-      selected ? theme.colors.primary : theme.colors.stroke};
-  border-radius: 12px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: ${({ theme, selected }) =>
-    selected ? theme.colors.primary : theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
-
-  cursor: pointer;
-  transition:
-    border-color 150ms ease,
-    background-color 150ms ease,
-    color 150ms ease;
 `;
 
 const ConfirmButton = styled.button<{ disabled: boolean }>`

@@ -3,7 +3,6 @@ import { fetcher } from '@bombom/shared/apis';
 export type PostNativeMaeilMailSubscriptionParams = {
   newsletterId: number;
   tracks: string[];
-  weeklyIssueCount: number;
 };
 
 export const postNativeMaeilMailSubscription = async (
