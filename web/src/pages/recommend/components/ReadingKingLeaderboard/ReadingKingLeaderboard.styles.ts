@@ -55,14 +55,14 @@ export const TabToggle = styled.div`
 `;
 
 export const TabButton = styled.button<{ active: boolean }>`
-  padding: 12px;
+  padding: 8px;
   border: none;
   border-radius: 30px;
 
   color: ${({ theme, active }) =>
     active ? theme.colors.textPrimary : theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t4Bold};
-  width: 112px;
+  width: 108px;
 
   background-color: ${({ active }) => (active ? '#fff' : 'transparent')};
 
