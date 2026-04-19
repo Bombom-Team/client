@@ -78,7 +78,7 @@ const NewsletterHero = ({ config, newsletterId }: NewsletterHeroProps) => {
           ) : isLoggedIn ? (
             <>
               <Flex align="center" gap={8}>
-                <AccountDot primaryColor={config.primaryColor} />
+                <AccountDot />
                 <SubText>{userProfile?.email}로 구독됩니다.</SubText>
               </Flex>
               <SubscribeButton onClick={openModal}>
@@ -210,14 +210,14 @@ const SuccessMark = styled.span<{ primaryColor: string }>`
   font-size: 0.75rem;
 `;
 
-const AccountDot = styled.span<{ primaryColor: string }>`
+const AccountDot = styled.span`
   width: 8px;
   height: 8px;
   border-radius: 50%;
 
   flex-shrink: 0;
 
-  background-color: ${({ primaryColor }) => primaryColor};
+  background-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const SubText = styled.span`
