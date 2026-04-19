@@ -141,7 +141,7 @@ const NewsletterName = styled.h3`
   overflow: hidden;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   font-weight: 600;
   white-space: nowrap;
 
@@ -154,7 +154,7 @@ const NewsletterDescription = styled.p`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -169,7 +169,7 @@ const UnsubscribeInfoText = styled.p`
   padding: 6px 10px;
 
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   text-align: center;
 `;
 
@@ -177,7 +177,7 @@ const ActionButton = styled(Button)`
   padding: 6px 10px;
   border-radius: 8px;
 
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 
   &:disabled {
     color: ${({ theme }) => theme.colors.textSecondary};

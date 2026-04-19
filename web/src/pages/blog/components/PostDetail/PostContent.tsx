@@ -25,7 +25,7 @@ const Container = styled.section`
 `;
 
 const Content = styled.div`
-  font: ${({ theme }) => theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.t7Regular};
   line-height: 1.7;
 
   h1,

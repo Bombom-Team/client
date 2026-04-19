@@ -131,11 +131,11 @@ const InfoWrapper = styled.div`
 `;
 
 const AchievementAverage = styled.p`
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const WarningMessage = styled.p`
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const NoticeMessageWrapper = styled.div`
@@ -145,7 +145,7 @@ const NoticeMessageWrapper = styled.div`
 `;
 
 const NoticeMessage = styled.p`
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const TabsWrapper = styled.div<{ device: Device }>`

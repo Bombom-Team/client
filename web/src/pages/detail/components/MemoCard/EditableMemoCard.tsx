@@ -143,7 +143,7 @@ const MemoContentText = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   word-break: break-all;
 `;
@@ -159,7 +159,7 @@ const NoteMemo = styled.textarea`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   resize: none;
   transition: all 0.2s ease-in-out;

@@ -65,7 +65,7 @@ const TextWrapper = styled.div``;
 
 const Text = styled.h2`
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.t13Bold};
 `;
 
 const StoreButtons = styled.div`
@@ -85,7 +85,7 @@ const StoreButton = styled.button`
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 
   &:hover {
     transform: scale(1.05);

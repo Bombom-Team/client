@@ -52,7 +52,11 @@ const ReplyList = ({ challengeId, commentId, replyCount }: ReplyListProps) => {
               </>
             )}
           </Flex>
-          <Text as="p" color="textPrimary" font={isMobile ? 'body2' : 'body1'}>
+          <Text
+            as="p"
+            color="textPrimary"
+            font={isMobile ? 't5Regular' : 't6Regular'}
+          >
             {replyItem.reply}
           </Text>
         </Flex>
@@ -79,17 +83,17 @@ const ReplyListContainer = styled.ul`
 
 const ReplyMetaText = styled.span`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const Dot = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const ReplyStatus = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

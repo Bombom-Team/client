@@ -72,7 +72,7 @@ const RemindButton = styled(Button)`
   width: 100%;
   border-radius: 8px;
 
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const FlipCard = styled.div`
@@ -132,7 +132,7 @@ const GuideImage = styled.img`
 
 const RemindTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const RemindContent = styled.p<{ isMobile: boolean }>`
@@ -143,11 +143,11 @@ const RemindContent = styled.p<{ isMobile: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: left;
 `;
 
 const RemindMotivation = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

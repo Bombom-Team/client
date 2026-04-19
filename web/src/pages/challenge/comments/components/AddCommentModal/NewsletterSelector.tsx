@@ -30,7 +30,7 @@ const NewsletterSelector = ({
         onSelectOption={onArticleSelect}
         placeholder="아티클을 선택하세요"
         width="100%"
-        fontSize={theme.fonts.body1}
+        fontSize={theme.fonts.t6Regular}
       />
       {showError && <ErrorMessage>아티클을 선택해주세요</ErrorMessage>}
     </Container>
@@ -47,10 +47,10 @@ const Container = styled.div`
 
 const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const ErrorMessage = styled.p`
   color: ${({ theme }) => theme.colors.error};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;

@@ -107,7 +107,7 @@ const IconWrapper = styled.div`
 const GreetingTitle = styled.h2`
   background: linear-gradient(107deg, #181818 0%, #f96 100%);
   background-clip: text;
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
   text-align: center;
 
   -webkit-text-fill-color: transparent;
@@ -117,7 +117,7 @@ const GreetingMessage = styled.p<{ isMobile: boolean }>`
   margin: ${({ isMobile }) => (isMobile ? '24px' : '34px')};
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
   font-weight: 400;
   text-align: center;
 `;
@@ -140,12 +140,12 @@ const LoginButton = styled(Button)`
   padding: 12px;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 5%);
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const Terms = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   text-align: center;
 `;
 

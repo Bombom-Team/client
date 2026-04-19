@@ -9,13 +9,13 @@ const UnregisteredState = () => {
   return (
     <Flex direction="column" gap={device === 'mobile' ? 12 : 16} align="center">
       <Text
-        font={device === 'mobile' ? 'heading4' : 'heading3'}
+        font={device === 'mobile' ? 't10Bold' : 't11Bold'}
         color="textPrimary"
       >
         대기열 미등록
       </Text>
       <Description
-        font={device === 'mobile' ? 'body1' : 'bodyLarge'}
+        font={device === 'mobile' ? 't6Regular' : 't7Regular'}
         color="textPrimary"
       >
         선착순 경품 받기를 클릭하여 대기열에 등록해주세요.
@@ -27,7 +27,7 @@ const UnregisteredState = () => {
         gap={device === 'mobile' ? 8 : 4}
       >
         <Caution
-          font={device === 'mobile' ? 'body2' : 'body1'}
+          font={device === 'mobile' ? 't5Regular' : 't6Regular'}
           color="textSecondary"
         >
           ※ 대기 중에 발생하는 인증 요구를 시간 내에 완료하지 못한 경우 인증이

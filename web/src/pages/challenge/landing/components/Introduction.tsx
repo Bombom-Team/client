@@ -93,7 +93,7 @@ const Introduction = ({ startDate, endDate }: IntroductionProps) => {
               color={theme.colors.textTertiary}
             />
             <Text
-              font={device === 'mobile' ? 'body1' : 'bodyLarge'}
+              font={device === 'mobile' ? 't6Regular' : 't7Regular'}
               color="textTertiary"
             >
               진행 기간
@@ -173,7 +173,7 @@ const QuoteItem = styled(Flex)<{ isVisible: boolean }>`
 const QuoteText = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading3};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t11Bold};
   font-weight: 400;
   text-align: center;
 `;
@@ -199,7 +199,7 @@ const ClosingQuoteIcon = styled(QuoteIcon)<{ device: Device }>`
 const IntroText = styled(Text)<{ device: Device; isVisible: boolean }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t10Bold};
   font-weight: 400;
   text-align: center;
 
@@ -239,7 +239,7 @@ const DescriptionWrapper = styled(Flex)`
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading3 : theme.fonts.heading2};
+    device === 'mobile' ? theme.fonts.t11Bold : theme.fonts.t13Bold};
   text-align: center;
 `;
 
@@ -255,7 +255,7 @@ const Strong = styled.span`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t10Bold};
   font-weight: 400;
   line-height: 1.8;
   text-align: center;
@@ -303,7 +303,7 @@ const OverviewItem = styled.p<{ device: Device }>`
 const OverViewText = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading5};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Bold};
   font-weight: 400;
 `;
 
@@ -326,12 +326,12 @@ const PeriodDate = styled.span<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t10Bold};
   font-weight: 400;
 `;
 
 const ComingSoonText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   font-weight: 400;
 `;

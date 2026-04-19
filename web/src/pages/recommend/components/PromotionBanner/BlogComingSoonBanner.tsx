@@ -73,5 +73,5 @@ const LogoImage = styled.img<{ device: Device }>`
 
 const Title = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;

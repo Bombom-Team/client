@@ -95,7 +95,7 @@ const FooterWrapper = styled.div<{ device: Device }>`
 
 const LogoText = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   font-weight: 600;
 `;
 
@@ -103,7 +103,7 @@ const Description = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   line-height: 1.75;
 `;
 
@@ -129,6 +129,6 @@ const SocialLink = styled.a`
 
 const Copyright = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   letter-spacing: 0.0625rem;
 `;

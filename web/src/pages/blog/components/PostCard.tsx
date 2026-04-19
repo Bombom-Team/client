@@ -34,7 +34,7 @@ const PostCard = ({ post }: PostCardProps) => {
       <ContentWrapper>
         <Text
           color="textTertiary"
-          font={device === 'mobile' ? 'body3' : 'body1'}
+          font={device === 'mobile' ? 't3Regular' : 't6Regular'}
         >
           {post.categoryName}
         </Text>
@@ -50,7 +50,7 @@ const PostCard = ({ post }: PostCardProps) => {
           />
           <Text
             color="textTertiary"
-            font={device === 'mobile' ? 'body3' : 'body1'}
+            font={device === 'mobile' ? 't3Regular' : 't6Regular'}
           >
             <time dateTime={post.publishedAt}>
               {formatDate(new Date(post.publishedAt))}
@@ -118,14 +118,14 @@ const NoThumbnailPlaceholder = styled.div`
 
   background-color: ${({ theme }) => theme.colors.dividers};
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   font-weight: 600;
 `;
 
 const Title = styled.h3<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.heading5 : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.t7Bold : theme.fonts.t10Bold};
   line-height: 1.4;
 `;
 

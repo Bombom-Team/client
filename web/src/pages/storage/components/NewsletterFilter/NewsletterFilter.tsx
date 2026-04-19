@@ -127,7 +127,7 @@ export const IconWrapper = styled.div`
 `;
 
 export const Title = styled.h3`
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 export const NewsLetterImage = styled.img`

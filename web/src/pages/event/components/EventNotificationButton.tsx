@@ -97,7 +97,7 @@ const Container = styled.button<{
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.t7Regular};
   font-weight: 600;
 
   &:disabled {

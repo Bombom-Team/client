@@ -146,7 +146,7 @@ export const Title = styled.h2<{ isMobile: boolean }>`
   display: -webkit-box;
 
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading4};
+    isMobile ? theme.fonts.t6Regular : theme.fonts.t10Bold};
   font-weight: 600;
 
   -webkit-box-orient: vertical;
@@ -159,7 +159,7 @@ export const Description = styled.p`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -174,7 +174,7 @@ export const MetaInfoRow = styled.div<{ isMobile: boolean }>`
 
 export const MetaInfoText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const ReadTimeBox = styled.div`

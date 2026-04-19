@@ -34,7 +34,7 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
         <Text
           as="p"
           color="textTertiary"
-          font={device === 'mobile' ? 'body1' : 'bodyLarge'}
+          font={device === 'mobile' ? 't6Regular' : 't7Regular'}
         >
           이 주의 콘텐츠
         </Text>
@@ -46,12 +46,12 @@ const FeaturedPost = ({ post }: FeaturedPostProps) => {
         </DescriptionBox>
         {device === 'mobile' ? (
           <Flex align="center">
-            <Text color="textSecondary" font="body1">
+            <Text color="textSecondary" font="t6Regular">
               {post.categoryName}
             </Text>
           </Flex>
         ) : (
-          <Text color="textTertiary" font="body1">
+          <Text color="textTertiary" font="t6Regular">
             {post.categoryName}
           </Text>
         )}
@@ -114,7 +114,7 @@ const NoThumbnailPlaceholder = styled.div`
 
   background-color: ${({ theme }) => theme.colors.dividers};
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   font-weight: 600;
 `;
 
@@ -134,14 +134,14 @@ export const DescriptionBox = styled.div`
 
 const Title = styled.h2<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading1};
+  font: ${({ theme }) => theme.fonts.t15Bold};
   line-height: ${({ device }) => (device === 'mobile' ? '1.18' : '1.4')};
 `;
 
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.bodyLarge : theme.fonts.heading4};
+    device === 'mobile' ? theme.fonts.t7Regular : theme.fonts.t10Bold};
   font-weight: 400;
   line-height: ${({ device }) => (device === 'mobile' ? '1.7' : 'inherit')};
 `;

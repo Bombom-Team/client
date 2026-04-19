@@ -259,19 +259,19 @@ const FieldGroup = styled.div`
 
 const Label = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ValueText = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   user-select: text;
 `;
 
 const DisabledText = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   user-select: text;
 `;
@@ -319,7 +319,7 @@ const RadioButtonLabel = styled.label<{
     selected ? theme.colors.primary : theme.colors.white};
   color: ${({ selected, theme }) =>
     selected ? theme.colors.white : theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 
   cursor: pointer;
@@ -340,7 +340,7 @@ const WithdrawButton = styled.button`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 
   &:hover {
     text-decoration: underline;

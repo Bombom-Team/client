@@ -31,5 +31,5 @@ const Container = styled.button<{
     selected ? theme.colors.black : theme.colors.dividers};
   color: ${({ theme, selected }) =>
     selected ? theme.colors.white : theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;

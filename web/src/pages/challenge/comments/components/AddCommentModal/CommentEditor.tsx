@@ -62,7 +62,7 @@ const Container = styled.div`
 
 const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const Comment = styled.textarea<{ device: Device; isError: boolean }>`
@@ -75,7 +75,7 @@ const Comment = styled.textarea<{ device: Device; isError: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   resize: vertical;
 
@@ -100,7 +100,7 @@ const MessageWrapper = styled.div`
 const MinLengthMessage = styled.p<{ isError: boolean }>`
   color: ${({ theme, isError }) =>
     isError ? theme.colors.error : theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const CharacterCount = styled.p<{ isError: boolean }>`
@@ -108,5 +108,5 @@ const CharacterCount = styled.p<{ isError: boolean }>`
 
   color: ${({ theme, isError }) =>
     isError ? theme.colors.error : theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
