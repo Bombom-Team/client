@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { queries } from '@/apis/queries';
 import { postNativeMaeilMailSubscription } from '@/apis/subscriptions/subscriptions.api';
 import { toast } from '@/components/Toast/utils/toastActions';
 import type { SubscribeTrack } from '../types/subscribe';
@@ -14,12 +15,17 @@ interface SubscribeNewsletterParams {
 export const useSubscribeNewsletterMutation = ({
   onSubscribeSuccess,
 }: UseSubscribeNewsletterMutationParams) => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({ tracks }: SubscribeNewsletterParams) =>
       postNativeMaeilMailSubscription({
         tracks,
       }),
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queries.nativeMaeilMailSubscription().queryKey,
+      });
       toast.success('사전 구독을 완료했어요!');
       onSubscribeSuccess();
     },
