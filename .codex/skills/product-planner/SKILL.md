@@ -19,7 +19,7 @@ description: 아이디어를 PRD + 이슈 분해로 정리하는 오케스트레
 
 ### 1회차 메시지 템플릿
 ```text
-먼저 `.codex/agents/product-planner.md`와 `.claude/skills/product-planner/context.md`를 읽고 지침을 엄수하세요.
+먼저 `.codex/agents/product-planner.md`와 `docs/ai-context/product-context.md`를 읽고 지침을 엄수하세요.
 
 아이디어: <사용자 입력>
 
@@ -29,7 +29,7 @@ description: 아이디어를 PRD + 이슈 분해로 정리하는 오케스트레
 
 ### 2회차 메시지 템플릿
 ```text
-먼저 `.codex/agents/product-planner.md`와 `.claude/skills/product-planner/context.md`를 읽고 지침을 엄수하세요.
+먼저 `.codex/agents/product-planner.md`와 `docs/ai-context/product-context.md`를 읽고 지침을 엄수하세요.
 
 아이디어: <원본 아이디어>
 사용자 답변:
@@ -52,4 +52,3 @@ description: 아이디어를 PRD + 이슈 분해로 정리하는 오케스트레
 
 - PRD는 raw 마크다운 보존을 위해 fenced code block으로 감싸 출력한다.
 - 에이전트 본문을 요약/재작성하지 않는다(출처 마커 유지).
-

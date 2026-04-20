@@ -153,6 +153,17 @@ Codex MUST follow the local mirror skills below:
 - `.codex/skills/update-context/SKILL.md`
 - `.codex/skills/pr-body/SKILL.md`
 
+Shared domain context documents (single source of truth):
+
+- `docs/ai-context/product-context.md`
+- `docs/ai-context/design-guide.md`
+
+Rules:
+
+- Claude/Codex skills MUST reference these `docs/ai-context/*` files.
+- Do NOT create duplicated copies of the same domain context under
+  tool-specific directories.
+
 Trigger mapping:
 
 - "기획/PRD/아이디어 정리" 요청 → `product-planner`
@@ -181,6 +192,21 @@ Rules:
 
 - If either command fails, task completion is blocked.
 - The agent MUST report the failure with actionable error context.
+
+---
+
+## 12. Skill File Sync Rule (Blocking)
+
+`.claude/skills/` and `.codex/skills/` are platform-specific mirrors of
+the same skill set. When modifying either side, the AI MUST:
+
+1. Identify the counterpart file in the other directory
+   (e.g., `.claude/skills/product-planner/SKILL.md` ↔ `.codex/skills/product-planner/SKILL.md`)
+2. Apply the equivalent change to the counterpart file
+3. Treat the task as incomplete until both sides are in sync
+
+Shared domain knowledge lives in `docs/ai-context/` and is referenced
+by both sides — do NOT duplicate it into `.claude/` or `.codex/`.
 
 ---
 

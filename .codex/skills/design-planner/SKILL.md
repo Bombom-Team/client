@@ -19,7 +19,7 @@ description: 봄봄 디자인 가이드 기반 화면/컴포넌트 설계 오케
 
 ### 1회차 메시지 템플릿
 ```text
-먼저 `.codex/agents/design-planner.md`와 `.claude/skills/design-planner/bombom-design-guide.md`를 읽고 지침을 엄수하세요.
+먼저 `.codex/agents/design-planner.md`와 `docs/ai-context/design-guide.md`를 읽고 지침을 엄수하세요.
 
 아이디어: <사용자 입력 또는 PRD 요약>
 
@@ -29,7 +29,7 @@ description: 봄봄 디자인 가이드 기반 화면/컴포넌트 설계 오케
 
 ### 2회차 메시지 템플릿
 ```text
-먼저 `.codex/agents/design-planner.md`와 `.claude/skills/design-planner/bombom-design-guide.md`를 읽고 지침을 엄수하세요.
+먼저 `.codex/agents/design-planner.md`와 `docs/ai-context/design-guide.md`를 읽고 지침을 엄수하세요.
 
 아이디어: <원본 입력>
 사용자 답변:
@@ -52,4 +52,3 @@ description: 봄봄 디자인 가이드 기반 화면/컴포넌트 설계 오케
 
 - 에이전트가 작성한 본문을 그대로 전달한다.
 - 불필요한 재요약/재서식으로 출처 마커를 제거하지 않는다.
-
