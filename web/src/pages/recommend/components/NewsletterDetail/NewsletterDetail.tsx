@@ -18,8 +18,6 @@ import type { NewsletterTab } from './NewsletterDetail.types';
 import HomeIcon from '#/assets/svg/home.svg';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
-const NEWSLETTERS_WITH_LANDING_PAGE = [57];
-
 interface NewsletterDetailProps {
   newsletterId: number;
 }
@@ -63,7 +61,7 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
       label: newsletterDetail.name,
     });
 
-    if (NEWSLETTERS_WITH_LANDING_PAGE.includes(newsletterId)) {
+    if (newsletterDetail.source === 'MAEIL_MAIL') {
       navigate({
         to: '/newsletter/$newsletterId/landing',
         params: { newsletterId: String(newsletterId) },

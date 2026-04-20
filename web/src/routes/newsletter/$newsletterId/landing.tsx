@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { createFileRoute, redirect, useParams } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { getNewsletterDetail } from '@/apis/newsletters/newsletters.api';
 import { useDevice } from '@/hooks/useDevice';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import HowSection from '@/pages/newsletter/components/NewsletterLanding/HowSection';
@@ -8,10 +9,25 @@ import NewsletterHero from '@/pages/newsletter/components/NewsletterLanding/News
 import { NEWSLETTER_LANDING_CONFIG } from '@/pages/newsletter/constants/subscribe';
 
 export const Route = createFileRoute('/newsletter/$newsletterId/landing')({
-  loader: ({ params }) => {
-    const config = NEWSLETTER_LANDING_CONFIG[Number(params.newsletterId)];
-    if (!config) throw redirect({ to: '/' });
-    return { config };
+  loader: async ({ params }) => {
+    const newsletterId = Number(params.newsletterId);
+
+    if (Number.isNaN(newsletterId)) {
+      throw redirect({ to: '/' });
+    }
+
+    try {
+      const newsletterDetail = await getNewsletterDetail({ id: newsletterId });
+      const config = NEWSLETTER_LANDING_CONFIG[newsletterDetail.source];
+
+      if (!config) {
+        throw redirect({ to: '/' });
+      }
+
+      return { config };
+    } catch {
+      throw redirect({ to: '/' });
+    }
   },
   head: ({ loaderData }) => {
     const name = loaderData?.config?.name;
@@ -25,9 +41,6 @@ export const Route = createFileRoute('/newsletter/$newsletterId/landing')({
 });
 
 function NewsletterLandingPage() {
-  const { newsletterId } = useParams({
-    from: '/newsletter/$newsletterId/landing',
-  });
   const { config } = Route.useLoaderData();
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -36,7 +49,7 @@ function NewsletterLandingPage() {
     <>
       <LandingHeader />
       <Container>
-        <NewsletterHero config={config} newsletterId={Number(newsletterId)} />
+        <NewsletterHero config={config} />
         <InformationSection isMobile={isMobile}>
           <HowSection />
           <NewsletterFAQ />

@@ -1,9 +1,8 @@
 import { fetcher } from '@bombom/shared/apis';
+import type { components } from '@/types/openapi';
 
-export type PostNativeMaeilMailSubscriptionParams = {
-  newsletterId: number;
-  tracks: string[];
-};
+export type PostNativeMaeilMailSubscriptionParams =
+  components['schemas']['MaeilMailSubscribeRequest'];
 
 export const postNativeMaeilMailSubscription = async (
   params: PostNativeMaeilMailSubscriptionParams,

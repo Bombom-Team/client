@@ -12,10 +12,9 @@ import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
 
 interface NewsletterHeroProps {
   config: NewsletterLandingConfig;
-  newsletterId: number;
 }
 
-const NewsletterHero = ({ config, newsletterId }: NewsletterHeroProps) => {
+const NewsletterHero = ({ config }: NewsletterHeroProps) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { isLoggedIn, userProfile } = useAuth();
   const device = useDevice();
@@ -96,7 +95,6 @@ const NewsletterHero = ({ config, newsletterId }: NewsletterHeroProps) => {
       <MaeilMailSubscribeModal
         modalRef={modalRef}
         isOpen={isOpen}
-        newsletterId={newsletterId}
         closeModal={closeModal}
         onSubscribeSuccess={completeSubscription}
       />

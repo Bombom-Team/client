@@ -7,13 +7,13 @@ import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
+import type { SubscribeTrack } from '../../types/subscribe';
 import type { Device } from '@/hooks/useDevice';
 import type { Ref } from 'react';
 
 interface Props {
   modalRef: Ref<HTMLDivElement | null>;
   isOpen: boolean;
-  newsletterId: number;
   closeModal: () => void;
   onSubscribeSuccess: () => void;
 }
@@ -21,21 +21,19 @@ interface Props {
 const MaeilMailSubscribeModal = ({
   modalRef,
   isOpen,
-  newsletterId,
   closeModal,
   onSubscribeSuccess,
 }: Props) => {
-  const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
+  const [selectedTracks, setSelectedTracks] = useState<SubscribeTrack[]>([]);
   const [tracksError, setTracksError] = useState<string | null>(null);
   const device = useDevice();
 
   const { mutate: subscribeNewsletter, isPending } =
     useSubscribeNewsletterMutation({
-      newsletterId,
       onSubscribeSuccess,
     });
 
-  const toggleTrack = (value: string) => {
+  const toggleTrack = (value: SubscribeTrack) => {
     setSelectedTracks((prev) =>
       prev.includes(value)
         ? prev.filter((track) => track !== value)

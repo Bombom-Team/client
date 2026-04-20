@@ -1,24 +1,22 @@
 import { useMutation } from '@tanstack/react-query';
 import { postNativeMaeilMailSubscription } from '@/apis/subscriptions/subscriptions.api';
 import { toast } from '@/components/Toast/utils/toastActions';
+import type { SubscribeTrack } from '../types/subscribe';
 
 interface UseSubscribeNewsletterMutationParams {
-  newsletterId: number;
   onSubscribeSuccess: () => void;
 }
 
 interface SubscribeNewsletterParams {
-  tracks: string[];
+  tracks: SubscribeTrack[];
 }
 
 export const useSubscribeNewsletterMutation = ({
-  newsletterId,
   onSubscribeSuccess,
 }: UseSubscribeNewsletterMutationParams) => {
   return useMutation({
     mutationFn: ({ tracks }: SubscribeNewsletterParams) =>
       postNativeMaeilMailSubscription({
-        newsletterId,
         tracks,
       }),
     onSuccess: () => {

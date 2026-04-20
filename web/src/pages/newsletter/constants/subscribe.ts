@@ -1,19 +1,27 @@
-import type { NewsletterLandingConfig } from '../types/subscribe';
+import type {
+  NewsletterLandingConfig,
+  SubscribeTrack,
+} from '../types/subscribe';
 
-export const NEWSLETTER_ID = 57;
+export const RESOURCE = 'MAEIL_MAIL';
 
 export const NEWSLETTER_LANDING_CONFIG: Record<
-  number,
+  string,
   NewsletterLandingConfig
 > = {
-  [NEWSLETTER_ID]: {
+  [RESOURCE]: {
     name: '매일메일',
     primaryColor: '#17C881',
     launchDate: '2026.04.30',
   },
 };
 
-export const TRACKS = [
+type TrackOption = {
+  value: SubscribeTrack;
+  label: string;
+};
+
+export const TRACKS: TrackOption[] = [
   { value: 'FE', label: '프론트엔드' },
   { value: 'BE', label: '백엔드' },
-] as const;
+];
