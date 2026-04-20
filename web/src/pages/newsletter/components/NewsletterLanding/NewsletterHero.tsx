@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import MaeilMailSubscribeModal from './MaeilMailSubscribeModal';
-import { MAEIL_MAIL_LANDING_CONFIG } from '../../constants/subscribe';
+import { MAEIL_MAIL_LANDING_CONFIG, TRACKS } from '../../constants/subscribe';
+import { queries } from '@/apis/queries';
 import Flex from '@/components/Flex';
 import useModal from '@/components/Modal/useModal';
 import Text from '@/components/Text';
@@ -11,10 +12,18 @@ import logo from '#/assets/avif/logo.avif';
 import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
 
 const NewsletterHero = () => {
-  const [isSubscribed, setIsSubscribed] = useState(false);
   const { isLoggedIn, userProfile } = useAuth();
   const device = useDevice();
   const { modalRef, isOpen, openModal, closeModal } = useModal();
+
+  const { data: subscription } = useQuery({
+    ...queries.nativeMaeilMailSubscription(),
+    enabled: isLoggedIn,
+  });
+
+  const subscribedTrackLabels = TRACKS.filter((track) =>
+    subscription?.tracks.includes(track.value),
+  ).map((track) => track.label);
 
   const redirectLandingPage = () => {
     const redirect = encodeURIComponent(window.location.pathname);
@@ -23,7 +32,6 @@ const NewsletterHero = () => {
 
   const completeSubscription = () => {
     closeModal();
-    setIsSubscribed(true);
   };
 
   return (
@@ -69,15 +77,21 @@ const NewsletterHero = () => {
         </Description>
 
         <CtaArea>
-          {isSubscribed ? (
-            <Flex align="center" gap={10}>
-              <SuccessMark
-                primaryColor={MAEIL_MAIL_LANDING_CONFIG.primaryColor}
-              >
-                ✓
-              </SuccessMark>
-              사전 구독 완료! 오픈 시 봄봄에서 바로 읽을 수 있어요.
-            </Flex>
+          {subscription?.subscribed ? (
+            <>
+              <Flex direction="column" align="center" gap={8}>
+                <Flex align="center" gap={8}>
+                  <SuccessMark>✓</SuccessMark>
+                  <Text color="textSecondary" font="t6Regular">
+                    <Highlight>{subscribedTrackLabels.join(' · ')}</Highlight>{' '}
+                    사전 구독 완료!
+                  </Text>
+                </Flex>
+              </Flex>
+              <SubscribeButton onClick={openModal} disabled>
+                구독 완료
+              </SubscribeButton>
+            </>
           ) : isLoggedIn ? (
             <>
               <Flex align="center" gap={8}>
@@ -178,7 +192,6 @@ const Description = styled.p`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t6Regular};
-  letter-spacing: -0.01em;
   text-align: center;
 `;
 
@@ -195,9 +208,9 @@ const CtaArea = styled.div`
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
-const SuccessMark = styled.span<{ primaryColor: string }>`
-  width: 24px;
-  height: 24px;
+const SuccessMark = styled.span`
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
 
   display: flex;
@@ -205,9 +218,14 @@ const SuccessMark = styled.span<{ primaryColor: string }>`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ primaryColor }) => primaryColor};
+  background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t3Regular};
+`;
+
+const Highlight = styled.span`
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: 700;
 `;
 
 const AccountDot = styled.span`
@@ -249,6 +267,11 @@ const SubscribeButton = styled.button`
 
   &:active {
     background-color: oklch(12% 0.02 55deg);
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.icons};
+    cursor: not-allowed;
   }
 `;
 
