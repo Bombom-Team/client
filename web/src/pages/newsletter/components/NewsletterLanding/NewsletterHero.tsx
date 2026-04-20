@@ -82,10 +82,10 @@ const NewsletterHero = () => {
               <Flex direction="column" align="center" gap={8}>
                 <Flex align="center" gap={8}>
                   <SuccessMark>✓</SuccessMark>
-                  <Text color="textSecondary" font="t6Regular">
+                  <SubText>
                     <Highlight>{subscribedTrackLabels.join(' · ')}</Highlight>{' '}
                     사전 구독 완료!
-                  </Text>
+                  </SubText>
                 </Flex>
               </Flex>
               <SubscribeButton onClick={openModal} disabled>
@@ -96,7 +96,9 @@ const NewsletterHero = () => {
             <>
               <Flex align="center" gap={8}>
                 <AccountDot />
-                <SubText>{userProfile?.email}로 구독됩니다.</SubText>
+                <SubText>
+                  <Strong>{userProfile?.email}</Strong> 로 구독해요.
+                </SubText>
               </Flex>
               <SubscribeButton onClick={openModal}>
                 사전 구독하기
@@ -228,6 +230,10 @@ const Highlight = styled.span`
   font-weight: 700;
 `;
 
+const Strong = styled.span`
+  font-weight: 500;
+`;
+
 const AccountDot = styled.span`
   width: 8px;
   height: 8px;
@@ -238,12 +244,11 @@ const AccountDot = styled.span`
   background-color: ${({ theme }) => theme.colors.primary};
 `;
 
-const SubText = styled.span`
+const SubText = styled(Text)`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: center;
 `;
-
 const SubscribeButton = styled.button`
   width: 100%;
   height: 52px;
