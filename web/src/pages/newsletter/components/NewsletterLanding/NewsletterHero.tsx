@@ -1,20 +1,16 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import MaeilMailSubscribeModal from './MaeilMailSubscribeModal';
+import { MAEIL_MAIL_LANDING_CONFIG } from '../../constants/subscribe';
 import Flex from '@/components/Flex';
 import useModal from '@/components/Modal/useModal';
 import Text from '@/components/Text';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import type { NewsletterLandingConfig } from '../../types/subscribe';
 import logo from '#/assets/avif/logo.avif';
 import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
 
-interface NewsletterHeroProps {
-  config: NewsletterLandingConfig;
-}
-
-const NewsletterHero = ({ config }: NewsletterHeroProps) => {
+const NewsletterHero = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { isLoggedIn, userProfile } = useAuth();
   const device = useDevice();
@@ -49,7 +45,9 @@ const NewsletterHero = ({ config }: NewsletterHeroProps) => {
         <HeroTitleSection>
           <HeadlineLine device={device}>
             이제{' '}
-            <BrandGreen primaryColor={config.primaryColor}>매일메일</BrandGreen>
+            <BrandGreen primaryColor={MAEIL_MAIL_LANDING_CONFIG.primaryColor}>
+              매일메일
+            </BrandGreen>
             도
           </HeadlineLine>
           <HeadlineLine device={device}>
@@ -58,7 +56,9 @@ const NewsletterHero = ({ config }: NewsletterHeroProps) => {
         </HeroTitleSection>
 
         <Flex align="center" gap={12}>
-          <OpenDateNumber>{config.launchDate}</OpenDateNumber>
+          <OpenDateNumber>
+            {MAEIL_MAIL_LANDING_CONFIG.launchDate}
+          </OpenDateNumber>
           <OpenDateLabel>OPEN</OpenDateLabel>
         </Flex>
 
@@ -71,7 +71,11 @@ const NewsletterHero = ({ config }: NewsletterHeroProps) => {
         <CtaArea>
           {isSubscribed ? (
             <Flex align="center" gap={10}>
-              <SuccessMark primaryColor={config.primaryColor}>✓</SuccessMark>
+              <SuccessMark
+                primaryColor={MAEIL_MAIL_LANDING_CONFIG.primaryColor}
+              >
+                ✓
+              </SuccessMark>
               사전 구독 완료! 오픈 시 봄봄에서 바로 읽을 수 있어요.
             </Flex>
           ) : isLoggedIn ? (

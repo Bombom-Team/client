@@ -63,8 +63,7 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
 
     if (newsletterDetail.source === 'MAEIL_MAIL') {
       navigate({
-        to: '/newsletter/$newsletterId/landing',
-        params: { newsletterId: String(newsletterId) },
+        to: '/maeil-mail/landing',
       });
       return;
     }

@@ -3,17 +3,10 @@ import type {
   SubscribeTrack,
 } from '../types/subscribe';
 
-export const RESOURCE = 'MAEIL_MAIL';
-
-export const NEWSLETTER_LANDING_CONFIG: Record<
-  string,
-  NewsletterLandingConfig
-> = {
-  [RESOURCE]: {
-    name: '매일메일',
-    primaryColor: '#17C881',
-    launchDate: '2026.04.30',
-  },
+export const MAEIL_MAIL_LANDING_CONFIG: NewsletterLandingConfig = {
+  name: '매일메일',
+  primaryColor: '#17C881',
+  launchDate: '2026.04.30',
 };
 
 type TrackOption = {
