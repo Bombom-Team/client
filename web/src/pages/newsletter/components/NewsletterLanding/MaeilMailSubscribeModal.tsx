@@ -59,7 +59,9 @@ const MaeilMailSubscribeModal = ({
       position={device === 'mobile' ? 'bottom' : 'center'}
     >
       <ModalContent device={device}>
-        <Title>사전 구독</Title>
+        <TitleGroup>
+          <Title>사전 구독</Title>
+        </TitleGroup>
 
         <Section>
           <Flex align="center" gap={4}>
@@ -87,10 +89,12 @@ const MaeilMailSubscribeModal = ({
           </TrackGrid>
           <ErrorMessage>{tracksError}</ErrorMessage>
         </Section>
-
-        <ConfirmButton onClick={confirmSubscription} disabled={isPending}>
-          {isPending ? '구독 중...' : '구독하기'}
-        </ConfirmButton>
+        <Flex direction="column" align="flex-start" gap={8}>
+          <WarnText>* 구독한 매일메일은 봄봄에서만 읽을 수 있어요.</WarnText>
+          <ConfirmButton onClick={confirmSubscription} disabled={isPending}>
+            {isPending ? '구독 중...' : '구독하기'}
+          </ConfirmButton>
+        </Flex>
       </ModalContent>
     </Modal>
   );
@@ -106,9 +110,22 @@ const ModalContent = styled.div<{ device: Device }>`
   flex-direction: column;
 `;
 
+const TitleGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t10Bold};
+  text-align: center;
+`;
+
+const WarnText = styled.p`
+  color: ${({ theme }) => theme.colors.primary};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;
 

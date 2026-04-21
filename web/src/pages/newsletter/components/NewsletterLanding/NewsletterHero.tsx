@@ -12,7 +12,7 @@ import logo from '#/assets/avif/logo.avif';
 import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
 
 const NewsletterHero = () => {
-  const { isLoggedIn, userProfile } = useAuth();
+  const { isLoggedIn } = useAuth();
   const device = useDevice();
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
@@ -97,12 +97,9 @@ const NewsletterHero = () => {
             </>
           ) : isLoggedIn ? (
             <>
-              <Flex align="center" gap={8}>
-                <AccountDot />
-                <SubText>
-                  <Strong>{userProfile?.email}</Strong> 로 구독해요.
-                </SubText>
-              </Flex>
+              <WarnText color="primary" font="t5Regular">
+                * 봄봄에서만 읽을 수 있는 뉴스레터예요.
+              </WarnText>
               <SubscribeButton onClick={openModal}>
                 사전 구독하기
               </SubscribeButton>
@@ -233,18 +230,8 @@ const Highlight = styled.span`
   font-weight: 700;
 `;
 
-const Strong = styled.span`
-  font-weight: 500;
-`;
-
-const AccountDot = styled.span`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-
-  flex-shrink: 0;
-
-  background-color: ${({ theme }) => theme.colors.primary};
+const WarnText = styled(Text)`
+  text-align: center;
 `;
 
 const SubText = styled(Text)`
