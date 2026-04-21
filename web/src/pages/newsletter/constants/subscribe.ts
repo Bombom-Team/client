@@ -6,7 +6,7 @@ import type {
 export const MAEIL_MAIL_LANDING_CONFIG: NewsletterLandingConfig = {
   name: '매일메일',
   primaryColor: '#17C881',
-  launchDate: '2026.04.30',
+  launchDate: '2026.05.01',
 };
 
 type TrackOption = {
