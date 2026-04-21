@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import DetailTab from './DetailTab';
 import { openSubscribeLink } from './NewsletterDetail.utils';
 import NewsletterTabs from './NewsletterTabs';
@@ -24,6 +25,7 @@ interface NewsletterDetailProps {
 const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
   const deviceType = useDevice();
   const { userProfile, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useSearchParamState<NewsletterTab>('tab', {
     defaultValue: 'detail',
   });
@@ -58,6 +60,14 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
       action: '구독하기 버튼 클릭',
       label: newsletterDetail.name,
     });
+
+    if (newsletterDetail.source === 'MAEIL_MAIL') {
+      navigate({
+        to: '/maeil-mail/landing',
+      });
+      return;
+    }
+
     openSubscribeLink(
       newsletterDetail.subscribeUrl,
       newsletterDetail.name,

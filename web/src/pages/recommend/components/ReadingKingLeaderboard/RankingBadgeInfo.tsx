@@ -23,13 +23,13 @@ const RankingBadgeInfo = ({ badges }: UserBadgeInfoProps) => {
   const [rankingTooltipOpened, setRankingTooltipOpened] = useState(false);
   const rankingBadgeRef = useRef<HTMLDivElement>(null);
 
-  const rankingBadgeSrc = badges?.ranking
-    ? BADGE_RANKING_IMAGE_MAP[badges.ranking.grade]
+  const rankingBadgeSrc = badges?.monthlyRanking
+    ? BADGE_RANKING_IMAGE_MAP[badges.monthlyRanking.grade]
     : null;
 
-  const rankingTooltipText = badges?.ranking
-    ? `${badges.ranking.month}월 독서왕 ${
-        BADGE_RANKING_LABEL_MAP[badges.ranking.grade]
+  const rankingTooltipText = badges?.monthlyRanking
+    ? `${badges.monthlyRanking.month}월 독서왕 ${
+        BADGE_RANKING_LABEL_MAP[badges.monthlyRanking.grade]
       }`
     : '';
 
@@ -38,7 +38,7 @@ const RankingBadgeInfo = ({ badges }: UserBadgeInfoProps) => {
 
   return (
     <>
-      {rankingBadgeSrc && badges?.ranking && (
+      {rankingBadgeSrc && badges?.monthlyRanking && (
         <BadgeItem
           tabIndex={0}
           ref={rankingBadgeRef}
@@ -49,7 +49,7 @@ const RankingBadgeInfo = ({ badges }: UserBadgeInfoProps) => {
         >
           <Badge
             src={rankingBadgeSrc}
-            alt={`${badges.ranking.year}년 ${badges.ranking.month}월 랭킹 ${badges.ranking.grade}`}
+            alt={`${badges.monthlyRanking.year}년 ${badges.monthlyRanking.month}월 랭킹 ${badges.monthlyRanking.grade}`}
             loading="lazy"
           />
           <Tooltip
