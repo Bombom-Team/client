@@ -15,10 +15,8 @@ export const postNativeMaeilMailSubscription = async (
 
 export type NativeMaeilMailSubscriptionTrack =
   PostNativeMaeilMailSubscriptionParams['tracks'][number];
-export type GetNativeMaeilMailSubscriptionResponse = {
-  subscribed: boolean;
-  tracks: NativeMaeilMailSubscriptionTrack[];
-};
+export type GetNativeMaeilMailSubscriptionResponse =
+  components['schemas']['MaeilMailSubscriptionResponse'];
 
 export const getNativeMaeilMailSubscription = async () => {
   return await fetcher.get<GetNativeMaeilMailSubscriptionResponse>({

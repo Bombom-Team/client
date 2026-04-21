@@ -21,8 +21,11 @@ const NewsletterHero = () => {
     enabled: isLoggedIn,
   });
 
+  const subscribedTracks = subscription?.tracks ?? [];
+  const subscribed = subscribedTracks.length > 0;
+
   const subscribedTrackLabels = TRACKS.filter((track) =>
-    subscription?.tracks.includes(track.value),
+    subscribedTracks.includes(track.value),
   ).map((track) => track.label);
 
   const redirectLandingPage = () => {
@@ -77,7 +80,7 @@ const NewsletterHero = () => {
         </Description>
 
         <CtaArea>
-          {subscription?.subscribed ? (
+          {subscribed ? (
             <>
               <Flex direction="column" align="center" gap={8}>
                 <Flex align="center" gap={8}>
