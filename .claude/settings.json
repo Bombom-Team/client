@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd /Users/jaeo/Documents/Github/client && OUT=$(npm run lint 2>&1) || { echo \"$OUT\" | tail -80 | jq -R -s '{decision:\"block\",reason:(\"린트 실패. 아래 에러를 고친 뒤 작업을 마무리해주세요:\\n\\n\" + .)}'; exit 0; }; OUT=$(pnpm -r --filter '!@bombom/shared' type-check 2>&1) || echo \"$OUT\" | tail -80 | jq -R -s '{decision:\"block\",reason:(\"타입 체크 실패. 아래 에러를 고친 뒤 작업을 마무리해주세요:\\n\\n\" + .)}'",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && OUT=$(npm run lint 2>&1) || { echo \"$OUT\" | tail -80 | jq -R -s '{decision:\"block\",reason:(\"린트 실패. 아래 에러를 고친 뒤 작업을 마무리해주세요:\\n\\n\" + .)}'; exit 0; }; OUT=$(pnpm -r --filter '!@bombom/shared' type-check 2>&1) || echo \"$OUT\" | tail -80 | jq -R -s '{decision:\"block\",reason:(\"타입 체크 실패. 아래 에러를 고친 뒤 작업을 마무리해주세요:\\n\\n\" + .)}'",
             "timeout": 300,
             "statusMessage": "린트 & 타입체크 실행 중..."
           }
