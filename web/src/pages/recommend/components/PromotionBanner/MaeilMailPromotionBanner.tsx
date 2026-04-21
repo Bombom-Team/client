@@ -18,7 +18,7 @@ const MaeilMailPromotionBanner = () => {
             <BomBomLogo src={logo} alt="봄봄" device={device} />
             <Text
               color="textPrimary"
-              font={device === 'mobile' ? 't6Bold' : 't8Bold'}
+              font={device === 'mobile' ? 't5Bold' : 't8Bold'}
             >
               봄봄
             </Text>
@@ -59,7 +59,7 @@ const Container = styled(Link)<{ device: Device }>`
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: ${({ device }) => (device ? '32px 36px' : '24px 20px')};
+  padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '24px 20px')};
   border-radius: 24px;
 
   display: flex;
@@ -104,7 +104,11 @@ const CrossSign = styled.span`
 const HeadlineLine = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t14Bold : theme.fonts.t16Bold};
+    device === 'mobile'
+      ? theme.fonts.t12Bold
+      : device === 'tablet'
+        ? theme.fonts.t14Bold
+        : theme.fonts.t16Bold};
 `;
 
 const BrandGreen = styled.span<{ primaryColor: string }>`
@@ -125,13 +129,13 @@ const HeroTitleSection = styled(Flex)`
 const OpenDateNumber = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.t6Bold : theme.fonts.t8Bold};
+    device === 'mobile' ? theme.fonts.t5Bold : theme.fonts.t8Bold};
   letter-spacing: -0.02em;
 `;
 
 const OpenDateLabel = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.t6Bold : theme.fonts.t8Bold};
+    device === 'mobile' ? theme.fonts.t5Bold : theme.fonts.t8Bold};
   letter-spacing: 0.04em;
 `;

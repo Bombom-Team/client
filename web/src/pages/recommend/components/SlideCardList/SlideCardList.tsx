@@ -34,7 +34,7 @@ export default SlideCardList;
 
 const BannerWrapper = styled.div<{ device: Device }>`
   width: 100%;
-  height: ${({ device }) => (device === 'mobile' ? '280px' : '320px')};
+  height: ${({ device }) => (device === 'mobile' ? '210px' : '280px')};
 
   > * {
     height: 100%;
