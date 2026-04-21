@@ -12,3 +12,14 @@ export const postNativeMaeilMailSubscription = async (
     body: params,
   });
 };
+
+export type NativeMaeilMailSubscriptionTrack =
+  PostNativeMaeilMailSubscriptionParams['tracks'][number];
+export type GetNativeMaeilMailSubscriptionResponse =
+  components['schemas']['MaeilMailSubscriptionResponse'];
+
+export const getNativeMaeilMailSubscription = async () => {
+  return await fetcher.get<GetNativeMaeilMailSubscriptionResponse>({
+    path: '/subscriptions/native/maeil-mail',
+  });
+};

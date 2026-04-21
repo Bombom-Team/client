@@ -51,7 +51,11 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /**
+     * 봄봄 자체 뉴스레터 구독 여부 조회
+     * @description 매일메일 구독 여부와 구독 중인 트랙 목록을 반환합니다.
+     */
+    get: operations['getSubscription'];
     put?: never;
     /**
      * 봄봄 자체 뉴스레터 구독
@@ -1503,6 +1507,9 @@ export interface components {
     UpdateChallengeCommentRequest: {
       comment: string;
     };
+    MaeilMailSubscriptionResponse: {
+      tracks: ('BE' | 'FE')[];
+    };
     Pageable: {
       /** Format: int32 */
       page?: number;
@@ -1631,8 +1638,9 @@ export interface components {
       goalCount: number;
     };
     BadgesResponse: {
-      ranking?: components['schemas']['RankingBadgeResponse'];
+      monthlyRanking?: components['schemas']['MonthlyRankingBadgeResponse'];
       challenge?: components['schemas']['ChallengeBadgeResponse'];
+      streak?: components['schemas']['StreakBadgeResponse'];
     };
     ChallengeBadgeResponse: {
       /** @enum {string} */
@@ -1658,13 +1666,26 @@ export interface components {
       serverTime: string;
       data: components['schemas']['ContinueReadingRankResponse'][];
     };
-    RankingBadgeResponse: {
+    MonthlyRankingBadgeResponse: {
       /** @enum {string} */
       grade: 'GOLD' | 'SILVER' | 'BRONZE';
       /** Format: int32 */
       year: number;
       /** Format: int32 */
       month: number;
+    };
+    StreakBadgeResponse: {
+      /** @enum {string} */
+      tier:
+        | 'SEVEN'
+        | 'FIFTEEN'
+        | 'THIRTY'
+        | 'FIFTY'
+        | 'HUNDRED'
+        | 'TWO_HUNDRED'
+        | 'THREE_HUNDRED'
+        | 'FOUR_HUNDRED'
+        | 'FIVE_HUNDRED';
     };
     MemberContinueReadingRankResponse: {
       nickname: string;
@@ -2463,6 +2484,35 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
+        };
       };
     };
   };
