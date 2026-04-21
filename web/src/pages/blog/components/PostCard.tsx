@@ -1,4 +1,3 @@
-import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import { createSlug } from '../utils/url';
@@ -8,7 +7,6 @@ import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
 import type { Device } from '@/hooks/useDevice';
 import type { PostListItem } from '@/pages/blog/types/post';
-import CalendarIcon from '#/assets/svg/calendar.svg';
 
 interface PostCardProps {
   post: PostListItem;
@@ -42,12 +40,6 @@ const PostCard = ({ post }: PostCardProps) => {
         <Title device={device}>{post.title}</Title>
 
         <MetaInfo>
-          <CalendarIcon
-            aria-hidden="true"
-            width={device === 'mobile' ? 12 : 14}
-            height={device === 'mobile' ? 12 : 14}
-            color={theme.colors.textTertiary}
-          />
           <Text
             color="textTertiary"
             font={device === 'mobile' ? 't3Regular' : 't6Regular'}
