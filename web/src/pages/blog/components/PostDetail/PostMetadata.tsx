@@ -5,7 +5,6 @@ import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
 import type { Device } from '@/hooks/useDevice';
-import CalendarIcon from '#/assets/svg/calendar.svg';
 import ClockIcon from '#/assets/svg/clock.svg';
 
 interface PostMetadataProps {
@@ -36,12 +35,6 @@ const PostMetadata = ({
           •
         </Text>
         <MetaInfo>
-          <CalendarIcon
-            aria-hidden="true"
-            width={device === 'mobile' ? 12 : 20}
-            height={device === 'mobile' ? 12 : 20}
-            color={theme.colors.textTertiary}
-          />
           <PublishedTime
             as="time"
             dateTime={publishedAt}
