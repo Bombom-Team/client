@@ -79,6 +79,9 @@ export const BlogEditor = () => {
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
     post.thumbnailImage?.imageUrl ?? null,
   );
+  const [thumbnailImageId, setThumbnailImageId] = useState<number | null>(
+    post.thumbnailImage?.imageId ?? null,
+  );
   const [isDirty, setIsDirty] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -105,7 +108,14 @@ export const BlogEditor = () => {
   const editor = useEditor({
     extensions: [
       StarterKitExtension,
-      ImageExtension.configure({
+      ImageExtension.extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            imageId: { default: null },
+          };
+        },
+      }).configure({
         resize: {
           enabled: true,
           directions: ['bottom-right', 'bottom-left', 'top-right', 'top-left'],
@@ -183,7 +193,10 @@ export const BlogEditor = () => {
     setSaveError(null);
     const json = editor.getJSON();
     const content = JSON.stringify(json);
-    const referencedImageIds = extractImageIds(json);
+    const referencedImageIds =
+      thumbnailImageId == null
+        ? extractImageIds(json)
+        : [...extractImageIds(json), thumbnailImageId];
     try {
       await saveDraftMutation.mutateAsync({
         postId: postIdNum,
@@ -213,6 +226,7 @@ export const BlogEditor = () => {
     description,
     categoryId,
     hashTags,
+    thumbnailImageId,
   ]);
 
   // ref 동기화
@@ -262,9 +276,13 @@ export const BlogEditor = () => {
       editor
         ?.chain()
         .focus()
-        .setImage({
-          src: result.imageUrl ?? '',
-          alt: file.name,
+        .insertContent({
+          type: 'image',
+          attrs: {
+            src: result.imageUrl ?? '',
+            alt: file.name,
+            imageId: result.imageId,
+          },
         })
         .run();
       setIsDirty(true);
@@ -286,6 +304,7 @@ export const BlogEditor = () => {
           postId: postIdNum,
           data: { imageId: result.imageId },
         });
+        setThumbnailImageId(result.imageId);
       }
       setThumbnailUrl(result.imageUrl ?? null);
     } catch (err) {
