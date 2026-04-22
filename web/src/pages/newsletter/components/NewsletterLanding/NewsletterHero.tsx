@@ -78,32 +78,28 @@ const NewsletterHero = () => {
           <br />
           기술 면접 질문을 한곳에서 더 편하게 읽을 수 있어요.
         </Description>
+        <WarnText color="primary" font="t5Regular">
+          * 봄봄에서만 읽을 수 있는 뉴스레터예요.
+        </WarnText>
 
         <CtaArea>
-          {subscribed ? (
-            <>
-              <Flex direction="column" align="center" gap={8}>
-                <Flex align="center" gap={8}>
-                  <SuccessMark>✓</SuccessMark>
-                  <SubText>
-                    <Highlight>{subscribedTrackLabels.join(' · ')}</Highlight>{' '}
-                    사전 구독 완료!
-                  </SubText>
-                </Flex>
+          <MessageSlot>
+            {subscribed && (
+              <Flex align="center" gap={8}>
+                <SuccessMark>✓</SuccessMark>
+                <SubText>
+                  <Highlight>{subscribedTrackLabels.join(' · ')}</Highlight>{' '}
+                  사전 구독 완료!
+                </SubText>
               </Flex>
-              <SubscribeButton onClick={openModal} disabled>
-                구독 완료
-              </SubscribeButton>
-            </>
+            )}
+          </MessageSlot>
+          {subscribed ? (
+            <SubscribeButton onClick={openModal} disabled>
+              구독 완료
+            </SubscribeButton>
           ) : isLoggedIn ? (
-            <>
-              <WarnText color="primary" font="t5Regular">
-                * 봄봄에서만 읽을 수 있는 뉴스레터예요.
-              </WarnText>
-              <SubscribeButton onClick={openModal}>
-                사전 구독하기
-              </SubscribeButton>
-            </>
+            <SubscribeButton onClick={openModal}>사전 구독하기</SubscribeButton>
           ) : (
             <SubscribeButton onClick={redirectLandingPage}>
               로그인하고 구독하기
@@ -195,6 +191,14 @@ const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: center;
+`;
+
+const MessageSlot = styled.div`
+  min-height: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const CtaArea = styled.div`
