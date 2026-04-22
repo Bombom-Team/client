@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import BlogComingSoonBanner from '../PromotionBanner/BlogComingSoonBanner';
+import BlogOpenBanner from '../PromotionBanner/BlogOpenBanner';
 import MaeilMailPromotionBanner from '../PromotionBanner/MaeilMailPromotionBanner';
 import { Carousel } from '@/components/Carousel/Carousel';
 import CarouselNavButtons from '@/components/Carousel/CarouselNavButtons';
@@ -20,7 +20,7 @@ const SlideCardList = () => {
           </Carousel.Slide>
           <Carousel.Slide>
             <BannerWrapper device={device}>
-              <BlogComingSoonBanner />
+              <BlogOpenBanner />
             </BannerWrapper>
           </Carousel.Slide>
         </Carousel.Slides>
