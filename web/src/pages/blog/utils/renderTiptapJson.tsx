@@ -90,16 +90,17 @@ const renderNode = (node: TiptapNode, key: string): ReactNode => {
     case 'image': {
       const src = validateUrl(String(node.attrs?.src ?? ''));
       const alt = String(node.attrs?.alt ?? '');
-      const width = node.attrs?.width ? Number(node.attrs.width) : '100%';
-      const height = node.attrs?.height ? Number(node.attrs.height) : '100%';
+      const width = node.attrs?.width ? Number(node.attrs.width) : null;
       return (
         <img
           key={key}
           src={src}
           alt={alt}
-          width={width}
-          height={height}
-          style={{ maxWidth: '100%' }}
+          style={{
+            width: width ? `${width}px` : '100%',
+            maxWidth: '100%',
+            height: 'auto',
+          }}
         />
       );
     }
