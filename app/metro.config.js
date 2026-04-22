@@ -21,12 +21,4 @@ const customResolveRequest = (context, moduleName, platform) => {
 };
 
 /** @type {import('metro-config').ConfigT} */
-const config = {
-  ...defaultConfig,
-  resolver: {
-    ...defaultConfig.resolver,
-    resolveRequest: customResolveRequest,
-  },
-};
-
-module.exports = config;
+module.exports = getDefaultConfig(__dirname);
