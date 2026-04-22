@@ -31,21 +31,22 @@ const Content = styled.div`
   h1,
   h2,
   h3 {
+    margin: 0;
     font-weight: 700;
   }
 
   h1 {
-    margin: 20px 0 8px;
+    margin-bottom: 12px;
     font-size: 1.75rem;
   }
 
   h2 {
-    margin: 18px 0 8px;
+    margin-bottom: 12px;
     font-size: 1.5rem;
   }
 
   h3 {
-    margin: 16px 0 8px;
+    margin-bottom: 12px;
     font-size: 1.25rem;
   }
 
@@ -54,6 +55,10 @@ const Content = styled.div`
 
     line-height: 1.7;
     white-space: normal;
+  }
+
+  p:empty {
+    height: 1em;
   }
 
   ul,
