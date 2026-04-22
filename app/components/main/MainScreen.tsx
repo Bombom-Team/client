@@ -21,6 +21,8 @@ import { goToSystemPermission, updateMemberId } from '@/utils/notification';
 import useNotification from '@/hooks/useNotification';
 import { useEffect, useRef } from 'react';
 import { useDeviceInfo } from '@/hooks/useDeviceInfo';
+import { useForceUpdate } from '@/hooks/useForceUpdate';
+import ForceUpdateScreen from './ForceUpdateScreen';
 import { useNotificationPermission } from '@/hooks/useNotificationPermission';
 
 const saveImageToGallery = async (base64: string, fileName: string) => {
@@ -64,6 +66,8 @@ export const MainScreen = () => {
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
   const { onNotification, registerFCMToken } = useNotification();
+  const { isVersionCheckCompleted, isForceUpdateRequired, openStore } =
+    useForceUpdate();
   const { sendPermissionToWeb } = useNotificationPermission({
     onPermissionGranted: registerFCMToken,
   });
@@ -149,6 +153,14 @@ export const MainScreen = () => {
       console.error('WebView 메시지 파싱 실패:', error);
     }
   };
+
+  if (!isVersionCheckCompleted) {
+    return null;
+  }
+
+  if (isForceUpdateRequired) {
+    return <ForceUpdateScreen onPressUpdate={openStore} />;
+  }
 
   return (
     <Container>
