@@ -4,7 +4,7 @@ import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 import logo from '#/assets/avif/logo.avif';
 
-const BlogComingSoonBanner = () => {
+const BlogOpenBanner = () => {
   const device = useDevice();
 
   return (
@@ -24,7 +24,7 @@ const BlogComingSoonBanner = () => {
   );
 };
 
-export default BlogComingSoonBanner;
+export default BlogOpenBanner;
 
 const Container = styled(Link)<{ device: Device }>`
   overflow: hidden;
@@ -56,7 +56,7 @@ const Content = styled.div<{ device: Device }>`
 const BannerImage = styled.img<{ device: Device }>`
   width: 100%;
   height: auto;
-  max-width: ${({ device }) => (device === 'pc' ? '480px' : '300px')};
+  max-width: ${({ device }) => (device === 'pc' ? '420px' : '300px')};
 `;
 
 const Logo = styled.div<{ device: Device }>`
@@ -66,12 +66,12 @@ const Logo = styled.div<{ device: Device }>`
 `;
 
 const LogoImage = styled.img<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '40px' : '48px')};
-  height: ${({ device }) => (device === 'mobile' ? '40px' : '48px')};
-  border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '16px')};
+  width: ${({ device }) => (device === 'mobile' ? '40px' : '52px')};
+  height: ${({ device }) => (device === 'mobile' ? '40px' : '52px')};
+  border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '18px')};
 `;
 
 const Title = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t10Bold};
+  font: ${({ theme }) => theme.fonts.t13Bold};
 `;

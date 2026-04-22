@@ -12,7 +12,7 @@ import logo from '#/assets/avif/logo.avif';
 import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
 
 const NewsletterHero = () => {
-  const { isLoggedIn, userProfile } = useAuth();
+  const { isLoggedIn } = useAuth();
   const device = useDevice();
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
@@ -78,35 +78,28 @@ const NewsletterHero = () => {
           <br />
           기술 면접 질문을 한곳에서 더 편하게 읽을 수 있어요.
         </Description>
+        <WarnText color="primary" font="t5Regular">
+          * 봄봄에서만 읽을 수 있는 뉴스레터예요.
+        </WarnText>
 
         <CtaArea>
-          {subscribed ? (
-            <>
-              <Flex direction="column" align="center" gap={8}>
-                <Flex align="center" gap={8}>
-                  <SuccessMark>✓</SuccessMark>
-                  <SubText>
-                    <Highlight>{subscribedTrackLabels.join(' · ')}</Highlight>{' '}
-                    사전 구독 완료!
-                  </SubText>
-                </Flex>
-              </Flex>
-              <SubscribeButton onClick={openModal} disabled>
-                구독 완료
-              </SubscribeButton>
-            </>
-          ) : isLoggedIn ? (
-            <>
+          <MessageSlot>
+            {subscribed && (
               <Flex align="center" gap={8}>
-                <AccountDot />
+                <SuccessMark>✓</SuccessMark>
                 <SubText>
-                  <Strong>{userProfile?.email}</Strong> 로 구독해요.
+                  <Highlight>{subscribedTrackLabels.join(' · ')}</Highlight>{' '}
+                  사전 구독 완료!
                 </SubText>
               </Flex>
-              <SubscribeButton onClick={openModal}>
-                사전 구독하기
-              </SubscribeButton>
-            </>
+            )}
+          </MessageSlot>
+          {subscribed ? (
+            <SubscribeButton onClick={openModal} disabled>
+              구독 완료
+            </SubscribeButton>
+          ) : isLoggedIn ? (
+            <SubscribeButton onClick={openModal}>사전 구독하기</SubscribeButton>
           ) : (
             <SubscribeButton onClick={redirectLandingPage}>
               로그인하고 구독하기
@@ -200,6 +193,14 @@ const Description = styled.p`
   text-align: center;
 `;
 
+const MessageSlot = styled.div`
+  min-height: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const CtaArea = styled.div`
   width: 100%;
   max-width: 480px;
@@ -233,18 +234,8 @@ const Highlight = styled.span`
   font-weight: 700;
 `;
 
-const Strong = styled.span`
-  font-weight: 500;
-`;
-
-const AccountDot = styled.span`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-
-  flex-shrink: 0;
-
-  background-color: ${({ theme }) => theme.colors.primary};
+const WarnText = styled(Text)`
+  text-align: center;
 `;
 
 const SubText = styled(Text)`
