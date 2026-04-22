@@ -55,7 +55,7 @@ const TodayArticleTitle = styled.h3`
   align-self: flex-start;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const TodayArticleList = styled.div<{ device: Device }>`

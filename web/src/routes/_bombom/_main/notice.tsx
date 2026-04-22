@@ -119,7 +119,7 @@ const TitleIconBox = styled.div`
 `;
 
 const Title = styled.h1`
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const ContentWrapper = styled.div`
@@ -138,11 +138,11 @@ const HeaderTextWrapper = styled.div`
 `;
 
 const AccordionTitle = styled.span`
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const AccordionDescription = styled.span`
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const AccordionContent = styled.p`

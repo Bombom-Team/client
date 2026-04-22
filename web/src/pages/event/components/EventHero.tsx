@@ -172,7 +172,7 @@ const HeroBadge = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
   font-weight: 700;
   text-align: center;
 
@@ -187,7 +187,7 @@ const EventButton = styled.button<{ device: Device }>`
 
   background-color: #d81b60;
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 
   &:hover {
     box-shadow: 6px 6px 0 0 ${({ theme }) => theme.colors.black};
@@ -229,7 +229,7 @@ const InfoCardBadge = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
+    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Bold};
   font-weight: 700;
   text-align: center;
   white-space: nowrap;
@@ -254,7 +254,7 @@ const InfoRowDivider = styled.div`
 const InfoLabel = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.icons};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
+    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Bold};
   text-align: center;
 `;
 
@@ -267,7 +267,7 @@ const InfoValue = styled.p<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.black};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body1 : theme.fonts.bodyLarge};
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
   font-weight: 700;
   text-align: left;
 `;
@@ -286,6 +286,6 @@ const Title = styled.div<{ device: Device }>`
   background-color: rgb(255 255 255 / 80%);
   color: ${({ theme }) => theme.colors.black};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.body2 : theme.fonts.heading6};
+    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Bold};
   text-align: center;
 `;

@@ -60,7 +60,7 @@ const ReadyState = ({ queueEntry, refetchQueueEntry }: ReadyStateProps) => {
 
       {expiredCaptchaTime && (
         <Flex direction="column" gap={4} align="center" justify="center">
-          <Text font={device === 'mobile' ? 'body3' : 'body2'}>
+          <Text font={device === 'mobile' ? 't3Regular' : 't5Regular'}>
             {isCompleting ? (
               '인증 시간이 만료되었어요.'
             ) : (
@@ -72,7 +72,7 @@ const ReadyState = ({ queueEntry, refetchQueueEntry }: ReadyStateProps) => {
             )}
           </Text>
           <Text
-            font={device === 'mobile' ? 'body4' : 'body3'}
+            font={device === 'mobile' ? 't1Regular' : 't3Regular'}
             color="textTertiary"
           >
             {isCompleting
@@ -96,7 +96,7 @@ export default ReadyState;
 
 const ReadyMessage = styled.p`
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
   text-align: center;
 `;
 

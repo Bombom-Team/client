@@ -81,5 +81,5 @@ const ConfirmButton = styled(Button)`
   width: 100%;
   max-width: 200px;
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

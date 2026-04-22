@@ -134,7 +134,7 @@ const Divider = styled.div`
 
 const ProfileName = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const EmailWrapper = styled.div`
@@ -160,7 +160,7 @@ const StyledMailIcon = styled(MailIcon)`
 
 const EmailTitle = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ProfileEmail = styled.button`
@@ -181,7 +181,7 @@ const ProfileEmail = styled.button`
 
 const EmailText = styled.div`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ChannelTalkButton = styled.button`
@@ -190,7 +190,7 @@ const ChannelTalkButton = styled.button`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   &:hover {
     text-decoration: underline;
@@ -204,7 +204,7 @@ const MyPageButton = styled(Link)`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   text-decoration: none;
 
@@ -220,7 +220,7 @@ const LogoutButton = styled.button`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   &:hover {
     text-decoration: underline;

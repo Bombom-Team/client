@@ -75,12 +75,12 @@ const Container = styled.div<{ isMobile: boolean }>`
 
 const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const UnsubscribeDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ModalButtonWrapper = styled.div`
@@ -96,7 +96,7 @@ const ModalButton = styled(Button)<{ isMobile: boolean }>`
   min-width: ${({ isMobile }) => (isMobile ? '120px' : '160px')};
   border-radius: 8px;
 
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   word-break: keep-all;
 `;

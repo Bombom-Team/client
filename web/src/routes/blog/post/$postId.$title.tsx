@@ -182,7 +182,7 @@ const GoToListButton = styled(Button)<{ device: Device }>`
   padding: 0;
 
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.bodyLarge};
+  font: ${({ theme }) => theme.fonts.t7Regular};
 
   transition: color 0.2s ease;
 

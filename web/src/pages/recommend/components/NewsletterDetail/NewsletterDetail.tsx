@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import DetailTab from './DetailTab';
 import { openSubscribeLink } from './NewsletterDetail.utils';
 import NewsletterTabs from './NewsletterTabs';
@@ -24,6 +25,7 @@ interface NewsletterDetailProps {
 const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
   const deviceType = useDevice();
   const { userProfile, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useSearchParamState<NewsletterTab>('tab', {
     defaultValue: 'detail',
   });
@@ -58,6 +60,14 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
       action: '구독하기 버튼 클릭',
       label: newsletterDetail.name,
     });
+
+    if (newsletterDetail.source === 'MAEIL_MAIL') {
+      navigate({
+        to: '/maeil-mail/landing',
+      });
+      return;
+    }
+
     openSubscribeLink(
       newsletterDetail.subscribeUrl,
       newsletterDetail.name,
@@ -227,7 +237,7 @@ export const TitleWrapper = styled.div<{ isMobile: boolean }>`
 
 const NewsletterTitle = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const StyledHomeIcon = styled(HomeIcon)<{ isMobile: boolean }>`
@@ -253,7 +263,7 @@ const SubscribeMethodInfo = styled.div`
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 export const NewsletterInfo = styled.div`
@@ -262,11 +272,11 @@ export const NewsletterInfo = styled.div`
   flex-wrap: wrap;
   align-items: center;
 
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const StyledBadge = styled(Badge)`
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const IssueCycle = styled.p`
@@ -280,7 +290,7 @@ const DetailLink = styled.button`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   transition: all 0.2s ease;
 
@@ -297,5 +307,5 @@ const SubscribeButton = styled(Button)<{ isMobile: boolean }>`
   align-self: center;
 
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body2 : theme.fonts.heading6};
+    isMobile ? theme.fonts.t5Regular : theme.fonts.t6Bold};
 `;

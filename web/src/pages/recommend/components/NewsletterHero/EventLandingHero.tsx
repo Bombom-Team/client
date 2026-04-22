@@ -68,7 +68,7 @@ const EventImage = styled.img`
 const HeroTitle = styled.p<{ isPC: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isPC }) =>
-    isPC ? theme.fonts.heading3 : theme.fonts.heading4};
+    isPC ? theme.fonts.t11Bold : theme.fonts.t10Bold};
   text-align: left;
 
   word-break: keep-all;
@@ -86,7 +86,8 @@ const HeroBadge = styled.div<{ isPC: boolean }>`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.body2 : theme.fonts.body3)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
   font-weight: 700;
   text-align: center;
 
@@ -100,6 +101,7 @@ const IndicateText = styled.p<{ isPC: boolean }>`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme, isPC }) => (isPC ? theme.fonts.body2 : theme.fonts.body3)};
+  font: ${({ theme, isPC }) =>
+    isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
   font-weight: 700;
 `;

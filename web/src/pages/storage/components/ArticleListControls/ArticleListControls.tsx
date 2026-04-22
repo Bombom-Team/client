@@ -165,7 +165,7 @@ const DeleteCount = styled.p`
   min-width: 68px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const HorizontalDivider = styled.div`
@@ -183,7 +183,7 @@ const TextButton = styled.button`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   white-space: nowrap;
 
   &:hover {

@@ -60,7 +60,7 @@ const Title = styled.h3`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -72,7 +72,7 @@ const Description = styled.p`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -86,7 +86,7 @@ const MetaInfoRow = styled.div`
 
 const MetaInfoText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const ReadTimeBox = styled.div`

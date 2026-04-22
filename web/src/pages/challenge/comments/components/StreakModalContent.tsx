@@ -137,13 +137,13 @@ const TitleWrapper = styled.div`
 
 const Title = styled.h2`
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.heading2};
+  font: ${({ theme }) => theme.fonts.t13Bold};
   font-weight: 800;
 `;
 
 const Subtitle = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
   font-weight: 700;
 `;
 
@@ -193,7 +193,7 @@ const DayColumn = styled.div`
 const DayLabel = styled.span<{ isHighlighted: boolean }>`
   color: ${({ theme, isHighlighted }) =>
     isHighlighted ? theme.colors.primary : theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 700;
 `;
 
@@ -270,14 +270,14 @@ const FreezeCheckMark = styled.span`
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   line-height: 1.6;
 `;
 
 const EncouragementText = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.body1 : theme.fonts.heading6};
+    isMobile ? theme.fonts.t6Regular : theme.fonts.t6Bold};
   font-weight: 600;
 `;
 
@@ -290,5 +290,5 @@ const ConfirmButton = styled(Button)`
   min-height: 56px;
   border-radius: 18px;
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

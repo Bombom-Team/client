@@ -129,7 +129,7 @@ const TitleWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
@@ -184,5 +184,5 @@ const SummaryBar = styled.div`
 
 const ResultsInfo = styled.div`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

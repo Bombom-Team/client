@@ -235,12 +235,12 @@ const HeaderWrapper = styled.div`
 
 const Title = styled.h4`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const FieldGroup = styled.div`
@@ -253,12 +253,12 @@ const FieldGroup = styled.div`
 
 const Label = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const TextValue = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   user-select: text;
 `;
@@ -295,7 +295,7 @@ const TooltipButton = styled.button`
 
 const InfoText = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const EmailHelpIcon = styled(HelpIcon)`
@@ -310,7 +310,7 @@ const SubmitButton = styled.button`
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 
   transition:
     transform 0.06s ease,
@@ -377,7 +377,7 @@ const RadioButtonLabel = styled.label<{ selected: boolean }>`
     selected ? theme.colors.primary : theme.colors.white};
   color: ${({ selected, theme }) =>
     selected ? theme.colors.white : theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 
   user-select: none;
@@ -389,12 +389,12 @@ const TermsText = styled.span`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const ViewTermsLink = styled(ExternalLink)`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   &:hover {
     color: ${({ theme }) => theme.colors.textSecondary};

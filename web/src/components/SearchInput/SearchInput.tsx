@@ -60,7 +60,7 @@ const StyledInput = styled.input`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   transition: all 0.2s ease-in-out;
 

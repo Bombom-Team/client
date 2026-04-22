@@ -60,7 +60,7 @@ const Title = styled.h2`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
 const MetaInfoRow = styled.div`
@@ -73,7 +73,7 @@ const MetaInfoRow = styled.div`
 
 const MetaInfoText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const ReadTimeBox = styled.div`

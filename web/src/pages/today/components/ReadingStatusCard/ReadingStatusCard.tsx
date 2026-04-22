@@ -166,7 +166,7 @@ export const StatusIconWrapper = styled.div`
 
 export const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
   text-align: center;
 `;
 
@@ -180,7 +180,7 @@ const StreakWrapper = styled.div<{ device: Device }>`
 
 const StreakDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: center;
 `;
 
@@ -215,7 +215,7 @@ const StyledIcon = styled.img`
 
 const ProgressLabel = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;
 
@@ -223,13 +223,13 @@ const ProgressRate = styled.span`
   margin-left: auto;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;
 
 const ProgressDescription = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const InputContainer = styled.div`
@@ -240,11 +240,11 @@ const InputContainer = styled.div`
   align-items: center;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   span {
     color: ${({ theme }) => theme.colors.primary};
-    font: ${({ theme }) => theme.fonts.body2};
+    font: ${({ theme }) => theme.fonts.t5Regular};
   }
 `;
 

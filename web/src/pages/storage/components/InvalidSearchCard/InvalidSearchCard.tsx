@@ -34,7 +34,7 @@ const EmptySearchIconWrapper = styled.div`
 const EmptyTitle = styled.h3`
   background: linear-gradient(90deg, #181818 0%, #f96 100%);
   background-clip: text;
-  font: ${({ theme }) => theme.fonts.heading3};
+  font: ${({ theme }) => theme.fonts.t11Bold};
   text-align: center;
 
   -webkit-text-fill-color: transparent;

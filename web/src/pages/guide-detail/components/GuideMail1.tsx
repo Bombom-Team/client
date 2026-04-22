@@ -86,7 +86,7 @@ const Container = styled.div`
   padding: 24px 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const HeaderBox = styled.div`
@@ -102,28 +102,28 @@ const HeaderTag = styled.div`
   margin-bottom: 6px;
 
   color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const HeaderTitle = styled.h1`
   margin: 0 0 10px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const HeaderDescription = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const SectionTitle = styled.h2`
   margin: 24px 0 12px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const TipBox = styled.div`
@@ -136,7 +136,7 @@ const TipText = styled.p`
   margin: 0 0 8px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const WarningBox = styled.div`
@@ -152,19 +152,19 @@ const WarningTitle = styled.strong`
   display: block;
 
   color: #92400e;
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const WarningDescription = styled.span`
   color: #451a03;
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const BodyText = styled.p`
   margin: 0 0 12px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const Image = styled.img`
@@ -189,7 +189,7 @@ const SubscribeLink = styled(Link)`
 
   background: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 
   &:hover {
     opacity: 0.9;

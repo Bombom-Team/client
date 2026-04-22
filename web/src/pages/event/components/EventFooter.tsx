@@ -65,7 +65,7 @@ const FooterHeader = styled.div`
 
 const Title = styled.p`
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   font-weight: 700;
 `;
 
@@ -81,7 +81,7 @@ const NoticeListItem = styled.li`
   padding-left: 18px;
 
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   line-height: 1.2;
 
   &::before {

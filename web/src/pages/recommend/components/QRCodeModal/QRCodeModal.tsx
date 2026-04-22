@@ -107,7 +107,7 @@ const QRCodesWrapper = styled.div`
 
 const QRModalTitle = styled.h2`
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const QRCodeWrapper = styled.div`
@@ -124,5 +124,5 @@ const QRCodeWrapper = styled.div`
 
 const QRModalDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

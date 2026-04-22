@@ -274,7 +274,7 @@ const SubscribePromptText = styled.p`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: center;
 `;
 
@@ -282,5 +282,5 @@ const SubscribePromptButton = styled(Button)`
   width: 100%;
   padding: 12px 24px;
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

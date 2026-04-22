@@ -90,5 +90,5 @@ const ProfileInfo = styled.div`
 
 const ProfileName = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

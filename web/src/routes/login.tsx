@@ -81,6 +81,6 @@ const InfoText = styled.p<{ device: Device }>`
 
   color: ${({ device, theme }) =>
     device === 'mobile' ? theme.colors.textSecondary : theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;

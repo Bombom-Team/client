@@ -132,12 +132,12 @@ const HeaderTitleBox = styled.div``;
 
 const HeaderTitleText = styled.h5`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const HeaderTitleCaption = styled.h5`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.caption};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const IconWrapper = styled.div`

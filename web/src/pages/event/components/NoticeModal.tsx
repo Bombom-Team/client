@@ -64,13 +64,13 @@ const ContentWrapper = styled.div`
 
 const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading4};
+  font: ${({ theme }) => theme.fonts.t10Bold};
   text-align: center;
 `;
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
   font-weight: 400;
   text-align: center;
 `;
@@ -79,7 +79,7 @@ const ConfirmButton = styled(Button)`
   width: 100%;
   max-width: 200px;
 
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const HighLight = styled.strong`

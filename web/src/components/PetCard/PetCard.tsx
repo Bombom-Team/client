@@ -174,7 +174,7 @@ const Heart = styled.div`
 
 const Level = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 export const TitleWrapper = styled.div`
@@ -200,7 +200,7 @@ export const StatusIconWrapper = styled.div`
 
 export const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
   text-align: center;
 `;
 

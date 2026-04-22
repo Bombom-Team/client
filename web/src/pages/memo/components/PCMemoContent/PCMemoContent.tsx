@@ -82,7 +82,7 @@ const SummaryBar = styled.div`
 
 const ResultsInfo = styled.div`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const MemoList = styled.ul`

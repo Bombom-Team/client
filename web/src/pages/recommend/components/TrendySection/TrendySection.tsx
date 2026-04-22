@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import NewsletterList from './NewsletterList';
@@ -26,6 +27,7 @@ const ALL_NEWSLETTERS = '전체';
 
 const TrendySection = () => {
   const device = useDevice();
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] =
     useState<string>(ALL_NEWSLETTERS);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -74,6 +76,10 @@ const TrendySection = () => {
   };
 
   const handleCardClick = (newsletter: Newsletter) => {
+    if (newsletter.source === 'MAEIL_MAIL') {
+      navigate({ to: '/maeil-mail/landing' });
+      return;
+    }
     setSelectedNewsletterId(newsletter.newsletterId);
     trackEvent({
       category: 'Newsletter',
@@ -245,14 +251,14 @@ const SectionIconBox = styled.span`
   justify-content: center;
 
   background: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const SectionTitle = styled.h2`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.black};
-  font: ${({ theme }) => theme.fonts.heading5};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
 const SearchIconButton = styled.button`

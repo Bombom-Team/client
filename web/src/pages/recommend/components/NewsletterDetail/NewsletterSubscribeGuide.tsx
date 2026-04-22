@@ -68,7 +68,7 @@ const Container = styled.div`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const SubscribeHeader = styled.div`
@@ -78,7 +78,7 @@ const SubscribeHeader = styled.div`
 
 const SubscribeTitle = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.heading6};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const SubscribeContent = styled.div`
@@ -132,7 +132,7 @@ const StepNumber = styled.span`
 
   background: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const StepContent = styled.div`
@@ -143,10 +143,10 @@ const StepContent = styled.div`
 
 const StepTitle = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const StepDescription = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

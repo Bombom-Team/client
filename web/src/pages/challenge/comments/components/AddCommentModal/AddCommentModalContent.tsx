@@ -211,7 +211,7 @@ const TipTitleWrapper = styled.div`
 
 const TipTitle = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.body2};
+  font: ${({ theme }) => theme.fonts.t5Regular};
   font-weight: 600;
 `;
 
@@ -221,7 +221,7 @@ const TipList = styled.ul`
   flex-direction: column;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.body3};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const TipItem = styled.li``;
@@ -233,5 +233,5 @@ const ButtonWrapper = styled.div`
 
 const StyledButton = styled(Button)`
   flex: 1;
-  font: ${({ theme }) => theme.fonts.body1};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

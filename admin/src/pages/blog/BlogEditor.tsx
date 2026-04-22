@@ -79,6 +79,9 @@ export const BlogEditor = () => {
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
     post.thumbnailImage?.imageUrl ?? null,
   );
+  const [thumbnailImageId, setThumbnailImageId] = useState<number | null>(
+    post.thumbnailImage?.imageId ?? null,
+  );
   const [isDirty, setIsDirty] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -105,7 +108,22 @@ export const BlogEditor = () => {
   const editor = useEditor({
     extensions: [
       StarterKitExtension,
-      ImageExtension,
+      ImageExtension.extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            imageId: { default: null },
+          };
+        },
+      }).configure({
+        resize: {
+          enabled: true,
+          directions: ['bottom-right', 'bottom-left', 'top-right', 'top-left'],
+          minWidth: 80,
+          minHeight: 80,
+          alwaysPreserveAspectRatio: true,
+        },
+      }),
       LinkExtension.configure({ openOnClick: false }),
       UnderlineExtension,
       HighlightExtension.configure({ multicolor: true }),
@@ -175,7 +193,10 @@ export const BlogEditor = () => {
     setSaveError(null);
     const json = editor.getJSON();
     const content = JSON.stringify(json);
-    const referencedImageIds = extractImageIds(json);
+    const referencedImageIds =
+      thumbnailImageId == null
+        ? extractImageIds(json)
+        : [...extractImageIds(json), thumbnailImageId];
     try {
       await saveDraftMutation.mutateAsync({
         postId: postIdNum,
@@ -205,6 +226,7 @@ export const BlogEditor = () => {
     description,
     categoryId,
     hashTags,
+    thumbnailImageId,
   ]);
 
   // ref 동기화
@@ -254,9 +276,13 @@ export const BlogEditor = () => {
       editor
         ?.chain()
         .focus()
-        .setImage({
-          src: result.imageUrl ?? '',
-          alt: file.name,
+        .insertContent({
+          type: 'image',
+          attrs: {
+            src: result.imageUrl ?? '',
+            alt: file.name,
+            imageId: result.imageId,
+          },
         })
         .run();
       setIsDirty(true);
@@ -278,6 +304,7 @@ export const BlogEditor = () => {
           postId: postIdNum,
           data: { imageId: result.imageId },
         });
+        setThumbnailImageId(result.imageId);
       }
       setThumbnailUrl(result.imageUrl ?? null);
     } catch (err) {
@@ -608,6 +635,33 @@ const EditorWrapper = styled.div`
       max-width: 100%;
       margin: 8px 0;
       border-radius: 8px;
+    }
+
+    [data-resize-handle] {
+      width: 10px;
+      height: 10px;
+      border: 2px solid ${({ theme }) => theme.colors.primary};
+      border-radius: 50%;
+
+      background: white;
+
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    [data-resize-wrapper]:hover [data-resize-handle],
+    [data-resize-wrapper]:has(img[data-resize-state]) [data-resize-handle] {
+      opacity: 1;
+    }
+
+    [data-resize-handle='bottom-right'],
+    [data-resize-handle='top-left'] {
+      cursor: nwse-resize;
+    }
+
+    [data-resize-handle='bottom-left'],
+    [data-resize-handle='top-right'] {
+      cursor: nesw-resize;
     }
 
     a {
