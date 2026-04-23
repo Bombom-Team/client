@@ -1,0 +1,77 @@
+name: CI/CD - Maeil Mail Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'maeil-mail/**'
+      - 'shared/**'
+      - '.github/workflows/maeil-mail-*.yml'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+
+concurrency:
+  group: deploy-maeil-mail-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/maeil-mail-ci-base.yml
+    secrets: inherit
+    with:
+      run-build: true
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: maeil-mail-dist
+          path: maeil-mail/dist
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to S3
+        run: |
+          echo "Uploading to bucket: ${{ secrets.MAEIL_MAIL_S3_BUCKET }}"
+          aws s3 sync maeil-mail/dist s3://${{ secrets.MAEIL_MAIL_S3_BUCKET }}/build-origin --delete
+
+      - name: CloudFront Invalidation
+        run: |
+          echo "Invalidating CF: ${{ secrets.MAEIL_MAIL_CLOUDFRONT_DISTRIBUTION_ID }}"
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.MAEIL_MAIL_CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: deploy
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send Post-Deploy Notification
+        uses: ./.github/actions/discord-notify
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_DEPLOY }}
+          content: ${{ github.ref_name == 'main' && '🚀 **매일메일 운영 서버에 새로운 버전이 배포되었습니다!**' || '🧪 **매일메일 개발 서버에 새로운 버전이 배포되었습니다!**' }}
+          title: "🔗 매일메일 바로가기"
+          url: ${{ secrets.MAEIL_MAIL_WEB_URL }}
+          color: ${{ github.ref_name == 'main' && '3066993' || '3447003' }}
+          fields: |
+            [
+              { "name": "배포자", "value": "${{ github.actor }}" },
+              { "name": "배포 시간", "value": "${{ github.event.head_commit.timestamp }}" }
+            ]
