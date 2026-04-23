@@ -5,11 +5,15 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --noEmit -p tsconfig.core.json",
+    "type-check:core": "tsc --noEmit -p tsconfig.core.json",
+    "type-check:ui-web": "tsc --noEmit -p tsconfig.ui-web.json",
     "format": "prettier --write ."
   },
   "exports": {
     ".": "./src/index.ts",
+    "./core": "./src/core/index.ts",
+    "./ui-web": "./src/ui-web/index.ts",
     "./theme": "./src/theme.ts",
     "./webview": "./src/webview.ts",
     "./apis": "./src/apis/index.ts",
