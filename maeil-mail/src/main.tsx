@@ -1,9 +1,11 @@
+import { ApiError } from '@bombom/shared/apis';
+import { Global } from '@emotion/react';
 import { QueryClient } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
-import { ApiError } from '../../shared/src/core/apis';
+import reset from './styles/reset';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,6 +39,7 @@ declare module '@tanstack/react-router' {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <Global styles={reset} />
     <RouterProvider router={router} />
   </StrictMode>,
 );
