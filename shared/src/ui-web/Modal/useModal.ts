@@ -1,0 +1,61 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useClickOutsideRef } from '../hooks/useClickOutsideRef';
+import useFocusTrap from '../hooks/useFocusTrap';
+import useKeydownEscape from '../hooks/useKeydownEscape';
+import { useScrollLock } from '../hooks/useScrollLock';
+import { compoundRefs } from '../hooks/element';
+
+interface UseModalOptions {
+  scrollLock?: boolean;
+  closeOnBackdropClick?: boolean;
+  onOpen?: () => void;
+  onClose?: () => void;
+}
+
+const useModal = (options: UseModalOptions = {}) => {
+  const {
+    scrollLock = true,
+    closeOnBackdropClick = true,
+    onOpen,
+    onClose,
+  } = options;
+  const onOpenRef = useRef(onOpen);
+  const onCloseRef = useRef(onClose);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = useCallback(() => {
+    onOpenRef.current?.();
+    setIsOpen(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    onCloseRef.current?.();
+    setIsOpen(false);
+  }, []);
+
+  const clickOutsideRef = useClickOutsideRef<HTMLDivElement>(
+    closeOnBackdropClick ? closeModal : null,
+  );
+  const focusTrapRef = useFocusTrap<HTMLDivElement>({
+    isActive: isOpen,
+  });
+
+  const modalRef = compoundRefs<HTMLDivElement>(clickOutsideRef, focusTrapRef);
+
+  useScrollLock({ scrollLock, isOpen });
+  useKeydownEscape(isOpen && closeOnBackdropClick ? closeModal : null);
+
+  useEffect(() => {
+    onOpenRef.current = onOpen;
+    onCloseRef.current = onClose;
+  });
+
+  return {
+    modalRef,
+    openModal,
+    closeModal,
+    isOpen,
+  };
+};
+
+export default useModal;
