@@ -15,18 +15,10 @@
     "resolveJsonModule": true,
     "types": [],
     "paths": {
-      "@bombom/shared/env": ["./src/env.ts"]
+      "@bombom/shared/env": ["./src/core/env.ts"]
     }
   },
   "include": [
-    "src/index.ts",
-    "src/app.ts",
-    "src/env.ts",
-    "src/theme.ts",
-    "src/webview.ts",
-    "src/apis/index.ts",
-    "src/types/index.ts",
-    "src/utils/index.ts",
     "src/core/**/*"
   ],
   "exclude": ["node_modules", "dist"]

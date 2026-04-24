@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { AppTheme } from '../../core/theme';
+import type { AppTheme } from '../core/theme';
 import type { ComponentPropsWithoutRef, ElementType } from 'react';
 
 type ColorKey = keyof AppTheme['colors'];
