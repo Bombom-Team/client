@@ -1,6 +1,5 @@
-import { theme } from '@bombom/shared/core';
+import { theme } from '@bombom/shared/theme';
 import { ThemeProvider } from '@emotion/react';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
@@ -24,7 +23,6 @@ function RootComponent() {
         </ThemeProvider>
       </QueryClientProvider>
       <TanStackRouterDevtools />
-      <ReactQueryDevtools />
     </>
   );
 }

@@ -5,6 +5,7 @@ import path from 'path';
 
 export default defineConfig({
   resolve: {
+    dedupe: ['react', 'react-dom', '@emotion/react', '@emotion/styled'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '#': path.resolve(__dirname, 'public'),
