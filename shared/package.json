@@ -5,9 +5,7 @@
   "main": "./src/core/index.ts",
   "types": "./src/core/index.ts",
   "scripts": {
-    "type-check": "pnpm exec tsc --noEmit -p tsconfig.core.json",
-    "type-check:core": "pnpm exec tsc --noEmit -p tsconfig.core.json",
-    "type-check:ui-web": "pnpm exec tsc --noEmit -p tsconfig.ui-web.json",
+    "type-check": "pnpm exec tsc --noEmit",
     "format": "prettier --write ."
   },
   "dependencies": {
