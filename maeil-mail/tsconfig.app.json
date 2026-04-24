@@ -13,6 +13,13 @@
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "@/*": ["src/*"],
+      "#/*": ["public/*"],
+      "@bombom/shared/env": ["src/env.ts"]
+    },
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
 
