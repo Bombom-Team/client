@@ -4,14 +4,14 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "target": "es6",
     "module": "nodenext",
-    "moduleResolution": "nodenext",
     "esModuleInterop": true,
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "nodenext",
     "allowUmdGlobalAccess": true,
-    "baseUrl": ".",
     "types": ["./emotion.d.ts", "jest", "node"],
     "paths": {
-      "@/*": ["src/*"],
-      "#/*": ["public/*"]
+      "@/*": ["./src/*"],
+      "#/*": ["./public/*"]
     }
   },
   "include": ["src", ".storybook/**/*"],
