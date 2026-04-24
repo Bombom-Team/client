@@ -1,1 +1,1 @@
-export { default } from '@bombom/shared/ui-web';
+export { Select as default } from '@bombom/shared/ui-web';

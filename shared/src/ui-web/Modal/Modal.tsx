@@ -1,5 +1,6 @@
 import { theme } from '../../core/theme';
 import { css } from '@emotion/react';
+import type { CSSObject } from '@emotion/react';
 import styled from '@emotion/styled';
 import CloseIcon from '../icons/CloseIcon';
 import type { PropsWithChildren, Ref } from 'react';
@@ -93,7 +94,7 @@ const CloseButton = styled.button`
 
   background: none;
 
-  @media (min-width: 769px) {
+  @media (width >= 769px) {
     top: 20px;
     right: 20px;
   }
@@ -110,7 +111,7 @@ const ContentWrapper = styled.div<{ position: Position }>`
   ${({ position }) => contentWrapperStyles[position]}
 `;
 
-const containerStyles: Record<Position, object> = {
+const containerStyles: Record<Position, CSSObject> = {
   dropdown: {
     height: 'auto',
     borderRadius: '8px',
@@ -159,7 +160,7 @@ const contentWrapperStyles: Record<Position, ReturnType<typeof css>> = {
 
     align-items: center;
 
-    @media (min-width: 769px) {
+    @media (width >= 769px) {
       padding: 32px;
     }
   `,
@@ -170,7 +171,7 @@ const contentWrapperStyles: Record<Position, ReturnType<typeof css>> = {
 
     align-items: center;
 
-    @media (min-width: 769px) {
+    @media (width >= 769px) {
       padding: 36px 52px;
     }
   `,
@@ -182,7 +183,7 @@ const contentWrapperStyles: Record<Position, ReturnType<typeof css>> = {
     align-items: center;
     justify-content: center;
 
-    @media (min-width: 769px) {
+    @media (width >= 769px) {
       padding: 36px 52px;
     }
   `,
