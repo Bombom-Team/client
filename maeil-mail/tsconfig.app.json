@@ -8,12 +8,14 @@
     "moduleResolution": "bundler",
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "types": ["vite/client"],
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "#/*": ["public/*"],
-      "@bombom/shared/env": ["src/env.ts"]
+      "@/*": ["./src/*"],
+      "#/*": ["./public/*"],
+      "@bombom/shared/env": ["./src/env.ts"]
     }
   },
   "include": ["src", "emotion.d.ts"]
