@@ -26,6 +26,33 @@ export default defineConfig([
     },
   },
   {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@bombom/shared/theme',
+              message: "theme import는 '@/styles/theme'을 사용하세요.",
+            },
+            {
+              name: '@bombom/shared',
+              importNames: ['theme'],
+              message: "theme import는 '@/styles/theme'을 사용하세요.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/styles/theme.ts'],
+    rules: {
+      'no-restricted-imports': 'off',
+    },
+  },
+  {
     files: ['src/routes/**/*.tsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
