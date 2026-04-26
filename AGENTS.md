@@ -143,6 +143,73 @@ Silence or implicit behavior is NOT acceptable.
 
 ---
 
+## 10. Claude/Codex Workflow Parity (Required)
+
+To keep Codex and Claude behavior aligned in this repository,
+Codex MUST follow the local mirror skills below:
+
+- `.codex/skills/product-planner/SKILL.md`
+- `.codex/skills/design-planner/SKILL.md`
+- `.codex/skills/update-context/SKILL.md`
+- `.codex/skills/pr-body/SKILL.md`
+
+Shared domain context documents (single source of truth):
+
+- `docs/ai-context/product-context.md`
+- `docs/ai-context/design-guide.md`
+
+Rules:
+
+- Claude/Codex skills MUST reference these `docs/ai-context/*` files.
+- Do NOT create duplicated copies of the same domain context under
+  tool-specific directories.
+
+Trigger mapping:
+
+- "기획/PRD/아이디어 정리" 요청 → `product-planner`
+- "디자인/화면 설계/UI 구성" 요청 → `design-planner`
+- "context 갱신/핵심 기능 맵 업데이트" 요청 → `update-context`
+- "PR 본문/PR description 작성" 요청 → `pr-body`
+
+For `product-planner` and `design-planner`, Codex MUST use a 2-step loop:
+
+1. First draft via sub-agent (`.codex/agents/*.md` 지침 사용)
+2. Ask user only the extracted 2~3 clarification questions
+3. Re-run sub-agent with user answers for the final draft
+
+If user skips questions, Codex MUST return the first draft as-is.
+
+---
+
+## 11. Stop-Gate Parity With Claude (Blocking)
+
+Before declaring completion, Codex MUST additionally run:
+
+1. `npm run lint`
+2. `pnpm -r --filter '!@bombom/shared' type-check`
+
+Rules:
+
+- If either command fails, task completion is blocked.
+- The agent MUST report the failure with actionable error context.
+
+---
+
+## 12. Skill File Sync Rule (Blocking)
+
+`.claude/skills/` and `.codex/skills/` are platform-specific mirrors of
+the same skill set. When modifying either side, the AI MUST:
+
+1. Identify the counterpart file in the other directory
+   (e.g., `.claude/skills/product-planner/SKILL.md` ↔ `.codex/skills/product-planner/SKILL.md`)
+2. Apply the equivalent change to the counterpart file
+3. Treat the task as incomplete until both sides are in sync
+
+Shared domain knowledge lives in `docs/ai-context/` and is referenced
+by both sides — do NOT duplicate it into `.claude/` or `.codex/`.
+
+---
+
 ## Final Note
 
 This repository prioritizes:

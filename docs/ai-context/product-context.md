@@ -109,7 +109,7 @@ _마지막 업데이트: 2026-04-19_
 - 브랜드·핵심기능 개요: `docs/README.md`
 - 용어 정의: `docs/용어사전.md`
 - 프론트엔드 코딩 규약: `docs/frontend-coding-standards.md`
-- 디자인 토큰·컴포넌트: `.claude/skills/design-planner/bombom-design-guide.md`
+- 디자인 토큰·컴포넌트: `docs/ai-context/design-guide.md`
 
 ---
 
