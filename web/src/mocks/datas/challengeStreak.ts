@@ -48,8 +48,9 @@ const getWeekday = (date: Date): Weekday => {
 };
 
 const getRecentWeekdays = (count: number) => {
-  const dates = [getToday()];
-  let currentDate = dates[0] as Date;
+  const today = getToday();
+  let currentDate = isWeekday(today) ? today : getAdjacentWeekday(today, -1);
+  const dates = [currentDate];
 
   while (dates.length < count) {
     currentDate = getAdjacentWeekday(currentDate, -1);
