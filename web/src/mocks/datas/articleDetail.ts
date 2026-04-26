@@ -14,8 +14,7 @@ export const ARTICLE_DETAIL = {
 
 export const MAEIL_MAIL_ARTICLE_ID = 100;
 
-export const MAEIL_MAIL_ANSWER_CHECK_BUTTON_ID =
-  'maeil-mail-answer-check-button';
+export { MAEIL_MAIL_ANSWER_CHECK_BUTTON_ID } from '@/pages/detail/constants/maeilMail';
 
 export const MAEIL_MAIL_ARTICLE_DETAIL = {
   title: '[매일메일] React Suspense는 어떻게 동작하나요?',
