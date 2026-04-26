@@ -12,7 +12,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ENV } from './apis/env';
 import { queries } from './apis/queries';
-import FullPageErrorFallback from './components/FullPageErrorFallback/FullPageErrorFallback';
+import PageErrorFallback from './components/PageErrorFallback/PageErrorFallback';
 import GAInitializer from './libs/googleAnalytics/GAInitializer';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
@@ -97,7 +97,7 @@ enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <Global styles={reset} />
-      <ErrorBoundary fallback={FullPageErrorFallback}>
+      <ErrorBoundary fallback={PageErrorFallback}>
         <RouterProvider router={router} />
         <GAInitializer />
       </ErrorBoundary>

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import Button from '../Button/Button';
 import Text from '../Text/Text';
 
-const FullPageErrorFallback = () => {
+const PageErrorFallback = () => {
   const handleRefresh = () => {
     window.location.reload();
   };
@@ -22,7 +22,7 @@ const FullPageErrorFallback = () => {
   );
 };
 
-export default FullPageErrorFallback;
+export default PageErrorFallback;
 
 const Container = styled.div`
   display: flex;
