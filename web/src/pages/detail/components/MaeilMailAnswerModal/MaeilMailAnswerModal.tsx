@@ -1,7 +1,11 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { queries } from '@/apis/queries';
+import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
+import { useDevice } from '@/hooks/useDevice';
+import type { ChangeEvent } from 'react';
 
 interface MaeilMailAnswerModalProps {
   modalRef: (node: HTMLDivElement) => void;
@@ -16,15 +20,57 @@ const MaeilMailAnswerModal = ({
   onClose,
   articleId,
 }: MaeilMailAnswerModalProps) => {
+  const [answer, setAnswer] = useState('');
+  const device = useDevice();
+
   useQuery({
     ...queries.contentByArticleId({ articleId }),
     enabled: isOpen,
   });
 
+  const handleAnswerChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setAnswer(e.target.value);
+  };
+
+  const handleViewAnswerClick = () => {
+    // TODO: 정답 보기 화면으로 이동
+  };
+
+  const handleSubmitClick = () => {
+    // TODO: 답변 제출 후 정답 보기 화면으로 이동
+  };
+
   return (
-    <Modal modalRef={modalRef} isOpen={isOpen} closeModal={onClose}>
+    <Modal
+      modalRef={modalRef}
+      isOpen={isOpen}
+      closeModal={onClose}
+      position={device === 'mobile' ? 'bottom' : 'center'}
+    >
       <Container>
-        <Title>답변 작성</Title>
+        <Title>내 답변 작성</Title>
+        <Field>
+          <Label htmlFor="maeil-mail-answer">내 답변</Label>
+          <Textarea
+            id="maeil-mail-answer"
+            value={answer}
+            onChange={handleAnswerChange}
+            placeholder="생각나는 대로 적어도 괜찮아요"
+          />
+          <CharacterCount>{answer.length}자</CharacterCount>
+        </Field>
+        <ButtonRow>
+          <ViewAnswerButton type="button" onClick={handleViewAnswerClick}>
+            바로 정답 보기
+          </ViewAnswerButton>
+          <SubmitButton
+            variant="filled"
+            onClick={handleSubmitClick}
+            disabled={answer.length === 0}
+          >
+            제출하고 정답 보기
+          </SubmitButton>
+        </ButtonRow>
       </Container>
     </Modal>
   );
@@ -33,15 +79,87 @@ const MaeilMailAnswerModal = ({
 export default MaeilMailAnswerModal;
 
 const Container = styled.div`
-  padding: 24px 0 0;
+  width: 720px;
+  max-width: 100%;
+  padding: 8px 0 0;
 
   display: flex;
-  gap: 16px;
+  gap: 24px;
   flex-direction: column;
-  align-items: center;
 `;
 
 const Title = styled.h2`
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t10Bold};
+`;
+
+const Field = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+`;
+
+const Label = styled.label`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t5Regular};
+`;
+
+const Textarea = styled.textarea`
+  min-height: 160px;
+  padding: 12px 14px;
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
+  border-radius: 12px;
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t6Regular};
+
+  resize: vertical;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.textTertiary};
+  }
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const CharacterCount = styled.p`
+  margin-left: auto;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t3Regular};
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+`;
+
+const ViewAnswerButton = styled.button`
+  padding: 8px 4px;
+  border: none;
+
+  background: none;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t3Regular};
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  cursor: pointer;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.textPrimary};
+  }
+`;
+
+const SubmitButton = styled(Button)`
+  flex: 1;
+  height: 48px;
+  border-radius: 24px;
+
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
