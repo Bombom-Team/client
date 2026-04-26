@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useMaeilMailAnswerMutation } from '../../hooks/useMaeilMailAnswerMutation';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
+import { toast } from '@/components/Toast/utils/toastActions';
 import { useDevice } from '@/hooks/useDevice';
 import type { ChangeEvent } from 'react';
 
@@ -23,10 +25,14 @@ const MaeilMailAnswerModal = ({
   const [answer, setAnswer] = useState('');
   const device = useDevice();
 
-  useQuery({
+  const { data: content } = useQuery({
     ...queries.contentByArticleId({ articleId }),
     enabled: isOpen,
   });
+  const contentId = content?.contentId;
+
+  const { mutate: submitAnswer, isPending: isSubmitting } =
+    useMaeilMailAnswerMutation();
 
   const handleAnswerChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setAnswer(e.target.value);
@@ -37,8 +43,26 @@ const MaeilMailAnswerModal = ({
   };
 
   const handleSubmitClick = () => {
-    // TODO: 답변 제출 후 정답 보기 화면으로 이동
+    if (contentId === undefined) {
+      toast.error('답변 제출에 실패했어요. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+
+    submitAnswer(
+      { contentId, answer },
+      {
+        onSuccess: () => {
+          // TODO: 정답 보기 화면으로 이동
+          onClose();
+        },
+        onError: () => {
+          toast.error('답변 제출에 실패했어요. 잠시 후 다시 시도해주세요.');
+        },
+      },
+    );
   };
+
+  const isSubmitDisabled = answer.length === 0 || isSubmitting;
 
   return (
     <Modal
@@ -66,7 +90,7 @@ const MaeilMailAnswerModal = ({
           <SubmitButton
             variant="filled"
             onClick={handleSubmitClick}
-            disabled={answer.length === 0}
+            disabled={isSubmitDisabled}
           >
             제출하고 정답 보기
           </SubmitButton>

@@ -16,3 +16,18 @@ export const getMaeilMailContent = async ({
     query: { articleId },
   });
 };
+
+export interface PostMaeilMailAnswerParams {
+  contentId: number;
+  answer: string;
+}
+
+export const postMaeilMailAnswer = async ({
+  contentId,
+  answer,
+}: PostMaeilMailAnswerParams) => {
+  return await fetcher.post({
+    path: `/maeil-mail/${contentId}/answer/me`,
+    body: { contentId, answer },
+  });
+};
