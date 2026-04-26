@@ -1,6 +1,23 @@
+import { MAEIL_MAIL_ARTICLE_ID } from './articleDetail';
 import type { Article } from '@/types/articles';
 
 export const ARTICLES: Article[] = [
+  {
+    articleId: MAEIL_MAIL_ARTICLE_ID,
+    title: '[매일메일] React Suspense는 어떻게 동작하나요?',
+    contentsSummary:
+      '오늘의 매일메일 질문입니다. 글을 읽고 본인의 언어로 정답을 작성해보세요.',
+    arrivedDateTime: '2026.04.26',
+    thumbnailUrl: '',
+    expectedReadTime: 4,
+    isRead: false,
+    isBookmarked: false,
+    newsletter: {
+      category: '기술',
+      name: '매일메일',
+      imageUrl: 'https://example.com/images/maeil-mail.avif',
+    },
+  },
   {
     articleId: 5,
     title: '폭염에도 전력난 없는 이유는11111?',
