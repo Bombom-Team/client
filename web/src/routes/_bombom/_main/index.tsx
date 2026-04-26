@@ -6,8 +6,8 @@ import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import AppInstallSection from '@/pages/recommend/components/AppInstallSection/AppInstallSection';
 import ChallengeSection from '@/pages/recommend/components/ChallengeSection/ChallengeSection';
-import NewsletterHero from '@/pages/recommend/components/NewsletterHero/NewsletterHero';
 import NoticeAnnounceBar from '@/pages/recommend/components/NoticeAnnounceBar/NoticeAnnounceBar';
+import SlideCardList from '@/pages/recommend/components/SlideCardList/SlideCardList';
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
 import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
@@ -49,7 +49,7 @@ function Index() {
 
       <MainContent device={device}>
         <MainSection device={device}>
-          <NewsletterHero />
+          <SlideCardList />
           <ChallengeSection />
           <TrendySection />
         </MainSection>
