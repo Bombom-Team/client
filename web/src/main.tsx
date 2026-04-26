@@ -5,12 +5,14 @@ import {
   init as initSentry,
   tanstackRouterBrowserTracingIntegration,
 } from '@sentry/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { QueryCache, QueryClient } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ENV } from './apis/env';
 import { queries } from './apis/queries';
+import FullPageErrorFallback from './components/FullPageErrorFallback/FullPageErrorFallback';
 import GAInitializer from './libs/googleAnalytics/GAInitializer';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
@@ -95,8 +97,10 @@ enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <Global styles={reset} />
-      <RouterProvider router={router} />
-      <GAInitializer />
+      <ErrorBoundary fallback={FullPageErrorFallback}>
+        <RouterProvider router={router} />
+        <GAInitializer />
+      </ErrorBoundary>
     </StrictMode>,
   );
 });
