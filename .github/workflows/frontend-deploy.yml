@@ -5,6 +5,12 @@ on:
     branches:
       - main
       - dev
+    paths:
+      - 'web/**'
+      - 'shared/**'
+      - '.github/workflows/frontend-*.yml'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
 
 concurrency:
   group: deploy-${{ github.ref_name }}
@@ -61,7 +67,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_DEPLOY }}
           content: ${{ github.ref_name == 'main' && '🚀 **운영 서버에 새로운 버전이 배포되었습니다!**' || '🧪 **개발 서버에 새로운 버전이 배포되었습니다!**' }}
-          title: "🔗 사이트 바로가기"
+          title: '🔗 사이트 바로가기'
           url: ${{ secrets.WEB_URL }}
           color: ${{ github.ref_name == 'main' && '3066993' || '3447003' }}
           fields: |

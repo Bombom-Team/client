@@ -2,6 +2,12 @@ name: Frontend PR CI
 
 on:
   pull_request:
+    paths:
+      - 'web/**'
+      - 'shared/**'
+      - '.github/workflows/frontend-*.yml'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
 
 jobs:
   pre-build:
