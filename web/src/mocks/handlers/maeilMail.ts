@@ -18,4 +18,21 @@ export const maeilMailHandlers = [
 
     return HttpResponse.json({ contentId: 7 });
   }),
+
+  http.post(
+    `${baseURL}/maeil-mail/:contentId/answer/me`,
+    async ({ request, params }) => {
+      const body = (await request.json()) as {
+        contentId: number;
+        answer: string;
+      };
+      // eslint-disable-next-line no-console
+      console.log('[mock] 매일메일 답변 제출', {
+        contentIdInPath: Number(params.contentId),
+        ...body,
+      });
+
+      return HttpResponse.json({}, { status: 200 });
+    },
+  ),
 ];
