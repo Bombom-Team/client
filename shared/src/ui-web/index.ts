@@ -17,6 +17,20 @@ export type { SelectOption } from './Select/Select.types';
 
 export { default as Toast } from './Toast/Toast';
 export { useToasts } from './Toast/useToasts';
-export { toast, showToast, hideToast, cleanToasts, updateToast } from './Toast/utils/toastActions';
-export type { ToastData, ToastVariant, ToastPosition } from './Toast/Toast.types';
-export { DEFAULT_LIMIT, DEFAULT_DURATION, DEFAULT_POSITION } from './Toast/Toast.constants';
+export {
+  toast,
+  showToast,
+  hideToast,
+  cleanToasts,
+  updateToast,
+} from './Toast/utils/toastActions';
+export type {
+  ToastData,
+  ToastVariant,
+  ToastPosition,
+} from './Toast/Toast.types';
+export {
+  DEFAULT_LIMIT,
+  DEFAULT_DURATION,
+  DEFAULT_POSITION,
+} from './Toast/Toast.constants';

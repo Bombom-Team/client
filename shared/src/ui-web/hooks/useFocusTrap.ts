@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { isElementVisible } from './element';
+import { isElementVisible } from '../utils/element';
 
 interface UseFocusTrapParams {
   isActive?: boolean;

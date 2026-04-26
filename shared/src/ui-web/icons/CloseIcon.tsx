@@ -1,6 +1,11 @@
 import type { SVGProps } from 'react';
 
-const CloseIcon = ({ width = 36, height = 36, fill = 'currentColor', ...props }: SVGProps<SVGSVGElement>) => (
+const CloseIcon = ({
+  width = 36,
+  height = 36,
+  fill = 'currentColor',
+  ...props
+}: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}

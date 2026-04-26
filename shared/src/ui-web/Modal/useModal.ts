@@ -3,7 +3,7 @@ import { useClickOutsideRef } from '../hooks/useClickOutsideRef';
 import useFocusTrap from '../hooks/useFocusTrap';
 import useKeydownEscape from '../hooks/useKeydownEscape';
 import { useScrollLock } from '../hooks/useScrollLock';
-import { compoundRefs } from '../hooks/element';
+import { compoundRefs } from '../utils/element';
 
 interface UseModalOptions {
   scrollLock?: boolean;

@@ -1,7 +1,15 @@
 import styled from '@emotion/styled';
 import type { SVGProps } from 'react';
 
-type Direction = 'up' | 'upRight' | 'right' | 'downRight' | 'down' | 'downLeft' | 'left' | 'upLeft';
+type Direction =
+  | 'up'
+  | 'upRight'
+  | 'right'
+  | 'downRight'
+  | 'down'
+  | 'downLeft'
+  | 'left'
+  | 'upLeft';
 
 interface ChevronIconProps extends SVGProps<SVGSVGElement> {
   direction?: Direction;
@@ -18,7 +26,14 @@ const rotationMap: Record<Direction, number> = {
   upLeft: 45,
 };
 
-const ChevronIcon = ({ direction = 'down', className, width = 16, height = 16, color = 'currentColor', ...props }: ChevronIconProps) => {
+const ChevronIcon = ({
+  direction = 'down',
+  className,
+  width = 16,
+  height = 16,
+  color = 'currentColor',
+  ...props
+}: ChevronIconProps) => {
   return (
     <Wrapper className={className} rotation={rotationMap[direction]}>
       <svg
