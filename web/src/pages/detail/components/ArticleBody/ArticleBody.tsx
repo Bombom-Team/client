@@ -149,6 +149,7 @@ const ArticleBody = ({
         modalRef={maeilMailModalRef}
         isOpen={isMaeilMailModalOpen}
         onClose={closeMaeilMailModal}
+        articleId={articleId}
       />
     </>
   );
