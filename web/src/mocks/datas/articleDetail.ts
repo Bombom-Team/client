@@ -11,3 +11,242 @@ export const ARTICLE_DETAIL = {
     category: '트렌드/라이프',
   },
 };
+
+export const MAEIL_MAIL_ARTICLE_ID = 100;
+
+export const MAEIL_MAIL_ARTICLE_DETAIL = {
+  title: '[매일메일] React Suspense는 어떻게 동작하나요?',
+  contents: `<section class="mail-preview" aria-hidden="true">
+        <span
+                style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden">
+            오늘의 질문이 도착했습니다.
+        </span>
+    <span
+            style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden">
+            &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
+            &nbsp;
+            &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
+            &zwnj;
+            &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
+            &shy;
+            &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
+            &nbsp;
+            &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
+            &zwnj;
+            &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
+            &shy;
+            &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
+            &nbsp;
+            &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
+            &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
+            &nbsp;
+            &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
+            &zwnj;
+            &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
+            &shy;
+            &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
+            &nbsp;
+            &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
+            &shy;
+            &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
+            &nbsp;
+            &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
+            &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
+            &nbsp;
+            &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
+            &zwnj;
+            &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
+            &shy;
+            &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
+            &nbsp;
+            &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
+            &zwnj;
+            &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
+            &shy;
+            &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
+            &nbsp;
+            &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
+            &zwnj;
+            &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
+            &shy;
+            &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
+            &nbsp;
+            &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
+        </span>
+</section>
+
+<div style="
+        height: 100%;
+        width: 100%;
+        font-family: Arial, sans-serif;
+        user-select: none;
+      ">
+    <div style="
+          background-color: #ffffff;
+          border-radius: 5px;
+          border: 1px solid #e1e1e1;
+          max-width: 480px;
+          width: 100%;
+          margin: 20px auto;
+        ">
+
+        <a href="https://www.maeil-mail.kr/" style="
+            display: block;
+            text-decoration: none;
+            width: 5.5rem;
+            font-weight: bold;
+            padding: 21px 16px 16px 40px;
+          ">
+            <img src="https://maeil-mail-resource.s3.ap-northeast-2.amazonaws.com/maeilmail-logo.png"
+                 style="width: 77px;"/>
+        </a>
+        <section style="text-align: center;">
+            <div
+                    style="background: url('https://maeil-mail-resource.s3.ap-northeast-2.amazonaws.com/mail-main-background.png'); padding: 54.5px 30px;">
+                <p
+                        style="font-size: 14px; color: #EEF8F5; font-weight: 550; margin: 0 auto 20px auto; width: fit-content;">
+                    오늘의 질문
+                </p>
+                <div style="
+              border-radius: 8px;
+              text-align: left;
+              ">
+                    <p style="
+                font-size: 21px;
+                color: #ffffff;
+                font-weight: 600;
+                margin-top: 16px;
+                margin-bottom: 0;
+                line-height: 1.4;
+                text-align: center;
+                word-break: keep-all;
+                text-decoration: none;
+                " th:text="\${question}"></p>
+                </div>
+            </div>
+            <p style="
+            font-size: 14px;
+            color: #666666;
+            text-align: center;
+            word-break: keep-all;
+            line-height: 1.5;
+            font-weight: 350;
+            padding: 40px 30px 24px 30px;
+            margin: 0px;
+            ">
+                혹시 답변 과정에서 확실하지 않은 부분이 있다면,<br/>
+                아래 버튼을 눌러 답변을 확인해 보시길 권장드려요!
+            </p>
+            <div style="margin: 0 auto; width: fit-content;">
+                <a th:href="@{https://www.maeil-mail.kr/question/{id}(id = \${questionId})}" style="
+                display: inline-block;
+                padding: 10px 26px;
+                background: url('https://maeil-mail-resource.s3.ap-northeast-2.amazonaws.com/mail-button.png');
+                background-size: cover;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                line-height: 1.5;
+                margin-bottom: 44px;
+                width: fit-content;
+                cursor: pointer;
+                ">
+                    답변 확인
+                </a>
+            </div>
+            <div style="height: 1px; width: 90%; background: #e1e1e1; margin: 0 auto;"></div>
+            <table role="presentation" style="
+      width: 100%;
+      border-collapse: collapse;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 0 47px;
+      ">
+                <tr>
+                    <td
+                            style="margin-top: 5rem; font-size: 14px; padding-bottom: 30px; color: #888888; width: auto; white-space: nowrap; text-align: center;">
+                        <table width="75%" style="margin: 0 auto;">
+                            <tr>
+                                <td width="100px" style="padding-top: 34px">
+                                    <a th:href="@{https://www.maeil-mail.kr/question/mine/{email}(email = \${email})}"
+                                       style="
+                      color: #888888;
+                      text-decoration: none;
+                      cursor: pointer;
+                      ">
+                                        <img src="https://maeil-mail-resource.s3.ap-northeast-2.amazonaws.com/subscribe-question.png"
+                                             style="
+                        width: 75px;
+                        display: inline;
+                        cursor: pointer;
+                        "/>
+                                    </a>
+                                </td>
+                                <td width="100px" style="text-align: center; padding-top: 9px;">
+                                    <a href="https://wiki.maeil-mail.kr/" style="
+                    color: #888888;
+                    text-decoration: none;
+                    cursor: pointer;
+                    ">
+                                        <div
+                                                style="color: #17C881; border: 1.3px solid #17C881; padding: 1px 5px; width: fit-content; border-radius: 80px; font-size: 11px; font-weight: 550; margin: 0 auto 7px auto;">
+                                            NEW
+                                        </div>
+                                        <img src="https://maeil-mail-resource.s3.ap-northeast-2.amazonaws.com/maeilwiki-access.png"
+                                             style="
+                      width: 48px;
+                      display: inline;
+                      cursor: pointer;
+                      "/>
+                                    </a>
+                                </td>
+                                <td width="100px" style="text-align: center; padding-top: 34px;">
+                                    <a style="
+                    color: #888888;
+                    text-decoration: none;
+                    cursor: pointer;
+                    " th:href="@{https://www.maeil-mail.kr/setting(email=\${email}, token=\${token})}">
+                                        <img src="https://maeil-mail-resource.s3.ap-northeast-2.amazonaws.com/setting.png"
+                                             style="
+                      width: 24px;
+                      display: inline;
+                      cursor: pointer;
+                      "/>
+                                    </a>
+                                </td>
+                                <td width="70px" style="text-align: right; padding-top: 34px;">
+                                    <a th:href="@{https://www.maeil-mail.kr/unsubscribe(email=\${email}, token=\${token})}"
+                                       style="
+                    color: #888888;
+                    text-decoration: none;
+                    cursor: pointer;
+                    ">
+                                        <img src="https://maeil-mail-resource.s3.ap-northeast-2.amazonaws.com/unsubscribe.png"
+                                             style="
+                      width: 51px;
+                      display: inline;
+                      cursor: pointer;
+                      margin-top: 1px;
+                      "/>
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </section>
+    </div>
+</div>`,
+  arrivedDateTime: '2026-04-26T08:00:00.000000',
+  expectedReadTime: 4,
+  newsletter: {
+    name: '매일메일',
+    email: 'contact@bombom.co',
+    imageUrl: 'https://example.com/images/maeil-mail.avif',
+    category: '기술',
+  },
+};
