@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import ChallengeBadgeInfo from './ChallengeBadgeInfo';
 import RankingBadgeInfo from './RankingBadgeInfo';
+import StreakBadgeInfo from './StreakBadgeInfo';
 import type { Badges } from '../../types/badges';
 
 interface UserBadgeInfoProps {
@@ -12,6 +13,7 @@ const UserBadgeInfo = ({ badges }: UserBadgeInfoProps) => {
     <Container>
       <ChallengeBadgeInfo badges={badges} />
       <RankingBadgeInfo badges={badges} />
+      <StreakBadgeInfo badges={badges} />
     </Container>
   );
 };
