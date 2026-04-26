@@ -49,19 +49,20 @@ export const TabToggle = styled.div`
   display: flex;
   gap: 4px;
   padding: 2px;
-  border-radius: 8px;
+  border-radius: 30px;
 
   background-color: ${({ theme }) => theme.colors.dividers};
 `;
 
 export const TabButton = styled.button<{ active: boolean }>`
-  padding: 4px 12px;
+  padding: 8px;
   border: none;
-  border-radius: 6px;
+  border-radius: 30px;
 
   color: ${({ theme, active }) =>
     active ? theme.colors.textPrimary : theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
+  font: ${({ theme }) => theme.fonts.t4Bold};
+  width: 108px;
 
   background-color: ${({ active }) => (active ? '#fff' : 'transparent')};
 
