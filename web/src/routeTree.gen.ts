@@ -17,7 +17,6 @@ import { Route as EventRouteImport } from './routes/event';
 import { Route as BlogRouteImport } from './routes/blog';
 import { Route as BombomRouteImport } from './routes/_bombom';
 import { Route as BlogIndexRouteImport } from './routes/blog/index';
-import { Route as MaeilMailLandingRouteImport } from './routes/maeil-mail/landing';
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
 import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
 import { Route as ChallengeChallengeIdLandingRouteImport } from './routes/challenge/$challengeId/landing';
@@ -79,11 +78,6 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => BlogRoute,
-} as any);
-const MaeilMailLandingRoute = MaeilMailLandingRouteImport.update({
-  id: '/maeil-mail/landing',
-  path: '/maeil-mail/landing',
-  getParentRoute: () => rootRouteImport,
 } as any);
 const BombomMainRoute = BombomMainRouteImport.update({
   id: '/_main',
@@ -212,7 +206,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
-  '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/blog/': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/challenge': typeof BombomMainChallengeRouteWithChildren;
@@ -242,7 +235,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
-  '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/blog': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/guide': typeof BombomMainGuideRoute;
@@ -274,7 +266,6 @@ export interface FileRoutesById {
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
-  '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/blog/': typeof BlogIndexRoute;
   '/_bombom/_main/bookmark': typeof BombomMainBookmarkRoute;
   '/_bombom/_main/challenge': typeof BombomMainChallengeRouteWithChildren;
@@ -307,7 +298,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/maintenance'
     | '/signup'
-    | '/maeil-mail/landing'
     | '/blog/'
     | '/bookmark'
     | '/challenge'
@@ -337,7 +327,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/maintenance'
     | '/signup'
-    | '/maeil-mail/landing'
     | '/blog'
     | '/bookmark'
     | '/guide'
@@ -368,7 +357,6 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/signup'
     | '/_bombom/_main'
-    | '/maeil-mail/landing'
     | '/blog/'
     | '/_bombom/_main/bookmark'
     | '/_bombom/_main/challenge'
@@ -401,7 +389,6 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute;
   MaintenanceRoute: typeof MaintenanceRoute;
   SignupRoute: typeof SignupRoute;
-  MaeilMailLandingRoute: typeof MaeilMailLandingRoute;
   ChallengeChallengeIdLandingRoute: typeof ChallengeChallengeIdLandingRoute;
 }
 
@@ -462,13 +449,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/';
       preLoaderRoute: typeof BlogIndexRouteImport;
       parentRoute: typeof BlogRoute;
-    };
-    '/maeil-mail/landing': {
-      id: '/maeil-mail/landing';
-      path: '/maeil-mail/landing';
-      fullPath: '/maeil-mail/landing';
-      preLoaderRoute: typeof MaeilMailLandingRouteImport;
-      parentRoute: typeof rootRouteImport;
     };
     '/_bombom/_main': {
       id: '/_bombom/_main';
@@ -733,7 +713,6 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MaintenanceRoute: MaintenanceRoute,
   SignupRoute: SignupRoute,
-  MaeilMailLandingRoute: MaeilMailLandingRoute,
   ChallengeChallengeIdLandingRoute: ChallengeChallengeIdLandingRoute,
 };
 export const routeTree = rootRouteImport
