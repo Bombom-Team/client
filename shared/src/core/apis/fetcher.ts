@@ -29,14 +29,26 @@ export const fetcher = {
     body,
     headers,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, baseUrl, body, method: 'POST', headers }),
+    request<TRequest, TResponse>({
+      path,
+      baseUrl,
+      body,
+      method: 'POST',
+      headers,
+    }),
   patch: async <TRequest extends JsonBody, TResponse>({
     path,
     baseUrl,
     query,
     body,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, baseUrl, query, body, method: 'PATCH' }),
+    request<TRequest, TResponse>({
+      path,
+      baseUrl,
+      query,
+      body,
+      method: 'PATCH',
+    }),
   put: async <TRequest extends JsonBody, TResponse>({
     path,
     baseUrl,

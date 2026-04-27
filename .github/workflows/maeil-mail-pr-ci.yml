@@ -1,0 +1,16 @@
+name: Maeil Mail PR CI
+
+on:
+  pull_request:
+    paths:
+      - 'maeil-mail/**'
+      - 'shared/**'
+      - '.github/workflows/maeil-mail-*.yml'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+
+jobs:
+  pre-build:
+    uses: ./.github/workflows/maeil-mail-ci-base.yml
+    with:
+      run-build: false
