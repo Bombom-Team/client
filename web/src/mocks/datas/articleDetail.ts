@@ -41,7 +41,7 @@ export const MAEIL_MAIL_ARTICLE_DETAIL = {
             }
         </style>
 
-        <a href="https://www.maeil-mail.kr/" style="display:block;margin-bottom:40px;text-decoration:none;width:5.5rem;font-weight:bold" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://www.maeil-mail.kr/&amp;source=gmail&amp;ust=1777304654547000&amp;usg=AOvVaw0k23bneZD02OK7h58j49Qc">
+        <a href="https://maeilmail.bombom.news" style="display:block;margin-bottom:40px;text-decoration:none;width:5.5rem;font-weight:bold" target="_blank">
             <p style="color:#00a86b;text-align:start;font-size:1rem">매일메일</p>
         </a>
         <p style="display:inline-block;margin:0 0 16px 0;padding:8px 16px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);border-radius:999px;font-size:16px;color:#10b981;font-weight:700;letter-spacing:1px">● 오늘의 질문</p>
