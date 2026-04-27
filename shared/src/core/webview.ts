@@ -1,4 +1,4 @@
-import { OAuthProvider } from './types/auth';
+import type { OAuthProvider } from './types/auth';
 
 export interface WindowWithWebkit extends Window {
   webkit?: {

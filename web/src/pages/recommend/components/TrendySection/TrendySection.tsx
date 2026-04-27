@@ -77,7 +77,7 @@ const TrendySection = () => {
 
   const handleCardClick = (newsletter: Newsletter) => {
     if (newsletter.source === 'MAEIL_MAIL') {
-      navigate({ to: '/maeil-mail/landing' });
+      navigate({ href: 'https://maeilmail.bombom.news' });
       return;
     }
     setSelectedNewsletterId(newsletter.newsletterId);

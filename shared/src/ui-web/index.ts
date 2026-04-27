@@ -34,3 +34,9 @@ export {
   DEFAULT_DURATION,
   DEFAULT_POSITION,
 } from './Toast/Toast.constants';
+
+export { useDevice } from './hooks/useDevice';
+export type { Device } from './hooks/useDevice';
+export { default as useMediaQuery } from './hooks/useMediaQuery';
+export type { MediaCondition } from './hooks/useMediaQuery';
+export { DEVICE_BREAKPOINTS } from './hooks/deviceBreakpoints';
