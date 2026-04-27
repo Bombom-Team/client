@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import { getMaeilMailAnswerUrl } from '../../constants/maeilMail';
 import { useMaeilMailAnswerMutation } from '../../hooks/useMaeilMailAnswerMutation';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
@@ -24,6 +26,7 @@ const MaeilMailAnswerModal = ({
 }: MaeilMailAnswerModalProps) => {
   const [answer, setAnswer] = useState('');
   const device = useDevice();
+  const navigate = useNavigate();
 
   const { data: content } = useQuery({
     ...queries.contentByArticleId({ articleId }),
@@ -39,7 +42,11 @@ const MaeilMailAnswerModal = ({
   };
 
   const handleViewAnswerClick = () => {
-    // TODO: 정답 보기 화면으로 이동
+    if (contentId === undefined) {
+      toast.error('정답 페이지로 이동할 수 없어요. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    navigate({ href: getMaeilMailAnswerUrl(contentId) });
   };
 
   const handleSubmitClick = () => {
@@ -52,8 +59,7 @@ const MaeilMailAnswerModal = ({
       { contentId, answer },
       {
         onSuccess: () => {
-          // TODO: 정답 보기 화면으로 이동
-          onClose();
+          navigate({ href: getMaeilMailAnswerUrl(contentId) });
         },
         onError: () => {
           toast.error('답변 제출에 실패했어요. 잠시 후 다시 시도해주세요.');
