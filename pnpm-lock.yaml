@@ -340,9 +340,6 @@ importers:
       react-dom:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
-      semver:
-        specifier: ^7.7.3
-        version: 7.7.3
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
@@ -359,9 +356,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.6
         version: 19.2.3(@types/react@19.1.17)
-      '@types/semver':
-        specifier: ^7.7.1
-        version: 7.7.1
       '@vitejs/plugin-react':
         specifier: ^6.0.1
         version: 6.0.1(vite@8.0.10(@types/node@24.12.2)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
@@ -407,10 +401,16 @@ importers:
       react:
         specifier: ^19.1.0
         version: 19.1.0
+      semver:
+        specifier: ^7.7.3
+        version: 7.7.3
     devDependencies:
       '@types/react':
         specifier: ^19.1.8
         version: 19.1.17
+      '@types/semver':
+        specifier: ^7.7.1
+        version: 7.7.1
       typescript:
         specifier: ^5.8.3
         version: 5.9.3
@@ -459,9 +459,6 @@ importers:
       react-google-recaptcha:
         specifier: ^3.1.0
         version: 3.1.0(react@19.1.0)
-      semver:
-        specifier: ^7.7.3
-        version: 7.7.3
     devDependencies:
       '@babel/core':
         specifier: ^7.28.0
@@ -520,9 +517,6 @@ importers:
       '@types/react-google-recaptcha':
         specifier: ^2.1.9
         version: 2.1.9
-      '@types/semver':
-        specifier: ^7.7.1
-        version: 7.7.1
       '@types/webpack':
         specifier: ^5.28.5
         version: 5.28.5(@swc/core@1.14.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
