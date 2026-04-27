@@ -1,22 +1,14 @@
+const missingEnv = (key: string) => () => {
+  throw new Error(
+    `[ENV] "${key}"가 주입되지 않았습니다. ` +
+      `webpack(web/admin) DefinePlugin · vite(maeil-mail) define · metro.config(app) 중 ` +
+      `해당 번들러의 환경변수 주입 설정과 .env 파일에 키가 존재하는지 확인해주세요.`,
+  );
+};
+
 export const ENV = {
-  baseUrl: (() => {
-    throw new Error(
-      'ENV가 설정되지 않았습니다. webpack 또는 metro.config 설정을 확인해주세요.',
-    );
-  })(),
-  eventBaseUrl: (() => {
-    throw new Error(
-      'ENV가 설정되지 않았습니다. webpack 또는 metro.config 설정을 확인해주세요.',
-    );
-  })(),
-  notificationBaseUrl: (() => {
-    throw new Error(
-      'ENV가 설정되지 않았습니다. webpack 또는 metro.config 설정을 확인해주세요.',
-    );
-  })(),
-  blogBaseUrl: (() => {
-    throw new Error(
-      'ENV가 설정되지 않았습니다. webpack 또는 metro.config 설정을 확인해주세요.',
-    );
-  })(),
+  baseUrl: missingEnv('baseUrl')(),
+  eventBaseUrl: missingEnv('eventBaseUrl')(),
+  notificationBaseUrl: missingEnv('notificationBaseUrl')(),
+  blogBaseUrl: missingEnv('blogBaseUrl')(),
 } as const;
