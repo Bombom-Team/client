@@ -1,5 +1,9 @@
 import { http, HttpResponse } from 'msw';
-import { ARTICLE_DETAIL } from '../datas/articleDetail';
+import {
+  ARTICLE_DETAIL,
+  MAEIL_MAIL_ARTICLE_DETAIL,
+  MAEIL_MAIL_ARTICLE_ID,
+} from '../datas/articleDetail';
 import { ARTICLES as ORIGINAL_ARTICLES } from '../datas/articles';
 import {
   PREVIOUS_ARTICLE_DETAILS,
@@ -76,7 +80,13 @@ export const articleHandlers = [
   }),
 
   // 아티클 상세
-  http.get(`${baseURL}/articles/:id`, () => {
+  http.get(`${baseURL}/articles/:id`, ({ params }) => {
+    const { id } = params;
+
+    if (Number(id) === MAEIL_MAIL_ARTICLE_ID) {
+      return HttpResponse.json(MAEIL_MAIL_ARTICLE_DETAIL);
+    }
+
     return HttpResponse.json(ARTICLE_DETAIL);
   }),
 
