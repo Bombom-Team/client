@@ -9,10 +9,10 @@ const PageErrorFallback = () => {
 
   return (
     <Container role="alert">
-      <Text as="h1" font="t8Bold" color="textPrimary">
+      <Text as="h1" font="t11Bold" color="textPrimary">
         문제가 발생했어요
       </Text>
-      <Text as="p" font="t5Regular" color="textSecondary">
+      <Text as="p" font="t6Regular" color="textSecondary">
         예상치 못한 오류가 발생했어요.
         <br />
         잠시 후 다시 시도해주세요.

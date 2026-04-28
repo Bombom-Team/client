@@ -99,8 +99,8 @@ enableMocking().then(() => {
       <Global styles={reset} />
       <ErrorBoundary fallback={PageErrorFallback}>
         <RouterProvider router={router} />
-        <GAInitializer />
       </ErrorBoundary>
+      <GAInitializer />
     </StrictMode>,
   );
 });
