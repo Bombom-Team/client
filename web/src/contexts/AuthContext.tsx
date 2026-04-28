@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRouterState } from '@tanstack/react-router';
 import { createContext, useContext, useMemo } from 'react';
 import { queries } from '@/apis/queries';
 import type { UserProfile } from '@/types/me';

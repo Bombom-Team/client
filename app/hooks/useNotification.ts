@@ -84,7 +84,7 @@ const useNotification = () => {
     coldStartNotificationOpen();
 
     // FCM 토큰 갱신 리스너: 토큰이 변경되면 자동으로 서버에 업데이트
-    const unsubscribeTokenRefresh = messaging().onTokenRefresh( async () => {
+    const unsubscribeTokenRefresh = messaging().onTokenRefresh(async () => {
       console.log('FCM 토큰이 갱신되었습니다');
       try {
         await registerFCMToken();
