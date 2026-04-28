@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { ChevronIcon } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { ELLIPSIS } from './Pagination.constants';
 import {
@@ -7,7 +8,6 @@ import {
   canGoToNextPage,
   shouldShowPagination,
 } from './Pagination.utils';
-import ChevronIcon from '../icons/ChevronIcon';
 
 interface PaginationProps {
   currentPage: number;

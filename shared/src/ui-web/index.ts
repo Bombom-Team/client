@@ -15,6 +15,8 @@ export { default as useModal } from './Modal/useModal';
 export { default as Select } from './Select/Select';
 export type { SelectOption } from './Select/Select.types';
 
+export { default as ChevronIcon } from './icons/ChevronIcon';
+
 export { default as Toast } from './Toast/Toast';
 export { useToasts } from './Toast/useToasts';
 export {

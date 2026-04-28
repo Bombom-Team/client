@@ -1,5 +1,5 @@
+import { ChevronIcon } from '@bombom/shared/ui-web';
 import FloatingActionPanel from '@/components/FloatingActionPanel/FloatingActionPanel';
-import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useDevice } from '@/hooks/useDevice';
 import { useSharePost } from '@/pages/blog/hooks/useSharePost';
 import ShareIcon from '#/assets/svg/share.svg';

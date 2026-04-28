@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import ChevronIcon from '../icons/ChevronIcon';
+import { ChevronIcon } from '@bombom/shared/ui-web';
 import type { PropsWithChildren } from 'react';
 
 interface AccordionProps {

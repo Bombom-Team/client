@@ -1,9 +1,9 @@
 import { theme } from '@bombom/shared';
+import { ChevronIcon } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import DateTab from './DateTab';
 import { useDateFilter } from '../hooks/useDateFilter';
 import Button from '@/components/Button/Button';
-import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
 
