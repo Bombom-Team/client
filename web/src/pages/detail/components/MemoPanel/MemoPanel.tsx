@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared/theme';
-import { ChevronIcon } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import EditableMemoCard from '../MemoCard/EditableMemoCard';
+import ChevronIcon from '@/components/icons/ChevronIcon';
 import type { Highlight } from '../../types/highlight';
 import CloseIcon from '#/assets/svg/close.svg';
 import MemoIcon from '#/assets/svg/memo.svg';

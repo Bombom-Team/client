@@ -1,5 +1,4 @@
 import { theme } from '@bombom/shared';
-import { ChevronIcon } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Suspense } from 'react';
 import useExpandQuotation from '../hooks/useExpandQuotation';
@@ -15,6 +14,7 @@ import { convertRelativeTime } from '../utils/date';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
 import Flex from '@/components/Flex/Flex';
+import ChevronIcon from '@/components/icons/ChevronIcon';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import Text from '@/components/Text/Text';
