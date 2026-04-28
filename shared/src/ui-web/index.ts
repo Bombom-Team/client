@@ -15,6 +15,8 @@ export { default as useModal } from './Modal/useModal';
 export { default as Select } from './Select/Select';
 export type { SelectOption } from './Select/Select.types';
 
+export { default as ChevronIcon } from './icons/ChevronIcon';
+
 export { default as Toast } from './Toast/Toast';
 export { useToasts } from './Toast/useToasts';
 export {
@@ -34,3 +36,23 @@ export {
   DEFAULT_DURATION,
   DEFAULT_POSITION,
 } from './Toast/Toast.constants';
+
+export { useDevice } from './hooks/useDevice';
+export type { Device } from './hooks/useDevice';
+export { default as useMediaQuery } from './hooks/useMediaQuery';
+export type { MediaCondition } from './hooks/useMediaQuery';
+export { DEVICE_BREAKPOINTS } from './hooks/deviceBreakpoints';
+
+export { isAppVersionSupported } from './utils/version';
+export {
+  isWebView,
+  getDevice,
+  getDeviceInWebView,
+  getDeviceInWebApp,
+  isAndroid,
+  isIOS,
+} from './utils/device';
+export {
+  sendMessageToRN,
+  addWebViewMessageListener,
+} from './utils/webview';
