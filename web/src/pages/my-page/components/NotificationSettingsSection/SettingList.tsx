@@ -37,12 +37,17 @@ const SettingList = ({
   notificationsEnabled,
   onToggle,
 }: SettingListProps) => {
-  const settings = NOTIFICATION_SETTINGS.map((config, index) => ({
-    category: config.category,
-    label: config.label,
-    hint: config.hint,
-    enabled: notificationsEnabled[index]?.data?.enabled ?? false,
-  }));
+  const settings = NOTIFICATION_SETTINGS.map((config) => {
+    const queryResult = notificationsEnabled.find(
+      ({ data }) => data?.category === config.category,
+    );
+    return {
+      category: config.category,
+      label: config.label,
+      hint: config.hint,
+      enabled: queryResult?.data?.enabled ?? false,
+    };
+  });
 
   return (
     <Container hasPermission={hasPermission}>

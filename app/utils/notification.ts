@@ -23,7 +23,7 @@ export const createAndroidChannel = async () => {
 export const requestNotificationPermission = async () => {
   try {
     if (Platform.OS === 'ios') {
-      const auth = await requestPermission(getMessaging());
+      const auth = await messaging().requestPermission();
 
       return (
         auth === AuthorizationStatus.AUTHORIZED ||
@@ -50,7 +50,7 @@ export const checkNotificationPermission = async () => {
   }
 
   if (Platform.OS === 'ios') {
-    const iosGrantedStatus = await hasPermission(getMessaging());
+    const iosGrantedStatus = await messaging().hasPermission();
     return (
       iosGrantedStatus === AuthorizationStatus.AUTHORIZED ||
       iosGrantedStatus === AuthorizationStatus.PROVISIONAL
@@ -91,7 +91,7 @@ export const getFCMToken = async () => {
       throw new Error('푸시 알림 권한이 없습니다.');
     }
 
-    const token = await getToken(getMessaging());
+    const token = await messaging().getToken();
     return token;
   } catch (error) {
     console.error('FCM 토큰을 가져오는데 실패했습니다.', error);

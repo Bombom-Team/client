@@ -1,7 +1,8 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQueries } from '@tanstack/react-query';
-import SettingList, { NOTIFICATION_SETTINGS } from './SettingList';
+import SettingList from './SettingList';
+import { CATEGORY } from '../../constants/notification';
 import useCategoryNotificationMutation from '../../hooks/useCategoryNotificationMutation';
 import { queries } from '@/apis/queries';
 import ChevronIcon from '@/components/icons/ChevronIcon';
@@ -18,7 +19,7 @@ const NotificationSettingsSection = () => {
   const { hasPermission } = useWebViewNotificationPermission();
 
   const notificationsEnabled = useQueries({
-    queries: NOTIFICATION_SETTINGS.map(({ category }) => ({
+    queries: Object.values(CATEGORY).map((category) => ({
       ...queries.notificationSettings.category({ memberId, category }),
       enabled: !!hasPermission,
     })),
