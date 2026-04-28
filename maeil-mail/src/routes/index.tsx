@@ -1,27 +1,37 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
-import { useDevice } from '@bombom/shared/ui-web';
+import { useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import HowSection from '@/pages/newsletter/components/NewsletterLanding/HowSection';
 import NewsletterFAQ from '@/pages/newsletter/components/NewsletterLanding/NewsletterFAQ';
 import NewsletterHero from '@/pages/newsletter/components/NewsletterLanding/NewsletterHero';
+import LandingExperienceSection from '@/pages/landing/components/LandingExperienceSection';
 
 export const Route = createFileRoute('/')({
   head: () => ({
     meta: [{ title: '봄봄 × 매일메일 | 사전 구독' }],
   }),
-  component: MaeilMailLandingPage,
+  component: LandingPage,
 });
 
-function MaeilMailLandingPage() {
+function LandingPage() {
   const device = useDevice();
   const isMobile = device === 'mobile';
+
+  const { visibleRef: experienceRef, isVisible: isExperienceVisible } =
+    useScrollVisible(0.2);
+  const experienceProgress = isExperienceVisible ? 1 : 0;
 
   return (
     <>
       <LandingHeader />
       <Container>
         <NewsletterHero />
+        <LandingExperienceSection
+          experienceProgress={experienceProgress}
+          visible={isExperienceVisible}
+          sectionRef={experienceRef}
+        />
         <InformationSection isMobile={isMobile}>
           <HowSection />
           <NewsletterFAQ />
