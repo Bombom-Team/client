@@ -1,5 +1,5 @@
 import RequireLoginCard from './RequireLoginCard';
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'components/common/RequireLoginCard',
