@@ -10,7 +10,6 @@ export type GetMaeilMailAnswerResponse = {
 };
 
 export type GetMaeilMailMyAnswerResponse = {
-  title: string;
   answer: string;
 };
 
