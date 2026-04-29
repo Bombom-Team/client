@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import ChatIcon from '@/assets/svg/chat.svg';
+import Header from '@/components/Header/Header';
 
 export const Route = createFileRoute('/contents/$contentId/answer')({
   head: () => ({
@@ -32,10 +33,7 @@ function RouteComponent() {
 
   return (
     <Container>
-      <Header>
-        <LogoBox aria-hidden />
-        <LogoText>매일메일</LogoText>
-      </Header>
+      <Header />
 
       <ContentWrapper>
         {data?.title && <QuestionTitle>{data.title}</QuestionTitle>}
@@ -90,42 +88,25 @@ function RouteComponent() {
 
 const Container = styled.main`
   min-height: 100dvh;
-  background-color: ${({ theme }) => theme.colors.white};
-`;
-
-const Header = styled.header`
-  height: 72px;
-  padding: 0 24px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
-
-  display: flex;
-  gap: 10px;
-  align-items: center;
+  padding-top: ${({ theme }) => theme.heights.headerPC};
 
   background-color: ${({ theme }) => theme.colors.white};
-`;
 
-const LogoBox = styled.div`
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-
-  background-color: ${({ theme }) => theme.colors.primary};
-`;
-
-const LogoText = styled.span`
-  color: ${({ theme }) => theme.colors.navy};
-  font: ${({ theme }) => theme.fonts.t10Bold};
+  @media (width <= 768px) {
+    padding-top: calc(
+      ${({ theme }) => `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
+    );
+  }
 `;
 
 const ContentWrapper = styled.div`
   width: 100%;
   max-width: 1360px;
   margin: 0 auto;
-  padding: 72px 24px 48px;
+  padding: 48px 24px;
 
   @media (width <= 768px) {
-    padding: 40px 20px;
+    padding: 24px 20px 40px;
   }
 `;
 
