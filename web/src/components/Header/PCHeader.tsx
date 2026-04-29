@@ -55,7 +55,7 @@ const HeaderContainer = styled.header`
   right: 0;
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
-  height: calc(${({ theme }) => theme.heights.headerPC} + 32px);
+  height: calc(${({ theme }) => theme.heights.headerPC} + 40px);
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 10%),
     0 4px 6px -4px rgb(0 0 0 / 10%);

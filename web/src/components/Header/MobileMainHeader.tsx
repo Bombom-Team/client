@@ -44,7 +44,7 @@ const Container = styled.header`
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   height: ${({ theme }) =>
-    `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 32px)`};
+    `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 40px)`};
   padding-top: ${({ theme }) => theme.safeArea.top};
   box-shadow:
     0 8px 12px -6px rgb(0 0 0 / 10%),
@@ -58,7 +58,7 @@ const Container = styled.header`
 `;
 
 const MainRow = styled.div`
-  padding: 8px 12px;
+  padding: 0 12px;
 
   display: flex;
   flex: 1;

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
+import { type Device, useDevice } from '../hooks/useDevice';
 
 const BOMBOM_URL = 'https://www.bombom.news';
 const MAEIL_MAIL_URL = 'https://maeilmail.bombom.news';
@@ -15,9 +16,11 @@ const ServiceSwitcher = ({
   bombomLogo,
   maeilmailLogo,
 }: ServiceSwitcherProps) => {
+  const device = useDevice();
+
   return (
     <Container>
-      <Inner>
+      <Inner device={device}>
         <ServiceLink href={BOMBOM_URL} isActive={activeService === 'bombom'}>
           {bombomLogo}
         </ServiceLink>
@@ -37,7 +40,7 @@ export default ServiceSwitcher;
 
 const Container = styled.div`
   width: 100%;
-  height: 32px;
+  height: 36px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
@@ -45,10 +48,10 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const Inner = styled.div`
+const Inner = styled.div<{ device: Device }>`
   width: 100%;
   max-width: 1280px;
-  padding: 0 4px;
+  padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '0 4px')};
 
   display: flex;
   gap: 12px;

@@ -42,7 +42,7 @@ const Container = styled.header<{ device: Device }>`
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   height: ${({ theme, device }) =>
-    `calc(${device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile} + 32px)`};
+    `calc(${device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile} + 40px)`};
 
   display: flex;
   flex-direction: column;
