@@ -1,10 +1,13 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
+import { queries } from '@/apis/queries';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
 
 const Header = () => {
   const router = useRouter();
+  const { data: userProfile } = useQuery(queries.userProfile());
 
   const handleBackClick = () => {
     router.history.back();
@@ -27,10 +30,19 @@ const Header = () => {
           <LogoBox aria-label="매일메일">
             <MaeilMailLogo width={120} />
           </LogoBox>
-          <ProfileBox>
-            <ProfileAvatar aria-hidden />
-            <ProfileName>매일메일러</ProfileName>
-          </ProfileBox>
+          {userProfile && (
+            <ProfileBox>
+              {userProfile.profileImageUrl ? (
+                <ProfileImage
+                  src={userProfile.profileImageUrl}
+                  alt="profile"
+                />
+              ) : (
+                <ProfileAvatar aria-hidden />
+              )}
+              <ProfileName>{userProfile.nickname}</ProfileName>
+            </ProfileBox>
+          )}
         </PCHeaderInner>
       </PCHeader>
     </>
@@ -136,6 +148,14 @@ const ProfileAvatar = styled.span`
   border-radius: 50%;
 
   background-color: ${({ theme }) => theme.colors.disabledBackground};
+`;
+
+const ProfileImage = styled.img`
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+
+  object-fit: cover;
 `;
 
 const ProfileName = styled.span`

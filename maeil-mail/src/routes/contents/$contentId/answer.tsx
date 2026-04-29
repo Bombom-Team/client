@@ -40,7 +40,6 @@ function RouteComponent() {
 
         <AnswerGrid>
           <ModelAnswerSection>
-            <SectionTitle status="success">모범 답안</SectionTitle>
             {isLoading && <StateText>답안을 불러오고 있어요.</StateText>}
             {isError && (
               <StateText>
@@ -59,7 +58,7 @@ function RouteComponent() {
           <MyAnswerSection>
             <MyAnswerHeader>
               <ChatIcon aria-hidden />
-              <SectionTitle status="muted">내 답변</SectionTitle>
+              <SectionTitle>내 답변</SectionTitle>
             </MyAnswerHeader>
             <MyAnswerBox>
               {isMyAnswerLoading && (
@@ -103,7 +102,7 @@ const ContentWrapper = styled.div`
   width: 100%;
   max-width: 1360px;
   margin: 0 auto;
-  padding: 48px 24px;
+  padding: 24px;
 
   @media (width <= 768px) {
     padding: 24px 20px 40px;
@@ -115,7 +114,7 @@ const QuestionTitle = styled.h1`
   margin-top: 24px;
 
   color: ${({ theme }) => theme.colors.navy};
-  font: ${({ theme }) => theme.fonts.t15Bold};
+  font: ${({ theme }) => theme.fonts.t12Bold};
 
   word-break: keep-all;
 
@@ -126,7 +125,7 @@ const QuestionTitle = styled.h1`
 `;
 
 const AnswerGrid = styled.div`
-  margin-top: 76px;
+  margin-top: 48px;
 
   display: grid;
 
@@ -161,22 +160,17 @@ const MyAnswerSection = styled.aside`
   }
 `;
 
-const SectionTitle = styled.h2<{ status: 'muted' | 'success' }>`
-  color: ${({ status, theme }) =>
-    status === 'success' ? theme.colors.primary : '#98a2b3'};
+const SectionTitle = styled.h2`
+  color: #98a2b3;
   font: ${({ theme }) => theme.fonts.t5Bold};
 `;
 
 const StateText = styled.p`
-  margin-top: 48px;
-
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const AnswerContent = styled.article`
-  margin-top: 48px;
-
   color: #344054;
   font: ${({ theme }) => theme.fonts.t8Regular};
 
@@ -255,7 +249,6 @@ const AnswerContent = styled.article`
   }
 
   @media (width <= 768px) {
-    margin-top: 32px;
     font: ${({ theme }) => theme.fonts.t6Regular};
 
     h2 {
