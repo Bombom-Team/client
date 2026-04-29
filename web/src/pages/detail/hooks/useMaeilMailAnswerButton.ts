@@ -2,10 +2,15 @@ import { useEffect } from 'react';
 import { MAEIL_MAIL_ANSWER_CHECK_BUTTON_ID } from '../constants/maeilMail';
 import type { RefObject } from 'react';
 
-export const useMaeilMailAnswerButton = (
-  contentRef: RefObject<HTMLDivElement | null>,
-  onClick: () => void,
-) => {
+interface UseMaeilMailAnswerButtonParams {
+  contentRef: RefObject<HTMLDivElement | null>;
+  onAnswerButtonClick: () => void;
+}
+
+export const useMaeilMailAnswerButton = ({
+  contentRef,
+  onAnswerButtonClick,
+}: UseMaeilMailAnswerButtonParams) => {
   useEffect(() => {
     const contentEl = contentRef.current;
     if (!contentEl) return;
@@ -16,10 +21,10 @@ export const useMaeilMailAnswerButton = (
       );
       if (!button) return;
       e.preventDefault();
-      onClick();
+      onAnswerButtonClick();
     };
 
     contentEl.addEventListener('click', handleClick);
     return () => contentEl.removeEventListener('click', handleClick);
-  }, [contentRef, onClick]);
+  }, [contentRef, onAnswerButtonClick]);
 };

@@ -58,7 +58,10 @@ const ArticleBody = ({
     isOpen: isMaeilMailModalOpen,
   } = useModal();
 
-  useMaeilMailAnswerButton(contentRef, openMaeilMailModal);
+  useMaeilMailAnswerButton({
+    contentRef,
+    onAnswerButtonClick: openMaeilMailModal,
+  });
 
   const updateMemo = (id: number, memo: string) => {
     updateHighlight({ id, memo });
