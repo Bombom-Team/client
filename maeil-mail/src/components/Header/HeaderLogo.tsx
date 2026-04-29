@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import textLogo from '#/assets/avif/bombom-text-logo.avif';
-import logo from '#/assets/avif/logo.avif';
+import textLogo from '@/assets/avif/bombom-text-logo.avif';
+import logo from '@/assets/avif/logo.avif';
 
 const HeaderLogo = () => {
   return (

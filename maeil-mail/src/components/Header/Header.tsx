@@ -45,11 +45,9 @@ const MobileHeader = styled.header`
     position: fixed;
     top: 0;
     z-index: ${({ theme }) => theme.zIndex.header};
-
     width: 100%;
     height: calc(
-      ${({ theme }) =>
-        `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
+      ${({ theme }) => `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
     );
     padding: calc(4px + ${({ theme }) => theme.safeArea.top}) 8px;
     box-shadow:
@@ -85,7 +83,6 @@ const PCHeader = styled.header`
   top: 0;
   right: 0;
   z-index: ${({ theme }) => theme.zIndex.header};
-
   width: 100%;
   height: ${({ theme }) => theme.heights.headerPC};
   padding: 8px 16px;
@@ -119,7 +116,6 @@ const LogoBox = styled.div`
 `;
 
 const GoToService = styled.a`
-  text-decoration: none;
   padding: 8px 16px;
   border: none;
   border-radius: 12px;
@@ -133,6 +129,7 @@ const GoToService = styled.a`
   font: ${({ theme }) => theme.fonts.t5Regular};
 
   cursor: pointer;
+  text-decoration: none;
   transition: background-color 0.3s ease;
 
   &:hover {

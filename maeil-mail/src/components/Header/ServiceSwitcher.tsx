@@ -1,6 +1,6 @@
 import { ServiceSwitcher as SharedServiceSwitcher } from '@bombom/shared/ui-web';
-import textLogo from '#/assets/avif/bombom-text-logo.avif';
-import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
+import textLogo from '@/assets/avif/bombom-text-logo.avif';
+import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
 
 const ServiceSwitcher = () => (
   <SharedServiceSwitcher
