@@ -51,7 +51,7 @@ const Container = styled.div`
 const Inner = styled.div<{ device: Device }>`
   width: 100%;
   max-width: 1280px;
-  padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '0 4px')};
+  padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '0 8px')};
 
   display: flex;
   gap: 12px;
