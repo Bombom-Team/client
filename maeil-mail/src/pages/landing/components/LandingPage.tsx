@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
+import { useScrollVisible } from '@bombom/shared/ui-web';
 import { FAQ_ITEMS } from '@/pages/landing/constants/landingContent';
-import { useReveal } from '@/pages/landing/hooks/useReveal';
 import LandingAboutSection from './LandingAboutSection';
 import LandingExperienceSection from './LandingExperienceSection';
 import LandingFaqSection from './LandingFaqSection';
@@ -19,11 +19,11 @@ const LandingPage = () => {
   const [viewportHeight, setViewportHeight] = useState(1);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
 
-  const { revealRef: aboutRef, visible: aboutVisible } =
-    useReveal<HTMLElement>(0.2);
-  const { revealRef: experienceRef, visible: experienceVisible } =
-    useReveal<HTMLElement>(0.2);
-  const { revealRef: faqRef, visible: faqVisible } = useReveal<HTMLElement>(0.15);
+  const { visibleRef: aboutRef, isVisible: aboutVisible } =
+    useScrollVisible(0.2);
+  const { visibleRef: experienceRef, isVisible: experienceVisible } =
+    useScrollVisible(0.2);
+  const { visibleRef: faqRef, isVisible: faqVisible } = useScrollVisible(0.15);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');

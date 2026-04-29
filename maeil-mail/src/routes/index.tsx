@@ -6,6 +6,7 @@ import HowSection from '@/pages/newsletter/components/NewsletterLanding/HowSecti
 import NewsletterFAQ from '@/pages/newsletter/components/NewsletterLanding/NewsletterFAQ';
 import NewsletterHero from '@/pages/newsletter/components/NewsletterLanding/NewsletterHero';
 import LandingExperienceSection from '@/pages/landing/components/LandingExperienceSection';
+import LandingAboutSection from '@/pages/landing/components/LandingAboutSection';
 
 export const Route = createFileRoute('/')({
   head: () => ({
@@ -22,11 +23,20 @@ function LandingPage() {
     useScrollVisible(0.2);
   const experienceProgress = isExperienceVisible ? 1 : 0;
 
+  const { visibleRef: aboutRef, isVisible: isAboutVisible } =
+    useScrollVisible(0.15);
+  const aboutProgress = isAboutVisible ? 1 : 0;
+
   return (
     <>
       <LandingHeader />
       <Container>
         <NewsletterHero />
+        <LandingAboutSection
+          aboutProgress={aboutProgress}
+          visible={isAboutVisible}
+          sectionRef={aboutRef}
+        />
         <LandingExperienceSection
           experienceProgress={experienceProgress}
           visible={isExperienceVisible}
