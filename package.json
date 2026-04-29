@@ -23,6 +23,7 @@
     "app:android": "pnpm --filter app android",
     "app:ios": "pnpm --filter app ios",
     "maeil-mail:start": "pnpm --filter @bombom/maeil-mail dev",
+    "maeil-mail:start:msw": "pnpm --filter @bombom/maeil-mail dev:msw",
     "maeil-mail:build": "pnpm --filter @bombom/maeil-mail build",
     "maeil-mail:lint": "pnpm --filter @bombom/maeil-mail lint",
     "maeil-mail:lint:fix": "pnpm --filter @bombom/maeil-mail lint:fix",
