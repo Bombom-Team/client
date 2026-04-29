@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
+import ChatIcon from '@/assets/svg/chat.svg';
 
 export const Route = createFileRoute('/contents/$contentId/answer')({
   head: () => ({
@@ -58,21 +59,26 @@ function RouteComponent() {
           </ModelAnswerSection>
 
           <MyAnswerSection>
-            <SectionTitle status="muted">내 답변</SectionTitle>
+            <MyAnswerHeader>
+              <ChatIcon aria-hidden />
+              <SectionTitle status="muted">내 답변</SectionTitle>
+            </MyAnswerHeader>
             <MyAnswerBox>
               {isMyAnswerLoading && (
-                <MyAnswerText>제출한 답변을 불러오고 있어요.</MyAnswerText>
+                <MyAnswerStateText>
+                  제출한 답변을 불러오고 있어요.
+                </MyAnswerStateText>
               )}
               {isMyAnswerError && (
-                <MyAnswerText>
+                <MyAnswerStateText>
                   제출한 답변을 불러오지 못했어요. 다시 시도해 주세요.
-                </MyAnswerText>
+                </MyAnswerStateText>
               )}
               {myAnswer?.answer && (
                 <MyAnswerText>{myAnswer.answer}</MyAnswerText>
               )}
               {!isMyAnswerLoading && !isMyAnswerError && !myAnswer?.answer && (
-                <MyAnswerText>제출한 답변이 없어요.</MyAnswerText>
+                <MyAnswerStateText>제출한 답변이 없어요.</MyAnswerStateText>
               )}
             </MyAnswerBox>
           </MyAnswerSection>
@@ -281,17 +287,44 @@ const AnswerContent = styled.article`
   }
 `;
 
+const MyAnswerHeader = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  color: #98a2b3;
+
+  svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+`;
+
 const MyAnswerBox = styled.div`
   min-height: 234px;
   margin-top: 28px;
-  padding: 46px 38px;
+  padding: 32px 36px;
   border: 1px solid ${({ theme }) => theme.colors.dividers};
-  border-radius: 8px;
+  border-radius: 12px;
 
   background-color: #f8fafc;
+
+  @media (width <= 768px) {
+    padding: 24px;
+  }
 `;
 
 const MyAnswerText = styled.p`
   color: ${({ theme }) => theme.colors.navy};
   font: ${({ theme }) => theme.fonts.t6Regular};
+  line-height: 1.7;
+  white-space: pre-line;
+  word-break: keep-all;
+`;
+
+const MyAnswerStateText = styled.p`
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.t6Regular};
+  font-style: italic;
 `;
