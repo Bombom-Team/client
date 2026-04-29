@@ -23,13 +23,13 @@ export const Route = createFileRoute('/contents/$contentId/answer')({
 function RouteComponent() {
   const { contentId } = Route.useParams();
   const { data, isError, isLoading } = useQuery(
-    queries.maeilMailAnswer({ contentId }),
+    queries.answer({ contentId }),
   );
   const {
     data: myAnswer,
     isError: isMyAnswerError,
     isLoading: isMyAnswerLoading,
-  } = useQuery(queries.maeilMailMyAnswer({ contentId }));
+  } = useQuery(queries.myAnswer({ contentId }));
 
   const showMyAnswer =
     !isMyAnswerError && (isMyAnswerLoading || Boolean(myAnswer?.answer));
