@@ -1,5 +1,4 @@
 name: CI/CD - Frontend Deploy
-# redeploy trigger: 2026-04-29
 
 on:
   push:
