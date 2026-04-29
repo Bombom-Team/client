@@ -62,7 +62,6 @@ const HeaderWrapper = styled.div`
 `;
 
 const GoToService = styled.a<{ device: Device }>`
-  text-decoration: none;
   padding: ${({ device }) => (device === 'mobile' ? '8px 12px' : '8px 16px')};
   border: none;
   border-radius: 12px;
@@ -76,6 +75,7 @@ const GoToService = styled.a<{ device: Device }>`
   font: ${({ theme }) => theme.fonts.t5Regular};
 
   cursor: pointer;
+  text-decoration: none;
   transition: background-color 0.3s ease;
 
   &:hover {

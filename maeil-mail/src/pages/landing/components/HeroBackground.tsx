@@ -291,8 +291,9 @@ export default HeroBackground;
 
 const Canvas = styled.canvas`
   position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
+
+  inset: 0;
   pointer-events: none;
 `;
