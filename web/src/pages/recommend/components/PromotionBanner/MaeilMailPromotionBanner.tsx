@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { Link } from '@tanstack/react-router';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { useDevice, type Device } from '@/hooks/useDevice';
@@ -7,11 +6,13 @@ import { MAEIL_MAIL_LANDING_CONFIG } from '@/pages/newsletter/constants/subscrib
 import logo from '#/assets/avif/logo.avif';
 import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
 
+const MAEIL_MAIL_URL = 'https://maeilmail.bombom.news';
+
 const MaeilMailPromotionBanner = () => {
   const device = useDevice();
 
   return (
-    <Container device={device} to="/maeil-mail/landing">
+    <Container device={device} href={MAEIL_MAIL_URL}>
       <Content device={device}>
         <LogoRow device={device}>
           <Flex align="center" gap={10}>
@@ -55,7 +56,7 @@ const MaeilMailPromotionBanner = () => {
 
 export default MaeilMailPromotionBanner;
 
-const Container = styled(Link)<{ device: Device }>`
+const Container = styled.a<{ device: Device }>`
   overflow: hidden;
   position: relative;
   width: 100%;
