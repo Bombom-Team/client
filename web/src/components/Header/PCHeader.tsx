@@ -4,6 +4,7 @@ import HeaderLogo from './HeaderLogo';
 import HeaderNavButtons from './HeaderNavButtons';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
+import ServiceSwitcher from './ServiceSwitcher';
 import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
@@ -19,26 +20,29 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
 
   return (
     <HeaderContainer>
-      <HeaderInner>
-        <HeaderLogo />
-        <NavWrapper>
-          <HeaderNavButtons activeNav={activeNav} device="pc" />
-        </NavWrapper>
+      <ServiceSwitcher />
+      <HeaderMainRow>
+        <HeaderInner>
+          <HeaderLogo />
+          <NavWrapper>
+            <HeaderNavButtons activeNav={activeNav} device="pc" />
+          </NavWrapper>
 
-        <UserInfoWrapper>
-          <Button
-            onClick={() => navigate({ to: '/notice' })}
-            variant={'transparent'}
-          >
-            <MegaphoneIcon width={22} height={24} />
-          </Button>
-          {userProfile ? (
-            <HeaderProfile userProfile={userProfile} device="pc" />
-          ) : (
-            <LoginButton />
-          )}
-        </UserInfoWrapper>
-      </HeaderInner>
+          <UserInfoWrapper>
+            <Button
+              onClick={() => navigate({ to: '/notice' })}
+              variant={'transparent'}
+            >
+              <MegaphoneIcon width={22} height={24} />
+            </Button>
+            {userProfile ? (
+              <HeaderProfile userProfile={userProfile} device="pc" />
+            ) : (
+              <LoginButton />
+            )}
+          </UserInfoWrapper>
+        </HeaderInner>
+      </HeaderMainRow>
     </HeaderContainer>
   );
 };
@@ -51,17 +55,25 @@ const HeaderContainer = styled.header`
   right: 0;
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
-  height: ${({ theme }) => theme.heights.headerPC};
-  padding: 8px 16px;
+  height: calc(${({ theme }) => theme.heights.headerPC} + 32px);
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 10%),
     0 4px 6px -4px rgb(0 0 0 / 10%);
 
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
 
   background: ${({ theme }) => theme.colors.white};
+`;
+
+const HeaderMainRow = styled.div`
+  padding: 8px 16px;
+
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
 `;
 
 const HeaderInner = styled.div`
