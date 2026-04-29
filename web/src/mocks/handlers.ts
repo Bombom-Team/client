@@ -8,7 +8,6 @@ import { articleHandlers } from './handlers/articles';
 import { blogHandlers } from './handlers/blog';
 import { bookmarkHandlers } from './handlers/bookmark';
 import { challengeHandlers } from './handlers/challenge';
-import { maeilMailHandlers } from './handlers/maeilMail';
 import { membersHandlers } from './handlers/members';
 import { newsletterDetailHandlers } from './handlers/newsletterDetail';
 import { queueEntryHandlers } from './handlers/queueEntry';
@@ -155,5 +154,4 @@ export const handlers = [
   ...membersHandlers,
   ...challengeHandlers,
   ...queueEntryHandlers,
-  ...maeilMailHandlers,
 ];

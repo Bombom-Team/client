@@ -19,7 +19,6 @@ import { Route as BombomRouteImport } from './routes/_bombom';
 import { Route as BlogIndexRouteImport } from './routes/blog/index';
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
 import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
-import { Route as ContentsContentIdAnswerRouteImport } from './routes/contents/$contentId/answer';
 import { Route as ChallengeChallengeIdLandingRouteImport } from './routes/challenge/$challengeId/landing';
 import { Route as BombomArticlesArticleIdRouteImport } from './routes/_bombom/articles.$articleId';
 import { Route as BombomMainTodayRouteImport } from './routes/_bombom/_main/today';
@@ -88,11 +87,6 @@ const BombomMainIndexRoute = BombomMainIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => BombomMainRoute,
-} as any);
-const ContentsContentIdAnswerRoute = ContentsContentIdAnswerRouteImport.update({
-  id: '/contents/$contentId/answer',
-  path: '/contents/$contentId/answer',
-  getParentRoute: () => rootRouteImport,
 } as any);
 const ChallengeChallengeIdLandingRoute =
   ChallengeChallengeIdLandingRouteImport.update({
@@ -223,7 +217,6 @@ export interface FileRoutesByFullPath {
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
-  '/contents/$contentId/answer': typeof ContentsContentIdAnswerRoute;
   '/': typeof BombomMainIndexRoute;
   '/challenge/$challengeId': typeof BombomMainChallengeChallengeIdRouteWithChildren;
   '/articles/guide/$guideId': typeof BombomArticlesGuideGuideIdRoute;
@@ -252,7 +245,6 @@ export interface FileRoutesByTo {
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
-  '/contents/$contentId/answer': typeof ContentsContentIdAnswerRoute;
   '/': typeof BombomMainIndexRoute;
   '/articles/guide/$guideId': typeof BombomArticlesGuideGuideIdRoute;
   '/articles/previous/$articleId': typeof BombomArticlesPreviousArticleIdRoute;
@@ -285,7 +277,6 @@ export interface FileRoutesById {
   '/_bombom/_main/today': typeof BombomMainTodayRoute;
   '/_bombom/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
-  '/contents/$contentId/answer': typeof ContentsContentIdAnswerRoute;
   '/_bombom/_main/': typeof BombomMainIndexRoute;
   '/_bombom/_main/challenge/$challengeId': typeof BombomMainChallengeChallengeIdRouteWithChildren;
   '/_bombom/articles/guide/$guideId': typeof BombomArticlesGuideGuideIdRoute;
@@ -318,7 +309,6 @@ export interface FileRouteTypes {
     | '/today'
     | '/articles/$articleId'
     | '/challenge/$challengeId/landing'
-    | '/contents/$contentId/answer'
     | '/'
     | '/challenge/$challengeId'
     | '/articles/guide/$guideId'
@@ -347,7 +337,6 @@ export interface FileRouteTypes {
     | '/today'
     | '/articles/$articleId'
     | '/challenge/$challengeId/landing'
-    | '/contents/$contentId/answer'
     | '/'
     | '/articles/guide/$guideId'
     | '/articles/previous/$articleId'
@@ -379,7 +368,6 @@ export interface FileRouteTypes {
     | '/_bombom/_main/today'
     | '/_bombom/articles/$articleId'
     | '/challenge/$challengeId/landing'
-    | '/contents/$contentId/answer'
     | '/_bombom/_main/'
     | '/_bombom/_main/challenge/$challengeId'
     | '/_bombom/articles/guide/$guideId'
@@ -402,7 +390,6 @@ export interface RootRouteChildren {
   MaintenanceRoute: typeof MaintenanceRoute;
   SignupRoute: typeof SignupRoute;
   ChallengeChallengeIdLandingRoute: typeof ChallengeChallengeIdLandingRoute;
-  ContentsContentIdAnswerRoute: typeof ContentsContentIdAnswerRoute;
 }
 
 declare module '@tanstack/react-router' {
@@ -476,13 +463,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/';
       preLoaderRoute: typeof BombomMainIndexRouteImport;
       parentRoute: typeof BombomMainRoute;
-    };
-    '/contents/$contentId/answer': {
-      id: '/contents/$contentId/answer';
-      path: '/contents/$contentId/answer';
-      fullPath: '/contents/$contentId/answer';
-      preLoaderRoute: typeof ContentsContentIdAnswerRouteImport;
-      parentRoute: typeof rootRouteImport;
     };
     '/challenge/$challengeId/landing': {
       id: '/challenge/$challengeId/landing';
@@ -734,7 +714,6 @@ const rootRouteChildren: RootRouteChildren = {
   MaintenanceRoute: MaintenanceRoute,
   SignupRoute: SignupRoute,
   ChallengeChallengeIdLandingRoute: ChallengeChallengeIdLandingRoute,
-  ContentsContentIdAnswerRoute: ContentsContentIdAnswerRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
