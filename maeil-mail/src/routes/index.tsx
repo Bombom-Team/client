@@ -25,7 +25,6 @@ function LandingPage() {
 
   const { visibleRef: aboutRef, isVisible: isAboutVisible } =
     useScrollVisible(0.15);
-  const aboutProgress = isAboutVisible ? 1 : 0;
 
   return (
     <>
@@ -33,7 +32,6 @@ function LandingPage() {
       <Container>
         <NewsletterHero />
         <LandingAboutSection
-          aboutProgress={aboutProgress}
           visible={isAboutVisible}
           sectionRef={aboutRef}
         />

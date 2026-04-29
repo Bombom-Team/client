@@ -30,7 +30,11 @@ const LandingExperienceSection = ({
         </ExperiencePhone>
 
         {EXPERIENCE_NOTES.map(({ title, text }, index) => (
-          <ExperienceNote key={title} $index={index} $progress={experienceProgress}>
+          <ExperienceNote
+            key={title}
+            $index={index}
+            $progress={experienceProgress}
+          >
             <strong>{title}</strong>
             <p>{text}</p>
           </ExperienceNote>
