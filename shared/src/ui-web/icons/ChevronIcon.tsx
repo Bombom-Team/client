@@ -38,19 +38,12 @@ const ChevronIcon = ({
     <Wrapper className={className} rotation={rotationMap[direction]}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width={width}
-        height={height}
-        viewBox="0 0 16 16"
-        fill="none"
-        {...props}
+        height="100%"
+        viewBox="0 -1000 960 960"
+        width="100%"
+        fill={color}
       >
-        <path
-          d="M3 5.5L8 10.5L13 5.5"
-          stroke={color as string}
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
       </svg>
     </Wrapper>
   );
