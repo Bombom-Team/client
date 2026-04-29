@@ -10,7 +10,7 @@ export const Route = createFileRoute('/contents/$contentId/answer')({
     meta: [
       {
         name: 'robots',
-        content: 'noindex, nofollow',
+        content: 'index, follow',
       },
       {
         title: '매일메일 | 정답 조회',
