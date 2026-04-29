@@ -31,6 +31,9 @@ function RouteComponent() {
     isLoading: isMyAnswerLoading,
   } = useQuery(queries.maeilMailMyAnswer({ contentId }));
 
+  const showMyAnswer =
+    !isMyAnswerError && (isMyAnswerLoading || Boolean(myAnswer?.answer));
+
   return (
     <Container>
       <Header />
@@ -38,8 +41,8 @@ function RouteComponent() {
       <ContentWrapper>
         {data?.title && <QuestionTitle>{data.title}</QuestionTitle>}
 
-        <AnswerGrid>
-          <ModelAnswerSection>
+        <AnswerGrid $hasMyAnswer={showMyAnswer}>
+          <ModelAnswerSection $hasMyAnswer={showMyAnswer}>
             {isLoading && <StateText>답안을 불러오고 있어요.</StateText>}
             {isError && (
               <StateText>
@@ -55,30 +58,24 @@ function RouteComponent() {
             )}
           </ModelAnswerSection>
 
-          <MyAnswerSection>
-            <MyAnswerHeader>
-              <ChatIcon aria-hidden />
-              <SectionTitle>내 답변</SectionTitle>
-            </MyAnswerHeader>
-            <MyAnswerBox>
-              {isMyAnswerLoading && (
-                <MyAnswerStateText>
-                  제출한 답변을 불러오고 있어요.
-                </MyAnswerStateText>
-              )}
-              {isMyAnswerError && (
-                <MyAnswerStateText>
-                  제출한 답변을 불러오지 못했어요. 다시 시도해 주세요.
-                </MyAnswerStateText>
-              )}
-              {myAnswer?.answer && (
-                <MyAnswerText>{myAnswer.answer}</MyAnswerText>
-              )}
-              {!isMyAnswerLoading && !isMyAnswerError && !myAnswer?.answer && (
-                <MyAnswerStateText>제출한 답변이 없어요.</MyAnswerStateText>
-              )}
-            </MyAnswerBox>
-          </MyAnswerSection>
+          {showMyAnswer && (
+            <MyAnswerSection>
+              <MyAnswerHeader>
+                <ChatIcon aria-hidden />
+                <SectionTitle>내 답변</SectionTitle>
+              </MyAnswerHeader>
+              <MyAnswerBox>
+                {isMyAnswerLoading && (
+                  <MyAnswerStateText>
+                    제출한 답변을 불러오고 있어요.
+                  </MyAnswerStateText>
+                )}
+                {myAnswer?.answer && (
+                  <MyAnswerText>{myAnswer.answer}</MyAnswerText>
+                )}
+              </MyAnswerBox>
+            </MyAnswerSection>
+          )}
         </AnswerGrid>
       </ContentWrapper>
     </Container>
@@ -124,12 +121,13 @@ const QuestionTitle = styled.h1`
   }
 `;
 
-const AnswerGrid = styled.div`
+const AnswerGrid = styled.div<{ $hasMyAnswer: boolean }>`
   margin-top: 48px;
 
   display: grid;
 
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 504px);
+  grid-template-columns: ${({ $hasMyAnswer }) =>
+    $hasMyAnswer ? 'minmax(0, 1fr) minmax(360px, 504px)' : 'minmax(0, 1fr)'};
 
   @media (width <= 960px) {
     margin-top: 48px;
@@ -137,9 +135,9 @@ const AnswerGrid = styled.div`
   }
 `;
 
-const ModelAnswerSection = styled.section`
+const ModelAnswerSection = styled.section<{ $hasMyAnswer: boolean }>`
   min-width: 0;
-  padding-right: 56px;
+  padding-right: ${({ $hasMyAnswer }) => ($hasMyAnswer ? '56px' : '0')};
 
   @media (width <= 960px) {
     padding-right: 0;
