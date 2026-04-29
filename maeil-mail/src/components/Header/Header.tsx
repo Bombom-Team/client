@@ -1,13 +1,12 @@
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
-import { queries } from '@/apis/queries';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
 
+const BOMBOM_SERVICE_URL = 'https://www.bombom.news';
+
 const Header = () => {
   const router = useRouter();
-  const { data: userProfile } = useQuery(queries.userProfile());
 
   const handleBackClick = () => {
     router.history.back();
@@ -30,19 +29,7 @@ const Header = () => {
           <LogoBox aria-label="매일메일">
             <MaeilMailLogo width={120} />
           </LogoBox>
-          {userProfile && (
-            <ProfileBox>
-              {userProfile.profileImageUrl ? (
-                <ProfileImage
-                  src={userProfile.profileImageUrl}
-                  alt="profile"
-                />
-              ) : (
-                <ProfileAvatar aria-hidden />
-              )}
-              <ProfileName>{userProfile.nickname}</ProfileName>
-            </ProfileBox>
-          )}
+          <GoToService href={BOMBOM_SERVICE_URL}>서비스 이동</GoToService>
         </PCHeaderInner>
       </PCHeader>
     </>
@@ -131,34 +118,24 @@ const LogoBox = styled.div`
   align-items: center;
 `;
 
-const ProfileBox = styled.div`
-  padding: 8px 12px;
+const GoToService = styled.a`
+  text-decoration: none;
+  padding: 8px 16px;
+  border: none;
   border-radius: 12px;
 
   display: flex;
-  gap: 12px;
   align-items: center;
+  justify-content: center;
 
-  background: ${({ theme }) => theme.colors.white};
-`;
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
-const ProfileAvatar = styled.span`
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 
-  background-color: ${({ theme }) => theme.colors.disabledBackground};
-`;
-
-const ProfileImage = styled.img`
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-
-  object-fit: cover;
-`;
-
-const ProfileName = styled.span`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primaryDark};
+  }
 `;
