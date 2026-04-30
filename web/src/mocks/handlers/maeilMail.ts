@@ -23,7 +23,6 @@ export const maeilMailHandlers = [
     `${baseURL}/maeil-mail/:contentId/answer/me`,
     async ({ request, params }) => {
       const body = (await request.json()) as {
-        contentId: number;
         answer: string;
       };
       // eslint-disable-next-line no-console
