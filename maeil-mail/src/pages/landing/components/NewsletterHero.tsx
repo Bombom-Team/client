@@ -64,19 +64,12 @@ const NewsletterHero = () => {
           </HeadlineLine>
         </HeroTitleSection>
 
-        <Flex align="center" gap={12}>
-          <OpenDateNumber>
-            {MAEIL_MAIL_LANDING_CONFIG.launchDate}
-          </OpenDateNumber>
-          <OpenDateLabel>OPEN</OpenDateLabel>
-        </Flex>
-
         <Description>
           서비스 종료로 아쉬움을 남긴 매일메일을 봄봄에서 계속 만나보세요.
           <br />
           기술 면접 질문을 한곳에서 더 편하게 읽을 수 있어요.
         </Description>
-        <WarnText color="primary" font="t5Regular">
+        <WarnText color="textPrimary" font="t5Bold">
           * 봄봄에서만 읽을 수 있는 뉴스레터예요.
         </WarnText>
 
@@ -270,16 +263,4 @@ const SubscribeButton = styled.button`
     background-color: ${({ theme }) => theme.colors.icons};
     cursor: not-allowed;
   }
-`;
-
-const OpenDateNumber = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.t13Bold};
-  letter-spacing: -0.02em;
-`;
-
-const OpenDateLabel = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.t13Bold};
-  letter-spacing: 0.04em;
 `;

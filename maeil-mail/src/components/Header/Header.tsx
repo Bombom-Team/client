@@ -1,11 +1,15 @@
 import styled from '@emotion/styled';
+import { useDevice } from '@bombom/shared/ui-web';
+import type { Device } from '@bombom/shared/ui-web';
 import { useRouter } from '@tanstack/react-router';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
+import ServiceSwitcher from '@/components/Header/ServiceSwitcher';
 
 const BOMBOM_SERVICE_URL = 'https://www.bombom.news';
 
 const Header = () => {
+  const device = useDevice();
   const router = useRouter();
 
   const handleBackClick = () => {
@@ -13,53 +17,64 @@ const Header = () => {
   };
 
   return (
-    <>
-      <MobileHeader>
-        <BackButton
-          type="button"
-          onClick={handleBackClick}
-          aria-label="뒤로가기"
-        >
-          <BackChevron aria-hidden />
-        </BackButton>
-      </MobileHeader>
+    <Container device={device}>
+      <ServiceSwitcher />
 
-      <PCHeader>
-        <PCHeaderInner>
-          <LogoBox aria-label="매일메일">
-            <MaeilMailLogo width={120} />
-          </LogoBox>
-          <GoToService href={BOMBOM_SERVICE_URL}>서비스 이동</GoToService>
-        </PCHeaderInner>
-      </PCHeader>
-    </>
+      <HeaderRow device={device}>
+        {device === 'mobile' ? (
+          <BackButton
+            type="button"
+            onClick={handleBackClick}
+            aria-label="뒤로가기"
+          >
+            <BackChevron aria-hidden />
+          </BackButton>
+        ) : (
+          <PCHeaderInner>
+            <LogoBox aria-label="매일메일">
+              <MaeilMailLogo width={120} />
+            </LogoBox>
+            <GoToService href={BOMBOM_SERVICE_URL}>서비스 이동</GoToService>
+          </PCHeaderInner>
+        )}
+      </HeaderRow>
+    </Container>
   );
 };
 
 export default Header;
 
-const MobileHeader = styled.header`
-  display: none;
+const Container = styled.header<{ device: Device }>`
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: ${({ theme }) => theme.zIndex.header};
+  width: 100%;
+  height: ${({ theme, device }) =>
+    `calc(${device === 'pc' ? theme.heights.headerPC : `${theme.heights.headerMobile} + ${theme.safeArea.top}`} + 40px)`};
 
-  @media (width <= 768px) {
-    position: fixed;
-    top: 0;
-    z-index: ${({ theme }) => theme.zIndex.header};
-    width: 100%;
-    height: calc(
-      ${({ theme }) => `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
-    );
-    padding: calc(4px + ${({ theme }) => theme.safeArea.top}) 8px;
-    box-shadow:
-      0 8px 12px -6px rgb(0 0 0 / 10%),
-      0 3px 5px -4px rgb(0 0 0 / 10%);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  background: ${({ theme }) => theme.colors.white};
 
-    background: ${({ theme }) => theme.colors.white};
-  }
+  transform: translateX(-50%);
+`;
+
+const HeaderRow = styled.div<{ device: Device }>`
+  padding: ${({ theme, device }) =>
+    device === 'pc' ? '8px 16px' : `calc(4px + ${theme.safeArea.top}) 8px 4px`};
+  box-shadow: ${({ device }) =>
+    device === 'pc'
+      ? '0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%)'
+      : '0 8px 12px -6px rgb(0 0 0 / 10%), 0 3px 5px -4px rgb(0 0 0 / 10%)'};
+
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: ${({ device }) =>
+    device === 'pc' ? 'center' : 'space-between'};
 `;
 
 const BackButton = styled.button`
@@ -76,29 +91,6 @@ const BackChevron = styled(ChevronDownIcon)`
   height: 32px;
 
   transform: rotate(90deg);
-`;
-
-const PCHeader = styled.header`
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: ${({ theme }) => theme.zIndex.header};
-  width: 100%;
-  height: ${({ theme }) => theme.heights.headerPC};
-  padding: 8px 16px;
-  box-shadow:
-    0 10px 15px -3px rgb(0 0 0 / 10%),
-    0 4px 6px -4px rgb(0 0 0 / 10%);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: ${({ theme }) => theme.colors.white};
-
-  @media (width <= 768px) {
-    display: none;
-  }
 `;
 
 const PCHeaderInner = styled.div`
