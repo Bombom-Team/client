@@ -4,6 +4,8 @@ import { ENV } from '@/apis/env';
 
 const baseURL = ENV.baseUrl;
 
+const submittedAnswers = new Map<number, string>();
+
 export const maeilMailHandlers = [
   http.get(`${baseURL}/maeil-mail/content`, ({ request }) => {
     const url = new URL(request.url);
@@ -19,15 +21,34 @@ export const maeilMailHandlers = [
     return HttpResponse.json({ contentId: 7 });
   }),
 
+  http.get(
+    `${baseURL}/maeil-mail/:contentId/answer/me`,
+    ({ params }) => {
+      const contentId = Number(params.contentId);
+      const answer = submittedAnswers.get(contentId);
+
+      if (answer === undefined) {
+        return HttpResponse.json(
+          { message: '제출한 답변이 없습니다' },
+          { status: 404 },
+        );
+      }
+
+      return HttpResponse.json({ answer });
+    },
+  ),
+
   http.post(
     `${baseURL}/maeil-mail/:contentId/answer/me`,
     async ({ request, params }) => {
       const body = (await request.json()) as {
         answer: string;
       };
+      const contentId = Number(params.contentId);
+      submittedAnswers.set(contentId, body.answer);
       // eslint-disable-next-line no-console
       console.log('[mock] 매일메일 답변 제출', {
-        contentIdInPath: Number(params.contentId),
+        contentIdInPath: contentId,
         ...body,
       });
 
