@@ -11,6 +11,7 @@ on:
       - '.github/workflows/frontend-*.yml'
       - 'pnpm-lock.yaml'
       - 'package.json'
+  workflow_dispatch:
 
 concurrency:
   group: deploy-${{ github.ref_name }}
@@ -73,5 +74,5 @@ jobs:
           fields: |
             [
               { "name": "배포자", "value": "${{ github.actor }}" },
-              { "name": "배포 시간", "value": "${{ github.event.head_commit.timestamp }}" }
+              { "name": "배포 시간", "value": "${{ github.event.head_commit.timestamp || github.event.repository.updated_at }}" }
             ]
