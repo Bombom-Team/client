@@ -1,6 +1,11 @@
 import styled from '@emotion/styled';
 import Logo from '@/assets/svg/maeilmail-logo.svg';
-import { NAV_ITEMS } from '@/pages/landing/constants/landingContent';
+
+const NAV_ITEMS = [
+  { href: '#about', label: '소개' },
+  { href: '#experience', label: '경험' },
+  { href: '#faq', label: 'FAQ' },
+] as const;
 
 const LandingTopNav = () => {
   return (

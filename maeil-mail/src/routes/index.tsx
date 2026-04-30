@@ -2,11 +2,11 @@ import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
-import HowSection from '@/pages/newsletter/components/NewsletterLanding/HowSection';
-import NewsletterFAQ from '@/pages/newsletter/components/NewsletterLanding/NewsletterFAQ';
-import NewsletterHero from '@/pages/newsletter/components/NewsletterLanding/NewsletterHero';
 import LandingExperienceSection from '@/pages/landing/components/LandingExperienceSection';
 import LandingAboutSection from '@/pages/landing/components/LandingAboutSection';
+import LandingHero from '@/pages/landing/components/LandingHero';
+import HowSection from '@/pages/landing/components/HowSection';
+import LandingFAQSection from '@/pages/landing/components/LandingFAQSection';
 
 export const Route = createFileRoute('/')({
   head: () => ({
@@ -30,7 +30,7 @@ function LandingPage() {
     <>
       <LandingHeader />
       <Container>
-        <NewsletterHero />
+        <LandingHero />
         <LandingAboutSection visible={isAboutVisible} sectionRef={aboutRef} />
         <LandingExperienceSection
           experienceProgress={experienceProgress}
@@ -39,7 +39,7 @@ function LandingPage() {
         />
         <InformationSection isMobile={isMobile}>
           <HowSection />
-          <NewsletterFAQ />
+          <LandingFAQSection />
         </InformationSection>
       </Container>
     </>

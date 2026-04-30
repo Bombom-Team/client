@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import MaeilMailSubscribeModal from './MaeilMailSubscribeModal';
-import { MAEIL_MAIL_LANDING_CONFIG, TRACKS } from '../../constants/subscribe';
 import { Flex, Text, useModal } from '@bombom/shared/ui-web';
 import { queries } from '@/apis/queries';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice, type Device } from '@bombom/shared/ui-web';
 import logo from '@/assets/avif/logo.avif';
 import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
+import MaeilMailSubscribeModal from './MaeilMailSubscribeModal';
+import { MAEIL_MAIL_LANDING_CONFIG, TRACKS } from '../constants/subscribe';
 
 const NewsletterHero = () => {
   const { isLoggedIn } = useAuth();

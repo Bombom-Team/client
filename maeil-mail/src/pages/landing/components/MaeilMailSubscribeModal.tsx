@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { TRACKS } from '../../constants/subscribe';
-import { useSubscribeNewsletterMutation } from '../../hooks/useSubscribeNewsletterMutation';
 import { Flex, Modal, Text } from '@bombom/shared/ui-web';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import { useDevice } from '@bombom/shared/ui-web';
-import type { SubscribeTrack } from '../../types/subscribe';
 import type { Device } from '@bombom/shared/ui-web';
 import type { Ref } from 'react';
+import type { SubscribeTrack } from '../types/subscribe';
+import { useSubscribeNewsletterMutation } from '../hooks/useSubscribeNewsletterMutation';
+import { TRACKS } from '../constants/subscribe';
 
 interface Props {
   modalRef: Ref<HTMLDivElement | null>;
