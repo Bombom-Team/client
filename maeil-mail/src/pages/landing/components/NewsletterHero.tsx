@@ -246,7 +246,7 @@ const SubscribeButton = styled.button`
   justify-content: center;
 
   background-color: oklch(15% 0.02 55deg);
-  color: #f5f0e8;
+  color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t6Bold};
 
   transition: background-color 150ms ease;

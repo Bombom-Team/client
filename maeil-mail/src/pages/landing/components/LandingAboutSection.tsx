@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import type { RefObject } from 'react';
+import { useDevice } from '@bombom/shared/ui-web';
 import maeilmailQuestionImage from '@/assets/avif/maeilmail-question.avif';
 import myAnswerImage from '@/assets/avif/my-answer.avif';
 import maeilmailAnswerImage from '@/assets/avif/maeilmail-answer.avif';
@@ -33,10 +34,14 @@ const FEATURE_ITEMS = [
 ] as const;
 
 const FLOW_PATH_POINTS = [
-  { x: 50, y: 250 },
-  { x: 150, y: 500 },
-  { x: 50, y: 750 },
+  { desktopX: 50, mobileX: 100, y: 250 },
+  { desktopX: 150, mobileX: 100, y: 500 },
+  { desktopX: 50, mobileX: 100, y: 750 },
 ] as const;
+
+const DESKTOP_PATH =
+  'M 100 0 C 80 80, 50 170, 50 250 C 50 330, 150 420, 150 500 C 150 580, 50 670, 50 750 C 50 840, 100 930, 100 1000';
+const MOBILE_PATH = 'M 100 0 L 100 1000';
 
 type LandingAboutSectionProps = {
   visible: boolean;
@@ -46,13 +51,13 @@ type LandingAboutSectionProps = {
 const clampValue = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
-const PATH_D =
-  'M 100 0 C 80 80, 50 170, 50 250 C 50 330, 150 420, 150 500 C 150 580, 50 670, 50 750 C 50 840, 100 930, 100 1000';
-
 const LandingAboutSection = ({
   visible,
   sectionRef,
 }: LandingAboutSectionProps) => {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+
   const [progress, setProgress] = useState(() =>
     window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0,
   );
@@ -66,7 +71,6 @@ const LandingAboutSection = ({
 
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
-
       const start = vh * 0.8;
       const range = vh * 0.6 + rect.height;
 
@@ -78,22 +82,29 @@ const LandingAboutSection = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [sectionRef]);
 
+  const svgPath = isMobile ? MOBILE_PATH : DESKTOP_PATH;
+
   return (
-    <Container id="about" ref={sectionRef} $visible={visible}>
+    <Container
+      id="about"
+      ref={sectionRef}
+      visible={visible}
+      isMobile={isMobile}
+    >
       <HeaderArea>
         <SectionTitle scale={1.12 - progress * 0.12}>
           왜 매일메일 일까요?
         </SectionTitle>
       </HeaderArea>
 
-      <FlowGrid>
+      <FlowGrid isMobile={isMobile}>
         <FlowSvg viewBox="0 0 200 1000" preserveAspectRatio="none" aria-hidden>
-          <FlowBasePath d={PATH_D} />
-          <FlowActivePath d={PATH_D} pathLength="1" $progress={progress} />
+          <FlowBasePath d={svgPath} />
+          <FlowActivePath d={svgPath} pathLength="1" $progress={progress} />
           {FLOW_PATH_POINTS.map((point, index) => (
             <FlowPoint
-              key={`${point.x}-${point.y}`}
-              cx={point.x}
+              key={point.y}
+              cx={isMobile ? point.mobileX : point.desktopX}
               cy={point.y}
               r="5"
               $active={progress >= (index + 1) / FLOW_PATH_POINTS.length}
@@ -104,31 +115,28 @@ const LandingAboutSection = ({
         {FEATURE_ITEMS.map(
           ({ title, description, image, imageOffset, imageScale }, index) => {
             const side = index % 2 === 0 ? 'left' : 'right';
-            const itemProgress = clampValue(
-              (progress - index * 0.22) / 0.28,
-              0,
-              1,
-            );
-            const opacityProgress = clampValue(
-              (progress - index * 0.22) / 0.12,
-              0,
-              1,
-            );
+            const itemProgress = isMobile
+              ? 1
+              : clampValue((progress - index * 0.22) / 0.28, 0, 1);
+            const opacityProgress = isMobile
+              ? 1
+              : clampValue((progress - index * 0.22) / 0.12, 0, 1);
 
             return (
               <FlowCard
                 key={title}
-                $col={(index % 2 === 0 ? 1 : 2) as 1 | 2}
-                $row={index + 1}
-                $side={side}
-                $progress={itemProgress}
-                $opacityProgress={opacityProgress}
+                col={(index % 2 === 0 ? 1 : 2) as 1 | 2}
+                row={index + 1}
+                side={side}
+                isMobile={isMobile}
+                progress={itemProgress}
+                opacityProgress={opacityProgress}
               >
                 <FlowEntryImage
                   src={image}
                   alt={title}
-                  $imageOffset={imageOffset}
-                  $imageScale={imageScale}
+                  imageOffset={isMobile ? 0 : imageOffset}
+                  imageScale={isMobile ? 1 : imageScale}
                 />
                 <FlowEntryText>
                   <FeatureTitle>{title}</FeatureTitle>
@@ -145,19 +153,15 @@ const LandingAboutSection = ({
 
 export default LandingAboutSection;
 
-const Container = styled.section<{ $visible: boolean }>`
-  padding: 80px 0 120px;
+const Container = styled.section<{ visible: boolean; isMobile: boolean }>`
+  padding: ${({ isMobile }) => (isMobile ? '60px 0 80px' : '100px 0 150px')};
 
-  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
-  transform: ${({ $visible }) =>
-    $visible ? 'translateY(0)' : 'translateY(24px)'};
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  transform: ${({ visible }) =>
+    visible ? 'translateY(0)' : 'translateY(24px)'};
   transition:
     opacity 460ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 460ms cubic-bezier(0.22, 1, 0.36, 1);
-
-  @media (width >= 920px) {
-    padding: 100px 0 150px;
-  }
 `;
 
 const HeaderArea = styled.div`
@@ -168,7 +172,7 @@ const HeaderArea = styled.div`
 
 const SectionTitle = styled.h2<{ scale: number }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-weight: 800;
+  font: ${({ theme }) => theme.fonts.t13Bold};
   font-size: clamp(1.8rem, 5vw, 3.2rem);
   line-height: 1.08;
   letter-spacing: -0.03em;
@@ -177,21 +181,17 @@ const SectionTitle = styled.h2<{ scale: number }>`
   transform-origin: left center;
 `;
 
-const FlowGrid = styled.div`
+const FlowGrid = styled.div<{ isMobile: boolean }>`
   position: relative;
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px clamp(18px, 3vw, 60px);
 
   display: grid;
+  gap: 0;
 
-  grid-template-columns: 1fr 1fr;
-  row-gap: 64px;
-
-  @media (width <= 720px) {
-    grid-template-columns: 1fr;
-    row-gap: 40px;
-  }
+  grid-template-columns: ${({ isMobile }) => (isMobile ? '1fr' : '1fr 1fr')};
+  row-gap: ${({ isMobile }) => (isMobile ? '48px' : '64px')};
 `;
 
 const FlowSvg = styled.svg`
@@ -202,10 +202,6 @@ const FlowSvg = styled.svg`
   inset: 0;
 
   pointer-events: none;
-
-  @media (width <= 720px) {
-    display: none;
-  }
 `;
 
 const FlowBasePath = styled.path`
@@ -229,40 +225,38 @@ const FlowPoint = styled.circle<{ $active: boolean }>`
 `;
 
 const FlowCard = styled.article<{
-  $col: 1 | 2;
-  $row: number;
-  $side: 'left' | 'right';
-  $progress: number;
-  $opacityProgress: number;
+  col: 1 | 2;
+  row: number;
+  side: 'left' | 'right';
+  isMobile: boolean;
+  progress: number;
+  opacityProgress: number;
 }>`
-  padding: ${({ $col }) => ($col === 1 ? '0 18% 0 0' : '0 0 0 18%')};
+  padding: ${({ col, isMobile }) => {
+    if (isMobile) return '0';
+    return col === 1 ? '0 18% 0 0' : '0 0 0 18%';
+  }};
 
   display: flex;
   gap: 12px;
   flex-direction: column;
 
-  grid-column: ${({ $col }) => $col};
-  grid-row: ${({ $row }) => $row};
+  grid-column: ${({ col, isMobile }) => (isMobile ? 1 : col)};
+  grid-row: ${({ row, isMobile }) => (isMobile ? 'auto' : row)};
 
-  opacity: ${({ $opacityProgress }) => $opacityProgress};
-  transform: ${({ $side, $progress }) =>
-    `translateX(${($side === 'left' ? -1 : 1) * (1 - $progress) * 28}px)`};
+  opacity: ${({ opacityProgress }) => opacityProgress};
+  transform: ${({ side, progress, isMobile }) =>
+    isMobile
+      ? 'none'
+      : `translateX(${(side === 'left' ? -1 : 1) * (1 - progress) * 28}px)`};
   transition:
     opacity 360ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
-
-  @media (width <= 720px) {
-    padding: 0;
-
-    grid-column: 1;
-    opacity: 1;
-    transform: none;
-  }
 `;
 
 const FlowEntryImage = styled.img<{
-  $imageOffset: number;
-  $imageScale: number;
+  imageOffset: number;
+  imageScale: number;
 }>`
   width: 100%;
   min-height: 220px;
@@ -274,11 +268,11 @@ const FlowEntryImage = styled.img<{
   object-fit: contain;
   object-position: top center;
 
-  transform: ${({ $imageOffset, $imageScale }) => {
+  transform: ${({ imageOffset, imageScale }) => {
     const parts: string[] = [];
 
-    if ($imageOffset !== 0) parts.push(`translateY(${$imageOffset}px)`);
-    if ($imageScale !== 1) parts.push(`scale(${$imageScale})`);
+    if (imageOffset !== 0) parts.push(`translateY(${imageOffset}px)`);
+    if (imageScale !== 1) parts.push(`scale(${imageScale})`);
     return parts.length > 0 ? parts.join(' ') : 'none';
   }};
   transform-origin: top left;

@@ -88,7 +88,7 @@ const HowSteps = styled.div<{ isMobile: boolean }>`
   gap: 16px;
 
   grid-template-columns: ${({ isMobile }) =>
-    isMobile ? '1fr' : '1fr 1fr 1fr'};
+    isMobile ? '1fr' : 'repeat(3, 1fr)'};
 `;
 
 const Step = styled.div<{ isMobile: boolean }>`

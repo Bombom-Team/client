@@ -1,27 +1,32 @@
 import styled from '@emotion/styled';
+import { useDevice } from '@bombom/shared/ui-web';
 import Logo from '@/assets/svg/maeilmail-logo.svg';
 
 const NAV_ITEMS = [
   { href: '#about', label: '소개' },
-  { href: '#experience', label: '경험' },
   { href: '#faq', label: 'FAQ' },
 ] as const;
 
 const LandingTopNav = () => {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+
   return (
     <Container>
-      <NavInner>
+      <NavInner isMobile={isMobile}>
         <LogoRow>
           <Logo width={110} />
         </LogoRow>
-        <NavMenu>
+        <NavMenu isMobile={isMobile}>
           {NAV_ITEMS.map(({ href, label }) => (
             <NavLink key={label} href={href}>
               {label}
             </NavLink>
           ))}
         </NavMenu>
-        <NavAction href="#about">매일메일 보기</NavAction>
+        <NavAction href="#about" isMobile={isMobile}>
+          매일메일 보기
+        </NavAction>
       </NavInner>
     </Container>
   );
@@ -33,7 +38,7 @@ const Container = styled.header`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 40;
+  z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   padding: 14px 16px;
   border-bottom: 1px solid rgb(0 0 0 / 6%);
@@ -44,20 +49,16 @@ const Container = styled.header`
   backdrop-filter: blur(12px);
 `;
 
-const NavInner = styled.div`
+const NavInner = styled.div<{ isMobile: boolean }>`
   max-width: 1140px;
   margin: 0 auto;
 
   display: grid;
-  gap: 10px;
+  gap: ${({ isMobile }) => (isMobile ? '10px' : '18px')};
   align-items: center;
 
-  grid-template-columns: 1fr;
-
-  @media (width >= 920px) {
-    gap: 18px;
-    grid-template-columns: auto 1fr auto;
-  }
+  grid-template-columns: ${({ isMobile }) =>
+    isMobile ? '1fr' : 'auto 1fr auto'};
 `;
 
 const LogoRow = styled.div`
@@ -65,14 +66,11 @@ const LogoRow = styled.div`
   align-items: center;
 `;
 
-const NavMenu = styled.nav`
+const NavMenu = styled.nav<{ isMobile: boolean }>`
   display: flex;
   gap: 14px;
   align-items: center;
-
-  @media (width <= 919px) {
-    justify-content: center;
-  }
+  justify-content: ${({ isMobile }) => (isMobile ? 'center' : 'flex-start')};
 `;
 
 const NavLink = styled.a`
@@ -87,12 +85,12 @@ const NavLink = styled.a`
   }
 `;
 
-const NavAction = styled.a`
+const NavAction = styled.a<{ isMobile: boolean }>`
   padding: 8px 14px;
   border: 1px solid currentcolor;
   border-radius: 2px;
 
-  justify-self: start;
+  justify-self: ${({ isMobile }) => (isMobile ? 'start' : 'end')};
 
   color: inherit;
   font: ${({ theme }) => theme.fonts.t5Regular};
@@ -102,9 +100,5 @@ const NavAction = styled.a`
 
   &:hover {
     opacity: 0.68;
-  }
-
-  @media (width >= 920px) {
-    justify-self: end;
   }
 `;
