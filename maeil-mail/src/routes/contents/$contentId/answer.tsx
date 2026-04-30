@@ -84,13 +84,14 @@ function RouteComponent() {
 
 const Container = styled.main`
   min-height: 100dvh;
-  padding-top: ${({ theme }) => theme.heights.headerPC};
+  padding-top: calc(${({ theme }) => theme.heights.headerPC} + 40px);
 
   background-color: ${({ theme }) => theme.colors.white};
 
   @media (width <= 768px) {
     padding-top: calc(
-      ${({ theme }) => `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
+      ${({ theme }) =>
+        `${theme.heights.headerMobile} + ${theme.safeArea.top} + 40px`}
     );
   }
 `;
@@ -269,6 +270,7 @@ const MyAnswerHeader = styled.div`
   svg {
     width: 22px;
     height: 22px;
+
     flex-shrink: 0;
   }
 `;
@@ -292,6 +294,7 @@ const MyAnswerText = styled.p`
   font: ${({ theme }) => theme.fonts.t6Regular};
   line-height: 1.7;
   white-space: pre-line;
+
   word-break: keep-all;
 `;
 
