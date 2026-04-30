@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:msw": "VITE_ENABLE_MSW=true vite",
     "build": "tsc --noEmit && vite build",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
     "stylelint:fix": "stylelint './src/**/*.tsx' --fix",
     "format": "prettier --write . && stylelint './src/**/*.tsx' --fix",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "generate-openapi-types": "dotenv -e .env -- bash -c 'openapi-typescript $OPEN_API_DOCS -o ./src/types/openapi.d.ts && prettier --write ./src/types/openapi.d.ts'"
   },
   "dependencies": {
     "@bombom/shared": "workspace:*",
@@ -20,8 +22,8 @@
     "@tanstack/react-query": "^5.82.0",
     "@tanstack/react-router": "^1.128.3",
     "@tanstack/react-router-devtools": "^1.128.3",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -30,13 +32,21 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^6.0.1",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^10.2.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
+    "openapi-typescript": "^7.9.1",
+    "msw": "^2.10.4",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.10",
     "vite-plugin-svgr": "^5.2.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

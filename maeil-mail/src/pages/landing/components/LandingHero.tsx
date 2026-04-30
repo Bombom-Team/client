@@ -1,17 +1,15 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import MaeilMailSubscribeModal from './MaeilMailSubscribeModal';
-import { MAEIL_MAIL_LANDING_CONFIG, TRACKS } from '../../constants/subscribe';
+import { Flex, Text, useModal } from '@bombom/shared/ui-web';
 import { queries } from '@/apis/queries';
-import Flex from '@/components/Flex';
-import useModal from '@/components/Modal/useModal';
-import Text from '@/components/Text';
 import { useAuth } from '@/contexts/AuthContext';
-import { useDevice, type Device } from '@/hooks/useDevice';
-import logo from '#/assets/avif/logo.avif';
-import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
+import { useDevice, type Device } from '@bombom/shared/ui-web';
+import logo from '@/assets/avif/logo.avif';
+import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
+import MaeilMailSubscribeModal from './MaeilMailSubscribeModal';
+import { MAEIL_MAIL_LANDING_CONFIG, TRACKS } from '../constants/subscribe';
 
-const NewsletterHero = () => {
+const LandingHero = () => {
   const { isLoggedIn } = useAuth();
   const device = useDevice();
   const { modalRef, isOpen, openModal, closeModal } = useModal();
@@ -24,17 +22,14 @@ const NewsletterHero = () => {
   const subscribedTracks = subscription?.tracks ?? [];
   const subscribed = subscribedTracks.length > 0;
 
-  const subscribedTrackLabels = TRACKS.filter((track) =>
-    subscribedTracks.includes(track.value),
-  ).map((track) => track.label);
+  const subscribedTrackLabels = TRACKS.reduce<string[]>((acc, track) => {
+    if (subscribedTracks.includes(track.value)) acc.push(track.label);
+    return acc;
+  }, []);
 
   const redirectLandingPage = () => {
     const redirect = encodeURIComponent(window.location.pathname);
     window.location.href = `/login?redirect=${redirect}`;
-  };
-
-  const completeSubscription = () => {
-    closeModal();
   };
 
   return (
@@ -66,19 +61,12 @@ const NewsletterHero = () => {
           </HeadlineLine>
         </HeroTitleSection>
 
-        <Flex align="center" gap={12}>
-          <OpenDateNumber>
-            {MAEIL_MAIL_LANDING_CONFIG.launchDate}
-          </OpenDateNumber>
-          <OpenDateLabel>OPEN</OpenDateLabel>
-        </Flex>
-
         <Description>
           서비스 종료로 아쉬움을 남긴 매일메일을 봄봄에서 계속 만나보세요.
           <br />
           기술 면접 질문을 한곳에서 더 편하게 읽을 수 있어요.
         </Description>
-        <WarnText color="primary" font="t5Regular">
+        <WarnText font="t5Bold">
           * 봄봄에서만 읽을 수 있는 뉴스레터예요.
         </WarnText>
 
@@ -89,7 +77,7 @@ const NewsletterHero = () => {
                 <SuccessMark>✓</SuccessMark>
                 <SubText>
                   <Highlight>{subscribedTrackLabels.join(' · ')}</Highlight>{' '}
-                  사전 구독 완료!
+                  구독 완료!
                 </SubText>
               </Flex>
             )}
@@ -99,7 +87,7 @@ const NewsletterHero = () => {
               구독 완료
             </SubscribeButton>
           ) : isLoggedIn ? (
-            <SubscribeButton onClick={openModal}>사전 구독하기</SubscribeButton>
+            <SubscribeButton onClick={openModal}>구독하기</SubscribeButton>
           ) : (
             <SubscribeButton onClick={redirectLandingPage}>
               로그인하고 구독하기
@@ -112,13 +100,13 @@ const NewsletterHero = () => {
         modalRef={modalRef}
         isOpen={isOpen}
         closeModal={closeModal}
-        onSubscribeSuccess={completeSubscription}
+        onSubscribeSuccess={closeModal}
       />
     </Container>
   );
 };
 
-export default NewsletterHero;
+export default LandingHero;
 
 const Container = styled.div`
   height: 85vh;
@@ -162,10 +150,12 @@ const CrossSign = styled.span`
 
 const HeadlineLine = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-weight: 900;
-  font-size: ${({ device }) =>
-    device === 'mobile' ? 'clamp(2.25rem, 9.5vw, 3rem)' : '4rem'};
-  line-height: 1.1;
+  font: ${({ theme, device }) =>
+    device === 'mobile'
+      ? theme.fonts.t14Bold
+      : device === 'tablet'
+        ? theme.fonts.t15Bold
+        : theme.fonts.t16Bold};
   letter-spacing: -0.03em;
 `;
 
@@ -174,7 +164,7 @@ const BrandGreen = styled.span<{ primaryColor: string }>`
 `;
 
 const BrandOrange = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const HeroTitleSection = styled(Flex)`
@@ -224,17 +214,18 @@ const SuccessMark = styled.span`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const Highlight = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font-weight: 700;
 `;
 
 const WarnText = styled(Text)`
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   text-align: center;
 `;
 
@@ -255,7 +246,7 @@ const SubscribeButton = styled.button`
   justify-content: center;
 
   background-color: oklch(15% 0.02 55deg);
-  color: #f5f0e8;
+  color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t6Bold};
 
   transition: background-color 150ms ease;
@@ -272,16 +263,4 @@ const SubscribeButton = styled.button`
     background-color: ${({ theme }) => theme.colors.icons};
     cursor: not-allowed;
   }
-`;
-
-const OpenDateNumber = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.t13Bold};
-  letter-spacing: -0.02em;
-`;
-
-const OpenDateLabel = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
-  font: ${({ theme }) => theme.fonts.t13Bold};
-  letter-spacing: 0.04em;
 `;

@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
-import Text from '@/components/Text';
-import { useDevice } from '@/hooks/useDevice';
+import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 
 const HowSection = () => {
   const device = useDevice();
@@ -89,7 +87,7 @@ const HowSteps = styled.div<{ isMobile: boolean }>`
   gap: 16px;
 
   grid-template-columns: ${({ isMobile }) =>
-    isMobile ? '1fr' : '1fr 1fr 1fr'};
+    isMobile ? '1fr' : 'repeat(3, 1fr)'};
 `;
 
 const Step = styled.div<{ isMobile: boolean }>`

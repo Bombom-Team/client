@@ -1,17 +1,22 @@
 import styled from '@emotion/styled';
-import { Link } from '@tanstack/react-router';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import { MAEIL_MAIL_LANDING_CONFIG } from '@/pages/newsletter/constants/subscribe';
 import logo from '#/assets/avif/logo.avif';
 import MaeilMailLogo from '#/assets/svg/maeilmail-logo.svg';
+
+const MAEIL_MAIL_URL = 'https://maeilmail.bombom.news';
+
+export const MAEIL_MAIL_LANDING_CONFIG = {
+  name: '매일메일',
+  primaryColor: '#17C881',
+};
 
 const MaeilMailPromotionBanner = () => {
   const device = useDevice();
 
   return (
-    <Container device={device} to="/maeil-mail/landing">
+    <Container device={device} href={MAEIL_MAIL_URL}>
       <Content device={device}>
         <LogoRow device={device}>
           <Flex align="center" gap={10}>
@@ -41,13 +46,6 @@ const MaeilMailPromotionBanner = () => {
             <BrandOrange>봄봄</BrandOrange>에서
           </HeadlineLine>
         </HeroTitleSection>
-
-        <Flex align="center" gap={8}>
-          <OpenDateNumber device={device}>
-            {MAEIL_MAIL_LANDING_CONFIG.launchDate}
-          </OpenDateNumber>
-          <OpenDateLabel device={device}>Coming Soon</OpenDateLabel>
-        </Flex>
       </Content>
     </Container>
   );
@@ -55,7 +53,7 @@ const MaeilMailPromotionBanner = () => {
 
 export default MaeilMailPromotionBanner;
 
-const Container = styled(Link)<{ device: Device }>`
+const Container = styled.a<{ device: Device }>`
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -124,18 +122,4 @@ const HeroTitleSection = styled(Flex)`
   align-items: center;
 
   text-align: center;
-`;
-
-const OpenDateNumber = styled.span<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.t5Bold : theme.fonts.t8Bold};
-  letter-spacing: -0.02em;
-`;
-
-const OpenDateLabel = styled.span<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme, device }) =>
-    device === 'mobile' ? theme.fonts.t5Bold : theme.fonts.t8Bold};
-  letter-spacing: 0.04em;
 `;

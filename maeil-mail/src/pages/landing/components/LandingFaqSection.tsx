@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import Accordion from '@/components/Accordion/Accordion';
-import Text from '@/components/Text';
-import { useDevice } from '@/hooks/useDevice';
+import { Text, useDevice } from '@bombom/shared/ui-web';
 
 const FAQ_ITEMS = [
   {
@@ -42,7 +41,7 @@ const FAQ_ITEMS = [
   },
 ] as const;
 
-const NewsletterFAQ = () => {
+const LandingFAQSection = () => {
   const device = useDevice();
   const isMobile = device === 'mobile';
   const [openQuestionId, setOpenQuestionId] = useState<string | null>(null);
@@ -93,7 +92,7 @@ const NewsletterFAQ = () => {
   );
 };
 
-export default NewsletterFAQ;
+export default LandingFAQSection;
 
 const Container = styled.aside<{ isMobile: boolean }>`
   margin: 0 ${({ isMobile }) => (isMobile ? '24px' : '40px')};
