@@ -4,12 +4,15 @@ import { useAddHighlightMutation } from '../../hooks/useAddHighlightMutation';
 import { useExternalLinkHandler } from '../../hooks/useExternalLinkHandler';
 import { useFloatingToolbarState } from '../../hooks/useFloatingToolbarState';
 import { useHighlights } from '../../hooks/useHighlights';
+import { useMaeilMailAnswerButton } from '../../hooks/useMaeilMailAnswerButton';
 import { useRemoveHighlightMutation } from '../../hooks/useRemoveHighlighMutation';
 import { useUpdateHighlightMutation } from '../../hooks/useUpdateHighlightMutation';
 import { restoreHighlightAll, saveSelection } from '../../utils/highlight';
 import ArticleContent from '../ArticleContent/ArticleContent';
 import FloatingToolbar from '../FloatingToolbar/FloatingToolbar';
+import MaeilMailAnswerModal from '../MaeilMailAnswerModal/MaeilMailAnswerModal';
 import MemoPanel from '../MemoPanel/MemoPanel';
+import useModal from '@/components/Modal/useModal';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { GetArticleByIdResponse } from '@/apis/articles/articles.api';
 import type { RefObject } from 'react';
@@ -47,6 +50,18 @@ const ArticleBody = ({
     });
 
   useExternalLinkHandler(contentRef);
+
+  const {
+    modalRef: maeilMailModalRef,
+    openModal: openMaeilMailModal,
+    closeModal: closeMaeilMailModal,
+    isOpen: isMaeilMailModalOpen,
+  } = useModal();
+
+  useMaeilMailAnswerButton({
+    contentRef,
+    onAnswerButtonClick: openMaeilMailModal,
+  });
 
   const updateMemo = (id: number, memo: string) => {
     updateHighlight({ id, memo });
@@ -132,6 +147,12 @@ const ArticleBody = ({
         updateMemo={updateMemo}
         onCloseButtonClick={() => setPanelOpen(false)}
         onToggleButtonClick={() => setPanelOpen((prev) => !prev)}
+      />
+      <MaeilMailAnswerModal
+        modalRef={maeilMailModalRef}
+        isOpen={isMaeilMailModalOpen}
+        onClose={closeMaeilMailModal}
+        articleId={articleId}
       />
     </>
   );
