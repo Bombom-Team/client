@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import { Flex, Text } from '@bombom/shared/ui-web';
-import { useDevice } from '@bombom/shared/ui-web';
+import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 
 const HowSection = () => {
   const device = useDevice();

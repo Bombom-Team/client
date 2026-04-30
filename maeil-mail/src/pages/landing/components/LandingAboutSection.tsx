@@ -10,7 +10,7 @@ const FEATURE_ITEMS = [
   {
     title: '매일 새로운 기술 질문을 만나요',
     description:
-      'BE/FE 핵심 기술 질문을 매일 받아볼 수 있어요. \n 짧고 명확하게 설계된 질문으로 학습 루틴을 만들어가세요.',
+      'BE/FE 핵심 기술 질문을 매일 받아볼 수 있어요.\n짧고 명확하게 설계된 질문으로 학습 루틴을 만들어가세요.',
     image: maeilmailQuestionImage,
     imageOffset: 0,
     imageScale: 1,
@@ -18,7 +18,7 @@ const FEATURE_ITEMS = [
   {
     title: '정답 전에 내 생각을 먼저 정리해요',
     description:
-      '먼저 생각을 글로 정리한 뒤 정답과 비교하는 하는 연습을 해요.\n 기억 유지와 실전 응답력이 함께 올라가요.',
+      '먼저 생각을 글로 정리한 뒤 정답과 비교하는 연습을 해요.\n기억 유지와 실전 응답력이 함께 올라가요.',
     image: myAnswerImage,
     imageOffset: -40,
     imageScale: 1.2,
@@ -26,22 +26,15 @@ const FEATURE_ITEMS = [
   {
     title: '정답을 확인하고 개념을 완성해요',
     description:
-      '작성한 답변과 정답을 비교하며 부족한 개념을 채워나가세요. \n 반복 학습으로 면접 대비 실력을 완성해요.',
+      '작성한 답변과 정답을 비교하며 부족한 개념을 채워나가세요.\n반복 학습으로 면접 대비 실력을 완성해요.',
     image: maeilmailAnswerImage,
     imageOffset: -40,
     imageScale: 1.2,
   },
 ] as const;
 
-const FLOW_PATH_POINTS = [
-  { desktopX: 50, mobileX: 100, y: 250 },
-  { desktopX: 150, mobileX: 100, y: 500 },
-  { desktopX: 50, mobileX: 100, y: 750 },
-] as const;
-
 const DESKTOP_PATH =
   'M 100 0 C 80 80, 50 170, 50 250 C 50 330, 150 420, 150 500 C 150 580, 50 670, 50 750 C 50 840, 100 930, 100 1000';
-const MOBILE_PATH = 'M 100 0 L 100 1000';
 
 type LandingAboutSectionProps = {
   visible: boolean;
@@ -82,8 +75,6 @@ const LandingAboutSection = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [sectionRef]);
 
-  const svgPath = isMobile ? MOBILE_PATH : DESKTOP_PATH;
-
   return (
     <Container
       id="about"
@@ -98,19 +89,12 @@ const LandingAboutSection = ({
       </HeaderArea>
 
       <FlowGrid isMobile={isMobile}>
-        <FlowSvg viewBox="0 0 200 1000" preserveAspectRatio="none" aria-hidden>
-          <FlowBasePath d={svgPath} />
-          <FlowActivePath d={svgPath} pathLength="1" $progress={progress} />
-          {FLOW_PATH_POINTS.map((point, index) => (
-            <FlowPoint
-              key={point.y}
-              cx={isMobile ? point.mobileX : point.desktopX}
-              cy={point.y}
-              r="5"
-              $active={progress >= (index + 1) / FLOW_PATH_POINTS.length}
-            />
-          ))}
-        </FlowSvg>
+        {!isMobile && (
+          <FlowSvg viewBox="0 0 200 1000" preserveAspectRatio="none" aria-hidden>
+            <FlowBasePath d={DESKTOP_PATH} />
+            <FlowActivePath d={DESKTOP_PATH} pathLength="1" $progress={progress} />
+          </FlowSvg>
+        )}
 
         {FEATURE_ITEMS.map(
           ({ title, description, image, imageOffset, imageScale }, index) => {
@@ -138,9 +122,11 @@ const LandingAboutSection = ({
                   imageOffset={isMobile ? 0 : imageOffset}
                   imageScale={isMobile ? 1 : imageScale}
                 />
-                <FlowEntryText>
-                  <FeatureTitle>{title}</FeatureTitle>
-                  <FeatureDescription>{description}</FeatureDescription>
+                <FlowEntryText isMobile={isMobile}>
+                  <FeatureTitle isMobile={isMobile}>{title}</FeatureTitle>
+                  <FeatureDescription isMobile={isMobile}>
+                    {description}
+                  </FeatureDescription>
                 </FlowEntryText>
               </FlowCard>
             );
@@ -168,17 +154,17 @@ const HeaderArea = styled.div`
   max-width: 1140px;
   margin: 0 auto;
   padding: 0 clamp(18px, 3vw, 84px) 56px;
+
+  text-align: center;
 `;
 
-const SectionTitle = styled.h2<{ scale: number }>`
+const SectionTitle = styled.h3<{ scale: number }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t13Bold};
-  font-size: clamp(1.8rem, 5vw, 3.2rem);
   line-height: 1.08;
-  letter-spacing: -0.03em;
 
   transform: ${({ scale }) => `scale(${scale})`};
-  transform-origin: left center;
+  transform-origin: center center;
 `;
 
 const FlowGrid = styled.div<{ isMobile: boolean }>`
@@ -191,11 +177,13 @@ const FlowGrid = styled.div<{ isMobile: boolean }>`
   gap: 0;
 
   grid-template-columns: ${({ isMobile }) => (isMobile ? '1fr' : '1fr 1fr')};
+  isolation: isolate;
   row-gap: ${({ isMobile }) => (isMobile ? '48px' : '64px')};
 `;
 
 const FlowSvg = styled.svg`
   position: absolute;
+  z-index: 0;
   width: 100%;
   height: 100%;
 
@@ -219,11 +207,6 @@ const FlowActivePath = styled.path<{ $progress: number }>`
   stroke-width: 2;
 `;
 
-const FlowPoint = styled.circle<{ $active: boolean }>`
-  fill: ${({ $active, theme }) =>
-    $active ? theme.colors.textPrimary : theme.colors.stroke};
-`;
-
 const FlowCard = styled.article<{
   col: 1 | 2;
   row: number;
@@ -232,6 +215,8 @@ const FlowCard = styled.article<{
   progress: number;
   opacityProgress: number;
 }>`
+  position: relative;
+  z-index: 1;
   padding: ${({ col, isMobile }) => {
     if (isMobile) return '0';
     return col === 1 ? '0 18% 0 0' : '0 0 0 18%';
@@ -278,20 +263,31 @@ const FlowEntryImage = styled.img<{
   transform-origin: top left;
 `;
 
-const FlowEntryText = styled.div`
+const FlowEntryText = styled.div<{ isMobile: boolean }>`
+  position: relative;
+  z-index: 1;
+  width: ${({ isMobile }) => (isMobile ? 'min(100%, 34ch)' : '100%')};
+  margin-top: 8px;
+
   display: flex;
   gap: 10px;
   flex-direction: column;
+  align-items: flex-start;
+  align-self: ${({ isMobile }) => (isMobile ? 'center' : 'stretch')};
+
+  text-align: left;
 `;
 
-const FeatureTitle = styled.h3`
+const FeatureTitle = styled.h3<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t11Bold};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.t9Bold : theme.fonts.t11Bold};
   line-height: 1.4;
 `;
 
-const FeatureDescription = styled.p`
+const FeatureDescription = styled.p<{ isMobile: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t8Regular};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.t6Regular : theme.fonts.t8Regular};
   line-height: 1.72;
 `;

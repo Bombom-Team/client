@@ -22,17 +22,14 @@ const LandingHero = () => {
   const subscribedTracks = subscription?.tracks ?? [];
   const subscribed = subscribedTracks.length > 0;
 
-  const subscribedTrackLabels = TRACKS.filter((track) =>
-    subscribedTracks.includes(track.value),
-  ).map((track) => track.label);
+  const subscribedTrackLabels = TRACKS.reduce<string[]>((acc, track) => {
+    if (subscribedTracks.includes(track.value)) acc.push(track.label);
+    return acc;
+  }, []);
 
   const redirectLandingPage = () => {
     const redirect = encodeURIComponent(window.location.pathname);
     window.location.href = `/login?redirect=${redirect}`;
-  };
-
-  const completeSubscription = () => {
-    closeModal();
   };
 
   return (
@@ -69,7 +66,7 @@ const LandingHero = () => {
           <br />
           기술 면접 질문을 한곳에서 더 편하게 읽을 수 있어요.
         </Description>
-        <WarnText color="textPrimary" font="t5Bold">
+        <WarnText font="t5Bold">
           * 봄봄에서만 읽을 수 있는 뉴스레터예요.
         </WarnText>
 
@@ -103,7 +100,7 @@ const LandingHero = () => {
         modalRef={modalRef}
         isOpen={isOpen}
         closeModal={closeModal}
-        onSubscribeSuccess={completeSubscription}
+        onSubscribeSuccess={closeModal}
       />
     </Container>
   );
@@ -153,10 +150,12 @@ const CrossSign = styled.span`
 
 const HeadlineLine = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-weight: 900;
-  font-size: ${({ device }) =>
-    device === 'mobile' ? 'clamp(2.25rem, 9.5vw, 3rem)' : '4rem'};
-  line-height: 1.1;
+  font: ${({ theme, device }) =>
+    device === 'mobile'
+      ? theme.fonts.t14Bold
+      : device === 'tablet'
+        ? theme.fonts.t15Bold
+        : theme.fonts.t16Bold};
   letter-spacing: -0.03em;
 `;
 
@@ -215,17 +214,18 @@ const SuccessMark = styled.span`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const Highlight = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font-weight: 700;
 `;
 
 const WarnText = styled(Text)`
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   text-align: center;
 `;
 
