@@ -3,9 +3,9 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import LandingAboutSection from '@/pages/landing/components/LandingAboutSection';
 import HowSection from '@/pages/landing/components/HowSection';
-import NewsletterHero from '@/pages/landing/components/NewsletterHero';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import LandingFAQSection from '@/pages/landing/components/LandingFaqSection';
+import LandingHero from '@/pages/landing/components/LandingHero';
 
 export const Route = createFileRoute('/')({
   head: () => ({
@@ -25,7 +25,7 @@ function LandingPage() {
     <>
       <LandingHeader />
       <Container>
-        <NewsletterHero />
+        <LandingHero />
         <LandingAboutSection visible={isAboutVisible} sectionRef={aboutRef} />
         <InformationSection isMobile={isMobile}>
           <HowSection />
