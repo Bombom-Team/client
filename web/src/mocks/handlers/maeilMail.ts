@@ -21,22 +21,19 @@ export const maeilMailHandlers = [
     return HttpResponse.json({ contentId: 7 });
   }),
 
-  http.get(
-    `${baseURL}/maeil-mail/:contentId/answer/me`,
-    ({ params }) => {
-      const contentId = Number(params.contentId);
-      const answer = submittedAnswers.get(contentId);
+  http.get(`${baseURL}/maeil-mail/:contentId/answer/me`, ({ params }) => {
+    const contentId = Number(params.contentId);
+    const answer = submittedAnswers.get(contentId);
 
-      if (answer === undefined) {
-        return HttpResponse.json(
-          { message: '제출한 답변이 없습니다' },
-          { status: 404 },
-        );
-      }
+    if (answer === undefined) {
+      return HttpResponse.json(
+        { message: '제출한 답변이 없습니다' },
+        { status: 404 },
+      );
+    }
 
-      return HttpResponse.json({ answer });
-    },
-  ),
+    return HttpResponse.json({ answer });
+  }),
 
   http.post(
     `${baseURL}/maeil-mail/:contentId/answer/me`,
