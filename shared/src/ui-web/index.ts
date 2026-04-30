@@ -42,6 +42,10 @@ export type { Device } from './hooks/useDevice';
 export { default as useMediaQuery } from './hooks/useMediaQuery';
 export type { MediaCondition } from './hooks/useMediaQuery';
 export { DEVICE_BREAKPOINTS } from './hooks/deviceBreakpoints';
+export { useScrollVisible } from './hooks/useScrollVisible';
+
+export { default as ServiceSwitcher } from './Header/ServiceSwitcher';
+export type { ServiceSwitcherProps } from './Header/ServiceSwitcher';
 
 export { isAppVersionSupported } from './utils/version';
 export {
@@ -52,7 +56,4 @@ export {
   isAndroid,
   isIOS,
 } from './utils/device';
-export {
-  sendMessageToRN,
-  addWebViewMessageListener,
-} from './utils/webview';
+export { sendMessageToRN, addWebViewMessageListener } from './utils/webview';

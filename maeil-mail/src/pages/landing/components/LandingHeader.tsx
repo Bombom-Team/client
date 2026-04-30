@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import HeaderLogo from '@/components/Header/HeaderLogo';
 import LoginButton from '@/components/Header/LoginButton';
+import ServiceSwitcher from '@/components/Header/ServiceSwitcher';
 import Skeleton from '@/components/Skeleton/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@bombom/shared/ui-web';
@@ -14,18 +15,21 @@ const LandingHeader = () => {
 
   return (
     <Container device={device}>
-      <HeaderWrapper>
-        <HeaderLogo />
-        {isLoading ? (
-          <Skeleton width="100px" height="40px" borderRadius={12} />
-        ) : isLoggedIn ? (
-          <GoToService device={device} href={BOMBOM_SERVICE_URL}>
-            서비스 이동
-          </GoToService>
-        ) : (
-          <LoginButton />
-        )}
-      </HeaderWrapper>
+      <ServiceSwitcher />
+      <HeaderRow device={device}>
+        <HeaderWrapper>
+          <HeaderLogo />
+          {isLoading ? (
+            <Skeleton width="100px" height="40px" borderRadius={12} />
+          ) : isLoggedIn ? (
+            <GoToService device={device} href={BOMBOM_SERVICE_URL}>
+              서비스 이동
+            </GoToService>
+          ) : (
+            <LoginButton />
+          )}
+        </HeaderWrapper>
+      </HeaderRow>
     </Container>
   );
 };
@@ -38,18 +42,26 @@ const Container = styled.header<{ device: Device }>`
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   height: ${({ theme, device }) =>
-    device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile};
-  padding: ${({ device }) => (device === 'pc' ? '8px 16px' : '8px 12px')};
+    `calc(${device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile} + 40px)`};
 
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
 
   background: rgb(249 248 248 / 60%);
 
   backdrop-filter: blur(10px);
 
   transform: translateX(-50%);
+`;
+
+const HeaderRow = styled.div<{ device: Device }>`
+  padding: ${({ device }) => (device === 'pc' ? '8px 16px' : '8px 12px')};
+
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
 `;
 
 const HeaderWrapper = styled.div`
@@ -62,7 +74,6 @@ const HeaderWrapper = styled.div`
 `;
 
 const GoToService = styled.a<{ device: Device }>`
-  text-decoration: none;
   padding: ${({ device }) => (device === 'mobile' ? '8px 12px' : '8px 16px')};
   border: none;
   border-radius: 12px;
@@ -76,6 +87,7 @@ const GoToService = styled.a<{ device: Device }>`
   font: ${({ theme }) => theme.fonts.t5Regular};
 
   cursor: pointer;
+  text-decoration: none;
   transition: background-color 0.3s ease;
 
   &:hover {

@@ -1,30 +1,35 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
-import { useDevice } from '@bombom/shared/ui-web';
+import { useDevice, useScrollVisible } from '@bombom/shared/ui-web';
+import LandingAboutSection from '@/pages/landing/components/LandingAboutSection';
+import HowSection from '@/pages/landing/components/HowSection';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
-import HowSection from '@/pages/newsletter/components/NewsletterLanding/HowSection';
-import NewsletterFAQ from '@/pages/newsletter/components/NewsletterLanding/NewsletterFAQ';
-import NewsletterHero from '@/pages/newsletter/components/NewsletterLanding/NewsletterHero';
+import LandingFAQSection from '@/pages/landing/components/LandingFaqSection';
+import LandingHero from '@/pages/landing/components/LandingHero';
 
 export const Route = createFileRoute('/')({
   head: () => ({
-    meta: [{ title: '봄봄 × 매일메일 | 사전 구독' }],
+    meta: [{ title: '봄봄 × 매일메일 | 랜딩 페이지' }],
   }),
-  component: MaeilMailLandingPage,
+  component: LandingPage,
 });
 
-function MaeilMailLandingPage() {
+function LandingPage() {
   const device = useDevice();
   const isMobile = device === 'mobile';
+
+  const { visibleRef: aboutRef, isVisible: isAboutVisible } =
+    useScrollVisible(0.15);
 
   return (
     <>
       <LandingHeader />
       <Container>
-        <NewsletterHero />
+        <LandingHero />
+        <LandingAboutSection visible={isAboutVisible} sectionRef={aboutRef} />
         <InformationSection isMobile={isMobile}>
           <HowSection />
-          <NewsletterFAQ />
+          <LandingFAQSection />
         </InformationSection>
       </Container>
     </>
