@@ -1,39 +1,41 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import type { RefObject } from 'react';
+import maeilmailQuestionImage from '@/assets/avif/maeilmail-question.avif';
+import myAnswerImage from '@/assets/avif/my-answer.avif';
+import maeilmailAnswerImage from '@/assets/avif/maeilmail-answer.avif';
 
 const FEATURE_ITEMS = [
   {
-    number: '01',
-    title: 'BE/FE 기술 면접 질문 큐레이션',
+    title: '매일 새로운 기술 질문을 만나요',
     description:
-      '매일메일 팀 콘텐츠를 바탕으로 핵심 질문을 선별해 제공해요. [텍스트: 질문 선정 기준 상세]',
+      'BE/FE 핵심 기술 질문을 매일 받아볼 수 있어요. \n 짧고 명확하게 설계된 질문으로 학습 루틴을 만들어가세요.',
+    image: maeilmailQuestionImage,
+    imageOffset: 0,
+    imageScale: 1,
   },
   {
-    number: '02',
-    title: '봄봄 안에서 구독 · 열람',
+    title: '정답 전에 내 생각을 먼저 정리해요',
     description:
-      '개인 이메일 발송 없이 봄봄 안에서만 제공돼요. [텍스트: 구독 플로우 상세]',
+      '먼저 생각을 글로 정리한 뒤 정답과 비교하는 하는 연습을 해요.\n 기억 유지와 실전 응답력이 함께 올라가요.',
+    image: myAnswerImage,
+    imageOffset: -40,
+    imageScale: 1.2,
   },
   {
-    number: '03',
-    title: '짧은 시간 복습 중심 구성',
+    title: '정답을 확인하고 개념을 완성해요',
     description:
-      '출퇴근 중에도 빠르게 확인할 수 있도록 스낵형 리딩으로 구성했어요. [텍스트: 카드 타입별 예시]',
-  },
-  {
-    number: '04',
-    title: '무료 제공 + 지속 개선',
-    description:
-      '현재 무료로 제공되며, 봄봄 안에서 활용성을 계속 개선할 예정이에요. [텍스트: 업데이트 예정 항목]',
+      '작성한 답변과 정답을 비교하며 부족한 개념을 채워나가세요. \n 반복 학습으로 면접 대비 실력을 완성해요.',
+    image: maeilmailAnswerImage,
+    imageOffset: -40,
+    imageScale: 1.2,
   },
 ] as const;
 
 const FLOW_PATH_POINTS = [
-  { x: 50, y: 200 },
-  { x: 150, y: 400 },
-  { x: 50, y: 600 },
-  { x: 150, y: 800 },
+  { x: 50, y: 250 },
+  { x: 150, y: 500 },
+  { x: 50, y: 750 },
 ] as const;
 
 type LandingAboutSectionProps = {
@@ -44,9 +46,8 @@ type LandingAboutSectionProps = {
 const clampValue = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
-// S-curve from center-top → left col → right col → left col → right col → center-bottom
 const PATH_D =
-  'M 100 0 C 80 80, 50 150, 50 200 C 50 270, 150 310, 150 400 C 150 470, 50 530, 50 600 C 50 670, 150 720, 150 800 C 150 880, 100 950, 100 1000';
+  'M 100 0 C 80 80, 50 170, 50 250 C 50 330, 150 420, 150 500 C 150 580, 50 670, 50 750 C 50 840, 100 930, 100 1000';
 
 const LandingAboutSection = ({
   visible,
@@ -66,7 +67,6 @@ const LandingAboutSection = ({
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
 
-      // Start when section enters 80% down, end when bottom exits at 20% from top
       const start = vh * 0.8;
       const range = vh * 0.6 + rect.height;
 
@@ -101,37 +101,43 @@ const LandingAboutSection = ({
           ))}
         </FlowSvg>
 
-        {FEATURE_ITEMS.map(({ number, title, description }, index) => {
-          const side = index % 2 === 0 ? 'left' : 'right';
-          const itemProgress = clampValue(
-            (progress - index * 0.22) / 0.28,
-            0,
-            1,
-          );
-          const opacityProgress = clampValue(
-            (progress - index * 0.22) / 0.12,
-            0,
-            1,
-          );
+        {FEATURE_ITEMS.map(
+          ({ title, description, image, imageOffset, imageScale }, index) => {
+            const side = index % 2 === 0 ? 'left' : 'right';
+            const itemProgress = clampValue(
+              (progress - index * 0.22) / 0.28,
+              0,
+              1,
+            );
+            const opacityProgress = clampValue(
+              (progress - index * 0.22) / 0.12,
+              0,
+              1,
+            );
 
-          return (
-            <FlowCard
-              key={number}
-              $col={(index % 2 === 0 ? 1 : 2) as 1 | 2}
-              $row={index + 1}
-              $side={side}
-              $progress={itemProgress}
-              $opacityProgress={opacityProgress}
-            >
-              <FlowEntryImage>[example 이미지]</FlowEntryImage>
-              <FlowEntryText>
-                <FeatureNumber>{number}</FeatureNumber>
-                <FeatureTitle>{title}</FeatureTitle>
-                <FeatureDescription>{description}</FeatureDescription>
-              </FlowEntryText>
-            </FlowCard>
-          );
-        })}
+            return (
+              <FlowCard
+                key={title}
+                $col={(index % 2 === 0 ? 1 : 2) as 1 | 2}
+                $row={index + 1}
+                $side={side}
+                $progress={itemProgress}
+                $opacityProgress={opacityProgress}
+              >
+                <FlowEntryImage
+                  src={image}
+                  alt={title}
+                  $imageOffset={imageOffset}
+                  $imageScale={imageScale}
+                />
+                <FlowEntryText>
+                  <FeatureTitle>{title}</FeatureTitle>
+                  <FeatureDescription>{description}</FeatureDescription>
+                </FlowEntryText>
+              </FlowCard>
+            );
+          },
+        )}
       </FlowGrid>
     </Container>
   );
@@ -141,14 +147,6 @@ export default LandingAboutSection;
 
 const Container = styled.section<{ $visible: boolean }>`
   padding: 80px 0 120px;
-
-  background:
-    radial-gradient(
-      circle at 15% 30%,
-      rgb(255 255 255 / 4%) 0%,
-      transparent 50%
-    ),
-    oklch(12% 0.004 220deg);
 
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
   transform: ${({ $visible }) =>
@@ -169,7 +167,7 @@ const HeaderArea = styled.div`
 `;
 
 const SectionTitle = styled.h2<{ scale: number }>`
-  color: rgb(255 255 255 / 96%);
+  color: ${({ theme }) => theme.colors.textPrimary};
   font-weight: 800;
   font-size: clamp(1.8rem, 5vw, 3.2rem);
   line-height: 1.08;
@@ -212,13 +210,13 @@ const FlowSvg = styled.svg`
 
 const FlowBasePath = styled.path`
   fill: none;
-  stroke: rgb(255 255 255 / 12%);
+  stroke: ${({ theme }) => theme.colors.dividers};
   stroke-width: 1.5;
 `;
 
 const FlowActivePath = styled.path<{ $progress: number }>`
   fill: none;
-  stroke: rgb(255 255 255 / 80%);
+  stroke: ${({ theme }) => theme.colors.stroke};
   stroke-dasharray: 1;
   stroke-dashoffset: ${({ $progress }) => 1 - $progress};
   stroke-linecap: round;
@@ -226,8 +224,8 @@ const FlowActivePath = styled.path<{ $progress: number }>`
 `;
 
 const FlowPoint = styled.circle<{ $active: boolean }>`
-  fill: ${({ $active }) =>
-    $active ? 'rgb(255 255 255 / 90%)' : 'rgb(255 255 255 / 20%)'};
+  fill: ${({ $active, theme }) =>
+    $active ? theme.colors.textPrimary : theme.colors.stroke};
 `;
 
 const FlowCard = styled.article<{
@@ -262,29 +260,28 @@ const FlowCard = styled.article<{
   }
 `;
 
-const FlowEntryImage = styled.div`
+const FlowEntryImage = styled.img<{
+  $imageOffset: number;
+  $imageScale: number;
+}>`
+  width: 100%;
   min-height: 220px;
   border-radius: 14px;
-  box-shadow: 0 20px 40px rgb(0 0 0 / 20%);
+  box-shadow: 0 12px 28px rgb(0 0 0 / 20%);
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-color: rgb(255 255 255 / 88%);
 
-  background:
-    radial-gradient(
-      circle at 22% 20%,
-      rgb(255 255 255 / 70%) 0%,
-      transparent 45%
-    ),
-    linear-gradient(
-      135deg,
-      oklch(93% 0.015 75deg) 0%,
-      oklch(88% 0.03 160deg) 100%
-    );
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  text-align: center;
+  object-fit: contain;
+  object-position: top center;
+
+  transform: ${({ $imageOffset, $imageScale }) => {
+    const parts: string[] = [];
+
+    if ($imageOffset !== 0) parts.push(`translateY(${$imageOffset}px)`);
+    if ($imageScale !== 1) parts.push(`scale(${$imageScale})`);
+    return parts.length > 0 ? parts.join(' ') : 'none';
+  }};
+  transform-origin: top left;
 `;
 
 const FlowEntryText = styled.div`
@@ -293,20 +290,14 @@ const FlowEntryText = styled.div`
   flex-direction: column;
 `;
 
-const FeatureNumber = styled.span`
-  color: rgb(255 255 255 / 35%);
-  font: ${({ theme }) => theme.fonts.t6Bold};
-  letter-spacing: 0.06em;
-`;
-
 const FeatureTitle = styled.h3`
-  color: rgb(255 255 255 / 96%);
-  font: ${({ theme }) => theme.fonts.t7Bold};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t11Bold};
   line-height: 1.4;
 `;
 
 const FeatureDescription = styled.p`
-  color: rgb(255 255 255 / 72%);
-  font: ${({ theme }) => theme.fonts.t5Regular};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t8Regular};
   line-height: 1.72;
 `;
