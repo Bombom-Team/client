@@ -34,6 +34,12 @@ const MaeilMailAnswerModal = ({
   });
   const contentId = content?.contentId;
 
+  const { data: submittedAnswer } = useQuery({
+    ...queries.answerByContentId({ contentId: contentId as number }),
+    enabled: isOpen && contentId !== undefined,
+  });
+  const hasSubmittedAnswer = typeof submittedAnswer === 'string';
+
   const { mutate: submitAnswer, isPending: isSubmitting } =
     useMaeilMailAnswerMutation();
 
@@ -68,6 +74,7 @@ const MaeilMailAnswerModal = ({
     );
   };
 
+  const textareaValue = hasSubmittedAnswer ? submittedAnswer : answer;
   const isSubmitDisabled = answer.length === 0 || isSubmitting;
 
   return (
@@ -83,23 +90,26 @@ const MaeilMailAnswerModal = ({
           <Label htmlFor="maeil-mail-answer">내 답변</Label>
           <Textarea
             id="maeil-mail-answer"
-            value={answer}
+            value={textareaValue}
             onChange={handleAnswerChange}
             placeholder="생각나는 대로 적어도 괜찮아요"
+            disabled={hasSubmittedAnswer}
           />
-          <CharacterCount>{answer.length}자</CharacterCount>
+          <CharacterCount>{textareaValue.length}자</CharacterCount>
         </Field>
         <ButtonRow>
           <ViewAnswerButton type="button" onClick={handleViewAnswerClick}>
             바로 정답 보기
           </ViewAnswerButton>
-          <SubmitButton
-            variant="filled"
-            onClick={handleSubmitClick}
-            disabled={isSubmitDisabled}
-          >
-            제출하고 정답 보기
-          </SubmitButton>
+          {!hasSubmittedAnswer && (
+            <SubmitButton
+              variant="filled"
+              onClick={handleSubmitClick}
+              disabled={isSubmitDisabled}
+            >
+              제출하고 정답 보기
+            </SubmitButton>
+          )}
         </ButtonRow>
       </Container>
     </Modal>
@@ -153,6 +163,13 @@ const Textarea = styled.textarea`
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.backgroundHover};
+    color: ${({ theme }) => theme.colors.textSecondary};
+    cursor: not-allowed;
+    resize: none;
   }
 `;
 

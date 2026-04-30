@@ -1,4 +1,4 @@
-import { fetcher } from '@bombom/shared/apis';
+import { ApiError, fetcher } from '@bombom/shared/apis';
 
 export interface GetMaeilMailContentParams {
   articleId: number;
@@ -15,6 +15,30 @@ export const getMaeilMailContent = async ({
     path: '/maeil-mail/content',
     query: { articleId },
   });
+};
+
+export interface GetMaeilMailAnswerParams {
+  contentId: number;
+}
+
+export interface GetMaeilMailAnswerResponse {
+  answer: string;
+}
+
+export const getMaeilMailAnswer = async ({
+  contentId,
+}: GetMaeilMailAnswerParams): Promise<string | null> => {
+  try {
+    const { answer } = await fetcher.get<GetMaeilMailAnswerResponse>({
+      path: `/maeil-mail/${contentId}/answer/me`,
+    });
+    return answer;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 };
 
 export interface PostMaeilMailAnswerParams {
