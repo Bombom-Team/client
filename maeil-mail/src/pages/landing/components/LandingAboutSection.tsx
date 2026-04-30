@@ -90,9 +90,17 @@ const LandingAboutSection = ({
 
       <FlowGrid isMobile={isMobile}>
         {!isMobile && (
-          <FlowSvg viewBox="0 0 200 1000" preserveAspectRatio="none" aria-hidden>
+          <FlowSvg
+            viewBox="0 0 200 1000"
+            preserveAspectRatio="none"
+            aria-hidden
+          >
             <FlowBasePath d={DESKTOP_PATH} />
-            <FlowActivePath d={DESKTOP_PATH} pathLength="1" $progress={progress} />
+            <FlowActivePath
+              d={DESKTOP_PATH}
+              pathLength="1"
+              $progress={progress}
+            />
           </FlowSvg>
         )}
 
@@ -244,7 +252,6 @@ const FlowEntryImage = styled.img<{
   imageScale: number;
 }>`
   width: 100%;
-  min-height: 220px;
   border-radius: 14px;
   box-shadow: 0 12px 28px rgb(0 0 0 / 20%);
 
@@ -267,7 +274,7 @@ const FlowEntryText = styled.div<{ isMobile: boolean }>`
   position: relative;
   z-index: 1;
   width: ${({ isMobile }) => (isMobile ? 'min(100%, 34ch)' : '100%')};
-  margin-top: 8px;
+  margin-top: 16px;
 
   display: flex;
   gap: 10px;
