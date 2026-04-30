@@ -28,6 +28,6 @@ export const postMaeilMailAnswer = async ({
 }: PostMaeilMailAnswerParams) => {
   return await fetcher.post({
     path: `/maeil-mail/${contentId}/answer/me`,
-    body: { contentId, answer },
+    body: { answer },
   });
 };
