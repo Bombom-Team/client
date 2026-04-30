@@ -60,7 +60,7 @@ const MaeilMailSubscribeModal = ({
     >
       <ModalContent device={device}>
         <TitleGroup>
-          <Title>사전 구독</Title>
+          <Title>구독</Title>
         </TitleGroup>
 
         <Section>

@@ -10,7 +10,7 @@ import LandingAboutSection from '@/pages/landing/components/LandingAboutSection'
 
 export const Route = createFileRoute('/')({
   head: () => ({
-    meta: [{ title: '봄봄 × 매일메일 | 사전 구독' }],
+    meta: [{ title: '봄봄 × 매일메일 | 랜딩 페이지' }],
   }),
   component: LandingPage,
 });
@@ -31,10 +31,7 @@ function LandingPage() {
       <LandingHeader />
       <Container>
         <NewsletterHero />
-        <LandingAboutSection
-          visible={isAboutVisible}
-          sectionRef={aboutRef}
-        />
+        <LandingAboutSection visible={isAboutVisible} sectionRef={aboutRef} />
         <LandingExperienceSection
           experienceProgress={experienceProgress}
           visible={isExperienceVisible}

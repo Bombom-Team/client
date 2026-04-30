@@ -89,7 +89,7 @@ const NewsletterHero = () => {
                 <SuccessMark>✓</SuccessMark>
                 <SubText>
                   <Highlight>{subscribedTrackLabels.join(' · ')}</Highlight>{' '}
-                  사전 구독 완료!
+                  구독 완료!
                 </SubText>
               </Flex>
             )}
@@ -99,7 +99,7 @@ const NewsletterHero = () => {
               구독 완료
             </SubscribeButton>
           ) : isLoggedIn ? (
-            <SubscribeButton onClick={openModal}>사전 구독하기</SubscribeButton>
+            <SubscribeButton onClick={openModal}>구독하기</SubscribeButton>
           ) : (
             <SubscribeButton onClick={redirectLandingPage}>
               로그인하고 구독하기

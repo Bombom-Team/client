@@ -26,7 +26,7 @@ export const useSubscribeNewsletterMutation = ({
       queryClient.invalidateQueries({
         queryKey: queries.nativeMaeilMailSubscription().queryKey,
       });
-      toast.success('사전 구독을 완료했어요!');
+      toast.success('구독을 완료했어요!');
       onSubscribeSuccess();
     },
     onError: () => {
