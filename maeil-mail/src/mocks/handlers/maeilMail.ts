@@ -61,9 +61,9 @@ export const maeilMailHandlers = [
     });
   }),
 
-  http.get(`${baseURL}/maeil-mail/:contentId/answer/me`, ({ params }) => {
-    const { contentId } = params;
-    const maeilMailAnswer = getMaeilMailAnswer(String(contentId));
+  http.get(`${baseURL}/maeil-mail/articles/:articleId/answers/me`, ({ params }) => {
+    const { articleId } = params;
+    const maeilMailAnswer = getMaeilMailAnswer(String(articleId));
 
     return HttpResponse.json({
       answer: maeilMailAnswer.myAnswer,
