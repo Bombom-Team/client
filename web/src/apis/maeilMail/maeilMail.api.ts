@@ -18,7 +18,7 @@ export const getMaeilMailContent = async ({
 };
 
 export interface GetMaeilMailAnswerParams {
-  contentId: number;
+  articleId: number;
 }
 
 export interface GetMaeilMailAnswerResponse {
@@ -26,11 +26,11 @@ export interface GetMaeilMailAnswerResponse {
 }
 
 export const getMaeilMailAnswer = async ({
-  contentId,
+  articleId,
 }: GetMaeilMailAnswerParams): Promise<string | null> => {
   try {
     const { answer } = await fetcher.get<GetMaeilMailAnswerResponse>({
-      path: `/maeil-mail/${contentId}/answer/me`,
+      path: `/maeil-mail/articles/${articleId}/answers/me`,
     });
     return answer;
   } catch (error) {
@@ -42,16 +42,16 @@ export const getMaeilMailAnswer = async ({
 };
 
 export interface PostMaeilMailAnswerParams {
-  contentId: number;
+  articleId: number;
   answer: string;
 }
 
 export const postMaeilMailAnswer = async ({
-  contentId,
+  articleId,
   answer,
 }: PostMaeilMailAnswerParams) => {
   return await fetcher.post({
-    path: `/maeil-mail/${contentId}/answer/me`,
+    path: `/maeil-mail/articles/${articleId}/answers/me`,
     body: { answer },
   });
 };
