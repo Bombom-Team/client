@@ -3,6 +3,7 @@ import {
   getAnswer,
   getMyAnswer,
   type GetAnswerParams,
+  type GetMyAnswerParams,
 } from './answer.api';
 
 export const answerQueries = {
@@ -11,9 +12,9 @@ export const answerQueries = {
       queryKey: ['maeil-mail', params.contentId, 'answer'],
       queryFn: () => getAnswer(params),
     }),
-  myAnswer: (params: GetAnswerParams) =>
+  myAnswer: (params: GetMyAnswerParams) =>
     queryOptions({
-      queryKey: ['maeil-mail', params.contentId, 'answer', 'me'],
+      queryKey: ['maeil-mail', 'articles', params.articleId, 'answers', 'me'],
       queryFn: () => getMyAnswer(params),
     }),
 };

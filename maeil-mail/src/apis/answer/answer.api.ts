@@ -4,6 +4,10 @@ export type GetAnswerParams = {
   contentId: string;
 };
 
+export type GetMyAnswerParams = {
+  articleId: number;
+};
+
 export type GetAnswerResponse = {
   title: string;
   answer: string;
@@ -19,8 +23,8 @@ export const getAnswer = async ({ contentId }: GetAnswerParams) => {
   });
 };
 
-export const getMyAnswer = async ({ contentId }: GetAnswerParams) => {
+export const getMyAnswer = async ({ articleId }: GetMyAnswerParams) => {
   return await fetcher.get<GetMyAnswerResponse>({
-    path: `/maeil-mail/${contentId}/answer/me`,
+    path: `/maeil-mail/articles/${articleId}/answers/me`,
   });
 };
