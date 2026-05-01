@@ -6,6 +6,13 @@ import ChatIcon from '@/assets/svg/chat.svg';
 import Header from '@/components/Header/Header';
 
 export const Route = createFileRoute('/contents/$contentId/answer')({
+  validateSearch: (search: { articleId?: string | number }) => {
+    const articleId = Number(search.articleId);
+
+    return {
+      articleId: Number.isNaN(articleId) ? undefined : articleId,
+    };
+  },
   head: () => ({
     meta: [
       {
@@ -22,6 +29,7 @@ export const Route = createFileRoute('/contents/$contentId/answer')({
 
 function RouteComponent() {
   const { contentId } = Route.useParams();
+  const { articleId } = Route.useSearch();
   const { data, isError, isLoading } = useQuery(
     queries.answer({ contentId }),
   );
@@ -29,10 +37,15 @@ function RouteComponent() {
     data: myAnswer,
     isError: isMyAnswerError,
     isLoading: isMyAnswerLoading,
-  } = useQuery(queries.myAnswer({ contentId }));
+  } = useQuery({
+    ...queries.myAnswer({ articleId: articleId ?? 0 }),
+    enabled: articleId !== undefined,
+  });
 
   const showMyAnswer =
-    !isMyAnswerError && (isMyAnswerLoading || Boolean(myAnswer?.answer));
+    articleId !== undefined &&
+    !isMyAnswerError &&
+    (isMyAnswerLoading || Boolean(myAnswer?.answer));
 
   return (
     <Container>

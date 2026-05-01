@@ -35,8 +35,8 @@ const MaeilMailAnswerModal = ({
   const contentId = content?.contentId;
 
   const { data: submittedAnswer } = useQuery({
-    ...queries.answerByContentId({ contentId: contentId as number }),
-    enabled: isOpen && contentId !== undefined,
+    ...queries.answerByArticleId({ articleId }),
+    enabled: isOpen,
   });
   const hasSubmittedAnswer = typeof submittedAnswer === 'string';
 
@@ -52,7 +52,7 @@ const MaeilMailAnswerModal = ({
       toast.error('정답 페이지로 이동할 수 없어요. 잠시 후 다시 시도해주세요.');
       return;
     }
-    navigate({ href: getMaeilMailAnswerUrl(contentId) });
+    navigate({ href: getMaeilMailAnswerUrl(contentId, articleId) });
   };
 
   const handleSubmitClick = () => {
@@ -62,10 +62,10 @@ const MaeilMailAnswerModal = ({
     }
 
     submitAnswer(
-      { contentId, answer },
+      { articleId, answer },
       {
         onSuccess: () => {
-          navigate({ href: getMaeilMailAnswerUrl(contentId) });
+          navigate({ href: getMaeilMailAnswerUrl(contentId, articleId) });
         },
         onError: () => {
           toast.error('답변 제출에 실패했어요. 잠시 후 다시 시도해주세요.');
@@ -168,6 +168,7 @@ const Textarea = styled.textarea`
   &:disabled {
     background-color: ${({ theme }) => theme.colors.backgroundHover};
     color: ${({ theme }) => theme.colors.textSecondary};
+
     cursor: not-allowed;
     resize: none;
   }
@@ -193,10 +194,10 @@ const ViewAnswerButton = styled.button`
   background: none;
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t3Regular};
-  text-decoration: underline;
-  text-underline-offset: 2px;
 
   cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 
   &:hover {
     color: ${({ theme }) => theme.colors.textPrimary};
@@ -204,9 +205,10 @@ const ViewAnswerButton = styled.button`
 `;
 
 const SubmitButton = styled(Button)`
-  flex: 1;
   height: 48px;
   border-radius: 24px;
+
+  flex: 1;
 
   font: ${({ theme }) => theme.fonts.t6Regular};
 `;
