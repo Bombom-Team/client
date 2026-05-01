@@ -12,9 +12,9 @@ export const maeilMailQueries = {
       queryKey: ['maeil-mail', 'content', params.articleId],
       queryFn: () => getMaeilMailContent(params),
     }),
-  answerByContentId: (params: GetMaeilMailAnswerParams) =>
+  answerByArticleId: (params: GetMaeilMailAnswerParams) =>
     queryOptions({
-      queryKey: ['maeil-mail', 'answer', 'me', params.contentId],
+      queryKey: ['maeil-mail', 'answer', 'me', params.articleId],
       queryFn: () => getMaeilMailAnswer(params),
     }),
 };
