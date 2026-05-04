@@ -15,7 +15,7 @@ const NewsletterDetailPageSkeleton = () => {
   const isMobile = deviceType === 'mobile';
 
   return (
-    <Layout isMobile={isMobile}>
+    <Layout>
       <Main>
         <HeroSection isMobile={isMobile}>
           <InfoWrapper isMobile={isMobile}>
