@@ -19,7 +19,10 @@ const SubscribeRequiredModal = ({
   const navigate = useNavigate();
 
   const handleNewsletterClick = (newsletterId: number) => {
-    navigate({ to: `/?newsletterDetail=${newsletterId}` });
+    navigate({
+      to: '/newsletters/$newsletterId',
+      params: { newsletterId: String(newsletterId) },
+    });
     closeModal();
   };
 
