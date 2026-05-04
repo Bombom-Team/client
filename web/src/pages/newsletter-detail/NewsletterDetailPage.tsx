@@ -5,6 +5,8 @@ import NewsletterSubscribeGuide from './components/NewsletterSubscribeGuide';
 import PreviousArticles from './components/PreviousArticles';
 import {
   NEWSLETTER_DETAIL_MAIN_WIDTH,
+  NEWSLETTER_DETAIL_SIDE_GAP,
+  NEWSLETTER_DETAIL_SIDE_VISIBLE_MIN_WIDTH,
   NEWSLETTER_DETAIL_SIDE_WIDTH,
 } from './constants';
 import { openSubscribeLink } from './utils';
@@ -81,7 +83,7 @@ const NewsletterDetailPage = ({ newsletterId }: NewsletterDetailPageProps) => {
           right={<HeaderTitle>{newsletterDetail.name}</HeaderTitle>}
         />
       )}
-      <Layout isMobile={isMobile}>
+      <Layout>
         <Main>
           <VisuallyHidden aria-label={newsletterSummary}>
             뉴스레터 정보
@@ -160,41 +162,47 @@ const NewsletterDetailPage = ({ newsletterId }: NewsletterDetailPageProps) => {
 
 export default NewsletterDetailPage;
 
-export const Layout = styled.div<{ isMobile: boolean }>`
+export const Layout = styled.div`
+  position: relative;
   width: 100%;
-  max-width: ${({ isMobile }) =>
-    isMobile
-      ? `${NEWSLETTER_DETAIL_MAIN_WIDTH}px`
-      : `${NEWSLETTER_DETAIL_MAIN_WIDTH + NEWSLETTER_DETAIL_SIDE_WIDTH + 24}px`};
+  max-width: ${NEWSLETTER_DETAIL_MAIN_WIDTH}px;
   margin: 0 auto;
-
-  display: flex;
-  gap: 24px;
-  flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
-  align-items: flex-start;
 `;
 
 export const Main = styled.div`
   width: 100%;
-  max-width: ${NEWSLETTER_DETAIL_MAIN_WIDTH}px;
   min-width: 0;
 
   display: flex;
   gap: 24px;
-  flex: 1;
   flex-direction: column;
 
   word-break: keep-all;
 `;
 
 const Aside = styled.aside`
-  position: sticky;
+  position: fixed;
   top: calc(
     ${({ theme }) => `${theme.heights.headerPC} + ${theme.safeArea.top}`} + 24px
   );
+  left: calc(
+    50% + ${NEWSLETTER_DETAIL_MAIN_WIDTH / 2}px +
+      ${NEWSLETTER_DETAIL_SIDE_GAP}px
+  );
   width: ${NEWSLETTER_DETAIL_SIDE_WIDTH}px;
+  max-height: calc(
+    100dvh -
+      (
+        ${({ theme }) => `${theme.heights.headerPC} + ${theme.safeArea.top}`} +
+          48px
+      )
+  );
 
-  flex-shrink: 0;
+  overflow-y: auto;
+
+  @media (max-width: ${NEWSLETTER_DETAIL_SIDE_VISIBLE_MIN_WIDTH - 1}px) {
+    display: none;
+  }
 `;
 
 const VisuallyHidden = styled.button`
