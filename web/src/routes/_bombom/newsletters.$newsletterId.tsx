@@ -1,7 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Suspense } from 'react';
-import NewsletterDetailPage from '@/pages/newsletter-detail/NewsletterDetailPage';
-import NewsletterDetailPageSkeleton from '@/pages/newsletter-detail/NewsletterDetailPageSkeleton';
+import { useDevice } from '@/hooks/useDevice';
+import NewsletterDetailDesktop from '@/pages/newsletter-detail/NewsletterDetailDesktop';
+import NewsletterDetailDesktopSkeleton from '@/pages/newsletter-detail/NewsletterDetailDesktopSkeleton';
+import NewsletterDetailMobile from '@/pages/newsletter-detail/NewsletterDetailMobile';
+import NewsletterDetailMobileSkeleton from '@/pages/newsletter-detail/NewsletterDetailMobileSkeleton';
+import type { NewsletterTab } from '@/pages/newsletter-detail/types';
+import type { SearchSchemaInput } from '@tanstack/react-router';
+
+interface NewsletterDetailSearch {
+  tab?: NewsletterTab;
+}
 
 export const Route = createFileRoute('/_bombom/newsletters/$newsletterId')({
   head: () => ({
@@ -16,15 +25,28 @@ export const Route = createFileRoute('/_bombom/newsletters/$newsletterId')({
     ],
   }),
   component: NewsletterDetailRoute,
+  validateSearch: (search: NewsletterDetailSearch & SearchSchemaInput) => ({
+    tab: search?.tab,
+  }),
 });
 
 function NewsletterDetailRoute() {
   const { newsletterId } = Route.useParams();
   const id = Number(newsletterId);
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+
+  if (isMobile) {
+    return (
+      <Suspense fallback={<NewsletterDetailMobileSkeleton />}>
+        <NewsletterDetailMobile newsletterId={id} />
+      </Suspense>
+    );
+  }
 
   return (
-    <Suspense fallback={<NewsletterDetailPageSkeleton />}>
-      <NewsletterDetailPage newsletterId={id} />
+    <Suspense fallback={<NewsletterDetailDesktopSkeleton />}>
+      <NewsletterDetailDesktop newsletterId={id} />
     </Suspense>
   );
 }
