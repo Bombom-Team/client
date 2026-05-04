@@ -10,7 +10,7 @@ tools: Read
 
 ## 시작하자마자 할 일
 
-**반드시 `.claude/skills/design-planner/bombom-design-guide.md`를 Read로 먼저 읽습니다.** 여기에 없는 토큰·컴포넌트·레이아웃은 지어내지 말고 `[TODO: 확인 필요]`로 남기세요. 가이드 문서가 디자인의 유일한 소스입니다.
+**반드시 `docs/ai-context/design-guide.md`를 Read로 먼저 읽습니다.** 여기에 없는 토큰·컴포넌트·레이아웃은 지어내지 말고 `[TODO: 확인 필요]`로 남기세요. 가이드 문서가 디자인의 유일한 소스입니다.
 
 ## 입력 형식
 

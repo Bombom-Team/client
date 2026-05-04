@@ -1,6 +1,6 @@
 ---
 name: update-context
-description: 봄봄 서비스 컨텍스트 문서(`.claude/skills/product-planner/context.md`)의 "핵심 기능 맵"과 "주요 화면 구조" 섹션을 갱신합니다. 사용자가 "이 기능 출시됐어 context 업데이트해줘", "새 페이지 추가됐으니 문서 갱신", "context.md 업데이트", "핵심 기능 추가", "서비스 컨텍스트 반영" 같은 요청을 하면 반드시 이 스킬을 사용하세요. product-planner 에이전트가 PRD 마지막에 "📌 Context 갱신 제안"을 남기면, 실제 출시 후 이 스킬로 반영합니다.
+description: 봄봄 서비스 컨텍스트 문서(`docs/ai-context/product-context.md`)의 "핵심 기능 맵"과 "주요 화면 구조" 섹션을 갱신합니다. 사용자가 "이 기능 출시됐어 context 업데이트해줘", "새 페이지 추가됐으니 문서 갱신", "context.md 업데이트", "핵심 기능 추가", "서비스 컨텍스트 반영" 같은 요청을 하면 반드시 이 스킬을 사용하세요. product-planner 에이전트가 PRD 마지막에 "📌 Context 갱신 제안"을 남기면, 실제 출시 후 이 스킬로 반영합니다.
 ---
 
 # Update Context
@@ -9,7 +9,7 @@ description: 봄봄 서비스 컨텍스트 문서(`.claude/skills/product-planne
 
 ## 대상 파일
 
-`.claude/skills/product-planner/context.md`
+`docs/ai-context/product-context.md`
 
 이 파일에서 **변경 잦은 두 섹션**만 갱신합니다:
 - **핵심 기능 맵** (기능 표)
@@ -24,7 +24,7 @@ description: 봄봄 서비스 컨텍스트 문서(`.claude/skills/product-planne
    - 불명확하면 `AskUserQuestion`으로 1~2개 질문:
      - "추가된 기능인가, 제거된 기능인가, 개편인가?"
      - "영향 받는 섹션: 핵심 기능 맵 / 주요 화면 구조 / 둘 다 / 모르겠음"
-2. `Read`로 현재 context.md를 읽어 해당 섹션 위치 확인
+2. `Read`로 현재 `product-context.md`를 읽어 해당 섹션 위치 확인
 3. `Edit`로 변경 반영
    - 기능 추가: 표에 새 행 추가 (기능명, 설명, 연결되는 가치 번호)
    - 기능 제거: 해당 행 삭제
@@ -45,7 +45,7 @@ description: 봄봄 서비스 컨텍스트 문서(`.claude/skills/product-planne
 **입력**: `/update-context 매일메일 답변 작성 기능 출시, 뉴스레터 읽기 페이지에 붙음. 가치 1, 4 연결`
 
 **동작**:
-1. context.md의 "핵심 기능 맵" 표에 행 추가:
+1. `product-context.md`의 "핵심 기능 맵" 표에 행 추가:
    ```
    | 매일메일 답변 작성 | 정답 공개 전 유저가 답변을 써보게 하고 비교 | 1, 4 |
    ```
@@ -55,6 +55,6 @@ description: 봄봄 서비스 컨텍스트 문서(`.claude/skills/product-planne
 
 ## 금지
 
-- 이 스킬로 context.md의 **다른 섹션**(한 줄 정의, 타겟층, 계정 모델 등)을 수정하지 마세요.
+- 이 스킬로 `product-context.md`의 **다른 섹션**(한 줄 정의, 타겟층, 계정 모델 등)을 수정하지 마세요.
 - **출시되지 않은 기획**을 기능 맵에 올리지 마세요. 반드시 "출시됨"을 사용자가 확인한 후 반영.
 - 자동으로 가치 번호(1~5)를 추측하지 마세요. 사용자가 명시하거나 질문으로 확인.
