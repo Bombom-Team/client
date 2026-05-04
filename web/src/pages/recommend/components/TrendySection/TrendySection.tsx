@@ -1,20 +1,14 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import NewsletterList from './NewsletterList';
-import NewsletterDetail from '../NewsletterDetail/NewsletterDetail';
-import NewsletterDetailSkeleton from '../NewsletterDetail/NewsletterDetailSkeleton';
 import { queries } from '@/apis/queries';
 import Chip from '@/components/Chip/Chip';
 import ImageInfoCardSkeleton from '@/components/ImageInfoCard/ImageInfoCardSkeleton';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
 import SearchInput from '@/components/SearchInput/SearchInput';
 import { NEWSLETTER_COUNT } from '@/constants/newsletter';
 import { useDevice } from '@/hooks/useDevice';
-import { useSearchParamState } from '@/hooks/useSearchParamState';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { Device } from '@/hooks/useDevice';
 import type { Newsletter } from '@/types/newsletter';
@@ -34,9 +28,6 @@ const TrendySection = () => {
   const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const [selectedNewsletterId, setSelectedNewsletterId] = useSearchParamState<
-    number | null
-  >('newsletterDetail', { replace: false });
   const { data, isLoading } = useQuery(queries.newsletters());
 
   const categories = useMemo(() => data?.categories ?? [], [data?.categories]);
@@ -44,17 +35,6 @@ const TrendySection = () => {
     () => data?.newsletters ?? [],
     [data?.newsletters],
   );
-
-  const {
-    modalRef: detailModalRef,
-    openModal: openDetailModal,
-    closeModal: closeDetailModal,
-    isOpen,
-  } = useModal({
-    onClose: () => {
-      setSelectedNewsletterId(null);
-    },
-  });
 
   const filteredNewsletters = newsletters
     ?.filter(
@@ -80,26 +60,16 @@ const TrendySection = () => {
       navigate({ href: 'https://maeilmail.bombom.news' });
       return;
     }
-    setSelectedNewsletterId(newsletter.newsletterId);
     trackEvent({
       category: 'Newsletter',
       action: '뉴스레터 카드 클릭',
       label: newsletter.name ?? 'Unknown Newsletter',
     });
+    navigate({
+      to: '/newsletters/$newsletterId',
+      params: { newsletterId: String(newsletter.newsletterId) },
+    });
   };
-
-  useEffect(() => {
-    if (selectedNewsletterId) {
-      const newsletter = newsletters?.find(
-        (newsletter) => newsletter.newsletterId === selectedNewsletterId,
-      );
-      if (newsletter) {
-        openDetailModal();
-      }
-    } else {
-      closeDetailModal();
-    }
-  }, [closeDetailModal, selectedNewsletterId, newsletters, openDetailModal]);
 
   useEffect(() => {
     if (isSearchExpanded && searchInputRef.current) {
@@ -108,104 +78,86 @@ const TrendySection = () => {
   }, [isSearchExpanded]);
 
   return (
-    <>
-      <Container>
-        <SectionHeader>
-          <HeaderLeft>
-            <SectionIconBox>
-              <TrendingUpIcon width={16} height={16} />
-            </SectionIconBox>
-            <SectionTitle>트렌디한 뉴스레터</SectionTitle>
-          </HeaderLeft>
-          <SearchIconButton
-            onClick={() => setIsSearchExpanded(true)}
-            aria-label="검색 열기"
-          >
-            <ReadingGlassesIcon width={20} height={20} />
-          </SearchIconButton>
-          <ExpandableSearchContainer isExpanded={isSearchExpanded}>
-            <SearchInput
-              ref={searchInputRef}
-              placeholder="뉴스레터 이름으로 검색"
-              value={searchQuery}
-              onChange={handleSearchInputChange}
-              onBlur={() => {
-                if (searchQuery !== '') return;
+    <Container>
+      <SectionHeader>
+        <HeaderLeft>
+          <SectionIconBox>
+            <TrendingUpIcon width={16} height={16} />
+          </SectionIconBox>
+          <SectionTitle>트렌디한 뉴스레터</SectionTitle>
+        </HeaderLeft>
+        <SearchIconButton
+          onClick={() => setIsSearchExpanded(true)}
+          aria-label="검색 열기"
+        >
+          <ReadingGlassesIcon width={20} height={20} />
+        </SearchIconButton>
+        <ExpandableSearchContainer isExpanded={isSearchExpanded}>
+          <SearchInput
+            ref={searchInputRef}
+            placeholder="뉴스레터 이름으로 검색"
+            value={searchQuery}
+            onChange={handleSearchInputChange}
+            onBlur={() => {
+              if (searchQuery !== '') return;
 
-                setIsSearchExpanded(false);
-              }}
-              aria-label="뉴스레터 검색"
-            />
-            <CloseButton
-              onClick={() => {
-                setIsSearchExpanded(false);
-                setSearchQuery('');
-              }}
-              aria-label="검색 닫기"
-            >
-              <CloseIcon width={20} height={20} />
-            </CloseButton>
-          </ExpandableSearchContainer>
-        </SectionHeader>
-        <TagContainer>
-          <Chip
-            key="all"
-            text={ALL_NEWSLETTERS}
-            selected={selectedCategory === ALL_NEWSLETTERS}
-            onSelect={() => setSelectedCategory(ALL_NEWSLETTERS)}
-            aria-label={`${ALL_NEWSLETTERS} 카테고리`}
+              setIsSearchExpanded(false);
+            }}
+            aria-label="뉴스레터 검색"
           />
-          {categories.map(({ id, name }) => (
-            <Chip
-              key={id}
-              text={name}
-              selected={selectedCategory === name}
-              onSelect={() => setSelectedCategory(name)}
-              aria-label={`${name} 필터링`}
-            />
-          ))}
-        </TagContainer>
-        <TrendyGrid
-          device={device}
-          aria-live="polite"
-          aria-label={`${selectedCategory} 카테고리 뉴스레터 목록`}
-          hasContent={!!(filteredNewsletters && filteredNewsletters.length > 0)}
-        >
-          {isLoading ? (
-            Array.from({
-              length:
-                device === 'mobile'
-                  ? NEWSLETTER_COUNT.mobile
-                  : NEWSLETTER_COUNT.nonMobile,
-            }).map((_, index) => (
-              <ImageInfoCardSkeleton key={`skeleton-card-${index}`} />
-            ))
-          ) : (
-            <NewsletterList
-              key={selectedCategory}
-              newsletters={filteredNewsletters ?? []}
-              handleCardClick={handleCardClick}
-            />
-          )}
-        </TrendyGrid>
-      </Container>
-      {createPortal(
-        <Modal
-          modalRef={detailModalRef}
-          closeModal={closeDetailModal}
-          isOpen={isOpen}
-          position={device === 'mobile' ? 'bottom' : 'center'}
-          showCloseButton={device !== 'mobile'}
-        >
-          {selectedNewsletterId && (
-            <Suspense fallback={<NewsletterDetailSkeleton />}>
-              <NewsletterDetail newsletterId={selectedNewsletterId} />
-            </Suspense>
-          )}
-        </Modal>,
-        document.body,
-      )}
-    </>
+          <CloseButton
+            onClick={() => {
+              setIsSearchExpanded(false);
+              setSearchQuery('');
+            }}
+            aria-label="검색 닫기"
+          >
+            <CloseIcon width={20} height={20} />
+          </CloseButton>
+        </ExpandableSearchContainer>
+      </SectionHeader>
+      <TagContainer>
+        <Chip
+          key="all"
+          text={ALL_NEWSLETTERS}
+          selected={selectedCategory === ALL_NEWSLETTERS}
+          onSelect={() => setSelectedCategory(ALL_NEWSLETTERS)}
+          aria-label={`${ALL_NEWSLETTERS} 카테고리`}
+        />
+        {categories.map(({ id, name }) => (
+          <Chip
+            key={id}
+            text={name}
+            selected={selectedCategory === name}
+            onSelect={() => setSelectedCategory(name)}
+            aria-label={`${name} 필터링`}
+          />
+        ))}
+      </TagContainer>
+      <TrendyGrid
+        device={device}
+        aria-live="polite"
+        aria-label={`${selectedCategory} 카테고리 뉴스레터 목록`}
+        hasContent={!!(filteredNewsletters && filteredNewsletters.length > 0)}
+      >
+        {isLoading ? (
+          Array.from({
+            length:
+              device === 'mobile'
+                ? NEWSLETTER_COUNT.mobile
+                : NEWSLETTER_COUNT.nonMobile,
+          }).map((_, index) => (
+            <ImageInfoCardSkeleton key={`skeleton-card-${index}`} />
+          ))
+        ) : (
+          <NewsletterList
+            key={selectedCategory}
+            newsletters={filteredNewsletters ?? []}
+            handleCardClick={handleCardClick}
+          />
+        )}
+      </TrendyGrid>
+    </Container>
   );
 };
 
