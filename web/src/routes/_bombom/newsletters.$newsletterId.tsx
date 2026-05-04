@@ -34,9 +34,9 @@ function NewsletterDetailRoute() {
   const { newsletterId } = Route.useParams();
   const id = Number(newsletterId);
   const device = useDevice();
-  const isMobile = device === 'mobile';
+  const isMobileView = device !== 'pc';
 
-  if (isMobile) {
+  if (isMobileView) {
     return (
       <Suspense fallback={<NewsletterDetailMobileSkeleton />}>
         <NewsletterDetailMobile newsletterId={id} />
