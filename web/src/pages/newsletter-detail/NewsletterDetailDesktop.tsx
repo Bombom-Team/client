@@ -13,21 +13,20 @@ import { openSubscribeLink } from './utils';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
-import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { useAuth } from '@/contexts/AuthContext';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { openExternalLink } from '@/utils/externalLink';
 import HomeIcon from '#/assets/svg/home.svg';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
-interface NewsletterDetailPageProps {
+interface NewsletterDetailDesktopProps {
   newsletterId: number;
 }
 
-const NewsletterDetailPage = ({ newsletterId }: NewsletterDetailPageProps) => {
-  const deviceType = useDevice();
+const NewsletterDetailDesktop = ({
+  newsletterId,
+}: NewsletterDetailDesktopProps) => {
   const { userProfile, isLoggedIn } = useAuth();
   const navigate = useNavigate();
 
@@ -37,8 +36,6 @@ const NewsletterDetailPage = ({ newsletterId }: NewsletterDetailPageProps) => {
   const { data: previousArticles } = useQuery({
     ...queries.previousArticles({ newsletterId, limit: 10 }),
   });
-
-  const isMobile = deviceType === 'mobile';
 
   if (!newsletterDetail || !newsletterId) return null;
 
@@ -77,90 +74,76 @@ const NewsletterDetailPage = ({ newsletterId }: NewsletterDetailPageProps) => {
   const newsletterSummary = `${newsletterDetail.name}, ${newsletterDetail.category} 카테고리, ${newsletterDetail.issueCycle} 발행. ${newsletterDetail.description}`;
 
   return (
-    <>
-      {isMobile && (
-        <MobileDetailHeader
-          right={<HeaderTitle>{newsletterDetail.name}</HeaderTitle>}
-        />
-      )}
-      <Layout>
-        <Main>
-          <VisuallyHidden aria-label={newsletterSummary}>
-            뉴스레터 정보
-          </VisuallyHidden>
-          <HeroSection isMobile={isMobile}>
-            <InfoWrapper isMobile={isMobile} aria-hidden="true">
-              <NewsletterImage
-                src={newsletterDetail.imageUrl}
-                alt=""
-                isMobile={isMobile}
-              />
-              <InfoBox>
-                <TitleWrapper isMobile={isMobile}>
-                  <NewsletterTitle>{newsletterDetail.name}</NewsletterTitle>
-                  <DetailLink
-                    onClick={openMainSite}
-                    aria-description="클릭 시 뉴스레터 공식 페이지로 이동합니다."
-                  >
-                    <StyledHomeIcon isMobile={isMobile} aria-hidden="true" />
-                  </DetailLink>
-                </TitleWrapper>
+    <Layout>
+      <Main>
+        <VisuallyHidden aria-label={newsletterSummary}>
+          뉴스레터 정보
+        </VisuallyHidden>
+        <HeroSection>
+          <InfoWrapper aria-hidden="true">
+            <NewsletterImage src={newsletterDetail.imageUrl} alt="" />
+            <InfoBox>
+              <TitleWrapper>
+                <NewsletterTitle>{newsletterDetail.name}</NewsletterTitle>
+                <DetailLink
+                  onClick={openMainSite}
+                  aria-description="클릭 시 뉴스레터 공식 페이지로 이동합니다."
+                >
+                  <StyledHomeIcon aria-hidden="true" />
+                </DetailLink>
+              </TitleWrapper>
 
-                <NewsletterInfo>
-                  <StyledBadge text={newsletterDetail.category} />
-                  <IssueCycle>{`${newsletterDetail.issueCycle} 발행`}</IssueCycle>
-                </NewsletterInfo>
-              </InfoBox>
-            </InfoWrapper>
+              <NewsletterInfo>
+                <StyledBadge text={newsletterDetail.category} />
+                <IssueCycle>{`${newsletterDetail.issueCycle} 발행`}</IssueCycle>
+              </NewsletterInfo>
+            </InfoBox>
+          </InfoWrapper>
 
-            {newsletterDetail.subscribeMethod && (
-              <SubscribeMethodInfo>
-                <StyledInfoIcon isMobile={isMobile} />
-                {newsletterDetail.subscribeMethod}
-              </SubscribeMethodInfo>
-            )}
+          {newsletterDetail.subscribeMethod && (
+            <SubscribeMethodInfo>
+              <StyledInfoIcon />
+              {newsletterDetail.subscribeMethod}
+            </SubscribeMethodInfo>
+          )}
 
-            <SubscribeButton
-              isMobile={isMobile}
-              onClick={handleSubscribeButtonClick}
-              disabled={
-                !isLoggedIn || (isLoggedIn && newsletterDetail.isSubscribed)
-              }
-            >
-              {getSubscribeButtonText()}
-            </SubscribeButton>
-          </HeroSection>
+          <SubscribeButton
+            onClick={handleSubscribeButtonClick}
+            disabled={
+              !isLoggedIn || (isLoggedIn && newsletterDetail.isSubscribed)
+            }
+          >
+            {getSubscribeButtonText()}
+          </SubscribeButton>
+        </HeroSection>
 
-          <Section>
-            <SectionHeading>뉴스레터 소개</SectionHeading>
-            <Description>{newsletterDetail.description}</Description>
-          </Section>
+        <Section>
+          <SectionHeading>뉴스레터 소개</SectionHeading>
+          <Description>{newsletterDetail.description}</Description>
+        </Section>
 
-          <SectionDivider />
+        <SectionDivider />
 
-          <Section>
-            <SectionHeading>지난 뉴스레터</SectionHeading>
-            <PreviousArticles
-              previousArticles={previousArticles}
-              newsletterName={newsletterDetail.name}
-              previousNewsletterUrl={newsletterDetail.previousNewsletterUrl}
-              newsletterSubscribeUrl={newsletterDetail.subscribeUrl}
-              isMobile={isMobile}
-            />
-          </Section>
-        </Main>
+        <Section>
+          <SectionHeading>지난 뉴스레터</SectionHeading>
+          <PreviousArticles
+            previousArticles={previousArticles}
+            newsletterName={newsletterDetail.name}
+            previousNewsletterUrl={newsletterDetail.previousNewsletterUrl}
+            newsletterSubscribeUrl={newsletterDetail.subscribeUrl}
+            isMobile={false}
+          />
+        </Section>
+      </Main>
 
-        {!isMobile && (
-          <Aside>
-            <NewsletterSubscribeGuide />
-          </Aside>
-        )}
-      </Layout>
-    </>
+      <Aside>
+        <NewsletterSubscribeGuide />
+      </Aside>
+    </Layout>
   );
 };
 
-export default NewsletterDetailPage;
+export default NewsletterDetailDesktop;
 
 export const Layout = styled.div`
   position: relative;
@@ -183,7 +166,7 @@ export const Main = styled.div`
 const Aside = styled.aside`
   position: fixed;
   top: calc(
-    ${({ theme }) => `${theme.heights.headerPC} + ${theme.safeArea.top}`} + 24px
+    ${({ theme }) => `${theme.heights.headerPC} + ${theme.safeArea.top}`} + 90px
   );
   left: calc(
     50% + ${NEWSLETTER_DETAIL_MAIN_WIDTH / 2}px +
@@ -225,21 +208,9 @@ const VisuallyHidden = styled.button`
   }
 `;
 
-const HeaderTitle = styled.h1`
-  overflow: hidden;
-  flex: 1;
-  margin-right: 32px;
-
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Bold};
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-export const HeroSection = styled.div<{ isMobile: boolean }>`
+export const HeroSection = styled.div`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '16px' : '24px')};
+  gap: 24px;
   flex-direction: column;
 `;
 
@@ -267,19 +238,17 @@ const SectionDivider = styled.hr`
   background-color: ${({ theme }) => theme.colors.dividers};
 `;
 
-export const InfoWrapper = styled.div<{ isMobile: boolean }>`
+export const InfoWrapper = styled.div`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '12px' : '16px')};
+  gap: 16px;
   align-items: center;
   justify-content: center;
 `;
 
-const NewsletterImage = styled(ImageWithFallback, {
-  shouldForwardProp: (prop) => prop !== 'isMobile',
-})<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '88px' : '104px')};
-  height: ${({ isMobile }) => (isMobile ? '88px' : '104px')};
-  border-radius: ${({ isMobile }) => (isMobile ? '12px' : '16px')};
+const NewsletterImage = styled(ImageWithFallback)`
+  width: 104px;
+  height: 104px;
+  border-radius: 16px;
 
   flex-shrink: 0;
 
@@ -294,9 +263,9 @@ export const InfoBox = styled.div`
   flex-direction: column;
 `;
 
-export const TitleWrapper = styled.div<{ isMobile: boolean }>`
+export const TitleWrapper = styled.div`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '4px' : '8px')};
+  gap: 8px;
 `;
 
 const NewsletterTitle = styled.h2`
@@ -304,16 +273,16 @@ const NewsletterTitle = styled.h2`
   font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
-const StyledHomeIcon = styled(HomeIcon)<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
-  height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+const StyledHomeIcon = styled(HomeIcon)`
+  width: 24px;
+  height: 24px;
 
   fill: ${({ theme }) => theme.colors.primary};
 `;
 
-const StyledInfoIcon = styled(InfoIcon)<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
-  height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
+const StyledInfoIcon = styled(InfoIcon)`
+  width: 24px;
+  height: 24px;
 
   fill: ${({ theme }) => theme.colors.primary};
 `;
@@ -364,12 +333,11 @@ const DetailLink = styled.button`
   }
 `;
 
-const SubscribeButton = styled(Button)<{ isMobile: boolean }>`
+const SubscribeButton = styled(Button)`
   width: 100%;
   max-width: 400px;
 
   align-self: center;
 
-  font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.t5Regular : theme.fonts.t6Bold};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
