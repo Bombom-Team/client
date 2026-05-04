@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import NewsletterSubscribeGuide from './components/NewsletterSubscribeGuide';
 import NewsletterTabs from './components/NewsletterTabs';
 import PreviousArticles from './components/PreviousArticles';
 import { openSubscribeLink } from './utils';
@@ -127,7 +128,10 @@ const NewsletterDetailMobile = ({
 
         <TabContent>
           {activeTab === 'detail' && (
-            <Description>{newsletterDetail.description}</Description>
+            <DetailContent>
+              <Description>{newsletterDetail.description}</Description>
+              <NewsletterSubscribeGuide />
+            </DetailContent>
           )}
 
           {activeTab === 'previous' && (
@@ -200,6 +204,12 @@ const TabContent = styled.div`
   padding: 16px 0;
 
   display: flex;
+  flex-direction: column;
+`;
+
+const DetailContent = styled.div`
+  display: flex;
+  gap: 16px;
   flex-direction: column;
 `;
 
