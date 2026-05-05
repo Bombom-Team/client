@@ -11,13 +11,6 @@ import SlideCardList from '@/pages/recommend/components/SlideCardList/SlideCardL
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
 import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
-import type { NewsletterTab } from '@/pages/recommend/components/NewsletterDetail/NewsletterDetail.types';
-import type { SearchSchemaInput } from '@tanstack/react-router';
-
-interface BombomIndexSearch {
-  newsletterDetail?: number;
-  tab?: NewsletterTab;
-}
 
 export const Route = createFileRoute('/_bombom/_main/')({
   head: () => ({
@@ -28,12 +21,6 @@ export const Route = createFileRoute('/_bombom/_main/')({
     ],
   }),
   component: Index,
-  validateSearch: (search: BombomIndexSearch & SearchSchemaInput) => {
-    return {
-      newsletterDetail: search?.newsletterDetail,
-      tab: search?.tab,
-    };
-  },
 });
 
 function Index() {

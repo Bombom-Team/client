@@ -77,8 +77,8 @@ Components follow atomic design principles:
 ### Git Workflow
 
 - **Commit Format**: `type: subject` (see docs/CONVENTION.md)
-- **PR Format**: `[FE][{issue_key}] {type}:{subject}`
-  - Example: `[FE][BOM-75] feat: SearchInput component 제작`
+- **PR Format**: `[{issue_key}] {type}: {subject}`
+  - Example: `[BOM-75] feat: SearchInput component 제작`
 - **Branch Naming**: `{type}/{issue_key}` (e.g., `feat/BOM-5`)
 - **Merge Strategy**: Squash & Merge to develop, Create a Commit merge to main
 

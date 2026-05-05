@@ -9,7 +9,7 @@ import sadBom from '#/assets/avif/sad-bom.avif';
 import subscribeBom from '#/assets/avif/subscribe-bom.avif';
 import OpenIcon from '#/assets/svg/open.svg';
 
-interface PreviousTabProps {
+interface PreviousArticlesProps {
   newsletterSubscribeUrl: string;
   newsletterName: string;
   previousArticles?: GetPreviousArticlesResponse | null;
@@ -17,13 +17,13 @@ interface PreviousTabProps {
   isMobile: boolean;
 }
 
-const PreviousTab = ({
+const PreviousArticles = ({
   newsletterSubscribeUrl,
   newsletterName,
   previousArticles,
   previousNewsletterUrl,
   isMobile,
-}: PreviousTabProps) => {
+}: PreviousArticlesProps) => {
   const navigate = useNavigate();
 
   const handlePreviousButtonClick = () => {
@@ -77,11 +77,10 @@ const PreviousTab = ({
   );
 };
 
-export default PreviousTab;
+export default PreviousArticles;
 
 const Container = styled.div`
   position: relative;
-  height: 100%;
   padding: 48px 0;
 
   display: flex;

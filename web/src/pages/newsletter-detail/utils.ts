@@ -1,4 +1,4 @@
-import { MAILY_DOMAIN, STIBEE_DOMAIN } from './NewsletterDetail.constant';
+import { MAILY_DOMAIN, STIBEE_DOMAIN } from './constants';
 import { copyToClipboard } from '@/utils/copy';
 import { openExternalLink } from '@/utils/externalLink';
 import type { UserProfile } from '@/types/me';
