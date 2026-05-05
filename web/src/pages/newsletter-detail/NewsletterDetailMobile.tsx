@@ -1,19 +1,15 @@
 import styled from '@emotion/styled';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
 import NewsletterSubscribeGuide from './components/NewsletterSubscribeGuide';
 import NewsletterTabs from './components/NewsletterTabs';
 import PreviousArticles from './components/PreviousArticles';
-import { openSubscribeLink } from './utils';
+import { useNewsletterHeroActions } from './hooks/useNewsletterHeroActions';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParamState } from '@/hooks/useSearchParamState';
-import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { openExternalLink } from '@/utils/externalLink';
 import type { NewsletterTab } from './types';
 import HomeIcon from '#/assets/svg/home.svg';
 import InfoIcon from '#/assets/svg/info-circle.svg';
@@ -25,8 +21,6 @@ interface NewsletterDetailMobileProps {
 const NewsletterDetailMobile = ({
   newsletterId,
 }: NewsletterDetailMobileProps) => {
-  const { userProfile, isLoggedIn } = useAuth();
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useSearchParamState<NewsletterTab>('tab', {
     defaultValue: 'detail',
   });
@@ -38,41 +32,15 @@ const NewsletterDetailMobile = ({
     ...queries.previousArticles({ newsletterId, limit: 10 }),
   });
 
+  const {
+    subscribeButtonText,
+    isSubscribeDisabled,
+    openMainSite,
+    handleSubscribeButtonClick,
+    newsletterSummary,
+  } = useNewsletterHeroActions(newsletterDetail);
+
   if (!newsletterDetail || !newsletterId) return null;
-
-  const openMainSite = () => {
-    openExternalLink(newsletterDetail.mainPageUrl);
-  };
-
-  const getSubscribeButtonText = () => {
-    if (!isLoggedIn) return '로그인 후 구독할 수 있어요';
-    if (newsletterDetail.isSubscribed) {
-      return '구독 중';
-    } else {
-      return '구독 하기';
-    }
-  };
-
-  const handleSubscribeButtonClick = () => {
-    trackEvent({
-      category: 'Newsletter',
-      action: '구독하기 버튼 클릭',
-      label: newsletterDetail.name,
-    });
-
-    if (newsletterDetail.source === 'MAEIL_MAIL') {
-      navigate({ href: 'https://maeilmail.bombom.news' });
-      return;
-    }
-
-    openSubscribeLink(
-      newsletterDetail.subscribeUrl,
-      newsletterDetail.name,
-      userProfile,
-    );
-  };
-
-  const newsletterSummary = `${newsletterDetail.name}, ${newsletterDetail.category} 카테고리, ${newsletterDetail.issueCycle} 발행. ${newsletterDetail.description}`;
 
   return (
     <>
@@ -113,11 +81,9 @@ const NewsletterDetailMobile = ({
 
           <SubscribeButton
             onClick={handleSubscribeButtonClick}
-            disabled={
-              !isLoggedIn || (isLoggedIn && newsletterDetail.isSubscribed)
-            }
+            disabled={isSubscribeDisabled}
           >
-            {getSubscribeButtonText()}
+            {subscribeButtonText}
           </SubscribeButton>
         </HeroSection>
 
