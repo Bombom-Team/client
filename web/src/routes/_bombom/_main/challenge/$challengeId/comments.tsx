@@ -154,8 +154,6 @@ function ChallengeComments() {
   );
 }
 
-export default ChallengeComments;
-
 const Container = styled.section`
   width: 100%;
 
