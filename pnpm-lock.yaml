@@ -508,9 +508,6 @@ importers:
       '@types/react-google-recaptcha':
         specifier: ^2.1.9
         version: 2.1.9
-      '@types/webpack':
-        specifier: ^5.28.5
-        version: 5.28.5(@swc/core@1.14.0)(esbuild@0.25.12)
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.37.0
         version: 8.46.0(@typescript-eslint/parser@8.46.0(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1)(typescript@5.9.3)
