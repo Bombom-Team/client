@@ -2,11 +2,11 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
-    "target": "es6",
-    "module": "nodenext",
+    "target": "es2020",
+    "module": "esnext",
     "esModuleInterop": true,
     "noUncheckedIndexedAccess": true,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "allowUmdGlobalAccess": true,
     "types": ["./emotion.d.ts", "jest", "node"],
     "paths": {

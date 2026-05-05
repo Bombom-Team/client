@@ -1,5 +1,5 @@
 import ProgressWithLabel from './ProgressWithLabel';
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import CompassIcon from '#/assets/svg/compass.svg';
 
 const meta = {

@@ -1,5 +1,5 @@
 import { Global, ThemeProvider } from '@emotion/react';
-import type { Preview, Decorator } from '@storybook/react-webpack5';
+import type { Preview, Decorator } from '@storybook/react-vite';
 import { theme } from '@bombom/shared/theme';
 import {
   createRouter,
