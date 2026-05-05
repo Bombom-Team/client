@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRouterState } from '@tanstack/react-router';
 import { createContext, useContext, useMemo } from 'react';
 import { queries } from '@/apis/queries';
 import type { UserProfile } from '@/types/me';
@@ -14,15 +13,7 @@ export interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  });
-  const isSignupPage = pathname === '/signup';
-
-  const { data: userProfile, isLoading } = useQuery({
-    ...queries.userProfile(),
-    enabled: !isSignupPage,
-  });
+  const { data: userProfile, isLoading } = useQuery(queries.userProfile());
 
   const isLoggedIn = useMemo(() => Boolean(userProfile), [userProfile]);
 
