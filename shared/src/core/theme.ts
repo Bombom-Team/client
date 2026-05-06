@@ -38,7 +38,6 @@ const fonts = {
 
 const colors = {
   primaryBomBom: '#FE5E04',
-  primary: '#FE5E04',
   primaryDark: '#E35400',
   primaryLight: '#FFD6C2',
   primaryInfo: '#ffebe0',
