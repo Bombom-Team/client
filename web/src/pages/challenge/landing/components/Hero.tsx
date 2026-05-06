@@ -179,7 +179,7 @@ const GenerationBadge = styled.div<{ device: Device }>`
     rgb(255 255 255 / 95%) 0%,
     rgb(255 248 244 / 90%) 100%
   );
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Regular};
   font-weight: 700;
@@ -232,7 +232,7 @@ const Description = styled.p<{ device: Device }>`
 `;
 
 const Highlight = styled.strong`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const PriceBox = styled.div<{ device: Device }>`
@@ -255,7 +255,7 @@ const OriginalPrice = styled.p<{ device: Device }>`
 `;
 
 const FreePrice = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t15Bold};
 `;
 

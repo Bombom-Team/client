@@ -72,7 +72,7 @@ const LogoSection = styled.div`
   align-items: center;
   justify-content: center;
 
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const LogoImage = styled.img`

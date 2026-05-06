@@ -202,5 +202,5 @@ const Lead = styled.p`
 `;
 
 const Support = styled.p`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;

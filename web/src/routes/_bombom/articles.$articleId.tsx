@@ -210,5 +210,5 @@ const RightActions = styled.div`
 `;
 
 const BookmarkIcon = styled.svg`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;

@@ -61,40 +61,46 @@ export const Button = ({
 };
 
 const BaseButton = styled.TouchableOpacity<{ $disabled?: boolean }>`
+  min-height: 48px;
+  padding: 12px 24px;
+  border-radius: 8px;
+
+  gap: 12px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 12px 24px;
-  border-radius: 8px;
-  min-height: 48px;
-  gap: 12px;
+
   opacity: ${(props) => (props.$disabled ? 0.5 : 1)};
 `;
 
 const PrimaryButton = styled(BaseButton)`
-  background-color: ${(props) => props.theme.colors.primary};
+  background-color: ${(props) => props.theme.colors.primaryBomBom};
 `;
 
 const SecondaryButton = styled(BaseButton)`
-  background-color: transparent;
   border-width: 2px;
-  border-color: ${(props) => props.theme.colors.primary};
+
+  background-color: transparent;
+
+  border-color: ${(props) => props.theme.colors.primaryBomBom};
 `;
 
 const SocialButton = styled(BaseButton)`
-  background-color: ${(props) => props.theme.colors.white};
   border-width: 2px;
+
+  background-color: ${(props) => props.theme.colors.white};
+
   border-color: ${(props) => props.theme.colors.stroke};
+  elevation: 3;
   shadow-color: ${(props) => props.theme.colors.black};
-  shadow-offset: 0px 2px;
+  shadow-offset: 0 2px;
   shadow-opacity: 0.1;
   shadow-radius: 3px;
-  elevation: 3;
 `;
 
 const BaseText = styled.Text`
-  font-size: 16px;
   font-weight: 600;
+  font-size: 16px;
   text-align: center;
 `;
 
@@ -103,7 +109,7 @@ const PrimaryText = styled(BaseText)`
 `;
 
 const SecondaryText = styled(BaseText)`
-  color: ${(props) => props.theme.colors.primary};
+  color: ${(props) => props.theme.colors.primaryBomBom};
 `;
 
 const SocialText = styled(BaseText)`

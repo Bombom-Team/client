@@ -165,7 +165,7 @@ const StreakCount = styled.div<{ isMobile: boolean }>`
 `;
 
 const StatValue = styled.div<{ isMobile: boolean }>`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ isMobile, theme }) =>
     isMobile ? theme.fonts.t6Regular : theme.fonts.t7Bold};
   white-space: nowrap;

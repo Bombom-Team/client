@@ -148,7 +148,7 @@ const DayColumn = styled.div`
 
 const DayLabel = styled.span<{ isHighlighted: boolean }>`
   color: ${({ theme, isHighlighted }) =>
-    isHighlighted ? theme.colors.primary : theme.colors.textSecondary};
+    isHighlighted ? theme.colors.primaryBomBom : theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: ${({ isHighlighted }) => (isHighlighted ? 700 : 400)};
 `;
@@ -165,7 +165,7 @@ const DayCheckBox = styled.div<{
       isShieldApplied
         ? 'transparent'
         : isCompleted
-          ? theme.colors.primary
+          ? theme.colors.primaryBomBom
           : theme.colors.stroke};
   border-radius: 50%;
 
@@ -177,7 +177,7 @@ const DayCheckBox = styled.div<{
     isShieldApplied
       ? 'transparent'
       : isCompleted
-        ? theme.colors.primary
+        ? theme.colors.primaryBomBom
         : theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t3Regular};

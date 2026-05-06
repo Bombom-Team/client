@@ -29,7 +29,7 @@ const Spinner = styled.div`
   width: 48px;
   height: 48px;
   border: 4px solid ${({ theme }) => theme.colors.dividers};
-  border-top: 4px solid ${({ theme }) => theme.colors.primary};
+  border-top: 4px solid ${({ theme }) => theme.colors.primaryBomBom};
   border-radius: 50%;
 
   animation: ${spin} 0.8s linear infinite;

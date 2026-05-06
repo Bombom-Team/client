@@ -124,7 +124,7 @@ const SubTitleBox = styled.div`
 `;
 
 const SubTitle = styled.h3`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
@@ -153,7 +153,7 @@ const BadgeImage = styled.img`
 `;
 
 const HighLight = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const LeaderboardPreview = styled.img`

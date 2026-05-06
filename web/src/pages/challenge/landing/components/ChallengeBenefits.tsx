@@ -87,7 +87,7 @@ const Title = styled.h2<{ device: Device }>`
 `;
 
 const Highlight = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const CardWrapper = styled.div<{ device: Device }>`
@@ -146,7 +146,7 @@ const IconBox = styled.div`
   justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 
   svg {
     width: 18px;
@@ -168,7 +168,7 @@ const CardNumber = styled.span`
   align-items: center;
   justify-content: center;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t15Bold};
 
   opacity: 0.6;

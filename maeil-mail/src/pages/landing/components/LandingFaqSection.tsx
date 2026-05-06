@@ -72,7 +72,7 @@ const LandingFAQSection = () => {
                 onToggle={() => handleToggle(id)}
               >
                 <QuestionWrapper>
-                  <Text color="primary" font="t6Bold">
+                  <Text color="primaryMaeilMail" font="t6Bold">
                     Q.
                   </Text>
                   <Text color="textPrimary" font="t6Bold">

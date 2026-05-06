@@ -36,7 +36,7 @@ const ViewAllCommentsButton = ({
         onMouseLeave={() => setShowTooltip(false)}
       >
         {!submittedMyComment && (
-          <LockIcon width={16} height={16} color={theme.colors.primary} />
+          <LockIcon width={16} height={16} color={theme.colors.primaryBomBom} />
         )}
         전체 답변 보기
       </StyledButton>
@@ -59,7 +59,7 @@ const StyledButton = styled(Button)`
   display: flex;
   gap: 4px;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t6Regular};
 
   &:hover {

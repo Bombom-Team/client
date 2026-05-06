@@ -126,7 +126,7 @@ const Content = styled.div`
   }
 
   a {
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primaryBomBom};
     text-decoration: underline;
   }
 

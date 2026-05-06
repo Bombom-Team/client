@@ -86,7 +86,7 @@ const LinkButton = styled(Link)`
   align-items: center;
   justify-content: center;
 
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t6Regular};
 

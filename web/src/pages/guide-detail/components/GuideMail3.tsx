@@ -128,7 +128,7 @@ const HeaderBox = styled.div`
 const HeaderTag = styled.div`
   margin-bottom: 6px;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
@@ -202,7 +202,7 @@ const SuccessText = styled.span`
 const TipBox = styled.div`
   margin-bottom: 16px;
   padding-left: 16px;
-  border-left: 4px solid ${({ theme }) => theme.colors.primary};
+  border-left: 4px solid ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const TipText = styled.p`

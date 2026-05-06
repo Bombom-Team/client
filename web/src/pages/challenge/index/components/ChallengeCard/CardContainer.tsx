@@ -42,7 +42,7 @@ const Container = styled.button`
   &:hover:not(:disabled) {
     box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
 
-    border-color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primaryBomBom};
 
     transform: translateY(-2px);
   }

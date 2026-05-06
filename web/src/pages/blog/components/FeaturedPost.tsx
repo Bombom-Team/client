@@ -76,7 +76,7 @@ export const Container = styled(Link)<{ device: Device }>`
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline: 2px solid ${({ theme }) => theme.colors.primaryBomBom};
     outline-offset: 2px;
   }
 `;

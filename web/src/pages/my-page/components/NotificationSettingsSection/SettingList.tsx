@@ -129,7 +129,7 @@ const ToggleTrack = styled.div<{ enabled: boolean }>`
   border-radius: 16px;
 
   background-color: ${({ theme, enabled }) =>
-    enabled ? theme.colors.primary : theme.colors.disabledText};
+    enabled ? theme.colors.primaryBomBom : theme.colors.disabledText};
 
   transition: background-color 0.3s;
 `;

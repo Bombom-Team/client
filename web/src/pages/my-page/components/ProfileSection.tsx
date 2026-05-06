@@ -316,7 +316,7 @@ const RadioButtonLabel = styled.label<{
   justify-content: center;
 
   background-color: ${({ selected, theme }) =>
-    selected ? theme.colors.primary : theme.colors.white};
+    selected ? theme.colors.primaryBomBom : theme.colors.white};
   color: ${({ selected, theme }) =>
     selected ? theme.colors.white : theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Regular};
@@ -329,7 +329,7 @@ const RadioButtonLabel = styled.label<{
 
   &:hover {
     border-color: ${({ theme, selected }) =>
-      selected ? 'transparent' : theme.colors.primary};
+      selected ? 'transparent' : theme.colors.primaryBomBom};
   }
 `;
 

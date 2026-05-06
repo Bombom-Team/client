@@ -145,7 +145,7 @@ const AppStoreButton = styled(StoreButton)`
 
 const GooglePlayStoreButton = styled(StoreButton)`
   padding: ${({ device }) => (device === 'mobile' ? '14px 22px' : '16px 26px')};
-  border: 2px solid ${({ theme }) => theme.colors.primary};
+  border: 2px solid ${({ theme }) => theme.colors.primaryBomBom};
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;

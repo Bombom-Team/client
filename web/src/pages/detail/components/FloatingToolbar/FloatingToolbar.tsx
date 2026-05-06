@@ -68,7 +68,7 @@ const Container = styled.div<{ position: Position; opened: boolean }>`
   display: ${({ opened }) => (opened ? 'flex' : 'none')};
   gap: 8px;
 
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.primaryBomBom};
 
   animation: ${({ opened }) => (opened ? fadeIn : fadeOut)} 0.2s ease-in-out
     forwards;

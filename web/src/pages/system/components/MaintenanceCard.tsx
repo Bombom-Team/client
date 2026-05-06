@@ -61,7 +61,7 @@ const MaintenanceImage = styled(ImageWithFallback, {
 `;
 
 const Title = styled.h1<{ isMobile: boolean }>`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ isMobile, theme }) =>
     isMobile ? theme.fonts.t11Bold : theme.fonts.t13Bold};
 `;
@@ -99,7 +99,7 @@ const Contact = styled.a<{ isMobile: boolean }>`
   padding: 8px 16px;
   border-radius: 12px;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ isMobile, theme }) =>
     isMobile ? theme.fonts.t5Regular : theme.fonts.t6Bold};
 
@@ -108,7 +108,7 @@ const Contact = styled.a<{ isMobile: boolean }>`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.primaryBomBom};
     color: ${({ theme }) => theme.colors.white};
   }
 `;

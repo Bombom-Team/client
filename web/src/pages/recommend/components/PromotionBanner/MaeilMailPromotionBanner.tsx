@@ -114,7 +114,7 @@ const BrandGreen = styled.span<{ primaryColor: string }>`
 `;
 
 const BrandOrange = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const HeroTitleSection = styled(Flex)`

@@ -102,7 +102,7 @@ const Title = styled.h3`
 `;
 
 const HelpText = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
@@ -160,11 +160,11 @@ const QuotationItem = styled(Button)<{
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '8px' : '16px')};
   outline: ${({ selected, theme }) =>
-    selected ? `2px solid ${theme.colors.primary}` : 'none'};
+    selected ? `2px solid ${theme.colors.primaryBomBom}` : 'none'};
   outline-offset: -2px;
   border: 1px solid
     ${({ theme, selected }) =>
-      selected ? theme.colors.primary : theme.colors.stroke};
+      selected ? theme.colors.primaryBomBom : theme.colors.stroke};
   border-radius: 8px;
 
   display: flex;

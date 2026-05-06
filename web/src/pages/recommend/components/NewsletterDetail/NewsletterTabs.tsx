@@ -36,19 +36,19 @@ const TabButton = styled.button<{ isActive: boolean }>`
   padding: 12px 0;
   border-bottom: 2px solid
     ${({ theme, isActive }) =>
-      isActive ? theme.colors.primary : 'transparent'};
+      isActive ? theme.colors.primaryBomBom : 'transparent'};
 
   flex: 1;
 
   background: none;
   color: ${({ theme, isActive }) =>
-    isActive ? theme.colors.primary : theme.colors.textSecondary};
+    isActive ? theme.colors.primaryBomBom : theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t5Regular};
 
   transition: color 0.2s;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primaryBomBom};
   }
 
   &:disabled {

@@ -8,7 +8,7 @@ export const Container = styled.section`
   gap: 12px;
   flex-direction: column;
 
-  background-color: ${({ theme }) => `${theme.colors.primary}10`};
+  background-color: ${({ theme }) => `${theme.colors.primaryBomBom}10`};
 `;
 
 export const MyRankInfo = styled.div`
@@ -40,7 +40,7 @@ export const MyRankValue = styled.div`
 `;
 
 export const MyReadValue = styled.div`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 

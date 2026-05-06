@@ -118,7 +118,7 @@ const SignupCard = () => {
               onBlur={closeEmailHelp}
               ref={emailHelpButtonRef}
             >
-              <EmailHelpIcon fill={theme.colors.primary} />
+              <EmailHelpIcon fill={theme.colors.primaryBomBom} />
             </TooltipButton>
             <InfoText>이 주소로 뉴스레터가 도착해요!</InfoText>
 
@@ -308,7 +308,7 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 12px;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t6Bold};
 
@@ -374,7 +374,7 @@ const RadioButtonLabel = styled.label<{ selected: boolean }>`
   justify-content: center;
 
   background-color: ${({ selected, theme }) =>
-    selected ? theme.colors.primary : theme.colors.white};
+    selected ? theme.colors.primaryBomBom : theme.colors.white};
   color: ${({ selected, theme }) =>
     selected ? theme.colors.white : theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Regular};

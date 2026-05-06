@@ -25,7 +25,7 @@ const ChallengeDetail = () => {
         <RoadSignIcon
           width={iconSize}
           height={iconSize}
-          color={theme.colors.primary}
+          color={theme.colors.primaryBomBom}
         />
       ),
       title: '데일리 가이드',
@@ -39,7 +39,7 @@ const ChallengeDetail = () => {
         <SproutIcon
           width={iconSize}
           height={iconSize}
-          color={theme.colors.primary}
+          color={theme.colors.primaryBomBom}
         />
       ),
       title: '챌린지 현황판',
@@ -53,7 +53,7 @@ const ChallengeDetail = () => {
         <CommentIcon
           width={iconSize}
           height={iconSize}
-          fill={theme.colors.primary}
+          fill={theme.colors.primaryBomBom}
         />
       ),
       title: '한 줄 코멘트',
@@ -132,7 +132,7 @@ const Title = styled.h2<{ device: Device }>`
 `;
 
 const Highlight = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const CommentImageWrapper = styled.div`

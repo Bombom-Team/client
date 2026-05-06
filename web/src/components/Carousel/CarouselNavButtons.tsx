@@ -36,7 +36,9 @@ const CarouselNavButtons = ({
           direction="left"
           width="100%"
           height="100%"
-          color={canGoPrev ? theme.colors.primary : theme.colors.disabledText}
+          color={
+            canGoPrev ? theme.colors.primaryBomBom : theme.colors.disabledText
+          }
         />
       </NavButton>
 
@@ -50,7 +52,9 @@ const CarouselNavButtons = ({
           direction="right"
           width="100%"
           height="100%"
-          color={canGoNext ? theme.colors.primary : theme.colors.disabledText}
+          color={
+            canGoNext ? theme.colors.primaryBomBom : theme.colors.disabledText
+          }
         />
       </NavButton>
     </Container>

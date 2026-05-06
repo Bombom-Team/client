@@ -185,7 +185,7 @@ const NewsletterCategory = styled.div`
   border-radius: 12px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 

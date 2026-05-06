@@ -131,7 +131,7 @@ const PageNumberButton = styled.button<{
   padding: 0 12px;
   border: 1px solid
     ${({ theme, isCurrent }) =>
-      isCurrent ? theme.colors.primary : theme.colors.stroke};
+      isCurrent ? theme.colors.primaryBomBom : theme.colors.stroke};
   border-radius: 8px;
 
   display: flex;
@@ -139,7 +139,7 @@ const PageNumberButton = styled.button<{
   justify-content: center;
 
   background-color: ${({ theme, isCurrent }) =>
-    isCurrent ? theme.colors.primary : theme.colors.white};
+    isCurrent ? theme.colors.primaryBomBom : theme.colors.white};
   color: ${({ theme, isCurrent }) =>
     isCurrent ? theme.colors.white : theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Regular};
@@ -149,7 +149,7 @@ const PageNumberButton = styled.button<{
 
   &:hover {
     background-color: ${({ theme, isCurrent }) =>
-      isCurrent ? theme.colors.primary : theme.colors.disabledBackground};
+      isCurrent ? theme.colors.primaryBomBom : theme.colors.disabledBackground};
   }
 `;
 

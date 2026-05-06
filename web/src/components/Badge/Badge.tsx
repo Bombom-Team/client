@@ -52,7 +52,7 @@ const variantStyles = {
   }),
   outlinePrimary: (theme: Theme) => ({
     border: `2px solid ${theme.colors.white}`,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: theme.colors.primaryBomBom,
     color: theme.colors.white,
     fontWeight: 600,
   }),
