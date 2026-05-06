@@ -1,4 +1,3 @@
-import { ServiceSwitcher } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
@@ -14,7 +13,6 @@ const MobileMainHeader = () => {
 
   return (
     <Container>
-      <ServiceSwitcher activeService="bombom" />
       <MainRow>
         <HeaderLogo />
         <UserInfoWrapper>
@@ -44,7 +42,7 @@ const Container = styled.header`
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   height: ${({ theme }) =>
-    `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 40px)`};
+    `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`};
   padding-top: ${({ theme }) => theme.safeArea.top};
   box-shadow:
     0 8px 12px -6px rgb(0 0 0 / 10%),
