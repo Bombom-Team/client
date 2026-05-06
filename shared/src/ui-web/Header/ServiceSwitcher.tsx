@@ -1,35 +1,34 @@
-import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { type Device, useDevice } from '../hooks/useDevice';
+import MaeilMailLogo from '../icons/MaeilMailLogo';
+import bombomTextLogo from '../assets/bombom-text-logo.avif';
 
 const BOMBOM_URL = 'https://www.bombom.news';
 const MAEIL_MAIL_URL = 'https://maeilmail.bombom.news';
 
 export interface ServiceSwitcherProps {
   activeService: 'bombom' | 'maeil-mail';
-  bombomLogo: ReactNode;
-  maeilmailLogo: ReactNode;
 }
 
-const ServiceSwitcher = ({
-  activeService,
-  bombomLogo,
-  maeilmailLogo,
-}: ServiceSwitcherProps) => {
+const ServiceSwitcher = ({ activeService }: ServiceSwitcherProps) => {
   const device = useDevice();
 
   return (
     <Container>
       <Inner device={device}>
         <ServiceLink href={BOMBOM_URL} isActive={activeService === 'bombom'}>
-          {bombomLogo}
+          <img
+            src={bombomTextLogo}
+            alt="봄봄"
+            style={{ height: 16, width: 'auto' }}
+          />
         </ServiceLink>
         <Divider />
         <ServiceLink
           href={MAEIL_MAIL_URL}
           isActive={activeService === 'maeil-mail'}
         >
-          {maeilmailLogo}
+          <MaeilMailLogo />
         </ServiceLink>
       </Inner>
     </Container>

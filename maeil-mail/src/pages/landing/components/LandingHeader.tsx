@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import HeaderLogo from '@/components/Header/HeaderLogo';
 import LoginButton from '@/components/Header/LoginButton';
-import ServiceSwitcher from '@/components/Header/ServiceSwitcher';
+import { ServiceSwitcher } from '@bombom/shared/ui-web';
 import Skeleton from '@/components/Skeleton/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@bombom/shared/ui-web';
@@ -15,7 +15,7 @@ const LandingHeader = () => {
 
   return (
     <Container device={device}>
-      <ServiceSwitcher />
+      <ServiceSwitcher activeService="maeil-mail" />
       <HeaderRow device={device}>
         <HeaderWrapper>
           <HeaderLogo />

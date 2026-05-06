@@ -4,7 +4,7 @@ import type { Device } from '@bombom/shared/ui-web';
 import { useRouter } from '@tanstack/react-router';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
-import ServiceSwitcher from '@/components/Header/ServiceSwitcher';
+import { ServiceSwitcher } from '@bombom/shared/ui-web';
 
 const BOMBOM_SERVICE_URL = 'https://www.bombom.news';
 
@@ -18,7 +18,7 @@ const Header = () => {
 
   return (
     <Container device={device}>
-      <ServiceSwitcher />
+      <ServiceSwitcher activeService="maeil-mail" />
 
       <HeaderRow device={device}>
         {device === 'mobile' ? (

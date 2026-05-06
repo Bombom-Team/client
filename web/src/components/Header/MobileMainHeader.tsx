@@ -1,9 +1,9 @@
+import { ServiceSwitcher } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
-import ServiceSwitcher from './ServiceSwitcher';
 import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
@@ -14,7 +14,7 @@ const MobileMainHeader = () => {
 
   return (
     <Container>
-      <ServiceSwitcher />
+      <ServiceSwitcher activeService="bombom" />
       <MainRow>
         <HeaderLogo />
         <UserInfoWrapper>
