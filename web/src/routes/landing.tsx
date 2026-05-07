@@ -17,7 +17,7 @@ export const Route = createFileRoute('/landing')({
     meta: [
       {
         name: 'robots',
-        content: 'noindex, follow',
+        content: 'index, follow',
       },
       {
         title: '봄봄 | 읽고 남기고 쌓는 뉴스레터 리딩 플랫폼',

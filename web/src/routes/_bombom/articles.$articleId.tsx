@@ -166,7 +166,7 @@ const ArticleProgressBar = styled(ProgressBar)<{ device: Device }>`
   position: fixed;
   top: ${({ device, theme }) =>
     device === 'pc'
-      ? `calc(${theme.heights.headerPC} + ${theme.safeArea.top})`
+      ? `calc(${theme.heights.headerPC} + ${theme.safeArea.top} + 40px)`
       : `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`};
   z-index: ${({ theme }) => theme.zIndex.floating};
   height: 4px;

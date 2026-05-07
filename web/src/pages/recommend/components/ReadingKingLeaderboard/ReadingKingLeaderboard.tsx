@@ -8,13 +8,11 @@ import {
   InfoIcon,
   TabButton,
   TabToggle,
-  TitleIcon,
   TitleWrapper,
 } from './ReadingKingLeaderboard.styles';
 import ReadingKingLeaderboardSkeleton from './ReadingKingLeaderboardSkeleton';
 import StreakRankingContent from './StreakRankingContent';
 import { useRankingCountdown } from './useRankingCountdown';
-import ArrowIcon from '@/components/icons/ArrowIcon';
 import Tooltip from '@/components/Tooltip/Tooltip';
 import { padTimeDigit } from '@/utils/time';
 import HelpIcon from '#/assets/svg/help.svg';
@@ -39,9 +37,6 @@ const ReadingKingLeaderboard = () => {
   return (
     <Container>
       <TitleWrapper>
-        <TitleIcon aria-hidden="true">
-          <ArrowIcon width={16} height={16} direction="upRight" />
-        </TitleIcon>
         <TabToggle role="tablist" aria-label="독서왕 랭킹 유형 선택">
           <TabButton
             role="tab"

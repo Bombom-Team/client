@@ -11,3 +11,78 @@ export const ARTICLE_DETAIL = {
     category: '트렌드/라이프',
   },
 };
+
+export const MAEIL_MAIL_ARTICLE_ID = 100;
+
+export { MAEIL_MAIL_ANSWER_CHECK_BUTTON_ID } from '@/pages/detail/constants/maeilMail';
+
+export const MAEIL_MAIL_ARTICLE_DETAIL = {
+  title: '[매일메일] React Suspense는 어떻게 동작하나요?',
+  contents: `<div style="background-color:#ffffff;padding:40px;border-radius:8px;text-align:center;width:100%;margin:0 auto">
+        <style>
+            #maeil-mail-answer-check-button {
+                transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, background 0.25s ease;
+                will-change: transform, box-shadow;
+            }
+            #maeil-mail-answer-check-button > span {
+                transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            #maeil-mail-answer-check-button:hover {
+                transform: translateY(-3px) scale(1.02);
+                box-shadow: 0 18px 44px rgba(16,185,129,0.5), 0 6px 18px rgba(16,185,129,0.35), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+                background: linear-gradient(135deg,#34d399 0%,#10b981 100%) !important;
+            }
+            #maeil-mail-answer-check-button:hover > span {
+                transform: translateX(5px);
+            }
+            #maeil-mail-answer-check-button:active {
+                transform: translateY(-1px) scale(1);
+                box-shadow: 0 8px 20px rgba(16,185,129,0.35), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+            }
+        </style>
+
+        <a href="https://maeilmail.bombom.news" style="display:block;margin-bottom:40px;text-decoration:none;width:5.5rem;font-weight:bold" target="_blank">
+            <p style="color:#00a86b;text-align:start;font-size:1rem">매일메일</p>
+        </a>
+        <p style="display:inline-block;margin:0 0 16px 0;padding:8px 16px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);border-radius:999px;font-size:16px;color:#10b981;font-weight:700;letter-spacing:1px">● 오늘의 질문</p>
+        <div style="background:linear-gradient(135deg,#0b1120 0%,#1e293b 50%,#0f172a 100%);padding:64px 32px 48px;border:1px solid #334155;border-radius:16px;box-shadow:0 20px 50px rgba(15,23,42,0.35),8px 8px 0 rgba(16,185,129,0.22);position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;left:0;right:0;padding:12px 16px;background:rgba(15,23,42,0.8);border-bottom:1px solid #334155;text-align:left">
+                <span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#ef4444;margin-right:6px;vertical-align:middle"></span>
+                <span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#f59e0b;margin-right:6px;vertical-align:middle"></span>
+                <span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#10b981;vertical-align:middle"></span>
+                <span style="margin-left:14px;color:#64748b;font-family:Menlo,Monaco,Consolas,monospace;font-size:12px;letter-spacing:0.3px;vertical-align:middle">question.md</span>
+            </div>
+            <p style="margin:8px 0 20px 0;color:#10b981;font-family:Menlo,Monaco,Consolas,monospace;font-size:13px;letter-spacing:1px;text-align:left;font-weight:600">// QUESTION</p>
+            <p style="margin:0;font-size:24px;color:#f8fafc;font-weight:700;line-height:1.55;text-align:center;word-break:keep-all;letter-spacing:-0.3px">리액트에서 컴포넌트가 불필요하게 리렌더링되는 상황을 방지하기 위한 방법을 설명해 주세요.</p>
+            <div style="margin-top:32px;text-align:center;line-height:0">
+                <span style="display:inline-block;width:32px;height:2px;background:linear-gradient(90deg,rgba(16,185,129,0),rgba(16,185,129,0.8));vertical-align:middle"></span>
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;margin:0 10px;box-shadow:0 0 14px rgba(16,185,129,0.9);vertical-align:middle"></span>
+                <span style="display:inline-block;width:32px;height:2px;background:linear-gradient(90deg,rgba(16,185,129,0.8),rgba(16,185,129,0));vertical-align:middle"></span>
+            </div>
+        </div>
+        <p style="margin:32px 0 24px 0;font-size:15px;color:#334155;text-align:center;word-break:keep-all;line-height:1.8;letter-spacing:-0.2px">머릿속 생각을 글로 정리하면 더 오래 기억에 남아요.<br>아래 <span style="color:#10b981;font-weight:700">답변 확인</span> 버튼을 눌러 <span style="color:#0f172a;font-weight:600">본인이 생각하는 정답</span>을 작성해보세요.</p>
+        <a id="maeil-mail-answer-check-button" style="display:inline-block;padding:16px 40px;background:linear-gradient(135deg,#10b981 0%,#059669 100%);color:#ffffff;text-decoration:none;border-radius:999px;font-size:17px;font-weight:700;letter-spacing:-0.2px;cursor:pointer;box-shadow:0 12px 32px rgba(16,185,129,0.4),0 4px 12px rgba(16,185,129,0.25),inset 0 1px 0 rgba(255,255,255,0.25)">
+            답변 확인 <span style="display:inline-block;margin-left:6px;font-weight:600">→</span>
+        </a>
+    </div>`,
+  arrivedDateTime: '2026-04-26T08:00:00.000000',
+  expectedReadTime: 4,
+  newsletter: {
+    name: '매일메일',
+    email: 'contact@bombom.co',
+    imageUrl: 'https://example.com/images/maeil-mail.avif',
+    category: '기술',
+  },
+};
+
+// 나중에 하단 버튼 ui를 위해 남겨놔요
+// <table role="presentation" style="width:100%;border-collapse:collapse">
+//     <tbody><tr style="height:5rem"></tr>
+//     <tr>
+//         <td align="right" style="margin-top:5rem;font-size:14px;padding-left:1rem;color:#888888;width:auto;white-space:nowrap">
+//             <a href="https://www.maeil-mail.kr/unsubscribe?email=wodud2443@gmail.com&amp;token=66384611-9f5f-46f5-8a09-dbdcd3307626" style="color:#888888;text-decoration:none" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://www.maeil-mail.kr/unsubscribe?email%3Dwodud2443@gmail.com%26token%3D66384611-9f5f-46f5-8a09-dbdcd3307626&amp;source=gmail&amp;ust=1777304654547000&amp;usg=AOvVaw0M-7NNRhYQV6bowh_weTzp">
+//                 <span style="display:inline;text-decoration:underline">구독 해지</span>
+//             </a>
+//         </td>
+//     </tr>
+// </tbody></table>

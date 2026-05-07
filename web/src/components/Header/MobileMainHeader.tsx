@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
+import ServiceSwitcher from './ServiceSwitcher';
 import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
@@ -13,20 +14,23 @@ const MobileMainHeader = () => {
 
   return (
     <Container>
-      <HeaderLogo />
-      <UserInfoWrapper>
-        <NavButton
-          onClick={() => navigate({ to: '/notice' })}
-          variant="transparent"
-        >
-          <MegaphoneIcon width={20} height={20} />
-        </NavButton>
-        {userProfile ? (
-          <HeaderProfile userProfile={userProfile} device="mobile" />
-        ) : (
-          <LoginButton />
-        )}
-      </UserInfoWrapper>
+      <ServiceSwitcher />
+      <MainRow>
+        <HeaderLogo />
+        <UserInfoWrapper>
+          <NavButton
+            onClick={() => navigate({ to: '/notice' })}
+            variant="transparent"
+          >
+            <MegaphoneIcon width={20} height={20} />
+          </NavButton>
+          {userProfile ? (
+            <HeaderProfile userProfile={userProfile} device="mobile" />
+          ) : (
+            <LoginButton />
+          )}
+        </UserInfoWrapper>
+      </MainRow>
     </Container>
   );
 };
@@ -39,20 +43,27 @@ const Container = styled.header`
   right: 0;
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
-  height: calc(
-    ${({ theme }) => `${theme.heights.headerMobile} + ${theme.safeArea.top}`}
-  );
-  padding: 8px 12px;
-  padding-top: calc(8px + ${({ theme }) => theme.safeArea.top});
+  height: ${({ theme }) =>
+    `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 40px)`};
+  padding-top: ${({ theme }) => theme.safeArea.top};
   box-shadow:
     0 8px 12px -6px rgb(0 0 0 / 10%),
     0 3px 5px -4px rgb(0 0 0 / 10%);
 
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
 
   background: ${({ theme }) => theme.colors.white};
+`;
+
+const MainRow = styled.div`
+  padding: 0 12px;
+
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const UserInfoWrapper = styled.div`

@@ -62,9 +62,7 @@ const NewsletterDetail = ({ newsletterId }: NewsletterDetailProps) => {
     });
 
     if (newsletterDetail.source === 'MAEIL_MAIL') {
-      navigate({
-        to: '/maeil-mail/landing',
-      });
+      navigate({ href: 'https://maeilmail.bombom.news' });
       return;
     }
 

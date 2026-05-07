@@ -6,12 +6,17 @@ interface NavigateToOAuthLoginOptions {
   redirectPath?: string;
 }
 
+const isAbsoluteUrl = (value: string) =>
+  value.startsWith('http://') || value.startsWith('https://');
+
 export const navigateToOAuthLogin = ({
   provider,
   redirectPath,
 }: NavigateToOAuthLoginOptions): void => {
-  const currentOrigin = window.location.origin;
-  const fullUrl = `${currentOrigin}${redirectPath ? redirectPath : ''}`;
+  const fullUrl =
+    redirectPath && isAbsoluteUrl(redirectPath)
+      ? redirectPath
+      : `${window.location.origin}${redirectPath ?? ''}`;
 
   const query = `?redirectUrl=${encodeURIComponent(fullUrl)}`;
   window.location.href = `${ENV.baseUrl}/auth/login/${provider}${query}`;

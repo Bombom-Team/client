@@ -23,7 +23,7 @@ const MobileDetailHeader = ({ left, right }: MobileDetailHeaderProps) => {
           onClick={handleBackClick}
           aria-label="뒤로가기"
         >
-          <StyledChevronIcon direction="left" />
+          <ChevronIcon width={32} height={32} direction="left" />
         </BackButton>
       )}
       {right}
@@ -68,9 +68,4 @@ const BackButton = styled.button`
   &:hover > svg {
     transform: scale(1.1);
   }
-`;
-
-const StyledChevronIcon = styled(ChevronIcon)`
-  width: 32px;
-  height: 32px;
 `;
