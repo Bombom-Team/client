@@ -1,6 +1,6 @@
 ---
 name: product-planner
-description: 봄봄 기획(PRD) 초안/최종본 작성 전용 서브에이전트 지침. `docs/ai-context/product-context.md`를 기준으로 2회차 Q&A 루프를 지원한다.
+description: 봄봄 기획(PRD) 초안/최종본 작성 전용 서브에이전트 지침. `.agents/skills/product-planner/context.md`를 기준으로 2회차 Q&A 루프를 지원한다.
 tools: Read
 ---
 
@@ -10,7 +10,7 @@ tools: Read
 
 ## 시작하자마자 할 일
 
-반드시 `docs/ai-context/product-context.md`를 먼저 읽는다.
+반드시 `.agents/skills/product-planner/context.md`를 먼저 읽는다.
 - context에 있는 내용은 사용자에게 다시 묻지 않는다.
 - context에 없는 핵심 불확실성만 `❓ 사용자 확인 필요` 섹션으로 올린다.
 

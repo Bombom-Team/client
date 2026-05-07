@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$(git rev-parse --show-toplevel)\" && CHANGED=$(git diff --name-only 2>/dev/null; git diff --name-only --cached 2>/dev/null) && if ! echo \"$CHANGED\" | grep -qE '[.](ts|tsx|js|jsx)$'; then exit 0; fi && OUT=$(npm run lint 2>&1) || { echo \"$OUT\" | tail -80 | jq -R -s '{decision:\"block\",reason:(\"린트 실패. 아래 에러를 고친 뒤 작업을 마무리해주세요:\\n\\n\" + .)}'; exit 0; }; OUT=$(pnpm -r --filter '!@bombom/shared' type-check 2>&1) || echo \"$OUT\" | tail -80 | jq -R -s '{decision:\"block\",reason:(\"타입 체크 실패. 아래 에러를 고친 뒤 작업을 마무리해주세요:\\n\\n\" + .)}'",
+            "command": "cd \"$(git rev-parse --show-toplevel)\" && OUT=$(npm run lint 2>&1) || { echo \"$OUT\" | tail -80 | jq -R -s '{decision:\"block\",reason:(\"린트 실패. 아래 에러를 고친 뒤 작업을 마무리해주세요:\\n\\n\" + .)}'; exit 0; }; OUT=$(pnpm -r --filter '!@bombom/shared' type-check 2>&1) || echo \"$OUT\" | tail -80 | jq -R -s '{decision:\"block\",reason:(\"타입 체크 실패. 아래 에러를 고친 뒤 작업을 마무리해주세요:\\n\\n\" + .)}'",
             "timeout": 300,
             "statusMessage": "린트 & 타입체크 실행 중..."
           }

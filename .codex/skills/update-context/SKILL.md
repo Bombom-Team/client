@@ -1,6 +1,6 @@
 ---
 name: update-context
-description: 봄봄 컨텍스트 문서(`docs/ai-context/product-context.md`)의 "핵심 기능 맵"과 "주요 화면 구조"만 갱신한다. 사용자가 출시 반영/컨텍스트 갱신을 요청하면 이 스킬을 사용한다.
+description: 봄봄 컨텍스트 문서(`.agents/skills/product-planner/context.md`)의 "핵심 기능 맵"과 "주요 화면 구조"만 갱신한다. 사용자가 출시 반영/컨텍스트 갱신을 요청하면 이 스킬을 사용한다.
 ---
 
 # Update Context
@@ -9,7 +9,7 @@ description: 봄봄 컨텍스트 문서(`docs/ai-context/product-context.md`)의
 
 ## 대상 파일
 
-`docs/ai-context/product-context.md`
+`.agents/skills/product-planner/context.md`
 
 수정 허용 섹션:
 - `핵심 기능 맵`

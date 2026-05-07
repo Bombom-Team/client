@@ -19,7 +19,7 @@ description: 아이디어를 PRD + 이슈 분해로 정리하는 오케스트레
 
 ### 1회차 메시지 템플릿
 ```text
-먼저 `.codex/agents/product-planner.md`와 `docs/ai-context/product-context.md`를 읽고 지침을 엄수하세요.
+먼저 `.codex/agents/product-planner.md`와 `.agents/skills/product-planner/context.md`를 읽고 지침을 엄수하세요.
 
 아이디어: <사용자 입력>
 
@@ -29,7 +29,7 @@ description: 아이디어를 PRD + 이슈 분해로 정리하는 오케스트레
 
 ### 2회차 메시지 템플릿
 ```text
-먼저 `.codex/agents/product-planner.md`와 `docs/ai-context/product-context.md`를 읽고 지침을 엄수하세요.
+먼저 `.codex/agents/product-planner.md`와 `.agents/skills/product-planner/context.md`를 읽고 지침을 엄수하세요.
 
 아이디어: <원본 아이디어>
 사용자 답변:

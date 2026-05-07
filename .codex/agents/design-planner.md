@@ -10,7 +10,7 @@ tools: Read
 
 ## 시작하자마자 할 일
 
-반드시 `docs/ai-context/design-guide.md`를 먼저 읽는다.
+반드시 `.agents/skills/design-planner/bombom-design-guide.md`를 먼저 읽는다.
 - 가이드에 없는 토큰/컴포넌트는 지어내지 않는다.
 - 불명확하거나 가이드에 없는 항목은 `[TODO: 확인 필요]`로 남긴다.
 
