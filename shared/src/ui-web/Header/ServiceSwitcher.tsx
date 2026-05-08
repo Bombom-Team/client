@@ -28,7 +28,7 @@ const ServiceSwitcher = ({ activeService }: ServiceSwitcherProps) => {
           href={MAEIL_MAIL_URL}
           isActive={activeService === 'maeil-mail'}
         >
-          <MaeilMailLogo width="auto" height={16} />
+          <MaeilMailLogo width="auto" height={18} />
         </ServiceLink>
       </Inner>
     </Container>
