@@ -4,6 +4,7 @@ import { useAddHighlightMutation } from '../../hooks/useAddHighlightMutation';
 import { useExternalLinkHandler } from '../../hooks/useExternalLinkHandler';
 import { useFloatingToolbarState } from '../../hooks/useFloatingToolbarState';
 import { useHighlights } from '../../hooks/useHighlights';
+import { useMaeilMailAnswerAction } from '../../hooks/useMaeilMailAnswerAction';
 import { useMaeilMailAnswerButton } from '../../hooks/useMaeilMailAnswerButton';
 import { useRemoveHighlightMutation } from '../../hooks/useRemoveHighlighMutation';
 import { useUpdateHighlightMutation } from '../../hooks/useUpdateHighlightMutation';
@@ -60,9 +61,14 @@ const ArticleBody = ({
     isOpen: isMaeilMailModalOpen,
   } = useModal();
 
+  const { checkMaeilMailAnswer, contentId } = useMaeilMailAnswerAction({
+    articleId,
+    onAnswerNotSubmitted: openMaeilMailModal,
+  });
+
   useMaeilMailAnswerButton({
     contentRef,
-    onAnswerButtonClick: openMaeilMailModal,
+    onAnswerButtonClick: checkMaeilMailAnswer,
   });
 
   const updateMemo = (id: number, memo: string) => {
@@ -155,6 +161,7 @@ const ArticleBody = ({
         isOpen={isMaeilMailModalOpen}
         onClose={closeMaeilMailModal}
         articleId={articleId}
+        contentId={contentId}
         question={articleTitle}
       />
     </>
