@@ -16,6 +16,7 @@ interface MaeilMailAnswerModalProps {
   isOpen: boolean;
   onClose: () => void;
   articleId: number;
+  question: string;
 }
 
 const MaeilMailAnswerModal = ({
@@ -23,6 +24,7 @@ const MaeilMailAnswerModal = ({
   isOpen,
   onClose,
   articleId,
+  question,
 }: MaeilMailAnswerModalProps) => {
   const [answer, setAnswer] = useState('');
   const device = useDevice();
@@ -86,6 +88,16 @@ const MaeilMailAnswerModal = ({
     >
       <Container>
         <Title>내 답변 작성</Title>
+
+        {question && (
+          <Field>
+            <Label>오늘의 질문</Label>
+            <QuestionBox>
+              <QuestionText>{question}</QuestionText>
+            </QuestionBox>
+          </Field>
+        )}
+
         <Field>
           <Label htmlFor="maeil-mail-answer">내 답변</Label>
           <Textarea
@@ -131,6 +143,25 @@ const Container = styled.div`
 const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t10Bold};
+`;
+
+const QuestionBox = styled.div`
+  padding: 16px 20px;
+  border-radius: 12px;
+
+  display: flex;
+  gap: 6px;
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
+`;
+
+const QuestionText = styled.p`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t6Regular};
+  line-height: 1.6;
+
+  word-break: keep-all;
 `;
 
 const Field = styled.div`

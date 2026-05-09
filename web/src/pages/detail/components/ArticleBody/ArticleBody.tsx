@@ -20,6 +20,7 @@ import type { RefObject } from 'react';
 interface ArticleBodyProps {
   contentRef: RefObject<HTMLDivElement | null>;
   articleId: number;
+  articleTitle: string;
   newsletterName: string;
   articleContent: GetArticleByIdResponse['contents'];
 }
@@ -27,6 +28,7 @@ interface ArticleBodyProps {
 const ArticleBody = ({
   contentRef,
   articleId,
+  articleTitle,
   newsletterName,
   articleContent,
 }: ArticleBodyProps) => {
@@ -153,6 +155,7 @@ const ArticleBody = ({
         isOpen={isMaeilMailModalOpen}
         onClose={closeMaeilMailModal}
         articleId={articleId}
+        question={articleTitle}
       />
     </>
   );
