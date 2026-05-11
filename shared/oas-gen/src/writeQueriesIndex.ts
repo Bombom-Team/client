@@ -16,6 +16,7 @@ const buildBlock = (tags: string[]): string => {
     .join('\n');
   return (
     `${START_MARKER}\n` +
+    `/* eslint-disable import/order */\n` +
     importLines +
     `\nexport const oasGenQueries = {\n` +
     spreadLines +

@@ -6,8 +6,7 @@ import {
   normalizeOperations,
   groupByTag,
 } from './utils/parseSpec';
-import { runOrval } from './runOrval';
-import { postProcessOrvalOutput } from './postProcess';
+import { generateApiFile } from './generateApi';
 import { generateQueryFile } from './generateQuery';
 import { writeQueriesIndex } from './writeQueriesIndex';
 
@@ -48,10 +47,7 @@ const parseArgs = (argv: string[]): CliOptions => {
       '[oas-gen] --spec or OPEN_API_DOCS env is required (yaml URL or local path)',
     );
   }
-  const apisDir = path.resolve(
-    repoRoot,
-    args.get('out') ?? 'web/src/apis',
-  );
+  const apisDir = path.resolve(repoRoot, args.get('out') ?? 'web/src/apis');
   const queriesIndex = path.resolve(
     apisDir,
     args.get('queries-index') ?? 'queries.ts',
@@ -79,56 +75,49 @@ const main = async () => {
     `[oas-gen] ${operations.length} operations across ${tagGroups.size} tag(s)`,
   );
 
-  const tmpDir = path.resolve(opts.apisDir, '__oas_tmp__');
-
   if (opts.dryRun) {
-    console.log('[oas-gen] --dry-run: skipping orval + file writes');
+    console.log('[oas-gen] --dry-run: skipping file writes\n');
     for (const [tag, ops] of tagGroups) {
-      console.log(`  tag=${tag} ops=${ops.map((o) => o.operationId).join(', ')}`);
+      const lowerTag = tag.toLowerCase();
+      console.log(
+        `  tag=${tag} (${lowerTag}) ops=${ops.map((o) => o.operationId).join(', ')}`,
+      );
+      const apiFile = generateApiFile(tag, ops);
+      console.log(`  --- ${lowerTag}.api.ts ---\n${apiFile}  ---`);
       const queryFile = generateQueryFile(tag, ops);
       if (queryFile) {
-        console.log(
-          `  --- ${tag.toLowerCase()}.query.ts ---\n${queryFile}\n  ---`,
-        );
+        console.log(`  --- ${lowerTag}.query.ts ---\n${queryFile}  ---`);
       }
     }
     return;
   }
 
-  // 1) orval run → tmpDir
-  await runOrval(path.resolve(pkgRoot, 'orval.config.ts'), {
-    OPEN_API_DOCS: opts.spec,
-    OAS_GEN_OUTPUT_DIR: tmpDir,
-  });
-
-  // 2) move tag files into <apisDir>/<tag>/<tag>.api.ts
-  const emittedTags = await postProcessOrvalOutput(tmpDir, opts.apisDir);
-  console.log(`[oas-gen] emitted .api.ts for tags: ${emittedTags.join(', ')}`);
-
-  // 3) generate .query.ts per tag (only those that exist after orval emit)
-  const writtenQueryTags: string[] = [];
+  const writtenTags: string[] = [];
   for (const [tag, ops] of tagGroups) {
     const lowerTag = tag.toLowerCase();
-    if (!emittedTags.includes(lowerTag)) continue;
-    const content = generateQueryFile(tag, ops);
-    if (!content) continue;
-    const queryPath = path.resolve(
-      opts.apisDir,
-      lowerTag,
-      `${lowerTag}.query.ts`,
-    );
-    await mkdir(path.dirname(queryPath), { recursive: true });
-    await writeFile(queryPath, content, 'utf-8');
-    writtenQueryTags.push(tag);
+    const apiContent = generateApiFile(tag, ops);
+    const queryContent = generateQueryFile(tag, ops);
+
+    const apiPath = path.resolve(opts.apisDir, lowerTag, `${lowerTag}.api.ts`);
+    await mkdir(path.dirname(apiPath), { recursive: true });
+    await writeFile(apiPath, apiContent, 'utf-8');
+
+    if (queryContent) {
+      const queryPath = path.resolve(
+        opts.apisDir,
+        lowerTag,
+        `${lowerTag}.query.ts`,
+      );
+      await writeFile(queryPath, queryContent, 'utf-8');
+      writtenTags.push(tag);
+    }
   }
+
   console.log(
-    `[oas-gen] emitted .query.ts for tags: ${writtenQueryTags
-      .map((t) => t.toLowerCase())
-      .join(', ')}`,
+    `[oas-gen] wrote .api.ts for ${tagGroups.size} tag(s); .query.ts for ${writtenTags.length} tag(s)`,
   );
 
-  // 4) maintain queries.ts marker block
-  await writeQueriesIndex(opts.queriesIndex, writtenQueryTags);
+  await writeQueriesIndex(opts.queriesIndex, writtenTags);
   console.log(`[oas-gen] updated ${opts.queriesIndex}`);
 };
 

@@ -10,5 +10,5 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*", "orval.config.ts"]
+  "include": ["src/**/*"]
 }
