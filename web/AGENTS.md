@@ -76,9 +76,9 @@ Components follow atomic design principles:
 
 ### Git Workflow
 
-- **Commit Format**: `type: subject` (see docs/CONVENTION.md)
-- **PR Format**: `[FE][{issue_key}] {type}:{subject}`
-  - Example: `[FE][BOM-75] feat: SearchInput component 제작`
+- **Commit Message Convention**: Read `/docs/git-commit-convention.md` before composing a commit message. Summary: `type: 한국어 명사형 설명` — no scope, no ticket prefix in the subject, no Co-Authored-By trailer.
+- **PR Format**: `[{issue_key}] {type}: {subject}` (티켓 prefix는 PR 제목에만, 커밋 제목엔 넣지 않음)
+  - Example: `[BOM-75] feat: SearchInput component 제작`
 - **Branch Naming**: `{type}/{issue_key}` (e.g., `feat/BOM-5`)
 - **Merge Strategy**: Squash & Merge to develop, Create a Commit merge to main
 
