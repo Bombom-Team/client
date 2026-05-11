@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import NewsletterSubscribeGuide from './components/NewsletterSubscribeGuide';
 import PreviousArticles from './components/PreviousArticles';
+import SimilarNewslettersSection from './components/SimilarNewslettersSection';
 import {
   NEWSLETTER_DETAIL_MAIN_WIDTH,
   NEWSLETTER_DETAIL_SIDE_GAP,
@@ -103,6 +104,10 @@ const NewsletterDetailDesktop = ({
 
       <Aside>
         <NewsletterSubscribeGuide />
+        <SimilarNewslettersSection
+          currentNewsletterId={newsletterId}
+          currentCategory={newsletterDetail.category}
+        />
       </Aside>
     </Layout>
   );
@@ -129,24 +134,14 @@ export const Main = styled.div`
 `;
 
 const Aside = styled.aside`
-  position: fixed;
-  top: calc(
-    ${({ theme }) => `${theme.heights.headerPC} + ${theme.safeArea.top}`} + 90px
-  );
-  left: calc(
-    50% + ${NEWSLETTER_DETAIL_MAIN_WIDTH / 2}px +
-      ${NEWSLETTER_DETAIL_SIDE_GAP}px
-  );
+  position: absolute;
+  top: 0;
+  left: calc(100% + ${NEWSLETTER_DETAIL_SIDE_GAP}px);
   width: ${NEWSLETTER_DETAIL_SIDE_WIDTH}px;
-  max-height: calc(
-    100dvh -
-      (
-        ${({ theme }) => `${theme.heights.headerPC} + ${theme.safeArea.top}`} +
-          48px
-      )
-  );
 
-  overflow-y: auto;
+  display: flex;
+  gap: 24px;
+  flex-direction: column;
 
   @media (max-width: ${NEWSLETTER_DETAIL_SIDE_VISIBLE_MIN_WIDTH - 1}px) {
     display: none;

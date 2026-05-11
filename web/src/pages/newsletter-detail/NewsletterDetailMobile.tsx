@@ -3,6 +3,7 @@ import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import NewsletterSubscribeGuide from './components/NewsletterSubscribeGuide';
 import NewsletterTabs from './components/NewsletterTabs';
 import PreviousArticles from './components/PreviousArticles';
+import SimilarNewslettersSection from './components/SimilarNewslettersSection';
 import { useNewsletterHeroActions } from './hooks/useNewsletterHeroActions';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
@@ -97,6 +98,10 @@ const NewsletterDetailMobile = ({
             <DetailContent>
               <Description>{newsletterDetail.description}</Description>
               <NewsletterSubscribeGuide />
+              <SimilarNewslettersSection
+                currentNewsletterId={newsletterId}
+                currentCategory={newsletterDetail.category}
+              />
             </DetailContent>
           )}
 
