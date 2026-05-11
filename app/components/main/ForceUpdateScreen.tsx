@@ -76,7 +76,7 @@ const ForceUpdateBadge = styled.View`
 `;
 
 const ForceUpdateBadgeText = styled.Text`
-  color: ${(props) => props.theme.colors.primary};
+  color: ${(props) => props.theme.colors.primaryBomBom};
   font-weight: 700;
   font-size: 11px;
   letter-spacing: 0.3px;
@@ -106,7 +106,7 @@ const ForceUpdateButton = styled(TouchableOpacity)`
 
   align-items: center;
 
-  background-color: ${(props) => props.theme.colors.primary};
+  background-color: ${(props) => props.theme.colors.primaryBomBom};
 `;
 
 const ForceUpdateButtonText = styled.Text`

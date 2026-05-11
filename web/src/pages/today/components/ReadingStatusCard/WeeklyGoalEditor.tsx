@@ -123,7 +123,7 @@ const EditButton = styled.button<{
   justify-content: center;
 
   background: ${({ theme, isEditing }) =>
-    isEditing ? theme.colors.primary : 'transparent'};
+    isEditing ? theme.colors.primaryBomBom : 'transparent'};
   color: ${({ theme, isEditing }) =>
     isEditing ? theme.colors.white : theme.colors.textTertiary};
 
@@ -133,7 +133,7 @@ const EditButton = styled.button<{
 
   &:hover {
     background: ${({ theme, isEditing }) =>
-      isEditing ? theme.colors.primary : theme.colors.dividers};
+      isEditing ? theme.colors.primaryBomBom : theme.colors.dividers};
   }
 
   &:disabled {
@@ -172,18 +172,18 @@ const EditInput = styled.input`
   height: auto;
   margin: 0;
   padding: 2px 4px;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border: 1px solid ${({ theme }) => theme.colors.primaryBomBom};
   border-radius: 3px;
 
   background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
   line-height: 1;
   text-align: center;
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.primary}40;
+    box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.primaryBomBom}40;
   }
 
   &:disabled {

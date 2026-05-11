@@ -75,7 +75,7 @@ const PostMetadata = ({
           {hashTags.map((tag) => (
             <Text
               key={tag}
-              color="primary"
+              color="primaryBomBom"
               font={device === 'mobile' ? 't3Regular' : 't7Regular'}
             >
               #{tag}
@@ -93,7 +93,7 @@ const CategoryBadge = styled.span<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '4px 8px' : '4px 12px')};
   border-radius: 12px;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Regular};

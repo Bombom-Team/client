@@ -13,17 +13,17 @@ type Story = StoryObj<typeof meta>;
 
 interface Slide {
   label: string;
-  backgroundColor: 'primary' | 'primaryLight';
+  backgroundColor: 'primaryBomBom' | 'primaryLight';
 }
 interface SlideBoxProps {
-  backgroundColor: 'primary' | 'primaryLight';
+  backgroundColor: 'primaryBomBom' | 'primaryLight';
   children: React.ReactNode;
 }
 
 const slides: Slide[] = [
-  { label: '슬라이드1', backgroundColor: 'primary' },
+  { label: '슬라이드1', backgroundColor: 'primaryBomBom' },
   { label: '슬라이드2', backgroundColor: 'primaryLight' },
-  { label: '슬라이드3', backgroundColor: 'primary' },
+  { label: '슬라이드3', backgroundColor: 'primaryBomBom' },
 ];
 
 const SlideBox = ({ backgroundColor, children }: SlideBoxProps) => {

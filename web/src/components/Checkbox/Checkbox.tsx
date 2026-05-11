@@ -51,7 +51,7 @@ const HiddenCheckbox = styled.input`
   pointer-events: none;
 
   &:focus-visible + label {
-    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline: 2px solid ${({ theme }) => theme.colors.primaryBomBom};
     outline-offset: 2px;
   }
 `;
@@ -70,7 +70,7 @@ const CheckboxSquare = styled.div<{ checked: boolean }>`
   height: 20px;
   border: 2px solid
     ${({ theme, checked }) =>
-      checked ? theme.colors.primary : theme.colors.stroke};
+      checked ? theme.colors.primaryBomBom : theme.colors.stroke};
   border-radius: 4px;
 
   display: flex;
@@ -78,7 +78,7 @@ const CheckboxSquare = styled.div<{ checked: boolean }>`
   justify-content: center;
 
   background-color: ${({ theme, checked }) =>
-    checked ? theme.colors.primary : theme.colors.white};
+    checked ? theme.colors.primaryBomBom : theme.colors.white};
 
   transition: all 0.2s ease;
 `;

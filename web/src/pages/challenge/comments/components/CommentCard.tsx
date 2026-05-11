@@ -109,7 +109,7 @@ const CommentCard = ({
                     <CheckIcon
                       width={16}
                       height={16}
-                      fill={theme.colors.primary}
+                      fill={theme.colors.primaryBomBom}
                     />
                   ),
                 })}
@@ -278,7 +278,7 @@ const NewsletterBadge = styled(Badge)<{ isMobile: boolean }>`
   padding: 2px 6px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ isMobile, theme }) =>
     isMobile ? theme.fonts.t3Regular : theme.fonts.t5Regular};
 `;
@@ -295,7 +295,7 @@ const EditButton = styled(Button)<{ isMobile: boolean }>`
     background: none;
 
     svg {
-      fill: ${({ theme }) => theme.colors.primary};
+      fill: ${({ theme }) => theme.colors.primaryBomBom};
     }
   }
 `;
@@ -334,7 +334,7 @@ const ExpandButton = styled(Button)<{ isMobile: boolean }>`
   text-decoration: underline;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primaryBomBom};
   }
 `;
 

@@ -109,7 +109,7 @@ const NewsletterBadge = styled(Badge)`
   padding: 2px 6px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 

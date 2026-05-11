@@ -99,7 +99,7 @@ const StepNumber = styled.span<{ device: Device }>`
   align-items: flex-start;
   justify-content: center;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.t7Bold : theme.fonts.t10Bold};
   white-space: nowrap;

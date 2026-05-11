@@ -101,7 +101,7 @@ const HeaderBox = styled.div`
 const HeaderTag = styled.div`
   margin-bottom: 6px;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
@@ -129,7 +129,7 @@ const SectionTitle = styled.h2`
 const TipBox = styled.div`
   margin-bottom: 16px;
   padding-left: 16px;
-  border-left: 4px solid ${({ theme }) => theme.colors.primary};
+  border-left: 4px solid ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const TipText = styled.p`
@@ -187,7 +187,7 @@ const SubscribeLink = styled(Link)`
 
   display: inline-block;
 
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t6Regular};
 

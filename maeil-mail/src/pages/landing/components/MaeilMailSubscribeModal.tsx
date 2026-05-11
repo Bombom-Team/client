@@ -65,11 +65,11 @@ const MaeilMailSubscribeModal = ({
           <Flex align="center" gap={4}>
             <SectionLabel>
               분야
-              <Text color="primary" font="t5Regular">
+              <Text color="primaryMaeilMail" font="t5Regular">
                 *
               </Text>
             </SectionLabel>
-            <Text color="primary" font="t5Regular">
+            <Text color="primaryMaeilMail" font="t5Regular">
               (중복 선택 가능)
             </Text>
           </Flex>
@@ -122,7 +122,7 @@ const Title = styled.h3`
 `;
 
 const WarnText = styled.p`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryMaeilMail};
   font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;

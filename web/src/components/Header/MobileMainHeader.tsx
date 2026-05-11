@@ -3,7 +3,6 @@ import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
-import ServiceSwitcher from './ServiceSwitcher';
 import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
@@ -14,7 +13,6 @@ const MobileMainHeader = () => {
 
   return (
     <Container>
-      <ServiceSwitcher />
       <MainRow>
         <HeaderLogo />
         <UserInfoWrapper>
@@ -44,7 +42,7 @@ const Container = styled.header`
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   height: ${({ theme }) =>
-    `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 40px)`};
+    `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`};
   padding-top: ${({ theme }) => theme.safeArea.top};
   box-shadow:
     0 8px 12px -6px rgb(0 0 0 / 10%),

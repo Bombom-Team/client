@@ -63,7 +63,7 @@ const PreviousTab = ({
         </ImageWrapper>
         <OpenSubscribeButton onClick={handlePreviousButtonClick}>
           지난 소식 보러가기
-          <OpenIcon fill={theme.colors.primary} width={16} height={16} />
+          <OpenIcon fill={theme.colors.primaryBomBom} width={16} height={16} />
         </OpenSubscribeButton>
       </Container>
     );
@@ -99,7 +99,7 @@ const OpenSubscribeButton = styled.button`
   width: fit-content;
   margin-bottom: 100px;
   padding: 8px 16px;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border: 1px solid ${({ theme }) => theme.colors.primaryBomBom};
   border-radius: 16px;
 
   display: flex;
@@ -107,7 +107,7 @@ const OpenSubscribeButton = styled.button`
   justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 

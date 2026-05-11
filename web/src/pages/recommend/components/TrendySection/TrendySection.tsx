@@ -250,7 +250,7 @@ const SectionIconBox = styled.span`
   align-items: center;
   justify-content: center;
 
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 

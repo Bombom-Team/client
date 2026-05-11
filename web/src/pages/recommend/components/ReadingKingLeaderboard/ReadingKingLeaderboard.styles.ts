@@ -37,7 +37,7 @@ export const TitleIcon = styled.div`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 export const Title = styled.h3`
@@ -94,7 +94,7 @@ export const Countdown = styled.div`
   position: relative;
   width: 36px;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
 
   cursor: help;

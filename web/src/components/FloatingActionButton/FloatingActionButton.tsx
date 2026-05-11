@@ -50,7 +50,7 @@ const FloatingButton = styled.button`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
 
   &:hover {
     box-shadow: 0 6px 16px rgb(0 0 0 / 20%);

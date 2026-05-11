@@ -172,34 +172,34 @@ const BodyRow = styled.tr<{ isMine: boolean; isMobile: boolean }>`
     (isMobile
       ? `
     & > td {
-      box-shadow: inset 0 2px 0 ${theme.colors.primary},
-        inset 0 -2px 0 ${theme.colors.primary};
+      box-shadow: inset 0 2px 0 ${theme.colors.primaryBomBom},
+        inset 0 -2px 0 ${theme.colors.primaryBomBom};
     }
 
     & > td:first-of-type {
-      box-shadow: inset 2px 0 0 ${theme.colors.primary},
-        inset 0 2px 0 ${theme.colors.primary},
-        inset 0 -2px 0 ${theme.colors.primary};
+      box-shadow: inset 2px 0 0 ${theme.colors.primaryBomBom},
+        inset 0 2px 0 ${theme.colors.primaryBomBom},
+        inset 0 -2px 0 ${theme.colors.primaryBomBom};
     }
 
     & > td:last-of-type {
-      box-shadow: inset -2px 0 0 ${theme.colors.primary},
-        inset 0 2px 0 ${theme.colors.primary},
-        inset 0 -2px 0 ${theme.colors.primary};
+      box-shadow: inset -2px 0 0 ${theme.colors.primaryBomBom},
+        inset 0 2px 0 ${theme.colors.primaryBomBom},
+        inset 0 -2px 0 ${theme.colors.primaryBomBom};
     }
   `
       : `
     & > td {
-      border-top: 2px solid ${theme.colors.primary};
-      border-bottom: 2px solid ${theme.colors.primary};
+      border-top: 2px solid ${theme.colors.primaryBomBom};
+      border-bottom: 2px solid ${theme.colors.primaryBomBom};
     }
 
     & > td:first-of-type {
-      border-left: 2px solid ${theme.colors.primary};
+      border-left: 2px solid ${theme.colors.primaryBomBom};
     }
 
     & > td:last-of-type {
-      border-right: 2px solid ${theme.colors.primary};
+      border-right: 2px solid ${theme.colors.primaryBomBom};
     }
   `)}
 `;
@@ -267,7 +267,7 @@ const NameText = styled.span`
 const FailBadge = styled.span`
   flex-shrink: 0;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t3Regular};
   white-space: nowrap;
 `;

@@ -161,7 +161,7 @@ export const StatusIconWrapper = styled.div`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 export const Title = styled.h2`
@@ -222,7 +222,7 @@ const ProgressLabel = styled.h3`
 const ProgressRate = styled.span`
   margin-left: auto;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;
@@ -239,11 +239,11 @@ const InputContainer = styled.div`
   gap: 0;
   align-items: center;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
 
   span {
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primaryBomBom};
     font: ${({ theme }) => theme.fonts.t5Regular};
   }
 `;

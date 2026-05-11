@@ -103,7 +103,7 @@ const GoToService = styled(Link)<{ device: Device }>`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t5Regular};
 

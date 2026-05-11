@@ -136,7 +136,7 @@ const SubscribeAction = styled.div`
   gap: 4px;
   align-items: center;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const SubscribeText = styled.span`

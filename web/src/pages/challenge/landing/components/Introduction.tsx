@@ -183,7 +183,7 @@ const OpeningQuoteIcon = styled(QuoteIcon)<{ device: Device }>`
   height: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
   margin-top: ${({ device }) => (device === 'mobile' ? '-12px' : '-24px')};
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const ClosingQuoteIcon = styled(QuoteIcon)<{ device: Device }>`
@@ -191,7 +191,7 @@ const ClosingQuoteIcon = styled(QuoteIcon)<{ device: Device }>`
   height: ${({ device }) => (device === 'mobile' ? '24px' : '32px')};
   margin-bottom: ${({ device }) => (device === 'mobile' ? '-12px' : '-24px')};
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 
   transform: rotate(180deg);
 `;
@@ -245,7 +245,7 @@ const Title = styled.h2<{ device: Device }>`
 
 const Highlight = styled.span`
   display: inline-block;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const Strong = styled.span`
@@ -296,12 +296,12 @@ const OverviewItem = styled.p<{ device: Device }>`
 
     flex-shrink: 0;
 
-    fill: ${({ theme }) => theme.colors.primary};
+    fill: ${({ theme }) => theme.colors.primaryBomBom};
   }
 `;
 
 const OverViewText = styled.p<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Bold};
   font-weight: 400;

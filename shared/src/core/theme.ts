@@ -37,10 +37,11 @@ const fonts = {
 };
 
 const colors = {
-  primary: '#FE5E04',
+  primaryBomBom: '#FE5E04',
   primaryDark: '#E35400',
   primaryLight: '#FFD6C2',
   primaryInfo: '#ffebe0',
+  primaryMaeilMail: '#17C881',
   textPrimary: '#181818',
   textSecondary: '#5C5C5C',
   textTertiary: '#747474',

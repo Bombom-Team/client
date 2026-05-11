@@ -82,7 +82,7 @@ const Comment = styled.textarea<{ device: Device; isError: boolean }>`
   &:focus {
     outline: none;
     border-color: ${({ theme, isError }) =>
-      isError ? theme.colors.error : theme.colors.primary};
+      isError ? theme.colors.error : theme.colors.primaryBomBom};
   }
 
   &::placeholder {

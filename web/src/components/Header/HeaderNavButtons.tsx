@@ -116,7 +116,7 @@ const BetaBadge = styled.span<{ active?: boolean }>`
   padding: 2px 4px;
 
   background: none;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t1Regular};
   font-weight: 700;
 `;
@@ -136,7 +136,7 @@ const NavButton = styled(Link, {
   justify-content: center;
 
   background: ${({ active, theme }) =>
-    active ? theme.colors.primary : 'transparent'};
+    active ? theme.colors.primaryBomBom : 'transparent'};
   color: ${({ active, theme }) =>
     active ? theme.colors.white : theme.colors.textPrimary};
   font: ${({ isPC, theme }) =>
@@ -148,7 +148,7 @@ const NavButton = styled(Link, {
 
   &:hover {
     background: ${({ active, theme }) =>
-      active ? theme.colors.primary : theme.colors.dividers};
+      active ? theme.colors.primaryBomBom : theme.colors.dividers};
     transform: translateY(-1px);
   }
 `;

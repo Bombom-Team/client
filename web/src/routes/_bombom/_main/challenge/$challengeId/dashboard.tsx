@@ -101,7 +101,7 @@ function ChallengeDashboardRoute() {
         />
       )}
       <NoticeMessageWrapper>
-        <InfoIcon width={20} height={20} fill={theme.colors.primary} />
+        <InfoIcon width={20} height={20} fill={theme.colors.primaryBomBom} />
         <NoticeMessage>
           {' '}
           공휴일이나 뉴스레터의 임시 휴재 등으로 인해 챌린지 인증 상태에 대한

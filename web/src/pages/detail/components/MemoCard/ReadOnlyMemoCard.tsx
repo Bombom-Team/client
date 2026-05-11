@@ -75,7 +75,7 @@ const Container = styled.div<{ disabled: boolean }>`
   &:hover {
     box-shadow: 0 8px 24px rgb(0 0 0 / 8%);
 
-    border-color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primaryBomBom};
     transform: translateY(-1px);
   }
 

@@ -16,7 +16,7 @@ const ChallengeChecklist = () => {
         <CheckIcon
           width={device === 'mobile' ? 20 : 32}
           height={device === 'mobile' ? 20 : 32}
-          fill={theme.colors.primary}
+          fill={theme.colors.primaryBomBom}
         />
       </Title>
       <ContentWrapper device={device}>
@@ -131,7 +131,7 @@ const ItemNumber = styled.span<{ device: Device }>`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t7Bold};
 `;

@@ -169,7 +169,7 @@ const LoginButtonExample = styled.div<{ device: Device }>`
   gap: 4px;
   align-items: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};

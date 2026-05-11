@@ -62,7 +62,7 @@ const StyledLockIcon = styled(LockIcon)`
   width: 52px;
   height: 52px;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const Title = styled.h1`

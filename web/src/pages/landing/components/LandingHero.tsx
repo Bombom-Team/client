@@ -56,7 +56,7 @@ const HeroBadge = styled.div`
   border-radius: 20px;
 
   background-color: ${({ theme }) => theme.colors.primaryInfo};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
@@ -67,7 +67,7 @@ const Title = styled.h2<{ device: Device }>`
 `;
 
 const Highlight = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const Description = styled.p<{ device: Device }>`

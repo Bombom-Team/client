@@ -4,7 +4,6 @@ import type { Device } from '@bombom/shared/ui-web';
 import { useRouter } from '@tanstack/react-router';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
-import ServiceSwitcher from '@/components/Header/ServiceSwitcher';
 
 const BOMBOM_SERVICE_URL = 'https://www.bombom.news';
 
@@ -18,8 +17,6 @@ const Header = () => {
 
   return (
     <Container device={device}>
-      <ServiceSwitcher />
-
       <HeaderRow device={device}>
         {device === 'mobile' ? (
           <BackButton
@@ -116,7 +113,7 @@ const GoToService = styled.a`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryMaeilMail};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t5Regular};
 

@@ -99,7 +99,7 @@ const Container = styled.div`
   &:hover {
     box-shadow: 0 8px 24px rgb(0 0 0 / 8%);
 
-    border-color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primaryBomBom};
     transform: translateY(-1px);
   }
 `;
@@ -117,7 +117,7 @@ const DeleteButton = styled.button`
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.primaryBomBom};
     color: ${({ theme }) => theme.colors.white};
 
     transform: scale(1.1);
@@ -165,8 +165,8 @@ const NoteMemo = styled.textarea`
   transition: all 0.2s ease-in-out;
 
   &:focus {
-    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primary}20;
-    border-color: ${({ theme }) => theme.colors.primary};
+    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primaryBomBom}20;
+    border-color: ${({ theme }) => theme.colors.primaryBomBom};
   }
 
   &::placeholder {

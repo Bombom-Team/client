@@ -67,7 +67,7 @@ export const ProgressGauge = styled.div<{
     return rate >= 100 ? '10px' : '10px 0 0 10px';
   }};
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
 
   ${({ transitionDuration }) =>
     transitionDuration &&

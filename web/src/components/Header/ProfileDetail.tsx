@@ -219,7 +219,7 @@ const LogoutButton = styled.button`
   gap: 4px;
   align-items: center;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
 
   &:hover {

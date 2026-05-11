@@ -31,7 +31,7 @@ const StyledBookmarkIcon = styled(BookmarkIcon)`
   width: 20px;
   height: 20px;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const LinkText = styled.span`
@@ -63,7 +63,7 @@ export const Default: Story = {
         <LinkText>북마크</LinkText>
       </StyledLink>
       <StyledLink>
-        <MemoIcon width={20} height={20} fill={theme.colors.primary} />
+        <MemoIcon width={20} height={20} fill={theme.colors.primaryBomBom} />
         <LinkText>메모</LinkText>
       </StyledLink>
     </FloatingActionButton>
