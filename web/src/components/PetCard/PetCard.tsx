@@ -6,7 +6,7 @@ import { LEVEL, PET_LABEL } from './PetCard.constants';
 import { heartAnimation, jumpAnimation } from './PetCard.keyframes';
 import Button from '../Button/Button';
 import ProgressBar from '../ProgressBar/ProgressBar';
-import { postPetAttendance } from '@/apis/pet/pet.api';
+import { attend } from '@/apis/pet/pet.api';
 import { useDevice } from '@/hooks/useDevice';
 import { queryClient } from '@/main';
 import { calculateRate } from '@/utils/math';
@@ -47,7 +47,7 @@ const PetCard = ({ pet }: PetCardProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const { mutate: mutatePetAttendance } = useMutation({
-    mutationFn: postPetAttendance,
+    mutationFn: attend,
     onSuccess: () => {
       setIsAnimating(true);
 
