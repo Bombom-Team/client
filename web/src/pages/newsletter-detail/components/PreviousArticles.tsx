@@ -45,7 +45,8 @@ const PreviousArticles = ({
         expectedReadTime={article.expectedReadTime}
         onClick={() =>
           navigate({
-            to: `articles/previous/${article.articleId}`,
+            to: '/articles/previous/$articleId',
+            params: { articleId: String(article.articleId) },
             state: {
               subscribeUrl: newsletterSubscribeUrl,
             },
