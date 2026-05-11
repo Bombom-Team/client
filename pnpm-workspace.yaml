@@ -3,4 +3,5 @@ packages:
   - 'web'
   - 'admin'
   - 'shared'
+  - 'shared/oas-gen'
   - 'maeil-mail'
