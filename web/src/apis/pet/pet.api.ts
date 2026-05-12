@@ -6,8 +6,9 @@
 import { fetcher } from '@bombom/shared/apis';
 import type { operations } from '@/types/openapi-spec';
 
-export type GetPetResponse =
-  NonNullable<operations['getPet']['responses']['200']['content']['application/json']>;
+export type GetPetResponse = NonNullable<
+  operations['getPet']['responses']['200']['content']['application/json']
+>;
 
 export const getPet = async () => {
   return fetcher.get<GetPetResponse>({ path: '/members/me/pet' });
