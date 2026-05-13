@@ -1,10 +1,12 @@
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useFloatingToolbarSelection } from './useFloatingToolbarSelection';
+import { getMaeilMailAnswerUrl } from '../../constants/maeilMail';
 import { useAddHighlightMutation } from '../../hooks/useAddHighlightMutation';
 import { useExternalLinkHandler } from '../../hooks/useExternalLinkHandler';
 import { useFloatingToolbarState } from '../../hooks/useFloatingToolbarState';
 import { useHighlights } from '../../hooks/useHighlights';
-import { useMaeilMailAnswerAction } from '../../hooks/useMaeilMailAnswerAction';
 import { useMaeilMailAnswerButton } from '../../hooks/useMaeilMailAnswerButton';
 import { useRemoveHighlightMutation } from '../../hooks/useRemoveHighlighMutation';
 import { useUpdateHighlightMutation } from '../../hooks/useUpdateHighlightMutation';
@@ -13,7 +15,9 @@ import ArticleContent from '../ArticleContent/ArticleContent';
 import FloatingToolbar from '../FloatingToolbar/FloatingToolbar';
 import MaeilMailAnswerModal from '../MaeilMailAnswerModal/MaeilMailAnswerModal';
 import MemoPanel from '../MemoPanel/MemoPanel';
+import { queries } from '@/apis/queries';
 import useModal from '@/components/Modal/useModal';
+import { toast } from '@/components/Toast/utils/toastActions';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { GetArticleByIdResponse } from '@/apis/articles/articles.api';
 import type { RefObject } from 'react';
@@ -33,6 +37,7 @@ const ArticleBody = ({
   newsletterName,
   articleContent,
 }: ArticleBodyProps) => {
+  const navigate = useNavigate();
   const {
     opened: toolbarOpened,
     position,
@@ -61,10 +66,24 @@ const ArticleBody = ({
     isOpen: isMaeilMailModalOpen,
   } = useModal();
 
-  const { checkMaeilMailAnswer, contentId } = useMaeilMailAnswerAction({
-    articleId,
-    onAnswerNotSubmitted: openMaeilMailModal,
-  });
+  const { data: content } = useQuery(queries.contentByArticleId({ articleId }));
+  const { data: submittedAnswer } = useQuery(
+    queries.answerByArticleId({ articleId }),
+  );
+  const contentId = content?.contentId;
+  const hasSubmittedAnswer = typeof submittedAnswer === 'string';
+
+  const checkMaeilMailAnswer = () => {
+    if (contentId === undefined) {
+      toast.error('정답을 확인할 수 없어요. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    if (hasSubmittedAnswer) {
+      navigate({ href: getMaeilMailAnswerUrl(contentId, articleId) });
+      return;
+    }
+    openMaeilMailModal();
+  };
 
   useMaeilMailAnswerButton({
     contentRef,

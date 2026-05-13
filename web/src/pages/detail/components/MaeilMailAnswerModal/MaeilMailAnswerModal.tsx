@@ -14,8 +14,8 @@ interface MaeilMailAnswerModalProps {
   isOpen: boolean;
   onClose: () => void;
   articleId: number;
-  contentId: number | undefined;
   question: string;
+  contentId?: number;
 }
 
 const MaeilMailAnswerModal = ({
