@@ -42,7 +42,7 @@ export const Container = styled.li<{ selected: boolean }>`
   padding: 10px 12px;
   border: 2px solid
     ${({ selected, theme }) =>
-      selected ? theme.colors.primary : 'transparent'};
+      selected ? theme.colors.primaryBomBom : 'transparent'};
   border-radius: 12px;
 
   display: flex;
@@ -51,7 +51,7 @@ export const Container = styled.li<{ selected: boolean }>`
   justify-content: space-between;
 
   background-color: ${({ selected, theme }) =>
-    selected ? theme.colors.primary : theme.colors.white};
+    selected ? theme.colors.primaryBomBom : theme.colors.white};
   color: ${({ selected, theme }) =>
     selected ? theme.colors.white : theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Regular};
@@ -61,7 +61,7 @@ export const Container = styled.li<{ selected: boolean }>`
 
   &:hover {
     background-color: ${({ selected, theme }) =>
-      selected ? theme.colors.primary : theme.colors.disabledBackground};
+      selected ? theme.colors.primaryBomBom : theme.colors.disabledBackground};
   }
 `;
 

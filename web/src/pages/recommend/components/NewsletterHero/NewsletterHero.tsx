@@ -107,7 +107,7 @@ const CTAButton = styled.button<{ isPC: boolean }>`
   border-radius: 12px;
 
   background: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme, isPC }) =>
     isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
 

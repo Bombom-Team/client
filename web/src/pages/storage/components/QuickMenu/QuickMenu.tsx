@@ -105,7 +105,7 @@ const QuickMenuIconWrapper = styled.div`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const StyledMenuIcon = styled(MenuIcon)`
@@ -124,7 +124,7 @@ const StyledIcon = styled.div<{ device: Device; selected?: boolean }>`
   height: ${({ device }) => (device === 'pc' ? '24px' : '28px')};
 
   color: ${({ theme, selected = false }) =>
-    selected ? theme.colors.white : theme.colors.primary};
+    selected ? theme.colors.white : theme.colors.primaryBomBom};
 `;
 
 const StyledTab = styled(Tab)`

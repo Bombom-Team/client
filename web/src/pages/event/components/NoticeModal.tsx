@@ -83,5 +83,5 @@ const ConfirmButton = styled(Button)`
 `;
 
 const HighLight = styled.strong`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;

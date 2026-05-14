@@ -58,7 +58,7 @@ const Content = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const TextWrapper = styled.div``;

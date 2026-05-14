@@ -31,7 +31,7 @@ const FeatureContent = ({
           <TitleWrapper>
             <Title>{title}</Title>
             <IconWrapper device={device}>
-              <Icon fill={theme.colors.primary} />
+              <Icon fill={theme.colors.primaryBomBom} />
             </IconWrapper>
           </TitleWrapper>
           <DescriptionWrapper
@@ -114,7 +114,7 @@ const TitleWrapper = styled.div`
 `;
 
 const Title = styled.h3`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t11Bold};
 `;
 
@@ -128,7 +128,7 @@ const IconWrapper = styled.div<{ device: Device }>`
     return device === 'tablet' ? '24px' : '28px';
   }};
 
-  fill: ${({ theme }) => theme.colors.primary};
+  fill: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const DescriptionWrapper = styled.div<{

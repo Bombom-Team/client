@@ -242,14 +242,14 @@ const StyledHomeIcon = styled(HomeIcon)<{ isMobile: boolean }>`
   width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
   height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
 
-  fill: ${({ theme }) => theme.colors.primary};
+  fill: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const StyledInfoIcon = styled(InfoIcon)<{ isMobile: boolean }>`
   width: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
   height: ${({ isMobile }) => (isMobile ? '20px' : '24px')};
 
-  fill: ${({ theme }) => theme.colors.primary};
+  fill: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const SubscribeMethodInfo = styled.div`
@@ -293,7 +293,7 @@ const DetailLink = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primaryBomBom};
     cursor: pointer;
   }
 `;

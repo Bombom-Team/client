@@ -81,7 +81,7 @@ const CountBadge = styled.div`
   border-radius: 999px;
 
   background: ${({ theme }) => theme.colors.primaryInfo};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 600;
 `;

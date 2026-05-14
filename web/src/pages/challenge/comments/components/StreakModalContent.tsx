@@ -136,7 +136,7 @@ const TitleWrapper = styled.div`
 `;
 
 const Title = styled.h2`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t13Bold};
   font-weight: 800;
 `;
@@ -192,7 +192,7 @@ const DayColumn = styled.div`
 
 const DayLabel = styled.span<{ isHighlighted: boolean }>`
   color: ${({ theme, isHighlighted }) =>
-    isHighlighted ? theme.colors.primary : theme.colors.textTertiary};
+    isHighlighted ? theme.colors.primaryBomBom : theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 700;
 `;
@@ -220,8 +220,8 @@ const DayCheckBox = styled.div<{
     isShieldApplied,
   }) => {
     if (isShieldApplied) return 'transparent';
-    if (isHighlighted) return theme.colors.primary;
-    return isCompleted ? theme.colors.primary : theme.colors.stroke;
+    if (isHighlighted) return theme.colors.primaryBomBom;
+    return isCompleted ? theme.colors.primaryBomBom : theme.colors.stroke;
   }};
   color: ${({ theme }) => theme.colors.white};
 `;

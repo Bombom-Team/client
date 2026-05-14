@@ -121,7 +121,7 @@ const InfoText = styled.p`
   display: flex;
   gap: 4px;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: left;
 `;

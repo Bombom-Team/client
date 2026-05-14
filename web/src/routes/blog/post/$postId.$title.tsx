@@ -188,7 +188,7 @@ const GoToListButton = styled(Button)<{ device: Device }>`
 
   &:hover {
     background-color: transparent;
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primaryBomBom};
   }
 `;
 

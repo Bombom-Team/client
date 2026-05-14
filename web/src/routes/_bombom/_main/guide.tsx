@@ -102,7 +102,7 @@ const GuideIcon = styled(HelpIcon)`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   text-align: center;
 `;

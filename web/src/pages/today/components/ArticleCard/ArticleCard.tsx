@@ -119,7 +119,7 @@ export const Container = styled(Link, {
   ${({ isMobile, isRead, theme }) =>
     !isMobile &&
     `
-    border-bottom: ${isRead ? '0' : '4px'} solid ${theme.colors.primary};
+    border-bottom: ${isRead ? '0' : '4px'} solid ${theme.colors.primaryBomBom};
     border-radius: 20px;
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 10%);
   `};

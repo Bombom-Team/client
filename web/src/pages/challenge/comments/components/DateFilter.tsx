@@ -51,7 +51,9 @@ const DateFilter = ({
             width={36}
             height={36}
             fill={
-              canGoPrevWeek ? theme.colors.primary : theme.colors.disabledText
+              canGoPrevWeek
+                ? theme.colors.primaryBomBom
+                : theme.colors.disabledText
             }
           />
         </NavButton>
@@ -92,7 +94,9 @@ const DateFilter = ({
             width={36}
             height={36}
             fill={
-              canGoNextWeek ? theme.colors.primary : theme.colors.disabledText
+              canGoNextWeek
+                ? theme.colors.primaryBomBom
+                : theme.colors.disabledText
             }
           />
         </NavButton>
@@ -114,7 +118,7 @@ const Container = styled.div`
 const NavButton = styled(Button)<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '6px' : '8px')};
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 
   transition: opacity 0.2s;
 

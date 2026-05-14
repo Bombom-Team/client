@@ -17,7 +17,7 @@ export const Tag = styled.span`
   align-self: flex-start;
 
   background-color: ${({ theme }) => `${theme.colors.primaryLight}40`};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t3Regular};
   font-weight: 600;
 `;
@@ -44,7 +44,7 @@ export const DDay = ({ startDate, ...props }: DDayProps) => {
   const dday = getDday(startDate);
 
   return (
-    <Text font="t5Regular" color="primary" {...props}>
+    <Text font="t5Regular" color="primaryBomBom" {...props}>
       D{dday}
     </Text>
   );
@@ -56,7 +56,7 @@ export const CardDetailButton = styled.button`
   align-self: flex-end;
 
   background-color: transparent;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
   font-weight: 600;
 

@@ -93,7 +93,7 @@ const DayBadge = styled.div`
   align-self: flex-start;
 
   background-color: ${({ theme }) => theme.colors.primaryLight};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
   font-weight: 600;
 `;
@@ -101,7 +101,7 @@ const DayBadge = styled.div`
 const NoticeBox = styled.div`
   width: 100%;
   padding: 12px 16px;
-  border-left: 4px solid ${({ theme }) => theme.colors.primary};
+  border-left: 4px solid ${({ theme }) => theme.colors.primaryBomBom};
   border-radius: 8px;
 
   display: flex;

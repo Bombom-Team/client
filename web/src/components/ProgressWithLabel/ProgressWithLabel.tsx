@@ -78,7 +78,7 @@ const ProgressLabel = styled.h3`
 export const ProgressRate = styled.span`
   margin-left: auto;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
 `;

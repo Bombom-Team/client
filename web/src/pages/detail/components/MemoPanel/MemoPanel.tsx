@@ -30,14 +30,18 @@ const MemoPanel = ({
           direction={opened ? 'right' : 'left'}
           width={24}
           height={24}
-          color={theme.colors.primary}
+          color={theme.colors.primaryBomBom}
         />
       </ToggleButton>
 
       <Header>
         <HeaderLeft>
           <IconWrapper>
-            <MemoIcon fill={theme.colors.primary} width={24} height={24} />
+            <MemoIcon
+              fill={theme.colors.primaryBomBom}
+              width={24}
+              height={24}
+            />
           </IconWrapper>
           <HeaderTitleBox>
             <HeaderTitleText>읽기 노트</HeaderTitleText>
@@ -54,7 +58,11 @@ const MemoPanel = ({
         {memos.length === 0 ? (
           <EmptyWrapper>
             <EmptyIconWrapper>
-              <MemoIcon width={36} height={36} fill={theme.colors.primary} />
+              <MemoIcon
+                width={36}
+                height={36}
+                fill={theme.colors.primaryBomBom}
+              />
             </EmptyIconWrapper>
             <HeaderTitleText>아직 메모가 없어요</HeaderTitleText>
             <HeaderTitleCaption>
@@ -145,7 +153,7 @@ const IconWrapper = styled.div`
   border-radius: 50%;
   box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
 
-  background-color: ${({ theme }) => `${theme.colors.primary}10`};
+  background-color: ${({ theme }) => `${theme.colors.primaryBomBom}10`};
 `;
 
 const CloseButton = styled.button`
@@ -178,5 +186,5 @@ const EmptyIconWrapper = styled.div`
   padding: 16px;
   border-radius: 50%;
 
-  background-color: ${({ theme }) => `${theme.colors.primary}10`};
+  background-color: ${({ theme }) => `${theme.colors.primaryBomBom}10`};
 `;

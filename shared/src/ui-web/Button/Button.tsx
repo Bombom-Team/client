@@ -57,7 +57,7 @@ const variantStyles = {
   filled: (theme: Theme) => css`
     border: none;
 
-    background-color: ${theme.colors.primary};
+    background-color: ${theme.colors.primaryBomBom};
     color: ${theme.colors.white};
 
     &:hover {

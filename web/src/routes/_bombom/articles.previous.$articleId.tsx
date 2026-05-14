@@ -252,7 +252,7 @@ const ActionButton = styled.button`
 `;
 
 const SubscribeButton = styled(ActionButton)`
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
 `;
 

@@ -159,7 +159,7 @@ const IconContainer = styled.View`
   border-radius: 50px;
   justify-content: center;
   align-items: center;
-  background-color: ${(props) => props.theme.colors.primary};
+  background-color: ${(props) => props.theme.colors.primaryBomBom};
 `;
 
 const Title = styled.Text`
@@ -215,5 +215,5 @@ const TermsText = styled.Text`
 `;
 
 const TermsLink = styled.Text`
-  color: ${(props) => props.theme.colors.primary};
+  color: ${(props) => props.theme.colors.primaryBomBom};
 `;

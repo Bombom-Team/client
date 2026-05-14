@@ -141,7 +141,7 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primaryBomBom};
   }
 `;
 
@@ -153,7 +153,7 @@ const SubmitButton = styled(Button)`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.stroke};

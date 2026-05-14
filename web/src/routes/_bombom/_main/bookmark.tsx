@@ -102,8 +102,6 @@ function BookmarkPage() {
   );
 }
 
-export default BookmarkPage;
-
 const Container = styled.div`
   width: 100%;
   max-width: 1280px;
@@ -168,7 +166,7 @@ const BookmarkStorageIcon = styled(BookmarkIcon)`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   text-align: center;
 `;

@@ -96,7 +96,7 @@ const HeaderBox = styled.div`
 const HeaderTag = styled.div`
   margin-bottom: 6px;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
@@ -189,7 +189,7 @@ const TodayLink = styled(Link)`
 
   display: inline-block;
 
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t6Regular};
 

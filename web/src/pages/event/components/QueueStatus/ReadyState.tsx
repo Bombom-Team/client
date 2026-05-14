@@ -101,7 +101,7 @@ const ReadyMessage = styled.p`
 `;
 
 const HighLight = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const pulse = keyframes`
@@ -130,7 +130,7 @@ const SpinnerDot = styled.div<{ delay: number }>`
   border: 2px solid ${({ theme }) => theme.colors.black};
   border-radius: 50%;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
 
   animation: ${pulse} 1.4s ease-in-out infinite;
 

@@ -195,7 +195,7 @@ export const StatusIconWrapper = styled.div`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 export const Title = styled.h2`

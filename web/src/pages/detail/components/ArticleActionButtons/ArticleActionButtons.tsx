@@ -45,7 +45,7 @@ const ArticleActionButtons = ({
             <BookmarkInactiveIcon
               width={28}
               height={28}
-              color={theme.colors.primary}
+              color={theme.colors.primaryBomBom}
             />
           ),
           onClick: onBookmarkClick,

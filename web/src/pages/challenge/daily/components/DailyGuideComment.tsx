@@ -135,7 +135,7 @@ const CommentTextarea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primaryBomBom};
   }
 `;
 
