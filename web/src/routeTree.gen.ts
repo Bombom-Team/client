@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root';
 import { Route as SignupRouteImport } from './routes/signup';
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy';
 import { Route as MaintenanceRouteImport } from './routes/maintenance';
 import { Route as LoginRouteImport } from './routes/login';
 import { Route as LandingRouteImport } from './routes/landing';
@@ -44,6 +45,11 @@ import { Route as BombomMainChallengeChallengeIdCertificationRouteImport } from 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any);
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any);
 const MaintenanceRoute = MaintenanceRouteImport.update({
@@ -211,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
+  '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/blog/': typeof BlogIndexRoute;
@@ -241,6 +248,7 @@ export interface FileRoutesByTo {
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
+  '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/blog': typeof BlogIndexRoute;
@@ -272,6 +280,7 @@ export interface FileRoutesById {
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
   '/maintenance': typeof MaintenanceRoute;
+  '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
@@ -306,6 +315,7 @@ export interface FileRouteTypes {
     | '/landing'
     | '/login'
     | '/maintenance'
+    | '/privacy-policy'
     | '/signup'
     | '/maeil-mail/landing'
     | '/blog/'
@@ -336,6 +346,7 @@ export interface FileRouteTypes {
     | '/landing'
     | '/login'
     | '/maintenance'
+    | '/privacy-policy'
     | '/signup'
     | '/maeil-mail/landing'
     | '/blog'
@@ -366,6 +377,7 @@ export interface FileRouteTypes {
     | '/landing'
     | '/login'
     | '/maintenance'
+    | '/privacy-policy'
     | '/signup'
     | '/_bombom/_main'
     | '/maeil-mail/landing'
@@ -400,6 +412,7 @@ export interface RootRouteChildren {
   LandingRoute: typeof LandingRoute;
   LoginRoute: typeof LoginRoute;
   MaintenanceRoute: typeof MaintenanceRoute;
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute;
   SignupRoute: typeof SignupRoute;
   MaeilMailLandingRoute: typeof MaeilMailLandingRoute;
   ChallengeChallengeIdLandingRoute: typeof ChallengeChallengeIdLandingRoute;
@@ -412,6 +425,13 @@ declare module '@tanstack/react-router' {
       path: '/signup';
       fullPath: '/signup';
       preLoaderRoute: typeof SignupRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    '/privacy-policy': {
+      id: '/privacy-policy';
+      path: '/privacy-policy';
+      fullPath: '/privacy-policy';
+      preLoaderRoute: typeof PrivacyPolicyRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     '/maintenance': {
@@ -732,6 +752,7 @@ const rootRouteChildren: RootRouteChildren = {
   LandingRoute: LandingRoute,
   LoginRoute: LoginRoute,
   MaintenanceRoute: MaintenanceRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   SignupRoute: SignupRoute,
   MaeilMailLandingRoute: MaeilMailLandingRoute,
   ChallengeChallengeIdLandingRoute: ChallengeChallengeIdLandingRoute,
