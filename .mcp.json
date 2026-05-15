@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "code-graph": {
+      "command": "npx",
+      "args": ["-y", "@sdsrs/code-graph"]
+    }
+  }
+}
