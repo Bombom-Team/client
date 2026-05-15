@@ -9,6 +9,8 @@ import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
 import MaeilMailSubscribeModal from './MaeilMailSubscribeModal';
 import { MAEIL_MAIL_LANDING_CONFIG, TRACKS } from '../constants/subscribe';
 
+const MAEIL_MAIL_URL = 'https://maeilmail.bombom.news';
+
 const LandingHero = () => {
   const { isLoggedIn } = useAuth();
   const device = useDevice();
@@ -28,8 +30,7 @@ const LandingHero = () => {
   }, []);
 
   const redirectLandingPage = () => {
-    const redirect = encodeURIComponent(window.location.pathname);
-    window.location.href = `/login?redirect=${redirect}`;
+    window.location.href = `https://www.bombom.news/login?redirect=${encodeURIComponent(MAEIL_MAIL_URL)}`;
   };
 
   return (
