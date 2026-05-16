@@ -333,6 +333,7 @@ jobs:
           PR_NUMBER: ${{ steps.branch_info.outputs.pr_number }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
           prompt: |
             <PR_INFO>

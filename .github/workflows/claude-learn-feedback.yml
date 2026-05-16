@@ -118,6 +118,7 @@ jobs:
         uses: anthropics/claude-code-action@v1.0.112
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
           prompt: |
             사용자가 Multi-Agent PR Review의 리뷰 코멘트에 피드백을 남겼습니다.
