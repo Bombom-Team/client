@@ -8,6 +8,12 @@ client 레포의 `CONVENTIONS.md`, `docs/frontend-coding-standards.md`, `docs/ai
 > `docs/frontend-coding-standards.md` → 기존 코드베이스 패턴 → 툴 기본값.
 > 규칙이 충돌하면 항상 상위 문서가 이깁니다.
 
+> **PR 본문의 `👀 Review Point` 참고**: PR 본문(컨텍스트의 PR Intent)에
+> `👀 Review Point` 섹션이 있으면, 그 체크리스트 항목은 **작성자가 직접 리뷰를 요청한
+> 지점**입니다. 리뷰 시 해당 항목들을 **반드시 함께 점검**하고, 관련된 발견이 있으면
+> 어떤 Review Point 항목에 대한 것인지 명시해 코멘트하세요. 항목이 "이상 없음"으로
+> 확인되면 그 근거(읽은 파일·code-graph 결과)를 리뷰 본문 "검증 과정"에 남기세요.
+
 ---
 
 ## 반드시 지적할 것
