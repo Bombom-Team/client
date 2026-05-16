@@ -8,17 +8,17 @@
 
 워크플로우 prompt의 `<PR_INFO>` 블록에서 다음 값들을 받습니다. 이 runbook에서 `${변수명}`이라고 표기된 부분은 모두 `<PR_INFO>` 값을 사용하세요.
 
-| 변수               | 의미                                                                                           |
-| ------------------ | ---------------------------------------------------------------------------------------------- |
-| `${PR_NUMBER}`     | 대상 PR 번호                                                                                   |
-| `${REVIEW_MODE}`   | `full` / `incremental` / `force_push`                                                          |
-| `${DIFF_LINES}`    | diff 줄 수                                                                                     |
-| `${CHANGED_FILES}` | 변경 파일 수                                                                                   |
-| `${DIFF_FILE}`     | diff 파일 경로                                                                                 |
-| `${CHANGED_FILE}`  | 변경 파일 목록 경로                                                                            |
-| `${RULES_FILE}`    | **정적 규칙** 파일 경로 (REVIEW.md + 학습 파일 + 일반 PR Scope 규칙)                           |
-| `${CONTEXT_FILE}`  | **이번 PR 맥락** 파일 경로 (PR Intent + Changed Files + 이번 PR의 영향 범위 + code-graph 결과) |
-| `${TRIAGE_SCORE}`  | Triage 복잡도 점수                                                                             |
+| 변수               | 의미                                                                         |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `${PR_NUMBER}`     | 대상 PR 번호                                                                 |
+| `${REVIEW_MODE}`   | `full` / `incremental` / `force_push`                                        |
+| `${DIFF_LINES}`    | diff 줄 수                                                                   |
+| `${CHANGED_FILES}` | 변경 파일 수                                                                 |
+| `${DIFF_FILE}`     | diff 파일 경로                                                               |
+| `${CHANGED_FILE}`  | 변경 파일 목록 경로                                                          |
+| `${RULES_FILE}`    | **정적 규칙** 파일 경로 (REVIEW.md + 학습 파일 + 일반 PR Scope 규칙)         |
+| `${CONTEXT_FILE}`  | **이번 PR 맥락** 파일 경로 (PR Intent + Changed Files + 이번 PR의 영향 범위) |
+| `${TRIAGE_SCORE}`  | Triage 복잡도 점수                                                           |
 
 ---
 
@@ -50,7 +50,7 @@
 
 1. `${DIFF_FILE}` — diff (크면 처음 300줄만, 나머지는 에이전트에게 맡기세요)
 2. `${RULES_FILE}` — 정적 규칙 (REVIEW.md + 학습 파일 + 일반 PR Scope 판정 규칙)
-3. `${CONTEXT_FILE}` — 이번 PR 맥락 (PR Intent + 변경 파일 + 영향 범위 인스턴스 + code-graph)
+3. `${CONTEXT_FILE}` — 이번 PR 맥락 (PR Intent + 변경 파일 + 영향 범위 인스턴스)
 4. `${CHANGED_FILE}` — 변경 파일 목록
 
 > **중요**: 정적 규칙과 PR 맥락이 **두 파일로 분리**되어 있습니다. 에이전트에게도 두 파일 모두 Read하도록 명시 전달하세요.
@@ -67,11 +67,11 @@
 ## 작업 순서
 1. `${DIFF_FILE}`을 Read로 읽어 변경사항 확인
 2. `${RULES_FILE}`을 Read로 읽어 정적 규칙(REVIEW.md + 학습 데이터 + PR Scope 규칙) 숙지
-3. `${CONTEXT_FILE}`을 Read로 읽어 이번 PR의 맥락(의도/변경 파일/영향 범위/code-graph) 숙지
+3. `${CONTEXT_FILE}`을 Read로 읽어 이번 PR의 맥락(의도/변경 파일/영향 범위) 숙지
 4. `.review-learnings/agent-prompts/{에이전트 파일명}`을 읽고 지침을 따르세요
 5. CLAUDE.md를 Read로 읽어 프로젝트 컨벤션 숙지
 6. 변경된 파일의 전체 컨텍스트가 필요하면 해당 파일을 Read로 직접 읽으세요
-7. code-graph MCP 도구를 사용하여 함수 구현, 호출 체인, 유사 코드를 확인하세요
+7. 함수 구현·호출부·유사 코드 확인이 필요하면 `Grep`/`Glob`/`Read`를 사용하세요
 8. PR 의도(`${CONTEXT_FILE}`의 PR Intent)와 코드가 일치하는지 반드시 검증하세요
 9. 리뷰 결과를 JSON 형식으로만 응답하세요
 
@@ -84,7 +84,7 @@
 - recommendation 심각도 (사용 금지)
 
 ## 중요
-- code-graph MCP 도구로 함수 구현을 직접 확인하세요. 추측 금지.
+- 함수 구현·호출부는 `Read`/`Grep`으로 직접 확인하세요. 추측 금지.
 - findings가 0개여도 괜찮습니다. 억지로 만들지 마세요.
 - review body를 임시 파일에 쓰지 마세요. JSON으로만 응답하세요.
 
@@ -95,16 +95,16 @@ REVIEW.md의 규칙은 **최소 베이스라인**입니다. "✓ 체크리스트
 
 1. **PR 자체의 고유 리스크 탐색** — "이 변경이 깨뜨릴 수 있는 것은?"
    - 기존 동작과 새 동작의 차이 (behavior equivalence)
-   - 기존 호출 사이트가 제거된 파라미터/훅에 의존했는지 (code-graph `find_references`)
+   - 기존 호출 사이트가 제거된 파라미터/훅에 의존했는지 (`Grep`으로 호출부 확인)
    - 새 파일의 핵심 로직 경로 (에러/엣지/동시성)
 
 2. **리팩토링 PR 특별 처리** (diff에 삭제·이동·rename 많으면)
-   - 제거된 데이터/훅/모듈이 정말 미사용인지 code-graph로 확인
+   - 제거된 데이터/훅/모듈이 정말 미사용인지 `Grep`으로 확인
    - 동일 기능을 유지하는지 (원본 함수의 모든 분기가 새 함수에 있는지)
    - 인자 변경 시 호출부 전부 업데이트됐는지
 
-3. **"✓" 찍을 때 근거 제시 의무** — code-graph 쿼리 결과 또는
-   실제 파일 내용 인용. "처리됨 ✓" 같은 근거 없는 체크는 Skeptic이
+3. **"✓" 찍을 때 근거 제시 의무** — 실제 파일 내용·`Grep` 결과 인용.
+   "처리됨 ✓" 같은 근거 없는 체크는 Skeptic이
    invalid로 걸러냅니다. 특히 **용어의 실제 의미 확인**이 중요합니다
    (단순 에러 처리와 상태 복원은 다른 개념).
 ```
@@ -152,7 +152,6 @@ REVIEW.md의 규칙은 **최소 베이스라인**입니다. "✓ 체크리스트
 - 심각도: {심각도}
 - 제목: {제목}
 - 설명: {설명}
-- code-graph 근거: {codeGraphEvidence}
 
 ## 검증 방법
 1. **claim 타입 분류 (먼저 체크)**:
@@ -161,14 +160,15 @@ REVIEW.md의 규칙은 **최소 베이스라인**입니다. "✓ 체크리스트
      - "호출부", "caller", "사용처", "참조", "패턴 불일치 (다른 파일 비교)"
      - "데드 코드", "미사용", "unused", "no callers"
      - "기존 패턴과 다름", "관행 위반"
-   - → **cross-file claim**이면 다음 2단계 (codeGraphEvidence 게이트) 적용
+   - → **cross-file claim**이면 다음 2단계 (증거 게이트) 적용
    - → **single-file claim** (이 파일 안의 null check, try-catch, 타입, 로직 등)이면 게이트 스킵
-2. **codeGraphEvidence 형식 게이트 (cross-file claim에만 적용)**:
-   - finding의 `codeGraphEvidence` 필드가 비어 있거나, placeholder("code-graph로 확인", "code-graph에서 확인한 근거", "함수 구현 등")만 박혀 있으면 → **즉시 `invalid` 처리** (cross-file claim인데 구체 증거 부재 → Bash `grep` false hit 위험)
-   - 실제 도구 호출 흔적(예: "find_references for X: N callers", "semantic_code_search: Y matches", "get_ast_node on Z: signature ...")이 있어야 valid 후보
-   - **single-file claim은 codeGraphEvidence 선택사항** — 없어도 invalid 처리 안 함
+2. **증거 게이트 (cross-file claim에만 적용)**:
+   - cross-file claim은 finding의 description에 **구체적 증거**(실제 파일 경로 + 라인 번호, 또는 확인한 호출 위치)가 있어야 valid 후보입니다.
+   - "여러 곳에서 쓰임", "광범위한 영향" 같은 **막연한 주장만 있고 구체적 위치가 없으면** → **즉시 `invalid` 처리** (`grep` false hit 위험)
+   - 검증자 본인이 `Grep`으로 직접 재확인하세요 — `grep`은 코멘트·문자열도 매치하므로, 매치된 위치를 `Read`로 열어 **실제 호출인지** 확인. 실제 호출이 아니면 invalid.
+   - **single-file claim은 증거 게이트 스킵** — 이 파일 안에서 직접 확인 가능하므로.
 3. 해당 파일을 Read로 읽고 이슈가 지적하는 코드를 직접 확인
-4. code-graph MCP로 관련 함수의 실제 구현, 호출부, 타입 정의 재확인 (필요 시)
+4. 관련 함수의 실제 구현·호출부·타입 정의를 `Grep`/`Read`로 재확인 (필요 시)
 5. PR 설명의 의도를 확인하여 의도적 설계인지 판단
 6. 커밋 메시지에서 작성자의 의도 확인
 7. **PR Scope 검증** (모노레포 오탐 방지):
@@ -183,7 +183,7 @@ REVIEW.md의 규칙은 **최소 베이스라인**입니다. "✓ 체크리스트
 {"verdict": "valid" | "invalid", "evidence": "구체적 근거 1-2문장", "confidence": 0-100}
 
 - valid: 반증 실패 — 이 이슈는 실제 문제 (반증을 시도했지만 실패했다는 증거 제시)
-- invalid: 반증 성공 — 이 이슈는 false positive (코드/커밋/패턴 근거 필수). **cross-file claim인데 `codeGraphEvidence`가 placeholder/빈값이면 자동 invalid** (이유: "cross-file claim without code-graph evidence — grep false hit 위험")
+- invalid: 반증 성공 — 이 이슈는 false positive (코드/커밋/패턴 근거 필수). **cross-file claim인데 구체적 증거(실제 파일·라인)가 없고 막연한 주장만 있으면 자동 invalid** (이유: "cross-file claim without concrete evidence — grep false hit 위험")
 
 근거 없이 valid로 판정하지 마세요. 반증을 시도한 과정을 설명하세요.
 ```
@@ -274,7 +274,7 @@ Critical/Major 이슈가 없으면 이 단계를 건너뛰세요.
 **확인한 리스크** (findings와 별개로 탐색한 항목):
 
 - {PR의 실제 변경 성격에 따라 2-4개 나열. 예: "refactor 전후 동작 동일성", "제거된 훅의 실제 미사용 여부", "mutation 에러 핸들링"}
-- 각 항목에 **어떻게 확인했는지** 1줄 (code-graph 쿼리명, 읽은 파일, 비교 대상 등)
+- 각 항목에 **어떻게 확인했는지** 1줄 (읽은 파일, `Grep` 패턴, 비교 대상 등)
 
 | Agent          | Issues |
 | -------------- | ------ |

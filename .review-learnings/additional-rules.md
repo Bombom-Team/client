@@ -99,7 +99,7 @@ PR #134, #105, #43.
 PR이 API 함수의 엔드포인트 경로·요청/응답 payload 형태를 바꿨다면, 대응하는 msw
 mock 핸들러(`mocks/handlers/**`)가 같이 갱신됐는지 확인하세요. 경로 불일치 →
 인터셉트 실패, payload 형태 불일치 → 런타임/타입 에러. cross-file 검증이므로
-code-graph로 호출 관계를 확인하세요. 출처: client PR #65 (codex bot).
+`Grep`/`Read`로 호출 관계를 확인하세요. 출처: client PR #65 (codex bot).
 
 ### [스타일] emotion 스타일 내 색상 리터럴 → `theme.colors` 토큰
 
