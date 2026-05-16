@@ -41,6 +41,16 @@ const NewsletterDetailDesktop = ({
 
   if (!newsletterDetail || !newsletterId) return null;
 
+  const sideContent = (
+    <>
+      <NewsletterSubscribeGuide />
+      <SimilarNewslettersSection
+        currentNewsletterId={newsletterId}
+        currentCategory={newsletterDetail.category}
+      />
+    </>
+  );
+
   return (
     <Layout>
       <Main>
@@ -100,15 +110,11 @@ const NewsletterDetailDesktop = ({
             isMobile={false}
           />
         </Section>
+
+        <InlineSide>{sideContent}</InlineSide>
       </Main>
 
-      <Aside>
-        <NewsletterSubscribeGuide />
-        <SimilarNewslettersSection
-          currentNewsletterId={newsletterId}
-          currentCategory={newsletterDetail.category}
-        />
-      </Aside>
+      <Aside>{sideContent}</Aside>
     </Layout>
   );
 };
@@ -145,6 +151,16 @@ const Aside = styled.aside`
 
   @media (max-width: ${NEWSLETTER_DETAIL_SIDE_VISIBLE_MIN_WIDTH - 1}px) {
     display: none;
+  }
+`;
+
+const InlineSide = styled.div`
+  display: none;
+  gap: 24px;
+  flex-direction: column;
+
+  @media (max-width: ${NEWSLETTER_DETAIL_SIDE_VISIBLE_MIN_WIDTH - 1}px) {
+    display: flex;
   }
 `;
 
