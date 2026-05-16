@@ -237,14 +237,14 @@ const StyledHomeIcon = styled(HomeIcon)`
   width: 24px;
   height: 24px;
 
-  fill: ${({ theme }) => theme.colors.primary};
+  fill: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const StyledInfoIcon = styled(InfoIcon)`
   width: 24px;
   height: 24px;
 
-  fill: ${({ theme }) => theme.colors.primary};
+  fill: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const SubscribeMethodInfo = styled.div`
@@ -288,7 +288,7 @@ const DetailLink = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primaryBomBom};
     cursor: pointer;
   }
 `;

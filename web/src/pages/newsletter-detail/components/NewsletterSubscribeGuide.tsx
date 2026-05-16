@@ -134,7 +134,7 @@ const StepNumber = styled.span`
   align-items: center;
   justify-content: center;
 
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
