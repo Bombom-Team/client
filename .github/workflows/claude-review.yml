@@ -331,6 +331,10 @@ jobs:
         uses: anthropics/claude-code-action@v1.0.112
         env:
           PR_NUMBER: ${{ steps.branch_info.outputs.pr_number }}
+          # code-graph MCP 호출이 멈춰도 무한 대기하지 않도록 타임아웃 (ms).
+          # 초과 시 해당 도구 호출만 실패하고 에이전트가 grep/Read로 폴백합니다.
+          MCP_TOOL_TIMEOUT: '120000'
+          MCP_TIMEOUT: '60000'
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
