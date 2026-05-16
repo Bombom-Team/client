@@ -1,0 +1,37 @@
+# False Positives
+
+AI 에이전트가 잘못 지적했거나, 사용자가 반박한 케이스들입니다.
+이 패턴들은 다음 리뷰 시 지적하지 않거나 심각도를 낮춥니다.
+
+> 이 파일은 `claude-learn-feedback.yml`(봇 리뷰 코멘트에 반박 reply를 달면)과
+> `claude-learn-patterns.yml`(반복 무시 패턴 분석)이 자동으로 채우며, 직접 편집해도
+> 됩니다. 등록된 항목은 다음 리뷰부터 반영됩니다.
+>
+> 아래는 봇 리뷰 이력이 쌓이기 전, PR 코멘트 분석에서 **오탐 위험이 확인된 룰**을
+> 예방 차원에서 미리 등록한 항목입니다.
+
+## 형식
+
+```markdown
+### [에이전트] 잘못된 지적 제목
+
+- **날짜**: YYYY-MM-DD
+- **원래 심각도**: critical | major | minor
+- **조정**: ignore | lower_severity | context_dependent
+
+왜 오탐인지 설명.
+```
+
+---
+
+### [Convention & Pattern Agent] `width: 100%` 제거 제안 — flex 컨테이너에서는 필요할 수 있음
+
+- **날짜**: 2026-05-16
+- **원래 심각도**: minor
+- **조정**: context_dependent
+
+block/flex 자식 요소에 붙은 불필요한 `width: 100%`는 제거 대상이지만, **flex
+컨테이너이거나 부모의 `align-items`가 `stretch`가 아닌 경우 `width: 100%`가
+실제로 필요**할 수 있습니다. 단순히 `width: 100%`가 보인다고 무조건 지적하지
+말고, 부모의 display/정렬 컨텍스트를 확인한 뒤에만 제안하세요. (출처:
+2025-bom-bom PR #30 — 제거 제안에 대한 반례가 실제로 나왔던 케이스.)
