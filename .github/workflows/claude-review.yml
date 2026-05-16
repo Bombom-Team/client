@@ -307,6 +307,8 @@ jobs:
 
           claude_args: |
             --model ${{ steps.triage.outputs.model }}
+            --debug
+            --setting-sources user
             --allowedTools "
               Bash(cat *),
               Bash(find *),
