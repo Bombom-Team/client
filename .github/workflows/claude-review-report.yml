@@ -61,7 +61,6 @@ jobs:
         uses: anthropics/claude-code-action@v1.0.112
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
           prompt: |
             당신은 리뷰 에이전트 성과 리포트 생성기입니다.
