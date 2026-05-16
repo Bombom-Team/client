@@ -205,7 +205,7 @@ Critical/Major 이슈가 없으면 이 단계를 건너뛰세요.
 → `mcp__github__create_and_submit_pull_request_review` 한 번에 제출
 
 - `event`: `"APPROVE"`
-- `body`: 아래 "리뷰 본문 형식" 그대로 (Minor는 본문 "참고" 섹션에 표시)
+- `body`: 아래 "리뷰 본문 형식"의 템플릿을 그대로 채워서 (Minor는 본문 "참고" 섹션에 표시)
 
 **B. Critical/Major 있음**
 
@@ -213,7 +213,7 @@ Critical/Major 이슈가 없으면 이 단계를 건너뛰세요.
    - `path`, `line`, `body` 전달
 2. 마지막에 `mcp__github__create_and_submit_pull_request_review`로 본문 제출
    - `event`: `"COMMENT"` (**REQUEST_CHANGES 사용 금지**)
-   - `body`: 리뷰 본문 (findings 요약)
+   - `body`: 아래 "리뷰 본문 형식"의 템플릿을 그대로 채워서
 
 > **중요**: review body를 임시 파일에 쓰지 마세요. `mcp__github` 도구의 `body` 파라미터에 직접 전달하세요.
 
@@ -221,50 +221,50 @@ Critical/Major 이슈가 없으면 이 단계를 건너뛰세요.
 
 ## 인라인 코멘트 형식
 
-````
-{심각도 이모지} **[{심각도}] {제목}**
+각 Critical/Major 이슈는 인라인 코멘트로 답니다. 코멘트 본문 형식:
 
-{왜 문제인지 2-3문장}
+- 첫 줄: `{심각도 이모지} **[{심각도}] {제목}**` — 심각도 이모지/라벨은 🚨 `Critical` 또는 ⚠️ `Major` (인라인은 Critical/Major만)
+- 그 아래: 왜 문제인지 2-3문장
+- 다음 줄: `**Skeptic 검증**: {Skeptic의 evidence}`
+- 마지막: `**수정 제안:**` — 가능하면 GitHub suggestion 코드블록으로 수정 코드를 제시
 
-**Skeptic 검증**: {Skeptic의 evidence}
-
-**수정 제안:**
-```suggestion
-{수정 코드}
-````
-
-```
+---
 
 ## 리뷰 본문 형식
 
-```
+리뷰 본문(`create_and_submit_pull_request_review`의 `body`)은 **아래 템플릿을 글자 그대로** 채워 제출합니다.
 
+**엄수 사항**:
+
+- 섹션 제목·이모지·순서를 바꾸지 말 것. `리뷰 요약`, `잘된 점` 등 **임의 섹션 추가 금지**.
+- 심각도는 **`Critical` / `Major` / `Minor` 세 가지만** 사용. `Medium` / `Low` / `Nit` / `High` 등 다른 등급 표기 **금지**.
+- `{...}` 자리는 실제 값으로 치환. `{... 일 때만}`이라고 표시된 섹션은 조건이 안 맞으면 통째로 생략.
+- `<!-- REVIEW_META ... -->` 안은 **반드시 유효한 JSON** (아래 "REVIEW_META 스펙"). 자유 형식 금지.
+- 아래 `===== 템플릿 =====` 구분선 자체는 출력하지 말 것.
+
+```
+===== 템플릿 시작 =====
 ## 🤖 PR Review
 
-{REVIEW_MODE=incremental일 때}
+{REVIEW_MODE=incremental 일 때만 이 한 줄:} > 📌 증분 리뷰: 새 커밋만 리뷰
 
-> 📌 증분 리뷰: 새 커밋만 리뷰
-
-> {Critical/Major 없으면 "✅ 전반적으로 양호합니다." / 있으면 "⚠️ " + 핵심 위험 요약}
+> {Critical/Major 없으면 "✅ 전반적으로 양호합니다." / 있으면 "⚠️ " + 핵심 위험 1~2문장}
 
 🚨 **{n}** Critical · ⚠️ **{n}** Major · 📝 **{n}** Minor
 
-{REVIEW_MODE=incremental이고 previous_issues가 있을 때}
-
+{REVIEW_MODE=incremental 이고 previous_issues 가 있을 때만 이 표:}
 ### 이전 리뷰 이슈 추적
 
-| ID  | 상태  | 심각도 | 파일 | 이슈 |
-| --- | ----- | ------ | ---- | ---- |
-| f1  | ✅/❌ | ...    | ...  | ...  |
+| ID | 상태 | 심각도 | 파일 | 이슈 |
+| -- | ---- | ------ | ---- | ---- |
+| {id} | ✅ 해결 / ❌ 미해결 | {심각도} | {파일} | {이슈} |
 
-{Critical/Major가 있을 때}
-
+{Critical/Major 가 1건 이상일 때만 이 섹션:}
 ### 수정 필요
 
 - **{파일}:{라인}** — {제목}: {설명 1줄}
 
-{Minor가 있을 때 — 최대 2개}
-
+{Minor 가 1건 이상일 때만 이 섹션 — 최대 2개:}
 ### 참고
 
 - **{파일}:{라인}** — {제목}
@@ -273,46 +273,60 @@ Critical/Major 이슈가 없으면 이 단계를 건너뛰세요.
 
 **확인한 리스크** (findings와 별개로 탐색한 항목):
 
-- {PR의 실제 변경 성격에 따라 2-4개 나열. 예: "refactor 전후 동작 동일성", "제거된 훅의 실제 미사용 여부", "mutation 에러 핸들링"}
-- 각 항목에 **어떻게 확인했는지** 1줄 (읽은 파일, `Grep` 패턴, 비교 대상 등)
+- {PR 변경 성격에 맞춰 2~4개. 각 항목에 어떻게 확인했는지 1줄 — 읽은 파일·Grep 패턴·비교 대상}
 
-| Agent          | Issues |
-| -------------- | ------ |
-| 🔍 Bug & Logic | {n}    |
-| 📏 Convention  | {n}    |
+| Agent | Issues |
+| ----- | ------ |
+| 🔍 Bug & Logic | {n} |
+| 📏 Convention | {n} |
 
 Skeptic 검증: {n}건 중 {통과}건 통과
 
 </details>
 
-**지침**: "✓ 나열식"은 사용 금지. 에이전트가 실제로 **"이 변경이 깨뜨릴 수 있는 것"**을
-탐색하고 그 결과를 서술형으로 작성하세요.
-
-<!-- REVIEW_META
-{
-  "version": 3,
-  "pr": {PR번호},
-  "review_sha": "{HEAD SHA short}",
-  "findings": [...],
-  "open_issues": [...]
-}
--->
+<!-- REVIEW_META {REVIEW_META 스펙대로의 JSON} -->
 
 ---
-
 <sub>🤖 PR Review | 💡 `/claude-review`로 재실행</sub>
+===== 템플릿 끝 =====
+```
+
+**지침**: `<details>`의 "확인한 리스크"는 "✓ 나열식"으로 쓰지 말고, 실제로 **"이 변경이 깨뜨릴 수 있는 것"**을 탐색한 결과를 서술형으로 작성하세요.
+
+### REVIEW_META 스펙 (필수 — 유효한 JSON)
+
+`<!-- REVIEW_META` 와 `-->` 사이에는 **반드시 유효한 JSON 객체**를 넣습니다. 증분 리뷰(이전 이슈 추적)와 `claude-attribution` 학습 워크플로우가 이 블록을 JSON으로 파싱합니다 — JSON이 아니면 추적·학습이 깨집니다. `open_issues: 4` 같은 YAML/자유 형식은 **금지**.
+
+스키마 (값은 예시):
 
 ```
+{
+  "version": 3,
+  "pr": 226,
+  "review_sha": "1e6d09f",
+  "findings": [
+    { "id": "footer-double-padding", "severity": "major", "file": "web/src/components/Footer/BomBomFooter.tsx", "line": 35, "title": "Footer border가 뷰포트 전체 폭을 못 씀" }
+  ],
+  "open_issues": ["footer-double-padding"]
+}
+```
+
+- `severity`는 `"critical"` / `"major"` / `"minor"` 중 하나 (소문자).
+- `findings`: 이번 리뷰의 모든 Critical/Major/Minor finding. 없으면 `[]`.
+- `open_issues`: 아직 미해결인 finding `id` 배열. 없으면 `[]`.
+- 증분 리뷰는 이전 본문의 이 JSON에서 `open_issues`를 읽어 추적합니다.
 
 ---
 
 ## 중요 규칙 (모든 단계 공통)
 
 - 모든 텍스트는 한국어로 작성
-- Critical/Major만 인라인 코멘트, Minor는 본문에만 (최대 2개)
+- **리뷰 본문은 "리뷰 본문 형식"의 템플릿을 글자 그대로** — 임의 섹션·임의 심각도 등급 금지
+- 심각도는 `Critical` / `Major` / `Minor` 만 (`Medium` / `Low` / `Nit` / `High` 등 금지)
+- Critical/Major만 인라인 코멘트, Minor는 본문 "참고"에만 (최대 2개)
 - Recommendation 사용 금지
 - REQUEST_CHANGES 사용 금지. Critical/Major가 있으면 COMMENT, 없으면 APPROVE
+- `REVIEW_META`는 반드시 유효한 JSON (스펙 준수)
 - `REVIEW_MODE=incremental`에서 새 이슈 0개 + 이전 미해결 0개면 리뷰 미제출
 - `REVIEW_MODE=incremental`에서 이전 미해결 이슈가 있으면 반드시 리뷰 제출
 - 정적 규칙은 `${RULES_FILE}`에, PR 맥락은 `${CONTEXT_FILE}`에 분리되어 있음 — 에이전트에게 두 파일 모두 Read 명시
-```
