@@ -44,6 +44,11 @@ client 레포의 `CONVENTIONS.md`, `docs/frontend-coding-standards.md`, `docs/ai
   요청/응답 타입을 OpenAPI 생성 타입 대신 손으로 정의한 경우.
 - **함수 선언** (§1) — 컴포넌트/훅/유틸을 `function` 선언으로 작성 (화살표 함수여야
   함). 예외: `routes` 폴더에서 Route `component` 로 쓰이는 컴포넌트는 `function` 허용.
+- **커스텀 훅 내부 메모이제이션** (팀 컨벤션) — 커스텀 훅이 **반환하는** 함수는
+  `useCallback` 으로, 반환하는 객체/배열/계산값은 `useMemo` 로 감싸야 합니다. 훅의
+  반환값이 메모화 없이 매 렌더 새 참조로 생성되면, 그 훅을 쓰는 쪽의 `useEffect`
+  의존성·메모이제이션이 깨지므로 지적하세요. (컴포넌트 내부에서의 메모이제이션은
+  필요할 때만 — 지적 대상 아님.)
 
 ### 타입 안전성
 
@@ -56,7 +61,8 @@ client 레포의 `CONVENTIONS.md`, `docs/frontend-coding-standards.md`, `docs/ai
 
 - 스타일/네이밍 (ESLint/Stylelint 가 처리)
 - import 순서, 미사용 변수/import (린터가 처리)
-- `useCallback`/`useMemo` 최적화 제안
+- 컴포넌트 내부의 `useCallback`/`useMemo` 최적화 제안 (단, **커스텀 훅이 반환하는**
+  함수/값의 메모화 누락은 프로젝트 규칙이므로 지적 대상 — 위 "프로젝트 규칙" 참조)
 - 상수화 제안 (매직 넘버 제외)
 - "~를 고려해보세요" 식 약한 제안
 - `*.gen.ts` 파일 자체의 내용 (자동 생성 — 단, 수동 수정 diff 는 위에서 지적)
