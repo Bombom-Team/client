@@ -14,8 +14,8 @@ const InAppBrowserGuide = () => {
         <TextWrapper>
           <Title>인앱브라우저에서는{'\n'}구글 로그인이 어려워요</Title>
           <Description>
-            카카오톡·인스타그램 등 인앱브라우저에서는 보안 정책상 구글 로그인이
-            제한돼요.{'\n'}봄봄 앱에서 1초 만에 로그인할 수 있어요.
+            카카오톡·인스타그램 등 인앱브라우저에서는 보안 정책상{'\n'}구글
+            로그인이 제한돼요.{'\n'}봄봄 앱에서 1초 만에 로그인할 수 있어요.
           </Description>
         </TextWrapper>
       </ContentWrapper>
