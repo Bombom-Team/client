@@ -89,6 +89,23 @@ jobs:
           fetch-depth: 0
           ref: ${{ steps.branch_info.outputs.target_ref }}
 
+      # 리뷰할 코드(diff·호출부)는 PR head 브랜치에서 읽지만,
+      # 리뷰 "도구"(절차 runbook·렌더 스크립트·가이드라인)는 PR 브랜치 버전에 좌우되면 안 됩니다.
+      # PR 브랜치가 리뷰 시스템 도입 전에 분기됐으면 .review-learnings/ 가 아예 없어서
+      # 오케스트레이터가 형식 지침 없이 매번 본문을 자유 작문하게 됩니다.
+      # → 도구 파일만 항상 default 브랜치 버전으로 덮어써 형식을 고정합니다.
+      # (learn-patterns 워크플로우도 .review-learnings/ 를 default 브랜치 기준으로 갱신합니다.)
+      - name: Sync review tooling from default branch
+        run: |
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          git fetch origin "$DEFAULT_BRANCH"
+          git checkout "origin/$DEFAULT_BRANCH" -- .review-learnings 2>/dev/null \
+            && echo "✅ .review-learnings/ synced from origin/$DEFAULT_BRANCH" \
+            || echo "⚠️ .review-learnings/ not found on origin/$DEFAULT_BRANCH"
+          git checkout "origin/$DEFAULT_BRANCH" -- .github/scripts/render_pr_review.py 2>/dev/null \
+            && echo "✅ render_pr_review.py synced from origin/$DEFAULT_BRANCH" \
+            || echo "⚠️ render_pr_review.py not found on origin/$DEFAULT_BRANCH"
+
       - name: Detect force push
         id: force_push_check
         if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
