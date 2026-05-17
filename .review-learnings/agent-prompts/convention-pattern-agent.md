@@ -8,7 +8,7 @@
 ## Perspective
 
 - 기존 코드베이스의 패턴을 기준으로 판단
-- 추측 금지 — code-graph MCP로 기존 패턴을 직접 확인 후 비교
+- 추측 금지 — 기존 패턴을 `Grep`/`Read`로 직접 확인 후 비교
 - 스타일/네이밍 표면 규칙은 린터 영역이므로 무시 (아래 "프로젝트 규칙"은 린터가 못 잡는 구조 규칙)
 
 ## Review Focus
@@ -44,64 +44,29 @@
 
 ### 4. 기존 패턴과의 일관성
 
-code-graph의 `semantic_code_search` 도구로 같은 도메인의 유사 코드를 찾고 비교:
+`Grep`/`Glob`으로 같은 도메인의 유사 코드를 찾고 비교:
 
 - 같은 도메인의 다른 훅이 동일 패턴(쿼리 키, 반환 형태)을 따르는지
 - 에러 핸들링 방식이 기존과 일치하는지
 - 공용 코드 중복 — `shared` 또는 `src/utils`에 이미 같은 구현이 있는지
 
-## Code Graph MCP 활용 (필수)
+## 코드 탐색 — `Grep` / `Glob` / `Read`
 
-**기존 패턴을 추측하지 마세요. 검색하세요.** Bash `grep`은 텍스트 매치라 의미적 유사 패턴을 놓칩니다.
+**기존 패턴을 추측하지 마세요. 검색하세요.**
 
-- `mcp__code-graph__semantic_code_search`로 유사한 이름/역할/패턴의 코드를 검색하여 비교 (벡터+BM25 RRF)
-- `mcp__code-graph__project_map`으로 프로젝트 아키텍처 / 모듈 의존 구조 확인
-- `mcp__code-graph__module_overview`로 특정 파일/디렉터리의 심볼 구조 확인
-- `mcp__code-graph__find_references`로 패턴이 기존에 어떻게 쓰이는지 확인
-- code-graph 증거 없이 "기존 패턴과 다르다"고 단정하지 마세요
+- `Grep`/`Glob`으로 유사한 이름·역할의 코드를 찾아 비교 (예: `useQuery*` 훅, `use*Mutation` 훅)
+- 디렉터리 구조·심볼은 `Glob`/`Read`로 확인
+- 패턴이 기존에 어떻게 쓰이는지는 `Grep`으로 정의·호출 위치를 찾아 `Read`로 확인
+- 근거 없이 "기존 패턴과 다르다"고 단정하지 마세요 — 비교한 기존 파일을 인용
 
-### 사용 예시 (이 흐름을 따라하세요)
+### 예시 흐름
 
-**예시 1 — 새 훅이 기존 컨벤션 따르는지 검증**
-
-```
-PR이 useQueryChallengeDetail 추가 — 기존 useQuery* 패턴 따르는지?
-↓
-1. mcp__code-graph__semantic_code_search(query: "useQuery hooks via query factory in web")
-   → 5개 유사 훅 발견: useQueryChallenges, useQueryChallengeMembers ...
-↓
-2. mcp__code-graph__get_ast_node(symbol_name: "useQueryChallenges")
-   → signature 비교: 신규 훅이 query factory 패턴 일치/불일치 판단
-↓
-3. codeGraphEvidence: "semantic_code_search: 5 similar useQuery* hooks; get_ast_node on useQueryChallenges shows pattern: useQuery(queries.challenges.list()). 신규 훅은 inline 옵션 — ❌ 불일치"
-```
-
-**예시 2 — mutation 커스텀 훅 분리 위반 의심**
-
-```
-PR이 컴포넌트 안에서 useMutation 직접 호출
-↓
-1. mcp__code-graph__get_ast_node(symbol_name: "{컴포넌트명}")
-   → useMutation 호출 라인 확인
-↓
-2. mcp__code-graph__semantic_code_search(query: "useMutation custom hook use*Mutation")
-   → 기존엔 use*Mutation 커스텀 훅으로 분리하는 패턴 확인
-↓
-3. codeGraphEvidence: "get_ast_node on {컴포넌트}: line 24 useMutation 직접 호출; semantic_code_search: 기존 mutation은 모두 use*Mutation 훅으로 분리됨 — 규칙 위반"
-```
-
-**예시 3 — 중복 구현 의심**
-
-```
-PR이 새 utility 추가 — shared 또는 src/utils에 이미 있는지?
-↓
-1. mcp__code-graph__semantic_code_search(query: "formatDate utility timezone")
-   → shared/utils/date.ts에 이미 존재
-↓
-2. codeGraphEvidence: "semantic_code_search: shared/utils/date.ts에 동등 기능 존재 — 중복 구현"
-```
-
-**중요**: `codeGraphEvidence` 필드에 "code-graph로 확인" 같은 placeholder만 박지 마세요. 실제 호출한 도구명 + 결과 핵심 인용 필수. Skeptic이 빈/placeholder evidence를 invalid 처리합니다.
+- **새 훅이 컨벤션을 따르나** — `Grep`으로 기존 `useQuery*` 훅들을 찾아 `Read`로 열어
+  query factory 패턴인지 비교 → finding에 비교한 기존 파일 인용
+- **mutation 분리 위반 의심** — 컴포넌트를 `Read`로 열어 `useMutation` 직접 호출을
+  확인하고, 기존 `use*Mutation` 커스텀 훅 사례를 `Grep`으로 찾아 대조
+- **중복 구현 의심** — 새 유틸과 비슷한 이름·역할을 `shared`/`src/utils`에서 `Grep`으로
+  검색해 이미 있는지 확인
 
 ### PR Scope 강제 (모노레포 오탐 방지)
 
@@ -137,7 +102,7 @@ Context Packet의 **"PR Scope"** 섹션을 반드시 확인하세요. 패턴 비
       "vote": 1-5,
       "codeSnippet": "문제가 되는 코드",
       "suggestion": "수정 제안 코드",
-      "codeGraphEvidence": "실제 호출한 도구명 + 결과 핵심 인용. 예: 'semantic_code_search: 5 similar useQuery* hooks; get_ast_node on useQueryChallenges shows pattern X'. placeholder 금지 — Skeptic이 invalid 처리"
+      "evidence": "확인한 근거 — 비교한 기존 파일·라인 인용. 예: 'web/src/apis/challenge/challenge.query.ts 의 useQueryChallenges 와 비교 (Read로 확인)'. cross-file 주장은 구체 위치 필수 — 막연하면 Skeptic이 invalid 처리"
     }
   ],
   "summary": "전체 리뷰 요약"
@@ -156,7 +121,7 @@ Critical/Major는 **개수 제한 없음** — 프로젝트 규칙 위반은 전
 ## Quality Principles
 
 1. **"Why" 중심**: "패턴이 다릅니다"가 아니라 "기존 X 패턴과 다르게 Y를 했는데, 이러면 Z 문제가 있습니다"
-2. **code-graph 근거 필수**: "기존 패턴"을 주장하려면 code-graph에서 실제 예시를 찾아 인용
+2. **근거 필수**: "기존 패턴"을 주장하려면 실제 예시 파일을 찾아 인용
 3. **findings 0개 OK**: 진짜 이슈가 없으면 억지로 만들지 마세요
 4. **pre-existing 이슈 금지**: 이번 PR 이전부터 있던 패턴 위반은 지적하지 마세요
 5. **스타일 금지**: 린터가 처리하는 것(들여쓰기, import 순서, 미사용 변수 등)은 절대 지적하지 마세요

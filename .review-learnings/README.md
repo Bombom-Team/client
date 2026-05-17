@@ -37,8 +37,8 @@
       │
       ▼
 ┌─ claude-review.yml (GitHub Actions) ──────────────────┐
-│  diff 추출 → code-graph 인덱싱 → triage 점수로 모델 선택 │
-│  → 규칙·맥락 패킷 조립 → Claude 실행                     │
+│  diff 추출 → triage 점수로 모델 선택 → 규칙·맥락 패킷    │
+│  조립 → Claude 실행                                      │
 └──────────────────────────────│─────────────────────────┘
                                ▼
    오케스트레이터 (orchestrator-runbook.md 절차 수행)
@@ -175,12 +175,6 @@
 > `additional-rules.md` / `patterns.md` / `false-positives.md`의 초기 내용은
 > 봄봄팀의 `woowacourse-teams/2025-bom-bom` PR 코멘트 2,100여 개를 분석해
 > 채웠습니다.
-
-### 기타
-
-| 파일        | 역할                                                                                    |
-| ----------- | --------------------------------------------------------------------------------------- |
-| `.mcp.json` | code-graph MCP 서버 등록 — 리뷰 에이전트가 심볼·호출관계를 정확히 파악 (grep 오탐 방지) |
 
 ---
 
