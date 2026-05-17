@@ -1,10 +1,16 @@
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import Button from '@/components/Button/Button';
+import { navigateToOAuthLogin } from '@/utils/auth';
 import { downloadApp } from '@/utils/downloadApp';
 import logo from '#/assets/avif/logo.avif';
+import AppleIcon from '#/assets/svg/apple.svg';
 
 const InAppBrowserGuide = () => {
+  const handleAppleLogin = () => {
+    navigateToOAuthLogin({ provider: 'apple' });
+  };
+
   return (
     <Container>
       <ContentWrapper>
@@ -21,6 +27,10 @@ const InAppBrowserGuide = () => {
       </ContentWrapper>
       <ActionWrapper>
         <OpenAppButton onClick={downloadApp}>봄봄 앱에서 열기</OpenAppButton>
+        <AppleLoginButton onClick={handleAppleLogin} variant="outlined">
+          <AppleIcon width={24} height={24} fill="black" />
+          Apple로 계속하기
+        </AppleLoginButton>
         <BackLink to="/login">← 로그인으로 돌아가기</BackLink>
       </ActionWrapper>
     </Container>
@@ -107,6 +117,13 @@ const OpenAppButton = styled(Button)`
   padding: 12px;
 
   font: ${({ theme }) => theme.fonts.t7Bold};
+`;
+
+const AppleLoginButton = styled(Button)`
+  width: 100%;
+  padding: 12px;
+
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const BackLink = styled(Link)`
