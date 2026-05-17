@@ -291,7 +291,7 @@ jobs:
 
             당신은 PR Review 오케스트레이터입니다. 이 PR을 v2 멀티 에이전트 파이프라인으로 리뷰하세요.
 
-            **`.review-learnings/orchestrator-runbook.md`** 를 Read로 읽고, 그 안의 Step 0–5 절차/에이전트 호출 템플릿/Skeptic 템플릿/리뷰 출력 형식/REVIEW_META 스펙을 정확히 따르세요. runbook의 `${변수명}` 표기는 모두 위 `<PR_INFO>` 값으로 해석하세요.
+            **`.review-learnings/orchestrator-runbook.md`** 를 Read로 읽고, 그 안의 Step 0–5 절차/에이전트 호출 템플릿/Skeptic 템플릿/결과 JSON 스키마를 정확히 따르세요. runbook의 `${변수명}` 표기는 모두 위 `<PR_INFO>` 값으로 해석하세요.
 
             모드 분기 (runbook의 "REVIEW_MODE 분기" 섹션 참조):
             - `IS_FORCED=true` → PR 전체 처음부터 다시 리뷰 (이전 리뷰 무시)
@@ -300,9 +300,7 @@ jobs:
               · 이전 미해결 이슈 있으면 새 이슈 0개여도 반드시 제출
             - 그 외 → 전체 리뷰
 
-            **중요**: review body를 임시 파일에 쓰지 마세요. `mcp__github` 도구의 `body` 파라미터에 직접 전달하세요. 모든 텍스트는 한국어로 작성하세요.
-
-            **리뷰 출력 형식 (엄수)**: 리뷰 본문은 runbook의 "리뷰 본문 형식" 섹션 템플릿을 **글자 그대로** 채워 제출하세요. 심각도는 `Critical`/`Major`/`Minor` 세 가지만 씁니다 (`Medium`/`Low`/`Nit`/`High` 등 금지). `리뷰 요약`·`잘된 점` 같은 임의 섹션을 만들지 마세요. `REVIEW_META`는 runbook 스펙대로 **유효한 JSON**이어야 합니다 (증분 리뷰·학습 워크플로우가 파싱).
+            **출력·제출 (엄수)**: 리뷰 본문 마크다운을 직접 작성하지 마세요. runbook Step 5대로 — 발견 사항을 "결과 JSON 스키마"에 맞춰 `/tmp/review-${PR_NUMBER}-result.json`에 `Write` → `Bash`로 `python3 .github/scripts/render_pr_review.py /tmp/review-${PR_NUMBER}-result.json` 렌더 → 출력된 페이로드를 `Bash`로 `gh api repos/$GITHUB_REPOSITORY/pulls/${PR_NUMBER}/reviews --method POST --input /tmp/review-${PR_NUMBER}-payload.json` 제출. 본문 형식·event·REVIEW_META는 렌더 스크립트가 결정합니다. 심각도는 `critical`/`major`/`minor`만 (Medium/Low/Nit 금지). 모든 텍스트는 한국어.
 
             **코드 탐색**: 호출부·기존 패턴·구현 확인은 `Grep`/`Glob`/`Read`로 하세요. 모노레포라 같은 이름의 훅/컴포넌트가 여러 워크스페이스에 존재할 수 있으니, 영향 범위를 주장할 때는 `${CONTEXT_FILE}`의 "PR Scope" 섹션에 속한 워크스페이스 내부 호출부만 카운트하세요. `grep`은 코멘트·문자열도 매치하므로, cross-file 주장은 실제 호출 위치를 `Read`로 확인한 뒤 적으세요.
 
@@ -316,6 +314,7 @@ jobs:
               Bash(gh api *),
               Bash(gh pr *),
               Bash(jq *),
+              Bash(python3 *),
               Bash(git blame *),
               Bash(git diff *),
               Bash(git log *),
@@ -331,12 +330,6 @@ jobs:
               Grep,
               Read,
               Task,
-              mcp__github__add_comment_to_pending_review,
-              mcp__github__create_and_submit_pull_request_review,
-              mcp__github__create_pending_pull_request_review,
-              mcp__github__create_pull_request_review,
-              mcp__github__create_review_comment,
-              mcp__github__delete_pending_pull_request_review,
               mcp__github__get_file_contents,
               mcp__github__get_issue_comments,
               mcp__github__get_me,
@@ -347,8 +340,6 @@ jobs:
               mcp__github__get_pull_request,
               mcp__github__get_repository,
               mcp__github__list_pull_requests,
-              mcp__github__submit_pending_pull_request_review,
-              mcp__github_inline_comment__create_inline_comment,
               mcp__github_ci__download_job_log,
               mcp__github_ci__get_ci_status,
               mcp__github_ci__get_workflow_run_details
@@ -373,8 +364,7 @@ jobs:
               Bash(rm *),
               Bash(rmdir *),
               Bash(sudo *),
-              Edit,
-              Write
+              Edit
             "
 
       - name: Upload debug artifacts
