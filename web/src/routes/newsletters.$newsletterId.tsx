@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Suspense } from 'react';
 import { queries } from '@/apis/queries';
+import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
 import { useDevice } from '@/hooks/useDevice';
 import NewsletterDetailDesktop from '@/pages/newsletter-detail/NewsletterDetailDesktop';
 import NewsletterDetailDesktopSkeleton from '@/pages/newsletter-detail/NewsletterDetailDesktopSkeleton';
@@ -13,7 +14,7 @@ interface NewsletterDetailSearch {
   tab?: NewsletterTab;
 }
 
-export const Route = createFileRoute('/_bombom/newsletters/$newsletterId')({
+export const Route = createFileRoute('/newsletters/$newsletterId')({
   loader: async ({ context, params }) => {
     const id = Number(params.newsletterId);
     const newsletter = await context.queryClient.ensureQueryData(
@@ -86,15 +87,19 @@ function NewsletterDetailRoute() {
 
   if (isMobileView) {
     return (
-      <Suspense fallback={<NewsletterDetailMobileSkeleton />}>
-        <NewsletterDetailMobile newsletterId={id} />
-      </Suspense>
+      <BomBomPageLayout>
+        <Suspense fallback={<NewsletterDetailMobileSkeleton />}>
+          <NewsletterDetailMobile newsletterId={id} />
+        </Suspense>
+      </BomBomPageLayout>
     );
   }
 
   return (
-    <Suspense fallback={<NewsletterDetailDesktopSkeleton />}>
-      <NewsletterDetailDesktop newsletterId={id} />
-    </Suspense>
+    <BomBomPageLayout>
+      <Suspense fallback={<NewsletterDetailDesktopSkeleton />}>
+        <NewsletterDetailDesktop newsletterId={id} />
+      </Suspense>
+    </BomBomPageLayout>
   );
 }

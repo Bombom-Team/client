@@ -91,8 +91,6 @@ const Container = styled.div`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t6Bold};
-
-  overflow-x: hidden;
 `;
 
 const OpenSubscribeButton = styled.button`
