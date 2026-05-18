@@ -1,10 +1,8 @@
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { getMaeilMailAnswerUrl } from '../../constants/maeilMail';
 import { useMaeilMailAnswerMutation } from '../../hooks/useMaeilMailAnswerMutation';
-import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
 import { toast } from '@/components/Toast/utils/toastActions';
@@ -16,6 +14,8 @@ interface MaeilMailAnswerModalProps {
   isOpen: boolean;
   onClose: () => void;
   articleId: number;
+  question: string;
+  contentId?: number;
 }
 
 const MaeilMailAnswerModal = ({
@@ -23,22 +23,12 @@ const MaeilMailAnswerModal = ({
   isOpen,
   onClose,
   articleId,
+  contentId,
+  question,
 }: MaeilMailAnswerModalProps) => {
   const [answer, setAnswer] = useState('');
   const device = useDevice();
   const navigate = useNavigate();
-
-  const { data: content } = useQuery({
-    ...queries.contentByArticleId({ articleId }),
-    enabled: isOpen,
-  });
-  const contentId = content?.contentId;
-
-  const { data: submittedAnswer } = useQuery({
-    ...queries.answerByArticleId({ articleId }),
-    enabled: isOpen,
-  });
-  const hasSubmittedAnswer = typeof submittedAnswer === 'string';
 
   const { mutate: submitAnswer, isPending: isSubmitting } =
     useMaeilMailAnswerMutation();
@@ -74,7 +64,6 @@ const MaeilMailAnswerModal = ({
     );
   };
 
-  const textareaValue = hasSubmittedAnswer ? submittedAnswer : answer;
   const isSubmitDisabled = answer.length === 0 || isSubmitting;
 
   return (
@@ -86,30 +75,37 @@ const MaeilMailAnswerModal = ({
     >
       <Container>
         <Title>내 답변 작성</Title>
+
+        {question && (
+          <Field>
+            <Label>오늘의 질문</Label>
+            <QuestionBox>
+              <QuestionText>{question}</QuestionText>
+            </QuestionBox>
+          </Field>
+        )}
+
         <Field>
           <Label htmlFor="maeil-mail-answer">내 답변</Label>
           <Textarea
             id="maeil-mail-answer"
-            value={textareaValue}
+            value={answer}
             onChange={handleAnswerChange}
             placeholder="생각나는 대로 적어도 괜찮아요"
-            disabled={hasSubmittedAnswer}
           />
-          <CharacterCount>{textareaValue.length}자</CharacterCount>
+          <CharacterCount>{answer.length}자</CharacterCount>
         </Field>
         <ButtonRow>
           <ViewAnswerButton type="button" onClick={handleViewAnswerClick}>
             바로 정답 보기
           </ViewAnswerButton>
-          {!hasSubmittedAnswer && (
-            <SubmitButton
-              variant="filled"
-              onClick={handleSubmitClick}
-              disabled={isSubmitDisabled}
-            >
-              제출하고 정답 보기
-            </SubmitButton>
-          )}
+          <SubmitButton
+            variant="filled"
+            onClick={handleSubmitClick}
+            disabled={isSubmitDisabled}
+          >
+            제출하고 정답 보기
+          </SubmitButton>
         </ButtonRow>
       </Container>
     </Modal>
@@ -131,6 +127,25 @@ const Container = styled.div`
 const Title = styled.h2`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t10Bold};
+`;
+
+const QuestionBox = styled.div`
+  padding: 16px 20px;
+  border-radius: 12px;
+
+  display: flex;
+  gap: 6px;
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
+`;
+
+const QuestionText = styled.p`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t6Regular};
+  line-height: 1.6;
+
+  word-break: keep-all;
 `;
 
 const Field = styled.div`
