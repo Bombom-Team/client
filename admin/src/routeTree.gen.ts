@@ -25,6 +25,7 @@ import { Route as AdminEventsIndexRouteImport } from './routes/_admin/events/ind
 import { Route as AdminChallengesIndexRouteImport } from './routes/_admin/challenges/index';
 import { Route as AdminBlogIndexRouteImport } from './routes/_admin/blog/index';
 import { Route as AdminResourcesUnsubscribePatternRouteImport } from './routes/_admin/resources/unsubscribe-pattern';
+import { Route as AdminResourcesUnsubscribeParsePatternRouteImport } from './routes/_admin/resources/unsubscribe-parse-pattern';
 import { Route as AdminResourcesUnsubscribeLambdaRouteImport } from './routes/_admin/resources/unsubscribe-lambda';
 import { Route as AdminNoticesNewRouteImport } from './routes/_admin/notices/new';
 import { Route as AdminNoticesNoticeIdRouteImport } from './routes/_admin/notices/$noticeId';
@@ -125,6 +126,12 @@ const AdminResourcesUnsubscribePatternRoute =
   AdminResourcesUnsubscribePatternRouteImport.update({
     id: '/unsubscribe-pattern',
     path: '/unsubscribe-pattern',
+    getParentRoute: () => AdminResourcesRoute,
+  } as any);
+const AdminResourcesUnsubscribeParsePatternRoute =
+  AdminResourcesUnsubscribeParsePatternRouteImport.update({
+    id: '/unsubscribe-parse-pattern',
+    path: '/unsubscribe-parse-pattern',
     getParentRoute: () => AdminResourcesRoute,
   } as any);
 const AdminResourcesUnsubscribeLambdaRoute =
@@ -268,6 +275,7 @@ export interface FileRoutesByFullPath {
   '/notices/$noticeId': typeof AdminNoticesNoticeIdRouteWithChildren;
   '/notices/new': typeof AdminNoticesNewRoute;
   '/resources/unsubscribe-lambda': typeof AdminResourcesUnsubscribeLambdaRouteWithChildren;
+  '/resources/unsubscribe-parse-pattern': typeof AdminResourcesUnsubscribeParsePatternRoute;
   '/resources/unsubscribe-pattern': typeof AdminResourcesUnsubscribePatternRoute;
   '/blog/': typeof AdminBlogIndexRoute;
   '/challenges/': typeof AdminChallengesIndexRoute;
@@ -297,6 +305,7 @@ export interface FileRoutesByTo {
   '/newsletters/categories': typeof AdminNewslettersCategoriesRoute;
   '/newsletters/new': typeof AdminNewslettersNewRoute;
   '/notices/new': typeof AdminNoticesNewRoute;
+  '/resources/unsubscribe-parse-pattern': typeof AdminResourcesUnsubscribeParsePatternRoute;
   '/resources/unsubscribe-pattern': typeof AdminResourcesUnsubscribePatternRoute;
   '/blog': typeof AdminBlogIndexRoute;
   '/challenges': typeof AdminChallengesIndexRoute;
@@ -336,6 +345,7 @@ export interface FileRoutesById {
   '/_admin/notices/$noticeId': typeof AdminNoticesNoticeIdRouteWithChildren;
   '/_admin/notices/new': typeof AdminNoticesNewRoute;
   '/_admin/resources/unsubscribe-lambda': typeof AdminResourcesUnsubscribeLambdaRouteWithChildren;
+  '/_admin/resources/unsubscribe-parse-pattern': typeof AdminResourcesUnsubscribeParsePatternRoute;
   '/_admin/resources/unsubscribe-pattern': typeof AdminResourcesUnsubscribePatternRoute;
   '/_admin/blog/': typeof AdminBlogIndexRoute;
   '/_admin/challenges/': typeof AdminChallengesIndexRoute;
@@ -376,6 +386,7 @@ export interface FileRouteTypes {
     | '/notices/$noticeId'
     | '/notices/new'
     | '/resources/unsubscribe-lambda'
+    | '/resources/unsubscribe-parse-pattern'
     | '/resources/unsubscribe-pattern'
     | '/blog/'
     | '/challenges/'
@@ -405,6 +416,7 @@ export interface FileRouteTypes {
     | '/newsletters/categories'
     | '/newsletters/new'
     | '/notices/new'
+    | '/resources/unsubscribe-parse-pattern'
     | '/resources/unsubscribe-pattern'
     | '/blog'
     | '/challenges'
@@ -443,6 +455,7 @@ export interface FileRouteTypes {
     | '/_admin/notices/$noticeId'
     | '/_admin/notices/new'
     | '/_admin/resources/unsubscribe-lambda'
+    | '/_admin/resources/unsubscribe-parse-pattern'
     | '/_admin/resources/unsubscribe-pattern'
     | '/_admin/blog/'
     | '/_admin/challenges/'
@@ -580,6 +593,13 @@ declare module '@tanstack/react-router' {
       path: '/unsubscribe-pattern';
       fullPath: '/resources/unsubscribe-pattern';
       preLoaderRoute: typeof AdminResourcesUnsubscribePatternRouteImport;
+      parentRoute: typeof AdminResourcesRoute;
+    };
+    '/_admin/resources/unsubscribe-parse-pattern': {
+      id: '/_admin/resources/unsubscribe-parse-pattern';
+      path: '/unsubscribe-parse-pattern';
+      fullPath: '/resources/unsubscribe-parse-pattern';
+      preLoaderRoute: typeof AdminResourcesUnsubscribeParsePatternRouteImport;
       parentRoute: typeof AdminResourcesRoute;
     };
     '/_admin/resources/unsubscribe-lambda': {
@@ -841,6 +861,7 @@ const AdminResourcesUnsubscribeLambdaRouteWithChildren =
 
 interface AdminResourcesRouteChildren {
   AdminResourcesUnsubscribeLambdaRoute: typeof AdminResourcesUnsubscribeLambdaRouteWithChildren;
+  AdminResourcesUnsubscribeParsePatternRoute: typeof AdminResourcesUnsubscribeParsePatternRoute;
   AdminResourcesUnsubscribePatternRoute: typeof AdminResourcesUnsubscribePatternRoute;
   AdminResourcesIndexRoute: typeof AdminResourcesIndexRoute;
 }
@@ -848,6 +869,8 @@ interface AdminResourcesRouteChildren {
 const AdminResourcesRouteChildren: AdminResourcesRouteChildren = {
   AdminResourcesUnsubscribeLambdaRoute:
     AdminResourcesUnsubscribeLambdaRouteWithChildren,
+  AdminResourcesUnsubscribeParsePatternRoute:
+    AdminResourcesUnsubscribeParsePatternRoute,
   AdminResourcesUnsubscribePatternRoute: AdminResourcesUnsubscribePatternRoute,
   AdminResourcesIndexRoute: AdminResourcesIndexRoute,
 };

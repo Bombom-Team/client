@@ -1,6 +1,7 @@
 import { queryOptions, useMutation } from '@tanstack/react-query';
 import {
   createUnsubscribePattern,
+  type GetUnsubscribePatternsParams,
   getUnsubscribePattern,
   getUnsubscribePatterns,
   updateUnsubscribePattern,
@@ -12,10 +13,10 @@ const UNSUBSCRIBE_PATTERNS_GC_TIME = 1000 * 60 * 5;
 export const unsubscribePatternsQueries = {
   all: ['unsubscribe-patterns'] as const,
 
-  list: () =>
+  list: (params: GetUnsubscribePatternsParams = {}) =>
     queryOptions({
-      queryKey: ['unsubscribe-patterns', 'list'] as const,
-      queryFn: getUnsubscribePatterns,
+      queryKey: ['unsubscribe-patterns', 'list', params] as const,
+      queryFn: () => getUnsubscribePatterns(params),
       staleTime: UNSUBSCRIBE_PATTERNS_STALE_TIME,
       gcTime: UNSUBSCRIBE_PATTERNS_GC_TIME,
     }),
