@@ -7,6 +7,9 @@ import { getResponsiveValue } from '@/utils/responsive';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/login')({
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } => ({
+    redirect: typeof search.redirect === 'string' ? search.redirect : undefined,
+  }),
   head: () => ({
     meta: [
       {
