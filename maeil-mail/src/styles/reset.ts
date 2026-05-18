@@ -113,7 +113,6 @@ const reset = css`
     touch-action: pan-x pan-y;
     -webkit-touch-callout: none;
 
-    user-select: none;
 
     @media (width >= 768px) {
       font-size: 100%;

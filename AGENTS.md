@@ -143,6 +143,35 @@ Silence or implicit behavior is NOT acceptable.
 
 ---
 
+## 10. Repository Overview
+
+봄봄(BomBom) monorepo. Packages include:
+
+- `web/` — React/TypeScript web client (see `web/CLAUDE.md`)
+- `app/` — React Native mobile client
+- `shared/` — Shared theme, UI components, and utilities used by both `web/` and `app/`
+- `server/` — Backend API
+
+---
+
+## 11. Conventions Index
+
+Detailed conventions live under `/docs/` and are indexed in `/CONVENTIONS.md`. Read the indexed documents in the situations they describe — do not duplicate their content here.
+
+---
+
+## 12. Git Workflow
+
+These rules apply to commits and pull requests in **any** package.
+
+- **Commit Message Convention**: Read `/docs/git-commit-convention.md` before composing a commit message. Summary: `type: 한국어 명사형 설명` — no scope, no ticket prefix in the subject, no `Co-Authored-By` trailer.
+- **PR Format**: `[{issue_key}] {type}: {subject}` — the issue key prefix belongs in the PR title only, not in commit subjects.
+  - Example: `[BOM-75] feat: SearchInput component 제작`
+- **Branch Naming**: `{type}/{issue_key}` (e.g., `feat/BOM-5`)
+- **Merge Strategy**: Squash & Merge to `develop`, Create a Commit merge to `main`
+
+---
+
 ## Final Note
 
 This repository prioritizes:

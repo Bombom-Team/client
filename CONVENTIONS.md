@@ -53,12 +53,31 @@ These rules exist to prevent:
 
 ---
 
+### 3. Git Commit Message Convention (Commit Time Only)
+
+Anyone composing a commit message MUST follow the convention defined here:
+
+→ `docs/git-commit-convention.md`
+
+This document defines:
+
+- Commit message format (`type: 한국어 명사형 설명`)
+- Allowed `type` values and their usage
+- Rules around scope, ticket prefix, body, and trailers
+- Examples per type
+
+This document is referenced **only at commit time** — it is intentionally not
+imported into the default editor context, to avoid polluting day-to-day
+prompts. Read it before writing or reviewing commit messages.
+
+---
+
 ## Priority
 
 When rules conflict, the following priority applies:
 
 1. This `CONVENTIONS.md`
-2. The referenced rule documents (`frontend-coding-standards.md`, `ai-rules.md`)
+2. The referenced rule documents (`frontend-coding-standards.md`, `ai-rules.md`, `git-commit-convention.md`)
 3. Existing codebase patterns
 4. Tool defaults (eslint, prettier, framework conventions)
 

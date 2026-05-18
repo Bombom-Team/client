@@ -3,14 +3,21 @@ import type { components } from '@/types/openapi';
 
 export type UnsubscribePattern =
   components['schemas']['UnsubscribePatternResponse'];
+export type UnsubscribePatternType = 'AUTO_UNSUBSCRIBE' | 'PARSE';
+export type GetUnsubscribePatternsParams = {
+  patternType?: UnsubscribePatternType;
+};
 export type CreateUnsubscribePatternRequest =
   components['schemas']['UnsubscribePatternRequest'];
 export type UpdateUnsubscribePatternRequest =
   components['schemas']['UnsubscribePatternUpdateRequest'];
 
-export const getUnsubscribePatterns = async () => {
+export const getUnsubscribePatterns = async (
+  params: GetUnsubscribePatternsParams = {},
+) => {
   return fetcher.get<UnsubscribePattern[]>({
     path: '/unsubscribe-patterns',
+    query: params,
   });
 };
 

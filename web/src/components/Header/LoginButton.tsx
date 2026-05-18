@@ -12,7 +12,13 @@ const LoginButton = () => {
       sendMessageToRN({
         type: 'SHOW_LOGIN_SCREEN',
       });
-    else navigate({ to: '/login' });
+    else
+      navigate({
+        to: '/login',
+        search: {
+          redirect: `${window.location.pathname}${window.location.search}`,
+        },
+      });
 
     trackEvent({
       category: 'Navigation',

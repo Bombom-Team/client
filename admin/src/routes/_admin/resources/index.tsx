@@ -44,6 +44,16 @@ function ResourcesPage() {
               </Link>
             </ActionCell>
           </ListRow>
+
+          <ListRow>
+            <RowName>구독 취소 URL 파싱 패턴</RowName>
+            <RowDescription>PARSE 패턴 조회/수정 전용 페이지</RowDescription>
+            <ActionCell>
+              <Link to="/resources/unsubscribe-parse-pattern">
+                <Button as="span">관리하기</Button>
+              </Link>
+            </ActionCell>
+          </ListRow>
         </ListBox>
       </Container>
     </Layout>
