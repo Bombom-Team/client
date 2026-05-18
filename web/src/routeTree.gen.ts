@@ -17,11 +17,11 @@ import { Route as EventRouteImport } from './routes/event';
 import { Route as BlogRouteImport } from './routes/blog';
 import { Route as BombomRouteImport } from './routes/_bombom';
 import { Route as BlogIndexRouteImport } from './routes/blog/index';
+import { Route as NewslettersNewsletterIdRouteImport } from './routes/newsletters.$newsletterId';
 import { Route as MaeilMailLandingRouteImport } from './routes/maeil-mail/landing';
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
 import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
 import { Route as ChallengeChallengeIdLandingRouteImport } from './routes/challenge/$challengeId/landing';
-import { Route as BombomNewslettersNewsletterIdRouteImport } from './routes/_bombom/newsletters.$newsletterId';
 import { Route as BombomArticlesArticleIdRouteImport } from './routes/_bombom/articles.$articleId';
 import { Route as BombomMainTodayRouteImport } from './routes/_bombom/_main/today';
 import { Route as BombomMainStorageRouteImport } from './routes/_bombom/_main/storage';
@@ -81,6 +81,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/',
   getParentRoute: () => BlogRoute,
 } as any);
+const NewslettersNewsletterIdRoute = NewslettersNewsletterIdRouteImport.update({
+  id: '/newsletters/$newsletterId',
+  path: '/newsletters/$newsletterId',
+  getParentRoute: () => rootRouteImport,
+} as any);
 const MaeilMailLandingRoute = MaeilMailLandingRouteImport.update({
   id: '/maeil-mail/landing',
   path: '/maeil-mail/landing',
@@ -100,12 +105,6 @@ const ChallengeChallengeIdLandingRoute =
     id: '/challenge/$challengeId/landing',
     path: '/challenge/$challengeId/landing',
     getParentRoute: () => rootRouteImport,
-  } as any);
-const BombomNewslettersNewsletterIdRoute =
-  BombomNewslettersNewsletterIdRouteImport.update({
-    id: '/newsletters/$newsletterId',
-    path: '/newsletters/$newsletterId',
-    getParentRoute: () => BombomRoute,
   } as any);
 const BombomArticlesArticleIdRoute = BombomArticlesArticleIdRouteImport.update({
   id: '/articles/$articleId',
@@ -220,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
+  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog/': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/challenge': typeof BombomMainChallengeRouteWithChildren;
@@ -230,7 +230,6 @@ export interface FileRoutesByFullPath {
   '/storage': typeof BombomMainStorageRoute;
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
-  '/newsletters/$newsletterId': typeof BombomNewslettersNewsletterIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
   '/': typeof BombomMainIndexRoute;
   '/challenge/$challengeId': typeof BombomMainChallengeChallengeIdRouteWithChildren;
@@ -251,6 +250,7 @@ export interface FileRoutesByTo {
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
+  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/guide': typeof BombomMainGuideRoute;
@@ -260,7 +260,6 @@ export interface FileRoutesByTo {
   '/storage': typeof BombomMainStorageRoute;
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
-  '/newsletters/$newsletterId': typeof BombomNewslettersNewsletterIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
   '/': typeof BombomMainIndexRoute;
   '/articles/guide/$guideId': typeof BombomArticlesGuideGuideIdRoute;
@@ -284,6 +283,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
+  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog/': typeof BlogIndexRoute;
   '/_bombom/_main/bookmark': typeof BombomMainBookmarkRoute;
   '/_bombom/_main/challenge': typeof BombomMainChallengeRouteWithChildren;
@@ -294,7 +294,6 @@ export interface FileRoutesById {
   '/_bombom/_main/storage': typeof BombomMainStorageRoute;
   '/_bombom/_main/today': typeof BombomMainTodayRoute;
   '/_bombom/articles/$articleId': typeof BombomArticlesArticleIdRoute;
-  '/_bombom/newsletters/$newsletterId': typeof BombomNewslettersNewsletterIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
   '/_bombom/_main/': typeof BombomMainIndexRoute;
   '/_bombom/_main/challenge/$challengeId': typeof BombomMainChallengeChallengeIdRouteWithChildren;
@@ -318,6 +317,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/signup'
     | '/maeil-mail/landing'
+    | '/newsletters/$newsletterId'
     | '/blog/'
     | '/bookmark'
     | '/challenge'
@@ -328,7 +328,6 @@ export interface FileRouteTypes {
     | '/storage'
     | '/today'
     | '/articles/$articleId'
-    | '/newsletters/$newsletterId'
     | '/challenge/$challengeId/landing'
     | '/'
     | '/challenge/$challengeId'
@@ -349,6 +348,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/signup'
     | '/maeil-mail/landing'
+    | '/newsletters/$newsletterId'
     | '/blog'
     | '/bookmark'
     | '/guide'
@@ -358,7 +358,6 @@ export interface FileRouteTypes {
     | '/storage'
     | '/today'
     | '/articles/$articleId'
-    | '/newsletters/$newsletterId'
     | '/challenge/$challengeId/landing'
     | '/'
     | '/articles/guide/$guideId'
@@ -381,6 +380,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_bombom/_main'
     | '/maeil-mail/landing'
+    | '/newsletters/$newsletterId'
     | '/blog/'
     | '/_bombom/_main/bookmark'
     | '/_bombom/_main/challenge'
@@ -391,7 +391,6 @@ export interface FileRouteTypes {
     | '/_bombom/_main/storage'
     | '/_bombom/_main/today'
     | '/_bombom/articles/$articleId'
-    | '/_bombom/newsletters/$newsletterId'
     | '/challenge/$challengeId/landing'
     | '/_bombom/_main/'
     | '/_bombom/_main/challenge/$challengeId'
@@ -415,6 +414,7 @@ export interface RootRouteChildren {
   MaintenanceRoute: typeof MaintenanceRoute;
   SignupRoute: typeof SignupRoute;
   MaeilMailLandingRoute: typeof MaeilMailLandingRoute;
+  NewslettersNewsletterIdRoute: typeof NewslettersNewsletterIdRoute;
   ChallengeChallengeIdLandingRoute: typeof ChallengeChallengeIdLandingRoute;
 }
 
@@ -476,6 +476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport;
       parentRoute: typeof BlogRoute;
     };
+    '/newsletters/$newsletterId': {
+      id: '/newsletters/$newsletterId';
+      path: '/newsletters/$newsletterId';
+      fullPath: '/newsletters/$newsletterId';
+      preLoaderRoute: typeof NewslettersNewsletterIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/maeil-mail/landing': {
       id: '/maeil-mail/landing';
       path: '/maeil-mail/landing';
@@ -503,13 +510,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/challenge/$challengeId/landing';
       preLoaderRoute: typeof ChallengeChallengeIdLandingRouteImport;
       parentRoute: typeof rootRouteImport;
-    };
-    '/_bombom/newsletters/$newsletterId': {
-      id: '/_bombom/newsletters/$newsletterId';
-      path: '/newsletters/$newsletterId';
-      fullPath: '/newsletters/$newsletterId';
-      preLoaderRoute: typeof BombomNewslettersNewsletterIdRouteImport;
-      parentRoute: typeof BombomRoute;
     };
     '/_bombom/articles/$articleId': {
       id: '/_bombom/articles/$articleId';
@@ -719,7 +719,6 @@ const BombomMainRouteWithChildren = BombomMainRoute._addFileChildren(
 interface BombomRouteChildren {
   BombomMainRoute: typeof BombomMainRouteWithChildren;
   BombomArticlesArticleIdRoute: typeof BombomArticlesArticleIdRoute;
-  BombomNewslettersNewsletterIdRoute: typeof BombomNewslettersNewsletterIdRoute;
   BombomArticlesGuideGuideIdRoute: typeof BombomArticlesGuideGuideIdRoute;
   BombomArticlesPreviousArticleIdRoute: typeof BombomArticlesPreviousArticleIdRoute;
 }
@@ -727,7 +726,6 @@ interface BombomRouteChildren {
 const BombomRouteChildren: BombomRouteChildren = {
   BombomMainRoute: BombomMainRouteWithChildren,
   BombomArticlesArticleIdRoute: BombomArticlesArticleIdRoute,
-  BombomNewslettersNewsletterIdRoute: BombomNewslettersNewsletterIdRoute,
   BombomArticlesGuideGuideIdRoute: BombomArticlesGuideGuideIdRoute,
   BombomArticlesPreviousArticleIdRoute: BombomArticlesPreviousArticleIdRoute,
 };
@@ -756,6 +754,7 @@ const rootRouteChildren: RootRouteChildren = {
   MaintenanceRoute: MaintenanceRoute,
   SignupRoute: SignupRoute,
   MaeilMailLandingRoute: MaeilMailLandingRoute,
+  NewslettersNewsletterIdRoute: NewslettersNewsletterIdRoute,
   ChallengeChallengeIdLandingRoute: ChallengeChallengeIdLandingRoute,
 };
 export const routeTree = rootRouteImport
