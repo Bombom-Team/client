@@ -33,6 +33,12 @@ export const useNewsletterHeroActions = (
     });
 
     if (!isLoggedIn) {
+      trackEvent({
+        category: 'Newsletter',
+        action: '비로그인 구독버튼 클릭',
+        label: newsletter.name,
+      });
+
       if (isWebView()) {
         sendMessageToRN({
           type: 'SHOW_LOGIN_SCREEN',
