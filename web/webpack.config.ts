@@ -1,4 +1,5 @@
 import path from 'path';
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 import { tanstackRouter } from '@tanstack/router-plugin/webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import dotenv from 'dotenv';
@@ -19,6 +20,7 @@ export default (env: Env, argv: Argv) => {
   const config: webpack.Configuration = {
     mode: argv.mode,
     entry: './src/main.tsx',
+    devtool: isProduction ? 'hidden-source-map' : 'eval-source-map',
     output: {
       filename: 'js/[name].[contenthash:8].js',
       chunkFilename: 'js/[name].[contenthash:8].chunk.js',
@@ -131,6 +133,18 @@ export default (env: Env, argv: Argv) => {
             : []),
         ],
       }),
+      ...(isProduction
+        ? [
+            sentryWebpackPlugin({
+              org: process.env.SENTRY_ORG,
+              project: process.env.SENTRY_PROJECT,
+              authToken: process.env.SENTRY_AUTH_TOKEN,
+              sourcemaps: {
+                filesToDeleteAfterUpload: ['./dist/**/*.map'],
+              },
+            }),
+          ]
+        : []),
     ],
     devServer: {
       static: [
