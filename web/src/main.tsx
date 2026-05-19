@@ -35,12 +35,9 @@ export const queryClient = new QueryClient({
           window.location.reload();
           return;
         }
-
-        // 비로그인 상태에서 profile/me 외 API 401: 비정상 경로 → 캡처
-        Sentry.captureException(error, { extra: { queryKey: query.queryKey } });
-        return;
       }
 
+      // profile/me 외 API 401 포함 그 외 모든 에러 → 캡처
       Sentry.captureException(error, { extra: { queryKey: query.queryKey } });
     },
   }),
