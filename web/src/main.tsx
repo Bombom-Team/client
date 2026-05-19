@@ -1,11 +1,15 @@
 import { ApiError } from '@bombom/shared/apis';
 import { Global } from '@emotion/react';
 import Clarity from '@microsoft/clarity';
+/* eslint-disable import/named */ // @sentry/react re-exports via `export * from '@sentry/browser'` — pnpm virtual store 구조로 eslint-plugin-import가 체인을 정적 분석 불가
 import {
+  captureException,
+  ErrorBoundary,
   init as initSentry,
+  replayIntegration,
   tanstackRouterBrowserTracingIntegration,
 } from '@sentry/react';
-import { ErrorBoundary } from '@suspensive/react';
+/* eslint-enable import/named */
 import { QueryCache, QueryClient } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
@@ -14,6 +18,7 @@ import { ENV } from './apis/env';
 import { queries } from './apis/queries';
 import PageErrorFallback from './components/PageErrorFallback/PageErrorFallback';
 import GAInitializer from './libs/googleAnalytics/GAInitializer';
+import { beforeSend } from './libs/sentry/sentry';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
 import { isDevelopment, isProduction } from './utils/environment';
@@ -22,13 +27,29 @@ if (isProduction) Clarity.init(ENV.clarityProjectId);
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
-    onError: (error) => {
+    onError: (error, query) => {
       if (error instanceof ApiError && error.status === 401) {
-        const data = queryClient.getQueryData(queries.userProfile().queryKey);
-        if (data) {
+        const profileQueryKey = queries.userProfile().queryKey;
+        const isUserProfileQuery =
+          query.queryKey.length === profileQueryKey.length &&
+          query.queryKey.every((k, i) => k === profileQueryKey[i]);
+
+        // profile/me 401: 비로그인 정상 흐름 → 드롭
+        if (isUserProfileQuery) return;
+
+        // 로그인 상태에서 다른 API 401: 세션 만료 → reload
+        const profileData = queryClient.getQueryData(profileQueryKey);
+        if (profileData) {
           window.location.reload();
+          return;
         }
+
+        // 비로그인 상태에서 profile/me 외 API 401: 비정상 경로 → 캡처
+        captureException(error, { extra: { queryKey: query.queryKey } });
+        return;
       }
+
+      captureException(error, { extra: { queryKey: query.queryKey } });
     },
   }),
   defaultOptions: {
@@ -60,11 +81,18 @@ const router = createRouter({
   scrollRestoration: true,
 });
 
+// router 생성 이후에 init해야 tanstackRouterBrowserTracingIntegration이 router를 참조할 수 있음
 initSentry({
   dsn: ENV.sentryDsn,
-  sendDefaultPii: true,
-  integrations: [tanstackRouterBrowserTracingIntegration(router)],
-  sampleRate: isDevelopment ? 1 : 0.1,
+  sendDefaultPii: false, // IP·쿠키·헤더 자동 수집 비활성. UA는 beforeSend에서 명시적 첨부
+  integrations: [
+    tanstackRouterBrowserTracingIntegration(router),
+    replayIntegration(),
+  ],
+  tracesSampleRate: isDevelopment ? 1 : 0.1,
+  replaysSessionSampleRate: 0,
+  replaysOnErrorSampleRate: 1.0,
+  beforeSend,
 });
 
 declare module '@tanstack/react-router' {
@@ -97,7 +125,7 @@ enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <Global styles={reset} />
-      <ErrorBoundary fallback={PageErrorFallback}>
+      <ErrorBoundary fallback={() => <PageErrorFallback />}>
         <RouterProvider router={router} />
       </ErrorBoundary>
       <GAInitializer />
