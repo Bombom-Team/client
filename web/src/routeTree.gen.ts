@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root';
 import { Route as SignupRouteImport } from './routes/signup';
 import { Route as MaintenanceRouteImport } from './routes/maintenance';
+import { Route as LoginGuideRouteImport } from './routes/login-guide';
 import { Route as LoginRouteImport } from './routes/login';
 import { Route as LandingRouteImport } from './routes/landing';
 import { Route as EventRouteImport } from './routes/event';
@@ -50,6 +51,11 @@ const SignupRoute = SignupRouteImport.update({
 const MaintenanceRoute = MaintenanceRouteImport.update({
   id: '/maintenance',
   path: '/maintenance',
+  getParentRoute: () => rootRouteImport,
+} as any);
+const LoginGuideRoute = LoginGuideRouteImport.update({
+  id: '/login-guide',
+  path: '/login-guide',
   getParentRoute: () => rootRouteImport,
 } as any);
 const LoginRoute = LoginRouteImport.update({
@@ -216,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/event': typeof EventRoute;
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
+  '/login-guide': typeof LoginGuideRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
@@ -247,6 +254,7 @@ export interface FileRoutesByTo {
   '/event': typeof EventRoute;
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
+  '/login-guide': typeof LoginGuideRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
@@ -279,6 +287,7 @@ export interface FileRoutesById {
   '/event': typeof EventRoute;
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
+  '/login-guide': typeof LoginGuideRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/signup': typeof SignupRoute;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
@@ -314,6 +323,7 @@ export interface FileRouteTypes {
     | '/event'
     | '/landing'
     | '/login'
+    | '/login-guide'
     | '/maintenance'
     | '/signup'
     | '/maeil-mail/landing'
@@ -345,6 +355,7 @@ export interface FileRouteTypes {
     | '/event'
     | '/landing'
     | '/login'
+    | '/login-guide'
     | '/maintenance'
     | '/signup'
     | '/maeil-mail/landing'
@@ -376,6 +387,7 @@ export interface FileRouteTypes {
     | '/event'
     | '/landing'
     | '/login'
+    | '/login-guide'
     | '/maintenance'
     | '/signup'
     | '/_bombom/_main'
@@ -411,6 +423,7 @@ export interface RootRouteChildren {
   EventRoute: typeof EventRoute;
   LandingRoute: typeof LandingRoute;
   LoginRoute: typeof LoginRoute;
+  LoginGuideRoute: typeof LoginGuideRoute;
   MaintenanceRoute: typeof MaintenanceRoute;
   SignupRoute: typeof SignupRoute;
   MaeilMailLandingRoute: typeof MaeilMailLandingRoute;
@@ -432,6 +445,13 @@ declare module '@tanstack/react-router' {
       path: '/maintenance';
       fullPath: '/maintenance';
       preLoaderRoute: typeof MaintenanceRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    '/login-guide': {
+      id: '/login-guide';
+      path: '/login-guide';
+      fullPath: '/login-guide';
+      preLoaderRoute: typeof LoginGuideRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     '/login': {
@@ -751,6 +771,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventRoute: EventRoute,
   LandingRoute: LandingRoute,
   LoginRoute: LoginRoute,
+  LoginGuideRoute: LoginGuideRoute,
   MaintenanceRoute: MaintenanceRoute,
   SignupRoute: SignupRoute,
   MaeilMailLandingRoute: MaeilMailLandingRoute,
