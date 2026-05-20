@@ -149,6 +149,7 @@ const Aside = styled.aside`
   gap: 24px;
   flex-direction: column;
 
+  /* stylelint-disable-next-line media-query-no-invalid */
   @media (max-width: ${NEWSLETTER_DETAIL_SIDE_VISIBLE_MIN_WIDTH - 1}px) {
     display: none;
   }
@@ -159,6 +160,7 @@ const InlineSide = styled.div`
   gap: 24px;
   flex-direction: column;
 
+  /* stylelint-disable-next-line media-query-no-invalid */
   @media (max-width: ${NEWSLETTER_DETAIL_SIDE_VISIBLE_MIN_WIDTH - 1}px) {
     display: flex;
   }
