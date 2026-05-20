@@ -1,29 +1,25 @@
 // eslint-disable-next-line import/named
 import { captureException, ErrorBoundary } from '@sentry/react';
-import type { MutationKey, QueryKey } from '@tanstack/react-query';
+import type { QueryKey } from '@tanstack/react-query';
 
 type CaptureQueryErrorParams = {
   error: unknown;
   queryKey: QueryKey;
 };
 
-type CaptureMutationErrorParams = {
-  error: unknown;
-  mutationKey?: MutationKey;
-};
-
 export const captureQueryError = ({
   error,
   queryKey,
 }: CaptureQueryErrorParams) => {
-  captureException(error, { extra: { queryKey } });
+  const sanitizedQueryKey = queryKey.map((segment) =>
+    typeof segment === 'object' && segment !== null ? '{params}' : segment,
+  );
+
+  captureException(error, { extra: { queryKey: sanitizedQueryKey } });
 };
 
-export const captureMutationError = ({
-  error,
-  mutationKey,
-}: CaptureMutationErrorParams) => {
-  captureException(error, { extra: { mutationKey } });
+export const captureMutationError = ({ error }: { error: unknown }) => {
+  captureException(error);
 };
 
 export const SentryErrorBoundary = ErrorBoundary;

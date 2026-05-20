@@ -46,11 +46,8 @@ export const queryClient = new QueryClient({
     },
   }),
   mutationCache: new MutationCache({
-    onError: (error, _variables, _context, mutation) => {
-      captureMutationError({
-        error,
-        mutationKey: mutation.options.mutationKey,
-      });
+    onError: (error) => {
+      captureMutationError({ error });
     },
   }),
   defaultOptions: {
