@@ -32,7 +32,6 @@ const BomBomFooter = () => {
             >
               개인정보 처리방침
             </PolicyLink>
-            <Divider />
           </PolicyLinkWrapper>
           <Flex
             gap={device === 'mobile' ? 20 : 24}
@@ -88,9 +87,13 @@ export default BomBomFooter;
 const Container = styled.footer<{ device: Device }>`
   width: 100%;
   margin-top: ${({ device }) => (device === 'mobile' ? '48px' : '80px')};
-  padding: ${({ device }) => {
-    if (device === 'mobile') return '32px 16px';
+  padding: ${({ device, theme }) => {
+    if (device === 'mobile') {
+      return `32px 16px calc(${theme.heights.bottomNav} + ${theme.safeArea.bottom} + 16px)`;
+    }
+
     if (device === 'tablet') return '48px 40px';
+
     return '48px 60px';
   }};
   border-top: 1px solid ${({ theme }) => theme.colors.dividers};
@@ -138,13 +141,6 @@ const PolicyLink = styled.a`
   &:hover {
     color: ${({ theme }) => theme.colors.textSecondary};
   }
-`;
-
-const Divider = styled.span`
-  width: 1px;
-  height: 12px;
-
-  background-color: ${({ theme }) => theme.colors.dividers};
 `;
 
 const SocialLink = styled.a`
