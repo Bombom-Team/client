@@ -8,6 +8,12 @@ import {
 import { beforeSend } from './beforeSend';
 import { ENV } from '@/apis/env';
 
+const NETWORK_NOISE_ERROR_PATTERNS = [
+  /^(?:TypeError:\s*)?Failed to fetch(?: \([^)]+\))?$/i,
+  /^(?:TypeError:\s*)?Load failed(?: \([^)]+\))?$/i,
+  /^(?:TypeError:\s*)?NetworkError when attempting to fetch resource\.?(?: \([^)]+\))?$/i,
+];
+
 type InitSentryParams = {
   router: Parameters<typeof tanstackRouterBrowserTracingIntegration>[0];
 };
@@ -20,6 +26,7 @@ export const initSentry = ({ router }: InitSentryParams) => {
     dsn: ENV.sentryDsn,
     sendDefaultPii: false,
     allowUrls: [/https?:\/\/.*\.bombom\.news/],
+    ignoreErrors: [...NETWORK_NOISE_ERROR_PATTERNS],
     integrations: [
       tanstackRouterBrowserTracingIntegration(router),
       replayIntegration(),
