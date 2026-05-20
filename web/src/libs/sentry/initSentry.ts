@@ -18,6 +18,7 @@ export const initSentry = ({ isDevelopment, router }: InitSentryParams) => {
   init({
     dsn: ENV.sentryDsn,
     sendDefaultPii: false,
+    allowUrls: [/https?:\/\/.*\.bombom\.news/],
     integrations: [
       tanstackRouterBrowserTracingIntegration(router),
       replayIntegration(),
