@@ -26,12 +26,6 @@ export const useNewsletterHeroActions = (
   };
 
   const handleSubscribeButtonClick = () => {
-    trackEvent({
-      category: 'Newsletter',
-      action: '구독하기 버튼 클릭',
-      label: newsletter.name,
-    });
-
     if (!isLoggedIn) {
       trackEvent({
         category: 'Newsletter',
@@ -53,6 +47,12 @@ export const useNewsletterHeroActions = (
       }
       return;
     }
+
+    trackEvent({
+      category: 'Newsletter',
+      action: '구독하기 버튼 클릭',
+      label: newsletter.name,
+    });
 
     if (newsletter.source === 'MAEIL_MAIL') {
       navigate({ href: 'https://maeilmail.bombom.news' });
