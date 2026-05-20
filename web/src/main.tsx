@@ -38,6 +38,7 @@ export const queryClient = new QueryClient({
       }
 
       // profile/me 외 API 401 포함 그 외 모든 에러 → 캡처
+      // eslint-disable-next-line import/namespace
       Sentry.captureException(error, { extra: { queryKey: query.queryKey } });
     },
   }),
@@ -76,6 +77,7 @@ Sentry.init({
   sendDefaultPii: false, // IP·쿠키·헤더 자동 수집 비활성. UA는 beforeSend에서 명시적 첨부
   integrations: [
     Sentry.tanstackRouterBrowserTracingIntegration(router),
+    // eslint-disable-next-line import/namespace
     Sentry.replayIntegration(),
   ],
   tracesSampleRate: isDevelopment ? 1 : 0.1,

@@ -1,8 +1,9 @@
+/* eslint-disable import/namespace */
+import * as Sentry from '@sentry/react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouterState } from '@tanstack/react-router';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 import { queries } from '@/apis/queries';
-import { useSentryUser } from '@/libs/sentry/useSentryUser';
 import type { UserProfile } from '@/types/me';
 import type { PropsWithChildren } from 'react';
 
@@ -25,9 +26,15 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     enabled: !isSignupPage,
   });
 
-  useSentryUser(userProfile);
-
   const isLoggedIn = useMemo(() => Boolean(userProfile), [userProfile]);
+
+  useEffect(() => {
+    if (userProfile) {
+      Sentry.setUser({ id: userProfile.id });
+    } else {
+      Sentry.setUser(null);
+    }
+  }, [userProfile]);
 
   return (
     <AuthContext.Provider
