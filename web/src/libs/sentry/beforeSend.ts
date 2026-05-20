@@ -1,8 +1,7 @@
 import { ApiError } from '@bombom/shared/apis';
 import { type ErrorEvent, type EventHint } from '@sentry/react';
 
-type ErrorClassification = 'API_ERROR' | 'RENDER_CRASH' | 'JS_RUNTIME';
-type ErrorTag = 'RENDER_CRASH' | 'JS_RUNTIME';
+type ErrorTag = 'API_ERROR' | 'RENDER_CRASH' | 'JS_RUNTIME';
 
 const RENDER_CRASH_MECHANISM = 'auto.function.react.error_boundary';
 
@@ -14,10 +13,7 @@ const isRenderCrash = (event: ErrorEvent): boolean => {
   );
 };
 
-const classifyError = (
-  event: ErrorEvent,
-  hint: EventHint,
-): ErrorClassification => {
+const classifyError = (event: ErrorEvent, hint: EventHint): ErrorTag => {
   if (hint.originalException instanceof ApiError) {
     return 'API_ERROR';
   }
@@ -41,17 +37,17 @@ export const beforeSend = (
   const classification = classifyError(event, hint);
 
   if (classification === 'API_ERROR') {
-    return {
-      ...event,
-      tags: {
-        ...event.tags,
-        http_status: (hint.originalException as ApiError).status,
+    return applyErrorTag(
+      {
+        ...event,
+        tags: {
+          ...event.tags,
+          http_status: (hint.originalException as ApiError).status,
+        },
       },
-    };
+      'API_ERROR',
+    );
   }
 
-  return applyErrorTag(
-    event,
-    classification === 'RENDER_CRASH' ? 'RENDER_CRASH' : 'JS_RUNTIME',
-  );
+  return applyErrorTag(event, classification);
 };

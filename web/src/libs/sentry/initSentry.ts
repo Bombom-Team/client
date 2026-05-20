@@ -20,12 +20,12 @@ type InitSentryParams = {
 
 // router 생성 이후에 init해야 tanstackRouterBrowserTracingIntegration이 router를 참조할 수 있음
 export const initSentry = ({ router }: InitSentryParams) => {
-  if (!ENV.sentryDsn) return;
+  if (!ENV.sentryDsn || ENV.sentryDsn === 'undefined') return;
 
   init({
     dsn: ENV.sentryDsn,
     sendDefaultPii: false,
-    allowUrls: [/https?:\/\/.*\.bombom\.news/],
+    allowUrls: [/https:\/\/.*\.bombom\.news/],
     ignoreErrors: [...NETWORK_NOISE_ERROR_PATTERNS],
     integrations: [
       tanstackRouterBrowserTracingIntegration(router),
