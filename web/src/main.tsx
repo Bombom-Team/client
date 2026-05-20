@@ -1,7 +1,7 @@
 import { ApiError } from '@bombom/shared/apis';
 import { Global } from '@emotion/react';
 import Clarity from '@microsoft/clarity';
-import { QueryCache, QueryClient } from '@tanstack/react-query';
+import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -11,6 +11,7 @@ import PageErrorFallback from './components/PageErrorFallback/PageErrorFallback'
 import GAInitializer from './libs/googleAnalytics/GAInitializer';
 import { initSentry } from './libs/sentry/initSentry';
 import {
+  captureMutationError,
   captureQueryError,
   SentryErrorBoundary,
 } from './libs/sentry/sentryUtils';
@@ -42,6 +43,14 @@ export const queryClient = new QueryClient({
 
       // profile/me 외 API 401 포함 그 외 모든 에러 → 캡처
       captureQueryError({ error, queryKey: query.queryKey });
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error, _variables, _context, mutation) => {
+      captureMutationError({
+        error,
+        mutationKey: mutation.options.mutationKey,
+      });
     },
   }),
   defaultOptions: {
