@@ -14,6 +14,6 @@ export const getPet = async () => {
   return fetcher.get<GetPetResponse>({ path: '/members/me/pet' });
 };
 
-export const postPetAttend = async () => {
+export const postPetAttendance = async () => {
   return fetcher.post<never, void>({ path: '/members/me/pet/attendance' });
 };

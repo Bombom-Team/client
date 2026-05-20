@@ -1,4 +1,4 @@
-import { postPetAttend } from '@bombom/shared/apis/pet';
+import { postPetAttendance } from '@bombom/shared/apis/pet';
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
@@ -47,7 +47,7 @@ const PetCard = ({ pet }: PetCardProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const { mutate: mutatePetAttendance } = useMutation({
-    mutationFn: postPetAttend,
+    mutationFn: postPetAttendance,
     onSuccess: () => {
       setIsAnimating(true);
 
