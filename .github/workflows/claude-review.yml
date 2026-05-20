@@ -1,0 +1,407 @@
+# PR Review Agent v2
+#
+# karrot-emu/community-web-group 의 PR Review Agent 를 client 레포로 이식한 워크플로우입니다.
+#
+# 설정 가이드:
+# 1. 필요한 GitHub Secrets:
+#    - ANTHROPIC_API_KEY: Anthropic API 키 (레포 또는 Bombom-Team org Secrets 에 등록)
+# 2. 선택적 GitHub Variables:
+#    - CLAUDE_REVIEW_MODEL: 기본 모델 (기본값: claude-sonnet-4-6)
+#    - CLAUDE_REVIEW_MODEL_STRONG: 복잡한 리뷰용 모델 (기본값: claude-opus-4-7)
+# 3. 프로젝트별 커스터마이징:
+#    - EXCLUDE_PATHS: diff 에서 제외할 경로를 ':(exclude)패턴' 형식으로 수정하세요
+#    - .review-learnings/REVIEW.md 에 리뷰 가이드라인을 작성하세요
+#    - .review-learnings/agent-prompts/* 를 레포 특성에 맞게 수정하세요
+#
+name: PR Review Agent
+
+on:
+  issue_comment:
+    types:
+      - created
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR 번호 (테스트용)'
+        required: true
+        type: number
+      target_ref:
+        description: '테스트할 브랜치/커밋 (기본값: PR head)'
+        required: false
+        type: string
+
+jobs:
+  pr-review:
+    if: >
+      (github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request != null &&
+        contains(github.event.comment.body, '/claude-review') &&
+        github.event.comment.user.type == 'User') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: pr-review-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
+      cancel-in-progress: true
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Determine target branch and PR info
+        id: branch_info
+        run: |
+          if [ "$EVENT_NAME" == "pull_request" ]; then
+            echo "target_ref=$HEAD_REF" >> $GITHUB_OUTPUT
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "base_ref=$BASE_REF" >> $GITHUB_OUTPUT
+          elif [ "$EVENT_NAME" == "issue_comment" ]; then
+            PR_DATA=$(gh api "$PR_URL")
+            echo "target_ref=$(echo "$PR_DATA" | jq -r '.head.ref')" >> $GITHUB_OUTPUT
+            echo "pr_number=$(echo "$PR_DATA" | jq -r '.number')" >> $GITHUB_OUTPUT
+            echo "base_ref=$(echo "$PR_DATA" | jq -r '.base.ref')" >> $GITHUB_OUTPUT
+          elif [ "$EVENT_NAME" == "workflow_dispatch" ]; then
+            if [ -n "$INPUT_TARGET_REF" ]; then
+              echo "target_ref=$INPUT_TARGET_REF" >> $GITHUB_OUTPUT
+            else
+              PR_DATA=$(gh pr view "$INPUT_PR_NUMBER" --json headRefName,baseRefName --repo "$GITHUB_REPOSITORY")
+              echo "target_ref=$(echo "$PR_DATA" | jq -r '.headRefName')" >> $GITHUB_OUTPUT
+              echo "base_ref=$(echo "$PR_DATA" | jq -r '.baseRefName')" >> $GITHUB_OUTPUT
+            fi
+            echo "pr_number=$INPUT_PR_NUMBER" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.number }}
+          PR_URL: ${{ github.event.issue.pull_request.url }}
+          INPUT_TARGET_REF: ${{ github.event.inputs.target_ref }}
+          INPUT_PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.branch_info.outputs.target_ref }}
+
+      # 리뷰할 코드(diff·호출부)는 PR head 브랜치에서 읽지만,
+      # 리뷰 "도구"(절차 runbook·렌더 스크립트·가이드라인)는 PR 브랜치 버전에 좌우되면 안 됩니다.
+      # PR 브랜치가 리뷰 시스템 도입 전에 분기됐으면 .review-learnings/ 가 아예 없어서
+      # 오케스트레이터가 형식 지침 없이 매번 본문을 자유 작문하게 됩니다.
+      # → 도구 파일만 항상 default 브랜치 버전으로 덮어써 형식을 고정합니다.
+      # (learn-patterns 워크플로우도 .review-learnings/ 를 default 브랜치 기준으로 갱신합니다.)
+      - name: Sync review tooling from default branch
+        run: |
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          git fetch origin "$DEFAULT_BRANCH"
+          git checkout "origin/$DEFAULT_BRANCH" -- .review-learnings 2>/dev/null \
+            && echo "✅ .review-learnings/ synced from origin/$DEFAULT_BRANCH" \
+            || echo "⚠️ .review-learnings/ not found on origin/$DEFAULT_BRANCH"
+          git checkout "origin/$DEFAULT_BRANCH" -- .github/scripts/render_pr_review.py 2>/dev/null \
+            && echo "✅ render_pr_review.py synced from origin/$DEFAULT_BRANCH" \
+            || echo "⚠️ render_pr_review.py not found on origin/$DEFAULT_BRANCH"
+
+      - name: Detect force push
+        id: force_push_check
+        if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
+        run: |
+          if git merge-base --is-ancestor "$BEFORE_SHA" "$AFTER_SHA" 2>/dev/null; then
+            echo "is_forced=false" >> $GITHUB_OUTPUT
+          else
+            echo "is_forced=true" >> $GITHUB_OUTPUT
+          fi
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.event.after }}
+
+      - name: Prepare diff
+        id: prepare_diff
+        run: |
+          BASE_REF="${{ steps.branch_info.outputs.base_ref || 'main' }}"
+          git fetch origin "$BASE_REF" 2>/dev/null || true
+          MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD 2>/dev/null || git merge-base "$BASE_REF" HEAD)
+
+          PR_NUM="${{ steps.branch_info.outputs.pr_number }}"
+          DIFF_FILE="/tmp/review-${PR_NUM}-diff.txt"
+          CHANGED_FILE="/tmp/review-${PR_NUM}-changed-files.txt"
+
+          IS_INCREMENTAL="${{ steps.force_push_check.outputs.is_forced == 'false' && github.event.action == 'synchronize' }}"
+
+          # EXCLUDE_PATHS: 프로젝트에 맞게 수정하세요 (client = pnpm 모노레포)
+          EXCLUDE_PATHS=":(exclude)pnpm-lock.yaml :(exclude)*.gen.ts :(exclude)*.generated.*"
+
+          if [ "$IS_INCREMENTAL" = "true" ]; then
+            BEFORE_SHA="${{ github.event.before }}"
+            AFTER_SHA="${{ github.event.after }}"
+            git diff ${BEFORE_SHA}...${AFTER_SHA} -- . ${EXCLUDE_PATHS} > "${DIFF_FILE}"
+            git diff --name-only ${BEFORE_SHA}...${AFTER_SHA} -- . ${EXCLUDE_PATHS} > "${CHANGED_FILE}"
+            echo "review_mode=incremental" >> $GITHUB_OUTPUT
+          else
+            git diff ${MERGE_BASE}...HEAD -- . ${EXCLUDE_PATHS} > "${DIFF_FILE}"
+            git diff --name-only ${MERGE_BASE}...HEAD -- . ${EXCLUDE_PATHS} > "${CHANGED_FILE}"
+            echo "review_mode=full" >> $GITHUB_OUTPUT
+          fi
+
+          DIFF_LINES=$(wc -l < "${DIFF_FILE}" | tr -d ' ')
+          CHANGED_COUNT=$(wc -l < "${CHANGED_FILE}" | tr -d ' ')
+
+          echo "diff_file=${DIFF_FILE}" >> $GITHUB_OUTPUT
+          echo "changed_file=${CHANGED_FILE}" >> $GITHUB_OUTPUT
+          echo "diff_lines=$DIFF_LINES" >> $GITHUB_OUTPUT
+          echo "changed_count=$CHANGED_COUNT" >> $GITHUB_OUTPUT
+          echo "merge_base=$MERGE_BASE" >> $GITHUB_OUTPUT
+
+      - name: Skip if no reviewable changes
+        if: steps.prepare_diff.outputs.changed_count == '0'
+        run: echo "⏭️ No reviewable changes."
+
+      - name: Compute triage score
+        id: triage
+        if: steps.prepare_diff.outputs.changed_count != '0'
+        run: |
+          DIFF_LINES=${{ steps.prepare_diff.outputs.diff_lines }}
+          CHANGED_COUNT=${{ steps.prepare_diff.outputs.changed_count }}
+
+          # 복잡도 점수: diff 크기 + 파일 수 기반
+          SCORE=0
+          if [ "$DIFF_LINES" -gt 500 ]; then SCORE=$((SCORE + 3)); fi
+          if [ "$DIFF_LINES" -gt 200 ]; then SCORE=$((SCORE + 2)); fi
+          if [ "$DIFF_LINES" -gt 50 ]; then SCORE=$((SCORE + 1)); fi
+          if [ "$CHANGED_COUNT" -gt 10 ]; then SCORE=$((SCORE + 2)); fi
+          if [ "$CHANGED_COUNT" -gt 5 ]; then SCORE=$((SCORE + 1)); fi
+
+          # 새 파일 비율 (merge_base는 prepare_diff에서 이미 계산)
+          MERGE_BASE="${{ steps.prepare_diff.outputs.merge_base }}"
+          if [ -n "$MERGE_BASE" ]; then
+            NEW_FILES=$(git diff --name-only --diff-filter=A "${MERGE_BASE}...HEAD" 2>/dev/null | wc -l | tr -d ' ')
+          else
+            NEW_FILES=0
+          fi
+          if [ "$NEW_FILES" -gt 3 ]; then SCORE=$((SCORE + 1)); fi
+
+          echo "score=$SCORE" >> $GITHUB_OUTPUT
+
+          if [ "$SCORE" -ge 5 ]; then
+            echo "model=${{ vars.CLAUDE_REVIEW_MODEL_STRONG || 'claude-opus-4-7' }}" >> $GITHUB_OUTPUT
+          else
+            echo "model=${{ vars.CLAUDE_REVIEW_MODEL || 'claude-sonnet-4-6' }}" >> $GITHUB_OUTPUT
+          fi
+
+          echo "📊 Triage: score=$SCORE, model=$([ "$SCORE" -ge 5 ] && echo 'Opus' || echo 'Sonnet')"
+
+      - name: Assemble context packet
+        id: packet
+        if: steps.prepare_diff.outputs.changed_count != '0'
+        # 정적/동적 분리:
+        #   RULES_FILE   = 매 PR 동일한 가이드라인 (REVIEW.md + 학습 파일 + 일반 PR Scope 규칙)
+        #   CONTEXT_FILE = 이번 PR 인스턴스 (PR Intent + 변경 파일 + 이번 PR의 영향 범위)
+        # 분리 목적: 매 turn에 따라가는 prompt 토큰 축소 + 향후 단계 확장 시 prompt 폭주 방지.
+        run: |
+          PR_NUM="${{ steps.branch_info.outputs.pr_number }}"
+          RULES_FILE="/tmp/review-${PR_NUM}-rules.md"
+          CONTEXT_FILE="/tmp/review-${PR_NUM}-context.md"
+
+          # ============================================================
+          # RULES_FILE: 정적 가이드라인 (PR마다 동일)
+          # ============================================================
+          echo "# Review Rules (정적 — 매 PR 동일)" > "${RULES_FILE}"
+
+          echo -e "\n## Review Guidelines" >> "${RULES_FILE}"
+          cat .review-learnings/REVIEW.md >> "${RULES_FILE}" 2>/dev/null || echo "(없음)" >> "${RULES_FILE}"
+
+          echo -e "\n## Promoted Rules (accepted ≥3회로 승격된 규칙)" >> "${RULES_FILE}"
+          cat .review-learnings/additional-rules.md >> "${RULES_FILE}" 2>/dev/null || echo "(없음)" >> "${RULES_FILE}"
+
+          echo -e "\n## Learned Patterns (팀에서 자주 지적되는 패턴)" >> "${RULES_FILE}"
+          cat .review-learnings/patterns.md >> "${RULES_FILE}" 2>/dev/null || echo "(없음)" >> "${RULES_FILE}"
+
+          echo -e "\n## False Positives (오탐 이력 — 지적 금지)" >> "${RULES_FILE}"
+          cat .review-learnings/false-positives.md >> "${RULES_FILE}" 2>/dev/null || echo "(없음)" >> "${RULES_FILE}"
+
+          # PR Scope 판정 일반 규칙 (모노레포 false positive 방지 — 워크플로우 invariant)
+          # heredoc 대신 printf 사용 (YAML block scalar 들여쓰기 충돌 회피)
+          echo -e "\n## PR Scope: 모노레포 영향 범위 판정 (일반 규칙)" >> "${RULES_FILE}"
+          printf '%s\n' \
+            '' \
+            '> 이 규칙은 강제됩니다 — 위반 시 Skeptic에서 invalid 처리됩니다.' \
+            '> 이번 PR의 구체적인 수정 대상/제외 워크스페이스는 `${CONTEXT_FILE}`의 "PR Scope (이번 PR 인스턴스)" 섹션을 참고하세요.' \
+            '' \
+            '**원칙**:' \
+            '- client는 pnpm 모노레포입니다: `app` / `web` / `admin` / `maeil-mail` 은 독립 배포 단위, `shared` 는 공유 패키지' \
+            '- 이번 PR이 변경한 `{변경 대상 워크스페이스}/**` + `shared/**` 만 영향 범위로 간주' \
+            '- 변경하지 않은 워크스페이스는 **독립 배포 단위**이므로 grep이 호출부로 잡아도 PR 영향 범위로 판단하지 마세요' \
+            '- 같은 이름의 훅/컴포넌트라도 **워크스페이스별로 다른 구현**일 수 있습니다' \
+            '- "광범위한 영향", "수많은 호출부" 같은 지적 시, 이번 PR이 변경한 워크스페이스 내 호출부만 카운트하세요' \
+            >> "${RULES_FILE}"
+
+          # ============================================================
+          # CONTEXT_FILE: 이번 PR 인스턴스 (PR마다 가변)
+          # ============================================================
+          echo "# PR Context (이번 PR 인스턴스)" > "${CONTEXT_FILE}"
+
+          echo -e "\n## PR Intent" >> "${CONTEXT_FILE}"
+          gh pr view "${PR_NUM}" --json body --jq '.body' >> "${CONTEXT_FILE}" 2>/dev/null || echo "(unavailable)" >> "${CONTEXT_FILE}"
+
+          echo -e "\n## Changed Files" >> "${CONTEXT_FILE}"
+          cat "${{ steps.prepare_diff.outputs.changed_file }}" >> "${CONTEXT_FILE}"
+
+          # PR Scope 인스턴스 (이번 PR이 건드린 워크스페이스 / 제외 워크스페이스)
+          # client 구조: app/web/admin/maeil-mail = 독립 배포 단위, shared = 공유 패키지
+          DEPLOY_WORKSPACES="app web admin maeil-mail"
+          echo -e "\n## PR Scope (이번 PR 인스턴스)" >> "${CONTEXT_FILE}"
+          CHANGED_WS=$(awk -F'/' '{print $1}' "${{ steps.prepare_diff.outputs.changed_file }}" | sort -u | tr '\n' ' ')
+          CHANGED_DEPLOY=""
+          for w in $DEPLOY_WORKSPACES; do
+            echo " $CHANGED_WS " | grep -q " $w " && CHANGED_DEPLOY="$CHANGED_DEPLOY $w"
+          done
+          CHANGED_DEPLOY=$(echo $CHANGED_DEPLOY | { grep -v '^$' || true; })
+          if [ -n "$CHANGED_DEPLOY" ]; then
+            OTHER_WS=""
+            for w in $DEPLOY_WORKSPACES; do
+              echo " $CHANGED_DEPLOY " | grep -q " $w " || OTHER_WS="$OTHER_WS $w"
+            done
+            OTHER_WS=$(echo $OTHER_WS | { grep -v '^$' || true; })
+
+            echo "**수정 대상 워크스페이스**: $CHANGED_DEPLOY" >> "${CONTEXT_FILE}"
+            echo "" >> "${CONTEXT_FILE}"
+            echo "- ✅ 영향 범위: \`{$(echo $CHANGED_DEPLOY | tr ' ' ',')}/**\` + \`shared/**\` (공유 패키지)" >> "${CONTEXT_FILE}"
+            if [ -n "$OTHER_WS" ]; then
+              echo "- ❌ **영향 범위 아님**: $OTHER_WS" >> "${CONTEXT_FILE}"
+            fi
+          else
+            echo "이 PR은 단일 워크스페이스/공유 패키지 범위입니다." >> "${CONTEXT_FILE}"
+          fi
+
+          echo "rules_file=${RULES_FILE}" >> $GITHUB_OUTPUT
+          echo "context_file=${CONTEXT_FILE}" >> $GITHUB_OUTPUT
+          echo "📋 rules: $(wc -l < "${RULES_FILE}" | tr -d ' ') lines · context: $(wc -l < "${CONTEXT_FILE}" | tr -d ' ') lines"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run PR Review
+        if: steps.prepare_diff.outputs.changed_count != '0'
+        id: review
+        uses: anthropics/claude-code-action@v1.0.112
+        env:
+          PR_NUMBER: ${{ steps.branch_info.outputs.pr_number }}
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+          prompt: |
+            <PR_INFO>
+            - PR_NUMBER: ${{ steps.branch_info.outputs.pr_number }}
+            - REVIEW_MODE: ${{ steps.prepare_diff.outputs.review_mode }}
+            - IS_FORCED: ${{ steps.force_push_check.outputs.is_forced || 'false' }}
+            - DIFF_LINES: ${{ steps.prepare_diff.outputs.diff_lines }}
+            - CHANGED_FILES: ${{ steps.prepare_diff.outputs.changed_count }}
+            - DIFF_FILE: ${{ steps.prepare_diff.outputs.diff_file }}
+            - CHANGED_FILE: ${{ steps.prepare_diff.outputs.changed_file }}
+            - RULES_FILE: ${{ steps.packet.outputs.rules_file }}
+            - CONTEXT_FILE: ${{ steps.packet.outputs.context_file }}
+            - TRIAGE_SCORE: ${{ steps.triage.outputs.score }}
+            </PR_INFO>
+
+            당신은 PR Review 오케스트레이터입니다. 이 PR을 v2 멀티 에이전트 파이프라인으로 리뷰하세요.
+
+            **`.review-learnings/orchestrator-runbook.md`** 를 Read로 읽고, 그 안의 Step 0–5 절차/에이전트 호출 템플릿/Skeptic 템플릿/결과 JSON 스키마를 정확히 따르세요. runbook의 `${변수명}` 표기는 모두 위 `<PR_INFO>` 값으로 해석하세요.
+
+            모드 분기 (runbook의 "REVIEW_MODE 분기" 섹션 참조):
+            - `IS_FORCED=true` → PR 전체 처음부터 다시 리뷰 (이전 리뷰 무시)
+            - `REVIEW_MODE=incremental` → 새 커밋만 리뷰. 이전 리뷰의 `open_issues`를 추적.
+              · 새 이슈 0개 + 이전 미해결 0개 → 리뷰 미제출
+              · 이전 미해결 이슈 있으면 새 이슈 0개여도 반드시 제출
+            - 그 외 → 전체 리뷰
+
+            **출력·제출 (엄수)**: 리뷰 본문 마크다운을 직접 작성하지 마세요. runbook Step 5대로 — 발견 사항을 "결과 JSON 스키마"에 맞춰 `/tmp/review-${PR_NUMBER}-result.json`에 `Write` → `Bash`로 `python3 .github/scripts/render_pr_review.py /tmp/review-${PR_NUMBER}-result.json` 렌더 → 출력된 페이로드를 `Bash`로 `gh api repos/$GITHUB_REPOSITORY/pulls/${PR_NUMBER}/reviews --method POST --input /tmp/review-${PR_NUMBER}-payload.json` 제출. 본문 형식·event·REVIEW_META는 렌더 스크립트가 결정합니다. 심각도는 `critical`/`major`/`minor`만 (Medium/Low/Nit 금지). 모든 텍스트는 한국어.
+
+            **코드 탐색**: 호출부·기존 패턴·구현 확인은 `Grep`/`Glob`/`Read`로 하세요. 모노레포라 같은 이름의 훅/컴포넌트가 여러 워크스페이스에 존재할 수 있으니, 영향 범위를 주장할 때는 `${CONTEXT_FILE}`의 "PR Scope" 섹션에 속한 워크스페이스 내부 호출부만 카운트하세요. `grep`은 코멘트·문자열도 매치하므로, cross-file 주장은 실제 호출 위치를 `Read`로 확인한 뒤 적으세요.
+
+          claude_args: |
+            --model ${{ steps.triage.outputs.model }}
+            --debug
+            --setting-sources user
+            --allowedTools "
+              Bash(cat *),
+              Bash(find *),
+              Bash(gh api *),
+              Bash(gh pr *),
+              Bash(jq *),
+              Bash(python3 *),
+              Bash(git blame *),
+              Bash(git diff *),
+              Bash(git log *),
+              Bash(git show *),
+              Bash(git status),
+              Bash(grep *),
+              Bash(head *),
+              Bash(ls *),
+              Bash(tail *),
+              Bash(tree *),
+              Bash(wc *),
+              Glob,
+              Grep,
+              Read,
+              Task,
+              mcp__github__get_file_contents,
+              mcp__github__get_issue_comments,
+              mcp__github__get_me,
+              mcp__github__get_pull_request_comments,
+              mcp__github__get_pull_request_files,
+              mcp__github__get_pull_request_review_comments,
+              mcp__github__get_pull_request_reviews,
+              mcp__github__get_pull_request,
+              mcp__github__get_repository,
+              mcp__github__list_pull_requests,
+              mcp__github_ci__download_job_log,
+              mcp__github_ci__get_ci_status,
+              mcp__github_ci__get_workflow_run_details
+            "
+            --disallowedTools "
+              Bash(chmod *),
+              Bash(chown *),
+              Bash(git add *),
+              Bash(git branch *),
+              Bash(git checkout *),
+              Bash(git clean *),
+              Bash(git commit *),
+              Bash(git merge *),
+              Bash(git mv *),
+              Bash(git pull *),
+              Bash(git push *),
+              Bash(git rebase *),
+              Bash(git reset *),
+              Bash(git rm *),
+              Bash(git stash *),
+              Bash(git tag *),
+              Bash(rm *),
+              Bash(rmdir *),
+              Bash(sudo *),
+              Edit
+            "
+
+      - name: Upload debug artifacts
+        if: always() && steps.prepare_diff.outputs.changed_count != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-debug-pr${{ steps.branch_info.outputs.pr_number }}-${{ github.run_id }}
+          path: |
+            /home/runner/work/_temp/claude-execution-output.json
+            /tmp/review-${{ steps.branch_info.outputs.pr_number }}-rules.md
+            /tmp/review-${{ steps.branch_info.outputs.pr_number }}-context.md
+            /tmp/review-${{ steps.branch_info.outputs.pr_number }}-diff.txt
+            /tmp/review-${{ steps.branch_info.outputs.pr_number }}-changed-files.txt
+            /tmp/inline-comments-buffer.jsonl
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Cleanup tmp files
+        if: always()
+        run: |
+          PR_NUM="${{ steps.branch_info.outputs.pr_number }}"
+          rm -f "/tmp/review-${PR_NUM}-"*
+          echo "🧹 Cleaned up"

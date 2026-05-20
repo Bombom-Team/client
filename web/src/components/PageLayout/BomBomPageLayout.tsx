@@ -36,7 +36,7 @@ const Container = styled.div<{ isPC: boolean }>`
       ? theme.heights.headerPC
       : theme.heights.headerMobile;
 
-    const topPadding = `calc(${headerHeight} + ${theme.safeArea.top} + ${sidePadding} + 40px)`;
+    const topPadding = `calc(${headerHeight} + ${theme.safeArea.top} + ${sidePadding}${isPC ? ' + 40px' : ''})`;
     const bottomPadding = isPC
       ? `calc(${theme.safeArea.bottom} + ${sidePadding})`
       : sidePadding;

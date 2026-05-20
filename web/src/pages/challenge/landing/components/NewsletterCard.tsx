@@ -40,10 +40,8 @@ const NewsletterCard = ({
   const handleNavigateDetail = (e: MouseEvent) => {
     e.stopPropagation();
     navigate({
-      to: '/',
-      search: {
-        newsletterDetail: newsletter.newsletterId,
-      },
+      to: '/newsletters/$newsletterId',
+      params: { newsletterId: String(newsletter.newsletterId) },
     });
   };
 

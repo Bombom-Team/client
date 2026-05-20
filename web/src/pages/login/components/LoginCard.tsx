@@ -1,17 +1,29 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
+import { useNavigate } from '@tanstack/react-router';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
 import { getRedirectPathFromSearch, navigateToOAuthLogin } from '@/utils/auth';
 import { isIOS, isWebView } from '@/utils/device';
+import { isInAppBrowser } from '@/utils/inAppBrowser';
 import AppleIcon from '#/assets/svg/apple.svg';
 import GoogleIcon from '#/assets/svg/google.svg';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
 
 const LoginCard = () => {
   const device = useDevice();
+  const navigate = useNavigate();
   const isMobile = device === 'mobile';
   const redirectPath = getRedirectPathFromSearch(window.location.search);
+
+  const handleGoogleLogin = () => {
+    // 인앱브라우저에서는 구글 OAuth가 차단되므로 안내 화면으로 이동시킨다.
+    if (isInAppBrowser()) {
+      navigate({ to: '/login-guide' });
+      return;
+    }
+    navigateToOAuthLogin({ provider: 'google', redirectPath });
+  };
 
   return (
     <Container isMobile={isMobile}>
@@ -31,12 +43,7 @@ const LoginCard = () => {
         </GreetingMessage>
       </GreetingWrapper>
       <Divider />
-      <LoginButton
-        onClick={() => {
-          navigateToOAuthLogin({ provider: 'google', redirectPath });
-        }}
-        variant="outlined"
-      >
+      <LoginButton onClick={handleGoogleLogin} variant="outlined">
         <GoogleIcon width={24} height={24} fill="black" />
         Google로 계속하기
       </LoginButton>

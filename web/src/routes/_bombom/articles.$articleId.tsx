@@ -114,6 +114,7 @@ function ArticleDetailPage() {
           <ArticleBody
             contentRef={contentRef}
             articleId={articleIdNumber}
+            articleTitle={currentArticle.title}
             newsletterName={currentArticle.newsletter.name}
             articleContent={currentArticle.contents}
           />

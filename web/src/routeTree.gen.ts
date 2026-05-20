@@ -12,12 +12,14 @@ import { Route as rootRouteImport } from './routes/__root';
 import { Route as SignupRouteImport } from './routes/signup';
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy';
 import { Route as MaintenanceRouteImport } from './routes/maintenance';
+import { Route as LoginGuideRouteImport } from './routes/login-guide';
 import { Route as LoginRouteImport } from './routes/login';
 import { Route as LandingRouteImport } from './routes/landing';
 import { Route as EventRouteImport } from './routes/event';
 import { Route as BlogRouteImport } from './routes/blog';
 import { Route as BombomRouteImport } from './routes/_bombom';
 import { Route as BlogIndexRouteImport } from './routes/blog/index';
+import { Route as NewslettersNewsletterIdRouteImport } from './routes/newsletters.$newsletterId';
 import { Route as MaeilMailLandingRouteImport } from './routes/maeil-mail/landing';
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
 import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
@@ -57,6 +59,11 @@ const MaintenanceRoute = MaintenanceRouteImport.update({
   path: '/maintenance',
   getParentRoute: () => rootRouteImport,
 } as any);
+const LoginGuideRoute = LoginGuideRouteImport.update({
+  id: '/login-guide',
+  path: '/login-guide',
+  getParentRoute: () => rootRouteImport,
+} as any);
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -85,6 +92,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => BlogRoute,
+} as any);
+const NewslettersNewsletterIdRoute = NewslettersNewsletterIdRouteImport.update({
+  id: '/newsletters/$newsletterId',
+  path: '/newsletters/$newsletterId',
+  getParentRoute: () => rootRouteImport,
 } as any);
 const MaeilMailLandingRoute = MaeilMailLandingRouteImport.update({
   id: '/maeil-mail/landing',
@@ -216,10 +228,12 @@ export interface FileRoutesByFullPath {
   '/event': typeof EventRoute;
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
+  '/login-guide': typeof LoginGuideRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
+  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog/': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/challenge': typeof BombomMainChallengeRouteWithChildren;
@@ -247,10 +261,12 @@ export interface FileRoutesByTo {
   '/event': typeof EventRoute;
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
+  '/login-guide': typeof LoginGuideRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
+  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/guide': typeof BombomMainGuideRoute;
@@ -279,11 +295,13 @@ export interface FileRoutesById {
   '/event': typeof EventRoute;
   '/landing': typeof LandingRoute;
   '/login': typeof LoginRoute;
+  '/login-guide': typeof LoginGuideRoute;
   '/maintenance': typeof MaintenanceRoute;
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
+  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog/': typeof BlogIndexRoute;
   '/_bombom/_main/bookmark': typeof BombomMainBookmarkRoute;
   '/_bombom/_main/challenge': typeof BombomMainChallengeRouteWithChildren;
@@ -314,10 +332,12 @@ export interface FileRouteTypes {
     | '/event'
     | '/landing'
     | '/login'
+    | '/login-guide'
     | '/maintenance'
     | '/privacy-policy'
     | '/signup'
     | '/maeil-mail/landing'
+    | '/newsletters/$newsletterId'
     | '/blog/'
     | '/bookmark'
     | '/challenge'
@@ -345,10 +365,12 @@ export interface FileRouteTypes {
     | '/event'
     | '/landing'
     | '/login'
+    | '/login-guide'
     | '/maintenance'
     | '/privacy-policy'
     | '/signup'
     | '/maeil-mail/landing'
+    | '/newsletters/$newsletterId'
     | '/blog'
     | '/bookmark'
     | '/guide'
@@ -376,11 +398,13 @@ export interface FileRouteTypes {
     | '/event'
     | '/landing'
     | '/login'
+    | '/login-guide'
     | '/maintenance'
     | '/privacy-policy'
     | '/signup'
     | '/_bombom/_main'
     | '/maeil-mail/landing'
+    | '/newsletters/$newsletterId'
     | '/blog/'
     | '/_bombom/_main/bookmark'
     | '/_bombom/_main/challenge'
@@ -411,10 +435,12 @@ export interface RootRouteChildren {
   EventRoute: typeof EventRoute;
   LandingRoute: typeof LandingRoute;
   LoginRoute: typeof LoginRoute;
+  LoginGuideRoute: typeof LoginGuideRoute;
   MaintenanceRoute: typeof MaintenanceRoute;
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute;
   SignupRoute: typeof SignupRoute;
   MaeilMailLandingRoute: typeof MaeilMailLandingRoute;
+  NewslettersNewsletterIdRoute: typeof NewslettersNewsletterIdRoute;
   ChallengeChallengeIdLandingRoute: typeof ChallengeChallengeIdLandingRoute;
 }
 
@@ -439,6 +465,13 @@ declare module '@tanstack/react-router' {
       path: '/maintenance';
       fullPath: '/maintenance';
       preLoaderRoute: typeof MaintenanceRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    '/login-guide': {
+      id: '/login-guide';
+      path: '/login-guide';
+      fullPath: '/login-guide';
+      preLoaderRoute: typeof LoginGuideRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     '/login': {
@@ -482,6 +515,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/';
       preLoaderRoute: typeof BlogIndexRouteImport;
       parentRoute: typeof BlogRoute;
+    };
+    '/newsletters/$newsletterId': {
+      id: '/newsletters/$newsletterId';
+      path: '/newsletters/$newsletterId';
+      fullPath: '/newsletters/$newsletterId';
+      preLoaderRoute: typeof NewslettersNewsletterIdRouteImport;
+      parentRoute: typeof rootRouteImport;
     };
     '/maeil-mail/landing': {
       id: '/maeil-mail/landing';
@@ -751,10 +791,12 @@ const rootRouteChildren: RootRouteChildren = {
   EventRoute: EventRoute,
   LandingRoute: LandingRoute,
   LoginRoute: LoginRoute,
+  LoginGuideRoute: LoginGuideRoute,
   MaintenanceRoute: MaintenanceRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SignupRoute: SignupRoute,
   MaeilMailLandingRoute: MaeilMailLandingRoute,
+  NewslettersNewsletterIdRoute: NewslettersNewsletterIdRoute,
   ChallengeChallengeIdLandingRoute: ChallengeChallengeIdLandingRoute,
 };
 export const routeTree = rootRouteImport

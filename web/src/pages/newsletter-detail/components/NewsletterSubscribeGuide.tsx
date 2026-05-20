@@ -1,6 +1,10 @@
 import styled from '@emotion/styled';
+import { useDevice } from '@/hooks/useDevice';
 
 const NewsletterSubscribeGuide = () => {
+  const device = useDevice();
+  const isMobile = device !== 'pc';
+
   return (
     <Container>
       <SubscribeHeader>
@@ -8,8 +12,8 @@ const NewsletterSubscribeGuide = () => {
       </SubscribeHeader>
 
       <SubscribeContent>
-        <StepsWrapper>
-          <StepItem>
+        <StepsWrapper isMobile={isMobile}>
+          <StepItem isMobile={isMobile}>
             <StepNumber>1</StepNumber>
             <StepContent>
               <StepTitle>구독하기 버튼 클릭</StepTitle>
@@ -18,7 +22,7 @@ const NewsletterSubscribeGuide = () => {
               </StepDescription>
             </StepContent>
           </StepItem>
-          <StepItem>
+          <StepItem isMobile={isMobile}>
             <StepNumber>2</StepNumber>
             <StepContent>
               <StepTitle>구독 페이지 접속</StepTitle>
@@ -27,7 +31,7 @@ const NewsletterSubscribeGuide = () => {
               </StepDescription>
             </StepContent>
           </StepItem>
-          <StepItem>
+          <StepItem isMobile={isMobile}>
             <StepNumber>3</StepNumber>
             <StepContent>
               <StepTitle>봄봄 메일 붙여넣기</StepTitle>
@@ -39,7 +43,7 @@ const NewsletterSubscribeGuide = () => {
               </StepDescription>
             </StepContent>
           </StepItem>
-          <StepItem>
+          <StepItem isMobile={isMobile}>
             <StepNumber>4</StepNumber>
             <StepContent>
               <StepTitle>구독 완료!</StepTitle>
@@ -87,14 +91,14 @@ const SubscribeContent = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 `;
 
-const StepsWrapper = styled.div`
+const StepsWrapper = styled.div<{ isMobile: boolean }>`
   position: relative;
-  padding: 20px 16px;
+  padding: ${({ isMobile }) => (isMobile ? '12px 16px' : '20px 16px')};
 
   &::before {
     position: absolute;
-    top: 36px;
-    bottom: 68px;
+    top: ${({ isMobile }) => (isMobile ? '28px' : '36px')};
+    bottom: ${({ isMobile }) => (isMobile ? '60px' : '68px')};
     left: 32px;
     width: 2px;
 
@@ -104,9 +108,9 @@ const StepsWrapper = styled.div`
   }
 `;
 
-const StepItem = styled.div`
+const StepItem = styled.div<{ isMobile: boolean }>`
   position: relative;
-  margin-bottom: 32px;
+  margin-bottom: ${({ isMobile }) => (isMobile ? '20px' : '32px')};
 
   display: flex;
   gap: 16px;
