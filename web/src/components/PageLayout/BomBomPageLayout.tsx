@@ -39,7 +39,7 @@ const Container = styled.div<{ isPC: boolean }>`
     const topPadding = `calc(${headerHeight} + ${theme.safeArea.top} + ${sidePadding} + 40px)`;
     const bottomPadding = isPC
       ? `calc(${theme.safeArea.bottom} + ${sidePadding})`
-      : `calc(${theme.heights.bottomNav} + ${theme.safeArea.bottom} + ${sidePadding})`;
+      : sidePadding;
 
     return `${topPadding} ${sidePadding} ${bottomPadding} ${sidePadding}`;
   }};
