@@ -16,7 +16,7 @@ import {
 } from './libs/sentry/sentryUtils';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
-import { isDevelopment, isProduction } from './utils/environment';
+import { isProduction } from './utils/environment';
 
 if (isProduction) Clarity.init(ENV.clarityProjectId);
 
@@ -73,11 +73,9 @@ const router = createRouter({
   scrollRestoration: true,
 });
 
-initSentry({
-  isDevelopment,
-  router,
-});
-
+if (isProduction) {
+  initSentry({ router });
+}
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;

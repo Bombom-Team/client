@@ -9,12 +9,13 @@ import { beforeSend } from './beforeSend';
 import { ENV } from '@/apis/env';
 
 type InitSentryParams = {
-  isDevelopment: boolean;
   router: Parameters<typeof tanstackRouterBrowserTracingIntegration>[0];
 };
 
 // router 생성 이후에 init해야 tanstackRouterBrowserTracingIntegration이 router를 참조할 수 있음
-export const initSentry = ({ isDevelopment, router }: InitSentryParams) => {
+export const initSentry = ({ router }: InitSentryParams) => {
+  if (!ENV.sentryDsn) return;
+
   init({
     dsn: ENV.sentryDsn,
     sendDefaultPii: false,
@@ -23,7 +24,7 @@ export const initSentry = ({ isDevelopment, router }: InitSentryParams) => {
       tanstackRouterBrowserTracingIntegration(router),
       replayIntegration(),
     ],
-    tracesSampleRate: isDevelopment ? 1 : 0.1,
+    tracesSampleRate: 0.1,
     replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 1.0,
     beforeSend,
