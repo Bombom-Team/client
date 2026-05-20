@@ -1,4 +1,5 @@
-import type { NormalizedOperation, ParameterObject } from './utils/parseSpec';
+import type { NormalizedOperation } from './utils/parseSpec';
+import { deriveFnName, fnNamePascal } from './utils/fnName';
 
 const HEADER = `/* eslint-disable */
 /**
@@ -11,7 +12,6 @@ const BASE_PATH_STRIP = /^\/api\/v1/;
 
 const stripBasePath = (p: string) => p.replace(BASE_PATH_STRIP, '');
 
-// "/articles/{id}/stats" → "/articles/${id}/stats"
 const pathToTemplate = (p: string) =>
   p.replace(/\{([^}]+)\}/g, (_, name) => `\${${name}}`);
 
@@ -27,31 +27,22 @@ const fetcherMethod: Record<HttpMethod, string> = {
   delete: 'fetcher.delete',
 };
 
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
 const responseTypeAlias = (op: NormalizedOperation): string =>
-  `${capitalize(op.operationId)}Response`;
+  `${fnNamePascal(op)}Response`;
 const queryTypeAlias = (op: NormalizedOperation): string =>
-  `${capitalize(op.operationId)}Query`;
+  `${fnNamePascal(op)}Query`;
 const pathTypeAlias = (op: NormalizedOperation): string =>
-  `${capitalize(op.operationId)}Path`;
+  `${fnNamePascal(op)}Path`;
 const bodyTypeAlias = (op: NormalizedOperation): string =>
-  `${capitalize(op.operationId)}Body`;
+  `${fnNamePascal(op)}Body`;
 
 type GeneratedOp = {
-  /** Type alias declarations to emit at the top of the file. */
   aliases: string[];
-  /** The function declaration. */
   fn: string;
-  /** Which operations-keyed type buckets this op touches; used to verify operations[id] exists. */
 };
 
 const buildResponseAlias = (op: NormalizedOperation): string | null => {
   if (!op.hasOkResponseBody) return null;
-  // We always reference the 200 response body for the alias. If the spec
-  // documents the success case under 201 only, parseSpec currently keeps
-  // hasOkResponseBody=true but the alias would resolve to `never`. That
-  // edge case will be addressed once we have an operation that needs it.
   return (
     `export type ${responseTypeAlias(op)} =\n` +
     `  NonNullable<operations['${op.operationId}']['responses']['200']['content']['application/json']>;\n`
@@ -75,20 +66,18 @@ const buildParamAliases = (op: NormalizedOperation): string[] => {
         `  NonNullable<operations['${op.operationId}']['parameters']>['query'];\n`,
     );
   }
-  if (op.requestBodySchemaRef || op.method !== 'get') {
-    // For non-GET methods with a JSON body, emit a body alias only when the
-    // spec actually declares a requestBody schema.
-    if (op.requestBodySchemaRef) {
-      aliases.push(
-        `export type ${bodyTypeAlias(op)} =\n` +
-          `  NonNullable<operations['${op.operationId}']['requestBody']>['content']['application/json'];\n`,
-      );
-    }
+  if (op.requestBodySchemaRef) {
+    aliases.push(
+      `export type ${bodyTypeAlias(op)} =\n` +
+        `  NonNullable<operations['${op.operationId}']['requestBody']>['content']['application/json'];\n`,
+    );
   }
   return aliases;
 };
 
-const buildArgList = (op: NormalizedOperation): {
+const buildArgList = (
+  op: NormalizedOperation,
+): {
   signature: string;
   destructuredVars: { pathVars: string[]; hasQuery: boolean; hasBody: boolean };
 } => {
@@ -111,13 +100,9 @@ const buildArgList = (op: NormalizedOperation): {
 
   const typeExpr = intersections.join(' & ');
 
-  // Build destructuring pattern
   const patternParts: string[] = [];
   for (const p of pathVars) patternParts.push(p);
   if (queryParams.length > 0 && hasBody) {
-    // Distinguish body from query — fall back to passing the whole object;
-    // the caller must split. To keep things simple we don't yet support both
-    // in a single operation. Emit a TODO.
     patternParts.push('...rest');
   } else if (queryParams.length > 0) {
     patternParts.push('...query');
@@ -125,7 +110,8 @@ const buildArgList = (op: NormalizedOperation): {
     patternParts.push('...body');
   }
 
-  const pattern = patternParts.length > 0 ? `{ ${patternParts.join(', ')} }` : '_';
+  const pattern =
+    patternParts.length > 0 ? `{ ${patternParts.join(', ')} }` : '_';
   return {
     signature: `(${pattern}: ${typeExpr})`,
     destructuredVars: {
@@ -174,7 +160,7 @@ const generateOp = (op: NormalizedOperation): GeneratedOp => {
   const body = buildFetcherCall(op, destructuredVars);
 
   const fn =
-    `export const ${op.operationId} = async ${signature} => {\n` +
+    `export const ${deriveFnName(op)} = async ${signature} => {\n` +
     `${body}\n` +
     `};\n`;
 
@@ -182,7 +168,7 @@ const generateOp = (op: NormalizedOperation): GeneratedOp => {
 };
 
 export const generateApiFile = (
-  tag: string,
+  _tag: string,
   ops: NormalizedOperation[],
 ): string => {
   const generated = ops.map(generateOp);
@@ -191,8 +177,8 @@ export const generateApiFile = (
 
   return (
     HEADER +
-    `import { fetcher } from '@bombom/shared/apis';\n` +
-    `import type { operations } from '@/types/openapi-spec';\n\n` +
+    `import { fetcher } from '../../fetcher';\n` +
+    `import type { operations } from '../types';\n\n` +
     aliases.join('\n') +
     (aliases.length > 0 ? '\n' : '') +
     fns.join('\n')

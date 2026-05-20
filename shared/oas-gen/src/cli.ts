@@ -8,7 +8,7 @@ import {
 } from './utils/parseSpec';
 import { generateApiFile } from './generateApi';
 import { generateQueryFile } from './generateQuery';
-import { writeQueriesIndex } from './writeQueriesIndex';
+import { generateTagIndexFile } from './generateIndex';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pkgRoot = path.resolve(here, '..');
@@ -17,7 +17,6 @@ const repoRoot = path.resolve(pkgRoot, '..', '..');
 type CliOptions = {
   spec: string;
   apisDir: string;
-  queriesIndex: string;
   dryRun: boolean;
 };
 
@@ -47,14 +46,13 @@ const parseArgs = (argv: string[]): CliOptions => {
       '[oas-gen] --spec or OPEN_API_DOCS env is required (yaml URL or local path)',
     );
   }
-  const apisDir = path.resolve(repoRoot, args.get('out') ?? 'web/src/apis');
-  const queriesIndex = path.resolve(
-    apisDir,
-    args.get('queries-index') ?? 'queries.ts',
+  const apisDir = path.resolve(
+    repoRoot,
+    args.get('out') ?? 'shared/src/core/apis/generated',
   );
   const dryRun = args.get('dry-run') === 'true';
 
-  return { spec, apisDir, queriesIndex, dryRun };
+  return { spec, apisDir, dryRun };
 };
 
 const main = async () => {
@@ -88,11 +86,13 @@ const main = async () => {
       if (queryFile) {
         console.log(`  --- ${lowerTag}.query.ts ---\n${queryFile}  ---`);
       }
+      const indexFile = generateTagIndexFile(tag, Boolean(queryFile));
+      console.log(`  --- ${lowerTag}/index.ts ---\n${indexFile}  ---`);
     }
     return;
   }
 
-  const writtenTags: string[] = [];
+  let queryFileCount = 0;
   for (const [tag, ops] of tagGroups) {
     const lowerTag = tag.toLowerCase();
     const apiContent = generateApiFile(tag, ops);
@@ -109,16 +109,17 @@ const main = async () => {
         `${lowerTag}.query.ts`,
       );
       await writeFile(queryPath, queryContent, 'utf-8');
-      writtenTags.push(tag);
+      queryFileCount++;
     }
+
+    const indexContent = generateTagIndexFile(tag, Boolean(queryContent));
+    const indexPath = path.resolve(opts.apisDir, lowerTag, 'index.ts');
+    await writeFile(indexPath, indexContent, 'utf-8');
   }
 
   console.log(
-    `[oas-gen] wrote .api.ts for ${tagGroups.size} tag(s); .query.ts for ${writtenTags.length} tag(s)`,
+    `[oas-gen] wrote .api.ts/index.ts for ${tagGroups.size} tag(s); .query.ts for ${queryFileCount} tag(s)`,
   );
-
-  await writeQueriesIndex(opts.queriesIndex, writtenTags);
-  console.log(`[oas-gen] updated ${opts.queriesIndex}`);
 };
 
 main().catch((err) => {

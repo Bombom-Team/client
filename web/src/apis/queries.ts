@@ -56,11 +56,3 @@ export const queries = {
   // subscriptions
   ...subscriptionsQueries,
 };
-
-// @oas-gen:start (do not edit)
-/* eslint-disable import/order */
-import { petQueries } from './pet/pet.query';
-export const oasGenQueries = {
-  ...petQueries,
-};
-// @oas-gen:end

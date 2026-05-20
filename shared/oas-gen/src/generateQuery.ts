@@ -1,5 +1,6 @@
 import type { NormalizedOperation } from './utils/parseSpec';
 import { isPageable } from './utils/detectPageable';
+import { deriveFnName } from './utils/fnName';
 import { toLowerCamel } from './utils/naming';
 
 const HEADER = `/* eslint-disable */
@@ -9,26 +10,21 @@ const HEADER = `/* eslint-disable */
  */
 `;
 
-const buildArgList = (op: NormalizedOperation): string => {
+const hasArgs = (op: NormalizedOperation): boolean => {
   const pathParams = op.parameters.filter((p) => p.in === 'path');
   const queryParams = op.parameters.filter((p) => p.in === 'query');
-  const hasArgs =
+  return (
     pathParams.length > 0 ||
     queryParams.length > 0 ||
-    Boolean(op.requestBodySchemaRef);
-  if (!hasArgs) return '';
-  return 'params: Parameters<typeof ' + op.operationId + '>[0]';
+    Boolean(op.requestBodySchemaRef)
+  );
 };
 
-const buildCallArgs = (op: NormalizedOperation): string => {
-  const pathParams = op.parameters.filter((p) => p.in === 'path');
-  const queryParams = op.parameters.filter((p) => p.in === 'query');
-  const hasArgs =
-    pathParams.length > 0 ||
-    queryParams.length > 0 ||
-    Boolean(op.requestBodySchemaRef);
-  return hasArgs ? 'params' : '';
-};
+const buildArgList = (op: NormalizedOperation, fnName: string): string =>
+  hasArgs(op) ? `params: Parameters<typeof ${fnName}>[0]` : '';
+
+const buildCallArgs = (op: NormalizedOperation): string =>
+  hasArgs(op) ? 'params' : '';
 
 const buildQueryKey = (
   tag: string,
@@ -37,9 +33,7 @@ const buildQueryKey = (
 ): string => {
   const base: string[] = [`'${tag.toLowerCase()}'`, `'${op.operationId}'`];
   if (variant === 'infinite') base.push(`'infinite'`);
-  const hasArgs =
-    op.parameters.length > 0 || Boolean(op.requestBodySchemaRef);
-  if (hasArgs) base.push('params');
+  if (hasArgs(op)) base.push('params');
   return `[${base.join(', ')}]`;
 };
 
@@ -50,39 +44,40 @@ export const generateQueryFile = (
   const getOps = ops.filter((op) => op.method === 'get');
   if (getOps.length === 0) return null;
 
-  const fnImports = getOps.map((op) => op.operationId).join(', ');
   const lowerTag = toLowerCamel(tag);
-
   const usesInfinite = getOps.some(isPageable);
 
   const queryImports = ['queryOptions'];
   if (usesInfinite) queryImports.push('infiniteQueryOptions');
 
+  const fnImports = getOps.map((op) => deriveFnName(op));
+
   const entries: string[] = [];
   for (const op of getOps) {
-    const argDecl = buildArgList(op);
+    const fnName = deriveFnName(op);
+    const argDecl = buildArgList(op, fnName);
     const callArgs = buildCallArgs(op);
     const arrow = argDecl ? `(${argDecl})` : '()';
     const queryKey = buildQueryKey(tag, op);
     entries.push(
-      `  ${toLowerCamel(op.operationId)}: ${arrow} =>\n` +
+      `  ${op.operationId}: ${arrow} =>\n` +
         `    queryOptions({\n` +
         `      queryKey: ${queryKey},\n` +
-        `      queryFn: () => ${op.operationId}(${callArgs}),\n` +
+        `      queryFn: () => ${fnName}(${callArgs}),\n` +
         `    }),`,
     );
 
     if (isPageable(op)) {
       const infiniteKey = buildQueryKey(tag, op, 'infinite');
       entries.push(
-        `  ${toLowerCamel(op.operationId)}Infinite: ${arrow} =>\n` +
+        `  ${op.operationId}Infinite: ${arrow} =>\n` +
           `    infiniteQueryOptions({\n` +
           `      queryKey: ${infiniteKey},\n` +
           `      queryFn: ({ pageParam = 0 }) =>\n` +
-          `        ${op.operationId}({\n` +
+          `        ${fnName}({\n` +
           `          ...(params as object),\n` +
           `          page: pageParam,\n` +
-          `        } as Parameters<typeof ${op.operationId}>[0]),\n` +
+          `        } as Parameters<typeof ${fnName}>[0]),\n` +
           `      getNextPageParam: (lastPage: any) => {\n` +
           `        if (!lastPage || lastPage.last) return undefined;\n` +
           `        return (lastPage.number ?? 0) + 1;\n` +
@@ -96,7 +91,7 @@ export const generateQueryFile = (
   return (
     HEADER +
     `import { ${queryImports.join(', ')} } from '@tanstack/react-query';\n` +
-    `import { ${fnImports} } from './${tag.toLowerCase()}.api';\n\n` +
+    `import { ${fnImports.join(', ')} } from './${tag.toLowerCase()}.api';\n\n` +
     `export const ${lowerTag}Queries = {\n` +
     entries.join('\n') +
     `\n};\n`

@@ -11,7 +11,7 @@
     "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
     "stylelint:fix": "stylelint './src/**/*.tsx' --fix",
     "format": "prettier --write . && stylelint './src/**/*.tsx' --fix",
-    "generate-openapi-types": "dotenv -e .env -- bash -c 'openapi-typescript $OPEN_API_DOCS -o ./src/types/openapi.d.ts && prettier --write ./src/types/openapi.d.ts && OAS_SPEC_URL=\"${OAS_SPEC_URL:-https://raw.githubusercontent.com/Bombom-Team/bom-bom-api-spec/main/openapi.yaml}\" && openapi-typescript $OAS_SPEC_URL -o ./src/types/openapi-spec.d.ts && prettier --write ./src/types/openapi-spec.d.ts && node ../shared/oas-gen/bin/oas-gen.mjs --spec $OAS_SPEC_URL --out web/src/apis && prettier --write \"./src/apis/queries.ts\" \"./src/apis/**/*.api.ts\" \"./src/apis/**/*.query.ts\"'",
+    "generate-openapi-types": "dotenv -e .env -- bash -c 'openapi-typescript $OPEN_API_DOCS -o ./src/types/openapi.d.ts && prettier --write ./src/types/openapi.d.ts && OAS_SPEC_URL=\"${OAS_SPEC_URL:-https://raw.githubusercontent.com/Bombom-Team/bom-bom-api-spec/main/openapi.yaml}\" && openapi-typescript $OAS_SPEC_URL -o ../shared/src/core/apis/generated/types.d.ts && prettier --write ../shared/src/core/apis/generated/types.d.ts && node ../shared/oas-gen/bin/oas-gen.mjs --spec $OAS_SPEC_URL --out shared/src/core/apis/generated && prettier --write \"../shared/src/core/apis/generated/**/*.ts\"'",
     "type-check": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
