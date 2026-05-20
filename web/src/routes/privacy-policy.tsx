@@ -18,7 +18,7 @@ function PrivacyPolicyPage() {
       <ContentWrapper>
         <Title>개인정보 처리방침</Title>
         <Intro>
-          본 개인정보 처리방침은 모바일 기기용 <strong>봄봄 앱</strong>에
+          본 개인정보 처리방침은 <strong>봄봄 웹 서비스 및 앱</strong>에
           적용됩니다. 서비스 제공자는 <strong>Antarctica</strong>이며, 본
           서비스는 &quot;있는 그대로&quot; 제공됩니다.
         </Intro>
@@ -26,23 +26,24 @@ function PrivacyPolicyPage() {
         <Section>
           <SectionTitle>정보 수집 및 이용</SectionTitle>
           <Paragraph>
-            앱은 다운로드 및 사용 시 아래와 같은 정보를 수집할 수 있습니다.
+            서비스는 접속, 다운로드 및 이용 시 아래와 같은 정보를 수집할 수
+            있습니다.
           </Paragraph>
           <List>
             <li>사용자의 인터넷 프로토콜 주소(IP 주소 등)</li>
             <li>방문 페이지, 방문 시간 및 날짜</li>
-            <li>앱 사용 시간</li>
-            <li>모바일 기기의 운영 체제</li>
+            <li>서비스 이용 시간</li>
+            <li>사용자 기기, 브라우저 및 운영 체제 정보</li>
           </List>
           <Paragraph>
-            앱은 사용자의 정확한 위치 정보를 수집하지 않습니다. 다만, 대략적인
-            지리적 위치를 파악하여 아래와 같은 목적으로 사용합니다.
+            서비스는 사용자의 정확한 위치 정보를 수집하지 않습니다. 다만,
+            대략적인 지리적 위치를 파악하여 아래와 같은 목적으로 사용합니다.
           </Paragraph>
           <List>
             <li>위치 기반 서비스: 개인화된 콘텐츠 및 추천 제공</li>
-            <li>분석 및 개선: 사용자 행동 분석, 앱 성능 개선</li>
+            <li>분석 및 개선: 사용자 행동 분석, 서비스 성능 개선</li>
             <li>
-              제3자 서비스: 외부 서비스로 익명화된 정보를 전송하여 앱 개선
+              제3자 서비스: 외부 서비스로 익명화된 정보를 전송하여 서비스 개선
             </li>
           </List>
           <Paragraph>
@@ -76,10 +77,11 @@ function PrivacyPolicyPage() {
         <Section>
           <SectionTitle>거부 권리 및 데이터 보유</SectionTitle>
           <Paragraph>
-            사용자는 앱을 삭제함으로써 모든 정보 수집을 중단할 수 있습니다.
+            사용자는 서비스 이용을 중단하거나 앱 또는 계정을 삭제함으로써 정보
+            수집을 중단할 수 있습니다.
           </Paragraph>
           <Paragraph>
-            서비스 제공자는 사용자가 앱을 사용하는 동안 데이터를 보유합니다.
+            서비스 제공자는 사용자가 서비스를 이용하는 동안 데이터를 보유합니다.
             데이터 삭제를 원하시면{' '}
             <MailLink href="mailto:bombom.news7@gmail.com">
               bombom.news7@gmail.com
@@ -106,12 +108,12 @@ function PrivacyPolicyPage() {
           <SectionTitle>변경 사항 및 동의</SectionTitle>
           <Paragraph>
             본 방침은 필요에 따라 수시로 변경될 수 있으며, 변경 사항은 본
-            페이지에 업데이트됩니다. 지속적인 앱 사용은 변경 사항에 동의한
+            페이지에 업데이트됩니다. 지속적인 서비스 이용은 변경 사항에 동의한
             것으로 간주됩니다.
           </Paragraph>
           <Paragraph>
-            본 방침은 <strong>2025년 9월 10일</strong>부터 효력이 발생합니다. 앱
-            사용을 통해 본 개인정보 처리방침에 따른 정보 처리에 동의함을
+            본 방침은 <strong>2025년 9월 10일</strong>부터 효력이 발생합니다.
+            서비스 이용을 통해 본 개인정보 처리방침에 따른 정보 처리에 동의함을
             의미합니다.
           </Paragraph>
         </Section>
@@ -119,11 +121,11 @@ function PrivacyPolicyPage() {
         <Section>
           <SectionTitle>계정 삭제</SectionTitle>
           <Paragraph>
-            사용자는 앱 내에서 직접 계정을 삭제할 수 있습니다.
+            사용자는 웹 서비스 또는 앱 내에서 직접 계정을 삭제할 수 있습니다.
           </Paragraph>
           <List>
             <li>
-              앱 실행 후 프로필 클릭 &gt; 회원 탈퇴 버튼을 통해 언제든지 계정을
+              로그인 후 프로필 클릭 &gt; 회원 탈퇴 버튼을 통해 언제든지 계정을
               삭제할 수 있습니다.
             </li>
             <li>
