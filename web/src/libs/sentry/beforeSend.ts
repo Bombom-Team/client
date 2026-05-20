@@ -1,10 +1,10 @@
 import { ApiError } from '@bombom/shared/apis';
 import { type ErrorEvent, type EventHint } from '@sentry/react';
 
-export function beforeSend(
+export const beforeSend = (
   event: ErrorEvent,
   hint: EventHint,
-): ErrorEvent | null {
+): ErrorEvent | null => {
   const error = hint.originalException;
 
   // 유저 네트워크 단절 — 조치 불가, 드롭
@@ -18,11 +18,5 @@ export function beforeSend(
     event.tags = { ...event.tags, error_type: 'JS_RUNTIME' };
   }
 
-  // sendDefaultPii: false이므로 UA만 명시적으로 첨부
-  event.request = {
-    ...event.request,
-    headers: { ...event.request?.headers, 'User-Agent': navigator.userAgent },
-  };
-
   return event;
-}
+};

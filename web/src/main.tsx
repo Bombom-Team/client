@@ -1,7 +1,6 @@
 import { ApiError } from '@bombom/shared/apis';
 import { Global } from '@emotion/react';
 import Clarity from '@microsoft/clarity';
-import * as Sentry from '@sentry/react';
 import { QueryCache, QueryClient } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
@@ -10,7 +9,11 @@ import { ENV } from './apis/env';
 import { queries } from './apis/queries';
 import PageErrorFallback from './components/PageErrorFallback/PageErrorFallback';
 import GAInitializer from './libs/googleAnalytics/GAInitializer';
-import { beforeSend } from './libs/sentry/sentry';
+import { initSentry } from './libs/sentry/initSentry';
+import {
+  captureQueryError,
+  SentryErrorBoundary,
+} from './libs/sentry/sentryUtils';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
 import { isDevelopment, isProduction } from './utils/environment';
@@ -38,8 +41,7 @@ export const queryClient = new QueryClient({
       }
 
       // profile/me 외 API 401 포함 그 외 모든 에러 → 캡처
-      // eslint-disable-next-line import/namespace
-      Sentry.captureException(error, { extra: { queryKey: query.queryKey } });
+      captureQueryError({ error, queryKey: query.queryKey });
     },
   }),
   defaultOptions: {
@@ -71,19 +73,9 @@ const router = createRouter({
   scrollRestoration: true,
 });
 
-// router 생성 이후에 init해야 tanstackRouterBrowserTracingIntegration이 router를 참조할 수 있음
-Sentry.init({
-  dsn: ENV.sentryDsn,
-  sendDefaultPii: false, // IP·쿠키·헤더 자동 수집 비활성. UA는 beforeSend에서 명시적 첨부
-  integrations: [
-    Sentry.tanstackRouterBrowserTracingIntegration(router),
-    // eslint-disable-next-line import/namespace
-    Sentry.replayIntegration(),
-  ],
-  tracesSampleRate: isDevelopment ? 1 : 0.1,
-  replaysSessionSampleRate: 0,
-  replaysOnErrorSampleRate: 1.0,
-  beforeSend,
+initSentry({
+  isDevelopment,
+  router,
 });
 
 declare module '@tanstack/react-router' {
@@ -116,9 +108,9 @@ enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <Global styles={reset} />
-      <Sentry.ErrorBoundary fallback={() => <PageErrorFallback />}>
+      <SentryErrorBoundary fallback={() => <PageErrorFallback />}>
         <RouterProvider router={router} />
-      </Sentry.ErrorBoundary>
+      </SentryErrorBoundary>
       <GAInitializer />
     </StrictMode>,
   );
