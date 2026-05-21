@@ -26,17 +26,29 @@ import { isProduction } from './utils/environment';
 
 if (isProduction) Clarity.init(ENV.clarityProjectId);
 
+const EXPECTED_UNAUTHORIZED_QUERY_KEYS = [
+  queries.userProfile().queryKey,
+  queries.myMonthlyReadingRank().queryKey,
+  queries.myStreakReadingRank().queryKey,
+];
+
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error, query) => {
       if (error instanceof ApiError && error.status === 401) {
-        const isUserProfileQuery = matchQuery(
-          { queryKey: queries.userProfile().queryKey, exact: true },
-          query,
-        );
+        const isExpectedUnauthorizedQuery =
+          EXPECTED_UNAUTHORIZED_QUERY_KEYS.some((queryKey) =>
+            matchQuery(
+              {
+                queryKey,
+                exact: true,
+              },
+              query,
+            ),
+          );
 
-        // profile/me 401: 비로그인 정상 흐름 → 드롭
-        if (isUserProfileQuery) return;
+        // 비로그인 정상 흐름에서 발생 가능한 인증 쿼리 401은 드롭
+        if (isExpectedUnauthorizedQuery) return;
 
         const profileData = queryClient.getQueryData(
           queries.userProfile().queryKey,
