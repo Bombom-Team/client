@@ -1,11 +1,18 @@
 import { ApiError } from '@bombom/shared/apis';
-import { type ErrorEvent, type EventHint } from '@sentry/react';
-
-type ErrorTag = 'API_ERROR' | 'RENDER_CRASH' | 'JS_RUNTIME';
+import {
+  type ErrorEvent,
+  type EventHint,
+  type SeverityLevel,
+} from '@sentry/react';
 
 const RENDER_CRASH_MECHANISM = 'auto.function.react.error_boundary';
 
-const isRenderCrash = (event: ErrorEvent): boolean => {
+interface Classification {
+  tags: Record<string, string | number>;
+  level: SeverityLevel;
+}
+
+const isRenderCrash = (event: ErrorEvent) => {
   return (
     event.exception?.values?.some(
       (exception) => exception.mechanism?.type === RENDER_CRASH_MECHANISM,
@@ -13,41 +20,39 @@ const isRenderCrash = (event: ErrorEvent): boolean => {
   );
 };
 
-const classifyError = (event: ErrorEvent, hint: EventHint): ErrorTag => {
+const isP1Status = (status: number) => status >= 500 || status === 401;
+
+const classifyError = (event: ErrorEvent, hint: EventHint): Classification => {
   if (hint.originalException instanceof ApiError) {
-    return 'API_ERROR';
+    const { status } = hint.originalException;
+    const isP1 = isP1Status(status);
+    return {
+      tags: {
+        error_type: 'API_ERROR',
+        http_status: status,
+        priority: isP1 ? 'P1' : 'P2',
+      },
+      level: isP1 ? 'error' : 'warning',
+    };
   }
 
   if (isRenderCrash(event)) {
-    return 'RENDER_CRASH';
+    return {
+      tags: { error_type: 'RENDER_CRASH', priority: 'P1' },
+      level: 'fatal',
+    };
   }
 
-  return 'JS_RUNTIME';
+  return {
+    tags: { error_type: 'JS_RUNTIME', priority: 'P2' },
+    level: 'warning',
+  };
 };
-
-const applyErrorTag = (event: ErrorEvent, errorTag: ErrorTag): ErrorEvent => ({
-  ...event,
-  tags: { ...event.tags, error_type: errorTag },
-});
 
 export const beforeSend = (
   event: ErrorEvent,
   hint: EventHint,
 ): ErrorEvent | null => {
-  const classification = classifyError(event, hint);
-
-  if (classification === 'API_ERROR') {
-    return applyErrorTag(
-      {
-        ...event,
-        tags: {
-          ...event.tags,
-          http_status: (hint.originalException as ApiError).status,
-        },
-      },
-      'API_ERROR',
-    );
-  }
-
-  return applyErrorTag(event, classification);
+  const { tags, level } = classifyError(event, hint);
+  return { ...event, level, tags: { ...event.tags, ...tags } };
 };
