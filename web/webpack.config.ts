@@ -139,6 +139,9 @@ export default (env: Env, argv: Argv) => {
               org: process.env.SENTRY_ORG,
               project: process.env.SENTRY_PROJECT,
               authToken: process.env.SENTRY_AUTH_TOKEN,
+              release: {
+                name: process.env.SENTRY_RELEASE,
+              },
               sourcemaps: {
                 filesToDeleteAfterUpload: ['./dist/**/*.map'],
               },

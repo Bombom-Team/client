@@ -5,6 +5,7 @@ export const ENV = {
   token: `${process.env.API_TOKEN}`,
   enableMsw: `${process.env.ENABLE_MSW}`,
   sentryDsn: `${process.env.SENTRY_DSN}`,
+  sentryRelease: `${process.env.SENTRY_RELEASE}`,
   nodeEnv: `${process.env.NODE_ENV}`,
   clarityProjectId: `${process.env.CLARITY_PROJECT_ID}`,
   monitoringStatusUrl: `${process.env.MONITORING_STATUS_URL}`,

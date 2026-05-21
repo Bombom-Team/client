@@ -23,6 +23,7 @@ export const initSentry = ({ router }: InitSentryParams) => {
 
   init({
     dsn: ENV.sentryDsn,
+    release: ENV.sentryRelease,
     sendDefaultPii: false,
     allowUrls: [/https:\/\/.*\.bombom\.news/],
     ignoreErrors: [...NETWORK_NOISE_ERROR_PATTERNS],
