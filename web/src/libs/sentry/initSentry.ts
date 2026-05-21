@@ -18,7 +18,6 @@ type InitSentryParams = {
   router: Parameters<typeof tanstackRouterBrowserTracingIntegration>[0];
 };
 
-// router 생성 이후에 init해야 tanstackRouterBrowserTracingIntegration이 router를 참조할 수 있음
 export const initSentry = ({ router }: InitSentryParams) => {
   if (!ENV.sentryDsn || ENV.sentryDsn === 'undefined') return;
 
