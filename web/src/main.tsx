@@ -1,7 +1,12 @@
 import { ApiError } from '@bombom/shared/apis';
 import { Global } from '@emotion/react';
 import Clarity from '@microsoft/clarity';
-import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  matchQuery,
+} from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -25,16 +30,17 @@ export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error, query) => {
       if (error instanceof ApiError && error.status === 401) {
-        const profileQueryKey = queries.userProfile().queryKey;
-        const isUserProfileQuery =
-          query.queryKey.length === profileQueryKey.length &&
-          query.queryKey.every((k, i) => k === profileQueryKey[i]);
+        const isUserProfileQuery = matchQuery(
+          { queryKey: queries.userProfile().queryKey, exact: true },
+          query,
+        );
 
         // profile/me 401: 비로그인 정상 흐름 → 드롭
         if (isUserProfileQuery) return;
 
-        // 로그인 상태에서 다른 API 401: 세션 만료 → reload
-        const profileData = queryClient.getQueryData(profileQueryKey);
+        const profileData = queryClient.getQueryData(
+          queries.userProfile().queryKey,
+        );
         if (profileData) {
           window.location.reload();
           return;
@@ -82,6 +88,7 @@ const router = createRouter({
 if (isProduction) {
   initSentry({ router });
 }
+
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
