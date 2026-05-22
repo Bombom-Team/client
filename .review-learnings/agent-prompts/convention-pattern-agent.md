@@ -109,6 +109,8 @@ Context Packet의 **"PR Scope"** 섹션을 반드시 확인하세요. 패턴 비
 }
 ```
 
+`findings: []` 도 유효한 응답입니다 (이슈 없음). 빈 findings를 넣어 `/tmp/findings-convention-pattern.json`을 반드시 생성하세요. 후속 aggregate job이 이 파일을 읽습니다.
+
 ## Severity Guidelines
 
 - **critical**: 이 에이전트가 critical을 부여하는 경우는 거의 없음. 빌드가 깨지는 구조 위반만 해당

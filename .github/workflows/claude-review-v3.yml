@@ -1,0 +1,737 @@
+# PR Review Agent v3 — multi-job pipeline with GHA-enforced parallelism
+#
+# 단일 Claude 세션으로 모든 단계를 오케스트레이션하던 v2를 3개 job으로 분리.
+# v2는 Step 2/4의 병렬 Task 호출이 Claude의 "한 결과 보고 다음 결정" 본능을 못 이김 (100개 run 중 0개 병렬).
+# v3는 GitHub Actions matrix로 워크플로 레벨에서 병렬을 강제.
+#
+# Job 구조:
+#   1. prepare-context        : diff / rules / context / code-graph 인덱스 / triage score
+#   2. reviewer-agents (×2)   : Bug & Logic / Convention & Pattern 병렬 실행
+#   3. finalize               : bash 집계 + inline Skeptic + 본문 작성 + 게시
+#
+# 인프라:
+#   - runs-on: ubuntu-latest (GitHub-hosted)
+#   - anthropics/claude-code-action@v1 (공식 액션)
+#
+# 필요한 GitHub Secrets:
+#   - ANTHROPIC_API_KEY: Anthropic API 키 (레포 또는 Bombom-Team org Secrets 에 등록)
+#
+# 선택적 GitHub Variables:
+#   - CLAUDE_REVIEW_MODEL_REVIEWER (작은 PR 기본값: claude-sonnet-4-6)
+#   - CLAUDE_REVIEW_MODEL_FINALIZE (작은 PR 기본값: claude-sonnet-4-6)
+#   - CLAUDE_REVIEW_MODEL_REVIEWER_STRONG (큰 PR 기본값: claude-opus-4-7)
+#   - CLAUDE_REVIEW_MODEL_FINALIZE_STRONG (큰 PR 기본값: claude-opus-4-7)
+#
+# 모델 선택: prepare-context의 triage score(diff/파일/새파일 가중치)가 4 이상이면 STRONG 모델 사용.
+
+name: PR Review Agent v3
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  issue_comment:
+    types:
+      - created
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR 번호 (테스트용)'
+        required: true
+        type: number
+      target_ref:
+        description: '테스트할 브랜치/커밋 (기본값: PR head)'
+        required: false
+        type: string
+
+concurrency:
+  # event_name을 group key에 포함 — PR open 직후 봇의 자동 issue_comment가 같은 group을
+  # 점유해 pull_request run을 cancel하는 race를 방지. 같은 이벤트(pull_request opened →
+  # synchronize) 내에서는 여전히 cancel-in-progress 동작.
+  group: pr-review-v3-${{ github.event_name }}-${{ github.event.pull_request.number || github.event.issue.number || github.event.inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  contents: read
+  id-token: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  prepare-context:
+    if: >
+      (github.event_name == 'pull_request' &&
+        (github.event.action == 'opened' || github.event.action == 'synchronize') &&
+        github.event.pull_request.draft == false) ||
+      (github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request != null &&
+        contains(github.event.comment.body, '/claude-review') &&
+        github.event.comment.user.type == 'User') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      should_skip: ${{ steps.prepare_diff.outputs.should_skip }}
+      pr_number: ${{ steps.branch_info.outputs.pr_number }}
+      head_sha: ${{ steps.branch_info.outputs.head_sha }}
+      target_ref: ${{ steps.branch_info.outputs.target_ref }}
+      review_mode: ${{ steps.prepare_diff.outputs.review_mode }}
+      diff_lines: ${{ steps.prepare_diff.outputs.diff_lines }}
+      changed_count: ${{ steps.prepare_diff.outputs.changed_count }}
+      triage_score: ${{ steps.triage.outputs.score }}
+      reviewer_model: ${{ steps.triage.outputs.reviewer_model }}
+      finalize_model: ${{ steps.triage.outputs.finalize_model }}
+    steps:
+      - name: Determine target branch and PR info
+        id: branch_info
+        run: |
+          if [ "$EVENT_NAME" == "pull_request" ]; then
+            echo "target_ref=$HEAD_REF" >> $GITHUB_OUTPUT
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "base_ref=$BASE_REF" >> $GITHUB_OUTPUT
+            echo "head_sha=$PR_HEAD_SHA" >> $GITHUB_OUTPUT
+          elif [ "$EVENT_NAME" == "issue_comment" ]; then
+            PR_DATA=$(gh api "$PR_URL")
+            echo "target_ref=$(echo "$PR_DATA" | jq -r '.head.ref')" >> $GITHUB_OUTPUT
+            echo "pr_number=$(echo "$PR_DATA" | jq -r '.number')" >> $GITHUB_OUTPUT
+            echo "base_ref=$(echo "$PR_DATA" | jq -r '.base.ref')" >> $GITHUB_OUTPUT
+            echo "head_sha=$(echo "$PR_DATA" | jq -r '.head.sha')" >> $GITHUB_OUTPUT
+          elif [ "$EVENT_NAME" == "workflow_dispatch" ]; then
+            # PR 데이터는 항상 가져와서 base_ref/head_sha를 채움.
+            # target_ref만 INPUT_TARGET_REF가 있으면 그것으로 override (특정 commit 테스트용).
+            PR_DATA=$(gh pr view "$INPUT_PR_NUMBER" --json headRefName,baseRefName,headRefOid --repo "$GITHUB_REPOSITORY")
+            if [ -n "$INPUT_TARGET_REF" ]; then
+              echo "target_ref=$INPUT_TARGET_REF" >> $GITHUB_OUTPUT
+            else
+              echo "target_ref=$(echo "$PR_DATA" | jq -r '.headRefName')" >> $GITHUB_OUTPUT
+            fi
+            echo "base_ref=$(echo "$PR_DATA" | jq -r '.baseRefName')" >> $GITHUB_OUTPUT
+            echo "head_sha=$(echo "$PR_DATA" | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
+            echo "pr_number=$INPUT_PR_NUMBER" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_URL: ${{ github.event.issue.pull_request.url }}
+          INPUT_TARGET_REF: ${{ github.event.inputs.target_ref }}
+          INPUT_PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.branch_info.outputs.target_ref }}
+
+      - name: Detect force push
+        id: force_push_check
+        if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
+        run: |
+          if git merge-base --is-ancestor "$BEFORE_SHA" "$AFTER_SHA" 2>/dev/null; then
+            echo "is_forced=false" >> $GITHUB_OUTPUT
+          else
+            echo "is_forced=true" >> $GITHUB_OUTPUT
+          fi
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.event.after }}
+
+      - name: Prepare diff
+        id: prepare_diff
+        run: |
+          BASE_REF="${{ steps.branch_info.outputs.base_ref || 'main' }}"
+          git fetch origin "$BASE_REF" 2>/dev/null || true
+          MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD 2>/dev/null || git merge-base "$BASE_REF" HEAD)
+
+          PR_NUM="${{ steps.branch_info.outputs.pr_number }}"
+          DIFF_FILE="/tmp/review-${PR_NUM}-diff.txt"
+          CHANGED_FILE="/tmp/review-${PR_NUM}-changed-files.txt"
+
+          IS_INCREMENTAL="${{ steps.force_push_check.outputs.is_forced == 'false' && github.event.action == 'synchronize' }}"
+
+          # EXCLUDE_PATHS: 프로젝트에 맞게 수정하세요 (client = pnpm 모노레포)
+          EXCLUDE_PATHS=":(exclude)pnpm-lock.yaml :(exclude)*.gen.ts :(exclude)*.generated.*"
+
+          if [ "$IS_INCREMENTAL" = "true" ]; then
+            BEFORE_SHA="${{ github.event.before }}"
+            AFTER_SHA="${{ github.event.after }}"
+            git diff ${BEFORE_SHA}...${AFTER_SHA} -- . ${EXCLUDE_PATHS} > "${DIFF_FILE}"
+            git diff --name-only ${BEFORE_SHA}...${AFTER_SHA} -- . ${EXCLUDE_PATHS} > "${CHANGED_FILE}"
+            echo "review_mode=incremental" >> $GITHUB_OUTPUT
+          else
+            git diff ${MERGE_BASE}...HEAD -- . ${EXCLUDE_PATHS} > "${DIFF_FILE}"
+            git diff --name-only ${MERGE_BASE}...HEAD -- . ${EXCLUDE_PATHS} > "${CHANGED_FILE}"
+            echo "review_mode=full" >> $GITHUB_OUTPUT
+          fi
+
+          DIFF_LINES=$(wc -l < "${DIFF_FILE}" | tr -d ' ')
+          CHANGED_COUNT=$(wc -l < "${CHANGED_FILE}" | tr -d ' ')
+
+          echo "diff_file=${DIFF_FILE}" >> $GITHUB_OUTPUT
+          echo "changed_file=${CHANGED_FILE}" >> $GITHUB_OUTPUT
+          echo "diff_lines=$DIFF_LINES" >> $GITHUB_OUTPUT
+          echo "changed_count=$CHANGED_COUNT" >> $GITHUB_OUTPUT
+          echo "merge_base=$MERGE_BASE" >> $GITHUB_OUTPUT
+
+          if [ "$CHANGED_COUNT" = "0" ]; then
+            echo "should_skip=true" >> $GITHUB_OUTPUT
+            echo "⏭️ No reviewable changes."
+          else
+            echo "should_skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Compute triage score and model selection
+        id: triage
+        if: steps.prepare_diff.outputs.should_skip != 'true'
+        # 복잡도 점수: diff 크기 + 파일 수 + 새 파일 수 기반.
+        # score >= 4면 STRONG 모델(Opus) 사용 — 큰 cross-file 리팩토링/기능 PR에서 정확도 향상.
+        # 임계값 4의 의미: diff 500줄+ 단독, 또는 diff 200줄+ + 파일 6개+ 같은 조합.
+        run: |
+          DIFF_LINES=${{ steps.prepare_diff.outputs.diff_lines }}
+          CHANGED_COUNT=${{ steps.prepare_diff.outputs.changed_count }}
+
+          SCORE=0
+          if [ "$DIFF_LINES" -gt 500 ]; then SCORE=$((SCORE + 3)); fi
+          if [ "$DIFF_LINES" -gt 200 ]; then SCORE=$((SCORE + 2)); fi
+          if [ "$DIFF_LINES" -gt 50 ]; then SCORE=$((SCORE + 1)); fi
+          if [ "$CHANGED_COUNT" -gt 10 ]; then SCORE=$((SCORE + 2)); fi
+          if [ "$CHANGED_COUNT" -gt 5 ]; then SCORE=$((SCORE + 1)); fi
+
+          MERGE_BASE="${{ steps.prepare_diff.outputs.merge_base }}"
+          if [ -n "$MERGE_BASE" ]; then
+            NEW_FILES=$(git diff --name-only --diff-filter=A "${MERGE_BASE}...HEAD" 2>/dev/null | wc -l | tr -d ' ')
+          else
+            NEW_FILES=0
+          fi
+          if [ "$NEW_FILES" -gt 3 ]; then SCORE=$((SCORE + 1)); fi
+
+          echo "score=$SCORE" >> $GITHUB_OUTPUT
+
+          if [ "$SCORE" -ge 4 ]; then
+            echo "reviewer_model=${{ vars.CLAUDE_REVIEW_MODEL_REVIEWER_STRONG || 'claude-opus-4-7' }}" >> $GITHUB_OUTPUT
+            echo "finalize_model=${{ vars.CLAUDE_REVIEW_MODEL_FINALIZE_STRONG || 'claude-opus-4-7' }}" >> $GITHUB_OUTPUT
+            echo "📊 Triage: score=$SCORE → Opus"
+          else
+            echo "reviewer_model=${{ vars.CLAUDE_REVIEW_MODEL_REVIEWER || 'claude-sonnet-4-6' }}" >> $GITHUB_OUTPUT
+            echo "finalize_model=${{ vars.CLAUDE_REVIEW_MODEL_FINALIZE || 'claude-sonnet-4-6' }}" >> $GITHUB_OUTPUT
+            echo "📊 Triage: score=$SCORE → Sonnet"
+          fi
+
+      - name: Cache code graph index
+        if: steps.prepare_diff.outputs.should_skip != 'true'
+        uses: actions/cache@v4
+        with:
+          path: .code-graph/
+          key: code-graph-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          restore-keys: code-graph-${{ runner.os }}-
+
+      - name: Setup code-graph CLI
+        if: steps.prepare_diff.outputs.should_skip != 'true'
+        uses: ./.github/actions/setup-code-graph
+
+      - name: Build code graph index
+        if: steps.prepare_diff.outputs.should_skip != 'true'
+        run: |
+          PR_NUM="${{ steps.branch_info.outputs.pr_number }}"
+          STDERR_LOG="/tmp/review-${PR_NUM}-code-graph-stderr.log"
+          if ! code-graph incremental-index 2>"$STDERR_LOG"; then
+            echo "⚠️ Code graph indexing failed. stderr:"
+            cat "$STDERR_LOG" 2>/dev/null || echo "(stderr 로그 없음)"
+          fi
+
+      - name: Assemble context packet
+        id: packet
+        if: steps.prepare_diff.outputs.should_skip != 'true'
+        run: |
+          PR_NUM="${{ steps.branch_info.outputs.pr_number }}"
+          RULES_FILE="/tmp/review-${PR_NUM}-rules.md"
+          CONTEXT_FILE="/tmp/review-${PR_NUM}-context.md"
+
+          # ============================================================
+          # RULES_FILE: 정적 가이드라인 (PR마다 동일)
+          # ============================================================
+          echo "# Review Rules (정적 — 매 PR 동일)" > "${RULES_FILE}"
+
+          echo -e "\n## Review Guidelines" >> "${RULES_FILE}"
+          cat .review-learnings/REVIEW.md >> "${RULES_FILE}" 2>/dev/null || echo "(없음)" >> "${RULES_FILE}"
+
+          echo -e "\n## Promoted Rules (accepted ≥3회로 승격된 규칙)" >> "${RULES_FILE}"
+          cat .review-learnings/additional-rules.md >> "${RULES_FILE}" 2>/dev/null || echo "(없음)" >> "${RULES_FILE}"
+
+          echo -e "\n## Learned Patterns (팀에서 자주 지적되는 패턴)" >> "${RULES_FILE}"
+          cat .review-learnings/patterns.md >> "${RULES_FILE}" 2>/dev/null || echo "(없음)" >> "${RULES_FILE}"
+
+          echo -e "\n## False Positives (오탐 이력 — 지적 금지)" >> "${RULES_FILE}"
+          cat .review-learnings/false-positives.md >> "${RULES_FILE}" 2>/dev/null || echo "(없음)" >> "${RULES_FILE}"
+
+          # PR Scope 판정 일반 규칙
+          echo -e "\n## PR Scope: 모노레포 영향 범위 판정 (일반 규칙)" >> "${RULES_FILE}"
+          printf '%s\n' \
+            '' \
+            '> 이 규칙은 강제됩니다 — 위반 시 Skeptic에서 invalid 처리됩니다.' \
+            '> 이번 PR의 구체적인 수정 대상/제외 워크스페이스는 context.md의 "PR Scope (이번 PR 인스턴스)" 섹션을 참고하세요.' \
+            '' \
+            '**원칙**:' \
+            '- client는 pnpm 모노레포입니다: `app` / `web` / `admin` / `maeil-mail` 은 독립 배포 단위, `shared` 는 공유 패키지' \
+            '- 이번 PR이 변경한 `{변경 대상 워크스페이스}/**` + `shared/**` 만 영향 범위로 간주' \
+            '- 변경하지 않은 워크스페이스는 **독립 배포 단위**이므로 code-graph가 호출부로 보고해도 PR 영향 범위로 판단하지 마세요' \
+            '- 같은 이름의 훅/컴포넌트라도 **워크스페이스별로 다른 구현**일 수 있습니다' \
+            '- "광범위한 영향", "수많은 호출부" 같은 지적 시, 이번 PR이 변경한 워크스페이스 내 호출부만 카운트하세요' \
+            >> "${RULES_FILE}"
+
+          # ============================================================
+          # CONTEXT_FILE: 이번 PR 인스턴스
+          # ============================================================
+          echo "# PR Context (이번 PR 인스턴스)" > "${CONTEXT_FILE}"
+
+          echo -e "\n## PR Intent" >> "${CONTEXT_FILE}"
+          gh pr view "${PR_NUM}" --json body --jq '.body' >> "${CONTEXT_FILE}" 2>/dev/null || echo "(unavailable)" >> "${CONTEXT_FILE}"
+
+          echo -e "\n## Changed Files" >> "${CONTEXT_FILE}"
+          cat "${{ steps.prepare_diff.outputs.changed_file }}" >> "${CONTEXT_FILE}"
+
+          # PR Scope 인스턴스 (이번 PR이 건드린 워크스페이스 / 제외 워크스페이스)
+          # client 구조: app/web/admin/maeil-mail = 독립 배포 단위, shared = 공유 패키지
+          DEPLOY_WORKSPACES="app web admin maeil-mail"
+          CG_FILTER_PATTERN=""
+          echo -e "\n## PR Scope (이번 PR 인스턴스)" >> "${CONTEXT_FILE}"
+          CHANGED_WS=$(awk -F'/' '{print $1}' "${{ steps.prepare_diff.outputs.changed_file }}" | sort -u | tr '\n' ' ')
+          CHANGED_DEPLOY=""
+          for w in $DEPLOY_WORKSPACES; do
+            echo " $CHANGED_WS " | grep -q " $w " && CHANGED_DEPLOY="$CHANGED_DEPLOY $w"
+          done
+          CHANGED_DEPLOY=$(echo $CHANGED_DEPLOY | { grep -v '^$' || true; })
+          if [ -n "$CHANGED_DEPLOY" ]; then
+            OTHER_WS=""
+            for w in $DEPLOY_WORKSPACES; do
+              echo " $CHANGED_DEPLOY " | grep -q " $w " || OTHER_WS="$OTHER_WS $w"
+            done
+            OTHER_WS=$(echo $OTHER_WS | { grep -v '^$' || true; })
+
+            echo "**수정 대상 워크스페이스**: $CHANGED_DEPLOY" >> "${CONTEXT_FILE}"
+            echo "" >> "${CONTEXT_FILE}"
+            echo "- ✅ 영향 범위: \`{$(echo $CHANGED_DEPLOY | tr ' ' ',')}/**\` + \`shared/**\` (공유 패키지)" >> "${CONTEXT_FILE}"
+            if [ -n "$OTHER_WS" ]; then
+              echo "- ❌ **영향 범위 아님**: $OTHER_WS" >> "${CONTEXT_FILE}"
+              CG_FILTER_PATTERN="^($(echo $OTHER_WS | tr ' ' '|'))/"
+            fi
+          else
+            echo "이 PR은 단일 워크스페이스/공유 패키지 범위입니다." >> "${CONTEXT_FILE}"
+          fi
+
+          echo -e "\n## Code Graph: Dependencies & Symbols" >> "${CONTEXT_FILE}"
+
+          CG_TMPDIR=$(mktemp -d)
+          export CG_TMPDIR CG_FILTER_PATTERN
+
+          xargs -a "${{ steps.prepare_diff.outputs.changed_file }}" -P 4 -I {} bash -c '
+            file="$1"
+            [ -z "$file" ] && exit 0
+            out="$CG_TMPDIR/$(echo "$file" | tr "/" "_").txt"
+            {
+              echo "### $file"
+              if [ -n "$CG_FILTER_PATTERN" ]; then
+                code-graph deps "$file" 2>/dev/null | grep -Ev "$CG_FILTER_PATTERN" || true
+                code-graph overview "$file" --compact 2>/dev/null | grep -Ev "$CG_FILTER_PATTERN" || true
+              else
+                code-graph deps "$file" 2>/dev/null || true
+                code-graph overview "$file" --compact 2>/dev/null || true
+              fi
+              echo ""
+            } > "$out"
+          ' _ {}
+
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            out="$CG_TMPDIR/$(echo "$file" | tr '/' '_').txt"
+            [ -f "$out" ] && cat "$out" >> "${CONTEXT_FILE}"
+          done < "${{ steps.prepare_diff.outputs.changed_file }}"
+
+          rm -rf "$CG_TMPDIR"
+
+          echo "rules_file=${RULES_FILE}" >> $GITHUB_OUTPUT
+          echo "context_file=${CONTEXT_FILE}" >> $GITHUB_OUTPUT
+          echo "📋 rules: $(wc -l < "${RULES_FILE}" | tr -d ' ') lines · context: $(wc -l < "${CONTEXT_FILE}" | tr -d ' ') lines"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch previous REVIEW_META (incremental)
+        id: prev_meta
+        if: steps.prepare_diff.outputs.should_skip != 'true' && steps.prepare_diff.outputs.review_mode == 'incremental'
+        run: |
+          PR_NUM="${{ steps.branch_info.outputs.pr_number }}"
+          PREV_META_FILE="/tmp/review-${PR_NUM}-prev-meta.json"
+
+          # 가장 최근 봇 리뷰에서 REVIEW_META HTML 코멘트 추출.
+          # jq에서 `|`가 `or`보다 약하므로 `.body | contains(...)` 부분은 괄호 필수.
+          gh pr view "$PR_NUM" --json reviews --jq '.reviews | map(select(.author.login == "github-actions[bot]" or (.body | contains("REVIEW_META")))) | last.body // ""' \
+            > /tmp/prev-review-body.txt 2>/dev/null || echo "" > /tmp/prev-review-body.txt
+
+          # <!-- REVIEW_META ... --> 안의 JSON 추출
+          awk '/<!-- REVIEW_META/,/-->/' /tmp/prev-review-body.txt \
+            | sed '1d;$d' \
+            | jq -c '.' > "$PREV_META_FILE" 2>/dev/null \
+            || echo '{}' > "$PREV_META_FILE"
+
+          echo "prev_meta_file=${PREV_META_FILE}" >> $GITHUB_OUTPUT
+          if [ -s "$PREV_META_FILE" ] && [ "$(jq -r '.open_issues // [] | length' "$PREV_META_FILE")" != "0" ]; then
+            echo "📋 Previous open issues: $(jq '.open_issues | length' "$PREV_META_FILE")"
+          else
+            echo "📋 No previous open issues."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload review-context artifact
+        if: steps.prepare_diff.outputs.should_skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-context-${{ steps.branch_info.outputs.pr_number }}-${{ github.run_id }}
+          path: |
+            /tmp/review-${{ steps.branch_info.outputs.pr_number }}-rules.md
+            /tmp/review-${{ steps.branch_info.outputs.pr_number }}-context.md
+            /tmp/review-${{ steps.branch_info.outputs.pr_number }}-diff.txt
+            /tmp/review-${{ steps.branch_info.outputs.pr_number }}-changed-files.txt
+            /tmp/review-${{ steps.branch_info.outputs.pr_number }}-prev-meta.json
+          retention-days: 7
+          if-no-files-found: warn
+
+  reviewer-agents:
+    needs: prepare-context
+    if: needs.prepare-context.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        agent:
+          - name: bug-logic
+            output_filename: findings-bug-logic.json
+          - name: convention-pattern
+            output_filename: findings-convention-pattern.json
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # diff/changed-files는 review-context artifact로 받음. 코드 본문만 필요해 shallow checkout.
+          fetch-depth: 1
+          ref: ${{ needs.prepare-context.outputs.target_ref }}
+
+      - name: Restore code-graph index
+        uses: actions/cache@v4
+        with:
+          path: .code-graph/
+          key: code-graph-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          restore-keys: code-graph-${{ runner.os }}-
+
+      - name: Setup code-graph CLI
+        uses: ./.github/actions/setup-code-graph
+
+      - name: Download review-context
+        uses: actions/download-artifact@v4
+        with:
+          name: review-context-${{ needs.prepare-context.outputs.pr_number }}-${{ github.run_id }}
+          path: /tmp/_ctx
+
+      - name: Stage context files
+        run: |
+          PR_NUM="${{ needs.prepare-context.outputs.pr_number }}"
+          # download-artifact reproduces the original /tmp/... paths under /tmp/_ctx
+          mv "/tmp/_ctx/tmp/review-${PR_NUM}-rules.md" /tmp/rules.md 2>/dev/null || cp "/tmp/_ctx/review-${PR_NUM}-rules.md" /tmp/rules.md
+          mv "/tmp/_ctx/tmp/review-${PR_NUM}-context.md" /tmp/context.md 2>/dev/null || cp "/tmp/_ctx/review-${PR_NUM}-context.md" /tmp/context.md
+          mv "/tmp/_ctx/tmp/review-${PR_NUM}-diff.txt" /tmp/diff.txt 2>/dev/null || cp "/tmp/_ctx/review-${PR_NUM}-diff.txt" /tmp/diff.txt
+          mv "/tmp/_ctx/tmp/review-${PR_NUM}-changed-files.txt" /tmp/changed-files.txt 2>/dev/null || cp "/tmp/_ctx/review-${PR_NUM}-changed-files.txt" /tmp/changed-files.txt
+          ls -la /tmp/rules.md /tmp/context.md /tmp/diff.txt /tmp/changed-files.txt
+
+      - name: Run ${{ matrix.agent.name }} review
+        id: review
+        uses: anthropics/claude-code-action@v1
+        env:
+          PR_NUMBER: ${{ needs.prepare-context.outputs.pr_number }}
+          AGENT_NAME: ${{ matrix.agent.name }}
+          OUTPUT_FILE: /tmp/${{ matrix.agent.output_filename }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            당신은 PR Review 에이전트 중 **${{ matrix.agent.name }}** 관점의 리뷰어입니다.
+
+            ## 작업 순서
+
+            1. `.review-learnings/agent-prompts/${{ matrix.agent.name }}-agent.md`를 Read로 읽어 본인의 역할/Focus/Output Format/Severity Guidelines를 정확히 숙지하세요.
+            2. 다음 입력 파일을 모두 Read로 읽으세요:
+               - `/tmp/rules.md` (정적 규칙: REVIEW.md + 학습 데이터 + PR Scope 규칙)
+               - `/tmp/context.md` (이번 PR 맥락: Intent + Changed Files + PR Scope + code-graph 개요)
+               - `/tmp/diff.txt` (변경 사항)
+               - `/tmp/changed-files.txt` (변경 파일 목록)
+               - `CLAUDE.md` (프로젝트 컨벤션)
+            3. `mcp__code-graph__*` 도구로 함수 구현/호출부/유사 패턴을 직접 확인하세요. **Bash `grep`은 보조 도구**. cross-file 관계는 반드시 code-graph로.
+            4. 변경 파일의 전체 컨텍스트가 필요하면 해당 파일을 Read로 읽으세요.
+            5. PR Intent와 코드 동작이 일치하는지 검증하세요.
+            6. 리뷰 결과 JSON을 `${{ env.OUTPUT_FILE }}`에 **Write 툴로 저장**. 다른 출력 금지.
+
+            ## 출력 규칙
+
+            - JSON 형식은 `${{ matrix.agent.name }}-agent.md`의 "Output Format" 섹션을 따르세요.
+            - findings 0개여도 OK. 빈 배열로 저장하세요 (`{"agentName":"...","findings":[],"summary":"..."}`).
+            - 각 finding의 `codeGraphEvidence`는 실제 호출한 도구명 + 결과 핵심 인용. placeholder 금지 — Skeptic이 invalid 처리합니다.
+            - Critical/Major는 개수 제한 없음. Minor는 본인 입장에서 최대 2개. (후속 aggregate에서 다시 cap)
+
+            ## 중요
+
+            - 이 호출은 **단일 에이전트 응답**이에요. Task tool로 서브에이전트 만들지 마세요.
+            - review body나 GitHub 코멘트 게시는 후속 job이 처리. 본인은 findings JSON만 만드세요.
+            - 모든 텍스트는 한국어로 작성.
+
+          claude_args: |
+            --model ${{ needs.prepare-context.outputs.reviewer_model }}
+            --allowedTools "
+              Bash(cat *),
+              Bash(find *),
+              Bash(gh api *),
+              Bash(gh pr *),
+              Bash(jq *),
+              Bash(git blame *),
+              Bash(git diff *),
+              Bash(git log *),
+              Bash(git show *),
+              Bash(git status),
+              Bash(grep *),
+              Bash(head *),
+              Bash(ls *),
+              Bash(tail *),
+              Bash(tree *),
+              Bash(wc *),
+              Glob,
+              Grep,
+              Read,
+              Write,
+              mcp__code-graph__*,
+              mcp__github__get_file_contents,
+              mcp__github__get_pull_request,
+              mcp__github__get_pull_request_diff,
+              mcp__github__get_pull_request_files,
+              mcp__github__get_repository
+            "
+            --disallowedTools "
+              Bash(chmod *),
+              Bash(chown *),
+              Bash(git add *),
+              Bash(git commit *),
+              Bash(git push *),
+              Bash(rm *),
+              Bash(sudo *),
+              Edit,
+              Task
+            "
+
+      - name: Verify findings file exists
+        if: always()
+        run: |
+          OUT=/tmp/${{ matrix.agent.output_filename }}
+          if [ ! -s "$OUT" ]; then
+            echo "⚠️ Findings file not created or empty — writing empty stub."
+            echo "{\"agentName\":\"${{ matrix.agent.name }}\",\"findings\":[],\"summary\":\"(agent did not write output)\"}" > "$OUT"
+          fi
+          echo "📊 Findings: $(jq '.findings | length' "$OUT")"
+
+      - name: Upload findings artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: findings-${{ matrix.agent.name }}-${{ needs.prepare-context.outputs.pr_number }}-${{ github.run_id }}
+          path: /tmp/${{ matrix.agent.output_filename }}
+          retention-days: 7
+
+      - name: Upload reviewer Claude execution log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-output-reviewer-${{ matrix.agent.name }}-${{ needs.prepare-context.outputs.pr_number }}-${{ github.run_id }}
+          path: /home/runner/work/_temp/claude-execution-output.json
+          retention-days: 7
+          if-no-files-found: warn
+
+  finalize:
+    needs: [prepare-context, reviewer-agents]
+    # 한 reviewer가 실패해도 나머지 결과로 진행. aggregate-findings.sh가 누락 파일을 빈 stub으로 보강.
+    # 'cancelled'만 차단 — 사용자가 의도적으로 중단한 경우는 게시 안 함.
+    if: |
+      always() &&
+      needs.prepare-context.outputs.should_skip != 'true' &&
+      needs.reviewer-agents.result != 'skipped' &&
+      needs.reviewer-agents.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ needs.prepare-context.outputs.target_ref }}
+
+      - name: Restore code-graph index
+        uses: actions/cache@v4
+        with:
+          path: .code-graph/
+          key: code-graph-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          restore-keys: code-graph-${{ runner.os }}-
+
+      - name: Setup code-graph CLI
+        uses: ./.github/actions/setup-code-graph
+
+      - name: Download findings artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: findings-*-${{ needs.prepare-context.outputs.pr_number }}-${{ github.run_id }}
+          path: /tmp/_findings
+          merge-multiple: true
+
+      - name: Download review-context
+        uses: actions/download-artifact@v4
+        with:
+          name: review-context-${{ needs.prepare-context.outputs.pr_number }}-${{ github.run_id }}
+          path: /tmp/_ctx
+
+      - name: Stage inputs and run aggregator
+        id: aggregate
+        run: |
+          PR_NUM="${{ needs.prepare-context.outputs.pr_number }}"
+
+          # download-artifact may flatten or preserve /tmp prefix — handle both
+          BL=$(find /tmp/_findings -name 'findings-bug-logic.json' | head -1)
+          CV=$(find /tmp/_findings -name 'findings-convention-pattern.json' | head -1)
+          PREV=$(find /tmp/_ctx -name "review-${PR_NUM}-prev-meta.json" | head -1)
+          CONTEXT=$(find /tmp/_ctx -name "review-${PR_NUM}-context.md" | head -1)
+
+          if [ -z "$BL" ]; then
+            echo "⚠️ findings-bug-logic.json 누락 — 빈 stub 생성"
+            BL=/tmp/_findings/findings-bug-logic.json
+            echo '{"agentName":"Bug & Logic Agent","findings":[],"summary":"(missing — reviewer job failed)"}' > "$BL"
+          fi
+          if [ -z "$CV" ]; then
+            echo "⚠️ findings-convention-pattern.json 누락 — 빈 stub 생성"
+            CV=/tmp/_findings/findings-convention-pattern.json
+            echo '{"agentName":"Convention & Pattern Agent","findings":[],"summary":"(missing — reviewer job failed)"}' > "$CV"
+          fi
+
+          # context.md를 /tmp로 stage (Claude prompt가 절대경로로 Read)
+          [ -n "$CONTEXT" ] && cp "$CONTEXT" /tmp/context.md
+          [ -f /tmp/context.md ] || echo "(unavailable)" > /tmp/context.md
+
+          BUG_LOGIC_FILE="$BL" \
+          CONVENTION_FILE="$CV" \
+          PREV_META_FILE="${PREV:-}" \
+          PR_NUMBER="$PR_NUM" \
+          HEAD_SHA="${{ needs.prepare-context.outputs.head_sha }}" \
+          REVIEW_MODE="${{ needs.prepare-context.outputs.review_mode }}" \
+          OUT_AGGREGATED=/tmp/aggregated.json \
+          OUT_SKEPTIC_TARGETS=/tmp/skeptic-targets.json \
+          bash .github/scripts/aggregate-findings.sh
+
+      - name: Compose, verify, and post review
+        uses: anthropics/claude-code-action@v1
+        env:
+          PR_NUMBER: ${{ needs.prepare-context.outputs.pr_number }}
+          REVIEW_MODE: ${{ needs.prepare-context.outputs.review_mode }}
+          HEAD_SHA: ${{ needs.prepare-context.outputs.head_sha }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            당신은 PR Review의 **Skeptic 검증 + 본문 작성 + 게시 담당**입니다. 한 호출 안에서 모든 후처리를 인라인으로 수행하세요.
+
+            ## 입력 파일
+
+            - `/tmp/aggregated.json` — 집계된 findings + 메타 (`findings[]`, `summary`, `previous_open_issues`, `review_mode` 등)
+            - `/tmp/skeptic-targets.json` — Critical/Major finding 배열 (Skeptic 검증 대상). 빈 배열이면 검증 단계 스킵.
+            - `/tmp/context.md` — PR Intent + PR Scope (Skeptic 검증에 필요)
+
+            ## 작업 순서
+
+            1. `.review-learnings/agent-prompts/skeptic.md`를 Read로 읽고 **검증 방법**을 숙지하세요.
+            2. `.review-learnings/agent-prompts/review-body.md`를 Read로 읽고 **본문/REVIEW_META 형식**을 숙지하세요.
+            3. `/tmp/aggregated.json` + `/tmp/skeptic-targets.json` + `/tmp/context.md` Read.
+            4. **Skeptic 검증 (인라인)**: `/tmp/skeptic-targets.json`의 각 finding에 대해 skeptic.md의 검증 절차(1~7단계)를 순서대로 적용. 필요 시 `mcp__code-graph__*` 도구로 추가 검증. Task tool 분리 금지 — 직접 분석. 각 finding마다 verdict(valid/invalid) + evidence + confidence(0-100) 결정.
+            5. **Verdict 적용**:
+               - `invalid` → drop
+               - `valid` + `confidence >= 80` → 인라인 + 본문 모두 노출
+               - `valid` + `confidence < 80` → 본문에만 노출
+               - Minor finding → 본문 "참고" 섹션에만 (최대 2개)
+            6. **review_mode=incremental 분기** (review-body.md 참조):
+               - 새 Critical/Major 0개 + previous_open_issues 미해결 0개 → 리뷰 미제출 (정상 종료)
+               - previous_open_issues 미해결 있으면 반드시 제출
+            7. **본문 작성** (review-body.md의 "리뷰 본문 형식" + REVIEW_META 그대로).
+            8. **인라인 코멘트 게시** (Critical/Major + valid + confidence ≥ 80만): 각각 `mcp__github_inline_comment__create_inline_comment` 호출 (path/line/body, body는 "인라인 코멘트 형식").
+            9. **최종 리뷰 제출**: `mcp__github__create_and_submit_pull_request_review` 호출. `event`: Critical/Major 0개면 `APPROVE`, 1개 이상이면 `COMMENT`. **REQUEST_CHANGES 금지**. `body`: 작성한 리뷰 본문 (REVIEW_META HTML 코멘트 포함).
+
+            ## 중요
+
+            - 모든 텍스트 한국어.
+            - review body는 임시 파일에 쓰지 마세요. `mcp__github` 도구의 `body` 파라미터에 직접 전달.
+            - PR 번호: ${{ env.PR_NUMBER }}.
+            - HEAD SHA short: 첫 7자 (`HEAD_SHA` env 사용).
+            - Task tool 사용 금지 (이 호출은 단일 응답).
+
+          claude_args: |
+            --model ${{ needs.prepare-context.outputs.finalize_model }}
+            --allowedTools "
+              Bash(cat *),
+              Bash(find *),
+              Bash(gh api *),
+              Bash(gh pr *),
+              Bash(git blame *),
+              Bash(git log *),
+              Bash(git show *),
+              Bash(grep *),
+              Bash(head *),
+              Bash(jq *),
+              Bash(ls *),
+              Bash(tail *),
+              Bash(wc *),
+              Glob,
+              Grep,
+              Read,
+              mcp__code-graph__*,
+              mcp__github__add_comment_to_pending_review,
+              mcp__github__create_and_submit_pull_request_review,
+              mcp__github__create_pending_pull_request_review,
+              mcp__github__create_pull_request_review,
+              mcp__github__create_review_comment,
+              mcp__github__get_file_contents,
+              mcp__github__get_pull_request,
+              mcp__github__get_pull_request_reviews,
+              mcp__github__submit_pending_pull_request_review,
+              mcp__github_inline_comment__create_inline_comment
+            "
+            --disallowedTools "
+              Bash(rm *),
+              Bash(sudo *),
+              Edit,
+              Task,
+              Write
+            "
+
+      - name: Upload debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-debug-pr${{ needs.prepare-context.outputs.pr_number }}-${{ github.run_id }}
+          path: |
+            /home/runner/work/_temp/claude-execution-output.json
+            /tmp/aggregated.json
+            /tmp/skeptic-targets.json
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf /tmp/aggregated.json /tmp/skeptic-targets.json /tmp/context.md /tmp/_findings /tmp/_ctx
+          echo "🧹 Cleaned up"

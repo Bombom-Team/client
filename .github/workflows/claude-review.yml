@@ -1,24 +1,23 @@
-# PR Review Agent v2
+# PR Review Agent v2 — DEPRECATED, replaced by claude-review-v3.yml
 #
-# karrot-emu/community-web-group 의 PR Review Agent 를 client 레포로 이식한 워크플로우입니다.
+# v2 (단일 Claude 세션 오케스트레이션)는 Step 2/4의 Task 병렬 호출이
+# 실제로는 0% 병렬로 동작 (최근 100개 run 측정 결과, Opus 24개 포함).
+# 자연어 지시로 Claude의 "한 결과 보고 다음 결정" 본능을 못 이김.
 #
-# 설정 가이드:
-# 1. 필요한 GitHub Secrets:
-#    - ANTHROPIC_API_KEY: Anthropic API 키 (레포 또는 Bombom-Team org Secrets 에 등록)
-# 2. 선택적 GitHub Variables:
+# v3는 동일한 흐름을 GitHub Actions matrix로 분할하여 워크플로 레벨에서
+# 병렬을 강제. 자세한 내용은 .github/workflows/claude-review-v3.yml 참조.
+#
+# v3가 안정화될 때까지(1-2주 운영) 이 파일은 workflow_dispatch 전용으로
+# 남겨두어 비상 롤백 경로로 활용. 안정 확인 후 이 파일을 삭제하고
+# claude-review-v3.yml을 claude-review.yml로 rename할 계획.
+#
+# 선택적 GitHub Variables:
 #    - CLAUDE_REVIEW_MODEL: 기본 모델 (기본값: claude-sonnet-4-6)
 #    - CLAUDE_REVIEW_MODEL_STRONG: 복잡한 리뷰용 모델 (기본값: claude-opus-4-7)
-# 3. 프로젝트별 커스터마이징:
-#    - EXCLUDE_PATHS: diff 에서 제외할 경로를 ':(exclude)패턴' 형식으로 수정하세요
-#    - .review-learnings/REVIEW.md 에 리뷰 가이드라인을 작성하세요
-#    - .review-learnings/agent-prompts/* 를 레포 특성에 맞게 수정하세요
 #
-name: PR Review Agent
+name: PR Review Agent (v2, deprecated)
 
 on:
-  issue_comment:
-    types:
-      - created
   workflow_dispatch:
     inputs:
       pr_number:
@@ -32,16 +31,11 @@ on:
 
 jobs:
   pr-review:
-    if: >
-      (github.event_name == 'issue_comment' &&
-        github.event.issue.pull_request != null &&
-        contains(github.event.comment.body, '/claude-review') &&
-        github.event.comment.user.type == 'User') ||
-      github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     concurrency:
-      group: pr-review-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
+      group: pr-review-${{ github.event.inputs.pr_number || github.run_id }}
       cancel-in-progress: true
     permissions:
       actions: read
@@ -308,7 +302,7 @@ jobs:
 
             당신은 PR Review 오케스트레이터입니다. 이 PR을 v2 멀티 에이전트 파이프라인으로 리뷰하세요.
 
-            **`.review-learnings/orchestrator-runbook.md`** 를 Read로 읽고, 그 안의 Step 0–5 절차/에이전트 호출 템플릿/Skeptic 템플릿/결과 JSON 스키마를 정확히 따르세요. runbook의 `${변수명}` 표기는 모두 위 `<PR_INFO>` 값으로 해석하세요.
+            **`.review-learnings/archive/orchestrator-runbook.md`** 를 Read로 읽고, 그 안의 Step 0–5 절차/에이전트 호출 템플릿/Skeptic 템플릿/결과 JSON 스키마를 정확히 따르세요. runbook의 `${변수명}` 표기는 모두 위 `<PR_INFO>` 값으로 해석하세요. (이 워크플로는 v2 deprecated 경로이며 v3는 별도 워크플로에서 동작합니다.)
 
             모드 분기 (runbook의 "REVIEW_MODE 분기" 섹션 참조):
             - `IS_FORCED=true` → PR 전체 처음부터 다시 리뷰 (이전 리뷰 무시)
