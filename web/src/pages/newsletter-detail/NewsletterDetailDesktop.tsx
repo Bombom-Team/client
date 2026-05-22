@@ -148,7 +148,7 @@ const Aside = styled.aside`
   gap: 24px;
   flex-direction: column;
 
-  @media (width <= 1387px) {
+  @media (width <= 1400px) {
     display: none;
   }
 `;
@@ -158,7 +158,7 @@ const InlineSide = styled.div`
   gap: 24px;
   flex-direction: column;
 
-  @media (width <= 1387px) {
+  @media (width <= 1400px) {
     display: flex;
   }
 `;
