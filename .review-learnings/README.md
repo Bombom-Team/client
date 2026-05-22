@@ -1,9 +1,10 @@
-# 🤖 Claude PR 리뷰 시스템 — 팀 가이드
+# 🤖 Codex PR 리뷰 시스템 — 팀 가이드
 
-이 레포에는 Claude 기반 자동 PR 리뷰 시스템이 있습니다. PR을 멀티 에이전트로
-리뷰하고, 리뷰 품질이 시간이 지날수록 스스로 개선되는 학습 루프를 갖췄습니다.
+이 레포에는 Codex 기반 자동 PR 리뷰 시스템이 있습니다. PR diff와 레포 규칙을 함께
+읽고, high-signal 이슈만 structured output으로 생성해 GitHub 리뷰에 게시합니다.
 
-`karrot-emu/community-web-group`의 PR Review Agent v2를 이 레포로 이식한 것입니다.
+기존 Claude v3 리뷰 워크플로우는 수동 롤백 경로로만 남겨두고, 기본 리뷰는
+`.github/workflows/codex-review.yml`이 담당합니다.
 
 ---
 
@@ -11,15 +12,15 @@
 
 | 하고 싶은 것                    | 방법                                                                     |
 | ------------------------------- | ------------------------------------------------------------------------ |
-| **PR 리뷰 받기**                | PR 대화창에 `/claude-review` 코멘트 작성                                 |
+| **PR 리뷰 받기**                | PR 생성/업데이트 시 자동 실행 또는 PR 대화창에 `/codex-review` 코멘트 작성 |
 | 리뷰 정확도 높이기              | PR 본문 `👀 Review Point`에 확인 지점을 구체적으로 작성 (봇이 우선 점검) |
-| 특정 PR을 수동 리뷰             | Actions 탭 → `PR Review Agent` → Run workflow → PR 번호 입력             |
+| 특정 PR을 수동 리뷰             | Actions 탭 → `Codex PR Review` → Run workflow → PR 번호 입력             |
 | 봇 지적이 **틀렸을 때**         | 그 인라인 코멘트에 **답글(reply)**로 반박 → 학습됨                       |
 | 봇 지적을 **고쳤을 때**         | 그냥 커밋 push → 봇이 해당 코멘트를 자동 resolve                         |
 | `chore/review-*` PR이 열렸을 때 | 학습 데이터 자동 갱신 PR — 내용 확인 후 머지                             |
 
-> ⚠️ **리뷰는 자동으로 돌지 않습니다.** PR을 열거나 커밋을 푸시해도 리뷰가 자동
-> 실행되지 않아요. 리뷰가 필요하면 `/claude-review` 코멘트를 직접 달아야 합니다.
+> Codex 리뷰는 draft가 아닌 PR의 open/reopen/synchronize/ready_for_review 이벤트에서
+> 자동 실행됩니다. 수동 재실행이 필요하면 `/codex-review` 코멘트를 달면 됩니다.
 
 ---
 
@@ -27,34 +28,33 @@
 
 ### 트리거 (언제 도는가)
 
-- PR 코멘트에 **`/claude-review`** 입력 (코멘트 본문에 이 문자열이 포함되면 됨)
+- PR 생성/업데이트/ready_for_review 이벤트
+- PR 코멘트에 **`/codex-review`** 입력 (코멘트 본문에 이 문자열이 포함되면 됨)
 - Actions 탭에서 **수동 실행**(`workflow_dispatch`)
 
 ### 파이프라인
 
 ```
-/claude-review 코멘트
+/codex-review 코멘트 또는 PR 이벤트
       │
       ▼
-┌─ claude-review.yml (GitHub Actions) ──────────────────┐
-│  diff 추출 → triage 점수로 모델 선택 → 규칙·맥락 패킷    │
-│  조립 → Claude 실행                                      │
+┌─ codex-review.yml (GitHub Actions) ───────────────────┐
+│  PR 메타데이터 확인 → AGENTS/REVIEW 규칙 주입 → diff 조립 │
+│  → Codex structured review 실행                         │
 └──────────────────────────────│─────────────────────────┘
                                ▼
-   오케스트레이터 (orchestrator-runbook.md 절차 수행)
-     ├─ 🔍 Bug & Logic Agent       ┐ 병렬 실행, 각자 findings(JSON)
-     ├─ 📏 Convention & Pattern Agent ┘
-     ├─ 결과 집계 + 중복 제거 + 심각도 산정
-     ├─ 🛡️ Skeptic 검증 — Critical/Major 이슈를 "틀렸다고 반증" 시도 → 오탐 제거
+   Codex
+     ├─ AGENTS.md의 Codex Review Policy 적용
+     ├─ .review-learnings/REVIEW.md / additional-rules / false-positives 반영
+     ├─ exact changed line 기준 findings(JSON) 생성
      └─ PR에 리뷰 제출
           · 문제 없음        → APPROVE (본문만)
           · Critical/Major 有 → COMMENT + 인라인 코멘트
             (REQUEST_CHANGES는 안 함 — 머지를 막지 않음)
 ```
 
-- **모델 자동 분기**: diff가 크고 복잡하면 Opus, 작으면 Sonnet (triage 점수 기반)
-- **Skeptic 검증**: 지적 하나하나를 별도 에이전트가 반증 시도 → 근거 없으면 제거.
-  오탐을 거르는 핵심 단계
+- **모델 설정**: 기본값은 `gpt-5.5`, 필요하면 GitHub Variable `CODEX_REVIEW_MODEL`로 변경
+- **High signal only**: 확신이 낮거나 라인 근거가 부족한 항목은 코멘트하지 않음
 - **심각도**: 🚨 Critical(크래시·데이터손실) / ⚠️ Major(조건부 버그) / 📝 Minor(개선,
   최대 2개)
 - **PR Review Point 반영**: PR 본문에 `👀 Review Point` 섹션이 있으면, 봇이 그 항목들을
@@ -145,7 +145,8 @@
 
 | 파일                        | 역할                              | 트리거                             |
 | --------------------------- | --------------------------------- | ---------------------------------- |
-| `claude-review.yml`         | 멀티 에이전트 PR 리뷰             | `/claude-review` 코멘트, 수동 실행 |
+| `codex-review.yml`          | Codex PR 리뷰                     | PR 이벤트, `/codex-review`, 수동 실행 |
+| `claude-review-v3.yml`      | 이전 Claude 리뷰 롤백 경로        | 수동 실행                          |
 | `claude-resolve.yml`        | 수정 반영된 코멘트 자동 resolve   | 커밋 push                          |
 | `claude-attribution.yml`    | 리뷰 제안 처리 결과 추적          | PR 머지                            |
 | `claude-learn-patterns.yml` | attribution 분석 → 학습 파일 갱신 | attribution 완료 후                |
@@ -180,18 +181,18 @@
 
 ## 5. 설정 / 동작 전제
 
-- **GitHub Secret `ANTHROPIC_API_KEY`** 가 등록돼 있어야 모든 워크플로우가 동작합니다.
-- `/claude-review` 코멘트와 수동 실행, 학습 루프(`attribution`/`learn-feedback` 등)는
+- **GitHub Secret `OPENAI_API_KEY`** 가 등록돼 있어야 Codex 리뷰가 동작합니다.
+- `/codex-review` 코멘트와 수동 실행, 학습 루프(`attribution`/`learn-feedback` 등)는
   GitHub 특성상 **워크플로우 파일이 기본 브랜치에 머지된 뒤**에야 동작합니다.
-- 모델은 GitHub Variables로 바꿀 수 있습니다: `CLAUDE_REVIEW_MODEL`,
-  `CLAUDE_REVIEW_MODEL_STRONG`, `CLAUDE_RESOLVE_MODEL`.
+- 모델은 GitHub Variable `CODEX_REVIEW_MODEL`로 바꿀 수 있습니다.
 
 ## 6. 알아두면 좋은 점
 
-- **AI 리뷰는 보조 도구입니다.** Skeptic이 오탐을 거르지만 완벽하지 않아요. 헛짚는
-  지적도, 놓치는 버그도 있습니다. 사람 리뷰를 대체하지 않습니다.
+- **AI 리뷰는 보조 도구입니다.** Codex가 high-signal 기준으로 오탐을 줄이지만
+  완벽하지 않아요. 헛짚는 지적도, 놓치는 버그도 있습니다. 사람 리뷰를 대체하지
+  않습니다.
 - 봇 지적이 틀렸으면 **답글로 반박**해 주세요. 그게 학습 루프의 연료입니다 — 반박할
   수록 봇이 똑똑해집니다.
 - 봇 리뷰 본문 끝에 `<!-- REVIEW_META ... -->` 주석이 있습니다. 학습 루프가 이걸
   읽으니 **편집·삭제하지 마세요.**
-- 리뷰가 manual이므로, 학습 루프도 리뷰를 실제로 돌린 PR에서만 데이터가 쌓입니다.
+- 학습 루프는 Codex 리뷰가 실제로 남긴 `REVIEW_META`가 있는 PR에서만 데이터가 쌓입니다.

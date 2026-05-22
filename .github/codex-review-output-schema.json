@@ -1,0 +1,80 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "overall_correctness": {
+      "type": "string",
+      "enum": ["patch is correct", "patch is incorrect"]
+    },
+    "overall_explanation": {
+      "type": "string"
+    },
+    "overall_confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "major", "minor"]
+          },
+          "confidence_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "code_location": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "absolute_file_path": {
+                "type": "string"
+              },
+              "line_range": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": ["start", "end"]
+              }
+            },
+            "required": ["absolute_file_path", "line_range"]
+          }
+        },
+        "required": [
+          "title",
+          "body",
+          "severity",
+          "confidence_score",
+          "code_location"
+        ]
+      }
+    }
+  },
+  "required": [
+    "overall_correctness",
+    "overall_explanation",
+    "overall_confidence_score",
+    "findings"
+  ]
+}

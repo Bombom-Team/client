@@ -1,4 +1,4 @@
-# PR Review Agent v3 — multi-job pipeline with GHA-enforced parallelism
+# PR Review Agent v3 — DEPRECATED, replaced by codex-review.yml
 #
 # 단일 Claude 세션으로 모든 단계를 오케스트레이션하던 v2를 3개 job으로 분리.
 # v2는 Step 2/4의 병렬 Task 호출이 Claude의 "한 결과 보고 다음 결정" 본능을 못 이김 (100개 run 중 0개 병렬).
@@ -9,12 +9,8 @@
 #   2. reviewer-agents (×2)   : Bug & Logic / Convention & Pattern 병렬 실행
 #   3. finalize               : bash 집계 + inline Skeptic + 본문 작성 + 게시
 #
-# 인프라:
-#   - runs-on: ubuntu-latest (GitHub-hosted)
-#   - anthropics/claude-code-action@v1 (공식 액션)
-#
-# 필요한 GitHub Secrets:
-#   - ANTHROPIC_API_KEY: Anthropic API 키 (레포 또는 Bombom-Team org Secrets 에 등록)
+# This workflow is kept as a manual rollback path only.
+# Automatic PR review now runs through .github/workflows/codex-review.yml.
 #
 # 선택적 GitHub Variables:
 #   - CLAUDE_REVIEW_MODEL_REVIEWER (작은 PR 기본값: claude-sonnet-4-6)
@@ -24,7 +20,7 @@
 #
 # 모델 선택: prepare-context의 triage score(diff/파일/새파일 가중치)가 4 이상이면 STRONG 모델 사용.
 
-name: PR Review Agent v3
+name: PR Review Agent v3 (deprecated)
 
 on:
   pull_request:
@@ -62,13 +58,6 @@ permissions:
 jobs:
   prepare-context:
     if: >
-      (github.event_name == 'pull_request' &&
-        (github.event.action == 'opened' || github.event.action == 'synchronize') &&
-        github.event.pull_request.draft == false) ||
-      (github.event_name == 'issue_comment' &&
-        github.event.issue.pull_request != null &&
-        contains(github.event.comment.body, '/claude-review') &&
-        github.event.comment.user.type == 'User') ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 15
