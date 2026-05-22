@@ -131,7 +131,7 @@ enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <Global styles={reset} />
-      <SentryErrorBoundary fallback={() => <PageErrorFallback />}>
+      <SentryErrorBoundary fallback={PageErrorFallback}>
         <RouterProvider router={router} />
       </SentryErrorBoundary>
       <GAInitializer />
