@@ -96,6 +96,25 @@ jobs:
           ref: refs/pull/${{ steps.pr.outputs.pr_number }}/merge
           persist-credentials: false
 
+      - name: Sync Codex review tooling from default branch
+        if: steps.pr.outputs.should_skip != 'true'
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch || 'main' }}
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin "$DEFAULT_BRANCH"
+
+          for path in \
+            .github/codex-review-output-schema.json \
+            .github/scripts/publish-codex-review.sh \
+            AGENTS.md \
+            .review-learnings/REVIEW.md \
+            .review-learnings/additional-rules.md \
+            .review-learnings/false-positives.md; do
+            git checkout "origin/$DEFAULT_BRANCH" -- "$path" 2>/dev/null || true
+          done
+
       - name: Prepare review prompt
         if: steps.pr.outputs.should_skip != 'true'
         env:
@@ -153,10 +172,10 @@ jobs:
             printf '%s\n' '----'
             printf '%s\n' ''
             printf '%s\n' 'Changed files:'
-            git --no-pager diff --name-status "$BASE_SHA" "$HEAD_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*'
+            git --no-pager diff --name-status "$BASE_SHA" "$HEAD_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*' ':(glob,exclude)**/openapi.d.ts' ':(glob,exclude)**/generated/**/*.d.ts'
             printf '%s\n' ''
             printf '%s\n' 'Unified diff (context=5):'
-            git --no-pager diff --unified=5 "$BASE_SHA" "$HEAD_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*'
+            git --no-pager diff --unified=5 "$BASE_SHA" "$HEAD_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*' ':(glob,exclude)**/openapi.d.ts' ':(glob,exclude)**/generated/**/*.d.ts'
           } > codex-review-prompt.md
 
       - name: Run Codex structured review
@@ -182,123 +201,7 @@ jobs:
           HEAD_SHA: ${{ steps.pr.outputs.head_sha }}
         run: |
           set -euo pipefail
-
-          if [ ! -s "$REVIEW_JSON" ]; then
-            gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "## Codex PR Review\n\nCodex structured output was not produced. Check the workflow logs."
-            exit 0
-          fi
-
-          jq '.' "$REVIEW_JSON" >/dev/null
-
-          FINDINGS_COUNT="$(jq '.findings | length' "$REVIEW_JSON")"
-          OVERALL="$(jq -r '.overall_correctness' "$REVIEW_JSON")"
-          EXPLANATION="$(jq -r '.overall_explanation' "$REVIEW_JSON")"
-          CONFIDENCE="$(jq -r '.overall_confidence_score' "$REVIEW_JSON")"
-
-          {
-            printf '%s\n' '## Codex PR Review'
-            printf '%s\n' ''
-            if [ "$OVERALL" = "patch is correct" ]; then
-              printf '%s\n' '> 전반적으로 양호합니다.'
-            else
-              printf '%s\n' '> 수정이 필요한 항목이 있습니다.'
-            fi
-            printf '%s\n' ''
-            printf 'Findings: **%s** · Confidence: **%s**\n' "$FINDINGS_COUNT" "$CONFIDENCE"
-            printf '%s\n' ''
-            printf '%s\n' "$EXPLANATION"
-            printf '%s\n' ''
-            if [ "$FINDINGS_COUNT" != "0" ]; then
-              printf '%s\n' '### Findings'
-              printf '%s\n' ''
-              jq -r '
-                .findings[]
-                | "- **" + .severity + "** `"
-                  + .code_location.absolute_file_path + ":"
-                  + (.code_location.line_range.start | tostring)
-                  + "` — " + .title + "\n  "
-                  + (.body | gsub("\n"; " "))
-              ' "$REVIEW_JSON"
-              printf '%s\n' ''
-            fi
-            printf '%s\n' '<!-- REVIEW_META'
-            jq \
-              --arg pr "$PR_NUMBER" \
-              --arg sha "$HEAD_SHA" \
-              '
-                (.findings | to_entries | map({
-                  id: ("codex-" + ((.key + 1) | tostring)),
-                  severity: .value.severity,
-                  file: .value.code_location.absolute_file_path,
-                  line: .value.code_location.line_range.start,
-                  lineEnd: .value.code_location.line_range.end,
-                  title: .value.title
-                })) as $meta_findings
-                | {
-                  version: 3,
-                  source: "codex",
-                  pr: ($pr | tonumber),
-                  review_sha: $sha[0:7],
-                  findings: $meta_findings,
-                  open_issues: [
-                    $meta_findings[]
-                    | select(.severity == "critical" or .severity == "major")
-                    | .id
-                  ]
-                }
-              ' "$REVIEW_JSON"
-            printf '%s\n' '-->'
-            printf '%s\n' ''
-            printf '%s\n' '---'
-            printf '%s\n' '<sub>Codex Review | `/codex-review`로 재실행</sub>'
-          } > /tmp/codex-review-body.md
-
-          jq -c --arg commit "$HEAD_SHA" '
-            .findings[]
-            | select(.severity == "critical" or .severity == "major")
-            | {
-                path: .code_location.absolute_file_path,
-                line: .code_location.line_range.end,
-                side: "RIGHT",
-                start_line: (if .code_location.line_range.start != .code_location.line_range.end then .code_location.line_range.start else null end),
-                start_side: (if .code_location.line_range.start != .code_location.line_range.end then "RIGHT" else null end),
-                body: (
-                  (if .severity == "critical" then "🚨" else "⚠️" end)
-                  + " **["
-                  + (if .severity == "critical" then "Critical" elif .severity == "major" then "Major" else "Minor" end)
-                  + "] " + .title + "**\n\n"
-                  + .body + "\n\n"
-                  + "Confidence: " + (.confidence_score | tostring)
-                  + "\n\n<!-- CODEX_REVIEW_COMMENT -->"
-                )
-              }
-            | with_entries(select(.value != null))
-          ' "$REVIEW_JSON" > /tmp/codex-review-comments.jsonl
-
-          COMMENTS_JSON="$(jq -s '.' /tmp/codex-review-comments.jsonl)"
-          EVENT="APPROVE"
-          if [ "$(jq '[.findings[] | select(.severity == "critical" or .severity == "major")] | length' "$REVIEW_JSON")" != "0" ]; then
-            EVENT="COMMENT"
-          fi
-
-          jq -n \
-            --rawfile body /tmp/codex-review-body.md \
-            --arg event "$EVENT" \
-            --argjson comments "$COMMENTS_JSON" \
-            '{body: $body, event: $event, comments: $comments}' \
-            > /tmp/codex-review-payload.json
-
-          if ! gh api \
-            --method POST \
-            "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" \
-            --input /tmp/codex-review-payload.json; then
-            echo "Inline review publishing failed. Retrying with body-only review."
-            jq '.comments = []' /tmp/codex-review-payload.json > /tmp/codex-review-payload-body-only.json
-            gh api \
-              --method POST \
-              "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" \
-              --input /tmp/codex-review-payload-body-only.json
-          fi
+          bash .github/scripts/publish-codex-review.sh
 
       - name: Upload Codex review artifacts
         if: always() && steps.pr.outputs.should_skip != 'true'
