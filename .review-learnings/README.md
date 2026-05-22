@@ -17,7 +17,7 @@ ChatGPT/Codex 내장 리뷰를 사용합니다. `.github/workflows/codex-review.
 | 리뷰 정확도 높이기              | PR 본문 `👀 Review Point`에 확인 지점을 구체적으로 작성 (봇이 우선 점검) |
 | 특정 PR을 수동 리뷰             | Actions 탭 → `Codex PR Review` → Run workflow → PR 번호 입력             |
 | 봇 지적이 **틀렸을 때**         | 해당 PR에서 답글로 반박하고 필요하면 `false-positives.md`에 수동 반영     |
-| 봇 지적을 **고쳤을 때**         | 커밋 push 후 스레드를 직접 resolve                                       |
+| 봇 지적을 **고쳤을 때**         | 커밋 push 시 `Codex Review Resolve`가 해결 여부를 판단해 자동 resolve     |
 
 > 커스텀 Codex 리뷰는 PR 이벤트에서 자동 실행되지 않습니다. 내장 Codex 리뷰와 비교하고
 > 싶은 PR에서만 `/codex-review` 코멘트 또는 수동 실행으로 호출합니다.
@@ -62,7 +62,8 @@ ChatGPT/Codex 내장 리뷰를 사용합니다. `.github/workflows/codex-review.
 
 ### 리뷰 결과 다루기
 
-- **봇 지적이 맞다** → 고쳐서 커밋 push 후 해당 리뷰 스레드를 직접 resolve합니다.
+- **봇 지적이 맞다** → 고쳐서 커밋 push. → `Codex Review Resolve`가 해당 스레드가
+  해결됐는지 판단해 confidence 0.8 이상이면 자동 resolve합니다.
 - **봇 지적이 틀렸다** → 그 인라인 코멘트에 답글로 반박하세요. 반복 오탐이면
   `.review-learnings/false-positives.md`에 수동으로 추가해 다음 리뷰에서 제외합니다.
 
@@ -75,6 +76,7 @@ ChatGPT/Codex 내장 리뷰를 사용합니다. `.github/workflows/codex-review.
 | 파일                        | 역할                              | 트리거                             |
 | --------------------------- | --------------------------------- | ---------------------------------- |
 | `codex-review.yml`          | 비교용 커스텀 Codex PR 리뷰       | `/codex-review`, 수동 실행 |
+| `codex-resolve.yml`         | 수정 반영된 커스텀 리뷰 스레드 자동 resolve | 커밋 push, 수동 실행 |
 
 ### 리뷰 규칙 (`.review-learnings/`) — **정적, 사람이 관리**
 

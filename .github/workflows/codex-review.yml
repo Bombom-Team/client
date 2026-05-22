@@ -269,6 +269,7 @@ jobs:
                   + "] " + .title + "**\n\n"
                   + .body + "\n\n"
                   + "Confidence: " + (.confidence_score | tostring)
+                  + "\n\n<!-- CODEX_REVIEW_COMMENT -->"
                 )
               }
             | with_entries(select(.value != null))
