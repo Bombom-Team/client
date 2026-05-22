@@ -2,7 +2,7 @@
 
 리뷰 에이전트가 따라야 할 가이드라인입니다.
 client 레포의 `CONVENTIONS.md`, `docs/frontend-coding-standards.md`, `docs/ai-rules.md`,
-`CLAUDE.md` 를 기준으로 작성되었습니다.
+`AGENTS.md` 를 기준으로 작성되었습니다.
 
 > 규칙 우선순위: `CONVENTIONS.md` → `docs/ai-rules.md` →
 > `docs/frontend-coding-standards.md` → 기존 코드베이스 패턴 → 툴 기본값.
@@ -95,6 +95,8 @@ client 레포의 `CONVENTIONS.md`, `docs/frontend-coding-standards.md`, `docs/ai
 | ~~Recommendation~~ | **사용 금지**                             | Minor로 올리거나 지적하지 않기 |
 
 findings가 0개여도 괜찮습니다. 진짜 이슈가 없으면 억지로 만들지 마세요.
+Codex 리뷰에서는 특히 "high signal only" 원칙을 따르며, 확신이 낮은 항목은 코멘트하지
+않습니다.
 
 ---
 

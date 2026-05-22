@@ -25,15 +25,15 @@ const PageErrorFallback = () => {
 export default PageErrorFallback;
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-  justify-content: center;
-
   width: 100%;
   min-height: 100dvh;
   padding: 24px;
+
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   text-align: center;
 `;

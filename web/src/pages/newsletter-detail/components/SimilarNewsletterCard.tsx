@@ -84,8 +84,9 @@ const Name = styled.span`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Regular};
-  text-overflow: ellipsis;
   white-space: nowrap;
+
+  text-overflow: ellipsis;
 `;
 
 const Meta = styled.span`
@@ -93,6 +94,7 @@ const Meta = styled.span`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t3Regular};
-  text-overflow: ellipsis;
   white-space: nowrap;
+
+  text-overflow: ellipsis;
 `;

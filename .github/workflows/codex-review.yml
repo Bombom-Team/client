@@ -1,0 +1,313 @@
+# Codex PR Review
+#
+# GitHub Secrets:
+#   - OPENAI_API_KEY
+#
+# Optional GitHub Variables:
+#   - CODEX_REVIEW_MODEL (default: gpt-5.5)
+#
+# Review triggers:
+#   - Manual run by commenting `/codex-review`
+#   - Manual workflow_dispatch by PR number
+
+name: Codex PR Review
+
+on:
+  issue_comment:
+    types:
+      - created
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR 번호'
+        required: true
+        type: number
+
+concurrency:
+  group: codex-review-${{ github.event.pull_request.number || github.event.issue.number || github.event.inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  codex-review:
+    if: >
+      (github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request != null &&
+        contains(github.event.comment.body, '/codex-review') &&
+        github.event.comment.user.type == 'User') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CODEX_MODEL: ${{ vars.CODEX_REVIEW_MODEL || 'gpt-5.5' }}
+    steps:
+      - name: Resolve PR metadata
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          ISSUE_PR_URL: ${{ github.event.issue.pull_request.url }}
+          INPUT_PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "issue_comment" ]; then
+            PR_NUMBER="$(gh api "$ISSUE_PR_URL" --jq '.number')"
+          else
+            PR_NUMBER="$INPUT_PR_NUMBER"
+          fi
+
+          PR_JSON="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json number,title,body,baseRefName,headRefName,baseRefOid,headRefOid,isDraft)"
+
+          if [ "$(echo "$PR_JSON" | jq -r '.isDraft')" = "true" ]; then
+            echo "should_skip=true" >> "$GITHUB_OUTPUT"
+            echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "should_skip=false" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "title<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$PR_JSON" | jq -r '.title' >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "body<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$PR_JSON" | jq -r '.body // ""' >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "base_ref=$(echo "$PR_JSON" | jq -r '.baseRefName')" >> "$GITHUB_OUTPUT"
+          echo "head_ref=$(echo "$PR_JSON" | jq -r '.headRefName')" >> "$GITHUB_OUTPUT"
+          echo "base_sha=$(echo "$PR_JSON" | jq -r '.baseRefOid')" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$(echo "$PR_JSON" | jq -r '.headRefOid')" >> "$GITHUB_OUTPUT"
+
+      - name: Stop for draft PR
+        if: steps.pr.outputs.should_skip == 'true'
+        run: echo "Draft PR is skipped."
+
+      - name: Checkout PR merge commit
+        if: steps.pr.outputs.should_skip != 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: refs/pull/${{ steps.pr.outputs.pr_number }}/merge
+          persist-credentials: false
+
+      - name: Prepare review prompt
+        if: steps.pr.outputs.should_skip != 'true'
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.pr_number }}
+          PR_TITLE: ${{ steps.pr.outputs.title }}
+          PR_BODY: ${{ steps.pr.outputs.body }}
+          BASE_REF: ${{ steps.pr.outputs.base_ref }}
+          HEAD_REF: ${{ steps.pr.outputs.head_ref }}
+          BASE_SHA: ${{ steps.pr.outputs.base_sha }}
+          HEAD_SHA: ${{ steps.pr.outputs.head_sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin "$BASE_REF" "+refs/pull/$PR_NUMBER/head"
+
+          {
+            printf '%s\n' 'You are Codex acting as the automated reviewer for this pull request.'
+            printf '%s\n' 'Follow AGENTS.md first, then .review-learnings/REVIEW.md.'
+            printf '%s\n' 'Comment only on actionable issues introduced by this PR.'
+            printf '%s\n' 'Prioritize correctness, runtime failures, data loss, security, API contract breaks, and severe maintainability risks.'
+            printf '%s\n' 'Avoid style nits, naming preferences, optional refactors, import order, and formatting comments.'
+            printf '%s\n' 'Every finding must cite an exact changed file and line range from the diff. If you are not certain, omit the finding.'
+            printf '%s\n' 'Use Korean for all finding text.'
+            printf '%s\n' ''
+            printf 'Repository: %s\n' "$REPOSITORY"
+            printf 'Pull Request: #%s\n' "$PR_NUMBER"
+            printf 'Title: %s\n' "$PR_TITLE"
+            printf 'Base: %s (%s)\n' "$BASE_REF" "$BASE_SHA"
+            printf 'Head: %s (%s)\n' "$HEAD_REF" "$HEAD_SHA"
+            printf '%s\n' ''
+            printf '%s\n' 'Pull request body:'
+            printf '%s\n' '----'
+            printf '%s\n' "$PR_BODY"
+            printf '%s\n' '----'
+            printf '%s\n' ''
+            printf '%s\n' 'Repository instructions (AGENTS.md):'
+            printf '%s\n' '----'
+            cat AGENTS.md
+            printf '%s\n' '----'
+            printf '%s\n' ''
+            printf '%s\n' 'Review guidelines (.review-learnings/REVIEW.md):'
+            printf '%s\n' '----'
+            cat .review-learnings/REVIEW.md
+            printf '%s\n' '----'
+            printf '%s\n' ''
+            printf '%s\n' 'Promoted team rules:'
+            printf '%s\n' '----'
+            cat .review-learnings/additional-rules.md 2>/dev/null || true
+            printf '%s\n' '----'
+            printf '%s\n' ''
+            printf '%s\n' 'Known false positives. Do not report these patterns:'
+            printf '%s\n' '----'
+            cat .review-learnings/false-positives.md 2>/dev/null || true
+            printf '%s\n' '----'
+            printf '%s\n' ''
+            printf '%s\n' 'Changed files:'
+            git --no-pager diff --name-status "$BASE_SHA" "$HEAD_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*'
+            printf '%s\n' ''
+            printf '%s\n' 'Unified diff (context=5):'
+            git --no-pager diff --unified=5 "$BASE_SHA" "$HEAD_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*'
+          } > codex-review-prompt.md
+
+      - name: Run Codex structured review
+        if: steps.pr.outputs.should_skip != 'true'
+        id: run_codex
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: codex-review-prompt.md
+          output-schema-file: .github/codex-review-output-schema.json
+          output-file: codex-review-output.json
+          sandbox: read-only
+          model: ${{ env.CODEX_MODEL }}
+          effort: high
+
+      - name: Publish Codex review
+        if: steps.pr.outputs.should_skip != 'true' && always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEW_JSON: codex-review-output.json
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.pr.outputs.pr_number }}
+          HEAD_SHA: ${{ steps.pr.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+
+          if [ ! -s "$REVIEW_JSON" ]; then
+            gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "## Codex PR Review\n\nCodex structured output was not produced. Check the workflow logs."
+            exit 0
+          fi
+
+          jq '.' "$REVIEW_JSON" >/dev/null
+
+          FINDINGS_COUNT="$(jq '.findings | length' "$REVIEW_JSON")"
+          OVERALL="$(jq -r '.overall_correctness' "$REVIEW_JSON")"
+          EXPLANATION="$(jq -r '.overall_explanation' "$REVIEW_JSON")"
+          CONFIDENCE="$(jq -r '.overall_confidence_score' "$REVIEW_JSON")"
+
+          {
+            printf '%s\n' '## Codex PR Review'
+            printf '%s\n' ''
+            if [ "$OVERALL" = "patch is correct" ]; then
+              printf '%s\n' '> 전반적으로 양호합니다.'
+            else
+              printf '%s\n' '> 수정이 필요한 항목이 있습니다.'
+            fi
+            printf '%s\n' ''
+            printf 'Findings: **%s** · Confidence: **%s**\n' "$FINDINGS_COUNT" "$CONFIDENCE"
+            printf '%s\n' ''
+            printf '%s\n' "$EXPLANATION"
+            printf '%s\n' ''
+            if [ "$FINDINGS_COUNT" != "0" ]; then
+              printf '%s\n' '### Findings'
+              printf '%s\n' ''
+              jq -r '
+                .findings[]
+                | "- **" + .severity + "** `"
+                  + .code_location.absolute_file_path + ":"
+                  + (.code_location.line_range.start | tostring)
+                  + "` — " + .title + "\n  "
+                  + (.body | gsub("\n"; " "))
+              ' "$REVIEW_JSON"
+              printf '%s\n' ''
+            fi
+            printf '%s\n' '<!-- REVIEW_META'
+            jq \
+              --arg pr "$PR_NUMBER" \
+              --arg sha "$HEAD_SHA" \
+              '
+                (.findings | to_entries | map({
+                  id: ("codex-" + ((.key + 1) | tostring)),
+                  severity: .value.severity,
+                  file: .value.code_location.absolute_file_path,
+                  line: .value.code_location.line_range.start,
+                  lineEnd: .value.code_location.line_range.end,
+                  title: .value.title
+                })) as $meta_findings
+                | {
+                  version: 3,
+                  source: "codex",
+                  pr: ($pr | tonumber),
+                  review_sha: $sha[0:7],
+                  findings: $meta_findings,
+                  open_issues: [
+                    $meta_findings[]
+                    | select(.severity == "critical" or .severity == "major")
+                    | .id
+                  ]
+                }
+              ' "$REVIEW_JSON"
+            printf '%s\n' '-->'
+            printf '%s\n' ''
+            printf '%s\n' '---'
+            printf '%s\n' '<sub>Codex Review | `/codex-review`로 재실행</sub>'
+          } > /tmp/codex-review-body.md
+
+          jq -c --arg commit "$HEAD_SHA" '
+            .findings[]
+            | select(.severity == "critical" or .severity == "major")
+            | {
+                path: .code_location.absolute_file_path,
+                line: .code_location.line_range.end,
+                side: "RIGHT",
+                start_line: (if .code_location.line_range.start != .code_location.line_range.end then .code_location.line_range.start else null end),
+                start_side: (if .code_location.line_range.start != .code_location.line_range.end then "RIGHT" else null end),
+                body: (
+                  (if .severity == "critical" then "🚨" else "⚠️" end)
+                  + " **["
+                  + (if .severity == "critical" then "Critical" elif .severity == "major" then "Major" else "Minor" end)
+                  + "] " + .title + "**\n\n"
+                  + .body + "\n\n"
+                  + "Confidence: " + (.confidence_score | tostring)
+                  + "\n\n<!-- CODEX_REVIEW_COMMENT -->"
+                )
+              }
+            | with_entries(select(.value != null))
+          ' "$REVIEW_JSON" > /tmp/codex-review-comments.jsonl
+
+          COMMENTS_JSON="$(jq -s '.' /tmp/codex-review-comments.jsonl)"
+          EVENT="APPROVE"
+          if [ "$(jq '[.findings[] | select(.severity == "critical" or .severity == "major")] | length' "$REVIEW_JSON")" != "0" ]; then
+            EVENT="COMMENT"
+          fi
+
+          jq -n \
+            --rawfile body /tmp/codex-review-body.md \
+            --arg event "$EVENT" \
+            --argjson comments "$COMMENTS_JSON" \
+            '{body: $body, event: $event, comments: $comments}' \
+            > /tmp/codex-review-payload.json
+
+          if ! gh api \
+            --method POST \
+            "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" \
+            --input /tmp/codex-review-payload.json; then
+            echo "Inline review publishing failed. Retrying with body-only review."
+            jq '.comments = []' /tmp/codex-review-payload.json > /tmp/codex-review-payload-body-only.json
+            gh api \
+              --method POST \
+              "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" \
+              --input /tmp/codex-review-payload-body-only.json
+          fi
+
+      - name: Upload Codex review artifacts
+        if: always() && steps.pr.outputs.should_skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-review-${{ steps.pr.outputs.pr_number }}-${{ github.run_id }}
+          path: |
+            codex-review-prompt.md
+            codex-review-output.json
+            /tmp/codex-review-payload.json
+          retention-days: 7
+          if-no-files-found: warn

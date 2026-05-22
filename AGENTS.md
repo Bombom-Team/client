@@ -172,6 +172,35 @@ These rules apply to commits and pull requests in **any** package.
 
 ---
 
+## 13. Codex Review Policy
+
+When Codex reviews a pull request, it MUST act as a high-signal reviewer.
+
+Focus on:
+
+- Production bugs, runtime crashes, and broken user flows
+- Data loss, stale data, duplicate requests, and consistency issues
+- Security issues, auth/permission bypass, and secret exposure
+- API contract breaks, generated-type misuse, and backward compatibility risks
+- Repository convention violations that lint cannot catch
+
+Avoid:
+
+- Style, formatting, import-order, or naming comments handled by tools
+- Optional refactors and "nice to have" suggestions
+- Comments on pre-existing issues outside the PR diff
+- Findings without exact file and line evidence
+
+Rules:
+
+- Review only changes introduced by the PR.
+- Prefer no comment over a low-confidence comment.
+- Critical and Major findings require a concrete failure scenario.
+- Minor findings are allowed only when they are actionable and limited.
+- All review text should be concise Korean.
+
+---
+
 ## Final Note
 
 This repository prioritizes:

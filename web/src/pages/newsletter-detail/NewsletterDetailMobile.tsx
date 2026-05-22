@@ -153,14 +153,16 @@ const VisuallyHidden = styled.button`
 
 const HeaderTitle = styled.h1`
   overflow: hidden;
-  flex: 1;
   margin-right: 32px;
+
+  flex: 1;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t6Bold};
   text-align: center;
-  text-overflow: ellipsis;
   white-space: nowrap;
+
+  text-overflow: ellipsis;
 `;
 
 export const HeroSection = styled.div`
