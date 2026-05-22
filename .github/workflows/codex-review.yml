@@ -171,10 +171,10 @@ jobs:
             printf '%s\n' '----'
             printf '%s\n' ''
             printf '%s\n' 'Changed files:'
-            git --no-pager diff --name-status "$BASE_SHA" "$HEAD_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*'
+            git --no-pager diff --name-status "$BASE_SHA" "$HEAD_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*' ':(glob,exclude)**/openapi.d.ts' ':(glob,exclude)**/generated/**/*.d.ts'
             printf '%s\n' ''
             printf '%s\n' 'Unified diff (context=5):'
-            git --no-pager diff --unified=5 "$BASE_SHA" "$HEAD_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*'
+            git --no-pager diff --unified=5 "$BASE_SHA" "$HEAD_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*' ':(glob,exclude)**/openapi.d.ts' ':(glob,exclude)**/generated/**/*.d.ts'
           } > codex-review-prompt.md
 
       - name: Run Codex structured review
@@ -248,11 +248,13 @@ jobs:
             printf '%s\n' ''
             printf '%s\n' "$EXPLANATION"
             printf '%s\n' ''
-            if [ "$FINDINGS_COUNT" != "0" ]; then
-              printf '%s\n' '<details>'
-              printf '<summary>Actionable comments posted: %s</summary>\n' "$FINDINGS_COUNT"
-              printf '%s\n' ''
-              printf '%s\n' ''
+            printf '%s\n' '<details>'
+            printf '<summary>Actionable comments posted: %s</summary>\n' "$FINDINGS_COUNT"
+            printf '%s\n' ''
+            printf '%s\n' ''
+            if [ "$FINDINGS_COUNT" = "0" ]; then
+              printf '%s\n' '확실하게 수정이 필요한 inline comment는 없습니다.'
+            else
               jq -r '
                 .findings[]
                 | "<details>\n<summary>"
@@ -273,9 +275,9 @@ jobs:
                   + (.confidence_score | tostring)
                   + "\n\n</details>\n"
               ' "$REVIEW_JSON"
-              printf '%s\n' '</details>'
-              printf '%s\n' ''
             fi
+            printf '%s\n' '</details>'
+            printf '%s\n' ''
             printf '%s\n' '<!-- REVIEW_META'
             jq \
               --arg pr "$PR_NUMBER" \
@@ -341,10 +343,7 @@ jobs:
           ' "$REVIEW_JSON" > /tmp/codex-review-comments.jsonl
 
           COMMENTS_JSON="$(jq -s '.' /tmp/codex-review-comments.jsonl)"
-          EVENT="APPROVE"
-          if [ "$(jq '[.findings[] | select(.severity == "critical" or .severity == "major")] | length' "$REVIEW_JSON")" != "0" ]; then
-            EVENT="COMMENT"
-          fi
+          EVENT="COMMENT"
 
           jq -n \
             --rawfile body /tmp/codex-review-body.md \
