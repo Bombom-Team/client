@@ -7,8 +7,8 @@
 > `Bombom-Team/client` 닫힌 PR 코멘트 분석. 여기 있는 항목은 **코드/diff만으로
 > 기계적으로 검출 가능한 룰**입니다(판단·맥락이 필요한 패턴은 `patterns.md`).
 >
-> 이 파일은 `claude-learn-patterns.yml`이 attribution 데이터에서 반복 accepted된
-> 지적을 자동으로 룰로 승격하며, 직접 편집해도 됩니다.
+> 현재는 Codex 리뷰가 직접 읽는 정적 룰 파일입니다. 반복 accepted된 지적이 있으면
+> 사람이 직접 룰로 승격해도 됩니다.
 
 ## 형식
 
