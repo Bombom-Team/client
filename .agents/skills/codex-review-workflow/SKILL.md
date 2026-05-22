@@ -7,9 +7,9 @@ description: Manage the Bombom client Codex PR review GitHub Actions workflow an
 
 Use this skill for changes around `.github/workflows/codex-review.yml`,
 `.github/workflows/codex-resolve.yml`, `.github/codex-review-output-schema.json`,
-and `.review-learnings/REVIEW.md`. Also use it when the user asks Codex to
-manually review a Bombom client PR and, when requested, post GitHub review
-comments in the same format as the workflow.
+`.github/scripts/publish-codex-review.sh`, and `.review-learnings/REVIEW.md`.
+Also use it when the user asks Codex to manually review a Bombom client PR and,
+when requested, post GitHub review comments in the same format as the workflow.
 
 The goal is to keep the custom Codex review bot high signal, readable, and safe:
 it should post comments only, never approve or request changes, and it should
@@ -35,8 +35,11 @@ formatting unless the user explicitly asks.
 - It prepares `codex-review-prompt.md` from PR metadata, repo instructions,
   review learnings, changed files, and unified diff.
 - `openai/codex-action@v1` writes `codex-review-output.json`.
-- The publish step converts Codex structured output into GitHub review body and
-  inline comments.
+- `.github/scripts/publish-codex-review.sh` converts Codex structured output
+  into the GitHub review body and inline comments.
+- The workflow and manual skill path should both run the same sequence:
+  review the PR, write structured review JSON, then call the shared publish
+  script.
 
 ## Hard Constraints
 
@@ -131,6 +134,13 @@ Use this path when the user says things like:
 - `이 PR에 코멘트 달아줘`
 - `스킬 실행해서 리뷰 남겨줘`
 
+Do not copy review-publishing logic out of the workflow YAML. The common
+contract is:
+
+1. Review produces `codex-review-output.json`.
+2. `.github/scripts/publish-codex-review.sh` converts that JSON into the review
+   body, inline comments, metadata, and GitHub API request.
+
 Procedure:
 
 1. Resolve the PR repository and number. Default to `Bombom-Team/client` when
@@ -172,29 +182,25 @@ Procedure:
    - If there are no actionable findings, post a concise summary-only review
      only when the user explicitly asked to post to GitHub.
 
-6. Build the review body with the Preferred Review Body Format and inline
-   comments with the Preferred Inline Comment Format. Include
-   `<!-- CODEX_REVIEW_COMMENT -->` in inline comments and `<!-- REVIEW_META ... -->`
-   in the body.
+6. Write the review result to `codex-review-output.json` using
+   `.github/codex-review-output-schema.json`. The shared publisher owns the
+   Preferred Review Body Format, Preferred Inline Comment Format,
+   `<!-- CODEX_REVIEW_COMMENT -->`, and `<!-- REVIEW_META ... -->`.
 
-7. Post with GitHub's review API using `COMMENT` only:
+7. Post by running the shared publisher:
 
    ```bash
-   jq -n \
-     --rawfile body /tmp/codex-manual-review-body.md \
-     --arg event COMMENT \
-     --argjson comments "$(jq -s '.' /tmp/codex-manual-review-comments.jsonl)" \
-     '{body:$body,event:$event,comments:$comments}' \
-     > /tmp/codex-manual-review-payload.json
-
-   gh api --method POST \
-     "repos/Bombom-Team/client/pulls/$PR_NUMBER/reviews" \
-     --input /tmp/codex-manual-review-payload.json
+   REVIEW_JSON=codex-review-output.json \
+   REPOSITORY=Bombom-Team/client \
+   PR_NUMBER=<pr-number> \
+   HEAD_SHA=<head-sha> \
+   bash .github/scripts/publish-codex-review.sh
    ```
 
 8. If inline publishing fails because of invalid positions or paths, retry once
-   with `comments: []` so the summary is still posted, then tell the user which
-   inline comments could not be attached.
+   with `comments: []` so the summary is still posted. The shared publisher
+   already performs this fallback; tell the user which inline comments could not
+   be attached if the logs reveal that detail.
 
 Never publish mock findings as a real PR review. Never publish `APPROVE` or
 `REQUEST_CHANGES`. Avoid posting a duplicate review for the same head commit
@@ -264,7 +270,7 @@ Common failures:
   `APPROVE`. Fix by forcing `EVENT="COMMENT"`.
 - Inline review failed then body-only fallback: likely invalid `path`, line, or
   range. Ensure `absolute_file_path` is normalized to repo-relative path before
-  publishing.
+  publishing. The common publisher performs this normalization.
 - Unexpected reads such as webpack/babel config: these are Codex read-only
   investigation commands, not workflow prompt input. Tighten prompt instructions
   if needed, but remember the action can still inspect the repo unless the
@@ -276,6 +282,7 @@ For workflow-only changes, at minimum run:
 
 ```bash
 ruby -e 'require "yaml"; YAML.load_file(".github/workflows/codex-review.yml"); puts "yaml ok"'
+bash -n .github/scripts/publish-codex-review.sh
 git diff --check
 rg -n "APPROVE|REQUEST_CHANGES|Write mock|if: \\$\\{\\{ false \\}\\}" .github/workflows/codex-review.yml
 ```
