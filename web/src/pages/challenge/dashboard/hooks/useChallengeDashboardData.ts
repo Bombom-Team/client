@@ -1,8 +1,17 @@
 import { useMemo } from 'react';
 import type { GetChallengesTeamsProgressResponse } from '@/apis/challenge/challenge.api';
 
-const isSuccessStatus = (status?: string) =>
-  status === 'COMPLETE' || status === 'SHIELD';
+type DailyStatus =
+  GetChallengesTeamsProgressResponse['members'][number]['dailyProgresses'][number]['status'];
+
+const SUCCESS_STATUSES = [
+  'COMPLETE',
+  'SHIELD',
+  'HOLIDAY_SHIELD',
+] satisfies DailyStatus[];
+
+const isSuccessStatus = (status?: DailyStatus) =>
+  status ? SUCCESS_STATUSES.includes(status) : false;
 
 const buildDateRange = (startDate: Date, endDate: Date) => {
   const dateRange: Date[] = [];

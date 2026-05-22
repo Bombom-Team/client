@@ -6,7 +6,10 @@ import type { GetChallengesTeamsProgressResponse } from '@/apis/challenge/challe
 import ShieldIcon from '#/assets/svg/shield.svg';
 import SproutIcon from '#/assets/svg/sprout.svg';
 
-type DailyStatus = 'COMPLETE' | 'SHIELD' | 'NONE';
+const HOLIDAY_SHIELD_IMAGE_SRC = '/assets/png/holiday-shield.png';
+
+type DailyStatus =
+  GetChallengesTeamsProgressResponse['members'][number]['dailyProgresses'][number]['status'];
 
 const getStatusIcon = (status?: DailyStatus) => {
   if (status === 'COMPLETE') {
@@ -15,6 +18,12 @@ const getStatusIcon = (status?: DailyStatus) => {
 
   if (status === 'SHIELD') {
     return <ShieldIcon aria-hidden />;
+  }
+
+  if (status === 'HOLIDAY_SHIELD') {
+    return (
+      <HolidayShieldImage src={HOLIDAY_SHIELD_IMAGE_SRC} alt="공휴일 쉴드" />
+    );
   }
 
   return null;
@@ -226,6 +235,15 @@ const BodyCell = styled.td<{
   &:last-of-type {
     border-right: none;
   }
+`;
+
+const HolidayShieldImage = styled.img`
+  width: 22px;
+  height: 22px;
+
+  vertical-align: middle;
+
+  object-fit: contain;
 `;
 
 const NameCell = styled(BodyCell)<{ isMobile: boolean }>`

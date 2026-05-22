@@ -6,7 +6,6 @@ import SimilarNewslettersSection from './components/SimilarNewslettersSection';
 import {
   NEWSLETTER_DETAIL_MAIN_WIDTH,
   NEWSLETTER_DETAIL_SIDE_GAP,
-  NEWSLETTER_DETAIL_SIDE_VISIBLE_MIN_WIDTH,
   NEWSLETTER_DETAIL_SIDE_WIDTH,
 } from './constants';
 import { useNewsletterHeroActions } from './hooks/useNewsletterHeroActions';
@@ -149,8 +148,7 @@ const Aside = styled.aside`
   gap: 24px;
   flex-direction: column;
 
-  /* stylelint-disable-next-line media-query-no-invalid */
-  @media (max-width: ${NEWSLETTER_DETAIL_SIDE_VISIBLE_MIN_WIDTH - 1}px) {
+  @media (width <= 1387px) {
     display: none;
   }
 `;
@@ -160,8 +158,7 @@ const InlineSide = styled.div`
   gap: 24px;
   flex-direction: column;
 
-  /* stylelint-disable-next-line media-query-no-invalid */
-  @media (max-width: ${NEWSLETTER_DETAIL_SIDE_VISIBLE_MIN_WIDTH - 1}px) {
+  @media (width <= 1387px) {
     display: flex;
   }
 `;
