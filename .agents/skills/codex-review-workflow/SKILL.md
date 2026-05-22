@@ -37,6 +37,9 @@ formatting unless the user explicitly asks.
 - `openai/codex-action@v1` writes `codex-review-output.json`.
 - `.github/scripts/publish-codex-review.sh` converts Codex structured output
   into the GitHub review body and inline comments.
+- `.github/workflows/codex-review-publish.yml` can publish a locally generated
+  `codex-review-output.json` through GitHub Actions without calling OpenAI or
+  `openai/codex-action`.
 - The workflow and manual skill path should both run the same sequence:
   review the PR, write structured review JSON, then call the shared publish
   script.
@@ -187,7 +190,26 @@ Procedure:
    Preferred Review Body Format, Preferred Inline Comment Format,
    `<!-- CODEX_REVIEW_COMMENT -->`, and `<!-- REVIEW_META ... -->`.
 
-7. Post by running the shared publisher:
+7. Post by running the shared publisher. If the user wants GitHub Actions to
+   own only the comment-writing step, prefer the publish-only workflow:
+
+   ```bash
+   REVIEW_JSON_BASE64="$(base64 < codex-review-output.json | tr -d '\n')"
+   gh workflow run codex-review-publish.yml \
+     --repo Bombom-Team/client \
+     --ref <default-branch> \
+     -f pr_number=<pr-number> \
+     -f head_sha=<head-sha> \
+     -f review_json_base64="$REVIEW_JSON_BASE64" \
+     -f source_workspace="$PWD"
+   ```
+
+   The publish-only workflow must not call OpenAI, must not use
+   `OPENAI_API_KEY`, and must only decode the local structured review result
+   and run `.github/scripts/publish-codex-review.sh`.
+
+   If workflow dispatch is unavailable or the user explicitly wants local
+   posting, run the shared publisher directly:
 
    ```bash
    REVIEW_JSON=codex-review-output.json \

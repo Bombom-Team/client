@@ -1,0 +1,108 @@
+# Publish Codex PR Review
+#
+# This workflow only publishes a precomputed Codex structured review.
+# Model-based review generation is expected to happen locally before dispatch.
+#
+# Expected local flow:
+#   1. Generate codex-review-output.json locally.
+#   2. Encode it with: base64 < codex-review-output.json | tr -d '\n'
+#   3. Dispatch this workflow with pr_number, head_sha, and review_json_base64.
+
+name: Publish Codex PR Review
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR 번호'
+        required: true
+        type: number
+      head_sha:
+        description: '리뷰 대상 PR head SHA'
+        required: true
+        type: string
+      review_json_base64:
+        description: 'base64로 인코딩한 codex-review-output.json'
+        required: true
+        type: string
+      source_workspace:
+        description: '리뷰 JSON 생성 시 사용한 로컬 workspace 경로(선택)'
+        required: false
+        type: string
+
+concurrency:
+  group: codex-review-publish-${{ github.event.inputs.pr_number || github.run_id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout review publisher
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Write review output
+        env:
+          REVIEW_JSON_BASE64: ${{ github.event.inputs.review_json_base64 }}
+          SOURCE_WORKSPACE: ${{ github.event.inputs.source_workspace }}
+        run: |
+          set -euo pipefail
+
+          printf '%s' "$REVIEW_JSON_BASE64" | base64 --decode > codex-review-output.json
+          jq '.' codex-review-output.json >/dev/null
+
+          SOURCE_WORKSPACE="${SOURCE_WORKSPACE%/}"
+          jq \
+            --arg github_workspace "$GITHUB_WORKSPACE" \
+            --arg source_workspace "$SOURCE_WORKSPACE" \
+            '
+              def repo_relative_path:
+                . as $path
+                | if ($source_workspace != "" and startswith($source_workspace + "/")) then
+                    ltrimstr($source_workspace + "/")
+                  elif startswith($github_workspace + "/") then
+                    ltrimstr($github_workspace + "/")
+                  elif startswith("/") and test("/client/") then
+                    sub("^.*/client/"; "")
+                  else
+                    sub("^\\./"; "")
+                  end;
+
+              .findings |= map(
+                .code_location.absolute_file_path = (
+                  $github_workspace + "/" + (.code_location.absolute_file_path | repo_relative_path)
+                )
+              )
+            ' codex-review-output.json > codex-review-output.normalized.json
+          mv codex-review-output.normalized.json codex-review-output.json
+          jq '.' codex-review-output.json >/dev/null
+
+      - name: Publish Codex review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEW_JSON: codex-review-output.json
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          HEAD_SHA: ${{ github.event.inputs.head_sha }}
+        run: |
+          set -euo pipefail
+          bash .github/scripts/publish-codex-review.sh
+
+      - name: Upload publish artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-review-publish-${{ github.event.inputs.pr_number }}-${{ github.run_id }}
+          path: |
+            codex-review-output.json
+            /tmp/codex-review-payload.json
+          retention-days: 7
+          if-no-files-found: warn
