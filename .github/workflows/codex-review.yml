@@ -96,6 +96,24 @@ jobs:
           ref: refs/pull/${{ steps.pr.outputs.pr_number }}/merge
           persist-credentials: false
 
+      - name: Sync Codex review tooling from default branch
+        if: steps.pr.outputs.should_skip != 'true'
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch || 'main' }}
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin "$DEFAULT_BRANCH"
+
+          for path in \
+            .github/codex-review-output-schema.json \
+            AGENTS.md \
+            .review-learnings/REVIEW.md \
+            .review-learnings/additional-rules.md \
+            .review-learnings/false-positives.md; do
+            git checkout "origin/$DEFAULT_BRANCH" -- "$path" 2>/dev/null || true
+          done
+
       - name: Prepare review prompt
         if: steps.pr.outputs.should_skip != 'true'
         env:
