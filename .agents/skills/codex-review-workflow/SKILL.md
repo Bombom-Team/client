@@ -1,13 +1,15 @@
 ---
 name: codex-review-workflow
-description: Manage the Bombom client Codex PR review GitHub Actions workflow. Use this skill whenever the user asks to change Codex review behavior, review comment format, inline review style, generated-file exclusions, approve/request-changes behavior, mock-test review output, resolve/unresolved tracking, or to diagnose Codex review Action failures in this repository.
+description: Manage the Bombom client Codex PR review GitHub Actions workflow and manual Codex-style PR reviews. Use this skill whenever the user asks to review a PR, post review comments, change Codex review behavior, review comment format, inline review style, generated-file exclusions, approve/request-changes behavior, mock-test review output, resolve/unresolved tracking, or to diagnose Codex review Action failures in this repository.
 ---
 
 # Codex Review Workflow
 
 Use this skill for changes around `.github/workflows/codex-review.yml`,
 `.github/workflows/codex-resolve.yml`, `.github/codex-review-output-schema.json`,
-and `.review-learnings/REVIEW.md`.
+and `.review-learnings/REVIEW.md`. Also use it when the user asks Codex to
+manually review a Bombom client PR and, when requested, post GitHub review
+comments in the same format as the workflow.
 
 The goal is to keep the custom Codex review bot high signal, readable, and safe:
 it should post comments only, never approve or request changes, and it should
@@ -120,6 +122,83 @@ Severity labels:
 - `critical` -> `🚨 **[Critical]`
 - `major` -> `⚠️ **[Major]`
 - `minor` -> `📝 **[Minor]` (normally summary only)
+
+## Manual PR Review Posting
+
+Use this path when the user says things like:
+
+- `Bombom-Team/client#240 리뷰해줘`
+- `이 PR에 코멘트 달아줘`
+- `스킬 실행해서 리뷰 남겨줘`
+
+Procedure:
+
+1. Resolve the PR repository and number. Default to `Bombom-Team/client` when
+   the user only provides a number or this repository is implied.
+
+2. Fetch PR metadata:
+
+   ```bash
+   gh pr view <number-or-url> --repo Bombom-Team/client --json number,title,body,baseRefName,headRefName,baseRefOid,headRefOid,isDraft,url
+   ```
+
+3. Inspect only the PR-introduced diff. Exclude generated and lock files using
+   the same pathspecs as the workflow:
+
+   ```bash
+   git diff --find-renames --diff-filter=ACMRTUXB <base>...<head> -- \
+     ':(exclude)pnpm-lock.yaml' \
+     ':(exclude)*.gen.ts' \
+     ':(exclude)*.generated.*' \
+     ':(glob,exclude)**/openapi.d.ts' \
+     ':(glob,exclude)**/generated/**/*.d.ts'
+   ```
+
+4. Review high-signal issues only:
+
+   - Comment only on likely production issues, security problems, data
+     corruption risks, broken user flows, or severe maintainability risks.
+   - Do not comment on generated files, style nits, formatting, subjective
+     naming, unchanged code, or speculative refactors.
+   - Only report issues introduced by the PR diff.
+
+5. Decide comment placement:
+
+   - `critical` and `major`: inline comments when the path and changed line are
+     valid.
+   - `minor`: summary only.
+   - If a finding cannot be tied to a valid changed line, keep it in the
+     summary instead of forcing an inline comment.
+   - If there are no actionable findings, post a concise summary-only review
+     only when the user explicitly asked to post to GitHub.
+
+6. Build the review body with the Preferred Review Body Format and inline
+   comments with the Preferred Inline Comment Format. Include
+   `<!-- CODEX_REVIEW_COMMENT -->` in inline comments and `<!-- REVIEW_META ... -->`
+   in the body.
+
+7. Post with GitHub's review API using `COMMENT` only:
+
+   ```bash
+   jq -n \
+     --rawfile body /tmp/codex-manual-review-body.md \
+     --arg event COMMENT \
+     --argjson comments "$(jq -s '.' /tmp/codex-manual-review-comments.jsonl)" \
+     '{body:$body,event:$event,comments:$comments}' \
+     > /tmp/codex-manual-review-payload.json
+
+   gh api --method POST \
+     "repos/Bombom-Team/client/pulls/$PR_NUMBER/reviews" \
+     --input /tmp/codex-manual-review-payload.json
+   ```
+
+8. If inline publishing fails because of invalid positions or paths, retry once
+   with `comments: []` so the summary is still posted, then tell the user which
+   inline comments could not be attached.
+
+Never publish mock findings as a real PR review. Never publish `APPROVE` or
+`REQUEST_CHANGES`. Avoid posting a duplicate review for the same head commit
+unless the user explicitly asks.
 
 ## Generated File Exclusions
 
