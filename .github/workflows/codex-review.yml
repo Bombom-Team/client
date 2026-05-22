@@ -7,19 +7,12 @@
 #   - CODEX_REVIEW_MODEL (default: gpt-5.5)
 #
 # Review triggers:
-#   - Automatic review on opened / reopened / synchronize / ready_for_review
-#   - Manual rerun by commenting `/codex-review`
+#   - Manual run by commenting `/codex-review`
 #   - Manual workflow_dispatch by PR number
 
 name: Codex PR Review
 
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
   issue_comment:
     types:
       - created
@@ -42,8 +35,6 @@ permissions:
 jobs:
   codex-review:
     if: >
-      (github.event_name == 'pull_request' &&
-        github.event.pull_request.draft == false) ||
       (github.event_name == 'issue_comment' &&
         github.event.issue.pull_request != null &&
         contains(github.event.comment.body, '/codex-review') &&
@@ -66,9 +57,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ "$EVENT_NAME" = "pull_request" ]; then
-            PR_NUMBER="$EVENT_PR_NUMBER"
-          elif [ "$EVENT_NAME" = "issue_comment" ]; then
+          if [ "$EVENT_NAME" = "issue_comment" ]; then
             PR_NUMBER="$(gh api "$ISSUE_PR_URL" --jq '.number')"
           else
             PR_NUMBER="$INPUT_PR_NUMBER"

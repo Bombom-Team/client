@@ -1,10 +1,11 @@
 # 🤖 Codex PR 리뷰 시스템 — 팀 가이드
 
-이 레포에는 Codex 기반 자동 PR 리뷰 시스템이 있습니다. PR diff와 레포 규칙을 함께
-읽고, high-signal 이슈만 structured output으로 생성해 GitHub 리뷰에 게시합니다.
+이 레포에는 비교용 커스텀 Codex PR 리뷰 워크플로우가 있습니다. PR diff와 레포 규칙을
+함께 읽고, high-signal 이슈만 structured output으로 생성해 GitHub 리뷰에 게시합니다.
 
 기존 Claude 리뷰 워크플로우는 제거했고, 기본 리뷰는
-`.github/workflows/codex-review.yml`이 담당합니다.
+ChatGPT/Codex 내장 리뷰를 사용합니다. `.github/workflows/codex-review.yml`은 내장
+리뷰와 품질을 비교하고 싶은 PR에서만 수동 실행합니다.
 
 ---
 
@@ -12,14 +13,14 @@
 
 | 하고 싶은 것                    | 방법                                                                     |
 | ------------------------------- | ------------------------------------------------------------------------ |
-| **PR 리뷰 받기**                | PR 생성/업데이트 시 자동 실행 또는 PR 대화창에 `/codex-review` 코멘트 작성 |
+| **커스텀 리뷰 받기**            | PR 대화창에 `/codex-review` 코멘트 작성                                   |
 | 리뷰 정확도 높이기              | PR 본문 `👀 Review Point`에 확인 지점을 구체적으로 작성 (봇이 우선 점검) |
 | 특정 PR을 수동 리뷰             | Actions 탭 → `Codex PR Review` → Run workflow → PR 번호 입력             |
 | 봇 지적이 **틀렸을 때**         | 해당 PR에서 답글로 반박하고 필요하면 `false-positives.md`에 수동 반영     |
 | 봇 지적을 **고쳤을 때**         | 커밋 push 후 스레드를 직접 resolve                                       |
 
-> Codex 리뷰는 draft가 아닌 PR의 open/reopen/synchronize/ready_for_review 이벤트에서
-> 자동 실행됩니다. 수동 재실행이 필요하면 `/codex-review` 코멘트를 달면 됩니다.
+> 커스텀 Codex 리뷰는 PR 이벤트에서 자동 실행되지 않습니다. 내장 Codex 리뷰와 비교하고
+> 싶은 PR에서만 `/codex-review` 코멘트 또는 수동 실행으로 호출합니다.
 
 ---
 
@@ -27,14 +28,13 @@
 
 ### 트리거 (언제 도는가)
 
-- PR 생성/업데이트/ready_for_review 이벤트
 - PR 코멘트에 **`/codex-review`** 입력 (코멘트 본문에 이 문자열이 포함되면 됨)
 - Actions 탭에서 **수동 실행**(`workflow_dispatch`)
 
 ### 파이프라인
 
 ```
-/codex-review 코멘트 또는 PR 이벤트
+/codex-review 코멘트 또는 workflow_dispatch
       │
       ▼
 ┌─ codex-review.yml (GitHub Actions) ───────────────────┐
@@ -74,7 +74,7 @@
 
 | 파일                        | 역할                              | 트리거                             |
 | --------------------------- | --------------------------------- | ---------------------------------- |
-| `codex-review.yml`          | Codex PR 리뷰                     | PR 이벤트, `/codex-review`, 수동 실행 |
+| `codex-review.yml`          | 비교용 커스텀 Codex PR 리뷰       | `/codex-review`, 수동 실행 |
 
 ### 리뷰 규칙 (`.review-learnings/`) — **정적, 사람이 관리**
 
