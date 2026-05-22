@@ -208,6 +208,28 @@ jobs:
 
           jq '.' "$REVIEW_JSON" >/dev/null
 
+          NORMALIZED_REVIEW_JSON="/tmp/codex-review-normalized.json"
+          jq --arg workspace "${GITHUB_WORKSPACE:-}" '
+            def repo_path:
+              . as $path
+              | if ($workspace != "" and startswith($workspace + "/")) then
+                  ltrimstr($workspace + "/")
+                elif ($workspace != "" and startswith($workspace)) then
+                  ltrimstr($workspace)
+                else
+                  sub("^/home/runner/work/[^/]+/[^/]+/"; "")
+                end
+              | sub("^/"; "")
+              | sub("^\\./"; "");
+
+            .findings |= map(
+              .code_location.relative_file_path = (
+                .code_location.absolute_file_path | repo_path
+              )
+            )
+          ' "$REVIEW_JSON" > "$NORMALIZED_REVIEW_JSON"
+          REVIEW_JSON="$NORMALIZED_REVIEW_JSON"
+
           FINDINGS_COUNT="$(jq '.findings | length' "$REVIEW_JSON")"
           OVERALL="$(jq -r '.overall_correctness' "$REVIEW_JSON")"
           EXPLANATION="$(jq -r '.overall_explanation' "$REVIEW_JSON")"
@@ -227,16 +249,31 @@ jobs:
             printf '%s\n' "$EXPLANATION"
             printf '%s\n' ''
             if [ "$FINDINGS_COUNT" != "0" ]; then
-              printf '%s\n' '### Findings'
+              printf '%s\n' '<details>'
+              printf '<summary>Actionable comments posted: %s</summary>\n' "$FINDINGS_COUNT"
+              printf '%s\n' ''
               printf '%s\n' ''
               jq -r '
                 .findings[]
-                | "- **" + .severity + "** `"
-                  + .code_location.absolute_file_path + ":"
+                | "<details>\n<summary>"
+                  + (if .severity == "critical" then "🚨 Critical"
+                     elif .severity == "major" then "⚠️ Major"
+                     else "💬 Minor"
+                     end)
+                  + " · "
+                  + .code_location.relative_file_path
+                  + ":"
                   + (.code_location.line_range.start | tostring)
-                  + "` — " + .title + "\n  "
-                  + (.body | gsub("\n"; " "))
+                  + " · "
+                  + .title
+                  + "</summary>\n\n"
+                  + "**" + .title + "**\n\n"
+                  + .body
+                  + "\n\nConfidence: "
+                  + (.confidence_score | tostring)
+                  + "\n\n</details>\n"
               ' "$REVIEW_JSON"
+              printf '%s\n' '</details>'
               printf '%s\n' ''
             fi
             printf '%s\n' '<!-- REVIEW_META'
@@ -247,7 +284,7 @@ jobs:
                 (.findings | to_entries | map({
                   id: ("codex-" + ((.key + 1) | tostring)),
                   severity: .value.severity,
-                  file: .value.code_location.absolute_file_path,
+                  file: .value.code_location.relative_file_path,
                   line: .value.code_location.line_range.start,
                   lineEnd: .value.code_location.line_range.end,
                   title: .value.title
@@ -275,18 +312,28 @@ jobs:
             .findings[]
             | select(.severity == "critical" or .severity == "major")
             | {
-                path: .code_location.absolute_file_path,
+                path: .code_location.relative_file_path,
                 line: .code_location.line_range.end,
                 side: "RIGHT",
                 start_line: (if .code_location.line_range.start != .code_location.line_range.end then .code_location.line_range.start else null end),
                 start_side: (if .code_location.line_range.start != .code_location.line_range.end then "RIGHT" else null end),
                 body: (
-                  (if .severity == "critical" then "🚨" else "⚠️" end)
-                  + " **["
-                  + (if .severity == "critical" then "Critical" elif .severity == "major" then "Major" else "Minor" end)
-                  + "] " + .title + "**\n\n"
-                  + .body + "\n\n"
-                  + "Confidence: " + (.confidence_score | tostring)
+                  (if .severity == "critical" then "_🚨 Critical_"
+                   elif .severity == "major" then "_⚠️ Major_"
+                   else "_💬 Minor_"
+                   end)
+                  + "\n\n**" + .title + "**\n\n"
+                  + .body
+                  + "\n\n<details>\n<summary>🤖 Prompt for AI Agents</summary>\n\n```text\n"
+                  + "Verify this finding against the current code. Fix it only if still valid, keep the change minimal, and validate the relevant checks.\n\n"
+                  + "In `" + .code_location.relative_file_path + "` around lines "
+                  + (.code_location.line_range.start | tostring)
+                  + "-"
+                  + (.code_location.line_range.end | tostring)
+                  + ": "
+                  + .title
+                  + "\n```\n\n</details>\n\n"
+                  + "<sub>Confidence: " + (.confidence_score | tostring) + "</sub>"
                   + "\n\n<!-- CODEX_REVIEW_COMMENT -->"
                 )
               }
