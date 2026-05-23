@@ -3,6 +3,7 @@ import {
   MOBILE_HORIZONTAL_PADDING,
   PC_HORIZONTAL_PADDING,
 } from './PageLayout.constants';
+import BomBomFooter from '../Footer/BomBomFooter';
 import PCHeader from '../Header/PCHeader';
 import { useActiveNav } from '@/hooks/useActiveNav';
 import { useDevice } from '@/hooks/useDevice';
@@ -17,6 +18,7 @@ const BomBomPageLayout = ({ children }: PropsWithChildren) => {
     <Container isPC={isPC}>
       {isPC && <PCHeader activeNav={activeNav} />}
       {children}
+      <BomBomFooter />
     </Container>
   );
 };
@@ -37,7 +39,7 @@ const Container = styled.div<{ isPC: boolean }>`
     const topPadding = `calc(${headerHeight} + ${theme.safeArea.top} + ${sidePadding}${isPC ? ' + 40px' : ''})`;
     const bottomPadding = isPC
       ? `calc(${theme.safeArea.bottom} + ${sidePadding})`
-      : `calc(${theme.heights.bottomNav} + ${theme.safeArea.bottom} + ${sidePadding})`;
+      : sidePadding;
 
     return `${topPadding} ${sidePadding} ${bottomPadding} ${sidePadding}`;
   }};

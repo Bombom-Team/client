@@ -2,6 +2,8 @@ import { useNavigate } from '@tanstack/react-router';
 import { openSubscribeLink } from '../utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { sendMessageToRN } from '@/libs/webview/webview.utils';
+import { isWebView } from '@/utils/device';
 import { openExternalLink } from '@/utils/externalLink';
 import type { GetNewsletterWithDetailResponse } from '@/apis/newsletters/newsletters.api';
 
@@ -17,14 +19,35 @@ export const useNewsletterHeroActions = (
       ? '구독 중'
       : '구독 하기';
 
-  const isSubscribeDisabled =
-    !isLoggedIn || (isLoggedIn && newsletter.isSubscribed);
+  const isSubscribeDisabled = Boolean(isLoggedIn && newsletter.isSubscribed);
 
   const openMainSite = () => {
     openExternalLink(newsletter.mainPageUrl);
   };
 
   const handleSubscribeButtonClick = () => {
+    if (!isLoggedIn) {
+      trackEvent({
+        category: 'Newsletter',
+        action: '비로그인 구독버튼 클릭',
+        label: newsletter.name,
+      });
+
+      if (isWebView()) {
+        sendMessageToRN({
+          type: 'SHOW_LOGIN_SCREEN',
+        });
+      } else {
+        navigate({
+          to: '/login',
+          search: {
+            redirect: `${window.location.pathname}${window.location.search}`,
+          },
+        });
+      }
+      return;
+    }
+
     trackEvent({
       category: 'Newsletter',
       action: '구독하기 버튼 클릭',

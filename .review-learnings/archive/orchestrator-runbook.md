@@ -1,4 +1,19 @@
-# PR Review Orchestrator Runbook
+# PR Review Orchestrator Runbook (v2 — ARCHIVED)
+
+> **⚠️ 이 파일은 deprecated 되었어요.** PR Review는 v3 워크플로 (`.github/workflows/claude-review-v3.yml`)로 이관됐고, runbook의 단계별 절차는 모두 GitHub Actions job 구조와 다음 프롬프트 파일들로 분산됐어요:
+>
+> - Step 2 (리뷰 에이전트 호출) → workflow의 `reviewer-agents` matrix job + `.review-learnings/agent-prompts/{bug-logic,convention-pattern}-agent.md`
+> - Step 3 (집계) → `.github/scripts/aggregate-findings.sh`
+> - Step 4 (Skeptic 검증) → workflow의 `finalize` job + `.review-learnings/agent-prompts/skeptic.md`
+> - Step 5 (리뷰 본문 + 게시) → workflow의 `finalize` job + `.review-learnings/agent-prompts/review-body.md`
+>
+> v2가 사라진 이유는 단순해요: 자연어로 "병렬 호출하라"고 지시해도 Claude(Opus 포함)가 한 번도 진짜 병렬로 동작하지 않았어요 (100개 run 측정). GitHub Actions matrix가 워크플로 레벨에서 병렬을 강제하는 게 신뢰성 있는 유일한 방법이었어요.
+>
+> 이 파일은 히스토리/레퍼런스 용도로만 보존돼요. v3가 1-2주 안정 운영되면 v2 워크플로(`claude-review.yml`)도 정리될 예정.
+
+---
+
+# (이하 v2 원본 — 참고용)
 
 > 이 파일은 PR Review v2 오케스트레이터가 따라야 할 **정적 실행 절차**입니다.
 > 워크플로우의 `prompt:` 인풋이 슬림해지도록, PR마다 바뀌지 않는 모든 절차/템플릿/포맷을 여기 모았습니다.

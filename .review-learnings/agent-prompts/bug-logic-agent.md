@@ -105,6 +105,8 @@ Context Packet의 **"PR Scope"** 섹션을 반드시 확인하세요. 영향 범
 }
 ```
 
+`findings: []` 도 유효한 응답입니다 (이슈 없음). 빈 findings를 넣어 `/tmp/findings-bug-logic.json`을 반드시 생성하세요. 후속 aggregate job이 이 파일을 읽습니다.
+
 ## Severity Guidelines
 
 - **critical**: 프로덕션 크래시, 데이터 손실. **재현 시나리오 필수**
