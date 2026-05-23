@@ -1,19 +1,38 @@
 ---
 name: codex-review-workflow
-description: Manage the Bombom client Codex PR review GitHub Actions workflow and manual Codex-style PR reviews. Use this skill whenever the user asks to review a PR, post review comments, change Codex review behavior, review comment format, inline review style, generated-file exclusions, approve/request-changes behavior, mock-test review output, resolve/unresolved tracking, or to diagnose Codex review Action failures in this repository.
+description: Manage the Bombom client PR review workflow shared by Codex (자동) and Claude (수동). Use this skill whenever the user asks to review a PR with the team's standard format, post review comments, change review behavior, review comment format, inline review style, generated-file exclusions, approve/request-changes behavior, mock-test review output, resolve/unresolved tracking, or to diagnose review Action failures in this repository.
 ---
 
-# Codex Review Workflow
+# PR Review Workflow (Codex + Claude)
 
 Use this skill for changes around `.github/workflows/codex-review.yml`,
 `.github/workflows/codex-resolve.yml`, `.github/codex-review-output-schema.json`,
 `.github/scripts/publish-codex-review.sh`, and `.review-learnings/REVIEW.md`.
-Also use it when the user asks Codex to manually review a Bombom client PR and,
-when requested, post GitHub review comments in the same format as the workflow.
+Also use it when the user asks Codex (자동) or Claude (수동) to review a Bombom
+client PR and post GitHub review comments in the same shared format.
 
-The goal is to keep the custom Codex review bot high signal, readable, and safe:
-it should post comments only, never approve or request changes, and it should
-look similar to the team's preferred Claude review format.
+The goal is to keep the custom PR review bot high signal, readable, and safe:
+it should post comments only, never approve or request changes, and the output
+should look identical between Codex 자동 워크플로우와 Claude 수동 리뷰 —
+오직 reviewer 라벨과 footer 텍스트만 다르다.
+
+## Reviewer Identity
+
+The shared publisher (`publish-codex-review.sh`) accepts a `REVIEWER` env
+(default `codex`). Set `REVIEWER=claude` when Claude is the manual reviewer.
+This swaps the user-facing reviewer label in:
+
+- Review body header / no-output fallback
+- `📋 검증 과정` wording
+- Inline comment `**<Reviewer> 검증**:` prefix
+- Footer (codex shows `/codex-review로 재실행`, others show `수동 리뷰`)
+- `<!-- REVIEW_META -->`의 `source` 필드와 finding id prefix
+
+These conventions stay identical regardless of reviewer (do **not** change them):
+
+- `<!-- CODEX_REVIEW_COMMENT -->` inline marker — `codex-resolve.yml`가 의존
+- 파일명 / 스키마 / 호출 계약 (`REVIEW_JSON`, `REPOSITORY`, `PR_NUMBER`, `HEAD_SHA`)
+- review event는 항상 `COMMENT`
 
 ## Required Repo Rules
 
@@ -28,19 +47,21 @@ formatting unless the user explicitly asks.
 
 ## Current Design
 
-- Review is triggered manually by `/codex-review` or `workflow_dispatch`.
+- Codex 자동 워크플로우는 `/codex-review` 또는 `workflow_dispatch`로 트리거.
 - The workflow checks out the PR merge commit.
 - It syncs review tooling from the default branch so old PRs can use the latest
   schema and review rules.
 - It prepares `codex-review-prompt.md` from PR metadata, repo instructions,
   review learnings, changed files, and unified diff.
-- `openai/codex-action@v1` writes `codex-review-output.json`.
-- `.github/scripts/publish-codex-review.sh` converts Codex structured output
-  into the GitHub review body and inline comments.
+- `openai/codex-action@v1` writes `codex-review-output.json` (Codex 자동).
+  Claude 수동 리뷰는 같은 스키마로 직접 JSON을 작성한다.
+- `.github/scripts/publish-codex-review.sh` converts the structured review
+  output into the GitHub review body and inline comments. `REVIEWER` env
+  controls reviewer 라벨 (default `codex`).
 - `.github/workflows/codex-review-publish.yml` can publish a locally generated
   `codex-review-output.json` through GitHub Actions without calling OpenAI or
   `openai/codex-action`.
-- The workflow and manual skill path should both run the same sequence:
+- The Codex 자동 워크플로우와 Claude 수동 경로 둘 다 같은 시퀀스를 따른다:
   review the PR, write structured review JSON, then call the shared publish
   script.
 
@@ -52,14 +73,15 @@ formatting unless the user explicitly asks.
 - Only `critical` and `major` findings should become inline comments.
 - `minor` findings should appear in the review summary `### 참고` section.
 - Generated OpenAPI type declarations and lock files should not be reviewed.
-- Keep `<!-- CODEX_REVIEW_COMMENT -->` in inline comments because the resolve
-  workflow uses it to identify Codex review threads.
+- Keep `<!-- CODEX_REVIEW_COMMENT -->` in inline comments — `codex-resolve.yml`
+  이 마커로 review thread를 식별. reviewer가 Codex/Claude 어느 쪽이어도 동일.
 - Preserve `<!-- REVIEW_META ... -->` because follow-up workflows and future
-  learning loops may parse it.
+  learning loops may parse it. `source` 필드는 `REVIEWER` env 값을 그대로 반영한다.
 
 ## Preferred Review Body Format
 
-Use this structure, matching the team's preferred Claude-style summary:
+`{REVIEWER_LABEL}`은 `REVIEWER` env에 따라 publisher가 자동 치환한다 (Codex/Claude).
+Footer 마지막 줄은 reviewer별로 분기된다 (아래 예시 참조).
 
 ```md
 ## 🤖 PR Review
@@ -68,26 +90,29 @@ Use this structure, matching the team's preferred Claude-style summary:
 
 > ⚠️ 수정이 필요한 리뷰 코멘트가 있습니다.
 
-> Overall explanation from Codex.
+> Overall explanation from {REVIEWER_LABEL}.
 
 🚨 **0** Critical · ⚠️ **1** Major · 📝 **2** Minor
 
 ### 이전 리뷰 이슈 추적
-| ID | 상태 | 심각도 | 파일 | 이슈 |
-|----|------|--------|------|------|
-| f1 | ✅ 해결 | major | path/to/file.ts:10 | issue title |
-| f2 | ❌ 미해결 | minor | path/to/file.ts:20 | issue title |
+
+| ID  | 상태      | 심각도 | 파일               | 이슈        |
+| --- | --------- | ------ | ------------------ | ----------- |
+| f1  | ✅ 해결   | major  | path/to/file.ts:10 | issue title |
+| f2  | ❌ 미해결 | minor  | path/to/file.ts:20 | issue title |
 
 ### 수정 필요
+
 - **path/to/file.ts:10** — Major issue title (인라인 코멘트 참조).
 
 ### 참고
+
 - **path/to/file.ts:20** — Minor issue title
   Minor explanation.
 
 <details><summary>📋 검증 과정</summary>
 
-- Codex structured review 결과 중 확신도가 있는 항목만 정리했습니다.
+- {REVIEWER_LABEL} structured review 결과 중 확신도가 있는 항목만 정리했습니다.
 - Critical/Major는 inline comment로 게시하고, Minor는 참고 항목으로 summary에 포함합니다.
 - 자동 생성된 OpenAPI 타입 선언 파일과 lock 파일은 리뷰 대상에서 제외합니다.
 
@@ -98,22 +123,34 @@ Use this structure, matching the team's preferred Claude-style summary:
 -->
 
 ---
+
+<!-- codex: -->
+
 <sub>🤖 Codex PR Review | `/codex-review`로 재실행</sub>
+
+<!-- claude (or other reviewers): -->
+
+<sub>🤖 {REVIEWER_LABEL} PR Review | 수동 리뷰</sub>
 ```
 
 Omit `### 이전 리뷰 이슈 추적` when no previous issue data exists. The workflow
 should tolerate `.previous_issues` being absent by using `(.previous_issues // [])`.
 
+When findings are empty (no critical/major/minor), the publisher still posts a
+summary with `> ✅ 확실하게 수정이 필요한 항목을 찾지 못했습니다.` — **리뷰는
+무조건 게시된다.**
+
 ## Preferred Inline Comment Format
 
-Use direct, readable inline comments rather than long agent prompts:
+Use direct, readable inline comments rather than long agent prompts.
+`{REVIEWER_LABEL}` 토큰은 publisher가 `REVIEWER` env에 따라 치환한다.
 
 ```md
 ⚠️ **[Major] Title**
 
 Finding body.
 
-**Codex 검증**: 변경 diff의 `path/to/file.ts:10-12` 기준으로 확인했습니다.
+**{REVIEWER_LABEL} 검증**: 변경 diff의 `path/to/file.ts:10-12` 기준으로 확인했습니다.
 실제 코드와 다르면 이 코멘트는 무시해 주세요. (confidence 0.92).
 
 **수정 제안:**
@@ -168,7 +205,6 @@ Procedure:
    ```
 
 4. Review high-signal issues only:
-
    - Comment only on likely production issues, security problems, data
      corruption risks, broken user flows, or severe maintainability risks.
    - Do not comment on generated files, style nits, formatting, subjective
@@ -176,22 +212,37 @@ Procedure:
    - Only report issues introduced by the PR diff.
 
 5. Decide comment placement:
-
    - `critical` and `major`: inline comments when the path and changed line are
      valid.
    - `minor`: summary only.
    - If a finding cannot be tied to a valid changed line, keep it in the
      summary instead of forcing an inline comment.
-   - If there are no actionable findings, post a concise summary-only review
-     only when the user explicitly asked to post to GitHub.
+   - **항상 PR 코멘트(리뷰)를 게시한다.** Findings가 0개여도 publisher가
+     `> ✅ 확실하게 수정이 필요한 항목을 찾지 못했습니다.` summary를 자동으로
+     채우므로, 스킬이 발동되면 무조건 step 7의 publisher 실행까지 진행한다.
+     "찾은 게 없으니 안 올리고 끝"은 금지.
 
 6. Write the review result to `codex-review-output.json` using
    `.github/codex-review-output-schema.json`. The shared publisher owns the
    Preferred Review Body Format, Preferred Inline Comment Format,
    `<!-- CODEX_REVIEW_COMMENT -->`, and `<!-- REVIEW_META ... -->`.
 
-7. Post by running the shared publisher. If the user wants GitHub Actions to
-   own only the comment-writing step, prefer the publish-only workflow:
+7. **반드시 publisher를 실행해 PR 코멘트를 게시한다.** Claude 수동 모드에서는
+   `REVIEWER=claude`로 로컬 publisher를 직접 실행하는 경로가 가장 직관적이다
+   (publish-only 워크플로우는 현재 `reviewer` input이 없어 default `codex`로 게시됨):
+
+   ```bash
+   REVIEW_JSON=codex-review-output.json \
+   REPOSITORY=Bombom-Team/client \
+   PR_NUMBER=<pr-number> \
+   HEAD_SHA=<head-sha> \
+   REVIEWER=claude \
+   bash .github/scripts/publish-codex-review.sh
+   ```
+
+   Codex 자동 워크플로우는 `REVIEWER`를 전달하지 않으므로 default `codex`로 게시된다.
+
+   GitHub Actions가 게시까지 맡게 하고 싶다면 publish-only 워크플로우:
 
    ```bash
    REVIEW_JSON_BASE64="$(base64 < codex-review-output.json | tr -d '\n')"
@@ -207,17 +258,6 @@ Procedure:
    The publish-only workflow must not call OpenAI, must not use
    `OPENAI_API_KEY`, and must only decode the local structured review result
    and run `.github/scripts/publish-codex-review.sh`.
-
-   If workflow dispatch is unavailable or the user explicitly wants local
-   posting, run the shared publisher directly:
-
-   ```bash
-   REVIEW_JSON=codex-review-output.json \
-   REPOSITORY=Bombom-Team/client \
-   PR_NUMBER=<pr-number> \
-   HEAD_SHA=<head-sha> \
-   bash .github/scripts/publish-codex-review.sh
-   ```
 
 8. If inline publishing fails because of invalid positions or paths, retry once
    with `comments: []` so the summary is still posted. The shared publisher
@@ -324,9 +364,10 @@ user asks.
 
 Use focused commits. Good examples:
 
-- `fix: Codex 리뷰 형식 개선`
-- `fix: Codex 리뷰 게시 조건 정리`
-- `test: Codex 리뷰 포맷 mock 추가` for temporary format tests only
+- `fix: PR 리뷰 형식 개선`
+- `fix: PR 리뷰 게시 조건 정리`
+- `feat: PR 리뷰 publisher reviewer 라벨 분기 추가`
+- `test: PR 리뷰 포맷 mock 추가` for temporary format tests only
 
 After successful staging/commit, report the commit hash and any verification
 that could not be completed.
