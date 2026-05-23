@@ -42,9 +42,14 @@ function ChallengeDetail() {
     ? compareDates(new Date(challengeInfo.endDate), new Date()) === -1
     : false;
 
+  const isLastDayOrAfter = challengeInfo
+    ? compareDates(new Date(challengeInfo.endDate), new Date()) <= 0
+    : false;
+
   const { tabs, activeTabId, goToTab } = useChallengeDetailTabs({
     challengeId,
     isChallengeEnd,
+    isLastDayOrAfter,
   });
 
   return (
