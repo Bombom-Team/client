@@ -1,6 +1,6 @@
 ---
-name: codex-review-workflow
-description: Manage the Bombom client PR review workflow. This skill is the ONLY way to invoke a PR review — manual triggers like `/codex-review` slash command and workflow_dispatch have been removed. Use this skill whenever the user asks to review a PR with the team's standard format, post review comments, change review behavior, review comment format, inline review style, generated-file exclusions, approve/request-changes behavior, mock-test review output, resolve/unresolved tracking, or to diagnose review Action failures in this repository.
+name: ai-review-workflow
+description: Manage the Bombom client PR review workflow used by AI reviewers (Codex 자동·Claude 수동 모두 포괄). This skill is the ONLY way to invoke a PR review — manual triggers like `/codex-review` slash command and workflow_dispatch have been removed. Use this skill whenever the user asks to review a PR with the team's standard format, post review comments, change review behavior, review comment format, inline review style, generated-file exclusions, approve/request-changes behavior, mock-test review output, resolve/unresolved tracking, or to diagnose review Action failures in this repository.
 ---
 
 # PR Review Workflow (skill-only)
