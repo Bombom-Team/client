@@ -7,6 +7,15 @@ PR_NUMBER="${PR_NUMBER:?PR_NUMBER is required}"
 HEAD_SHA="${HEAD_SHA:?HEAD_SHA is required}"
 OUTPUT_DIR="${OUTPUT_DIR:-/tmp}"
 
+REVIEWER="${REVIEWER:-codex}"
+if [ -z "${REVIEWER_LABEL:-}" ]; then
+  case "$REVIEWER" in
+    codex)  REVIEWER_LABEL="Codex" ;;
+    claude) REVIEWER_LABEL="Claude" ;;
+    *)      REVIEWER_LABEL="$REVIEWER" ;;
+  esac
+fi
+
 BODY_PATH="$OUTPUT_DIR/codex-review-body.md"
 COMMENTS_PATH="$OUTPUT_DIR/codex-review-comments.jsonl"
 PAYLOAD_PATH="$OUTPUT_DIR/codex-review-payload.json"
@@ -15,7 +24,7 @@ BODY_ONLY_PAYLOAD_PATH="$OUTPUT_DIR/codex-review-payload-body-only.json"
 if [ ! -s "$REVIEW_JSON" ]; then
   gh pr comment "$PR_NUMBER" \
     --repo "$REPOSITORY" \
-    --body "## Codex PR Review\n\nCodex structured output was not produced. Check the workflow logs."
+    --body "## ${REVIEWER_LABEL} PR Review\n\n${REVIEWER_LABEL} structured output was not produced. Check the workflow logs."
   exit 0
 fi
 
@@ -124,7 +133,7 @@ PREVIOUS_ISSUES_COUNT="$(jq '(.previous_issues // []) | length' "$REVIEW_JSON")"
 
   printf '%s\n' '<details><summary>📋 검증 과정</summary>'
   printf '%s\n' ''
-  printf '%s\n' '- Codex structured review 결과 중 확신도가 있는 항목만 정리했습니다.'
+  printf '%s\n' "- ${REVIEWER_LABEL} structured review 결과 중 확신도가 있는 항목만 정리했습니다."
   printf '%s\n' '- Critical/Major는 inline comment로 게시하고, Minor는 참고 항목으로 summary에 포함합니다.'
   printf '%s\n' '- 자동 생성된 OpenAPI 타입 선언 파일과 lock 파일은 리뷰 대상에서 제외합니다.'
   printf '%s\n' ''
@@ -135,9 +144,10 @@ PREVIOUS_ISSUES_COUNT="$(jq '(.previous_issues // []) | length' "$REVIEW_JSON")"
   jq \
     --arg pr "$PR_NUMBER" \
     --arg sha "$HEAD_SHA" \
+    --arg reviewer "$REVIEWER" \
     '
       (.findings | to_entries | map({
-        id: ("codex-" + ((.key + 1) | tostring)),
+        id: ($reviewer + "-" + ((.key + 1) | tostring)),
         severity: .value.severity,
         file: .value.code_location.relative_file_path,
         line: .value.code_location.line_range.start,
@@ -146,7 +156,7 @@ PREVIOUS_ISSUES_COUNT="$(jq '(.previous_issues // []) | length' "$REVIEW_JSON")"
       })) as $meta_findings
       | {
         version: 3,
-        source: "codex",
+        source: $reviewer,
         pr: ($pr | tonumber),
         review_sha: $sha[0:7],
         previous_issues: (.previous_issues // []),
@@ -157,10 +167,10 @@ PREVIOUS_ISSUES_COUNT="$(jq '(.previous_issues // []) | length' "$REVIEW_JSON")"
   printf '%s\n' '-->'
   printf '%s\n' ''
   printf '%s\n' '---'
-  printf '%s\n' '<sub>🤖 Codex PR Review | `/codex-review`로 재실행</sub>'
+  printf '%s\n' "<sub>🤖 ${REVIEWER_LABEL} PR Review</sub>"
 } > "$BODY_PATH"
 
-jq -c --arg commit "$HEAD_SHA" '
+jq -c --arg commit "$HEAD_SHA" --arg reviewer_label "$REVIEWER_LABEL" '
   .findings[]
   | select(.severity == "critical" or .severity == "major")
   | {
@@ -177,7 +187,7 @@ jq -c --arg commit "$HEAD_SHA" '
         + .title
         + "**\n\n"
         + .body
-        + "\n\n**Codex 검증**: 변경 diff의 `"
+        + "\n\n**" + $reviewer_label + " 검증**: 변경 diff의 `"
         + .code_location.relative_file_path
         + ":"
         + (.code_location.line_range.start | tostring)
@@ -196,21 +206,34 @@ jq -c --arg commit "$HEAD_SHA" '
 
 COMMENTS_JSON="$(jq -s '.' "$COMMENTS_PATH")"
 
+if [ "$CRITICAL_COUNT" = "0" ] && [ "$MAJOR_COUNT" = "0" ] && [ "$MINOR_COUNT" = "0" ] && [ "$OVERALL" = "patch is correct" ]; then
+  EVENT="APPROVE"
+else
+  EVENT="COMMENT"
+fi
+
 jq -n \
   --rawfile body "$BODY_PATH" \
-  --arg event COMMENT \
+  --arg event "$EVENT" \
   --argjson comments "$COMMENTS_JSON" \
   '{body: $body, event: $event, comments: $comments}' \
   > "$PAYLOAD_PATH"
 
-if ! gh api \
-  --method POST \
-  "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" \
-  --input "$PAYLOAD_PATH"; then
+post_review() {
+  gh api --method POST "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" --input "$1"
+}
+
+if ! post_review "$PAYLOAD_PATH"; then
   echo "Inline review publishing failed. Retrying with body-only review."
   jq '.comments = []' "$PAYLOAD_PATH" > "$BODY_ONLY_PAYLOAD_PATH"
-  gh api \
-    --method POST \
-    "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" \
-    --input "$BODY_ONLY_PAYLOAD_PATH"
+  if ! post_review "$BODY_ONLY_PAYLOAD_PATH"; then
+    if [ "$EVENT" = "APPROVE" ]; then
+      echo "APPROVE event rejected (likely permission). Retrying with COMMENT event."
+      jq '.event = "COMMENT"' "$BODY_ONLY_PAYLOAD_PATH" > "$BODY_ONLY_PAYLOAD_PATH.tmp"
+      mv "$BODY_ONLY_PAYLOAD_PATH.tmp" "$BODY_ONLY_PAYLOAD_PATH"
+      post_review "$BODY_ONLY_PAYLOAD_PATH"
+    else
+      exit 1
+    fi
+  fi
 fi
