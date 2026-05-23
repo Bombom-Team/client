@@ -168,6 +168,7 @@ These rules apply to commits and pull requests in **any** package.
 - **PR Format**: `[{issue_key}] {type}: {subject}` — the issue key prefix belongs in the PR title only, not in commit subjects.
   - Example: `[BOM-75] feat: SearchInput component 제작`
 - **Branch Naming**: `{type}/{issue_key}` (e.g., `feat/BOM-5`)
+- **Branch Base**: Always create new branches from `dev` (not `main`). PRs in this repo target `dev`, so branching off any other base will produce a noisy diff. Before `git checkout -b`, ensure you are on `dev` (or use `git checkout -b <name> origin/dev`).
 - **Merge Strategy**: Squash & Merge to `develop`, Create a Commit merge to `main`
 
 ---
