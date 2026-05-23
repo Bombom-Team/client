@@ -77,9 +77,9 @@ formatting unless the user explicitly asks.
 
 ## Hard Constraints
 
-- Never publish `APPROVE`.
 - Never publish `REQUEST_CHANGES`.
-- Always use review event `COMMENT`.
+- `APPROVE`는 **조건부**로만 허용된다 (아래 "Review Event Decision" 참조).
+  그 외엔 항상 `COMMENT`.
 - Only `critical` and `major` findings should become inline comments.
 - `minor` findings should appear in the review summary `### 참고` section.
 - Generated OpenAPI type declarations and lock files should not be reviewed.
@@ -87,6 +87,26 @@ formatting unless the user explicitly asks.
   이 마커로 review thread를 식별. reviewer가 Codex/Claude 어느 쪽이어도 동일.
 - Preserve `<!-- REVIEW_META ... -->` because follow-up workflows and future
   learning loops may parse it. `source` 필드는 `REVIEWER` env 값을 그대로 반영한다.
+
+## Review Event Decision
+
+publisher가 review event를 자동 결정한다 (publisher 단일 진실원):
+
+- `APPROVE` ← `findings.length == 0` **AND** `overall_correctness == "patch is correct"`
+  (이중 가드: finding 카운트만 보면 LLM이 "incorrect" 판정인데 minor도 없는
+  경우를 잘못 approve할 수 있어 overall 판정도 같이 체크)
+- 그 외 모든 경우 ← `COMMENT`
+
+**Fallback chain** (post 실패 시):
+
+1. inline + event → 실패 → body-only + event 재시도
+2. body-only도 실패 + event=APPROVE → body-only + `COMMENT`로 한 번 더 재시도
+   (GitHub Actions에서 APPROVE 권한 거절되는 경우 대비)
+3. 그래도 실패 → exit 1
+
+이 정책으로 사람 reviewer가 없어도 클린한 PR은 자동 통과시킬 수 있되,
+모델이 조금이라도 의심하면 자동 approve를 회피한다. 정책 변경 시
+publisher 스크립트의 `EVENT` 결정 로직 한 곳만 수정.
 
 ## Preferred Review Body Format
 
@@ -324,8 +344,10 @@ gh run view <run-id> --repo Bombom-Team/client --job <job-id> --log
 
 Common failures:
 
-- `GitHub Actions is not permitted to approve pull requests`: publisher attempted
-  `APPROVE`. Fix by forcing `EVENT="COMMENT"` (already wired in script).
+- `GitHub Actions is not permitted to approve pull requests`: publisher가
+  조건부 APPROVE를 시도했으나 GHA가 거절. publisher가 자동으로 `COMMENT`로
+  fallback해 재시도하므로 게시 자체는 성공한다. 영구 해결은 Org/Repo의
+  "Allow GitHub Actions reviews to approve pull requests" 설정을 켜는 것.
 - Inline review failed then body-only fallback: likely invalid `path`, line, or
   range. Ensure `absolute_file_path` is normalized to repo-relative path before
   publishing. The publisher performs this normalization automatically.
@@ -342,12 +364,21 @@ bash -n .github/scripts/publish-codex-review.sh
 ruby -e 'require "yaml"; YAML.load_file(".github/workflows/codex-review-publish.yml"); puts "yaml ok"'
 ruby -e 'require "yaml"; YAML.load_file(".github/workflows/codex-resolve.yml"); puts "yaml ok"'
 git diff --check
-rg -n "APPROVE|REQUEST_CHANGES" .github/scripts/publish-codex-review.sh \
+rg -n "REQUEST_CHANGES" .github/scripts/publish-codex-review.sh \
   .github/workflows/codex-review-publish.yml .github/workflows/codex-resolve.yml
 ```
 
-Publisher 회귀는 위 "Mock Format Testing" 절차로 codex/claude 두 모드와 findings 0개
-케이스를 한 번씩 돌려본다.
+`REQUEST_CHANGES`는 절대 등장하면 안 된다. `APPROVE`는 publisher의 조건부 로직과
+fallback 안에서만 등장하는지 직접 확인 (`grep -n APPROVE
+.github/scripts/publish-codex-review.sh`).
+
+Publisher 회귀는 위 "Mock Format Testing" 절차로 codex/claude 두 모드와 다음
+케이스를 한 번씩 돌려본다:
+
+- findings 다수 → event `COMMENT`
+- findings 0개 + `overall_correctness: "patch is correct"` → event `APPROVE`
+- findings 0개 + `overall_correctness: "patch is incorrect"` → event `COMMENT`
+  (가드: incorrect 판정이면 0개여도 approve 안 함)
 
 Repository-wide frontend lint/stylelint may fail on pre-existing frontend files.
 Do not fix unrelated frontend files while working on this workflow unless the

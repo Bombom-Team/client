@@ -206,21 +206,34 @@ jq -c --arg commit "$HEAD_SHA" --arg reviewer_label "$REVIEWER_LABEL" '
 
 COMMENTS_JSON="$(jq -s '.' "$COMMENTS_PATH")"
 
+if [ "$CRITICAL_COUNT" = "0" ] && [ "$MAJOR_COUNT" = "0" ] && [ "$MINOR_COUNT" = "0" ] && [ "$OVERALL" = "patch is correct" ]; then
+  EVENT="APPROVE"
+else
+  EVENT="COMMENT"
+fi
+
 jq -n \
   --rawfile body "$BODY_PATH" \
-  --arg event COMMENT \
+  --arg event "$EVENT" \
   --argjson comments "$COMMENTS_JSON" \
   '{body: $body, event: $event, comments: $comments}' \
   > "$PAYLOAD_PATH"
 
-if ! gh api \
-  --method POST \
-  "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" \
-  --input "$PAYLOAD_PATH"; then
+post_review() {
+  gh api --method POST "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" --input "$1"
+}
+
+if ! post_review "$PAYLOAD_PATH"; then
   echo "Inline review publishing failed. Retrying with body-only review."
   jq '.comments = []' "$PAYLOAD_PATH" > "$BODY_ONLY_PAYLOAD_PATH"
-  gh api \
-    --method POST \
-    "repos/$REPOSITORY/pulls/$PR_NUMBER/reviews" \
-    --input "$BODY_ONLY_PAYLOAD_PATH"
+  if ! post_review "$BODY_ONLY_PAYLOAD_PATH"; then
+    if [ "$EVENT" = "APPROVE" ]; then
+      echo "APPROVE event rejected (likely permission). Retrying with COMMENT event."
+      jq '.event = "COMMENT"' "$BODY_ONLY_PAYLOAD_PATH" > "$BODY_ONLY_PAYLOAD_PATH.tmp"
+      mv "$BODY_ONLY_PAYLOAD_PATH.tmp" "$BODY_ONLY_PAYLOAD_PATH"
+      post_review "$BODY_ONLY_PAYLOAD_PATH"
+    else
+      exit 1
+    fi
+  fi
 fi
