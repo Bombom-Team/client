@@ -167,11 +167,7 @@ PREVIOUS_ISSUES_COUNT="$(jq '(.previous_issues // []) | length' "$REVIEW_JSON")"
   printf '%s\n' '-->'
   printf '%s\n' ''
   printf '%s\n' '---'
-  if [ "$REVIEWER" = "codex" ]; then
-    printf '%s\n' '<sub>🤖 Codex PR Review | `/codex-review`로 재실행</sub>'
-  else
-    printf '%s\n' "<sub>🤖 ${REVIEWER_LABEL} PR Review | 수동 리뷰</sub>"
-  fi
+  printf '%s\n' "<sub>🤖 ${REVIEWER_LABEL} PR Review</sub>"
 } > "$BODY_PATH"
 
 jq -c --arg commit "$HEAD_SHA" --arg reviewer_label "$REVIEWER_LABEL" '
