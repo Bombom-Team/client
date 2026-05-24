@@ -304,3 +304,45 @@ export const getChallengeLanding = async (challengeId: number) => {
     path: `/challenges/${challengeId}/landing`,
   });
 };
+
+export type ChallengeReview = components['schemas']['ChallengeReviewResponse'];
+export type GetChallengeReviewsResponse = ChallengeReview[];
+
+export const getChallengeReviews = async (challengeId: number) => {
+  return await fetcher.get<GetChallengeReviewsResponse>({
+    path: `/challenges/${challengeId}/reviews`,
+  });
+};
+
+export const getMyReview = async (challengeId: number) => {
+  return await fetcher.get<ChallengeReview>({
+    path: `/challenges/${challengeId}/reviews/me`,
+  });
+};
+
+export type PostChallengeReviewParams =
+  components['schemas']['CreateChallengeReviewRequest'];
+
+export const postChallengeReview = async (
+  challengeId: number,
+  params: PostChallengeReviewParams,
+) => {
+  return await fetcher.post<PostChallengeReviewParams, never>({
+    path: `/challenges/${challengeId}/reviews`,
+    body: params,
+  });
+};
+
+export type PutChallengeReviewParams =
+  components['schemas']['UpdateChallengeReviewRequest'];
+
+export const putChallengeReview = async (
+  challengeId: number,
+  reviewId: number,
+  params: PutChallengeReviewParams,
+) => {
+  return await fetcher.put<PutChallengeReviewParams, never>({
+    path: `/challenges/${challengeId}/reviews/${reviewId}`,
+    body: params,
+  });
+};

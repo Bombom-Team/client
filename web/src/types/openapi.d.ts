@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+  '/api/v1/challenges/{challengeId}/reviews/{reviewId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * 리뷰 수정
+     * @description 로그인한 사용자가 자신의 챌린지 리뷰를 수정합니다. 코멘트와 비공개 여부를 함께 수정할 수 있습니다.
+     */
+    put: operations['updateReview'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/challenges/{challengeId}/comments/{commentId}/like': {
     parameters: {
       query?: never;
@@ -132,6 +152,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/maeil-mail/articles/{articleId}/answers/me': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 매일메일 제출 답변 조회
+     * @description 회원이 제출한 매일메일 아티클 답변을 조회합니다.
+     */
+    get: operations['getSubmittedAnswer'];
+    put?: never;
+    /**
+     * 매일메일 답변 제출
+     * @description 회원이 매일메일 아티클에 대한 답변을 제출합니다.
+     */
+    post: operations['submitAnswer'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/highlights': {
     parameters: {
       query?: never;
@@ -175,6 +219,30 @@ export interface paths {
      * @description 신청한 챌린지를 취소합니다.
      */
     delete: operations['cancelChallenge'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{challengeId}/reviews': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 열람 가능한 리뷰 목록 조회
+     * @description 로그인한 사용자가 직접 작성한 리뷰(비공개 포함)와 다른 사용자가 작성한 공개 리뷰 목록을 함께 조회합니다.
+     */
+    get: operations['getReviews'];
+    put?: never;
+    /**
+     * 리뷰 작성
+     * @description 로그인한 사용자가 챌린지 리뷰를 작성합니다. 비공개 여부를 함께 지정할 수 있습니다.
+     */
+    post: operations['createReview'];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -771,6 +839,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/maeil-mail/{contentId}/answer': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 매일메일 모범 답변 조회
+     * @description 매일메일 컨텐츠의 모범 답변을 확인합니다.
+     */
+    get: operations['getIdealAnswer'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/maeil-mail/content': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 매일메일 정보 조회
+     * @description 아티클 id로 매일메일 컨텐츠 정보를 조회합니다.
+     */
+    get: operations['getInformationByArticle'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/highlights/statistics/newsletters': {
     parameters: {
       query?: never;
@@ -963,6 +1071,26 @@ export interface paths {
      * @description 사용자의 챌린지 수료증 정보(닉네임, 챌린지명, 기수, 기간, 메달 등급)를 조회합니다.
      */
     get: operations['getCertificationInfo'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/challenges/{challengeId}/reviews/me': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 내 리뷰 존재 확인
+     * @description 로그인한 사용자가 해당 챌린지에 이미 작성한 리뷰가 있는지 확인합니다. 리뷰가 존재하면 200과 함께 리뷰 본문을 반환하고, 없으면 404를 반환합니다. 프론트엔드는 이 응답으로 리뷰 작성 버튼 활성화 여부를 결정합니다.
+     */
+    get: operations['getMyReview'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1371,6 +1499,10 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    UpdateChallengeReviewRequest: {
+      comment: string;
+      isPrivate?: boolean;
+    };
     ChallengeCommentLikeResponse: {
       /** Format: int32 */
       likeCount?: number;
@@ -1381,6 +1513,10 @@ export interface components {
     /** @description 경고 설정 변경 요청 */
     UpdateWarningSettingRequest: {
       isVisible?: boolean;
+    };
+    MaeilMailSubmitAnswerRequest: {
+      /** @description 사용자가 제출한 매일메일 답변 */
+      answer: string;
     };
     HighlightCreateRequest: {
       location: components['schemas']['HighlightLocationRequest'];
@@ -1425,6 +1561,10 @@ export interface components {
        */
       endOffset: number;
       endXPath: string;
+    };
+    CreateChallengeReviewRequest: {
+      comment: string;
+      isPrivate?: boolean;
     };
     DailyGuideCommentRequest: {
       content: string;
@@ -1557,8 +1697,8 @@ export interface components {
     };
     SortObject: {
       empty?: boolean;
-      sorted?: boolean;
       unsorted?: boolean;
+      sorted?: boolean;
     };
     CategoryResponse: {
       /** Format: int64 */
@@ -1641,19 +1781,6 @@ export interface components {
       monthlyRanking?: components['schemas']['MonthlyRankingBadgeResponse'];
       challenge?: components['schemas']['ChallengeBadgeResponse'];
       streak?: components['schemas']['StreakBadgeResponse'];
-    };
-    StreakBadgeResponse: {
-      /** @enum {string} */
-      tier:
-        | 'SEVEN'
-        | 'FIFTEEN'
-        | 'THIRTY'
-        | 'FIFTY'
-        | 'HUNDRED'
-        | 'TWO_HUNDRED'
-        | 'THREE_HUNDRED'
-        | 'FOUR_HUNDRED'
-        | 'FIVE_HUNDRED';
     };
     ChallengeBadgeResponse: {
       /** @enum {string} */
@@ -1764,6 +1891,17 @@ export interface components {
       requiredStageScore: number;
       /** @description 출석 여부 */
       isAttended: boolean;
+    };
+    MaeilMailIdealAnswerResponse: {
+      title: string;
+      answer: string;
+    };
+    MaeilMailInformationResponse: {
+      /** Format: int64 */
+      contentId: number;
+    };
+    MaeilMailSubmittedAnswerResponse: {
+      answer: string;
     };
     HighlightResponse: {
       /** Format: int64 */
@@ -1901,7 +2039,7 @@ export interface components {
       /** Format: date */
       date: string;
       /** @enum {string} */
-      status: 'COMPLETE' | 'SHIELD';
+      status: 'COMPLETE' | 'SHIELD' | 'HOLIDAY_SHIELD';
     };
     MemberDailyResultResponse: {
       /** Format: int64 */
@@ -2001,6 +2139,29 @@ export interface components {
       medal: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
       /** Format: int32 */
       medalCondition: number;
+    };
+    ChallengeReviewResponse: {
+      /**
+       * Format: int64
+       * @description 리뷰 코멘트 식별자
+       * @example 1
+       */
+      reviewId: number;
+      /**
+       * @description 작성자 별명
+       * @example 나밍곰
+       */
+      nickname: string;
+      /**
+       * @description 작성자 코멘트
+       * @example 좋았어요
+       */
+      comment: string;
+      /**
+       * @description 비밀글 여부 (자신이 쓴 글이 비공개인지 표시할 때 사용)
+       * @example false
+       */
+      isPrivate: boolean;
     };
     MemberDailyCommentResponse: {
       comment: string;
@@ -2374,6 +2535,59 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  updateReview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        challengeId: number;
+        reviewId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateChallengeReviewRequest'];
+      };
+    };
+    responses: {
+      /** @description 리뷰 수정 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 (유효성 검증 실패) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 본인이 작성하지 않은 리뷰는 수정할 수 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지 또는 리뷰를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   addChallengeCommentLike: {
     parameters: {
       query?: never;
@@ -2673,6 +2887,89 @@ export interface operations {
       };
     };
   };
+  getSubmittedAnswer: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 매일메일 아티클 id */
+        articleId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailSubmittedAnswerResponse'];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 답변 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  submitAnswer: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 매일메일 아티클 id */
+        articleId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MaeilMailSubmitAnswerRequest'];
+      };
+    };
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 글자 수 제한 초과 (최대 1,500자) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 매일메일 아티클 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   getHighlights: {
     parameters: {
       query: {
@@ -2849,6 +3146,87 @@ export interface operations {
         content?: never;
       };
       /** @description 챌린지 또는 신청 내역을 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getReviews: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        challengeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 리뷰 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeReviewResponse'][];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지를 찾을 수 없음 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  createReview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        challengeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateChallengeReviewRequest'];
+      };
+    };
+    responses: {
+      /** @description 리뷰 작성 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 (유효성 검증 실패, 또는 해당 챌린지에 이미 작성한 리뷰가 존재) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 챌린지를 찾을 수 없음 */
       404: {
         headers: {
           [name: string]: unknown;
@@ -4107,6 +4485,73 @@ export interface operations {
       };
     };
   };
+  getIdealAnswer: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 매일메일 컨텐츠 id */
+        contentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailIdealAnswerResponse'];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 매일메일 컨텐츠 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getInformationByArticle: {
+    parameters: {
+      query: {
+        /** @description 매일메일 아티클 id */
+        articleId: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailInformationResponse'];
+        };
+      };
+      /** @description 존재하지 않는 아티클 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   getHighlightNewsletterStatistics: {
     parameters: {
       query?: never;
@@ -4488,6 +4933,42 @@ export interface operations {
       };
       /** @description 인증 실패 (로그인 필요) */
       401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getMyReview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        challengeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 내 리뷰가 존재함 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ChallengeReviewResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 해당 챌린지에 작성한 리뷰가 없음 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
