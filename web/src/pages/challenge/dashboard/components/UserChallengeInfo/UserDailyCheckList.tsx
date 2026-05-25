@@ -4,15 +4,20 @@ import type { TodayTodos } from '@/apis/challenge/challenge.api';
 
 interface UserDailyCheckListProps {
   todayTodos: TodayTodos;
+  isLastDay: boolean;
 }
 
 const todoLabels = {
   READ: '뉴스레터를 읽었나요?',
   COMMENT: '오늘의 코멘트를 작성했나요?',
+  COMMENT_LAST_DAY: '리뷰 또는 코멘트를 작성했나요?',
   MINDSET: '첫 날 각오를 작성했나요?',
 };
 
-const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
+const UserDailyCheckList = ({
+  todayTodos,
+  isLastDay,
+}: UserDailyCheckListProps) => {
   const visibleTodos = todayTodos.filter(
     (todo) => todo.challengeTodoType && todo.challengeTodoStatus,
   );
@@ -41,7 +46,11 @@ const UserDailyCheckList = ({ todayTodos }: UserDailyCheckListProps) => {
               <StatusBox status={todo.challengeTodoStatus}>
                 {todo.challengeTodoStatus === 'COMPLETE' ? '✓' : ''}
               </StatusBox>
-              <TodoText>{todoLabels[todo.challengeTodoType]}</TodoText>
+              <TodoText>
+                {todo.challengeTodoType === 'COMMENT' && isLastDay
+                  ? todoLabels.COMMENT_LAST_DAY
+                  : todoLabels[todo.challengeTodoType]}
+              </TodoText>
             </ListItem>
           );
         })}

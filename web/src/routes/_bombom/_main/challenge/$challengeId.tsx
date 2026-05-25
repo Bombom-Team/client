@@ -10,6 +10,7 @@ import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChalle
 import ChallengeGuideModal from '@/pages/challenge/index/components/ChallengeGuideModal/ChallengeGuideModal';
 import ChallengeStreakCard from '@/pages/challenge/index/components/ChallengeStreakCard';
 import { useChallengeDetailTabs } from '@/pages/challenge/index/hooks/useChallengeDetailTabs';
+import ReviewNotice from '@/pages/challenge/review/components/ReviewNotice';
 import { compareDates } from '@/utils/date';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
@@ -90,13 +91,18 @@ function ChallengeDetail() {
           </NavigationWrapper>
 
           <TabPanel>
-            {!isReviewTab && challengeInfo && memberChallengeProgressInfo && (
-              <UserChallengeInfoWrapper>
-                <UserChallengeInfo
-                  challengeInfo={challengeInfo}
-                  memberChallengeProgressInfo={memberChallengeProgressInfo}
-                />
-              </UserChallengeInfoWrapper>
+            {isReviewTab ? (
+              <ReviewNotice />
+            ) : (
+              challengeInfo &&
+              memberChallengeProgressInfo && (
+                <UserChallengeInfoWrapper>
+                  <UserChallengeInfo
+                    challengeInfo={challengeInfo}
+                    memberChallengeProgressInfo={memberChallengeProgressInfo}
+                  />
+                </UserChallengeInfoWrapper>
+              )
             )}
             <Outlet />
           </TabPanel>
