@@ -6,7 +6,6 @@ import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import Flex from '@/components/Flex/Flex';
 import Text from '@/components/Text/Text';
-import { useDevice } from '@/hooks/useDevice';
 import type { ChangeEvent } from 'react';
 
 interface ReviewWriterProps {
@@ -16,34 +15,37 @@ interface ReviewWriterProps {
 const ReviewWriter = ({ challengeId }: ReviewWriterProps) => {
   const [comment, setComment] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
+  const [showError, setShowError] = useState(false);
 
-  const device = useDevice();
-  const isMobile = device === 'mobile';
-
-  const { mutate: addReview, isPending } = useAddReviewMutation({
+  const { mutate: addReview } = useAddReviewMutation({
     challengeId,
     onSuccess: () => {
       setComment('');
       setIsPrivate(false);
+      setShowError(false);
     },
   });
 
   const handleReviewChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    if (value.length <= REVIEW_VALIDATION.maxLength) {
-      setComment(value);
+    if (value.length >= REVIEW_VALIDATION.minLength) {
+      setShowError(false);
     }
+    setComment(value);
   };
 
   const handleSubmit = () => {
-    if (comment.length >= REVIEW_VALIDATION.minLength) {
-      addReview({ comment, isPrivate });
+    if (comment.length < REVIEW_VALIDATION.minLength) {
+      setShowError(true);
+      return;
     }
+
+    addReview({ comment, isPrivate });
   };
 
   return (
-    <Container isMobile={isMobile}>
-      <Title isMobile={isMobile}>챌린지 리뷰 남기기</Title>
+    <Container>
+      <Title>챌린지 리뷰 남기기</Title>
       <Checkbox
         id="private-review"
         checked={isPrivate}
@@ -55,26 +57,27 @@ const ReviewWriter = ({ challengeId }: ReviewWriterProps) => {
       </Checkbox>
       <Flex gap={8} direction="column">
         <Textarea
-          isMobile={isMobile}
+          isError={showError}
           value={comment}
           onChange={handleReviewChange}
           placeholder={`챌린지에서 좋았던 점이나 아쉬웠던 점을 자유롭게 남겨주세요. (최소 ${REVIEW_VALIDATION.minLength}자)`}
           maxLength={REVIEW_VALIDATION.maxLength}
         />
         <Flex justify="space-between" align="flex-start">
-          <Text
-            color="textTertiary"
-            font={isMobile ? 't3Regular' : 't4Regular'}
-          >
+          <Text color={showError ? 'error' : 'textSecondary'} font="t4Regular">
             {comment.length}/{REVIEW_VALIDATION.maxLength}
           </Text>
-          <SubmitButton
-            onClick={handleSubmit}
-            disabled={comment.length < REVIEW_VALIDATION.minLength || isPending}
-            isMobile={isMobile}
-          >
-            등록
-          </SubmitButton>
+          <Flex direction="column" gap={4} align="flex-end">
+            <Text
+              color={showError ? 'error' : 'textSecondary'}
+              font="t4Regular"
+            >
+              {showError
+                ? `최소 ${REVIEW_VALIDATION.minLength}자 이상 입력해주세요`
+                : `최소 ${REVIEW_VALIDATION.minLength}자 이상`}
+            </Text>
+            <SubmitButton onClick={handleSubmit}>등록</SubmitButton>
+          </Flex>
         </Flex>
       </Flex>
     </Container>
@@ -83,7 +86,7 @@ const ReviewWriter = ({ challengeId }: ReviewWriterProps) => {
 
 export default ReviewWriter;
 
-const Container = styled.article<{ isMobile: boolean }>`
+const Container = styled.article`
   width: 100%;
 
   display: flex;
@@ -91,23 +94,23 @@ const Container = styled.article<{ isMobile: boolean }>`
   flex-direction: column;
 `;
 
-const Title = styled.h3<{ isMobile: boolean }>`
+const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.t6Bold : theme.fonts.t7Bold};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
-const Textarea = styled.textarea<{ isMobile: boolean }>`
+const Textarea = styled.textarea<{ isError: boolean }>`
   width: 100%;
-  min-height: ${({ isMobile }) => (isMobile ? '100px' : '120px')};
+  min-height: 120px;
   padding: 12px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
+  border: 1px solid
+    ${({ theme, isError }) =>
+      isError ? theme.colors.error : theme.colors.stroke};
   border-radius: 8px;
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.t4Regular : theme.fonts.t5Regular};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 
   box-sizing: border-box;
   resize: vertical;
@@ -118,17 +121,12 @@ const Textarea = styled.textarea<{ isMobile: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primaryBomBom};
+    border-color: ${({ theme, isError }) =>
+      isError ? theme.colors.error : theme.colors.primaryBomBom};
   }
 `;
 
-const SubmitButton = styled(Button)<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => (isMobile ? '8px 16px' : '10px 20px')};
-  font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.t4Bold : theme.fonts.t5Bold};
-
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.stroke};
-    color: ${({ theme }) => theme.colors.textSecondary};
-  }
+const SubmitButton = styled(Button)`
+  padding: 10px 20px;
+  font: ${({ theme }) => theme.fonts.t5Bold};
 `;
