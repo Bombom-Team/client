@@ -8,16 +8,26 @@ type ReviewCardProps = Review;
 
 const DELETED_USER_NICKNAME = '탈퇴한 회원';
 
-const ReviewCard = ({ nickname, comment, isPrivate }: ReviewCardProps) => {
+const ReviewCard = ({
+  nickname,
+  comment,
+  isPrivate,
+  isMyReview,
+}: ReviewCardProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
 
   return (
-    <Container isMobile={isMobile} isPrivate={isPrivate}>
-      <Flex gap={4} direction="column">
+    <Container isMobile={isMobile} isMyReview={isMyReview}>
+      <Flex gap={4} align="center">
         <Text color="textSecondary" font="t5Regular">
           {nickname ?? DELETED_USER_NICKNAME}
         </Text>
+        {isPrivate && (
+          <Text color="textTertiary" font="t5Regular">
+            · 비공개
+          </Text>
+        )}
       </Flex>
       <Text as="p">{comment}</Text>
     </Container>
@@ -26,11 +36,11 @@ const ReviewCard = ({ nickname, comment, isPrivate }: ReviewCardProps) => {
 
 export default ReviewCard;
 
-const Container = styled.article<{ isMobile: boolean; isPrivate: boolean }>`
+const Container = styled.article<{ isMobile: boolean; isMyReview: boolean }>`
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
-  border-bottom: ${({ theme, isPrivate }) =>
-    isPrivate ? `4px solid ${theme.colors.primaryLight}` : 'none'};
+  border-bottom: ${({ theme, isMyReview }) =>
+    isMyReview ? `4px solid ${theme.colors.primaryLight}` : 'none'};
   border-radius: 12px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
