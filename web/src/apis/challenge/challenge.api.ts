@@ -314,6 +314,34 @@ export const getChallengeReviews = async (challengeId: number) => {
   });
 };
 
+export type GetChallengeReviewsPageParams = {
+  challengeId: number;
+  page?: number;
+  size?: number;
+};
+
+export type GetChallengeReviewsPageResponse = {
+  content?: ChallengeReview[];
+  totalElements?: number;
+  totalPages?: number;
+  first?: boolean;
+  last?: boolean;
+  size?: number;
+  number?: number;
+  numberOfElements?: number;
+  empty?: boolean;
+};
+
+export const getChallengeReviewsPage = async ({
+  challengeId,
+  ...params
+}: GetChallengeReviewsPageParams) => {
+  return await fetcher.get<GetChallengeReviewsPageResponse>({
+    path: `/challenges/${challengeId}/reviews`,
+    query: params,
+  });
+};
+
 export const getMyReview = async (challengeId: number) => {
   return await fetcher.get<ChallengeReview>({
     path: `/challenges/${challengeId}/reviews/me`,

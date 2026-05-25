@@ -18,6 +18,7 @@ import {
   getCertificationInfo,
   getChallengeLanding,
   getChallengeReviews,
+  getChallengeReviewsPage,
   getMyReview,
 } from './challenge.api';
 import type {
@@ -25,6 +26,7 @@ import type {
   GetChallengeCommentsParams,
   GetChallengeCommentRepliesParams,
   GetChallengeArticleHighlightsParams,
+  GetChallengeReviewsPageParams,
   GetDailyGuideCommentsParams,
   GetMemberChallengeStreakParams,
 } from './challenge.api';
@@ -175,6 +177,30 @@ export const challengeQueries = {
       queryOptions({
         queryKey: [...challengeQueries.reviews.all(challengeId)],
         queryFn: () => getChallengeReviews(challengeId),
+      }),
+    pageList: (params: GetChallengeReviewsPageParams) =>
+      queryOptions({
+        queryKey: [
+          ...challengeQueries.reviews.all(params.challengeId),
+          'page',
+          params,
+        ],
+        queryFn: () => getChallengeReviewsPage(params),
+      }),
+    infiniteList: (params: GetChallengeReviewsPageParams) =>
+      infiniteQueryOptions({
+        queryKey: [
+          ...challengeQueries.reviews.all(params.challengeId),
+          'infinite',
+          params,
+        ],
+        queryFn: ({ pageParam = 0 }) =>
+          getChallengeReviewsPage({ ...params, page: pageParam }),
+        getNextPageParam: (lastPage) => {
+          if (!lastPage || lastPage.last) return undefined;
+          return (lastPage.number ?? 0) + 1;
+        },
+        initialPageParam: 0,
       }),
     me: (challengeId: number) =>
       queryOptions({
