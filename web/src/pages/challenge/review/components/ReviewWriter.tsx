@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import { REVIEW_VALIDATION } from '../constants/review';
 import useAddReviewMutation from '../hooks/useAddReviewMutation';
+import useUpdateReviewMutation from '../hooks/useUpdateReviewMutation';
 import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import Flex from '@/components/Flex/Flex';
@@ -10,12 +11,26 @@ import type { ChangeEvent } from 'react';
 
 interface ReviewWriterProps {
   challengeId: number;
+  mode: 'create' | 'edit';
+  reviewId?: number;
+  initialComment?: string;
+  initialIsPrivate?: boolean;
+  onSubmit?: () => void;
 }
 
-const ReviewWriter = ({ challengeId }: ReviewWriterProps) => {
-  const [comment, setComment] = useState('');
-  const [isPrivate, setIsPrivate] = useState(false);
+const ReviewWriter = ({
+  challengeId,
+  mode,
+  reviewId,
+  initialComment = '',
+  initialIsPrivate = false,
+  onSubmit,
+}: ReviewWriterProps) => {
+  const [comment, setComment] = useState(initialComment);
+  const [isPrivate, setIsPrivate] = useState(initialIsPrivate);
   const [showError, setShowError] = useState(false);
+
+  const isEditing = mode === 'edit';
 
   const { mutate: addReview } = useAddReviewMutation({
     challengeId,
@@ -23,6 +38,16 @@ const ReviewWriter = ({ challengeId }: ReviewWriterProps) => {
       setComment('');
       setIsPrivate(false);
       setShowError(false);
+      onSubmit?.();
+    },
+  });
+
+  const { mutate: updateReview } = useUpdateReviewMutation({
+    challengeId,
+    reviewId: reviewId ?? 0,
+    onSuccess: () => {
+      setShowError(false);
+      onSubmit?.();
     },
   });
 
@@ -40,12 +65,16 @@ const ReviewWriter = ({ challengeId }: ReviewWriterProps) => {
       return;
     }
 
-    addReview({ comment, isPrivate });
+    if (isEditing) {
+      updateReview({ comment, isPrivate });
+    } else {
+      addReview({ comment, isPrivate });
+    }
   };
 
   return (
     <Container>
-      <Title>챌린지 리뷰 남기기</Title>
+      <Title>{isEditing ? '리뷰 수정하기' : '챌린지 리뷰 남기기'}</Title>
       <Checkbox
         id="private-review"
         checked={isPrivate}
@@ -76,7 +105,16 @@ const ReviewWriter = ({ challengeId }: ReviewWriterProps) => {
                 ? `최소 ${REVIEW_VALIDATION.minLength}자 이상 입력해주세요`
                 : `최소 ${REVIEW_VALIDATION.minLength}자 이상`}
             </Text>
-            <SubmitButton onClick={handleSubmit}>등록</SubmitButton>
+            <Flex gap={8}>
+              {isEditing && (
+                <CancelButton variant="outlined" onClick={onSubmit}>
+                  취소
+                </CancelButton>
+              )}
+              <SubmitButton onClick={handleSubmit}>
+                {isEditing ? '수정' : '등록'}
+              </SubmitButton>
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
@@ -127,6 +165,11 @@ const Textarea = styled.textarea<{ isError: boolean }>`
 `;
 
 const SubmitButton = styled(Button)`
+  padding: 10px 20px;
+  font: ${({ theme }) => theme.fonts.t5Bold};
+`;
+
+const CancelButton = styled(Button)`
   padding: 10px 20px;
   font: ${({ theme }) => theme.fonts.t5Bold};
 `;

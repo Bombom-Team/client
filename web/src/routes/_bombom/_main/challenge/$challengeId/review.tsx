@@ -1,8 +1,12 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
+import { useState } from 'react';
+import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import MobileReviewsContent from '@/pages/challenge/review/components/MobileReviewsContent';
 import PCReviewsContent from '@/pages/challenge/review/components/PCReviewsContent';
+import ReviewCard from '@/pages/challenge/review/components/ReviewCard';
 import ReviewWriter from '@/pages/challenge/review/components/ReviewWriter';
 import { useReviewsPagination } from '@/pages/challenge/review/hooks/useReviewsPagination';
 
@@ -31,10 +35,48 @@ function ChallengeReview() {
     challengeId: Number(challengeId),
   });
 
+  const { data: myReview, isLoading: isMyReviewLoading } = useQuery(
+    queries.reviews.me(Number(challengeId)),
+  );
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  const renderWriterSection = () => {
+    if (isMyReviewLoading) return null;
+
+    if (myReview && !isEditing) {
+      return (
+        <MyReviewSection>
+          <SectionTitle>내가 남긴 리뷰</SectionTitle>
+          <ReviewCard
+            {...myReview}
+            isMyReview={true}
+            onEdit={() => setIsEditing(true)}
+          />
+        </MyReviewSection>
+      );
+    }
+
+    if (isEditing && myReview) {
+      return (
+        <ReviewWriter
+          challengeId={Number(challengeId)}
+          mode="edit"
+          reviewId={myReview.reviewId}
+          initialComment={myReview.comment}
+          initialIsPrivate={myReview.isPrivate}
+          onSubmit={() => setIsEditing(false)}
+        />
+      );
+    }
+
+    return <ReviewWriter challengeId={Number(challengeId)} mode="create" />;
+  };
+
   return (
     <Container>
       <ContentWrapper isMobile={isMobile}>
-        <ReviewWriter challengeId={Number(challengeId)} />
+        {renderWriterSection()}
         {isMobile ? (
           <MobileReviewsContent baseQueryParams={baseQueryParams} />
         ) : (
@@ -68,4 +110,17 @@ const ContentWrapper = styled.div<{ isMobile: boolean }>`
 
   background-color: ${({ theme, isMobile }) =>
     isMobile ? 'none' : theme.colors.backgroundHover};
+`;
+
+const MyReviewSection = styled.article`
+  width: 100%;
+
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+`;
+
+const SectionTitle = styled.h3`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t7Bold};
 `;

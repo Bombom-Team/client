@@ -1,4 +1,4 @@
-import { fetcher } from '@bombom/shared/apis';
+import { ApiError, fetcher } from '@bombom/shared/apis';
 import type { components, operations } from '@/types/openapi';
 
 export type Challenge = components['schemas']['ChallengeResponse'];
@@ -342,10 +342,19 @@ export const getChallengeReviewsPage = async ({
   });
 };
 
-export const getMyReview = async (challengeId: number) => {
-  return await fetcher.get<ChallengeReview>({
-    path: `/challenges/${challengeId}/reviews/me`,
-  });
+export const getMyReview = async (
+  challengeId: number,
+): Promise<ChallengeReview | null> => {
+  try {
+    return await fetcher.get<ChallengeReview>({
+      path: `/challenges/${challengeId}/reviews/me`,
+    });
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 };
 
 export type PostChallengeReviewParams =
