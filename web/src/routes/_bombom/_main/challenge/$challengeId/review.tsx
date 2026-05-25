@@ -6,6 +6,7 @@ import { useDevice } from '@/hooks/useDevice';
 import MobileReviewsContent from '@/pages/challenge/review/components/MobileReviewsContent';
 import MyReviewSection from '@/pages/challenge/review/components/MyReviewSection';
 import PCReviewsContent from '@/pages/challenge/review/components/PCReviewsContent';
+import ReviewNotice from '@/pages/challenge/review/components/ReviewNotice';
 import { useReviewsPagination } from '@/pages/challenge/review/hooks/useReviewsPagination';
 
 export const Route = createFileRoute(
@@ -40,6 +41,7 @@ function ChallengeReview() {
   return (
     <Container>
       <ContentWrapper isMobile={isMobile}>
+        <ReviewNotice />
         {!isMyReviewLoading && (
           <MyReviewSection
             challengeId={Number(challengeId)}
