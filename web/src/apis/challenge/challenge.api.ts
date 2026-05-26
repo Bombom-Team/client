@@ -332,7 +332,7 @@ export const getMyReview = async (challengeId: number) => {
     });
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
-      return null;
+      return;
     }
     throw error;
   }

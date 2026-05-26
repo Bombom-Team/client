@@ -6,7 +6,7 @@ import type { MyReview } from '@/apis/challenge/challenge.api';
 
 interface MyReviewSectionProps {
   challengeId: number;
-  myReview: MyReview;
+  myReview?: MyReview;
 }
 
 const MyReviewSection = ({ challengeId, myReview }: MyReviewSectionProps) => {
