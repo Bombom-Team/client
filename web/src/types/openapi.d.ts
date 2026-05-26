@@ -233,7 +233,7 @@ export interface paths {
     };
     /**
      * 열람 가능한 리뷰 목록 조회
-     * @description 로그인한 사용자가 직접 작성한 리뷰(비공개 포함)와 다른 사용자가 작성한 공개 리뷰 목록을 함께 조회합니다.
+     * @description 로그인한 사용자가 직접 작성한 리뷰(비공개 포함)와 다른 사용자가 작성한 공개 리뷰 목록을 함께 조회합니다. 응답은 `Page<ChallengeReviewResponse>` 형식이며, 정렬은 항상 최신순으로 서버가 강제합니다. `page`, `size` 쿼리 파라미터만 사용 가능하며, `sort` 파라미터는 무시됩니다. 각 항목의 `isMyReview` 필드로 로그인 회원 본인 작성 여부를 분기 처리할 수 있습니다. (v2: 응답에 `isMyReview` 추가, 페이징 적용)
      */
     get: operations['getReviews'];
     put?: never;
@@ -1671,14 +1671,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['NoticeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1697,8 +1697,8 @@ export interface components {
     };
     SortObject: {
       empty?: boolean;
-      unsorted?: boolean;
       sorted?: boolean;
+      unsorted?: boolean;
     };
     CategoryResponse: {
       /** Format: int64 */
@@ -1923,14 +1923,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2162,6 +2162,52 @@ export interface components {
        * @example false
        */
       isPrivate: boolean;
+      /**
+       * @description 로그인 회원 본인이 작성한 리뷰인지 여부 (클라이언트 분기용)
+       * @example true
+       */
+      isMyReview: boolean;
+    };
+    PageChallengeReviewResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['ChallengeReviewResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    MyChallengeReviewResponse: {
+      /**
+       * Format: int64
+       * @description 리뷰 코멘트 식별자
+       * @example 1
+       */
+      reviewId: number;
+      /**
+       * @description 작성자 별명
+       * @example 나밍곰
+       */
+      nickname: string;
+      /**
+       * @description 작성자 코멘트
+       * @example 좋았어요
+       */
+      comment: string;
+      /**
+       * @description 비밀글 여부 (자신이 쓴 글이 비공개인지 표시할 때 사용)
+       * @example false
+       */
+      isPrivate: boolean;
     };
     MemberDailyCommentResponse: {
       comment: string;
@@ -2177,14 +2223,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['DailyGuideCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2236,14 +2282,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2265,14 +2311,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['CommentReplyResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2289,14 +2335,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentHighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2336,14 +2382,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2380,14 +2426,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BlogPostResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2438,14 +2484,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -3156,7 +3202,10 @@ export interface operations {
   };
   getReviews: {
     parameters: {
-      query?: never;
+      query: {
+        /** @description 페이징 요청 (예: ?page=0&size=20). 정렬은 항상 최신순으로 서버 강제이며 sort 파라미터는 무시됩니다. */
+        pageable: components['schemas']['Pageable'];
+      };
       header?: never;
       path: {
         challengeId: number;
@@ -3171,7 +3220,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['ChallengeReviewResponse'][];
+          '*/*': components['schemas']['PageChallengeReviewResponse'];
         };
       };
       /** @description 인증 실패 (로그인 필요) */
@@ -4957,7 +5006,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          '*/*': components['schemas']['ChallengeReviewResponse'];
+          '*/*': components['schemas']['MyChallengeReviewResponse'];
         };
       };
       /** @description 인증 실패 (로그인 필요) */
