@@ -3,10 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import AllReviewsSection from './AllReviewsSection';
 import { queries } from '@/apis/queries';
 import Pagination from '@/components/Pagination/Pagination';
-import type { GetChallengeReviewsPageParams } from '@/apis/challenge/challenge.api';
+import type { getChallengeReviewsParams } from '@/apis/challenge/challenge.api';
 
 interface PCReviewsContentProps {
-  baseQueryParams: GetChallengeReviewsPageParams;
+  baseQueryParams: getChallengeReviewsParams;
   page: number;
   onPageChange: (page: number) => void;
 }
@@ -22,7 +22,7 @@ const PCReviewsContent = ({
   };
 
   const { data: reviews, isLoading } = useQuery(
-    queries.reviews.pageList(queryParams),
+    queries.reviews.list(queryParams),
   );
   const reviewList = reviews?.content || [];
 

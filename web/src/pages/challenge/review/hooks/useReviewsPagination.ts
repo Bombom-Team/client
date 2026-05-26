@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { GetChallengeReviewsPageParams } from '@/apis/challenge/challenge.api';
+import type { getChallengeReviewsParams } from '@/apis/challenge/challenge.api';
 
 const REVIEWS_SIZE = 10;
 
@@ -12,7 +12,7 @@ export const useReviewsPagination = ({
 }: UseReviewsPaginationProps) => {
   const [page, setPage] = useState(1);
 
-  const baseQueryParams: GetChallengeReviewsPageParams = {
+  const baseQueryParams: getChallengeReviewsParams = {
     challengeId,
     page,
     size: REVIEWS_SIZE,

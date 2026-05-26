@@ -3,10 +3,10 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import AllReviewsSection from './AllReviewsSection';
 import { queries } from '@/apis/queries';
-import type { GetChallengeReviewsPageParams } from '@/apis/challenge/challenge.api';
+import type { getChallengeReviewsParams } from '@/apis/challenge/challenge.api';
 
 interface MobileReviewsContentProps {
-  baseQueryParams: GetChallengeReviewsPageParams;
+  baseQueryParams: getChallengeReviewsParams;
 }
 
 const MobileReviewsContent = ({

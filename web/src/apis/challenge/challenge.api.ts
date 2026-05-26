@@ -306,21 +306,14 @@ export const getChallengeLanding = async (challengeId: number) => {
 };
 
 export type ChallengeReview = components['schemas']['ChallengeReviewResponse'];
-export type GetChallengeReviewsResponse = ChallengeReview[];
 
-export const getChallengeReviews = async (challengeId: number) => {
-  return await fetcher.get<GetChallengeReviewsResponse>({
-    path: `/challenges/${challengeId}/reviews`,
-  });
-};
-
-export type GetChallengeReviewsPageParams = {
+export type getChallengeReviewsParams = {
   challengeId: number;
   page?: number;
   size?: number;
 };
 
-export type GetChallengeReviewsPageResponse = {
+export type getChallengeReviewsResponse = {
   content?: ChallengeReview[];
   totalElements?: number;
   totalPages?: number;
@@ -332,11 +325,11 @@ export type GetChallengeReviewsPageResponse = {
   empty?: boolean;
 };
 
-export const getChallengeReviewsPage = async ({
+export const getChallengeReviews = async ({
   challengeId,
   ...params
-}: GetChallengeReviewsPageParams) => {
-  return await fetcher.get<GetChallengeReviewsPageResponse>({
+}: getChallengeReviewsParams) => {
+  return await fetcher.get<getChallengeReviewsResponse>({
     path: `/challenges/${challengeId}/reviews`,
     query: params,
   });

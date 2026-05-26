@@ -25,11 +25,14 @@ const MyReviewSection = ({ challengeId, myReview }: MyReviewSectionProps) => {
     );
   }
 
+  const reviewModeProps = myReview
+    ? { mode: 'edit' as const, reviewId: myReview.reviewId }
+    : { mode: 'create' as const };
+
   return (
     <ReviewWriter
+      {...reviewModeProps}
       challengeId={challengeId}
-      mode={myReview ? 'edit' : 'create'}
-      reviewId={myReview?.reviewId}
       initialComment={myReview?.comment}
       initialIsPrivate={myReview?.isPrivate}
       onSubmit={() => setIsEditing(false)}

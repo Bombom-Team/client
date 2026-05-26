@@ -9,14 +9,12 @@ import Flex from '@/components/Flex/Flex';
 import Text from '@/components/Text/Text';
 import type { ChangeEvent } from 'react';
 
-interface ReviewWriterProps {
+type ReviewWriterProps = {
   challengeId: number;
-  mode: 'create' | 'edit';
-  reviewId?: number;
   initialComment?: string;
   initialIsPrivate?: boolean;
   onSubmit?: () => void;
-}
+} & ({ mode: 'create'; reviewId?: never } | { mode: 'edit'; reviewId: number });
 
 const ReviewWriter = ({
   challengeId,
