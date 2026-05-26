@@ -60,6 +60,7 @@ const Container = styled.div`
 
   background-color: ${({ theme }) => theme.colors.white};
   text-align: left;
+
   cursor: pointer;
 
   transition: all 0.2s ease;

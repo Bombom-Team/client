@@ -43,6 +43,32 @@ const RootComponent = () => {
 };
 
 export const Route = createRootRouteWithContext<BomBomRouterContext>()({
+  head: () => ({
+    meta: [
+      { title: '봄봄' },
+      {
+        name: 'description',
+        content: '봄봄 - 뉴스레터, 아티클, 트렌드 정보를 한 곳에!',
+      },
+      { property: 'og:title', content: '봄봄' },
+      {
+        property: 'og:description',
+        content: '봄봄 - 뉴스레터, 아티클, 트렌드 정보를 한 곳에!',
+      },
+      { property: 'og:image', content: '/assets/png/og-image.png' },
+      { property: 'og:image:alt', content: '봄봄 로고' },
+      { property: 'og:url', content: 'https://www.bombom.news' },
+      { name: 'twitter:title', content: '봄봄' },
+      {
+        name: 'twitter:description',
+        content: '봄봄 - 뉴스레터, 아티클, 트렌드 정보를 한 곳에!',
+      },
+      { name: 'twitter:image', content: '/assets/png/og-image.png' },
+      { name: 'twitter:image:alt', content: '봄봄 로고' },
+      { name: 'robots', content: 'index, follow' },
+    ],
+    links: [{ rel: 'canonical', href: 'https://www.bombom.news' }],
+  }),
   component: () => (
     <>
       <HeadContent />

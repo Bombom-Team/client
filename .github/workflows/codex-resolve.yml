@@ -1,0 +1,291 @@
+# Codex Review Resolve
+#
+# GitHub Secrets:
+#   - OPENAI_API_KEY
+#
+# Optional GitHub Variables:
+#   - CODEX_REVIEW_MODEL (default: gpt-5.5)
+#
+# Resolves custom Codex review threads when a follow-up push appears to fix them.
+
+name: Codex Review Resolve
+
+on:
+  pull_request:
+    types:
+      - synchronize
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR 번호'
+        required: true
+        type: number
+
+concurrency:
+  group: codex-resolve-${{ github.event.pull_request.number || github.event.inputs.pr_number || github.run_id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  codex-resolve:
+    if: >
+      (github.event_name == 'pull_request' &&
+        github.event.pull_request.draft == false) ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CODEX_MODEL: ${{ vars.CODEX_REVIEW_MODEL || 'gpt-5.5' }}
+    steps:
+      - name: Resolve PR metadata
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_BEFORE_SHA: ${{ github.event.before }}
+          EVENT_AFTER_SHA: ${{ github.event.after }}
+          INPUT_PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            PR_NUMBER="$EVENT_PR_NUMBER"
+          else
+            PR_NUMBER="$INPUT_PR_NUMBER"
+          fi
+
+          PR_JSON="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json number,title,baseRefName,headRefName,baseRefOid,headRefOid,isDraft)"
+
+          if [ "$(echo "$PR_JSON" | jq -r '.isDraft')" = "true" ]; then
+            echo "should_skip=true" >> "$GITHUB_OUTPUT"
+            echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BASE_SHA="$(echo "$PR_JSON" | jq -r '.baseRefOid')"
+          HEAD_SHA="$(echo "$PR_JSON" | jq -r '.headRefOid')"
+          BEFORE_SHA="$BASE_SHA"
+          AFTER_SHA="$HEAD_SHA"
+
+          if [ "$EVENT_NAME" = "pull_request" ] && [ -n "$EVENT_BEFORE_SHA" ] && [ -n "$EVENT_AFTER_SHA" ]; then
+            BEFORE_SHA="$EVENT_BEFORE_SHA"
+            AFTER_SHA="$EVENT_AFTER_SHA"
+          fi
+
+          echo "should_skip=false" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "title<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$PR_JSON" | jq -r '.title' >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "base_ref=$(echo "$PR_JSON" | jq -r '.baseRefName')" >> "$GITHUB_OUTPUT"
+          echo "head_ref=$(echo "$PR_JSON" | jq -r '.headRefName')" >> "$GITHUB_OUTPUT"
+          echo "base_sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          echo "before_sha=$BEFORE_SHA" >> "$GITHUB_OUTPUT"
+          echo "after_sha=$AFTER_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Stop for draft PR
+        if: steps.pr.outputs.should_skip == 'true'
+        run: echo "Draft PR is skipped."
+
+      - name: Fetch unresolved Codex review threads
+        id: threads
+        if: steps.pr.outputs.should_skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.pr.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+
+          OWNER="${REPOSITORY%/*}"
+          REPO="${REPOSITORY#*/}"
+
+          gh api graphql \
+            -f owner="$OWNER" \
+            -f repo="$REPO" \
+            -F number="$PR_NUMBER" \
+            -f query='
+              query($owner: String!, $repo: String!, $number: Int!) {
+                repository(owner: $owner, name: $repo) {
+                  pullRequest(number: $number) {
+                    reviewThreads(first: 100) {
+                      nodes {
+                        id
+                        isResolved
+                        isOutdated
+                        path
+                        line
+                        startLine
+                        comments(first: 20) {
+                          nodes {
+                            id
+                            body
+                            createdAt
+                            author {
+                              login
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }' \
+            > /tmp/review-threads-raw.json
+
+          jq '
+            .data.repository.pullRequest.reviewThreads.nodes
+            | map(select(.isResolved == false))
+            | map(select(
+                [.comments.nodes[].body]
+                | any(
+                    contains("<!-- CODEX_REVIEW_COMMENT -->") or
+                    (contains("Confidence:") and (contains("[Critical]") or contains("[Major]")))
+                  )
+              ))
+          ' /tmp/review-threads-raw.json > /tmp/codex-unresolved-threads.json
+
+          COUNT="$(jq 'length' /tmp/codex-unresolved-threads.json)"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "Found $COUNT unresolved Codex review threads."
+
+      - name: Stop if no Codex review threads
+        if: steps.threads.outputs.count == '0'
+        run: echo "No unresolved Codex review threads."
+
+      - name: Checkout PR merge commit
+        if: steps.threads.outputs.count != '0'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: refs/pull/${{ steps.pr.outputs.pr_number }}/merge
+          persist-credentials: false
+
+      - name: Sync Codex resolve tooling from default branch
+        if: steps.threads.outputs.count != '0'
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch || 'main' }}
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin "$DEFAULT_BRANCH"
+
+          for path in \
+            .github/codex-resolve-output-schema.json \
+            AGENTS.md; do
+            git checkout "origin/$DEFAULT_BRANCH" -- "$path" 2>/dev/null || true
+          done
+
+      - name: Prepare resolve prompt
+        if: steps.threads.outputs.count != '0'
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.pr_number }}
+          PR_TITLE: ${{ steps.pr.outputs.title }}
+          BASE_REF: ${{ steps.pr.outputs.base_ref }}
+          BEFORE_SHA: ${{ steps.pr.outputs.before_sha }}
+          AFTER_SHA: ${{ steps.pr.outputs.after_sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin "$BASE_REF"
+          git fetch --no-tags origin "$BEFORE_SHA" "$AFTER_SHA" || true
+
+          {
+            printf '%s\n' 'You are Codex resolving automated PR review threads.'
+            printf '%s\n' 'Decide whether each unresolved Codex review thread has been fixed by the latest PR changes.'
+            printf '%s\n' 'Resolve only when the new diff directly addresses the original issue or makes it no longer applicable.'
+            printf '%s\n' 'Do not resolve when the fix is unrelated, partial, unclear, or outside the changed code.'
+            printf '%s\n' 'Prefer leaving a thread unresolved over a low-confidence resolve.'
+            printf '%s\n' 'Use Korean for reasons.'
+            printf '%s\n' ''
+            printf 'Repository: %s\n' "$REPOSITORY"
+            printf 'Pull Request: #%s\n' "$PR_NUMBER"
+            printf 'Title: %s\n' "$PR_TITLE"
+            printf 'Before SHA: %s\n' "$BEFORE_SHA"
+            printf 'After SHA: %s\n' "$AFTER_SHA"
+            printf '%s\n' ''
+            printf '%s\n' 'Repository instructions (AGENTS.md):'
+            printf '%s\n' '----'
+            cat AGENTS.md
+            printf '%s\n' '----'
+            printf '%s\n' ''
+            printf '%s\n' 'Unresolved Codex review threads:'
+            printf '%s\n' '----'
+            cat /tmp/codex-unresolved-threads.json
+            printf '%s\n' '----'
+            printf '%s\n' ''
+            printf '%s\n' 'Changed files in the follow-up push:'
+            git --no-pager diff --name-status "$BEFORE_SHA" "$AFTER_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*' || true
+            printf '%s\n' ''
+            printf '%s\n' 'Follow-up diff:'
+            git --no-pager diff --unified=8 "$BEFORE_SHA" "$AFTER_SHA" -- . ':(exclude)pnpm-lock.yaml' ':(exclude)*.gen.ts' ':(exclude)*.generated.*' || true
+          } > codex-resolve-prompt.md
+
+      - name: Run Codex resolve check
+        if: steps.threads.outputs.count != '0'
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: codex-resolve-prompt.md
+          output-schema-file: .github/codex-resolve-output-schema.json
+          output-file: codex-resolve-output.json
+          sandbox: read-only
+          model: ${{ env.CODEX_MODEL }}
+          effort: high
+
+      - name: Resolve confirmed threads
+        if: steps.threads.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if [ ! -s codex-resolve-output.json ]; then
+            echo "Codex resolve output was not produced."
+            exit 0
+          fi
+
+          jq '.' codex-resolve-output.json >/dev/null
+
+          jq -r '
+            .resolved_threads[]
+            | select(.confidence_score >= 0.8)
+            | .thread_id
+          ' codex-resolve-output.json > /tmp/threads-to-resolve.txt
+
+          COUNT="$(wc -l < /tmp/threads-to-resolve.txt | tr -d ' ')"
+          echo "Resolving $COUNT thread(s)."
+
+          while IFS= read -r THREAD_ID; do
+            [ -z "$THREAD_ID" ] && continue
+            gh api graphql \
+              -f threadId="$THREAD_ID" \
+              -f query='
+                mutation($threadId: ID!) {
+                  resolveReviewThread(input: {threadId: $threadId}) {
+                    thread {
+                      id
+                      isResolved
+                    }
+                  }
+                }'
+          done < /tmp/threads-to-resolve.txt
+
+      - name: Upload Codex resolve artifacts
+        if: always() && steps.threads.outputs.count != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-resolve-${{ steps.pr.outputs.pr_number }}-${{ github.run_id }}
+          path: |
+            codex-resolve-prompt.md
+            codex-resolve-output.json
+            /tmp/codex-unresolved-threads.json
+          retention-days: 7
+          if-no-files-found: warn

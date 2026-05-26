@@ -1,0 +1,33 @@
+name: Setup code-graph CLI
+description: Install (or cache-restore) the code-graph CLI into a per-runner directory so subsequent steps can run `code-graph` directly. 의도적으로 `npm config set prefix`를 사용하지 않음 — 사내 runner가 persistent여도 사용자의 ~/.npmrc를 건드리지 않아 다른 job에 영향 없음. 대신 `npm install --prefix` 플래그로 install 시점에만 경로를 override.
+inputs:
+  version:
+    description: code-graph CLI version
+    required: false
+    default: '0.22.2'
+runs:
+  using: composite
+  steps:
+    - name: Prepare local install dir
+      shell: bash
+      run: |
+        mkdir -p "$HOME/.npm-global/bin"
+        # PATH에만 추가 — npm config는 건드리지 않음
+        echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
+
+    - name: Restore cached code-graph CLI
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm-global
+        key: code-graph-cli-${{ inputs.version }}-${{ runner.os }}
+
+    - name: Install code-graph CLI
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      # --prefix 플래그로 한 번만 override. ~/.npmrc 등 사용자 config 무영향.
+      run: npm install --prefix "$HOME/.npm-global" -g "@sdsrs/code-graph@${{ inputs.version }}"
+
+    - name: Verify code-graph CLI
+      shell: bash
+      run: code-graph --version || true
