@@ -14,7 +14,7 @@ export const useReviewsPagination = ({
 
   const baseQueryParams: getChallengeReviewsParams = {
     challengeId,
-    page,
+    page: page - 1,
     size: REVIEWS_SIZE,
   };
 

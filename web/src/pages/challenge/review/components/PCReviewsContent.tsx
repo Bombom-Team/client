@@ -16,13 +16,8 @@ const PCReviewsContent = ({
   page,
   onPageChange,
 }: PCReviewsContentProps) => {
-  const queryParams = {
-    ...baseQueryParams,
-    page: (baseQueryParams.page ?? 1) - 1,
-  };
-
   const { data: reviews, isLoading } = useQuery(
-    queries.reviews.list(queryParams),
+    queries.reviews.list(baseQueryParams),
   );
   const reviewList = reviews?.content || [];
 
@@ -41,7 +36,7 @@ const PCReviewsContent = ({
 
 export default PCReviewsContent;
 
-const Container = styled.section`
+const Container = styled.div`
   display: flex;
   gap: 28px;
   flex-direction: column;

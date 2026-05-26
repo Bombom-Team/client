@@ -57,7 +57,7 @@ const Container = styled.section<{ isMobile: boolean }>`
   box-sizing: border-box;
 `;
 
-const Title = styled.h2`
+const Title = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t7Bold};
 `;

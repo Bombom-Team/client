@@ -54,7 +54,7 @@ const MobileReviewsContent = ({
 
 export default MobileReviewsContent;
 
-const Container = styled.section`
+const Container = styled.div`
   display: flex;
   gap: 20px;
   flex-direction: column;
