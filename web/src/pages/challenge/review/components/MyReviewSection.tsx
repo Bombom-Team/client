@@ -2,11 +2,11 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import ReviewCard from './ReviewCard';
 import ReviewWriter from './ReviewWriter';
-import type { ChallengeReview } from '@/apis/challenge/challenge.api';
+import type { MyReview } from '@/apis/challenge/challenge.api';
 
 interface MyReviewSectionProps {
   challengeId: number;
-  myReview?: ChallengeReview | null;
+  myReview: MyReview;
 }
 
 const MyReviewSection = ({ challengeId, myReview }: MyReviewSectionProps) => {

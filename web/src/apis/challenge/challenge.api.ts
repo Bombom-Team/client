@@ -306,40 +306,28 @@ export const getChallengeLanding = async (challengeId: number) => {
 };
 
 export type ChallengeReview = components['schemas']['ChallengeReviewResponse'];
+export type MyReview = components['schemas']['MyChallengeReviewResponse'];
 
-export type getChallengeReviewsParams = {
-  challengeId: number;
-  page?: number;
-  size?: number;
-};
+export type GetChallengeReviewsParams =
+  operations['getReviews']['parameters']['path'] &
+    components['schemas']['Pageable'];
 
-export type getChallengeReviewsResponse = {
-  content?: ChallengeReview[];
-  totalElements?: number;
-  totalPages?: number;
-  first?: boolean;
-  last?: boolean;
-  size?: number;
-  number?: number;
-  numberOfElements?: number;
-  empty?: boolean;
-};
+export type GetChallengeReviewsResponse =
+  components['schemas']['PageChallengeReviewResponse'];
 
 export const getChallengeReviews = async ({
   challengeId,
   ...params
-}: getChallengeReviewsParams) => {
-  return await fetcher.get<getChallengeReviewsResponse>({
+}: GetChallengeReviewsParams) => {
+  return await fetcher.get<GetChallengeReviewsResponse>({
     path: `/challenges/${challengeId}/reviews`,
     query: params,
   });
 };
 
-export const getMyReview = async (
-  challengeId: number,
-): Promise<ChallengeReview | null> => {
+export const getMyReview = async (challengeId: number) => {
   try {
-    return await fetcher.get<ChallengeReview>({
+    return await fetcher.get<MyReview>({
       path: `/challenges/${challengeId}/reviews/me`,
     });
   } catch (error) {

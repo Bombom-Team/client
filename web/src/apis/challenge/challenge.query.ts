@@ -25,7 +25,7 @@ import type {
   GetChallengeCommentsParams,
   GetChallengeCommentRepliesParams,
   GetChallengeArticleHighlightsParams,
-  getChallengeReviewsParams,
+  GetChallengeReviewsParams,
   GetDailyGuideCommentsParams,
   GetMemberChallengeStreakParams,
 } from './challenge.api';
@@ -172,7 +172,7 @@ export const challengeQueries = {
   reviews: {
     all: (challengeId: number) =>
       ['challenges', challengeId, 'reviews'] as const,
-    list: (params: getChallengeReviewsParams) =>
+    list: (params: GetChallengeReviewsParams) =>
       queryOptions({
         queryKey: [
           ...challengeQueries.reviews.all(params.challengeId),
@@ -181,7 +181,7 @@ export const challengeQueries = {
         ],
         queryFn: () => getChallengeReviews(params),
       }),
-    infiniteList: (params: getChallengeReviewsParams) =>
+    infiniteList: (params: GetChallengeReviewsParams) =>
       infiniteQueryOptions({
         queryKey: [
           ...challengeQueries.reviews.all(params.challengeId),

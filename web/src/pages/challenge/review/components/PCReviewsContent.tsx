@@ -3,10 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import AllReviewsSection from './AllReviewsSection';
 import { queries } from '@/apis/queries';
 import Pagination from '@/components/Pagination/Pagination';
-import type { getChallengeReviewsParams } from '@/apis/challenge/challenge.api';
+import type { GetChallengeReviewsParams } from '@/apis/challenge/challenge.api';
 
 interface PCReviewsContentProps {
-  baseQueryParams: getChallengeReviewsParams;
+  baseQueryParams: GetChallengeReviewsParams;
   page: number;
   onPageChange: (page: number) => void;
 }
