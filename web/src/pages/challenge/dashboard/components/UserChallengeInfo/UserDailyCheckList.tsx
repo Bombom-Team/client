@@ -22,20 +22,24 @@ const UserDailyCheckList = ({
     (todo) => todo.challengeTodoType && todo.challengeTodoStatus,
   );
 
-  const isReviewComplete = validTodos.some(
-    (todo) =>
-      todo.challengeTodoType === 'REVIEW' &&
-      todo.challengeTodoStatus === 'COMPLETE',
-  );
+  const isComplete = (todoType: string) =>
+    validTodos.some(
+      (todo) =>
+        todo.challengeTodoType === todoType &&
+        todo.challengeTodoStatus === 'COMPLETE',
+    );
 
-  const visibleTodos = validTodos
-    .filter((todo) => todo.challengeTodoType !== 'REVIEW')
-    .map((todo) => {
-      if (todo.challengeTodoType === 'COMMENT' && isReviewComplete) {
-        return { ...todo, challengeTodoStatus: 'COMPLETE' as const };
-      }
-      return todo;
-    });
+  const isLastDayComplete =
+    isComplete('REVIEW') || (isComplete('READ') && isComplete('COMMENT'));
+
+  const visibleTodos = isLastDay
+    ? [
+        {
+          challengeTodoType: 'COMMENT_LAST_DAY',
+          challengeTodoStatus: isLastDayComplete ? 'COMPLETE' : 'INCOMPLETE',
+        },
+      ]
+    : validTodos;
 
   const totalCount = visibleTodos.length;
   const completedCount = visibleTodos.filter(
@@ -58,15 +62,11 @@ const UserDailyCheckList = ({
 
           return (
             <ListItem key={`${todo.challengeTodoType}-${index}`}>
-              <StatusBox status={todo.challengeTodoStatus}>
+              <StatusBox status={todo.challengeTodoStatus as TodoStatus}>
                 {todo.challengeTodoStatus === 'COMPLETE' ? '✓' : ''}
               </StatusBox>
               <TodoText>
-                {todo.challengeTodoType === 'COMMENT' && isLastDay
-                  ? todoLabels.COMMENT_LAST_DAY
-                  : todoLabels[
-                      todo.challengeTodoType as keyof typeof todoLabels
-                    ]}
+                {todoLabels[todo.challengeTodoType as keyof typeof todoLabels]}
               </TodoText>
             </ListItem>
           );
