@@ -21,10 +21,8 @@ const ReviewNotice = () => {
       <NoticeBox>
         <Text color="textSecondary" font="t5Regular" as="p">
           · 챌린지 마지막 날에는{' '}
-          <Highlight>
-            뉴스레터를 읽은 후, 코멘트 대신에 리뷰를 작성해도 참여로 인정돼요.
-          </Highlight>{' '}
-          한 줄 코멘트도 자유롭게 남길 수 있어요.
+          <Highlight>리뷰만 작성해도 참여로 인정돼요. </Highlight> 한 줄
+          코멘트도 자유롭게 남길 수 있어요.
         </Text>
         <Text color="textSecondary" font="t5Regular" as="p">
           · 비밀글로 설정하면 다른 참여자에게는 공개되지 않아요.
