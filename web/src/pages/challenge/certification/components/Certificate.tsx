@@ -109,7 +109,8 @@ const Container = styled.div<{ medal: CertificateMedal }>`
   padding: 210px 70px 160px 90px;
   border-radius: 10px;
 
-  background-image: url(${({ medal }) => FRAME_IMAGE[medal]});
+  background-image: ${({ medal }) =>
+    FRAME_IMAGE[medal] ? `url(${FRAME_IMAGE[medal]})` : 'none'};
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
