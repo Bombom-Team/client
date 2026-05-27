@@ -1,4 +1,4 @@
-import { fetcher } from '@bombom/shared/apis';
+import { ApiError, fetcher } from '@bombom/shared/apis';
 import type { components, operations } from '@/types/openapi';
 
 export type Challenge = components['schemas']['ChallengeResponse'];
@@ -302,5 +302,65 @@ export type GetChallengeLandingResponse =
 export const getChallengeLanding = async (challengeId: number) => {
   return await fetcher.get<GetChallengeLandingResponse>({
     path: `/challenges/${challengeId}/landing`,
+  });
+};
+
+export type ChallengeReview = components['schemas']['ChallengeReviewResponse'];
+export type MyReview = components['schemas']['MyChallengeReviewResponse'];
+
+export type GetChallengeReviewsParams =
+  operations['getReviews']['parameters']['path'] &
+    components['schemas']['Pageable'];
+
+export type GetChallengeReviewsResponse =
+  components['schemas']['PageChallengeReviewResponse'];
+
+export const getChallengeReviews = async ({
+  challengeId,
+  ...params
+}: GetChallengeReviewsParams) => {
+  return await fetcher.get<GetChallengeReviewsResponse>({
+    path: `/challenges/${challengeId}/reviews`,
+    query: params,
+  });
+};
+
+export const getMyReview = async (challengeId: number) => {
+  try {
+    return await fetcher.get<MyReview>({
+      path: `/challenges/${challengeId}/reviews/me`,
+    });
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return;
+    }
+    throw error;
+  }
+};
+
+export type PostChallengeReviewParams =
+  components['schemas']['CreateChallengeReviewRequest'];
+
+export const postChallengeReview = async (
+  challengeId: number,
+  params: PostChallengeReviewParams,
+) => {
+  return await fetcher.post<PostChallengeReviewParams, never>({
+    path: `/challenges/${challengeId}/reviews`,
+    body: params,
+  });
+};
+
+export type PutChallengeReviewParams =
+  components['schemas']['UpdateChallengeReviewRequest'];
+
+export const putChallengeReview = async (
+  challengeId: number,
+  reviewId: number,
+  params: PutChallengeReviewParams,
+) => {
+  return await fetcher.put<PutChallengeReviewParams, never>({
+    path: `/challenges/${challengeId}/reviews/${reviewId}`,
+    body: params,
   });
 };

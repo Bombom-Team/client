@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, Outlet } from '@tanstack/react-router';
+import { createFileRoute, Outlet, useMatch } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
@@ -10,6 +10,7 @@ import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChalle
 import ChallengeGuideModal from '@/pages/challenge/index/components/ChallengeGuideModal/ChallengeGuideModal';
 import ChallengeStreakCard from '@/pages/challenge/index/components/ChallengeStreakCard';
 import { useChallengeDetailTabs } from '@/pages/challenge/index/hooks/useChallengeDetailTabs';
+import ReviewNotice from '@/pages/challenge/review/components/ReviewNotice';
 import { compareDates } from '@/utils/date';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
@@ -42,9 +43,19 @@ function ChallengeDetail() {
     ? compareDates(new Date(challengeInfo.endDate), new Date()) === -1
     : false;
 
+  const isLastDayOrAfter = challengeInfo
+    ? compareDates(new Date(challengeInfo.endDate), new Date()) <= 0
+    : false;
+
+  const isReviewTab = useMatch({
+    from: '/_bombom/_main/challenge/$challengeId/review',
+    shouldThrow: false,
+  });
+
   const { tabs, activeTabId, goToTab } = useChallengeDetailTabs({
     challengeId,
     isChallengeEnd,
+    isLastDayOrAfter,
   });
 
   return (
@@ -80,13 +91,18 @@ function ChallengeDetail() {
           </NavigationWrapper>
 
           <TabPanel>
-            {challengeInfo && memberChallengeProgressInfo && (
-              <UserChallengeInfoWrapper>
-                <UserChallengeInfo
-                  challengeInfo={challengeInfo}
-                  memberChallengeProgressInfo={memberChallengeProgressInfo}
-                />
-              </UserChallengeInfoWrapper>
+            {isReviewTab ? (
+              <ReviewNotice />
+            ) : (
+              challengeInfo &&
+              memberChallengeProgressInfo && (
+                <UserChallengeInfoWrapper>
+                  <UserChallengeInfo
+                    challengeInfo={challengeInfo}
+                    memberChallengeProgressInfo={memberChallengeProgressInfo}
+                  />
+                </UserChallengeInfoWrapper>
+              )
             )}
             <Outlet />
           </TabPanel>

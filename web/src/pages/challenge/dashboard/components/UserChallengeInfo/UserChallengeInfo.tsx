@@ -3,6 +3,7 @@ import UserChallengeOverview from './UserChallengeOverview';
 import UserChallengeSummaryCard from './UserChallengeSummaryCard';
 import UserDailyCheckList from './UserDailyCheckList';
 import { useDevice } from '@/hooks/useDevice';
+import { compareDates } from '@/utils/date';
 import type {
   GetChallengeInfoResponse,
   GetMemberChallengeProgressResponse,
@@ -21,6 +22,8 @@ const UserChallengeInfo = ({
   const isMobile = device === 'mobile';
   const completionRate =
     (memberChallengeProgressInfo.completedDays / challengeInfo.totalDays) * 100;
+  const isLastDay =
+    compareDates(new Date(challengeInfo.endDate), new Date()) === 0;
 
   return (
     <Container isMobile={isMobile}>
@@ -43,6 +46,7 @@ const UserChallengeInfo = ({
       <ChecklistArea isMobile={isMobile}>
         <UserDailyCheckList
           todayTodos={memberChallengeProgressInfo.todayTodos}
+          isLastDay={isLastDay}
         />
       </ChecklistArea>
     </Container>
