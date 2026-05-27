@@ -18,9 +18,24 @@ const UserDailyCheckList = ({
   todayTodos,
   isLastDay,
 }: UserDailyCheckListProps) => {
-  const visibleTodos = todayTodos.filter(
+  const validTodos = todayTodos.filter(
     (todo) => todo.challengeTodoType && todo.challengeTodoStatus,
   );
+
+  const isReviewComplete = validTodos.some(
+    (todo) =>
+      todo.challengeTodoType === 'REVIEW' &&
+      todo.challengeTodoStatus === 'COMPLETE',
+  );
+
+  const visibleTodos = validTodos
+    .filter((todo) => todo.challengeTodoType !== 'REVIEW')
+    .map((todo) => {
+      if (todo.challengeTodoType === 'COMMENT' && isReviewComplete) {
+        return { ...todo, challengeTodoStatus: 'COMPLETE' as const };
+      }
+      return todo;
+    });
 
   const totalCount = visibleTodos.length;
   const completedCount = visibleTodos.filter(
@@ -49,7 +64,9 @@ const UserDailyCheckList = ({
               <TodoText>
                 {todo.challengeTodoType === 'COMMENT' && isLastDay
                   ? todoLabels.COMMENT_LAST_DAY
-                  : todoLabels[todo.challengeTodoType]}
+                  : todoLabels[
+                      todo.challengeTodoType as keyof typeof todoLabels
+                    ]}
               </TodoText>
             </ListItem>
           );
