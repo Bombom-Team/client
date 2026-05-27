@@ -22,6 +22,15 @@ const useAddReviewMutation = ({
       queryClient.invalidateQueries({
         queryKey: queries.reviews.all(challengeId),
       });
+      queryClient.invalidateQueries({
+        queryKey: queries.memberProgress(challengeId).queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: queries.memberStreak({
+          id: challengeId,
+          limit: 5,
+        }).queryKey,
+      });
       onSuccess?.();
     },
     onError: () => {
