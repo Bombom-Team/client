@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, useParams } from '@tanstack/react-router';
+import { createFileRoute, redirect, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import MobileReviewsContent from '@/pages/challenge/review/components/MobileReviewsContent';
 import MyReviewSection from '@/pages/challenge/review/components/MyReviewSection';
 import PCReviewsContent from '@/pages/challenge/review/components/PCReviewsContent';
 import { useReviewsPagination } from '@/pages/challenge/review/hooks/useReviewsPagination';
+import { compareDates } from '@/utils/date';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/review',
@@ -18,6 +19,17 @@ export const Route = createFileRoute(
       },
     ],
   }),
+  beforeLoad: async ({ context, params }) => {
+    const challengeInfo = await context.queryClient.fetchQuery(
+      queries.challengesInfo(Number(params.challengeId)),
+    );
+    if (compareDates(new Date(challengeInfo.endDate), new Date()) > 0) {
+      throw redirect({
+        to: '/challenge/$challengeId/daily',
+        params: { challengeId: params.challengeId },
+      });
+    }
+  },
   component: ChallengeReview,
 });
 
@@ -28,13 +40,14 @@ function ChallengeReview() {
 
   const device = useDevice();
   const isMobile = device === 'mobile';
+  const challengeIdNumber = Number(challengeId);
 
   const { baseQueryParams, changePage, page } = useReviewsPagination({
-    challengeId: Number(challengeId),
+    challengeId: challengeIdNumber,
   });
 
   const { data: myReview, isLoading: isMyReviewLoading } = useQuery(
-    queries.reviews.me(Number(challengeId)),
+    queries.reviews.me(challengeIdNumber),
   );
 
   return (
@@ -42,7 +55,7 @@ function ChallengeReview() {
       <ContentWrapper isMobile={isMobile}>
         {!isMyReviewLoading && (
           <MyReviewSection
-            challengeId={Number(challengeId)}
+            challengeId={challengeIdNumber}
             myReview={myReview}
           />
         )}
