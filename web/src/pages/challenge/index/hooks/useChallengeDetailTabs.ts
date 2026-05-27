@@ -2,6 +2,7 @@ import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
 
 const CHALLENGE_TABS = [
+  { id: 'review', label: '리뷰', path: 'review' },
   { id: 'certification', label: '수료증', path: 'certification' },
   { id: 'daily', label: '데일리 가이드', path: 'daily' },
   { id: 'dashboard', label: '진행 현황판', path: 'dashboard' },
@@ -14,11 +15,13 @@ type ChallengeTabPath = (typeof CHALLENGE_TABS)[number]['path'];
 interface UseChallengeDetailTabsProps {
   challengeId: string;
   isChallengeEnd: boolean;
+  isLastDayOrAfter: boolean;
 }
 
 export const useChallengeDetailTabs = ({
   challengeId,
   isChallengeEnd,
+  isLastDayOrAfter,
 }: UseChallengeDetailTabsProps) => {
   const navigate = useNavigate();
   const routerState = useRouterState();
@@ -26,10 +29,11 @@ export const useChallengeDetailTabs = ({
 
   const tabs = useMemo(
     () =>
-      CHALLENGE_TABS.filter((tab) =>
-        isChallengeEnd ? tab.id !== 'daily' : tab.id !== 'certification',
-      ),
-    [isChallengeEnd],
+      CHALLENGE_TABS.filter((tab) => {
+        if (tab.id === 'review') return isLastDayOrAfter;
+        return isChallengeEnd ? tab.id !== 'daily' : tab.id !== 'certification';
+      }),
+    [isChallengeEnd, isLastDayOrAfter],
   );
 
   const defaultTabId: ChallengeTabId = isChallengeEnd

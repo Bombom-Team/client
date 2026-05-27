@@ -39,6 +39,7 @@ import { Route as BombomArticlesPreviousArticleIdRouteImport } from './routes/_b
 import { Route as BombomArticlesGuideGuideIdRouteImport } from './routes/_bombom/articles.guide.$guideId';
 import { Route as BombomMainChallengeChallengeIdRouteImport } from './routes/_bombom/_main/challenge/$challengeId';
 import { Route as BombomMainChallengeChallengeIdIndexRouteImport } from './routes/_bombom/_main/challenge/$challengeId/index';
+import { Route as BombomMainChallengeChallengeIdReviewRouteImport } from './routes/_bombom/_main/challenge/$challengeId/review';
 import { Route as BombomMainChallengeChallengeIdDashboardRouteImport } from './routes/_bombom/_main/challenge/$challengeId/dashboard';
 import { Route as BombomMainChallengeChallengeIdDailyRouteImport } from './routes/_bombom/_main/challenge/$challengeId/daily';
 import { Route as BombomMainChallengeChallengeIdCommentsRouteImport } from './routes/_bombom/_main/challenge/$challengeId/comments';
@@ -198,6 +199,12 @@ const BombomMainChallengeChallengeIdIndexRoute =
     path: '/',
     getParentRoute: () => BombomMainChallengeChallengeIdRoute,
   } as any);
+const BombomMainChallengeChallengeIdReviewRoute =
+  BombomMainChallengeChallengeIdReviewRouteImport.update({
+    id: '/review',
+    path: '/review',
+    getParentRoute: () => BombomMainChallengeChallengeIdRoute,
+  } as any);
 const BombomMainChallengeChallengeIdDashboardRoute =
   BombomMainChallengeChallengeIdDashboardRouteImport.update({
     id: '/dashboard',
@@ -255,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/challenge/$challengeId/comments': typeof BombomMainChallengeChallengeIdCommentsRoute;
   '/challenge/$challengeId/daily': typeof BombomMainChallengeChallengeIdDailyRoute;
   '/challenge/$challengeId/dashboard': typeof BombomMainChallengeChallengeIdDashboardRoute;
+  '/challenge/$challengeId/review': typeof BombomMainChallengeChallengeIdReviewRoute;
   '/challenge/$challengeId/': typeof BombomMainChallengeChallengeIdIndexRoute;
 }
 export interface FileRoutesByTo {
@@ -286,6 +294,7 @@ export interface FileRoutesByTo {
   '/challenge/$challengeId/comments': typeof BombomMainChallengeChallengeIdCommentsRoute;
   '/challenge/$challengeId/daily': typeof BombomMainChallengeChallengeIdDailyRoute;
   '/challenge/$challengeId/dashboard': typeof BombomMainChallengeChallengeIdDashboardRoute;
+  '/challenge/$challengeId/review': typeof BombomMainChallengeChallengeIdReviewRoute;
   '/challenge/$challengeId': typeof BombomMainChallengeChallengeIdIndexRoute;
 }
 export interface FileRoutesById {
@@ -323,6 +332,7 @@ export interface FileRoutesById {
   '/_bombom/_main/challenge/$challengeId/comments': typeof BombomMainChallengeChallengeIdCommentsRoute;
   '/_bombom/_main/challenge/$challengeId/daily': typeof BombomMainChallengeChallengeIdDailyRoute;
   '/_bombom/_main/challenge/$challengeId/dashboard': typeof BombomMainChallengeChallengeIdDashboardRoute;
+  '/_bombom/_main/challenge/$challengeId/review': typeof BombomMainChallengeChallengeIdReviewRoute;
   '/_bombom/_main/challenge/$challengeId/': typeof BombomMainChallengeChallengeIdIndexRoute;
 }
 export interface FileRouteTypes {
@@ -359,6 +369,7 @@ export interface FileRouteTypes {
     | '/challenge/$challengeId/comments'
     | '/challenge/$challengeId/daily'
     | '/challenge/$challengeId/dashboard'
+    | '/challenge/$challengeId/review'
     | '/challenge/$challengeId/';
   fileRoutesByTo: FileRoutesByTo;
   to:
@@ -390,6 +401,7 @@ export interface FileRouteTypes {
     | '/challenge/$challengeId/comments'
     | '/challenge/$challengeId/daily'
     | '/challenge/$challengeId/dashboard'
+    | '/challenge/$challengeId/review'
     | '/challenge/$challengeId';
   id:
     | '__root__'
@@ -426,6 +438,7 @@ export interface FileRouteTypes {
     | '/_bombom/_main/challenge/$challengeId/comments'
     | '/_bombom/_main/challenge/$challengeId/daily'
     | '/_bombom/_main/challenge/$challengeId/dashboard'
+    | '/_bombom/_main/challenge/$challengeId/review'
     | '/_bombom/_main/challenge/$challengeId/';
   fileRoutesById: FileRoutesById;
 }
@@ -656,6 +669,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BombomMainChallengeChallengeIdIndexRouteImport;
       parentRoute: typeof BombomMainChallengeChallengeIdRoute;
     };
+    '/_bombom/_main/challenge/$challengeId/review': {
+      id: '/_bombom/_main/challenge/$challengeId/review';
+      path: '/review';
+      fullPath: '/challenge/$challengeId/review';
+      preLoaderRoute: typeof BombomMainChallengeChallengeIdReviewRouteImport;
+      parentRoute: typeof BombomMainChallengeChallengeIdRoute;
+    };
     '/_bombom/_main/challenge/$challengeId/dashboard': {
       id: '/_bombom/_main/challenge/$challengeId/dashboard';
       path: '/dashboard';
@@ -692,6 +712,7 @@ interface BombomMainChallengeChallengeIdRouteChildren {
   BombomMainChallengeChallengeIdCommentsRoute: typeof BombomMainChallengeChallengeIdCommentsRoute;
   BombomMainChallengeChallengeIdDailyRoute: typeof BombomMainChallengeChallengeIdDailyRoute;
   BombomMainChallengeChallengeIdDashboardRoute: typeof BombomMainChallengeChallengeIdDashboardRoute;
+  BombomMainChallengeChallengeIdReviewRoute: typeof BombomMainChallengeChallengeIdReviewRoute;
   BombomMainChallengeChallengeIdIndexRoute: typeof BombomMainChallengeChallengeIdIndexRoute;
 }
 
@@ -705,6 +726,8 @@ const BombomMainChallengeChallengeIdRouteChildren: BombomMainChallengeChallengeI
       BombomMainChallengeChallengeIdDailyRoute,
     BombomMainChallengeChallengeIdDashboardRoute:
       BombomMainChallengeChallengeIdDashboardRoute,
+    BombomMainChallengeChallengeIdReviewRoute:
+      BombomMainChallengeChallengeIdReviewRoute,
     BombomMainChallengeChallengeIdIndexRoute:
       BombomMainChallengeChallengeIdIndexRoute,
   };
