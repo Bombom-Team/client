@@ -6,7 +6,6 @@ import { useRef } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Flex from '@/components/Flex';
-import { useDevice } from '@/hooks/useDevice';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import Certificate from '@/pages/challenge/certification/components/Certificate';
 import { isWebView } from '@/utils/device';
@@ -24,16 +23,12 @@ export const Route = createFileRoute(
   component: ChallengeCertification,
 });
 
-const MOBILE_CERTIFICATE_SCALE = 0.6;
-
 function ChallengeCertification() {
   const { challengeId: stringChallengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/certification',
   });
   const challengeId = Number(stringChallengeId);
   const certificateRef = useRef<HTMLDivElement>(null);
-  const device = useDevice();
-  const isPC = device === 'pc';
 
   const { data: certificationInfo } = useQuery(
     queries.certificationInfo(challengeId),
@@ -42,7 +37,9 @@ function ChallengeCertification() {
   const handleDownload = async () => {
     if (!certificateRef.current) return;
 
-    const canvas = await html2canvas(certificateRef.current);
+    const canvas = await html2canvas(certificateRef.current, {
+      scale: window.devicePixelRatio || 1,
+    });
     const fileName = `${certificationInfo?.nickname}_수료증.png`;
 
     if (isWebView()) {
@@ -69,7 +66,7 @@ function ChallengeCertification() {
         <DownloadButton onClick={handleDownload}>
           💾 이미지로 저장하기
         </DownloadButton>
-        <CertificateScaler ref={certificateRef} isPC={isPC}>
+        <CertificateScaler ref={certificateRef}>
           <Certificate {...certificationInfo} />
         </CertificateScaler>
       </Flex>
@@ -85,11 +82,7 @@ const Container = styled.section`
   align-items: center;
 `;
 
-const CertificateScaler = styled.div<{ isPC: boolean }>`
-  transform: ${({ isPC }) =>
-    isPC ? 'none' : `scale(${MOBILE_CERTIFICATE_SCALE})`};
-  transform-origin: top center;
-`;
+const CertificateScaler = styled.div``;
 
 const DownloadButton = styled(Button)`
   padding: 12px 16px;
