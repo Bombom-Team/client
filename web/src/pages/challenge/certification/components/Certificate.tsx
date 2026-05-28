@@ -4,17 +4,14 @@ import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { formatDate } from '@/utils/date';
 import type { CertificateMedal } from '../types/certificate';
-import certificateFrame from '#/assets/avif/certificate-frame.avif';
-import challengeBronzeMedal from '#/assets/avif/challenge-bronze-medal.avif';
-import challengeGoldMedal from '#/assets/avif/challenge-gold-medal.avif';
-import challengeSilverMedal from '#/assets/avif/challenge-silver-medal.avif';
-import logo from '#/assets/avif/logo.avif';
+import certificateFrameBronze from '#/assets/avif/certificate-frame-bronze.avif';
+import certificateFrameGold from '#/assets/avif/certificate-frame-gold.avif';
+import certificateFrameSilver from '#/assets/avif/certificate-frame-silver.avif';
 
-const MEDAL_IMAGE: Record<CertificateMedal, string> = {
-  GOLD: challengeGoldMedal,
-  SILVER: challengeSilverMedal,
-  BRONZE: challengeBronzeMedal,
-  FAIL: '',
+const FRAME_IMAGE: Partial<Record<CertificateMedal, string>> = {
+  GOLD: certificateFrameGold,
+  SILVER: certificateFrameSilver,
+  BRONZE: certificateFrameBronze,
 };
 
 const MEDAL_LABEL: Record<CertificateMedal, string> = {
@@ -61,14 +58,12 @@ const Certificate = ({
   const formattedIssuedDate = formatDate(issuedDate);
 
   return (
-    <Container>
-      <TopTitle>[봄봄] 챌린지 수료증</TopTitle>
-
+    <Container medal={medal}>
       <Main>
-        <Flex justify="space-between" align="center" gap={16}>
-          <UserName title={nickname}>{nickname}</UserName>
-
-          <MedalImg src={MEDAL_IMAGE[medal]} alt={MEDAL_LABEL[medal]} />
+        <Flex align="flex-start">
+          <Text color="textPrimary" font="t11Bold">
+            {nickname}
+          </Text>
         </Flex>
 
         <Flex direction="column" gap={6}>
@@ -99,16 +94,7 @@ const Certificate = ({
       </Main>
 
       <Bottom>
-        <BrandWrapper>
-          <Text font="t3Regular">뉴스레터 서비스</Text>
-          <Flex align="center" gap={8}>
-            <BrandMark src={logo} alt="봄봄 로고" />
-            <Text font="t6Regular">봄봄</Text>
-          </Flex>
-          <Text font="t3Regular">www.bombom.news</Text>
-        </BrandWrapper>
         <IssuedDate>{formattedIssuedDate}</IssuedDate>
-        <EmptyBox />
       </Bottom>
     </Container>
   );
@@ -116,40 +102,27 @@ const Certificate = ({
 
 export default Certificate;
 
-const Container = styled.div`
+const Container = styled.div<{ medal: CertificateMedal }>`
   position: relative;
-  width: 480px;
-  padding: 80px 60px;
+  width: 100%;
+  height: 100%;
+  padding: 210px 70px 160px 90px;
   border-radius: 10px;
 
-  background-image: url(${certificateFrame});
+  background-image: ${({ medal }) =>
+    FRAME_IMAGE[medal] ? `url(${FRAME_IMAGE[medal]})` : 'none'};
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 
-  aspect-ratio: 456 / 673;
-`;
-
-const TopTitle = styled.h1`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t13Bold};
-  text-align: center;
+  aspect-ratio: 1086 / 1448;
 `;
 
 const Main = styled.div`
-  margin-top: 32px;
-`;
-
-const UserName = styled.h2`
-  max-width: 260px;
-
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t13Bold};
-`;
-
-const MedalImg = styled.img`
-  width: 140px;
-  height: 140px;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const MetaLine = styled.div`
@@ -171,25 +144,18 @@ const MetaValue = styled.span`
 
 const Description = styled.p`
   max-width: 360px;
-  margin: 44px 0 0;
+  margin: 12px 0 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const Bottom = styled.div`
-  position: absolute;
-  right: 44px;
-  bottom: 50px;
-  left: 44px;
+  margin-top: 32px;
 
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-`;
-
-const EmptyBox = styled.div`
-  flex: 1;
+  align-items: center;
+  justify-content: center;
 `;
 
 const IssuedDate = styled.div`
@@ -198,16 +164,4 @@ const IssuedDate = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
-`;
-
-const BrandWrapper = styled.div`
-  display: flex;
-  gap: 6px;
-  flex: 1;
-  flex-direction: column;
-`;
-
-const BrandMark = styled.img`
-  width: 28px;
-  height: 28px;
 `;
