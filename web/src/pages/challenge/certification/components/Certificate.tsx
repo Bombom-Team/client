@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 import { Certificate } from '../types/certificate';
 import Flex from '@/components/Flex';
-import Text from '@/components/Text';
+import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
 import type { CertificateMedal } from '../types/certificate';
+import type { Device } from '@/hooks/useDevice';
 import certificateFrameBronze from '#/assets/avif/certificate-frame-bronze.avif';
 import certificateFrameGold from '#/assets/avif/certificate-frame-gold.avif';
 import certificateFrameSilver from '#/assets/avif/certificate-frame-silver.avif';
@@ -50,6 +51,9 @@ const Certificate = ({
   medal,
   medalCondition,
 }: CertificateProps) => {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+
   const formattedStartDate = formatDate(new Date(startDate));
   const formattedEndDate = formatDate(new Date(endDate));
 
@@ -57,80 +61,104 @@ const Certificate = ({
   issuedDate.setDate(issuedDate.getDate() + 1);
   const formattedIssuedDate = formatDate(issuedDate);
 
+  const frameImage = FRAME_IMAGE[medal];
+
   return (
-    <Container medal={medal}>
-      <Main>
-        <Flex align="flex-start">
-          <Text color="textPrimary" font="t11Bold">
-            {nickname}
-          </Text>
-        </Flex>
+    <Container device={device}>
+      {frameImage && <FrameImage src={frameImage} alt="" />}
+      <Content isMobile={isMobile}>
+        <Main isMobile={isMobile}>
+          <Flex align="flex-start">
+            <NicknameText>{nickname}</NicknameText>
+          </Flex>
 
-        <Flex direction="column" gap={6}>
-          <MetaLine>
-            <MetaLabel>프로그램</MetaLabel>
-            <MetaValue>{challengeName}</MetaValue>
-          </MetaLine>
-          <MetaLine>
-            <MetaLabel>기수</MetaLabel>
-            <MetaValue>{generation}기</MetaValue>
-          </MetaLine>
-          <MetaLine>
-            <MetaLabel>기간</MetaLabel>
-            <MetaValue>
-              {formattedStartDate} ~ {formattedEndDate}
-            </MetaValue>
-          </MetaLine>
-        </Flex>
+          <Flex direction="column" gap={6}>
+            <MetaLine isMobile={isMobile}>
+              <MetaLabel>프로그램</MetaLabel>
+              <MetaValue>{challengeName}</MetaValue>
+            </MetaLine>
+            <MetaLine isMobile={isMobile}>
+              <MetaLabel>기수</MetaLabel>
+              <MetaValue>{generation}기</MetaValue>
+            </MetaLine>
+            <MetaLine isMobile={isMobile}>
+              <MetaLabel>기간</MetaLabel>
+              <MetaValue>
+                {formattedStartDate} ~ {formattedEndDate}
+              </MetaValue>
+            </MetaLine>
+          </Flex>
 
-        <Description>
-          {getMedalDescription(
-            medal,
-            medalCondition,
-            challengeName,
-            generation,
-          )}
-        </Description>
-      </Main>
+          <Description isMobile={isMobile}>
+            {getMedalDescription(
+              medal,
+              medalCondition,
+              challengeName,
+              generation,
+            )}
+          </Description>
+        </Main>
 
-      <Bottom>
-        <IssuedDate>{formattedIssuedDate}</IssuedDate>
-      </Bottom>
+        <Bottom>
+          <IssuedDate isMobile={isMobile}>{formattedIssuedDate}</IssuedDate>
+        </Bottom>
+      </Content>
     </Container>
   );
 };
 
 export default Certificate;
 
-const Container = styled.div<{ medal: CertificateMedal }>`
+const Container = styled.div<{ device: Device }>`
+  overflow: hidden;
   position: relative;
   width: 100%;
-  height: 100%;
-  padding: 210px 70px 160px 90px;
+  min-width: 300px;
+  max-width: ${({ device }) => {
+    if (device === 'pc') return '540px';
+    if (device === 'tablet') return '450px';
+    return '360px';
+  }};
   border-radius: 10px;
-
-  background-image: ${({ medal }) =>
-    FRAME_IMAGE[medal] ? `url(${FRAME_IMAGE[medal]})` : 'none'};
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  aspect-ratio: 1086 / 1448;
 `;
 
-const Main = styled.div`
+const FrameImage = styled.img`
+  width: 100%;
+  display: block;
+`;
+
+const Content = styled.div<{ isMobile: boolean }>`
+  position: absolute;
+
   display: flex;
-  gap: 20px;
+  gap: ${({ isMobile }) => (isMobile ? '10px' : '24px')};
   flex-direction: column;
+  align-items: center;
   justify-content: center;
+
+  inset: 0;
 `;
 
-const MetaLine = styled.div`
+const Main = styled.div<{ isMobile: boolean }>`
+  display: flex;
+  gap: ${({ isMobile }) => (isMobile ? '0px' : '16px')};
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+const NicknameText = styled.span`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t11Bold};
+  font-size: clamp(1.175rem, 3.5vw, 1.75rem);
+`;
+
+const MetaLine = styled.div<{ isMobile: boolean }>`
   display: flex;
   gap: 8px;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Regular};
+  font-size: clamp(0.65rem, 1.5vw, 0.875rem);
 `;
 
 const MetaLabel = styled.span`
@@ -142,26 +170,26 @@ const MetaValue = styled.span`
   font-weight: 600;
 `;
 
-const Description = styled.p`
+const Description = styled.p<{ isMobile: boolean }>`
   max-width: 360px;
-  margin: 12px 0 0;
+  margin: ${({ isMobile }) => (isMobile ? '8px 0 0' : '12px 0 0')};
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t6Regular};
+  font-size: clamp(0.6875rem, 1.8vw, 1rem);
 `;
 
 const Bottom = styled.div`
-  margin-top: 32px;
-
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const IssuedDate = styled.div`
+const IssuedDate = styled.div<{ isMobile: boolean }>`
   flex: 1;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Regular};
+  font-size: clamp(0.65rem, 1.5vw, 0.875rem);
   text-align: center;
 `;
