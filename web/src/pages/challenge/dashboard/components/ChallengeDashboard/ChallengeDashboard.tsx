@@ -238,8 +238,8 @@ const BodyCell = styled.td<{
 `;
 
 const HolidayShieldImage = styled.img`
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
 
   vertical-align: middle;
 
