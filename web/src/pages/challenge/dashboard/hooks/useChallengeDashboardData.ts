@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import type { GetChallengesTeamsProgressResponse } from '@/apis/challenge/challenge.api';
-
-type DailyStatus =
-  GetChallengesTeamsProgressResponse['members'][number]['dailyProgresses'][number]['status'];
+import type { DailyStatus } from '@/pages/challenge/dashboard/types/dailyStatus';
 
 const SUCCESS_STATUSES = [
   'COMPLETE',

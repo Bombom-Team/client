@@ -3,13 +3,11 @@ import { useDevice } from '@/hooks/useDevice';
 import { useChallengeDashboardData } from '@/pages/challenge/dashboard/hooks/useChallengeDashboardData';
 import { formatDate } from '@/utils/date';
 import type { GetChallengesTeamsProgressResponse } from '@/apis/challenge/challenge.api';
+import type { DailyStatus } from '@/pages/challenge/dashboard/types/dailyStatus';
 import ShieldIcon from '#/assets/svg/shield.svg';
 import SproutIcon from '#/assets/svg/sprout.svg';
 
 const HOLIDAY_SHIELD_IMAGE_SRC = '/assets/png/holiday-shield.png';
-
-type DailyStatus =
-  GetChallengesTeamsProgressResponse['members'][number]['dailyProgresses'][number]['status'];
 
 const getStatusIcon = (status?: DailyStatus) => {
   if (status === 'COMPLETE') {
