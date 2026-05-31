@@ -59,6 +59,7 @@ export type NormalizedOperation = {
   operationId: string;
   parameters: ParameterObject[];
   requestBodySchemaRef?: string;
+  hasRequestBody: boolean;
   okResponseSchemaRef?: string;
   hasOkResponseBody: boolean;
 };
@@ -138,6 +139,7 @@ export const normalizeOperations = (
         operationId,
         parameters: op.parameters ?? [],
         requestBodySchemaRef: bodyRef,
+        hasRequestBody: Boolean(bodySchema),
         okResponseSchemaRef: okRef,
         hasOkResponseBody: Boolean(okSchema),
       });

@@ -66,7 +66,7 @@ const buildParamAliases = (op: NormalizedOperation): string[] => {
         `  NonNullable<operations['${op.operationId}']['parameters']>['query'];\n`,
     );
   }
-  if (op.requestBodySchemaRef) {
+  if (op.hasRequestBody) {
     aliases.push(
       `export type ${bodyTypeAlias(op)} =\n` +
         `  NonNullable<operations['${op.operationId}']['requestBody']>['content']['application/json'];\n`,
@@ -83,7 +83,7 @@ const buildArgList = (
 } => {
   const pathParams = op.parameters.filter((p) => p.in === 'path');
   const queryParams = op.parameters.filter((p) => p.in === 'query');
-  const hasBody = Boolean(op.requestBodySchemaRef);
+  const hasBody = op.hasRequestBody;
   const pathVars = pathParams.map((p) => p.name);
 
   const intersections: string[] = [];
@@ -144,7 +144,7 @@ const buildFetcherCall = (
     : op.method === 'get'
       ? '<void>'
       : op.method === 'post' || op.method === 'patch' || op.method === 'put'
-        ? `<${op.requestBodySchemaRef ? bodyTypeAlias(op) : 'never'}, void>`
+        ? `<${op.hasRequestBody ? bodyTypeAlias(op) : 'never'}, void>`
         : '<never, void>';
 
   return `  return ${fetcher}${respType}({ ${opts.join(', ')} });`;

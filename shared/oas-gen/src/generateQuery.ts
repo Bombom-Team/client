@@ -13,11 +13,7 @@ const HEADER = `/* eslint-disable */
 const hasArgs = (op: NormalizedOperation): boolean => {
   const pathParams = op.parameters.filter((p) => p.in === 'path');
   const queryParams = op.parameters.filter((p) => p.in === 'query');
-  return (
-    pathParams.length > 0 ||
-    queryParams.length > 0 ||
-    Boolean(op.requestBodySchemaRef)
-  );
+  return pathParams.length > 0 || queryParams.length > 0 || op.hasRequestBody;
 };
 
 const buildArgList = (op: NormalizedOperation, fnName: string): string =>
