@@ -2,7 +2,7 @@ import { isWebView } from '@/utils/device';
 
 // 서드파티 인앱브라우저 UA 토큰 (봄봄 네이티브 앱 'bombom'은 매칭되지 않음)
 const IN_APP_BROWSER_UA_PATTERN =
-  /KAKAOTALK|Instagram|Threads|Barcelona|FBAN|FBAV|FB_IAB|Line|NAVER\(inapp|DaumApps|BAND/i;
+  /KAKAOTALK|Instagram|Threads|Barcelona|FBAN|FBAV|FB_IAB|Line|NAVER\(inapp|DaumApps|BAND|Blind/i;
 
 /**
  * 카카오톡·인스타그램·쓰레드 등 서드파티 인앱브라우저 여부를 판별한다.
