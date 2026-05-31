@@ -1,5 +1,5 @@
 import PCHeader from './PCHeader';
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta: Meta<typeof PCHeader> = {
   title: 'components/common/PCHeader',

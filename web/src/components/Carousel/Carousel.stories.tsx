@@ -1,6 +1,6 @@
 import { useTheme } from '@emotion/react';
 import { Carousel } from './Carousel';
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'components/common/Carousel',

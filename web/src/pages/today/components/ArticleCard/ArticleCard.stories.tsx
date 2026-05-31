@@ -1,5 +1,5 @@
 import ArticleCard from './ArticleCard';
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'components/bombom/ArticleCard',

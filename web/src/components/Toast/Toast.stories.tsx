@@ -4,7 +4,7 @@ import Toast from './Toast';
 import Button from '../Button/Button';
 import { toast } from './utils/toastActions';
 import type { ToastPosition } from './Toast.types';
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 type StoryArgs = {
   position?: ToastPosition;
