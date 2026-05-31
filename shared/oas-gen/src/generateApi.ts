@@ -83,42 +83,41 @@ const buildArgList = (
 } => {
   const pathParams = op.parameters.filter((p) => p.in === 'path');
   const queryParams = op.parameters.filter((p) => p.in === 'query');
+  const hasQuery = queryParams.length > 0;
   const hasBody = op.hasRequestBody;
   const pathVars = pathParams.map((p) => p.name);
 
-  const intersections: string[] = [];
-  if (pathParams.length > 0) intersections.push(pathTypeAlias(op));
-  if (queryParams.length > 0) intersections.push(queryTypeAlias(op));
-  if (hasBody) intersections.push(bodyTypeAlias(op));
-
-  if (intersections.length === 0) {
+  if (pathVars.length === 0 && !hasQuery && !hasBody) {
     return {
       signature: '()',
       destructuredVars: { pathVars: [], hasQuery: false, hasBody: false },
     };
   }
 
-  const typeExpr = intersections.join(' & ');
+  const intersections: string[] = [];
+  if (pathParams.length > 0) intersections.push(pathTypeAlias(op));
 
-  const patternParts: string[] = [];
-  for (const p of pathVars) patternParts.push(p);
-  if (queryParams.length > 0 && hasBody) {
-    patternParts.push('...rest');
-  } else if (queryParams.length > 0) {
+  const patternParts: string[] = [...pathVars];
+
+  if (hasQuery && hasBody) {
+    patternParts.push('query', 'body');
+    intersections.push(
+      `{ query: ${queryTypeAlias(op)}; body: ${bodyTypeAlias(op)} }`,
+    );
+  } else if (hasQuery) {
     patternParts.push('...query');
+    intersections.push(queryTypeAlias(op));
   } else if (hasBody) {
     patternParts.push('...body');
+    intersections.push(bodyTypeAlias(op));
   }
 
+  const typeExpr = intersections.join(' & ');
   const pattern =
     patternParts.length > 0 ? `{ ${patternParts.join(', ')} }` : '_';
   return {
     signature: `(${pattern}: ${typeExpr})`,
-    destructuredVars: {
-      pathVars,
-      hasQuery: queryParams.length > 0,
-      hasBody,
-    },
+    destructuredVars: { pathVars, hasQuery, hasBody },
   };
 };
 
