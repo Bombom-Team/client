@@ -1,13 +1,16 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
+import MaeilMailSubscriptionCard from './MaeilMailSubscriptionCard';
+import MySubscriptionCard from './MySubscriptionCard';
 import NewsletterUnsubscribeModal from './NewsletterUnsubscribeModal';
-import { useUnsubscribe } from '../hooks/useUnsubscribe';
+import { useUnsubscribe } from '../../hooks/useUnsubscribe';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
-import MySubscriptionCard from '@/pages/my-page/MySubscriptionCard';
 import type { GetMySubscriptionsResponse } from '@/apis/members/members.api';
 import type { Device } from '@/hooks/useDevice';
+
+const NATIVE_NEWSLETTER_SOURCE = 'MAEIL_MAIL' as const;
 
 interface SubscribedNewslettersSectionProps {
   newsletters: GetMySubscriptionsResponse;
@@ -49,16 +52,20 @@ const SubscribedNewslettersSection = ({
   return (
     <>
       <Container>
-        {newsletters && newsletters.length > 0 ? (
+        {newsletters.length > 0 ? (
           <NewsletterGrid device={device}>
-            {newsletters.map((newsletter) => (
-              <MySubscriptionCard
-                key={newsletter.newsletterId}
-                newsletter={newsletter}
-                onUnsubscribeRequest={handleUnsubscribeRequest}
-                onRemoveRequest={handleRemoveRequest}
-              />
-            ))}
+            {newsletters.map((newsletter) =>
+              newsletter.newsletterSource === NATIVE_NEWSLETTER_SOURCE ? (
+                <MaeilMailSubscriptionCard key={newsletter.newsletterId} />
+              ) : (
+                <MySubscriptionCard
+                  key={newsletter.newsletterId}
+                  newsletter={newsletter}
+                  onUnsubscribeRequest={handleUnsubscribeRequest}
+                  onRemoveRequest={handleRemoveRequest}
+                />
+              ),
+            )}
           </NewsletterGrid>
         ) : (
           <EmptyMessage>구독 중인 뉴스레터가 없습니다.</EmptyMessage>
