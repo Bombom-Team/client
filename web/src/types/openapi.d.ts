@@ -4,6 +4,34 @@
  */
 
 export interface paths {
+  '/api/v1/subscriptions/native/maeil-mail': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 봄봄 자체 뉴스레터 구독 여부 조회
+     * @description 매일메일 구독 여부와 구독 중인 트랙 목록을 반환합니다.
+     */
+    get: operations['getSubscription'];
+    /**
+     * 봄봄 자체 뉴스레터 구독 생성/수정
+     * @description 요청한 트랙 목록으로 구독 상태를 치환합니다. 미구독 상태에서 트랙을 보내면 신규 구독, 구독 중에 다른 트랙을 보내면 수정합니다.
+     */
+    put: operations['putSubscription'];
+    post: operations['postSubscription'];
+    /**
+     * 봄봄 자체 뉴스레터 구독 해지
+     * @description 매일메일 구독을 해지하고 구독 트랙을 삭제합니다.
+     */
+    delete: operations['deleteSubscription'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/challenges/{challengeId}/reviews/{reviewId}': {
     parameters: {
       query?: never;
@@ -58,30 +86,6 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations['handleAppleFormPost'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/subscriptions/native/maeil-mail': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 봄봄 자체 뉴스레터 구독 여부 조회
-     * @description 매일메일 구독 여부와 구독 중인 트랙 목록을 반환합니다.
-     */
-    get: operations['getSubscription'];
-    put?: never;
-    /**
-     * 봄봄 자체 뉴스레터 구독
-     * @description 봄봄 자체 뉴스레터(매일메일)를 구독합니다.
-     */
-    post: operations['subscribe'];
     delete?: never;
     options?: never;
     head?: never;
@@ -1499,6 +1503,9 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    MaeilMailUpdateSubscriptionRequest: {
+      tracks: ('BE' | 'FE')[];
+    };
     UpdateChallengeReviewRequest: {
       comment: string;
       isPrivate?: boolean;
@@ -1506,9 +1513,6 @@ export interface components {
     ChallengeCommentLikeResponse: {
       /** Format: int32 */
       likeCount?: number;
-    };
-    MaeilMailSubscribeRequest: {
-      tracks: ('BE' | 'FE')[];
     };
     /** @description 경고 설정 변경 요청 */
     UpdateWarningSettingRequest: {
@@ -1697,8 +1701,8 @@ export interface components {
     };
     SortObject: {
       empty?: boolean;
-      unsorted?: boolean;
       sorted?: boolean;
+      unsorted?: boolean;
     };
     CategoryResponse: {
       /** Format: int64 */
@@ -1752,12 +1756,13 @@ export interface components {
       name: string;
       imageUrl?: string;
       description: string;
-      category: string;
       unsubscribeUrl?: string;
       /** @enum {string} */
       status: 'SUBSCRIBED' | 'UNSUBSCRIBING' | 'UNSUBSCRIBE_FAILED';
       /** @enum {string} */
       newsletterPublicationStatus: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
+      /** @enum {string} */
+      newsletterSource: 'EXTERNAL' | 'MAEIL_MAIL';
     };
     ReadingInformationResponse: {
       /** Format: int32 */
@@ -2581,6 +2586,118 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  getSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
+        };
+      };
+    };
+  };
+  putSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MaeilMailUpdateSubscriptionRequest'];
+      };
+    };
+    responses: {
+      /** @description 처리 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 (빈 트랙, 중복 트랙) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  postSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MaeilMailUpdateSubscriptionRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 해지 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   updateReview: {
     parameters: {
       query?: never;
@@ -2746,71 +2863,6 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getSubscription: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 조회 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
-        };
-      };
-      /** @description 인증 실패 */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
-        };
-      };
-    };
-  };
-  subscribe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['MaeilMailSubscribeRequest'];
-      };
-    };
-    responses: {
-      /** @description 구독 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description 잘못된 요청 (외부 뉴스레터, 중복 구독) */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description 인증 실패 */
-      401: {
         headers: {
           [name: string]: unknown;
         };
