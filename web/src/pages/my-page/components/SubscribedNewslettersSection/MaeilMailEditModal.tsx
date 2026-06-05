@@ -2,17 +2,17 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
-import type { NativeMaeilMailSubscriptionTrack } from '@/apis/subscriptions/subscriptions.api';
+import type { Track } from '../../types/subscribeNewsletters';
 
-const TRACKS: { value: NativeMaeilMailSubscriptionTrack; label: string }[] = [
+const TRACKS: { value: Track; label: string }[] = [
   { value: 'FE', label: '프론트엔드' },
   { value: 'BE', label: '백엔드' },
 ];
 
 interface MaeilMailEditModalProps {
-  initialTracks: NativeMaeilMailSubscriptionTrack[];
+  initialTracks: Track[];
   isPending: boolean;
-  onSave: (tracks: NativeMaeilMailSubscriptionTrack[]) => void;
+  onSave: (tracks: Track[]) => void;
   onClose: () => void;
 }
 
@@ -24,7 +24,7 @@ const MaeilMailEditModal = ({
 }: MaeilMailEditModalProps) => {
   const [selectedTracks, setSelectedTracks] = useState(initialTracks);
 
-  const handleToggleTrack = (track: NativeMaeilMailSubscriptionTrack) => {
+  const handleToggleTrack = (track: Track) => {
     setSelectedTracks((prev) =>
       prev.includes(track) ? prev.filter((t) => t !== track) : [...prev, track],
     );

@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { createPortal } from 'react-dom';
 import MaeilMailEditModal from './MaeilMailEditModal';
 import NewsletterUnsubscribeModal from './NewsletterUnsubscribeModal';
 import { useUnsubscribeMaeilMailSubscriptionMutations } from '../../hooks/useUnsubscribeMaeilMailSubscriptionMutations';
@@ -10,6 +9,7 @@ import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
+import type { Track } from '../../types/subscribeNewsletters';
 import type { SubscribedNewsletterResponse } from '@/apis/members/members.api';
 
 interface MaeilMailSubscriptionCardProps {
@@ -40,6 +40,11 @@ const MaeilMailSubscriptionCard = ({
     closeModal: closeCancelModal,
     isOpen: isCancelOpen,
   } = useModal();
+
+  const updateSubscriptionTracks = (tracks: Track[]) => {
+    updateSubscription({ tracks });
+    closeEditModal();
+  };
 
   return (
     <>
@@ -72,41 +77,32 @@ const MaeilMailSubscriptionCard = ({
         </ActionWrapper>
       </Container>
 
-      {createPortal(
-        <Modal
-          modalRef={editModalRef}
-          closeModal={closeEditModal}
-          isOpen={isEditOpen}
-          showCloseButton={false}
-        >
-          <MaeilMailEditModal
-            initialTracks={subscription?.tracks ?? []}
-            isPending={isUpdatePending}
-            onSave={(tracks) => {
-              updateSubscription({ tracks });
-              closeEditModal();
-            }}
-            onClose={closeEditModal}
-          />
-        </Modal>,
-        document.body,
-      )}
+      <Modal
+        modalRef={editModalRef}
+        closeModal={closeEditModal}
+        isOpen={isEditOpen}
+        showCloseButton={false}
+      >
+        <MaeilMailEditModal
+          initialTracks={subscription?.tracks ?? []}
+          isPending={isUpdatePending}
+          onSave={updateSubscriptionTracks}
+          onClose={closeEditModal}
+        />
+      </Modal>
 
-      {createPortal(
-        <Modal
-          modalRef={cancelModalRef}
-          closeModal={closeCancelModal}
-          isOpen={isCancelOpen}
-          showCloseButton={false}
-        >
-          <NewsletterUnsubscribeModal
-            type="UNSUBSCRIBE"
-            onUnsubscribe={removeSubscription}
-            onClose={closeCancelModal}
-          />
-        </Modal>,
-        document.body,
-      )}
+      <Modal
+        modalRef={cancelModalRef}
+        closeModal={closeCancelModal}
+        isOpen={isCancelOpen}
+        showCloseButton={false}
+      >
+        <NewsletterUnsubscribeModal
+          type="UNSUBSCRIBE"
+          onUnsubscribe={removeSubscription}
+          onClose={closeCancelModal}
+        />
+      </Modal>
     </>
   );
 };
