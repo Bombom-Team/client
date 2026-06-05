@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { createPortal } from 'react-dom';
 import MaeilMailEditModal from './MaeilMailEditModal';
 import NewsletterUnsubscribeModal from './NewsletterUnsubscribeModal';
 import { useUnsubscribeMaeilMailSubscriptionMutations } from '../../hooks/useUnsubscribeMaeilMailSubscriptionMutations';
 import { useUpdateMaeilMailSubscriptionMutations } from '../../hooks/useUpdateMaeilMailSubscriptionMutations';
+import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Modal from '@/components/Modal/Modal';
@@ -17,6 +19,9 @@ interface MaeilMailSubscriptionCardProps {
 const MaeilMailSubscriptionCard = ({
   newsletter,
 }: MaeilMailSubscriptionCardProps) => {
+  const { data: subscription } = useQuery(
+    queries.nativeMaeilMailSubscription(),
+  );
   const { mutate: updateSubscription, isPending: isUpdatePending } =
     useUpdateMaeilMailSubscriptionMutations();
   const { mutate: removeSubscription, isPending: isRemovePending } =
@@ -75,6 +80,7 @@ const MaeilMailSubscriptionCard = ({
           showCloseButton={false}
         >
           <MaeilMailEditModal
+            initialTracks={subscription?.tracks ?? []}
             isPending={isUpdatePending}
             onSave={(tracks) => {
               updateSubscription({ tracks });

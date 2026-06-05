@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import type { NativeMaeilMailSubscriptionTrack } from '@/apis/subscriptions/subscriptions.api';
@@ -12,22 +10,19 @@ const TRACKS: { value: NativeMaeilMailSubscriptionTrack; label: string }[] = [
 ];
 
 interface MaeilMailEditModalProps {
+  initialTracks: NativeMaeilMailSubscriptionTrack[];
   isPending: boolean;
   onSave: (tracks: NativeMaeilMailSubscriptionTrack[]) => void;
   onClose: () => void;
 }
 
 const MaeilMailEditModal = ({
+  initialTracks,
   isPending,
   onSave,
   onClose,
 }: MaeilMailEditModalProps) => {
-  const { data: subscription } = useQuery(
-    queries.nativeMaeilMailSubscription(),
-  );
-  const [selectedTracks, setSelectedTracks] = useState(
-    subscription?.tracks ?? [],
-  );
+  const [selectedTracks, setSelectedTracks] = useState(initialTracks);
 
   const handleToggleTrack = (track: NativeMaeilMailSubscriptionTrack) => {
     setSelectedTracks((prev) =>
