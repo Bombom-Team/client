@@ -5,12 +5,23 @@ import LandingAboutSection from '@/pages/landing/components/LandingAboutSection'
 import HowSection from '@/pages/landing/components/HowSection';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
 import LandingFAQSection from '@/pages/landing/components/LandingFaqSection';
+import { FAQ_ITEMS } from '@/pages/landing/constants/faq';
 import LandingHero from '@/pages/landing/components/LandingHero';
 
 const SITE_URL = 'https://maeilmail.bombom.news';
 const TITLE = '봄봄 × 매일메일 | 매일 받는 기술 면접 질문을 간편하게';
 const DESCRIPTION =
   '매일 기술 면접 질문을 봄봄에서 받아보세요. 개발자를 위한 기술 면접 준비 뉴스레터, 매일메일로 매일 성장해요.';
+
+const FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ_ITEMS.map(({ question, answer }) => ({
+    '@type': 'Question',
+    name: question,
+    acceptedAnswer: { '@type': 'Answer', text: answer },
+  })),
+};
 
 export const Route = createFileRoute('/')({
   head: () => ({
@@ -24,6 +35,9 @@ export const Route = createFileRoute('/')({
       { name: 'twitter:description', content: DESCRIPTION },
     ],
     links: [{ rel: 'canonical', href: SITE_URL }],
+    scripts: [
+      { type: 'application/ld+json', children: JSON.stringify(FAQ_SCHEMA) },
+    ],
   }),
   component: LandingPage,
 });
