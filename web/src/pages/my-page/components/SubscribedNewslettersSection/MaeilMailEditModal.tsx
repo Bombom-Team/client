@@ -1,3 +1,4 @@
+import { Text } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import Button from '@/components/Button/Button';
@@ -45,13 +46,18 @@ const MaeilMailEditModal = ({
           </Checkbox>
         ))}
       </TrackGrid>
+      <Text color="primaryBomBom" font="t4Regular">
+        * 최소 하나 이상의 분야를 선택해주세요.
+        <br />
+        수정 시, 다음 발행일부터 반영됩니다.
+      </Text>
       <ButtonWrapper>
         <ModalButton
           variant="filled"
           onClick={() => onSave(selectedTracks)}
           disabled={selectedTracks.length === 0 || isPending}
         >
-          저장
+          수정
         </ModalButton>
         <ModalButton variant="outlined" onClick={onClose}>
           취소
