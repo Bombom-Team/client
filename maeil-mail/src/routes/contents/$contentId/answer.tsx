@@ -30,12 +30,13 @@ export const Route = createFileRoute('/contents/$contentId/answer')({
 
     return {
       meta: [
-        { name: 'robots', content: 'index, follow' },
         { title },
         { name: 'description', content: description },
         { property: 'og:url', content: url },
         { property: 'og:title', content: title },
         { property: 'og:description', content: description },
+        { name: 'twitter:title', content: title },
+        { name: 'twitter:description', content: description },
       ],
       links: [{ rel: 'canonical', href: url }],
     };
@@ -46,9 +47,7 @@ export const Route = createFileRoute('/contents/$contentId/answer')({
 function RouteComponent() {
   const { contentId } = Route.useParams();
   const { articleId } = Route.useSearch();
-  const { data, isError, isLoading } = useQuery(
-    queries.answer({ contentId }),
-  );
+  const { data, isError, isLoading } = useQuery(queries.answer({ contentId }));
   const {
     data: myAnswer,
     isError: isMyAnswerError,
