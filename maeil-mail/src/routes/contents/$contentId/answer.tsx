@@ -13,14 +13,15 @@ export const Route = createFileRoute('/contents/$contentId/answer')({
       articleId: Number.isNaN(articleId) ? undefined : articleId,
     };
   },
-  head: () => ({
+  head: ({ params }) => ({
     meta: [
+      { name: 'robots', content: 'index, follow' },
+      { title: '매일메일 | 정답 조회' },
+    ],
+    links: [
       {
-        name: 'robots',
-        content: 'index, follow',
-      },
-      {
-        title: '매일메일 | 정답 조회',
+        rel: 'canonical',
+        href: `https://maeilmail.bombom.news/contents/${params.contentId}/answer`,
       },
     ],
   }),
