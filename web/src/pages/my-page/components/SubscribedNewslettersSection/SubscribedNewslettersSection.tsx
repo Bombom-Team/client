@@ -56,7 +56,10 @@ const SubscribedNewslettersSection = ({
           <NewsletterGrid device={device}>
             {newsletters.map((newsletter) =>
               newsletter.newsletterSource === NATIVE_NEWSLETTER_SOURCE ? (
-                <MaeilMailSubscriptionCard key={newsletter.newsletterId} />
+                <MaeilMailSubscriptionCard
+                  key={newsletter.newsletterId}
+                  newsletter={newsletter}
+                />
               ) : (
                 <MySubscriptionCard
                   key={newsletter.newsletterId}
