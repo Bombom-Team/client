@@ -7,8 +7,8 @@ import LandingHeader from '@/pages/landing/components/LandingHeader';
 import LandingFAQSection from '@/pages/landing/components/LandingFaqSection';
 import { FAQ_ITEMS } from '@/pages/landing/constants/faq';
 import LandingHero from '@/pages/landing/components/LandingHero';
+import { MAEIL_MAIL_URL } from '@/constants/urls';
 
-const SITE_URL = 'https://maeilmail.bombom.news';
 const TITLE = '봄봄 × 매일메일 | 매일 받는 기술 면접 질문을 간편하게';
 const DESCRIPTION =
   '매일 기술 면접 질문을 봄봄에서 받아보세요. 개발자를 위한 기술 면접 준비 뉴스레터, 매일메일로 매일 성장해요.';
@@ -28,13 +28,13 @@ export const Route = createFileRoute('/')({
     meta: [
       { title: TITLE },
       { name: 'description', content: DESCRIPTION },
-      { property: 'og:url', content: SITE_URL },
+      { property: 'og:url', content: MAEIL_MAIL_URL },
       { property: 'og:title', content: TITLE },
       { property: 'og:description', content: DESCRIPTION },
       { name: 'twitter:title', content: TITLE },
       { name: 'twitter:description', content: DESCRIPTION },
     ],
-    links: [{ rel: 'canonical', href: SITE_URL }],
+    links: [{ rel: 'canonical', href: MAEIL_MAIL_URL }],
     scripts: [
       { type: 'application/ld+json', children: JSON.stringify(FAQ_SCHEMA) },
     ],
