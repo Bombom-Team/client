@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { createPortal } from 'react-dom';
 import MaeilMailEditModal from './MaeilMailEditModal';
 import NewsletterUnsubscribeModal from './NewsletterUnsubscribeModal';
-import { useRemoveMaeilMailSubscriptionMutations } from '../../hooks/useRemoveMaeilMailSubscriptionMutations';
+import { useUnsubscribeMaeilMailSubscriptionMutations } from '../../hooks/useUnsubscribeMaeilMailSubscriptionMutations';
 import { useUpdateMaeilMailSubscriptionMutations } from '../../hooks/useUpdateMaeilMailSubscriptionMutations';
 import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
@@ -20,7 +20,7 @@ const MaeilMailSubscriptionCard = ({
   const { mutate: updateSubscription, isPending: isUpdatePending } =
     useUpdateMaeilMailSubscriptionMutations();
   const { mutate: removeSubscription, isPending: isRemovePending } =
-    useRemoveMaeilMailSubscriptionMutations();
+    useUnsubscribeMaeilMailSubscriptionMutations();
 
   const {
     modalRef: editModalRef,

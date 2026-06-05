@@ -3,7 +3,7 @@ import { queries } from '@/apis/queries';
 import { deleteNativeMaeilMailSubscription } from '@/apis/subscriptions/subscriptions.api';
 import { toast } from '@/components/Toast/utils/toastActions';
 
-export const useRemoveMaeilMailSubscriptionMutations = () => {
+export const useUnsubscribeMaeilMailSubscriptionMutations = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
