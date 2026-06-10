@@ -1,6 +1,10 @@
 import { ThemeProvider } from '@emotion/react';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { HeadContent, Outlet, createRootRouteWithContext } from '@tanstack/react-router';
+import {
+  HeadContent,
+  Outlet,
+  createRootRouteWithContext,
+} from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { Toast } from '@bombom/shared/ui-web';
 import { queryClient } from '../main';
@@ -16,7 +20,7 @@ export const Route = createRootRouteWithContext<MaeilMailRouterContext>()({
   head: () => ({
     meta: [
       { title: '매일메일' },
-      { name: 'robots', content: 'index, follow' },
+      { name: 'description', content: '봄봄 × 매일메일' },
     ],
   }),
   component: RootComponent,

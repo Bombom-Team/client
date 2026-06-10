@@ -9,7 +9,7 @@ import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
 import MaeilMailSubscribeModal from './MaeilMailSubscribeModal';
 import { MAEIL_MAIL_LANDING_CONFIG, TRACKS } from '../constants/subscribe';
 
-const MAEIL_MAIL_URL = 'https://maeilmail.bombom.news';
+import { MAEIL_MAIL_URL } from '@/constants/urls';
 
 const LandingHero = () => {
   const { isLoggedIn } = useAuth();

@@ -3,7 +3,8 @@ import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { isWebView } from '@/utils/device';
 
-const MAEIL_MAIL_URL = 'https://maeilmail.bombom.news';
+import { MAEIL_MAIL_URL } from '@/constants/urls';
+
 const BOMBOM_LOGIN_URL = `https://www.bombom.news/login?redirect=${encodeURIComponent(MAEIL_MAIL_URL)}`;
 
 const LoginButton = () => {
