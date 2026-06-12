@@ -1,9 +1,9 @@
+import { getPet } from '@bombom/shared/apis/pet';
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo } from 'react';
-import { getPet } from '@/apis/pet/pet.api';
 import { queries } from '@/apis/queries';
 import PetCard from '@/components/PetCard/PetCard';
 import PetCardSkeleton from '@/components/PetCard/PetCardSkeleton';

@@ -38,7 +38,7 @@ npm run storybook      # Start Storybook on port 6006
 npm run build-storybook # Build Storybook
 
 # API Types
-npm run generate-openapi-types # Generate TypeScript types from OpenAPI spec
+npm run gen:api # Generate TypeScript types from OpenAPI spec
 ```
 
 ## Architecture & Technology Stack

@@ -5,6 +5,8 @@ import { queries } from '@/apis/queries';
 import ChatIcon from '@/assets/svg/chat.svg';
 import Header from '@/components/Header/Header';
 
+import { MAEIL_MAIL_URL } from '@/constants/urls';
+
 export const Route = createFileRoute('/contents/$contentId/answer')({
   validateSearch: (search: { articleId?: string | number }) => {
     const articleId = Number(search.articleId);
@@ -13,26 +15,39 @@ export const Route = createFileRoute('/contents/$contentId/answer')({
       articleId: Number.isNaN(articleId) ? undefined : articleId,
     };
   },
-  head: () => ({
-    meta: [
-      {
-        name: 'robots',
-        content: 'index, follow',
-      },
-      {
-        title: '매일메일 | 정답 조회',
-      },
-    ],
-  }),
+  loader: ({ context: { queryClient }, params }) =>
+    queryClient
+      .ensureQueryData(queries.answer({ contentId: params.contentId }))
+      .catch(() => null),
+  head: ({ loaderData, params }) => {
+    const url = `${MAEIL_MAIL_URL}/contents/${params.contentId}/answer`;
+    const title = loaderData?.title
+      ? `매일메일 | ${loaderData.title}`
+      : '매일메일 | 정답 조회';
+    const description = loaderData?.title
+      ? `${loaderData.title} — 매일메일 정답 확인`
+      : '매일메일 기술 면접 질문 정답 조회';
+
+    return {
+      meta: [
+        { title },
+        { name: 'description', content: description },
+        { property: 'og:url', content: url },
+        { property: 'og:title', content: title },
+        { property: 'og:description', content: description },
+        { name: 'twitter:title', content: title },
+        { name: 'twitter:description', content: description },
+      ],
+      links: [{ rel: 'canonical', href: url }],
+    };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { contentId } = Route.useParams();
   const { articleId } = Route.useSearch();
-  const { data, isError, isLoading } = useQuery(
-    queries.answer({ contentId }),
-  );
+  const { data, isError, isLoading } = useQuery(queries.answer({ contentId }));
   const {
     data: myAnswer,
     isError: isMyAnswerError,

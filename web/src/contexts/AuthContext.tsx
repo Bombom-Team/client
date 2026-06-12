@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouterState } from '@tanstack/react-router';
 import { createContext, useContext, useMemo } from 'react';
 import { queries } from '@/apis/queries';
+import { useSentryUser } from '@/libs/sentry/useSentryUser';
 import type { UserProfile } from '@/types/me';
 import type { PropsWithChildren } from 'react';
 
@@ -25,6 +26,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   });
 
   const isLoggedIn = useMemo(() => Boolean(userProfile), [userProfile]);
+
+  useSentryUser(userProfile);
 
   return (
     <AuthContext.Provider

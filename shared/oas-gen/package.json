@@ -1,0 +1,21 @@
+{
+  "name": "@bombom/oas-gen",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "bin": {
+    "oas-gen": "./bin/oas-gen.mjs"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^24.1.0",
+    "typescript": "^5.8.3"
+  }
+}

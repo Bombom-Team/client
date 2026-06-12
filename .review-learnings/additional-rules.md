@@ -87,7 +87,7 @@ PR #134, #105, #43.
 
 요청/응답 등 백엔드 API 타입을 손으로 새로 정의하면 지적하세요. 생성된 OpenAPI
 타입(`components['schemas'][...]`, `operations[...]`)을 직접 사용해야 합니다
-(client는 `pnpm run web:generate-openapi-types`로 생성). 생성 타입과 중복되는
+(client는 `pnpm run web:gen:api`로 생성). 생성 타입과 중복되는
 수동 타입 선언이 후보. 출처: client PR #109, #111.
 
 ### [정확성] API 함수 시그니처·엔드포인트 변경 시 msw 핸들러 동기화

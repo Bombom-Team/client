@@ -2,11 +2,11 @@ import { ApiError } from '@bombom/shared/apis';
 import { Global } from '@emotion/react';
 import Clarity from '@microsoft/clarity';
 import {
-  init as initSentry,
-  tanstackRouterBrowserTracingIntegration,
-} from '@sentry/react';
-import { ErrorBoundary } from '@suspensive/react';
-import { QueryCache, QueryClient } from '@tanstack/react-query';
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  matchQuery,
+} from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -14,21 +14,58 @@ import { ENV } from './apis/env';
 import { queries } from './apis/queries';
 import PageErrorFallback from './components/PageErrorFallback/PageErrorFallback';
 import GAInitializer from './libs/googleAnalytics/GAInitializer';
+import { initSentry } from './libs/sentry/initSentry';
+import {
+  captureMutationError,
+  captureQueryError,
+  SentryErrorBoundary,
+} from './libs/sentry/sentryUtils';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
-import { isDevelopment, isProduction } from './utils/environment';
+import { isProduction } from './utils/environment';
 
 if (isProduction) Clarity.init(ENV.clarityProjectId);
 
+const EXPECTED_UNAUTHORIZED_QUERY_KEYS = [
+  queries.userProfile().queryKey,
+  queries.myMonthlyReadingRank().queryKey,
+  queries.myStreakReadingRank().queryKey,
+];
+
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
-    onError: (error) => {
+    onError: (error, query) => {
       if (error instanceof ApiError && error.status === 401) {
-        const data = queryClient.getQueryData(queries.userProfile().queryKey);
-        if (data) {
+        const isExpectedUnauthorizedQuery =
+          EXPECTED_UNAUTHORIZED_QUERY_KEYS.some((queryKey) =>
+            matchQuery(
+              {
+                queryKey,
+                exact: true,
+              },
+              query,
+            ),
+          );
+
+        // 비로그인 정상 흐름에서 발생 가능한 인증 쿼리 401은 드롭
+        if (isExpectedUnauthorizedQuery) return;
+
+        const profileData = queryClient.getQueryData(
+          queries.userProfile().queryKey,
+        );
+        if (profileData) {
           window.location.reload();
+          return;
         }
       }
+
+      // profile/me 외 API 401 포함 그 외 모든 에러 → 캡처
+      captureQueryError({ error, queryKey: query.queryKey });
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      captureMutationError({ error });
     },
   }),
   defaultOptions: {
@@ -60,12 +97,9 @@ const router = createRouter({
   scrollRestoration: true,
 });
 
-initSentry({
-  dsn: ENV.sentryDsn,
-  sendDefaultPii: true,
-  integrations: [tanstackRouterBrowserTracingIntegration(router)],
-  sampleRate: isDevelopment ? 1 : 0.1,
-});
+if (isProduction) {
+  initSentry({ router });
+}
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -97,9 +131,9 @@ enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <Global styles={reset} />
-      <ErrorBoundary fallback={PageErrorFallback}>
+      <SentryErrorBoundary fallback={PageErrorFallback}>
         <RouterProvider router={router} />
-      </ErrorBoundary>
+      </SentryErrorBoundary>
       <GAInitializer />
     </StrictMode>,
   );
