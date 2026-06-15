@@ -9,8 +9,12 @@ import {
   getMySubscriptions,
   getUserProfile,
   getWarningVisible,
+  getMyChallengeSummary,
+  getMyOngoingChallenges,
+  getMyCompletedChallenges,
   type GetMonthlyReadingRankParams,
   type GetStreakReadingRankParams,
+  type GetMyCompletedChallengesParams,
 } from './members.api';
 
 export const membersQueries = {
@@ -68,5 +72,23 @@ export const membersQueries = {
     queryOptions({
       queryKey: ['members', 'me', 'warning', 'near-capacity'],
       queryFn: () => getWarningVisible(),
+    }),
+
+  myChallengeSummary: () =>
+    queryOptions({
+      queryKey: ['members', 'me', 'challenges', 'summary'],
+      queryFn: getMyChallengeSummary,
+    }),
+
+  myOngoingChallenges: () =>
+    queryOptions({
+      queryKey: ['members', 'me', 'challenges', 'ongoing'],
+      queryFn: getMyOngoingChallenges,
+    }),
+
+  myCompletedChallenges: (params?: GetMyCompletedChallengesParams) =>
+    queryOptions({
+      queryKey: ['members', 'me', 'challenges', 'completed', params],
+      queryFn: () => getMyCompletedChallenges(params),
     }),
 };
