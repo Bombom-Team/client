@@ -25,11 +25,11 @@ const ChallengeStatsHeader = ({ summary }: ChallengeStatsHeaderProps) => {
 
   return (
     <Container device={device}>
-      <StatCell gap={12} align="center">
-        <IconCircle device={device}>
+      <StatCell device={device} align="center">
+        <IconCircle>
           <TrophyColoredIcon width="100%" height="100%" />
         </IconCircle>
-        <StatContent direction="column" gap={4}>
+        <StatContent direction="column">
           <Text font="t4Regular" color="textSecondary">
             완료한 챌린지
           </Text>
@@ -44,48 +44,49 @@ const ChallengeStatsHeader = ({ summary }: ChallengeStatsHeaderProps) => {
 
       <Divider device={device} />
 
-      <StatCell gap={12} align="center">
-        <IconCircle device={device}>
+      <StatCell device={device} align="center">
+        <IconCircle>
           <MedalIcon width="100%" height="100%" />
         </IconCircle>
-        <StatContent direction="column" gap={4}>
+        <StatContent direction="column">
           <Text font="t4Regular" color="textSecondary">
             수료율 순위
           </Text>
           <Text font="t7Bold" color="primaryBomBom">
             상위 {completionRank.topPercent}%
           </Text>
-          <Text font="t3Regular" color="textSecondary">
-            내 수료율
-            <HighLight>{completionRank.completionRate}%</HighLight>
-          </Text>
+          <NoWrapText font="t3Regular" color="textSecondary">
+            내 수료율 <SubValue>{completionRank.completionRate}%</SubValue>
+          </NoWrapText>
         </StatContent>
       </StatCell>
 
       <Divider device={device} />
 
-      <StatCell gap={12} align="center">
-        <IconCircle device={device}>
+      <StatCell device={device} align="center">
+        <IconCircle>
           <CrownIcon width="100%" height="100%" />
         </IconCircle>
-        <StatContent direction="column" gap={4}>
+        <StatContent direction="column">
           <Text font="t4Regular" color="textSecondary">
             출석률 순위
           </Text>
           <Text font="t7Bold" color="primaryBomBom">
             상위 {attendanceRank.topPercent}%
           </Text>
-          <Text font="t3Regular" color="textSecondary">
-            평균 출석률
-            <HighLight>{attendanceRank.averageAttendanceRate}%</HighLight>
-          </Text>
+          <NoWrapText font="t3Regular" color="textSecondary">
+            평균 출석률{' '}
+            <SubValue>{attendanceRank.averageAttendanceRate}%</SubValue>
+          </NoWrapText>
         </StatContent>
       </StatCell>
 
       <Divider device={device} />
 
-      <StatCell gap={12} align="center">
-        <MedalDonutChart ratio={medalRatio} size={device === 'pc' ? 72 : 52} />
+      <StatCell device={device} align="center">
+        <DonutWrapper>
+          <MedalDonutChart ratio={medalRatio} />
+        </DonutWrapper>
         <Flex direction="column" gap={4}>
           {(Object.keys(MEDAL_LABEL) as (keyof typeof MEDAL_LABEL)[]).map(
             (key) => (
@@ -107,7 +108,8 @@ export default ChallengeStatsHeader;
 
 const Container = styled.div<{ device: Device }>`
   width: 100%;
-  padding: 16px;
+  padding: ${({ device }) =>
+    device === 'pc' ? '16px' : 'clamp(6px, 1.6vw, 12px)'};
   border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 12px;
 
@@ -126,34 +128,28 @@ const Container = styled.div<{ device: Device }>`
 
           & > *:nth-child(1),
           & > *:nth-child(5) {
-            padding-right: 16px;
+            padding-right: clamp(6px, 1.6vw, 12px);
             border-right: 1px solid ${theme.colors.dividers};
           }
           & > *:nth-child(3),
           & > *:nth-child(7) {
-            padding-left: 16px;
+            padding-left: clamp(6px, 1.6vw, 12px);
           }
           & > *:nth-child(1),
           & > *:nth-child(3) {
-            padding-bottom: 16px;
+            padding-bottom: clamp(6px, 1.6vw, 12px);
             border-bottom: 1px solid ${theme.colors.dividers};
           }
           & > *:nth-child(5),
           & > *:nth-child(7) {
-            padding-top: 16px;
+            padding-top: clamp(6px, 1.6vw, 12px);
           }
         `}
 `;
 
-const ICON_SIZE: Record<Device, string> = {
-  mobile: '48px',
-  tablet: '48px',
-  pc: '64px',
-};
-
-const IconCircle = styled.div<{ device: Device }>`
-  width: ${({ device }) => ICON_SIZE[device]};
-  height: ${({ device }) => ICON_SIZE[device]};
+const IconCircle = styled.div`
+  width: clamp(40px, 11vw, 64px);
+  height: clamp(40px, 11vw, 64px);
   border-radius: 50%;
 
   display: flex;
@@ -162,6 +158,13 @@ const IconCircle = styled.div<{ device: Device }>`
   justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.dividers};
+`;
+
+const DonutWrapper = styled.div`
+  width: clamp(40px, 11vw, 72px);
+  height: clamp(40px, 11vw, 72px);
+
+  flex-shrink: 0;
 `;
 
 const Divider = styled.div<{ device: Device }>`
@@ -184,22 +187,23 @@ const LegendDot = styled.div<{ color: string }>`
   background-color: ${({ color }) => color};
 `;
 
-const StatCell = styled(Flex)`
+const StatCell = styled(Flex)<{ device: Device }>`
   min-width: 0;
+
+  gap: ${({ device }) => (device === 'pc' ? '12px' : '8px')};
   flex: 1;
 `;
 
 const StatContent = styled(Flex)`
   min-width: 0;
+  gap: 4px;
 `;
 
 const NoWrapText = styled(Text)`
   white-space: nowrap;
 `;
 
-const HighLight = styled.span`
-  margin-left: 4px;
-
+const SubValue = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t3Bold};
 `;

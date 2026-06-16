@@ -14,10 +14,9 @@ type SegmentData = {
 
 interface MedalDonutChartProps {
   ratio: MedalRatio;
-  size?: number;
 }
 
-const MedalDonutChart = ({ ratio, size = 72 }: MedalDonutChartProps) => {
+const MedalDonutChart = ({ ratio }: MedalDonutChartProps) => {
   const total = ratio.gold + ratio.silver + ratio.bronze || 1;
   const radius = 28;
   const strokeWidth = 10;
@@ -47,7 +46,7 @@ const MedalDonutChart = ({ ratio, size = 72 }: MedalDonutChartProps) => {
   );
 
   return (
-    <svg width={size} height={size} viewBox="0 0 72 72">
+    <svg width="100%" height="100%" viewBox="0 0 72 72">
       <circle
         cx={cx}
         cy={cy}
