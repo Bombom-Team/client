@@ -122,7 +122,7 @@ export const WipRegisterForm = ({
         <Button
           type="button"
           onClick={handleSubmit}
-          disabled={!canSubmit || isPending}
+          disabled={!canSubmit || isPending || !!data}
         >
           {isPending ? '등록 중...' : '저장'}
         </Button>

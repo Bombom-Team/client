@@ -455,7 +455,8 @@ const NextSafe = styled.span`
 const Panes = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
-  height: 540px;
+  height: calc(100vh - 400px);
+  min-height: 400px;
 `;
 
 const List = styled.div`
@@ -476,7 +477,7 @@ const leapfrogBackground = (
   severity: ConflictSeverity | null,
   active: boolean,
 ) => {
-  if (severity === 'COLUMN') return '#FFF5F5';
+  if (severity === 'COLUMN') return active ? '#FFE4E4' : '#FFF5F5';
   if (severity === 'TABLE') return active ? '#FFFBEB' : '#FFFEF5';
   return null;
 };
