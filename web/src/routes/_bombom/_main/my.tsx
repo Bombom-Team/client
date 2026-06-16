@@ -11,6 +11,7 @@ import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
+import MyChallengeSection from '@/pages/my-page/components/MyChallengeSection/MyChallengeSection';
 import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection/NotificationSettingsSection';
 import ProfileSection from '@/pages/my-page/components/ProfileSection';
 import RewardsSection from '@/pages/my-page/components/RewardsSection';
@@ -20,12 +21,18 @@ import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
 import AvatarIcon from '#/assets/svg/avatar.svg';
 
-type MyPageTab = 'profile' | 'newsletters' | 'notification' | 'rewards';
+type MyPageTab =
+  | 'profile'
+  | 'newsletters'
+  | 'notification'
+  | 'rewards'
+  | 'challenges';
 
 const DEFAULT_TABS = [
   { id: 'profile', label: '내 정보' },
   { id: 'newsletters', label: '구독 뉴스레터' },
   { id: 'rewards', label: '선물함' },
+  { id: 'challenges', label: '나의 챌린지' },
 ] as const;
 
 const WEBVIEW_TABS = [{ id: 'notification', label: '알림 설정' }] as const;
@@ -89,6 +96,8 @@ function MyPage() {
             device={device}
           />
         );
+      case 'challenges':
+        return <MyChallengeSection />;
       case 'rewards':
         return <RewardsSection />;
       case 'notification':
