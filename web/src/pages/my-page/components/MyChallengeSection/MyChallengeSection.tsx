@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQueries } from '@tanstack/react-query';
 import ChallengeEmptyState from './ChallengeEmptyState';
 import ChallengeStatsHeader from './ChallengeStatsHeader';
 import CompletedChallengeCard from './CompletedChallengeCard';
@@ -10,14 +10,17 @@ import type { Device } from '@/hooks/useDevice';
 
 const MyChallengeSection = () => {
   const device = useDevice();
-  const { data: summary } = useSuspenseQuery(queries.myChallengeSummary());
-  const { data: ongoingData } = useSuspenseQuery(queries.myOngoingChallenges());
-  const { data: completedData } = useSuspenseQuery(
-    queries.myCompletedChallenges(),
-  );
+  const [summaryResult, ongoingResult, completedResult] = useSuspenseQueries({
+    queries: [
+      queries.myChallengeSummary(),
+      queries.myOngoingChallenges(),
+      queries.myCompletedChallenges(),
+    ],
+  });
 
-  const ongoing = ongoingData?.challenges ?? [];
-  const completed = completedData?.content ?? [];
+  const summary = summaryResult.data;
+  const ongoing = ongoingResult.data?.challenges ?? [];
+  const completed = completedResult.data?.content ?? [];
 
   return (
     <Container>
@@ -26,7 +29,7 @@ const MyChallengeSection = () => {
         <PageDesc>참여한 챌린지와 상위 기록을 한눈에 확인해보세요.</PageDesc>
       </Header>
 
-      {summary && <ChallengeStatsHeader summary={summary} />}
+      <ChallengeStatsHeader summary={summary} />
 
       <Section>
         <SectionTitle>참여 중인 챌린지</SectionTitle>
