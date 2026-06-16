@@ -1,5 +1,5 @@
-import { Flex } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
+import Flex from '@/components/Flex';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
