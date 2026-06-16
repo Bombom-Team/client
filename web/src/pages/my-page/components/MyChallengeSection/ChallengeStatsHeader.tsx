@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import { MEDAL_COLORS, MEDAL_LABEL } from './constants';
+import MedalDonutChart from './MedalDonutChart';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
@@ -11,92 +13,6 @@ import TrophyColoredIcon from '#/assets/svg/trophy-colored.svg';
 interface ChallengeStatsHeaderProps {
   summary: GetMyChallengeSummaryResponse;
 }
-
-interface MedalRatio {
-  gold: number;
-  silver: number;
-  bronze: number;
-}
-
-const MEDAL_COLORS = {
-  gold: '#F59E0B',
-  silver: '#9CA3AF',
-  bronze: '#B45309',
-} as const;
-
-const MEDAL_LABEL = {
-  gold: '금메달',
-  silver: '은메달',
-  bronze: '동메달',
-} as const;
-
-type SegmentData = {
-  key: keyof typeof MEDAL_COLORS;
-  dashArray: string;
-  rotation: number;
-};
-
-const DonutChart = ({
-  ratio,
-  size = 72,
-}: {
-  ratio: MedalRatio;
-  size?: number;
-}) => {
-  const total = ratio.gold + ratio.silver + ratio.bronze || 1;
-  const radius = 28;
-  const strokeWidth = 10;
-  const cx = 36;
-  const cy = 36;
-  const circumference = 2 * Math.PI * radius;
-
-  const { segments } = (
-    Object.keys(MEDAL_COLORS) as (keyof typeof MEDAL_COLORS)[]
-  ).reduce<{ segments: SegmentData[]; cumulative: number }>(
-    ({ segments, cumulative }, key) => {
-      const value = ratio[key];
-      if (value === 0) return { segments, cumulative };
-      return {
-        segments: [
-          ...segments,
-          {
-            key,
-            dashArray: `${(value / total) * circumference} ${circumference}`,
-            rotation: (cumulative / total) * 360 - 90,
-          },
-        ],
-        cumulative: cumulative + value,
-      };
-    },
-    { segments: [], cumulative: 0 },
-  );
-
-  return (
-    <svg width={size} height={size} viewBox="0 0 72 72">
-      <circle
-        cx={cx}
-        cy={cy}
-        r={radius}
-        fill="none"
-        stroke="#EDEDED"
-        strokeWidth={strokeWidth}
-      />
-      {segments.map(({ key, dashArray, rotation }) => (
-        <circle
-          key={key}
-          cx={cx}
-          cy={cy}
-          r={radius}
-          fill="none"
-          stroke={MEDAL_COLORS[key]}
-          strokeWidth={strokeWidth}
-          strokeDasharray={dashArray}
-          transform={`rotate(${rotation} ${cx} ${cy})`}
-        />
-      ))}
-    </svg>
-  );
-};
 
 const ChallengeStatsHeader = ({ summary }: ChallengeStatsHeaderProps) => {
   const device = useDevice();
@@ -169,7 +85,7 @@ const ChallengeStatsHeader = ({ summary }: ChallengeStatsHeaderProps) => {
       <Divider device={device} />
 
       <StatCell gap={12} align="center">
-        <DonutChart ratio={medalRatio} size={device === 'pc' ? 72 : 52} />
+        <MedalDonutChart ratio={medalRatio} size={device === 'pc' ? 72 : 52} />
         <Flex direction="column" gap={4}>
           {(Object.keys(MEDAL_LABEL) as (keyof typeof MEDAL_LABEL)[]).map(
             (key) => (
