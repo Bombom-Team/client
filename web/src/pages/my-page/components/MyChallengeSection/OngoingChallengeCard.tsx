@@ -234,11 +234,9 @@ const StatsZone = styled.div<{ device: Device }>`
     device === 'pc'
       ? `
           grid-template-columns: repeat(4, 1fr);
-
-          /* DOM 순서: 팀내순위, 전체팀순위, 나의출석, 팀출석
-             PC 시각 순서: 팀내순위, 나의출석, 전체팀순위, 팀출석 */
           & > *:nth-child(2) { order: 3; }
           & > *:nth-child(3) { order: 2; }
+          & > *:nth-child(4) { order: 4; }
 
           & > * {
             position: relative;
