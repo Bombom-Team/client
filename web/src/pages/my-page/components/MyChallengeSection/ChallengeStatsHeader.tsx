@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { MEDAL_COLORS, MEDAL_LABEL } from './constants';
 import MedalDonutChart from './MedalDonutChart';
+import { MEDAL_COLORS, MEDAL_LABEL } from '../../constants/challenge';
 import Flex from '@/components/Flex';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';

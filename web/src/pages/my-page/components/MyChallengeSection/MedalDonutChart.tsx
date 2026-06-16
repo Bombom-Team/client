@@ -1,4 +1,4 @@
-import { MEDAL_COLORS } from './constants';
+import { MEDAL_COLORS } from '../../constants/challenge';
 
 interface MedalRatio {
   gold: number;

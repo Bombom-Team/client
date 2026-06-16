@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import CertificateModal from './CertificateModal';
+import { MEDAL_COLORS } from '../../constants/challenge';
 import Button from '@/components/Button/Button';
 import useModal from '@/components/Modal/useModal';
 import type { MyCompletedChallenge } from '@/apis/members/members.api';
@@ -18,9 +19,9 @@ const MEDAL_ICON: Partial<
 };
 
 const GRADE_COLOR: Partial<Record<Grade, string>> = {
-  GOLD: '#F59E0B',
-  SILVER: '#9CA3AF',
-  BRONZE: '#B45309',
+  GOLD: MEDAL_COLORS.gold,
+  SILVER: MEDAL_COLORS.silver,
+  BRONZE: MEDAL_COLORS.bronze,
 };
 
 interface CompletedChallengeCardProps {
