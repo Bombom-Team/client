@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import ChallengeEmptyState from './ChallengeEmptyState';
 import ChallengeStatsHeader from './ChallengeStatsHeader';
 import CompletedChallengeCard from './CompletedChallengeCard';
@@ -10,27 +10,14 @@ import type { Device } from '@/hooks/useDevice';
 
 const MyChallengeSection = () => {
   const device = useDevice();
-  const { data: summary, isLoading: summaryLoading } = useQuery(
-    queries.myChallengeSummary(),
-  );
-  const { data: ongoingData, isLoading: ongoingLoading } = useQuery(
-    queries.myOngoingChallenges(),
-  );
-  const { data: completedData, isLoading: completedLoading } = useQuery(
+  const { data: summary } = useSuspenseQuery(queries.myChallengeSummary());
+  const { data: ongoingData } = useSuspenseQuery(queries.myOngoingChallenges());
+  const { data: completedData } = useSuspenseQuery(
     queries.myCompletedChallenges(),
   );
 
-  const isLoading = summaryLoading || ongoingLoading || completedLoading;
   const ongoing = ongoingData?.challenges ?? [];
   const completed = completedData?.content ?? [];
-
-  if (isLoading) {
-    return (
-      <Container>
-        <LoadingText>챌린지 정보를 불러오는 중...</LoadingText>
-      </Container>
-    );
-  }
 
   return (
     <Container>
@@ -140,11 +127,4 @@ const CompletedGrid = styled.div<{ device: Device }>`
 
   grid-template-columns: ${({ device }) =>
     device === 'pc' ? 'repeat(2, 1fr)' : '1fr'};
-`;
-
-const LoadingText = styled.p`
-  margin: 0;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
 `;

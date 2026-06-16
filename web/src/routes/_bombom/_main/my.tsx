@@ -6,12 +6,13 @@ import {
   useNavigate,
   useSearch,
 } from '@tanstack/react-router';
-import { useRef } from 'react';
+import { Suspense, useRef } from 'react';
 import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
 import MyChallengeSection from '@/pages/my-page/components/MyChallengeSection/MyChallengeSection';
+import MyChallengeSectionSkeleton from '@/pages/my-page/components/MyChallengeSection/MyChallengeSectionSkeleton';
 import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection/NotificationSettingsSection';
 import ProfileSection from '@/pages/my-page/components/ProfileSection';
 import RewardsSection from '@/pages/my-page/components/RewardsSection';
@@ -97,7 +98,11 @@ function MyPage() {
           />
         );
       case 'challenges':
-        return <MyChallengeSection />;
+        return (
+          <Suspense fallback={<MyChallengeSectionSkeleton />}>
+            <MyChallengeSection />
+          </Suspense>
+        );
       case 'rewards':
         return <RewardsSection />;
       case 'notification':
