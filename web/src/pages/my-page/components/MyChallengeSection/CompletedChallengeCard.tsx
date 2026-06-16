@@ -38,28 +38,28 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
   return (
     <>
       <Container>
-        <Left>
-          <MedalCircle gradeColor={gradeColor}>
-            {MedalIcon ? (
-              <MedalIcon width={36} height={36} />
-            ) : (
-              <MedalPlaceholder>-</MedalPlaceholder>
-            )}
-          </MedalCircle>
+        <MedalCircle gradeColor={gradeColor}>
+          {MedalIcon ? (
+            <MedalIcon width={36} height={36} />
+          ) : (
+            <MedalPlaceholder>-</MedalPlaceholder>
+          )}
+        </MedalCircle>
+
+        <Content>
           <Info>
             <Title>{title}</Title>
             <DateText>
               {startDate} ~ {endDate}
             </DateText>
-            <AttendanceText>출석률 {attendanceRate}%</AttendanceText>
+            <BottomRow>
+              <AttendanceText>출석률 {attendanceRate}%</AttendanceText>
+              <CertButton variant="transparent" onClick={openModal}>
+                수료증 확인
+              </CertButton>
+            </BottomRow>
           </Info>
-        </Left>
-
-        <Right>
-          <Button variant="outlined" onClick={openModal}>
-            수료증 보기
-          </Button>
-        </Right>
+        </Content>
       </Container>
 
       <CertificateModal
@@ -83,18 +83,13 @@ const Container = styled.div`
   display: flex;
   gap: 12px;
   align-items: center;
-  justify-content: space-between;
 
   box-sizing: border-box;
 `;
 
-const Left = styled.div`
+const Content = styled.div`
   min-width: 0;
-
-  display: flex;
-  gap: 12px;
   flex: 1;
-  align-items: center;
 `;
 
 const MedalCircle = styled.div<{ gradeColor?: string }>`
@@ -154,10 +149,18 @@ const AttendanceText = styled.span`
   font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
-const Right = styled.div`
+const BottomRow = styled.div`
   display: flex;
-  gap: 6px;
-  flex-direction: column;
-  flex-shrink: 0;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const CertButton = styled(Button)`
+  padding: 0;
+  color: ${({ theme }) => theme.colors.primaryBomBom};
+
+  &:hover {
+    background-color: transparent;
+    text-decoration: underline;
+  }
 `;
