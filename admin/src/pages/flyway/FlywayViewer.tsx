@@ -7,7 +7,12 @@ import { WipRegisterForm } from './WipRegisterForm';
 import { flywayQueries } from '@/apis/flyway/flyway.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
-import type { MigrationItem, MigrationStatus } from '@/apis/flyway/flyway.api';
+import type {
+  ConflictSeverity,
+  FlywayLeapfrog,
+  MigrationItem,
+  MigrationStatus,
+} from '@/apis/flyway/flyway.api';
 
 const STATUS_META: Record<
   MigrationStatus,
@@ -15,8 +20,8 @@ const STATUS_META: Record<
 > = {
   LOCAL_WIP: { label: '로컬 작업중', dot: '🟣', order: 0 },
   PR_REVIEW: { label: 'PR 리뷰중', dot: '🟠', order: 1 },
-  MERGE_PENDING: { label: '머지·배포 대기', dot: '🔵', order: 2 },
-  DB_APPLIED: { label: 'DB 서버 반영', dot: '🟢', order: 3 },
+  MERGE_PENDING: { label: 'dev 반영', dot: '🔵', order: 2 },
+  DB_APPLIED: { label: 'prod 반영', dot: '🟢', order: 3 },
 };
 
 const STATUS_ORDER: MigrationStatus[] = [
@@ -61,8 +66,25 @@ export const FlywayViewer = () => {
   const conflictVersions = new Set(
     (data?.conflicts ?? []).map((conflict) => conflict.version),
   );
-  const leapfrogVersions = new Set(
-    (data?.leapfrogWarnings ?? []).map((warning) => warning.mineVersion),
+
+  // version → 가장 심각한 severity (COLUMN > TABLE)
+  const leapfrogSeverityMap = useMemo(() => {
+    const map = new Map<string, ConflictSeverity>();
+    for (const warning of data?.leapfrogWarnings ?? []) {
+      const current = map.get(warning.mineVersion);
+      if (!current || warning.severity === 'COLUMN') {
+        map.set(warning.mineVersion, warning.severity);
+      }
+    }
+    return map;
+  }, [data]);
+
+  const selectedLeapfrogs = useMemo(
+    () =>
+      (data?.leapfrogWarnings ?? []).filter(
+        (w) => w.mineVersion === selected?.version,
+      ),
+    [data, selected],
   );
 
   const filtered = useMemo(
@@ -138,7 +160,7 @@ export const FlywayViewer = () => {
           {data.leapfrogWarnings
             .map(
               (warning) =>
-                `${warning.mineVersion} ↔ ${warning.aheadVersion} (${warning.sharedTables.join(', ')}, ${warning.severity})`,
+                `${warning.mineVersion} ↔ ${warning.aheadVersion} (${warning.sharedTables.join(', ')}, ${warning.severity === 'COLUMN' ? '컬럼' : '테이블'})`,
             )
             .join(' · ')}
         </Banner>
@@ -171,28 +193,39 @@ export const FlywayViewer = () => {
 
       <Panes>
         <List>
-          {filtered.map((item) => (
-            <RowButton
-              key={item.fileName}
-              type="button"
-              $active={item.fileName === selectedFileName}
-              $conflict={conflictVersions.has(item.version)}
-              $leapfrog={leapfrogVersions.has(item.version)}
-              onClick={() => setSelectedFileName(item.fileName)}
-            >
-              <Version>{item.version}</Version>
-              <Desc>{item.description}</Desc>
-              {item.tables.slice(0, 1).map((table) => (
-                <Tag key={table}>
-                  {item.createsNewTable ? '🆕' : '🗂'} {table}
-                </Tag>
-              ))}
-              {item.sourceLabel ? <Source>{item.sourceLabel}</Source> : null}
-              <StatusBadge $status={item.status}>
-                {STATUS_META[item.status].label}
-              </StatusBadge>
-            </RowButton>
-          ))}
+          {filtered.map((item) => {
+            const leapfrogSeverity =
+              leapfrogSeverityMap.get(item.version) ?? null;
+            return (
+              <RowButton
+                key={item.fileName}
+                type="button"
+                $active={item.fileName === selectedFileName}
+                $conflict={conflictVersions.has(item.version)}
+                $leapfrogSeverity={leapfrogSeverity}
+                onClick={() => setSelectedFileName(item.fileName)}
+              >
+                <Version>{item.version}</Version>
+                <Desc>{item.description}</Desc>
+                {leapfrogSeverity ? (
+                  <LeapfrogBadge $severity={leapfrogSeverity}>
+                    {leapfrogSeverity === 'COLUMN'
+                      ? '⚠ 컬럼 역전'
+                      : '🔀 순서 역전'}
+                  </LeapfrogBadge>
+                ) : null}
+                {item.tables.slice(0, 1).map((table) => (
+                  <Tag key={table}>
+                    {item.createsNewTable ? '🆕' : '🗂'} {table}
+                  </Tag>
+                ))}
+                {item.sourceLabel ? <Source>{item.sourceLabel}</Source> : null}
+                <StatusBadge $status={item.status}>
+                  {STATUS_META[item.status].label}
+                </StatusBadge>
+              </RowButton>
+            );
+          })}
           {filtered.length === 0 ? (
             <Empty>조건에 맞는 마이그레이션이 없습니다.</Empty>
           ) : null}
@@ -200,7 +233,7 @@ export const FlywayViewer = () => {
 
         <Detail>
           {selected ? (
-            <DetailContent item={selected} />
+            <DetailContent item={selected} leapfrogs={selectedLeapfrogs} />
           ) : (
             <Empty>왼쪽에서 마이그레이션을 선택하세요.</Empty>
           )}
@@ -212,9 +245,10 @@ export const FlywayViewer = () => {
 
 interface DetailContentProps {
   item: MigrationItem;
+  leapfrogs: FlywayLeapfrog[];
 }
 
-const DetailContent = ({ item }: DetailContentProps) => {
+const DetailContent = ({ item, leapfrogs }: DetailContentProps) => {
   const hasFile =
     item.status === 'DB_APPLIED' || item.status === 'MERGE_PENDING';
   const { data, isLoading, isError } = useQuery({
@@ -237,6 +271,35 @@ const DetailContent = ({ item }: DetailContentProps) => {
         {item.author ? ` · 담당 ${item.author}` : ''}
         {item.tables.length > 0 ? ` · ${item.tables.join(', ')}` : ''}
       </DetailMeta>
+
+      {leapfrogs.map((leapfrog) => (
+        <LeapfrogWarning
+          key={leapfrog.aheadVersion}
+          $severity={leapfrog.severity}
+        >
+          <LeapfrogWarningTitle>
+            {leapfrog.severity === 'COLUMN'
+              ? '⚠ 순서 역전 — 같은 컬럼 접근 (강한 경고)'
+              : '🔀 순서 역전 — 같은 테이블 접근'}
+          </LeapfrogWarningTitle>
+          <LeapfrogWarningBody>
+            이 버전(<strong>{leapfrog.mineVersion}</strong>)보다 높은{' '}
+            <strong>{leapfrog.aheadVersion}</strong>이 이미 반영되어 있습니다.
+            {leapfrog.severity === 'COLUMN'
+              ? ' out-of-order로 끼워 넣으면 같은 컬럼이 덮어씌워질 수 있습니다.'
+              : ' out-of-order로 끼워 넣어도 컬럼 충돌은 없지만, 같은 테이블을 다룹니다.'}
+          </LeapfrogWarningBody>
+          <LeapfrogWarningDetail>
+            공유 {leapfrog.severity === 'COLUMN' ? '컬럼' : '테이블'}:{' '}
+            {leapfrog.sharedTables.map((name) => (
+              <LeapfrogTag key={name} $severity={leapfrog.severity}>
+                {name}
+              </LeapfrogTag>
+            ))}
+          </LeapfrogWarningDetail>
+        </LeapfrogWarning>
+      ))}
+
       {hasFile ? (
         <ScriptArea>
           {isLoading ? <StateText>스크립트 로딩 중...</StateText> : null}
@@ -255,8 +318,8 @@ const DetailContent = ({ item }: DetailContentProps) => {
         </ScriptArea>
       ) : (
         <PendingNote>
-          아직 server/main 에 없는 작업중 항목입니다. 상세 SQL 은{' '}
-          {item.sourceUrl ? 'PR/이슈' : '소스'} 에서 확인하세요.
+          아직 dev/prod에 없는 작업중 항목입니다. 상세 SQL은{' '}
+          {item.sourceUrl ? 'PR/이슈' : '소스'}에서 확인하세요.
         </PendingNote>
       )}
     </>
@@ -392,7 +455,8 @@ const NextSafe = styled.span`
 const Panes = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
-  height: 540px;
+  height: calc(100vh - 400px);
+  min-height: 400px;
 `;
 
 const List = styled.div`
@@ -403,10 +467,25 @@ const List = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
+const leapfrogBorderColor = (severity: ConflictSeverity | null) => {
+  if (severity === 'COLUMN') return '#EF4444';
+  if (severity === 'TABLE') return '#F59E0B';
+  return 'transparent';
+};
+
+const leapfrogBackground = (
+  severity: ConflictSeverity | null,
+  active: boolean,
+) => {
+  if (severity === 'COLUMN') return active ? '#FFE4E4' : '#FFF5F5';
+  if (severity === 'TABLE') return active ? '#FFFBEB' : '#FFFEF5';
+  return null;
+};
+
 const RowButton = styled.button<{
   $active: boolean;
   $conflict: boolean;
-  $leapfrog: boolean;
+  $leapfrogSeverity: ConflictSeverity | null;
 }>`
   width: 100%;
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
@@ -418,13 +497,17 @@ const RowButton = styled.button<{
 
   cursor: pointer;
   text-align: left;
-  background-color: ${({ theme, $active, $conflict }) =>
-    $conflict ? '#FDEAEA' : $active ? theme.colors.gray50 : theme.colors.white};
-  box-shadow: ${({ theme, $active, $conflict, $leapfrog }) =>
+  background-color: ${({ theme, $active, $conflict, $leapfrogSeverity }) => {
+    if ($conflict) return '#FDEAEA';
+    const leap = leapfrogBackground($leapfrogSeverity, $active);
+    if (leap) return leap;
+    return $active ? theme.colors.gray50 : theme.colors.white;
+  }};
+  box-shadow: ${({ theme, $active, $conflict, $leapfrogSeverity }) =>
     $conflict
       ? `inset 3px 0 0 ${theme.colors.error}`
-      : $leapfrog
-        ? `inset 3px 0 0 ${theme.colors.warning}`
+      : $leapfrogSeverity
+        ? `inset 3px 0 0 ${leapfrogBorderColor($leapfrogSeverity)}`
         : $active
           ? `inset 3px 0 0 ${theme.colors.primary}`
           : 'none'};
@@ -448,6 +531,18 @@ const Desc = styled.span`
   text-overflow: ellipsis;
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const LeapfrogBadge = styled.span<{ $severity: ConflictSeverity }>`
+  flex-shrink: 0;
+  padding: 1px ${({ theme }) => theme.spacing.xs};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  white-space: nowrap;
+  color: ${({ $severity }) => ($severity === 'COLUMN' ? '#B91C1C' : '#92400E')};
+  background-color: ${({ $severity }) =>
+    $severity === 'COLUMN' ? '#FEE2E2' : '#FEF3C7'};
 `;
 
 const Tag = styled.span`
@@ -518,6 +613,47 @@ const DetailMeta = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
   color: ${({ theme }) => theme.colors.gray600};
   font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const LeapfrogWarning = styled.div<{ $severity: ConflictSeverity }>`
+  margin: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.md}
+    0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border: 1px solid
+    ${({ $severity }) => ($severity === 'COLUMN' ? '#FCA5A5' : '#FCD34D')};
+  background-color: ${({ $severity }) =>
+    $severity === 'COLUMN' ? '#FFF5F5' : '#FFFBEB'};
+`;
+
+const LeapfrogWarningTitle = styled.div`
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+`;
+
+const LeapfrogWarningBody = styled.p`
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  color: ${({ theme }) => theme.colors.gray700};
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  line-height: 1.5;
+`;
+
+const LeapfrogWarningDetail = styled.div`
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  color: ${({ theme }) => theme.colors.gray600};
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-wrap: wrap;
+`;
+
+const LeapfrogTag = styled.code<{ $severity: ConflictSeverity }>`
+  padding: 1px 5px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  background-color: ${({ $severity }) =>
+    $severity === 'COLUMN' ? '#FEE2E2' : '#FEF3C7'};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const ScriptArea = styled.div`
