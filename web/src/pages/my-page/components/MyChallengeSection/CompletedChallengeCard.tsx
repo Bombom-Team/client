@@ -54,7 +54,9 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
               {startDate} ~ {endDate}
             </DateText>
             <BottomRow>
-              <AttendanceText>출석률 {attendanceRate}%</AttendanceText>
+              <AttendanceText>
+                출석률 <AttendanceValue>{attendanceRate}%</AttendanceValue>
+              </AttendanceText>
               <CertButton variant="transparent" onClick={openModal}>
                 수료증 확인
               </CertButton>
@@ -148,6 +150,11 @@ const DateText = styled.span`
 const AttendanceText = styled.span`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t3Regular};
+`;
+
+const AttendanceValue = styled.span`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t3Bold};
 `;
 
 const BottomRow = styled.div`

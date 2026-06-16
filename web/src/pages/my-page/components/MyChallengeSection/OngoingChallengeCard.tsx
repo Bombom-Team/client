@@ -68,7 +68,9 @@ const OngoingChallengeCard = ({ challenge }: OngoingChallengeCardProps) => {
             </CellLabel>
             <RankValue>
               {myTeamRank.rank}
-              <RankUnit>위</RankUnit> / {myTeamRank.totalMembers}
+              <RankUnit>위</RankUnit>
+              <RankSeparator> / </RankSeparator>
+              {myTeamRank.totalMembers}
               <RankUnit>명</RankUnit>
             </RankValue>
           </StatCell>
@@ -81,7 +83,9 @@ const OngoingChallengeCard = ({ challenge }: OngoingChallengeCardProps) => {
             </CellLabel>
             <RankValue>
               {teamRank.rank}
-              <RankUnit>위</RankUnit> / {teamRank.totalTeams}
+              <RankUnit>위</RankUnit>
+              <RankSeparator> / </RankSeparator>
+              {teamRank.totalTeams}
               <RankUnit>팀</RankUnit>
             </RankValue>
           </StatCell>
@@ -291,6 +295,11 @@ const RankValue = styled.span`
 `;
 
 const RankUnit = styled.span`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t5Regular};
+`;
+
+const RankSeparator = styled.span`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
@@ -302,7 +311,7 @@ const AttendanceValue = styled.span`
 `;
 
 const AttendanceUnit = styled.span`
-  color: ${({ theme }) => theme.colors.textSecondary};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
