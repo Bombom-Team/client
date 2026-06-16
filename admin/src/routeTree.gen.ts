@@ -15,7 +15,6 @@ import { Route as AdminIndexRouteImport } from './routes/_admin/index';
 import { Route as AdminResourcesRouteImport } from './routes/_admin/resources';
 import { Route as AdminNoticesRouteImport } from './routes/_admin/notices';
 import { Route as AdminMembersRouteImport } from './routes/_admin/members';
-import { Route as AdminFlywayRouteImport } from './routes/_admin/flyway';
 import { Route as AdminEventsRouteImport } from './routes/_admin/events';
 import { Route as AdminChallengesRouteImport } from './routes/_admin/challenges';
 import { Route as AdminBlogRouteImport } from './routes/_admin/blog';
@@ -76,11 +75,6 @@ const AdminNoticesRoute = AdminNoticesRouteImport.update({
 const AdminMembersRoute = AdminMembersRouteImport.update({
   id: '/members',
   path: '/members',
-  getParentRoute: () => AdminRoute,
-} as any);
-const AdminFlywayRoute = AdminFlywayRouteImport.update({
-  id: '/flyway',
-  path: '/flyway',
   getParentRoute: () => AdminRoute,
 } as any);
 const AdminEventsRoute = AdminEventsRouteImport.update({
@@ -267,7 +261,6 @@ export interface FileRoutesByFullPath {
   '/blog': typeof AdminBlogRouteWithChildren;
   '/challenges': typeof AdminChallengesRouteWithChildren;
   '/events': typeof AdminEventsRouteWithChildren;
-  '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
   '/notices': typeof AdminNoticesRouteWithChildren;
   '/resources': typeof AdminResourcesRouteWithChildren;
@@ -304,7 +297,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/403': typeof R403Route;
-  '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
@@ -339,7 +331,6 @@ export interface FileRoutesById {
   '/_admin/blog': typeof AdminBlogRouteWithChildren;
   '/_admin/challenges': typeof AdminChallengesRouteWithChildren;
   '/_admin/events': typeof AdminEventsRouteWithChildren;
-  '/_admin/flyway': typeof AdminFlywayRoute;
   '/_admin/members': typeof AdminMembersRoute;
   '/_admin/notices': typeof AdminNoticesRouteWithChildren;
   '/_admin/resources': typeof AdminResourcesRouteWithChildren;
@@ -381,7 +372,6 @@ export interface FileRouteTypes {
     | '/blog'
     | '/challenges'
     | '/events'
-    | '/flyway'
     | '/members'
     | '/notices'
     | '/resources'
@@ -418,7 +408,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/403'
-    | '/flyway'
     | '/members'
     | '/'
     | '/blog/$postId'
@@ -452,7 +441,6 @@ export interface FileRouteTypes {
     | '/_admin/blog'
     | '/_admin/challenges'
     | '/_admin/events'
-    | '/_admin/flyway'
     | '/_admin/members'
     | '/_admin/notices'
     | '/_admin/resources'
@@ -535,13 +523,6 @@ declare module '@tanstack/react-router' {
       path: '/members';
       fullPath: '/members';
       preLoaderRoute: typeof AdminMembersRouteImport;
-      parentRoute: typeof AdminRoute;
-    };
-    '/_admin/flyway': {
-      id: '/_admin/flyway';
-      path: '/flyway';
-      fullPath: '/flyway';
-      preLoaderRoute: typeof AdminFlywayRouteImport;
       parentRoute: typeof AdminRoute;
     };
     '/_admin/events': {
@@ -941,7 +922,6 @@ interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRouteWithChildren;
   AdminChallengesRoute: typeof AdminChallengesRouteWithChildren;
   AdminEventsRoute: typeof AdminEventsRouteWithChildren;
-  AdminFlywayRoute: typeof AdminFlywayRoute;
   AdminMembersRoute: typeof AdminMembersRoute;
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren;
   AdminResourcesRoute: typeof AdminResourcesRouteWithChildren;
@@ -956,7 +936,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRouteWithChildren,
   AdminChallengesRoute: AdminChallengesRouteWithChildren,
   AdminEventsRoute: AdminEventsRouteWithChildren,
-  AdminFlywayRoute: AdminFlywayRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminResourcesRoute: AdminResourcesRouteWithChildren,
