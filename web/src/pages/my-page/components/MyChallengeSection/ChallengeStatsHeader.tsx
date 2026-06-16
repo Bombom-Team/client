@@ -36,7 +36,13 @@ type SegmentData = {
   rotation: number;
 };
 
-const DonutChart = ({ ratio }: { ratio: MedalRatio }) => {
+const DonutChart = ({
+  ratio,
+  size = 72,
+}: {
+  ratio: MedalRatio;
+  size?: number;
+}) => {
   const total = ratio.gold + ratio.silver + ratio.bronze || 1;
   const radius = 28;
   const strokeWidth = 10;
@@ -66,7 +72,7 @@ const DonutChart = ({ ratio }: { ratio: MedalRatio }) => {
   );
 
   return (
-    <svg width="72" height="72" viewBox="0 0 72 72">
+    <svg width={size} height={size} viewBox="0 0 72 72">
       <circle
         cx={cx}
         cy={cy}
@@ -104,7 +110,7 @@ const ChallengeStatsHeader = ({ summary }: ChallengeStatsHeaderProps) => {
   return (
     <Container device={device}>
       <StatCell gap={12} align="center">
-        <IconCircle>
+        <IconCircle device={device}>
           <TrophyColoredIcon width="100%" height="100%" />
         </IconCircle>
         <StatContent direction="column" gap={4}>
@@ -123,7 +129,7 @@ const ChallengeStatsHeader = ({ summary }: ChallengeStatsHeaderProps) => {
       <Divider device={device} />
 
       <StatCell gap={12} align="center">
-        <IconCircle>
+        <IconCircle device={device}>
           <MedalIcon width="100%" height="100%" />
         </IconCircle>
         <StatContent direction="column" gap={4}>
@@ -143,7 +149,7 @@ const ChallengeStatsHeader = ({ summary }: ChallengeStatsHeaderProps) => {
       <Divider device={device} />
 
       <StatCell gap={12} align="center">
-        <IconCircle>
+        <IconCircle device={device}>
           <CrownIcon width="100%" height="100%" />
         </IconCircle>
         <StatContent direction="column" gap={4}>
@@ -163,7 +169,7 @@ const ChallengeStatsHeader = ({ summary }: ChallengeStatsHeaderProps) => {
       <Divider device={device} />
 
       <StatCell gap={12} align="center">
-        <DonutChart ratio={medalRatio} />
+        <DonutChart ratio={medalRatio} size={device === 'pc' ? 72 : 52} />
         <Flex direction="column" gap={4}>
           {(Object.keys(MEDAL_LABEL) as (keyof typeof MEDAL_LABEL)[]).map(
             (key) => (
@@ -192,8 +198,13 @@ const Container = styled.div<{ device: Device }>`
   box-sizing: border-box;
 
   ${({ device, theme }) =>
-    device === 'mobile'
+    device === 'pc'
       ? `
+          display: flex;
+          gap: 16px;
+          align-items: center;
+        `
+      : `
           display: grid;
           grid-template-columns: repeat(2, 1fr);
 
@@ -215,17 +226,18 @@ const Container = styled.div<{ device: Device }>`
           & > *:nth-child(7) {
             padding-top: 16px;
           }
-        `
-      : `
-          display: flex;
-          gap: 16px;
-          align-items: center;
         `}
 `;
 
-const IconCircle = styled.div`
-  width: 64px;
-  height: 64px;
+const ICON_SIZE: Record<Device, string> = {
+  mobile: '48px',
+  tablet: '48px',
+  pc: '64px',
+};
+
+const IconCircle = styled.div<{ device: Device }>`
+  width: ${({ device }) => ICON_SIZE[device]};
+  height: ${({ device }) => ICON_SIZE[device]};
   border-radius: 50%;
 
   display: flex;
@@ -240,7 +252,7 @@ const Divider = styled.div<{ device: Device }>`
   width: 1px;
   height: 48px;
 
-  display: ${({ device }) => (device === 'mobile' ? 'none' : 'block')};
+  display: ${({ device }) => (device === 'pc' ? 'block' : 'none')};
   flex-shrink: 0;
 
   background-color: ${({ theme }) => theme.colors.dividers};
