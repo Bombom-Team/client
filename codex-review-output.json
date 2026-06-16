@@ -1,0 +1,46 @@
+{
+  "overall_correctness": "patch is incorrect",
+  "overall_explanation": "UI 개선 방향과 구현이 전반적으로 올바르나, WipRegisterForm에서 성공 후 폼 초기화 또는 버튼 비활성화가 없어 GitHub 이슈가 중복 생성될 수 있습니다.",
+  "overall_confidence_score": 0.82,
+  "findings": [
+    {
+      "title": "WipRegisterForm 성공 후 중복 제출 가능",
+      "body": "`onSuccess`에서 쿼리 무효화만 수행하고 폼 상태를 초기화하지 않습니다. 제출 성공 후에도 `canSubmit`이 `true`로 유지되어 사용자가 실수로 다시 \"저장\"을 누르면 동일한 내용으로 GitHub 이슈가 중복 생성됩니다.\n\n**수정 방법**: `onSuccess`에서 폼 필드를 초기화(`setDescription(''), setPlannedVersion(defaultVersion)` 등)하거나, 버튼 `disabled` 조건에 `!!data`를 추가(`disabled={!canSubmit || isPending || !!data}`)하여 중복 제출을 방지하세요.",
+      "severity": "major",
+      "confidence_score": 0.88,
+      "code_location": {
+        "absolute_file_path": "admin/src/pages/flyway/WipRegisterForm.tsx",
+        "line_range": {
+          "start": 26,
+          "end": 31
+        }
+      }
+    },
+    {
+      "title": "leapfrogBackground — COLUMN 심각도에서 active 상태 미반영",
+      "body": "`leapfrogBackground` 함수는 `active` 파라미터를 `TABLE` 심각도에서만 사용합니다(`active ? '#FFFBEB' : '#FFFEF5'`). `COLUMN` 심각도 행이 선택(active)되어도 배경색이 동일(`#FFF5F5`)하여 TABLE 심각도와 달리 선택 여부를 시각적으로 구분할 수 없습니다. 필요 시 COLUMN 케이스에도 `active` 분기를 추가하는 것을 고려하세요.",
+      "severity": "minor",
+      "confidence_score": 0.75,
+      "code_location": {
+        "absolute_file_path": "admin/src/pages/flyway/FlywayViewer.tsx",
+        "line_range": {
+          "start": 475,
+          "end": 482
+        }
+      }
+    },
+    {
+      "title": "Panes 컨테이너 높이 540px 하드코딩",
+      "body": "`Panes`의 `height: 540px`은 고정값이라 화면 높이나 상단 콘텐츠 양에 따라 패널이 잘리거나 불필요하게 짧아질 수 있습니다. `calc(100vh - Npx)` 또는 `flex: 1` + 부모 `overflow: hidden` 방식으로 가용 높이를 동적으로 사용하는 편이 더 견고합니다.",
+      "severity": "minor",
+      "confidence_score": 0.70,
+      "code_location": {
+        "absolute_file_path": "admin/src/pages/flyway/FlywayViewer.tsx",
+        "line_range": {
+          "start": 455,
+          "end": 459
+        }
+      }
+    }
+  ]
+}
