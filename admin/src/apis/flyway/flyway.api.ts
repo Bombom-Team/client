@@ -86,3 +86,9 @@ export const createWipIssue = async (payload: CreateWipIssuePayload) => {
     body: payload,
   });
 };
+
+export const refreshFlywayCache = async () => {
+  return fetcher.delete<never, void>({
+    path: '/flyway/cache',
+  });
+};
