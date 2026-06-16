@@ -13,6 +13,7 @@ import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
 import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection/NotificationSettingsSection';
 import ProfileSection from '@/pages/my-page/components/ProfileSection';
+import ReadingActivitySection from '@/pages/my-page/components/ReadingActivitySection';
 import RewardsSection from '@/pages/my-page/components/RewardsSection';
 import SubscribedNewslettersSection from '@/pages/my-page/components/SubscribedNewslettersSection';
 import { isWebView } from '@/utils/device';
@@ -20,10 +21,16 @@ import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
 import AvatarIcon from '#/assets/svg/avatar.svg';
 
-type MyPageTab = 'profile' | 'newsletters' | 'notification' | 'rewards';
+type MyPageTab =
+  | 'profile'
+  | 'reading-activity'
+  | 'newsletters'
+  | 'notification'
+  | 'rewards';
 
 const DEFAULT_TABS = [
   { id: 'profile', label: '내 정보' },
+  { id: 'reading-activity', label: '읽기 활동' },
   { id: 'newsletters', label: '구독 뉴스레터' },
   { id: 'rewards', label: '선물함' },
 ] as const;
@@ -82,6 +89,8 @@ function MyPage() {
     switch (activeTabParam) {
       case 'profile':
         return <ProfileSection userInfo={userInfo} />;
+      case 'reading-activity':
+        return <ReadingActivitySection />;
       case 'newsletters':
         return (
           <SubscribedNewslettersSection
@@ -122,6 +131,12 @@ function MyPage() {
               />
             ))}
           </Tabs>
+          {device !== 'mobile' && (
+            <CompanionImage
+              src="/assets/svg/reading-companion.svg"
+              alt="봄봄과 함께한 지 142일째. 꾸준한 읽기 습관이 쌓이고 있어요."
+            />
+          )}
         </TabsWrapper>
 
         <TabPanel
@@ -196,15 +211,26 @@ const TabsWrapper = styled.div<{ device: Device }>`
   ${({ device, theme }) => tabsWrapperStyles[device](theme)}
 `;
 
+const CompanionImage = styled.img`
+  width: 100%;
+  height: auto;
+  margin-top: auto;
+  border-radius: 16px;
+
+  display: block;
+`;
+
 const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   pc: (theme) => ({
     flexShrink: 0,
+    alignSelf: 'stretch',
     border: `1px solid ${theme.colors.stroke}`,
     borderRadius: '12px',
     padding: '16px',
   }),
   tablet: (theme) => ({
     flexShrink: 0,
+    alignSelf: 'stretch',
     border: `1px solid ${theme.colors.stroke}`,
     borderRadius: '12px',
     padding: '16px',
