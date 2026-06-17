@@ -20,6 +20,7 @@ import { Route as AdminEventsRouteImport } from './routes/_admin/events';
 import { Route as AdminChallengesRouteImport } from './routes/_admin/challenges';
 import { Route as AdminBlogRouteImport } from './routes/_admin/blog';
 import { Route as AdminReviewersRouteImport } from './routes/_admin/reviewers';
+import { Route as AdminReviewersStatsRouteImport } from './routes/_admin/reviewers/stats';
 import { Route as AdminResourcesIndexRouteImport } from './routes/_admin/resources/index';
 import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/index';
 import { Route as AdminNewslettersIndexRouteImport } from './routes/_admin/newsletters/index';
@@ -103,6 +104,11 @@ const AdminReviewersRoute = AdminReviewersRouteImport.update({
   id: '/reviewers',
   path: '/reviewers',
   getParentRoute: () => AdminRoute,
+} as any);
+const AdminReviewersStatsRoute = AdminReviewersStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AdminReviewersRoute,
 } as any);
 const AdminResourcesIndexRoute = AdminResourcesIndexRouteImport.update({
   id: '/',
@@ -277,7 +283,8 @@ export interface FileRoutesByFullPath {
   '/members': typeof AdminMembersRoute;
   '/notices': typeof AdminNoticesRouteWithChildren;
   '/resources': typeof AdminResourcesRouteWithChildren;
-  '/reviewers': typeof AdminReviewersRoute;
+  '/reviewers': typeof AdminReviewersRouteWithChildren;
+  '/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
   '/challenges/$challengeId': typeof AdminChallengesChallengeIdRouteWithChildren;
@@ -314,6 +321,7 @@ export interface FileRoutesByTo {
   '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
   '/reviewers': typeof AdminReviewersRoute;
+  '/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
   '/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute;
@@ -349,7 +357,8 @@ export interface FileRoutesById {
   '/_admin/events': typeof AdminEventsRouteWithChildren;
   '/_admin/flyway': typeof AdminFlywayRoute;
   '/_admin/members': typeof AdminMembersRoute;
-  '/_admin/reviewers': typeof AdminReviewersRoute;
+  '/_admin/reviewers': typeof AdminReviewersRouteWithChildren;
+  '/_admin/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/_admin/notices': typeof AdminNoticesRouteWithChildren;
   '/_admin/resources': typeof AdminResourcesRouteWithChildren;
   '/_admin/': typeof AdminIndexRoute;
@@ -393,6 +402,7 @@ export interface FileRouteTypes {
     | '/flyway'
     | '/members'
     | '/reviewers'
+    | '/reviewers/stats'
     | '/notices'
     | '/resources'
     | '/'
@@ -431,6 +441,7 @@ export interface FileRouteTypes {
     | '/flyway'
     | '/members'
     | '/reviewers'
+    | '/reviewers/stats'
     | '/'
     | '/blog/$postId'
     | '/challenges/daily-guides'
@@ -466,6 +477,7 @@ export interface FileRouteTypes {
     | '/_admin/flyway'
     | '/_admin/members'
     | '/_admin/reviewers'
+    | '/_admin/reviewers/stats'
     | '/_admin/notices'
     | '/_admin/resources'
     | '/_admin/'
@@ -555,6 +567,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/reviewers';
       preLoaderRoute: typeof AdminReviewersRouteImport;
       parentRoute: typeof AdminRoute;
+    };
+    '/_admin/reviewers/stats': {
+      id: '/_admin/reviewers/stats';
+      path: '/stats';
+      fullPath: '/reviewers/stats';
+      preLoaderRoute: typeof AdminReviewersStatsRouteImport;
+      parentRoute: typeof AdminReviewersRoute;
     };
     '/_admin/flyway': {
       id: '/_admin/flyway';
@@ -956,13 +975,25 @@ const AdminNewslettersNewsletterIdRouteWithChildren =
     AdminNewslettersNewsletterIdRouteChildren,
   );
 
+interface AdminReviewersRouteChildren {
+  AdminReviewersStatsRoute: typeof AdminReviewersStatsRoute;
+}
+
+const AdminReviewersRouteChildren: AdminReviewersRouteChildren = {
+  AdminReviewersStatsRoute: AdminReviewersStatsRoute,
+};
+
+const AdminReviewersRouteWithChildren = AdminReviewersRoute._addFileChildren(
+  AdminReviewersRouteChildren,
+);
+
 interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRouteWithChildren;
   AdminChallengesRoute: typeof AdminChallengesRouteWithChildren;
   AdminEventsRoute: typeof AdminEventsRouteWithChildren;
   AdminFlywayRoute: typeof AdminFlywayRoute;
   AdminMembersRoute: typeof AdminMembersRoute;
-  AdminReviewersRoute: typeof AdminReviewersRoute;
+  AdminReviewersRoute: typeof AdminReviewersRouteWithChildren;
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren;
   AdminResourcesRoute: typeof AdminResourcesRouteWithChildren;
   AdminIndexRoute: typeof AdminIndexRoute;
@@ -978,7 +1009,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminEventsRoute: AdminEventsRouteWithChildren,
   AdminFlywayRoute: AdminFlywayRoute,
   AdminMembersRoute: AdminMembersRoute,
-  AdminReviewersRoute: AdminReviewersRoute,
+  AdminReviewersRoute: AdminReviewersRouteWithChildren,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminResourcesRoute: AdminResourcesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,

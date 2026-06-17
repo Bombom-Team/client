@@ -27,7 +27,7 @@ function ReviewersPage() {
       <Container>
         <Header>
           <Title>리뷰어 관리</Title>
-          <Link to={'/reviewers/stats' as any}>통계 보기 →</Link>
+          <Link to="/reviewers/stats">통계 보기 →</Link>
         </Header>
         <Table>
           <Thead>
