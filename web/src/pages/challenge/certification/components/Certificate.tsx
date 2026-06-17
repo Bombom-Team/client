@@ -119,7 +119,6 @@ const Container = styled.div<{ device: Device }>`
     if (device === 'tablet') return '450px';
     return '360px';
   }};
-  border-radius: 10px;
 `;
 
 const FrameImage = styled.img`
