@@ -36,7 +36,6 @@ const ReadingActivitySection = () => {
   const { data: readingRank, isLoading: isReadingLoading } = useQuery(
     queries.myMonthlyReadingRank(),
   );
-  const { data: categoryStats } = useQuery(queries.categoryStats());
 
   return (
     <Container>
@@ -117,9 +116,7 @@ const ReadingActivitySection = () => {
           )}
         </StatCard>
 
-        {categoryStats && (
-          <SubscribedCategoryStats stats={categoryStats} isMobile={isMobile} />
-        )}
+        <SubscribedCategoryStats isMobile={isMobile} />
       </StatsWrapper>
 
       <MonthlyReportImage
