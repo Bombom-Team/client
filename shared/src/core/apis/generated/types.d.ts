@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-  '/api/v1/articles': {
+  '/api/v1/members/me/join-days': {
     parameters: {
       query?: never;
       header?: never;
@@ -12,12 +12,10 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * 아티클 목록 조회
-     * @description 조건에 맞는 아티클 목록을 페이징하여 조회합니다.
-     *     (정렬 기본값: ?page=0&size=10&sort=arrivedDateTime,desc)
-     *
+     * 회원 가입일 기준 경과일 조회
+     * @description 로그인한 회원의 가입일과 가입일 이래로 지난 일수를 조회합니다.
      */
-    get: operations['getArticles'];
+    get: operations['getMemberJoinDays'];
     put?: never;
     post?: never;
     delete?: never;
@@ -26,7 +24,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/members/me/pet': {
+  '/api/v1/members/me/rank': {
     parameters: {
       query?: never;
       header?: never;
@@ -34,10 +32,12 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * 내 펫 정보 조회
-     * @description 현재 로그인한 사용자의 펫 정보를 조회합니다.
+     * 마이페이지 랭킹 요약 조회
+     * @description 로그인한 회원의 마이페이지 랭킹 카드를 조회합니다.
+     *     rankHistory와 currentRank는 현재월을 제외한 이전달까지의 확정 랭킹을 기준으로 합니다.
+     *     reading 카드의 value는 누적 읽은 아티클 수, streak 카드의 value는 현재 연속 읽기 일수입니다.
      */
-    get: operations['getPet'];
+    get: operations['getRankSummary'];
     put?: never;
     post?: never;
     delete?: never;
@@ -46,20 +46,41 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/members/me/pet/attendance': {
+  '/api/v1/members/me/reading/calendar': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
-    put?: never;
     /**
-     * 출석 점수 부여
-     * @description 오늘의 출석 점수를 펫에게 부여합니다.
+     * 월간 읽기 캘린더 조회
+     * @description 로그인한 회원의 해당 연·월 일자별 읽기 현황을 조회합니다.
      */
-    post: operations['attend'];
+    get: operations['getReadingCalendar'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/reading/dashboard': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 월간 읽기 대시보드 조회
+     * @description 로그인한 회원의 해당 연·월 읽기 통계를 조회합니다.
+     *     읽은 아티클 수(지난 달 대비 증감 포함), 북마크 수, 자주 읽은 뉴스레터를 반환합니다.
+     */
+    get: operations['getReadingDashboard'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -70,93 +91,144 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    ArticleResponse: {
-      /**
-       * Format: int64
-       * @description 아티클 ID
-       */
-      articleId: number;
-      /** @description 아티클 제목 */
-      title: string;
-      /** @description 본문 요약 */
-      contentsSummary: string;
-      /**
-       * Format: date-time
-       * @description 도착 일시
-       */
-      arrivedDateTime: string;
-      /** @description 썸네일 이미지 URL */
-      thumbnailUrl?: string | null;
+    /**
+     * @description 증감 방향
+     * @enum {string}
+     */
+    ChangeDirection: 'UP' | 'DOWN' | 'SAME';
+    /** @description 자주 읽은 뉴스레터 정보 */
+    FrequentReadNewsletterResponse: {
       /**
        * Format: int32
-       * @description 예상 읽기 시간 (분)
+       * @description 순위 (1-base)
        */
-      expectedReadTime: number;
-      /** @description 읽음 여부 */
-      isRead: boolean;
-      /** @description 북마크 여부 */
-      isBookmarked: boolean;
-      newsletter: components['schemas']['NewsletterSummaryResponse'];
-    };
-    NewsletterSummaryResponse: {
+      rank: number;
+      /**
+       * Format: int64
+       * @description 뉴스레터 ID
+       */
+      newsletterId: number;
       /** @description 뉴스레터명 */
       name: string;
-      /** @description 이미지 URL */
-      imageUrl?: string | null;
-      /** @description 카테고리 */
-      category: string;
-    };
-    /** @description 페이징된 아티클 목록 응답 */
-    PageArticleResponse: {
-      content: components['schemas']['ArticleResponse'][];
       /**
        * Format: int64
-       * @description 전체 데이터 개수
+       * @description 이번 달 읽은 아티클 수
        */
-      totalElements: number;
-      /**
-       * Format: int32
-       * @description 전체 페이지 수
-       */
-      totalPages: number;
-      /**
-       * Format: int32
-       * @description 현재 페이지 번호 (0-base)
-       */
-      number: number;
-      /**
-       * Format: int32
-       * @description 페이지 크기
-       */
-      size: number;
-      /**
-       * Format: int32
-       * @description 현재 페이지 데이터 개수
-       */
-      numberOfElements: number;
-      /** @description 첫 페이지 여부 */
-      first: boolean;
-      /** @description 마지막 페이지 여부 */
-      last: boolean;
+      readCount: number;
     };
-    PetResponse: {
+    /** @description 회원 가입일 기준 경과일 정보 */
+    MemberJoinDaysResponse: {
       /**
        * Format: int32
-       * @description 펫 레벨
+       * @description 가입일 이래로 지난 일수
        */
-      level: number;
+      daysSinceJoined: number;
+      /**
+       * Format: date
+       * @description 가입일 (yyyy-MM-dd)
+       */
+      joinedAt: string;
+    };
+    /** @description 월간 리포트 대시보드 조회 조건 */
+    MonthlyReportDashboardRequest: {
       /**
        * Format: int32
-       * @description 현재 스테이지 점수
+       * @description 조회할 연도
        */
-      currentStageScore: number;
+      year: number;
       /**
        * Format: int32
-       * @description 필요한 스테이지 점수
+       * @description 조회할 월 (1-12)
        */
-      requiredStageScore: number;
-      /** @description 출석 여부 */
-      isAttended: boolean;
+      month: number;
+      /**
+       * Format: int32
+       * @description 자주 읽은 뉴스레터 조회 개수
+       */
+      limit: number;
+    };
+    /** @description 월간 리포트 조회 조건 */
+    MonthlyReportRequest: {
+      /**
+       * Format: int32
+       * @description 조회할 연도
+       */
+      year: number;
+      /**
+       * Format: int32
+       * @description 조회할 월 (1-12)
+       */
+      month: number;
+    };
+    /** @description 마이페이지 랭킹 카드 정보 */
+    RankCardResponse: {
+      /** @description 랭킹 타입 (streak: 연속 읽기, reading: 다독왕) */
+      type: string;
+      /**
+       * Format: int64
+       * @description 이전달까지의 최신 확정 순위. 랭킹 이력이 없으면 null입니다.
+       */
+      currentRank: number | null;
+      rankHistory: components['schemas']['RankHistoryResponse'][];
+      /**
+       * Format: int32
+       * @description 카드 표시 값. streak는 현재 연속 읽기 일수, reading은 누적 읽은 아티클 수입니다.
+       */
+      value: number;
+    };
+    /** @description 마이페이지 랭킹 히스토리 정보 */
+    RankHistoryResponse: {
+      /** @description 랭킹 기준 월 (yyyy-MM) */
+      month: string;
+      /** @description 화면 표시용 월 라벨 */
+      label: string;
+      /**
+       * Format: int64
+       * @description 해당 월의 순위
+       */
+      rank: number;
+    };
+    /** @description 마이페이지 랭킹 요약 응답 */
+    RankSummaryResponse: {
+      cards: components['schemas']['RankCardResponse'][];
+    };
+    /** @description 읽기 캘린더의 하루 정보 */
+    ReadingCalendarDayResponse: {
+      /**
+       * Format: date
+       * @description 날짜 (yyyy-MM-dd)
+       */
+      date: string;
+      /** @description 해당 날짜에 아티클을 읽었는지 여부 */
+      read: boolean;
+      /**
+       * Format: int64
+       * @description 해당 날짜에 읽은 아티클 수
+       */
+      readCount: number;
+    };
+    /** @description 월간 읽기 대시보드 응답 */
+    ReadingDashboardResponse: {
+      /**
+       * Format: int64
+       * @description 이번 달 읽은 아티클 수
+       */
+      readArticleCount: number;
+      /**
+       * Format: double
+       * @description 지난 달 대비 읽은 아티클 수 증감률 (%)
+       */
+      readArticleChangeRate: number | null;
+      readArticleChangeDirection:
+        | components['schemas']['ChangeDirection']
+        | null;
+      /**
+       * Format: int64
+       * @description 북마크 개수
+       */
+      bookmarkCount: number;
+      /** @description 자주 읽은 뉴스레터 TOP */
+      frequentReadNewsletters: components['schemas']['FrequentReadNewsletterResponse'][];
     };
   };
   responses: never;
@@ -167,13 +239,38 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  getArticles: {
+  getMemberJoinDays: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 회원 가입일 기준 경과일 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MemberJoinDaysResponse'];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getRankSummary: {
     parameters: {
       query?: {
-        /** @description 필터링할 도착 날짜 (yyyy-MM-dd) */
-        date?: string;
-        /** @description 필터링할 뉴스레터 ID */
-        newsletterId?: number;
+        /** @description 랭킹 타입 (streak 또는 reading). 생략하면 모든 랭킹 카드를 반환합니다. */
+        type?: string;
       };
       header?: never;
       path?: never;
@@ -181,16 +278,16 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description 아티클 목록 조회 성공 */
+      /** @description 마이페이지 랭킹 요약 조회 성공 */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['PageArticleResponse'];
+          'application/json': components['schemas']['RankSummaryResponse'];
         };
       };
-      /** @description 잘못된 정렬 파라미터 요청 */
+      /** @description 잘못된 랭킹 타입 요청 */
       400: {
         headers: {
           [name: string]: unknown;
@@ -206,23 +303,35 @@ export interface operations {
       };
     };
   };
-  getPet: {
+  getReadingCalendar: {
     parameters: {
-      query?: never;
+      query: {
+        /** @description 조회할 연도 */
+        year: number;
+        /** @description 조회할 월 (1-12) */
+        month: number;
+      };
       header?: never;
       path?: never;
       cookie?: never;
     };
     requestBody?: never;
     responses: {
-      /** @description 펫 정보 조회 성공 */
+      /** @description 읽기 캘린더 조회 성공 */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['PetResponse'];
+          'application/json': components['schemas']['ReadingCalendarDayResponse'][];
         };
+      };
+      /** @description 잘못된 연·월 파라미터 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description 인증 실패 */
       401: {
@@ -233,17 +342,33 @@ export interface operations {
       };
     };
   };
-  attend: {
+  getReadingDashboard: {
     parameters: {
-      query?: never;
+      query: {
+        /** @description 조회할 연도 */
+        year: number;
+        /** @description 조회할 월 (1-12) */
+        month: number;
+        /** @description 자주 읽은 뉴스레터 조회 개수 */
+        limit: number;
+      };
       header?: never;
       path?: never;
       cookie?: never;
     };
     requestBody?: never;
     responses: {
-      /** @description 출석 점수 부여 성공 */
+      /** @description 읽기 대시보드 조회 성공 */
       200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReadingDashboardResponse'];
+        };
+      };
+      /** @description 잘못된 연·월 파라미터 요청 */
+      400: {
         headers: {
           [name: string]: unknown;
         };
