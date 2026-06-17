@@ -125,11 +125,7 @@ export const FlywayViewer = () => {
           <strong>{data.integrationBranch}</strong>
         </Chip>
         <Spacer />
-        <Button
-          type="button"
-          onClick={() => refresh()}
-          disabled={isRefreshing}
-        >
+        <Button type="button" onClick={() => refresh()} disabled={isRefreshing}>
           {isRefreshing ? '새로고침 중...' : '🔄 새로고침'}
         </Button>
         <Button type="button" onClick={() => setShowForm((prev) => !prev)}>
