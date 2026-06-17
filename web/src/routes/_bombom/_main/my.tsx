@@ -32,8 +32,8 @@ type MyPageTab =
 const DEFAULT_TABS = [
   { id: 'profile', label: '내 정보' },
   { id: 'newsletters', label: '구독 뉴스레터' },
-  { id: 'rewards', label: '선물함' },
   { id: 'challenges', label: '나의 챌린지' },
+  { id: 'rewards', label: '선물함' },
 ] as const;
 
 const WEBVIEW_TABS = [{ id: 'notification', label: '알림 설정' }] as const;
