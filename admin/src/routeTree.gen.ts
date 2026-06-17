@@ -19,6 +19,7 @@ import { Route as AdminFlywayRouteImport } from './routes/_admin/flyway';
 import { Route as AdminEventsRouteImport } from './routes/_admin/events';
 import { Route as AdminChallengesRouteImport } from './routes/_admin/challenges';
 import { Route as AdminBlogRouteImport } from './routes/_admin/blog';
+import { Route as AdminReviewersRouteImport } from './routes/_admin/reviewers';
 import { Route as AdminResourcesIndexRouteImport } from './routes/_admin/resources/index';
 import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/index';
 import { Route as AdminNewslettersIndexRouteImport } from './routes/_admin/newsletters/index';
@@ -96,6 +97,11 @@ const AdminChallengesRoute = AdminChallengesRouteImport.update({
 const AdminBlogRoute = AdminBlogRouteImport.update({
   id: '/blog',
   path: '/blog',
+  getParentRoute: () => AdminRoute,
+} as any);
+const AdminReviewersRoute = AdminReviewersRouteImport.update({
+  id: '/reviewers',
+  path: '/reviewers',
   getParentRoute: () => AdminRoute,
 } as any);
 const AdminResourcesIndexRoute = AdminResourcesIndexRouteImport.update({
@@ -271,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/members': typeof AdminMembersRoute;
   '/notices': typeof AdminNoticesRouteWithChildren;
   '/resources': typeof AdminResourcesRouteWithChildren;
+  '/reviewers': typeof AdminReviewersRoute;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
   '/challenges/$challengeId': typeof AdminChallengesChallengeIdRouteWithChildren;
@@ -306,6 +313,7 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route;
   '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
+  '/reviewers': typeof AdminReviewersRoute;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
   '/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute;
@@ -341,6 +349,7 @@ export interface FileRoutesById {
   '/_admin/events': typeof AdminEventsRouteWithChildren;
   '/_admin/flyway': typeof AdminFlywayRoute;
   '/_admin/members': typeof AdminMembersRoute;
+  '/_admin/reviewers': typeof AdminReviewersRoute;
   '/_admin/notices': typeof AdminNoticesRouteWithChildren;
   '/_admin/resources': typeof AdminResourcesRouteWithChildren;
   '/_admin/': typeof AdminIndexRoute;
@@ -383,6 +392,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/flyway'
     | '/members'
+    | '/reviewers'
     | '/notices'
     | '/resources'
     | '/'
@@ -420,6 +430,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/flyway'
     | '/members'
+    | '/reviewers'
     | '/'
     | '/blog/$postId'
     | '/challenges/daily-guides'
@@ -454,6 +465,7 @@ export interface FileRouteTypes {
     | '/_admin/events'
     | '/_admin/flyway'
     | '/_admin/members'
+    | '/_admin/reviewers'
     | '/_admin/notices'
     | '/_admin/resources'
     | '/_admin/'
@@ -535,6 +547,13 @@ declare module '@tanstack/react-router' {
       path: '/members';
       fullPath: '/members';
       preLoaderRoute: typeof AdminMembersRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
+    '/_admin/reviewers': {
+      id: '/_admin/reviewers';
+      path: '/reviewers';
+      fullPath: '/reviewers';
+      preLoaderRoute: typeof AdminReviewersRouteImport;
       parentRoute: typeof AdminRoute;
     };
     '/_admin/flyway': {
@@ -943,6 +962,7 @@ interface AdminRouteChildren {
   AdminEventsRoute: typeof AdminEventsRouteWithChildren;
   AdminFlywayRoute: typeof AdminFlywayRoute;
   AdminMembersRoute: typeof AdminMembersRoute;
+  AdminReviewersRoute: typeof AdminReviewersRoute;
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren;
   AdminResourcesRoute: typeof AdminResourcesRouteWithChildren;
   AdminIndexRoute: typeof AdminIndexRoute;
@@ -958,6 +978,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminEventsRoute: AdminEventsRouteWithChildren,
   AdminFlywayRoute: AdminFlywayRoute,
   AdminMembersRoute: AdminMembersRoute,
+  AdminReviewersRoute: AdminReviewersRoute,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminResourcesRoute: AdminResourcesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
