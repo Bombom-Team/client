@@ -7,6 +7,7 @@ import {
   FiDatabase,
   FiEdit,
   FiFlag,
+  FiGitPullRequest,
   FiHome,
   FiMail,
   FiUsers,
@@ -66,6 +67,13 @@ export const Sidebar = () => {
         >
           <FiCode />
           <span>리소스 관리</span>
+        </NavItem>
+        <NavItem
+          to="/reviewers"
+          $isActive={currentPath.startsWith('/reviewers')}
+        >
+          <FiGitPullRequest />
+          <span>리뷰어 관리</span>
         </NavItem>
       </Nav>
       <Footer>© 2025 BomBom. All rights reserved.</Footer>
