@@ -1,9 +1,12 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createPortal } from 'react-dom';
+import { useDevice } from '../../../../../../shared/src/ui-web/hooks/useDevice';
 import { queries } from '@/apis/queries';
+import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
 import Certificate from '@/pages/challenge/certification/components/Certificate';
+import { useCertificateDownload } from '@/pages/challenge/certification/hooks/useCertificateDownload';
 import type { Ref } from 'react';
 
 interface CertificateModalProps {
@@ -24,11 +27,31 @@ const CertificateModal = ({
     enabled: isOpen,
   });
 
+  const { certificateRef, download } = useCertificateDownload(
+    certificationInfo?.nickname,
+  );
+
+  const device = useDevice();
+
   return createPortal(
-    <Modal modalRef={modalRef} closeModal={closeModal} isOpen={isOpen}>
+    <Modal
+      position={device === 'mobile' ? 'fullscreen' : 'center'}
+      modalRef={modalRef}
+      closeModal={closeModal}
+      isOpen={isOpen}
+    >
       <Content>
         {isLoading && <LoadingText>수료증을 불러오는 중...</LoadingText>}
-        {certificationInfo && <Certificate {...certificationInfo} />}
+        {certificationInfo && (
+          <>
+            <DownloadButton onClick={download}>
+              💾 이미지로 저장하기
+            </DownloadButton>
+            <CertificateWrapper ref={certificateRef}>
+              <Certificate {...certificationInfo} />
+            </CertificateWrapper>
+          </>
+        )}
       </Content>
     </Modal>,
     document.body,
@@ -41,9 +64,12 @@ const Content = styled.div`
   padding: 8px 0;
 
   display: flex;
+  gap: 16px;
   flex-direction: column;
   align-items: center;
 `;
+
+const CertificateWrapper = styled.div``;
 
 const LoadingText = styled.p`
   margin: 0;
@@ -52,4 +78,14 @@ const LoadingText = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
+`;
+
+const DownloadButton = styled(Button)`
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+
+  font: ${({ theme }) => theme.fonts.t3Regular};
+  font-weight: 600;
+  white-space: nowrap;
 `;
