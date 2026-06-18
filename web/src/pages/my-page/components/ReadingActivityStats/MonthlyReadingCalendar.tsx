@@ -3,12 +3,9 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 
 interface Props {
-  isMobile?: boolean;
-}
-
-interface ViewMonth {
   year: number;
   month: number;
+  isMobile?: boolean;
 }
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'] as const;
@@ -28,15 +25,7 @@ const COLORS = {
 
 const pad = (value: number) => String(value).padStart(2, '0');
 
-const getCurrentMonth = (): ViewMonth => {
-  const now = new Date();
-
-  return { year: now.getFullYear(), month: now.getMonth() + 1 };
-};
-
-const MonthlyReadingCalendar = ({ isMobile = false }: Props) => {
-  const { year, month } = getCurrentMonth();
-
+const MonthlyReadingCalendar = ({ year, month, isMobile = false }: Props) => {
   const { data } = useQuery(
     monthlyReportQueries.getReadingCalendar({ year, month }),
   );

@@ -110,6 +110,20 @@ export const membersHandlers = [
     });
   }),
 
+  http.get(`${baseURL}/members/me/reading/dashboard`, () => {
+    return HttpResponse.json({
+      readArticleCount: 248,
+      readArticleChangeRate: 32,
+      readArticleChangeDirection: 'UP',
+      bookmarkCount: 132,
+      frequentReadNewsletters: [
+        { rank: 1, newsletterId: 1, name: '뉴닉', readCount: 12 },
+        { rank: 2, newsletterId: 2, name: '데일리바이트', readCount: 5 },
+        { rank: 3, newsletterId: 3, name: '부딩', readCount: 2 },
+      ],
+    });
+  }),
+
   http.get(`${baseURL}/members/me/reading/calendar`, ({ request }) => {
     const url = new URL(request.url);
     const year = Number(url.searchParams.get('year'));
