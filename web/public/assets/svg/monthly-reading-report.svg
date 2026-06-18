@@ -1,0 +1,96 @@
+<svg width="1440" height="800" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="reportBackground" x1="0" y1="0" x2="1440" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFDFC"/>
+      <stop offset="1" stop-color="#FFF8F3"/>
+    </linearGradient>
+    <linearGradient id="donutA" x1="800" y1="392" x2="990" y2="582" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF5E04"/>
+      <stop offset="0.25" stop-color="#FF9E00"/>
+      <stop offset="0.5" stop-color="#35A65C"/>
+      <stop offset="0.75" stop-color="#7C2CF4"/>
+      <stop offset="1" stop-color="#2878F0"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="1438" height="798" rx="28" fill="url(#reportBackground)" stroke="#FFD9C5" stroke-width="2"/>
+  <g font-family="Arial, sans-serif">
+    <rect x="40" y="32" width="32" height="32" rx="6" stroke="#FE5E04" stroke-width="4"/>
+    <path d="M48 26V40M64 26V40M40 48H72" stroke="#FE5E04" stroke-width="4" stroke-linecap="round"/>
+    <text x="88" y="58" fill="#FE5E04" font-size="28" font-weight="700">월간 리포트 ✦</text>
+
+    <rect x="510" y="24" width="360" height="64" rx="16" fill="white" stroke="#E9E2DD"/>
+    <path d="M548 56L560 44M548 56L560 68" stroke="#111111" stroke-width="4" stroke-linecap="round"/>
+    <text x="690" y="65" text-anchor="middle" fill="#111111" font-size="28" font-weight="700">2024년 6월</text>
+    <path d="M832 44L844 56M844 56L832 68" stroke="#111111" stroke-width="4" stroke-linecap="round"/>
+
+    <rect x="40" y="112" width="848" height="184" rx="20" fill="white" stroke="#E9E2DD"/>
+    <rect x="112" y="144" width="72" height="72" rx="16" fill="#FFF8F4"/>
+    <path d="M128 164C141 157 148 164 148 164V198C148 198 141 191 128 198V164ZM168 164C155 157 148 164 148 164V198C148 198 155 191 168 198V164Z" stroke="#FE5E04" stroke-width="4" stroke-linejoin="round"/>
+    <text x="208" y="168" fill="#222222" font-size="20" font-weight="700">읽은 아티클</text>
+    <text x="208" y="212" fill="#111111" font-size="40" font-weight="700">248<tspan font-size="20">째</tspan></text>
+    <rect x="188" y="232" width="220" height="40" rx="12" fill="white" stroke="#D7DDE4"/>
+    <text x="298" y="258" text-anchor="middle" fill="#58708A" font-size="13" font-weight="700">↑ 32% 5월 기준의 지난 달과 비교</text>
+    <line x1="456" y1="140" x2="456" y2="268" stroke="#E9E2DD"/>
+    <rect x="528" y="144" width="72" height="72" rx="16" fill="#FFF8F4"/>
+    <path d="M564 156L575 178L599 181L581 198L586 222L564 210L542 222L547 198L529 181L553 178L564 156Z" stroke="#FE5E04" stroke-width="4" stroke-linejoin="round"/>
+    <text x="624" y="168" fill="#222222" font-size="20" font-weight="700">북마크 개수</text>
+    <text x="624" y="212" fill="#111111" font-size="40" font-weight="700">132<tspan font-size="20">개</tspan></text>
+
+    <rect x="904" y="112" width="496" height="184" rx="20" fill="white" stroke="#E9E2DD"/>
+    <text x="960" y="154" fill="#222222" font-size="19" font-weight="700">내가 자주 읽는 뉴스레터 TOP 3</text>
+    <circle cx="952" cy="190" r="12" fill="#FE5E04"/><text x="952" y="196" text-anchor="middle" fill="white" font-size="13" font-weight="700">1</text>
+    <text x="980" y="196" fill="#444444" font-size="17">뉴닉</text><text x="1308" y="196" text-anchor="end" fill="#444444" font-size="17">12개</text>
+    <circle cx="952" cy="226" r="12" fill="#FE5E04"/><text x="952" y="232" text-anchor="middle" fill="white" font-size="13" font-weight="700">2</text>
+    <text x="980" y="232" fill="#444444" font-size="17">데일리바이트</text><text x="1308" y="232" text-anchor="end" fill="#444444" font-size="17">5개</text>
+    <circle cx="952" cy="262" r="12" fill="#FE5E04"/><text x="952" y="268" text-anchor="middle" fill="white" font-size="13" font-weight="700">3</text>
+    <text x="980" y="268" fill="#444444" font-size="17">부딩</text><text x="1308" y="268" text-anchor="end" fill="#444444" font-size="17">2개</text>
+
+    <rect x="40" y="316" width="640" height="444" rx="20" fill="white" stroke="#E9E2DD"/>
+    <text x="68" y="356" fill="#222222" font-size="22" font-weight="700">월간 읽기 요약</text>
+    <text x="68" y="384" fill="#58708A" font-size="15" font-weight="700">주요 독서 한눈에 보기</text>
+    <rect x="504" y="336" width="144" height="44" rx="12" fill="white" stroke="#E0E0E0"/>
+    <text x="576" y="364" text-anchor="middle" fill="#333333" font-size="15" font-weight="700">읽은 아티클⌄</text>
+
+    <g fill="#555555" font-size="14" text-anchor="middle">
+      <text x="96" y="424">일</text><text x="184" y="424">월</text><text x="272" y="424">화</text><text x="360" y="424">수</text><text x="448" y="424">목</text><text x="536" y="424">금</text><text x="624" y="424">토</text>
+    </g>
+    <line x1="68" y1="440" x2="652" y2="440" stroke="#E9E2DD"/>
+    <g fill="#333333" font-size="17" text-anchor="middle">
+      <text x="184" y="478">1</text><text x="272" y="478">3</text><text x="360" y="478">4</text><text x="448" y="478">5</text><text x="536" y="478">6</text><text x="624" y="478">6</text>
+      <text x="96" y="526">7</text><text x="184" y="526">8</text><text x="272" y="526">9</text><text x="360" y="526">10</text><text x="448" y="526">11</text><text x="536" y="526">12</text><text x="624" y="526">13</text>
+      <text x="96" y="574">14</text><text x="184" y="574">15</text><text x="272" y="574">16</text><circle cx="360" cy="568" r="23" fill="#7DD500"/><text x="360" y="574" fill="#111111">17</text><text x="448" y="574">18</text><text x="536" y="574">19</text><text x="624" y="574">20</text>
+      <text x="96" y="622">21</text><text x="184" y="622">22</text><text x="272" y="622">23</text><text x="360" y="622">24</text><text x="448" y="622">25</text><text x="536" y="622">26</text><text x="624" y="622">27</text>
+      <text x="96" y="670">28</text><text x="184" y="670">29</text><text x="272" y="670">30</text>
+    </g>
+    <g stroke="#7DD500" stroke-width="5" stroke-linecap="round">
+      <path d="M82 580H110"/><path d="M170 580H198"/><path d="M258 532H286"/><path d="M434 532H462"/><path d="M522 532H550"/><path d="M610 532H638"/>
+      <path d="M82 628H110"/><path d="M170 628H198"/><path d="M346 628H374"/><path d="M434 628H462"/><path d="M522 628H550"/><path d="M82 676H110"/>
+    </g>
+    <line x1="68" y1="704" x2="652" y2="704" stroke="#E9E2DD"/>
+    <circle cx="96" cy="732" r="14" fill="#7DD500"/><text x="96" y="738" text-anchor="middle" fill="#111111" font-size="13">17</text>
+    <text x="124" y="738" fill="#555555" font-size="14">가장 많이 읽은 날</text>
+    <rect x="292" y="718" width="22" height="22" rx="5" fill="#ECFFD7" stroke="#7DD500"/>
+    <text x="326" y="738" fill="#555555" font-size="14">읽은 날</text>
+
+    <rect x="696" y="316" width="704" height="444" rx="20" fill="white" stroke="#E9E2DD"/>
+    <circle cx="736" cy="356" r="16" fill="#FE5E04"/>
+    <text x="768" y="364" fill="#222222" font-size="22" font-weight="700">이번 달에 읽은 뉴스레터 카테고리</text>
+    <circle cx="840" cy="500" r="92" stroke="url(#donutA)" stroke-width="38"/>
+    <text x="840" y="494" text-anchor="middle" fill="#222222" font-size="18" font-weight="700">총 <tspan fill="#FE5E04">48</tspan>개</text>
+    <text x="840" y="520" text-anchor="middle" fill="#222222" font-size="16" font-weight="700">카테고리</text>
+    <g font-size="16">
+      <circle cx="976" cy="412" r="7" fill="#FE5E04"/><text x="996" y="418" fill="#333333">자기계발</text><text x="1312" y="418" text-anchor="end" fill="#333333">12개  25%</text>
+      <circle cx="976" cy="456" r="7" fill="#2878F0"/><text x="996" y="462" fill="#333333">경제</text><text x="1312" y="462" text-anchor="end" fill="#333333">9개  19%</text>
+      <circle cx="976" cy="500" r="7" fill="#7C2CF4"/><text x="996" y="506" fill="#333333">기술</text><text x="1312" y="506" text-anchor="end" fill="#333333">11개  23%</text>
+      <circle cx="976" cy="544" r="7" fill="#35A65C"/><text x="996" y="550" fill="#333333">시사/사회</text><text x="1312" y="550" text-anchor="end" fill="#333333">8개  17%</text>
+      <circle cx="976" cy="588" r="7" fill="#FFA400"/><text x="996" y="594" fill="#333333">취미/라이프</text><text x="1312" y="594" text-anchor="end" fill="#333333">8개  16%</text>
+    </g>
+    <line x1="736" y1="632" x2="1360" y2="632" stroke="#E9E2DD"/>
+    <text x="736" y="674" fill="#333333" font-size="16" font-weight="700">4</text><text x="788" y="674" fill="#333333">경제</text>
+    <rect x="932" y="662" width="280" height="8" rx="4" fill="#EFEFEF"/><rect x="932" y="662" width="112" height="8" rx="4" fill="#FE5E04"/>
+    <text x="1312" y="674" text-anchor="end" fill="#555555" font-size="15">14%</text>
+    <text x="736" y="714" fill="#333333" font-size="16" font-weight="700">5</text><text x="788" y="714" fill="#333333">라이프스타일</text>
+    <rect x="932" y="702" width="280" height="8" rx="4" fill="#EFEFEF"/><rect x="932" y="702" width="96" height="8" rx="4" fill="#FE5E04"/>
+    <text x="1312" y="714" text-anchor="end" fill="#555555" font-size="15">12%</text>
+  </g>
+</svg>

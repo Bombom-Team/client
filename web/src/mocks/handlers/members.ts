@@ -1,6 +1,10 @@
 import { http, HttpResponse } from 'msw';
 import { ENV } from '../../apis/env';
 import {
+  CUMULATIVE_CATEGORY_STATS,
+  MONTHLY_CATEGORY_STATS,
+} from '../datas/categoryStats';
+import {
   getRankingMetadata,
   getStreakRankingMetadata,
 } from '../datas/monthlyReadingRank';
@@ -9,6 +13,15 @@ import { TRENDY_NEWSLETTERS } from '../datas/trendyNewsLetter';
 const baseURL = ENV.baseUrl;
 
 export const membersHandlers = [
+  http.get(`${baseURL}/mypage/category-stats`, ({ request }) => {
+    const url = new URL(request.url);
+    const yearMonth = url.searchParams.get('yearMonth');
+
+    return HttpResponse.json(
+      yearMonth ? MONTHLY_CATEGORY_STATS : CUMULATIVE_CATEGORY_STATS,
+    );
+  }),
+
   http.get(`${baseURL}/members/me/subscriptions`, () => {
     const subscribedNewsletters = TRENDY_NEWSLETTERS.slice(0, 5).map(
       (newsletter, index) => {
@@ -75,9 +88,9 @@ export const membersHandlers = [
 
   http.get(`${baseURL}/members/me/reading/streak/rank/me`, () => {
     return HttpResponse.json({
-      rank: 12,
+      rank: 3,
       nickname: '나',
-      dayCount: 7,
+      dayCount: 52,
       badges: {
         challenge: {
           name: '뉴스레터 한달 읽기',
@@ -85,6 +98,15 @@ export const membersHandlers = [
           grade: 'bronze',
         },
       },
+    });
+  }),
+
+  http.get(`${baseURL}/members/me/reading/month/rank/me`, () => {
+    return HttpResponse.json({
+      rank: 3,
+      nickname: '나',
+      monthlyReadCount: 248,
+      nextRankDifference: 12,
     });
   }),
 ];

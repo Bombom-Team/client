@@ -1,0 +1,21 @@
+<svg width="248" height="316" viewBox="0 0 248 316" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="background" x1="24" y1="24" x2="224" y2="292" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF9F6"/>
+      <stop offset="1" stop-color="#FFF0E8"/>
+    </linearGradient>
+    <linearGradient id="heart" x1="104" y1="48" x2="144" y2="88" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFB4C3"/>
+      <stop offset="1" stop-color="#FF4E6E"/>
+    </linearGradient>
+  </defs>
+  <rect width="248" height="316" rx="20" fill="url(#background)"/>
+  <path d="M124 88C121 83 105 74 105 62C105 54 111 48 119 48C123 48 127 50 130 54C133 50 137 48 141 48C149 48 155 54 155 62C155 74 139 83 124 88Z" fill="url(#heart)" stroke="#FF3F62" stroke-width="2"/>
+  <text x="124" y="128" text-anchor="middle" fill="#1F1F1F" font-family="Arial, sans-serif" font-size="18" font-weight="700">봄봄과 함께한 지</text>
+  <text x="124" y="174" text-anchor="middle" fill="#111111" font-family="Arial, sans-serif" font-size="32" font-weight="700">142일째</text>
+  <text x="124" y="220" text-anchor="middle" fill="#315B83" font-family="Arial, sans-serif" font-size="17" font-weight="700">꾸준한 읽기 습관이</text>
+  <text x="108" y="254" text-anchor="middle" fill="#315B83" font-family="Arial, sans-serif" font-size="17" font-weight="700">쌓이고 있어요!</text>
+  <path d="M164 247C175 242 184 246 187 256C176 259 168 256 164 247Z" fill="#4DDA24"/>
+  <path d="M164 247C158 239 149 238 143 244C149 252 157 253 164 247Z" fill="#75E83B"/>
+  <path d="M164 247V266" stroke="#239B24" stroke-width="3" stroke-linecap="round"/>
+</svg>
