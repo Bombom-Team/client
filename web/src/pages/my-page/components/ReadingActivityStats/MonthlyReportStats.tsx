@@ -1,6 +1,7 @@
 import { monthlyReportQueries } from '@bombom/shared/apis/monthlyreport';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import Text from '@/components/Text';
 import KidStarIcon from '#/assets/svg/kid-star.svg';
 import MenuBookIcon from '#/assets/svg/menu-book.svg';
 
@@ -45,13 +46,13 @@ const MonthlyReportStats = ({ year, month, isMobile = false }: Props) => {
               <StatIcon as={MenuBookIcon} aria-hidden="true" />
             </IconBox>
             <StatTextGroup>
-              <StatLabel>읽은 아티클</StatLabel>
-              <StatValue>
+              <StatLabel font="t4Bold">읽은 아티클</StatLabel>
+              <StatValue font="t11Bold">
                 {data?.readArticleCount ?? 0}
-                <StatUnit>개</StatUnit>
+                <StatUnit font="t4Bold">개</StatUnit>
               </StatValue>
               {changeRate !== null && changeDirection !== null && (
-                <ChangePill>
+                <ChangePill font="t2Bold">
                   {CHANGE_ARROW[changeDirection]}{' '}
                   {Math.round(Math.abs(changeRate))}% 지난 달 대비
                 </ChangePill>
@@ -68,10 +69,10 @@ const MonthlyReportStats = ({ year, month, isMobile = false }: Props) => {
               <StatIcon as={KidStarIcon} aria-hidden="true" />
             </IconBox>
             <StatTextGroup>
-              <StatLabel>북마크 개수</StatLabel>
-              <StatValue>
+              <StatLabel font="t4Bold">북마크 개수</StatLabel>
+              <StatValue font="t11Bold">
                 {data?.bookmarkCount ?? 0}
-                <StatUnit>개</StatUnit>
+                <StatUnit font="t4Bold">개</StatUnit>
               </StatValue>
             </StatTextGroup>
           </StatRow>
@@ -83,9 +84,15 @@ const MonthlyReportStats = ({ year, month, isMobile = false }: Props) => {
         <NewsletterList>
           {newsletters.map((newsletter) => (
             <NewsletterRow key={newsletter.newsletterId}>
-              <RankBadge>{newsletter.rank}</RankBadge>
-              <NewsletterName>{newsletter.name}</NewsletterName>
-              <NewsletterCount>{newsletter.readCount}개</NewsletterCount>
+              <RankBadge font="t2Bold" color="white">
+                {newsletter.rank}
+              </RankBadge>
+              <NewsletterName font="t4Regular">
+                {newsletter.name}
+              </NewsletterName>
+              <NewsletterCount font="t4Regular">
+                {newsletter.readCount}개
+              </NewsletterCount>
             </NewsletterRow>
           ))}
         </NewsletterList>
@@ -165,32 +172,33 @@ const StatTextGroup = styled.div`
   flex-direction: column;
 `;
 
-const StatLabel = styled.span`
-  color: ${COLORS.label};
-  font-size: 13px;
-  font-weight: 700;
+const StatLabel = styled(Text)`
+  && {
+    color: ${COLORS.label};
+  }
 `;
 
-const StatValue = styled.span`
-  color: ${COLORS.value};
-  font-size: 26px;
-  font-weight: 700;
+const StatValue = styled(Text)`
+  && {
+    color: ${COLORS.value};
+  }
 `;
 
-const StatUnit = styled.span`
-  font-size: 13px;
-  font-weight: 700;
+const StatUnit = styled(Text)`
+  && {
+    color: ${COLORS.value};
+  }
 `;
 
-const ChangePill = styled.span`
+const ChangePill = styled(Text)`
   align-self: flex-start;
   padding: 6px 12px;
   border: 1px solid ${COLORS.pillBorder};
   border-radius: 12px;
 
-  color: ${COLORS.pillText};
-  font-size: 11px;
-  font-weight: 700;
+  && {
+    color: ${COLORS.pillText};
+  }
 `;
 
 const Divider = styled.div`
@@ -221,8 +229,7 @@ const NewslettersTitle = styled.h3`
   margin: 0;
 
   color: ${COLORS.label};
-  font-size: 13px;
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t4Bold};
 `;
 
 const NewsletterList = styled.div`
@@ -237,7 +244,7 @@ const NewsletterRow = styled.div`
   align-items: center;
 `;
 
-const RankBadge = styled.span`
+const RankBadge = styled(Text)`
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -249,27 +256,27 @@ const RankBadge = styled.span`
   justify-content: center;
 
   background-color: ${COLORS.brand};
-  color: ${({ theme }) => theme.colors.white};
-  font-size: 11px;
-  font-weight: 700;
 `;
 
-const NewsletterName = styled.span`
+const NewsletterName = styled(Text)`
   min-width: 0;
 
   overflow: hidden;
 
-  color: ${COLORS.newsletterText};
-  font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  && {
+    color: ${COLORS.newsletterText};
+  }
 `;
 
-const NewsletterCount = styled.span`
+const NewsletterCount = styled(Text)`
   margin-left: auto;
 
   flex-shrink: 0;
 
-  color: ${COLORS.newsletterText};
-  font-size: 13px;
+  && {
+    color: ${COLORS.newsletterText};
+  }
 `;

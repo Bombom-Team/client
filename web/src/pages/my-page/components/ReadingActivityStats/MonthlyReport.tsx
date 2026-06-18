@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import ChevronIcon from '@/components/icons/ChevronIcon';
+import Text from '@/components/Text';
 import MonthlyReadingCalendar from '@/pages/my-page/components/ReadingActivityStats/MonthlyReadingCalendar';
 import MonthlyReportStats from '@/pages/my-page/components/ReadingActivityStats/MonthlyReportStats';
 
@@ -75,7 +76,7 @@ const MonthlyReport = ({ isMobile = false }: Props) => {
           >
             <ChevronIcon direction="left" width={16} />
           </NavButton>
-          <MonthLabel>
+          <MonthLabel font="t5Bold">
             {year}년 {month}월
           </MonthLabel>
           <NavButton
@@ -127,8 +128,7 @@ const ReportTitle = styled.h2`
   align-items: center;
 
   color: ${COLORS.brand};
-  font-size: 16px;
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const TitleIcon = styled.svg`
@@ -150,13 +150,14 @@ const MonthNav = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const MonthLabel = styled.span`
+const MonthLabel = styled(Text)`
   min-width: 76px;
 
-  color: ${COLORS.navText};
-  font-size: 14px;
-  font-weight: 700;
   text-align: center;
+
+  && {
+    color: ${COLORS.navText};
+  }
 `;
 
 const NavButton = styled.button`

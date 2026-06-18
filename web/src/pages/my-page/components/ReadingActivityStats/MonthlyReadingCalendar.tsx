@@ -1,6 +1,7 @@
 import { monthlyReportQueries } from '@bombom/shared/apis/monthlyreport';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import Text from '@/components/Text';
 
 interface Props {
   year: number;
@@ -49,7 +50,9 @@ const MonthlyReadingCalendar = ({ year, month, isMobile = false }: Props) => {
 
       <WeekdayRow>
         {WEEKDAYS.map((weekday) => (
-          <Weekday key={weekday}>{weekday}</Weekday>
+          <Weekday key={weekday} font="t3Regular">
+            {weekday}
+          </Weekday>
         ))}
       </WeekdayRow>
       <Divider />
@@ -74,7 +77,7 @@ const MonthlyReadingCalendar = ({ year, month, isMobile = false }: Props) => {
                 <MostReadCircle />
               ) : (
                 <>
-                  <DayNumber>{day}</DayNumber>
+                  <DayNumber font="t3Bold">{day}</DayNumber>
                   {isRead && <ReadUnderline />}
                 </>
               )}
@@ -86,14 +89,14 @@ const MonthlyReadingCalendar = ({ year, month, isMobile = false }: Props) => {
       <Divider />
       <Legend>
         <LegendItem>
-          <LegendCircle>
+          <LegendCircle font="t1Regular">
             {mostReadDay ? Number(mostReadDay.date.slice(8)) : ''}
           </LegendCircle>
-          <LegendText>가장 많이 읽은 날</LegendText>
+          <LegendText font="t3Regular">가장 많이 읽은 날</LegendText>
         </LegendItem>
         <LegendItem>
           <LegendSquare />
-          <LegendText>읽은 날</LegendText>
+          <LegendText font="t3Regular">읽은 날</LegendText>
         </LegendItem>
       </Legend>
     </Card>
@@ -129,16 +132,14 @@ const Title = styled.h3`
   margin: 0;
 
   color: ${COLORS.title};
-  font-size: 14px;
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t5Bold};
 `;
 
 const Subtitle = styled.p`
   margin: 0;
 
   color: ${COLORS.subtitle};
-  font-size: 12px;
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t3Bold};
 `;
 
 const WeekdayRow = styled.div`
@@ -146,10 +147,12 @@ const WeekdayRow = styled.div`
   grid-template-columns: repeat(7, 1fr);
 `;
 
-const Weekday = styled.span`
-  color: ${COLORS.weekday};
-  font-size: 12px;
+const Weekday = styled(Text)`
   text-align: center;
+
+  && {
+    color: ${COLORS.weekday};
+  }
 `;
 
 const Divider = styled.div`
@@ -173,10 +176,10 @@ const DayCell = styled.div`
   justify-content: center;
 `;
 
-const DayNumber = styled.span`
-  color: ${COLORS.day};
-  font-size: 12px;
-  font-weight: 700;
+const DayNumber = styled(Text)`
+  && {
+    color: ${COLORS.day};
+  }
 `;
 
 const MostReadCircle = styled.span`
@@ -219,7 +222,7 @@ const LegendItem = styled.div`
   align-items: center;
 `;
 
-const LegendCircle = styled.span`
+const LegendCircle = styled(Text)`
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -229,8 +232,10 @@ const LegendCircle = styled.span`
   justify-content: center;
 
   background-color: ${COLORS.read};
-  color: ${COLORS.mostReadText};
-  font-size: 10px;
+
+  && {
+    color: ${COLORS.mostReadText};
+  }
 `;
 
 const LegendSquare = styled.span`
@@ -242,7 +247,8 @@ const LegendSquare = styled.span`
   background-color: ${COLORS.readBg};
 `;
 
-const LegendText = styled.span`
-  color: ${COLORS.legendText};
-  font-size: 12px;
+const LegendText = styled(Text)`
+  && {
+    color: ${COLORS.legendText};
+  }
 `;

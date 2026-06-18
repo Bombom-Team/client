@@ -97,15 +97,13 @@ const Label = styled.p`
   margin: 0;
 
   color: ${COLORS.label};
-  font-size: 16px;
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t6Bold};
   text-align: center;
 `;
 
 const Days = styled.strong`
   color: ${COLORS.days};
-  font-size: 24px;
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t10Bold};
 `;
 
 const Message = styled.p`
@@ -117,8 +115,7 @@ const Message = styled.p`
   align-items: center;
 
   color: ${COLORS.message};
-  font-size: 14px;
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t5Bold};
   text-align: center;
 `;
 
