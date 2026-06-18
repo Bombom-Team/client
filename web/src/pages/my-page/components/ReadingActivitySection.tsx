@@ -121,11 +121,6 @@ const ReadingActivitySection = () => {
       </StatsWrapper>
 
       <MonthlyReport isMobile={isMobile} />
-
-      <MonthlyReportImage
-        src="/assets/svg/monthly-reading-report.svg"
-        alt="2024년 6월 월간 리포트 예시. 읽은 아티클 248개, 북마크 132개, 월간 읽기 달력과 뉴스레터 카테고리 요약"
-      />
     </Container>
   );
 };
@@ -254,14 +249,6 @@ const LoadingMessage = styled.p`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t4Regular};
-`;
-
-const MonthlyReportImage = styled.img`
-  width: 100%;
-  height: auto;
-  border-radius: 16px;
-
-  display: block;
 `;
 
 const MobileCompanionCard = styled.article`

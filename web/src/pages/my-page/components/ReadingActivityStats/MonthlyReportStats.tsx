@@ -50,14 +50,14 @@ const MonthlyReportStats = ({ year, month, isMobile = false }: Props) => {
                 {data?.readArticleCount ?? 0}
                 <StatUnit>개</StatUnit>
               </StatValue>
+              {changeRate !== null && changeDirection !== null && (
+                <ChangePill>
+                  {CHANGE_ARROW[changeDirection]}{' '}
+                  {Math.round(Math.abs(changeRate))}% 지난 달 대비
+                </ChangePill>
+              )}
             </StatTextGroup>
           </StatRow>
-          {changeRate !== null && changeDirection !== null && (
-            <ChangePill>
-              {CHANGE_ARROW[changeDirection]} {Math.round(Math.abs(changeRate))}
-              % 지난 달 대비
-            </ChangePill>
-          )}
         </Stat>
 
         <Divider />
@@ -161,7 +161,7 @@ const StatTextGroup = styled.div`
   min-width: 0;
 
   display: flex;
-  gap: 2px;
+  gap: 4px;
   flex-direction: column;
 `;
 
@@ -173,7 +173,7 @@ const StatLabel = styled.span`
 
 const StatValue = styled.span`
   color: ${COLORS.value};
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
 `;
 

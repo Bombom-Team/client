@@ -70,9 +70,14 @@ const MonthlyReadingCalendar = ({ year, month, isMobile = false }: Props) => {
               key={dateKey}
               aria-label={`${month}월 ${day}일 ${readCount}개 읽음`}
             >
-              {isMostRead && <MostReadCircle />}
-              <DayNumber isMostRead={isMostRead}>{day}</DayNumber>
-              {isRead && <ReadUnderline />}
+              {isMostRead ? (
+                <MostReadCircle />
+              ) : (
+                <>
+                  <DayNumber>{day}</DayNumber>
+                  {isRead && <ReadUnderline />}
+                </>
+              )}
             </DayCell>
           );
         })}
@@ -168,12 +173,10 @@ const DayCell = styled.div`
   justify-content: center;
 `;
 
-const DayNumber = styled.span<{ isMostRead: boolean }>`
-  position: relative;
-  z-index: ${({ theme }) => theme.zIndex.content};
-
-  color: ${({ isMostRead }) => (isMostRead ? COLORS.mostReadText : COLORS.day)};
+const DayNumber = styled.span`
+  color: ${COLORS.day};
   font-size: 12px;
+  font-weight: 700;
 `;
 
 const MostReadCircle = styled.span`
