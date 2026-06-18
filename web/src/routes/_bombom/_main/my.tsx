@@ -14,6 +14,7 @@ import { useDevice } from '@/hooks/useDevice';
 import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection/NotificationSettingsSection';
 import ProfileSection from '@/pages/my-page/components/ProfileSection';
 import ReadingActivitySection from '@/pages/my-page/components/ReadingActivitySection';
+import ReadingCompanionCard from '@/pages/my-page/components/ReadingCompanionCard';
 import RewardsSection from '@/pages/my-page/components/RewardsSection';
 import SubscribedNewslettersSection from '@/pages/my-page/components/SubscribedNewslettersSection/SubscribedNewslettersSection';
 import { isWebView } from '@/utils/device';
@@ -131,12 +132,7 @@ function MyPage() {
               />
             ))}
           </Tabs>
-          {device !== 'mobile' && (
-            <CompanionImage
-              src="/assets/svg/reading-companion.svg"
-              alt="봄봄과 함께한 지 142일째. 꾸준한 읽기 습관이 쌓이고 있어요."
-            />
-          )}
+          {device !== 'mobile' && <ReadingCompanionCard />}
         </TabsWrapper>
 
         <TabPanel
@@ -209,15 +205,6 @@ const TabsWrapper = styled.div<{ device: Device }>`
   order: 0;
 
   ${({ device, theme }) => tabsWrapperStyles[device](theme)}
-`;
-
-const CompanionImage = styled.img`
-  width: 100%;
-  height: auto;
-  margin-top: auto;
-  border-radius: 16px;
-
-  display: block;
 `;
 
 const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {

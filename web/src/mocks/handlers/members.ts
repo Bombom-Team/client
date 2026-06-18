@@ -110,6 +110,13 @@ export const membersHandlers = [
     });
   }),
 
+  http.get(`${baseURL}/members/me/join-days`, () => {
+    return HttpResponse.json({
+      daysSinceJoined: 141,
+      joinedAt: '2026-01-28',
+    });
+  }),
+
   http.get(`${baseURL}/members/me/reading/dashboard`, () => {
     return HttpResponse.json({
       readArticleCount: 248,
