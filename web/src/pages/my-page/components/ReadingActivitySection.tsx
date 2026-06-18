@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import DottedRankGraph from '@/pages/my-page/components/ReadingActivityStats/DottedRankGraph';
+import MonthlyReadingCalendar from '@/pages/my-page/components/ReadingActivityStats/MonthlyReadingCalendar';
 import SubscribedCategoryStats from '@/pages/my-page/components/ReadingActivityStats/SubscribedCategoryStats';
 import LogoImage from '#/assets/avif/logo.avif';
 import CrownIcon from '#/assets/svg/crown.svg';
@@ -123,6 +124,8 @@ const ReadingActivitySection = () => {
         src="/assets/svg/monthly-reading-report.svg"
         alt="2024년 6월 월간 리포트 예시. 읽은 아티클 248개, 북마크 132개, 월간 읽기 달력과 뉴스레터 카테고리 요약"
       />
+
+      <MonthlyReadingCalendar isMobile={isMobile} />
     </Container>
   );
 };

@@ -109,4 +109,24 @@ export const membersHandlers = [
       nextRankDifference: 12,
     });
   }),
+
+  http.get(`${baseURL}/members/me/reading/calendar`, ({ request }) => {
+    const url = new URL(request.url);
+    const year = Number(url.searchParams.get('year'));
+    const month = Number(url.searchParams.get('month'));
+    const daysInMonth = new Date(year, month, 0).getDate();
+
+    const days = Array.from({ length: daysInMonth }, (_, index) => {
+      const day = index + 1;
+      const readCount = (day * 7) % 9;
+
+      return {
+        date: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+        read: readCount > 0,
+        readCount,
+      };
+    });
+
+    return HttpResponse.json(days);
+  }),
 ];
