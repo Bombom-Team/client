@@ -6,11 +6,12 @@ import {
   useNavigate,
   useSearch,
 } from '@tanstack/react-router';
-import { Suspense, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import MyChallengeSection from '@/pages/my-page/components/MyChallengeSection/MyChallengeSection';
 import MyChallengeSectionSkeleton from '@/pages/my-page/components/MyChallengeSection/MyChallengeSectionSkeleton';
 import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection/NotificationSettingsSection';
@@ -71,6 +72,15 @@ function MyPage() {
       return 5 * 1000;
     },
   });
+
+  useEffect(() => {
+    if (activeTabParam === 'challenges') {
+      trackEvent({
+        category: 'MyPage',
+        action: '나의 챌린지 탭 진입',
+      });
+    }
+  }, [activeTabParam]);
 
   const tabs = isWebView()
     ? [...DEFAULT_TABS, ...WEBVIEW_TABS]
