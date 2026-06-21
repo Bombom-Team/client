@@ -6,7 +6,7 @@ import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 import type { GetMyChallengeSummaryResponse } from '@/apis/members/members.api';
 import type { Device } from '@/hooks/useDevice';
-import CrownIcon from '#/assets/svg/crown.svg';
+import CrownIcon from '#/assets/svg/crown-colored.svg';
 import MedalIcon from '#/assets/svg/medal.svg';
 import TrophyColoredIcon from '#/assets/svg/trophy-colored.svg';
 
