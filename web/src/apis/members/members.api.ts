@@ -95,6 +95,32 @@ export const getMyStreakReadingRank = async () => {
   });
 };
 
+export interface CategoryStat {
+  id: number;
+  name: string;
+  count: number;
+  percent: number;
+}
+
+export interface CategoryStatsResponse {
+  type: 'cumulative' | 'monthly';
+  total: number;
+  categories: CategoryStat[];
+}
+
+export interface GetCategoryStatsParams {
+  yearMonth?: string;
+}
+
+export const getCategoryStats = async ({
+  yearMonth,
+}: GetCategoryStatsParams = {}) => {
+  return await fetcher.get<CategoryStatsResponse>({
+    path: '/mypage/category-stats',
+    query: yearMonth ? { yearMonth } : undefined,
+  });
+};
+
 export type PatchMembersInfoParams =
   components['schemas']['MemberInfoUpdateRequest'];
 

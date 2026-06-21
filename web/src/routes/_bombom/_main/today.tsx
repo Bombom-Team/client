@@ -1,4 +1,3 @@
-import { getPet } from '@bombom/shared/apis/pet';
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
@@ -51,10 +50,7 @@ function Index() {
     queries.articles({ date: todayDateStr }),
   );
 
-  const { data: pet, isLoading: isPetLoading } = useQuery({
-    queryKey: ['pet'],
-    queryFn: getPet,
-  });
+  const { data: pet, isLoading: isPetLoading } = useQuery(queries.pet());
 
   const { mutate: deleteArticles } = useDeleteArticlesMutation('today');
 
