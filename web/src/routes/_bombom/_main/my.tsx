@@ -15,7 +15,7 @@ import NotificationSettingsSection from '@/pages/my-page/components/Notification
 import ProfileSection from '@/pages/my-page/components/ProfileSection';
 import ReadingActivitySection from '@/pages/my-page/components/ReadingActivitySection';
 import RewardsSection from '@/pages/my-page/components/RewardsSection';
-import SubscribedNewslettersSection from '@/pages/my-page/components/SubscribedNewslettersSection';
+import SubscribedNewslettersSection from '@/pages/my-page/components/SubscribedNewslettersSection/SubscribedNewslettersSection';
 import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
