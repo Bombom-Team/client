@@ -23,7 +23,7 @@ const LandingHeader = () => {
             <Skeleton width="100px" height="40px" borderRadius={12} />
           ) : isLoggedIn ? (
             <GoToService device={device} href={BOMBOM_SERVICE_URL}>
-              서비스 이동
+              봄봄으로 이동
             </GoToService>
           ) : (
             <LoginButton />
@@ -82,7 +82,7 @@ const GoToService = styled.a<{ device: Device }>`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primaryMaeilMail};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t5Regular};
 
