@@ -35,7 +35,7 @@ const CertificateModal = ({
 
   return createPortal(
     <Modal
-      position={device === 'mobile' ? 'fullscreen' : 'center'}
+      position={device === 'pc' ? 'center' : 'fullscreen'}
       modalRef={modalRef}
       closeModal={closeModal}
       isOpen={isOpen}

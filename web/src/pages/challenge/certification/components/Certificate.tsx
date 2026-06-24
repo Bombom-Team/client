@@ -115,7 +115,7 @@ const Container = styled.div<{ device: Device }>`
   width: 100%;
   min-width: 300px;
   max-width: ${({ device }) => {
-    if (device === 'pc') return '540px';
+    if (device === 'pc') return '560px';
     if (device === 'tablet') return '450px';
     return '360px';
   }};
