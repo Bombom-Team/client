@@ -115,7 +115,7 @@ const Container = styled.div<{ device: Device }>`
   width: 100%;
   min-width: 300px;
   max-width: ${({ device }) => {
-    if (device === 'pc') return '560px';
+    if (device === 'pc') return '520px';
     if (device === 'tablet') return '450px';
     return '360px';
   }};
@@ -174,8 +174,8 @@ const Description = styled.p<{ isMobile: boolean }>`
   margin: ${({ isMobile }) => (isMobile ? '8px 0 0' : '12px 0 0')};
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
   font-size: clamp(0.6875rem, 1.8vw, 1rem);
+  line-height: 1.4;
 `;
 
 const Bottom = styled.div`
