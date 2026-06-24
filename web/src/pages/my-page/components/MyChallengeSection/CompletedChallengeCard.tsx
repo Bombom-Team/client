@@ -56,21 +56,26 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
             <BottomRow>
               <AttendanceText>
                 출석률 <AttendanceValue>{attendanceRate}%</AttendanceValue>
+                {grade === 'FAIL' && <FailBadge>(탈락)</FailBadge>}
               </AttendanceText>
-              <CertButton variant="transparent" onClick={openModal}>
-                수료증 확인
-              </CertButton>
+              {grade !== 'FAIL' && (
+                <CertButton variant="transparent" onClick={openModal}>
+                  수료증 확인
+                </CertButton>
+              )}
             </BottomRow>
           </Info>
         </Content>
       </Container>
 
-      <CertificateModal
-        challengeId={challengeId}
-        modalRef={modalRef}
-        isOpen={isOpen}
-        closeModal={closeModal}
-      />
+      {grade !== 'FAIL' && (
+        <CertificateModal
+          challengeId={challengeId}
+          modalRef={modalRef}
+          isOpen={isOpen}
+          closeModal={closeModal}
+        />
+      )}
     </>
   );
 };
@@ -155,6 +160,13 @@ const AttendanceText = styled.span`
 const AttendanceValue = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t3Bold};
+`;
+
+const FailBadge = styled.span`
+  margin-left: 4px;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
 const BottomRow = styled.div`

@@ -80,6 +80,14 @@ const MY_COMPLETED_CHALLENGES_DATA: GetMyCompletedChallengesResponse['content'] 
       attendanceRate: 61,
       grade: 'BRONZE',
     },
+    {
+      challengeId: 5,
+      title: '6월 집중 독서 챌린지',
+      startDate: '2026-06-01',
+      endDate: '2026-06-30',
+      attendanceRate: 32,
+      grade: 'FAIL',
+    },
   ];
 
 export const membersHandlers = [
