@@ -1,7 +1,7 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createPortal } from 'react-dom';
-import { useDevice } from '../../../../../../shared/src/ui-web/hooks/useDevice';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
