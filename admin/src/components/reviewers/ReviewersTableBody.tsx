@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import type { ReviewerWithStats } from '@/types/reviewer';
 import { useToggleVacationMutation } from '@/hooks/useToggleVacationMutation';
+import type { ReviewerWithStats } from '@/types/reviewer';
 
 type Props = {
   reviewers: ReviewerWithStats[];
@@ -65,7 +65,10 @@ export const ReviewersTableBodyLoading = () => (
 export const ReviewersTableBodyError = ({ message }: { message: string }) => (
   <tbody>
     <tr>
-      <td colSpan={7} style={{ textAlign: 'center', color: '#ef4444', padding: '16px' }}>
+      <td
+        colSpan={7}
+        style={{ textAlign: 'center', color: '#ef4444', padding: '16px' }}
+      >
         {message}
       </td>
     </tr>
@@ -94,7 +97,8 @@ const VacationBadge = styled.span<{ $isOnVacation: boolean }>`
   border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
-  background-color: ${({ $isOnVacation }) => ($isOnVacation ? '#fee2e2' : '#d1fae5')};
+  background-color: ${({ $isOnVacation }) =>
+    $isOnVacation ? '#fee2e2' : '#d1fae5'};
   color: ${({ $isOnVacation }) => ($isOnVacation ? '#991b1b' : '#065f46')};
 `;
 

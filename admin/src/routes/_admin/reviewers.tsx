@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Layout } from '@/components/Layout';
 import { reviewersQueries } from '@/apis/reviewers/reviewers.query';
+import { Layout } from '@/components/Layout';
 import {
   ReviewersTableBody,
   ReviewersTableBodyLoading,
@@ -42,7 +42,9 @@ function ReviewersPage() {
             </Tr>
           </Thead>
           <ErrorBoundary
-            fallback={<ReviewersTableBodyError message="리뷰어 목록을 불러오는 중 오류가 발생했습니다." />}
+            fallback={
+              <ReviewersTableBodyError message="리뷰어 목록을 불러오는 중 오류가 발생했습니다." />
+            }
           >
             <Suspense fallback={<ReviewersTableBodyLoading />}>
               <ReviewersTable />

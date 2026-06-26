@@ -1,9 +1,17 @@
 import { supabase } from '@/lib/supabase';
-import type { Reviewer, ReviewAssignment, ReviewerWithStats } from '@/types/reviewer';
+import type {
+  Reviewer,
+  ReviewAssignment,
+  ReviewerWithStats,
+} from '@/types/reviewer';
 
 export const getReviewersWithStats = async (): Promise<ReviewerWithStats[]> => {
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const startOfMonth = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    1,
+  ).toISOString();
   const startOfWeek = new Date(
     now.getFullYear(),
     now.getMonth(),
@@ -50,7 +58,10 @@ export const toggleVacation = async (
 ): Promise<void> => {
   const { error } = await supabase
     .from('reviewer')
-    .update({ is_on_vacation: !currentValue, updated_at: new Date().toISOString() })
+    .update({
+      is_on_vacation: !currentValue,
+      updated_at: new Date().toISOString(),
+    })
     .eq('id', reviewerId);
 
   if (error) throw error;

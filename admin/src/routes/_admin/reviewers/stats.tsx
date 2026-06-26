@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense, useState } from 'react';
 import styled from '@emotion/styled';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { Suspense, useState } from 'react';
 import {
   BarChart,
   Bar,
@@ -26,16 +26,13 @@ function MonthlyBarChart({ year, month }: { year: number; month: number }) {
   const { data } = useSuspenseQuery(reviewersQueries.monthlyStats(year, month));
 
   const chartData: MonthlyStatEntry[] = Object.values(
-    (data ?? []).reduce(
-      (acc: Record<string, MonthlyStatEntry>, item) => {
-        const reviewArr = item.review as { display_name: string }[] | null;
-        const name = reviewArr?.[0]?.display_name ?? `#${item.reviewer_id}`;
-        if (!acc[name]) acc[name] = { display_name: name, count: 0 };
-        acc[name].count += 1;
-        return acc;
-      },
-      {},
-    ),
+    (data ?? []).reduce((acc: Record<string, MonthlyStatEntry>, item) => {
+      const reviewArr = item.review as { display_name: string }[] | null;
+      const name = reviewArr?.[0]?.display_name ?? `#${item.reviewer_id}`;
+      if (!acc[name]) acc[name] = { display_name: name, count: 0 };
+      acc[name].count += 1;
+      return acc;
+    }, {}),
   );
 
   return (
@@ -52,7 +49,9 @@ function MonthlyBarChart({ year, month }: { year: number; month: number }) {
 }
 
 function OpenAssignmentsList() {
-  const { data: assignments } = useSuspenseQuery(reviewersQueries.openAssignments());
+  const { data: assignments } = useSuspenseQuery(
+    reviewersQueries.openAssignments(),
+  );
 
   if (!assignments || assignments.length === 0) {
     return <EmptyText>현재 배정된 PR이 없습니다.</EmptyText>;
@@ -93,14 +92,20 @@ function ReviewerStatsPage() {
       <Section>
         <SectionTitle>월별 리뷰 수</SectionTitle>
         <Controls>
-          <select value={year} onChange={(e) => setYear(Number(e.target.value))}>
+          <select
+            value={year}
+            onChange={(e) => setYear(Number(e.target.value))}
+          >
             {years.map((y) => (
               <option key={y} value={y}>
                 {y}년
               </option>
             ))}
           </select>
-          <select value={month} onChange={(e) => setMonth(Number(e.target.value))}>
+          <select
+            value={month}
+            onChange={(e) => setMonth(Number(e.target.value))}
+          >
             {months.map((m) => (
               <option key={m} value={m}>
                 {m}월
@@ -134,7 +139,9 @@ const Header = styled.div`
     color: #6b7280;
     text-decoration: none;
     font-size: 14px;
-    &:hover { color: #111; }
+    &:hover {
+      color: #111;
+    }
   }
 
   h1 {
@@ -181,13 +188,17 @@ const AssignmentList = styled.ul`
 const AssignmentItem = styled.li`
   padding: 12px 0;
   border-bottom: 1px solid #f3f4f6;
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 
   a {
     color: #1d4ed8;
     text-decoration: none;
     font-size: 14px;
-    &:hover { text-decoration: underline; }
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 
