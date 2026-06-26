@@ -17,6 +17,7 @@ import { Route as AdminNoticesRouteImport } from './routes/_admin/notices';
 import { Route as AdminMembersRouteImport } from './routes/_admin/members';
 import { Route as AdminFlywayRouteImport } from './routes/_admin/flyway';
 import { Route as AdminEventsRouteImport } from './routes/_admin/events';
+import { Route as AdminErdRouteImport } from './routes/_admin/erd';
 import { Route as AdminChallengesRouteImport } from './routes/_admin/challenges';
 import { Route as AdminBlogRouteImport } from './routes/_admin/blog';
 import { Route as AdminResourcesIndexRouteImport } from './routes/_admin/resources/index';
@@ -86,6 +87,11 @@ const AdminFlywayRoute = AdminFlywayRouteImport.update({
 const AdminEventsRoute = AdminEventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any);
+const AdminErdRoute = AdminErdRouteImport.update({
+  id: '/erd',
+  path: '/erd',
   getParentRoute: () => AdminRoute,
 } as any);
 const AdminChallengesRoute = AdminChallengesRouteImport.update({
@@ -266,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/403': typeof R403Route;
   '/blog': typeof AdminBlogRouteWithChildren;
   '/challenges': typeof AdminChallengesRouteWithChildren;
+  '/erd': typeof AdminErdRoute;
   '/events': typeof AdminEventsRouteWithChildren;
   '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
@@ -304,6 +311,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/403': typeof R403Route;
+  '/erd': typeof AdminErdRoute;
   '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
   '/': typeof AdminIndexRoute;
@@ -338,6 +346,7 @@ export interface FileRoutesById {
   '/_admin': typeof AdminRouteWithChildren;
   '/_admin/blog': typeof AdminBlogRouteWithChildren;
   '/_admin/challenges': typeof AdminChallengesRouteWithChildren;
+  '/_admin/erd': typeof AdminErdRoute;
   '/_admin/events': typeof AdminEventsRouteWithChildren;
   '/_admin/flyway': typeof AdminFlywayRoute;
   '/_admin/members': typeof AdminMembersRoute;
@@ -380,6 +389,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/blog'
     | '/challenges'
+    | '/erd'
     | '/events'
     | '/flyway'
     | '/members'
@@ -418,6 +428,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/403'
+    | '/erd'
     | '/flyway'
     | '/members'
     | '/'
@@ -451,6 +462,7 @@ export interface FileRouteTypes {
     | '/_admin'
     | '/_admin/blog'
     | '/_admin/challenges'
+    | '/_admin/erd'
     | '/_admin/events'
     | '/_admin/flyway'
     | '/_admin/members'
@@ -549,6 +561,13 @@ declare module '@tanstack/react-router' {
       path: '/events';
       fullPath: '/events';
       preLoaderRoute: typeof AdminEventsRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
+    '/_admin/erd': {
+      id: '/_admin/erd';
+      path: '/erd';
+      fullPath: '/erd';
+      preLoaderRoute: typeof AdminErdRouteImport;
       parentRoute: typeof AdminRoute;
     };
     '/_admin/challenges': {
@@ -940,6 +959,7 @@ const AdminNewslettersNewsletterIdRouteWithChildren =
 interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRouteWithChildren;
   AdminChallengesRoute: typeof AdminChallengesRouteWithChildren;
+  AdminErdRoute: typeof AdminErdRoute;
   AdminEventsRoute: typeof AdminEventsRouteWithChildren;
   AdminFlywayRoute: typeof AdminFlywayRoute;
   AdminMembersRoute: typeof AdminMembersRoute;
@@ -955,6 +975,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRouteWithChildren,
   AdminChallengesRoute: AdminChallengesRouteWithChildren,
+  AdminErdRoute: AdminErdRoute,
   AdminEventsRoute: AdminEventsRouteWithChildren,
   AdminFlywayRoute: AdminFlywayRoute,
   AdminMembersRoute: AdminMembersRoute,
