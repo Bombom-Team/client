@@ -43,6 +43,7 @@ const MAX_ZOOM = 2.4;
 const ZOOM_STEP = 0.2;
 const TRACKPAD_ZOOM_SENSITIVITY = 0.0032;
 const TRACKPAD_ZOOM_MAX_DELTA = 90;
+const ERD_SCHEMA_UPDATED_AT = '2026.06.27';
 
 const filters: Array<{ id: DomainFilter; label: string }> = [
   { id: 'all', label: 'All' },
@@ -780,6 +781,9 @@ const ErdPage = () => {
             <TitleGroup>
               <Eyebrow>BomBom Data Map</Eyebrow>
               <Title>Service ERD</Title>
+              <UpdateMeta>
+                main 기준 최근 업데이트: {ERD_SCHEMA_UPDATED_AT}
+              </UpdateMeta>
             </TitleGroup>
           </BrandGroup>
           <Search
@@ -1435,6 +1439,14 @@ const Title = styled.h1`
   color: #0f172a;
   font:
     800 30px/38px Inter,
+    system-ui,
+    sans-serif;
+`;
+
+const UpdateMeta = styled.span`
+  color: #64748b;
+  font:
+    600 12px/18px Inter,
     system-ui,
     sans-serif;
 `;
