@@ -23,6 +23,7 @@ export const Route = createFileRoute('/landing')({
         title: '봄봄 | 읽고 남기고 쌓는 뉴스레터 리딩 플랫폼',
       },
     ],
+    links: [{ rel: 'canonical', href: 'https://www.bombom.news' }],
   }),
   component: LandingPage,
 });
