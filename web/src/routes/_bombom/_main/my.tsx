@@ -118,22 +118,24 @@ function MyPage() {
       </TitleWrapper>
 
       <ContentWrapper device={device}>
-        <TabsWrapper device={device}>
-          <Tabs direction={device === 'mobile' ? 'horizontal' : 'vertical'}>
-            {tabs.map((tab) => (
-              <Tab
-                key={tab.id}
-                value={tab.id}
-                label={tab.label}
-                onTabSelect={() => handleTabSelect(tab.id)}
-                selected={activeTabParam === tab.id}
-                aria-controls={`panel-${tab.id}`}
-                textAlign="start"
-              />
-            ))}
-          </Tabs>
+        <SideColumn device={device}>
+          <TabsWrapper device={device}>
+            <Tabs direction={device === 'mobile' ? 'horizontal' : 'vertical'}>
+              {tabs.map((tab) => (
+                <Tab
+                  key={tab.id}
+                  value={tab.id}
+                  label={tab.label}
+                  onTabSelect={() => handleTabSelect(tab.id)}
+                  selected={activeTabParam === tab.id}
+                  aria-controls={`panel-${tab.id}`}
+                  textAlign="start"
+                />
+              ))}
+            </Tabs>
+          </TabsWrapper>
           {device !== 'mobile' && <ReadingCompanionCard />}
-        </TabsWrapper>
+        </SideColumn>
 
         <TabPanel
           id={`panel-${activeTabParam}`}
@@ -194,30 +196,37 @@ const ContentWrapper = styled.div<{ device: Device }>`
   align-self: stretch;
 `;
 
-const TabsWrapper = styled.div<{ device: Device }>`
+const SideColumn = styled.div<{ device: Device }>`
   width: ${({ device }) => (device === 'mobile' ? '100%' : '280px')};
+
+  display: flex;
+  flex-direction: column;
+  gap: ${({ device }) => (device === 'mobile' ? '0' : '20px')};
+  flex-shrink: 0;
+
+  box-sizing: border-box;
+
+  order: 0;
+`;
+
+const TabsWrapper = styled.div<{ device: Device }>`
+  width: 100%;
 
   display: flex;
   flex-direction: column;
 
   box-sizing: border-box;
 
-  order: 0;
-
   ${({ device, theme }) => tabsWrapperStyles[device](theme)}
 `;
 
 const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   pc: (theme) => ({
-    flexShrink: 0,
-    alignSelf: 'stretch',
     border: `1px solid ${theme.colors.stroke}`,
     borderRadius: '12px',
     padding: '16px',
   }),
   tablet: (theme) => ({
-    flexShrink: 0,
-    alignSelf: 'stretch',
     border: `1px solid ${theme.colors.stroke}`,
     borderRadius: '12px',
     padding: '16px',

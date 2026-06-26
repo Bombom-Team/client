@@ -72,7 +72,6 @@ export default ReadingCompanionCard;
 
 const Card = styled.div`
   width: 100%;
-  margin-top: auto;
   padding: 28px 20px;
   border-radius: 20px;
 
