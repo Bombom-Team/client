@@ -46,6 +46,10 @@ export const Sidebar = () => {
           <FiDatabase />
           <span>Flyway 형상</span>
         </NavItem>
+        <NavItem to="/erd" $isActive={currentPath.startsWith('/erd')}>
+          <FiDatabase />
+          <span>ERD</span>
+        </NavItem>
         <NavItem
           to="/newsletters"
           $isActive={currentPath.startsWith('/newsletters')}
