@@ -52,7 +52,8 @@ function NewslettersPage() {
       <ErrorBoundary
         fallbackRender={({ error }) => (
           <div className="p-4 text-red-500">
-            에러가 발생했습니다: {error.message}
+            에러가 발생했습니다:{' '}
+            {error instanceof Error ? error.message : String(error)}
           </div>
         )}
       >
