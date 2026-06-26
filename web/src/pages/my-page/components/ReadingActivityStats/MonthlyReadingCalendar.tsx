@@ -74,7 +74,9 @@ const MonthlyReadingCalendar = ({ year, month, isMobile = false }: Props) => {
               aria-label={`${month}월 ${day}일 ${readCount}개 읽음`}
             >
               {isMostRead ? (
-                <MostReadCircle />
+                <MostReadCircle font="t3Bold" color="white">
+                  {day}
+                </MostReadCircle>
               ) : (
                 <>
                   <DayNumber font="t3Bold">{day}</DayNumber>
@@ -89,9 +91,7 @@ const MonthlyReadingCalendar = ({ year, month, isMobile = false }: Props) => {
       <Divider />
       <Legend>
         <LegendItem>
-          <LegendCircle font="t1Regular">
-            {mostReadDay ? Number(mostReadDay.date.slice(8)) : ''}
-          </LegendCircle>
+          <LegendCircle />
           <LegendText font="t3Regular">가장 많이 읽은 날</LegendText>
         </LegendItem>
         <LegendItem>
@@ -182,14 +182,18 @@ const DayNumber = styled(Text)`
   }
 `;
 
-const MostReadCircle = styled.span`
+const MostReadCircle = styled(Text)`
   position: absolute;
   top: 50%;
   left: 50%;
 
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   background-color: ${COLORS.read};
 
@@ -232,10 +236,6 @@ const LegendCircle = styled(Text)`
   justify-content: center;
 
   background-color: ${COLORS.read};
-
-  && {
-    color: ${COLORS.mostReadText};
-  }
 `;
 
 const LegendSquare = styled.span`
