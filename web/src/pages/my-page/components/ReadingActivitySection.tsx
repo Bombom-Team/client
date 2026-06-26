@@ -4,7 +4,6 @@ import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import DottedRankGraph from '@/pages/my-page/components/ReadingActivityStats/DottedRankGraph';
 import MonthlyReport from '@/pages/my-page/components/ReadingActivityStats/MonthlyReport';
-import SubscribedCategoryStats from '@/pages/my-page/components/ReadingActivityStats/SubscribedCategoryStats';
 import LogoImage from '#/assets/avif/logo.avif';
 import CrownIcon from '#/assets/svg/crown.svg';
 import StreakIcon from '#/assets/svg/streak.svg';
@@ -116,8 +115,6 @@ const ReadingActivitySection = () => {
             </>
           )}
         </StatCard>
-
-        <SubscribedCategoryStats isMobile={isMobile} />
       </StatsWrapper>
 
       <MonthlyReport isMobile={isMobile} />
@@ -149,9 +146,7 @@ const StatsWrapper = styled.div<{ isMobile: boolean }>`
   gap: 16px;
 
   grid-template-columns: ${({ isMobile }) =>
-    isMobile
-      ? 'repeat(2, minmax(0, 1fr))'
-      : 'minmax(0, 1fr) minmax(0, 1fr) minmax(360px, 1.4fr)'};
+    isMobile ? 'repeat(2, minmax(0, 1fr))' : 'minmax(0, 1fr) minmax(0, 1fr)'};
 `;
 
 const StatCard = styled.article<{ isMobile: boolean }>`

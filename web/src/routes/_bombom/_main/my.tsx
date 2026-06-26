@@ -6,7 +6,6 @@ import {
   useNavigate,
   useSearch,
 } from '@tanstack/react-router';
-import { useRef } from 'react';
 import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
@@ -59,18 +58,9 @@ export const Route = createFileRoute('/_bombom/_main/my')({
 function MyPage() {
   const device = useDevice();
   const navigate = useNavigate();
-  const countRef = useRef(0);
   const { tab: activeTabParam } = useSearch({ from: '/_bombom/_main/my' });
 
   const { data: userInfo } = useQuery(queries.me());
-  const { data: mySubscriptions } = useQuery({
-    ...queries.mySubscriptions(),
-    refetchInterval: () => {
-      if (countRef.current >= 60) return false;
-      countRef.current += 1;
-      return 5 * 1000;
-    },
-  });
 
   const tabs = isWebView()
     ? [...DEFAULT_TABS, ...WEBVIEW_TABS]
@@ -93,12 +83,7 @@ function MyPage() {
       case 'reading-activity':
         return <ReadingActivitySection />;
       case 'newsletters':
-        return (
-          <SubscribedNewslettersSection
-            newsletters={mySubscriptions ?? []}
-            device={device}
-          />
-        );
+        return <SubscribedNewslettersSection device={device} />;
       case 'rewards':
         return <RewardsSection />;
       case 'notification':
