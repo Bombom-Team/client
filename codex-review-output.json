@@ -1,0 +1,46 @@
+{
+  "overall_correctness": "patch is incorrect",
+  "overall_explanation": "관리자용 ERD 뷰어와 리뷰어 관리 기능을 추가하는 PR입니다. ERD 페이지는 정적 데이터 기반으로 잘 구성되어 있고 이벤트 핸들러 cleanup도 올바르게 처리되어 있습니다. 다만 리뷰어 통계 조회 시 `review_assignment` 테이블을 날짜 필터나 LIMIT 없이 전체 조회하여 데이터 증가 시 성능 저하가 예상됩니다.",
+  "overall_confidence_score": 0.88,
+  "findings": [
+    {
+      "title": "review_assignment 전체 조회 — 성능 저하 위험",
+      "body": "`getReviewersWithStats`에서 `review_assignment` 테이블을 날짜 필터나 LIMIT 없이 전체 조회(`select('*')`)한 후, 월간·주간 집계를 클라이언트에서 수행합니다. PR 리뷰가 쌓일수록 쿼리 응답 시간이 선형적으로 늘어나고, Supabase 기본 응답 상한(1,000행)을 초과하면 집계 결과가 잘려 통계가 부정확해집니다.\n\n**수정 방향:** 서버 사이드에서 기간 필터를 적용하거나, 아래처럼 최근 N개월로 조건을 좁히세요.\n```ts\n// 예: 최근 3개월치만 조회\nconst since = new Date(now.getFullYear(), now.getMonth() - 2, 1).toISOString();\nsupabase.from('review_assignment').select('*').gte('assigned_at', since);\n```\n또는 `getMonthlyStats`처럼 집계 자체를 서버 쿼리로 분리하는 방법도 권장됩니다.",
+      "severity": "major",
+      "confidence_score": 0.93,
+      "code_location": {
+        "absolute_file_path": "admin/src/apis/reviewers/reviewers.api.ts",
+        "line_range": {
+          "start": 21,
+          "end": 23
+        }
+      }
+    },
+    {
+      "title": "ERD 업데이트 일자 하드코딩",
+      "body": "`ERD_SCHEMA_UPDATED_AT = '2026.06.27'`이 소스에 직접 박혀 있어, DB 스키마를 변경할 때마다 이 값을 수동으로 갱신해야 합니다. PR 설명에서 '수동 갱신 방식'임을 명시했으나, 갱신을 잊으면 화면에 표시되는 날짜가 실제 ERD 상태와 달라집니다. 빌드 시점의 날짜나 CI에서 주입하는 방식으로 전환하거나, 최소한 주석으로 수동 갱신 필요성을 명시하는 것을 권장합니다.",
+      "severity": "minor",
+      "confidence_score": 0.97,
+      "code_location": {
+        "absolute_file_path": "admin/src/pages/erd/ErdPage.tsx",
+        "line_range": {
+          "start": 46,
+          "end": 46
+        }
+      }
+    },
+    {
+      "title": "기획 문서에 로컬 절대 경로 포함",
+      "body": "`docs/superpowers/plans/2026-06-17-auto-reviewer-frontend.md`에 `/Users/wonmac/code/...` 형식의 개발자 로컬 머신 절대 경로가 다수 포함되어 있습니다. 다른 팀원이나 CI 환경에서 이 경로는 유효하지 않습니다. 레포 상대 경로(`./docs/...`)로 교체하거나 외부 링크로 변경하는 것을 권장합니다.",
+      "severity": "minor",
+      "confidence_score": 0.99,
+      "code_location": {
+        "absolute_file_path": "docs/superpowers/plans/2026-06-17-auto-reviewer-frontend.md",
+        "line_range": {
+          "start": 11,
+          "end": 13
+        }
+      }
+    }
+  ]
+}
