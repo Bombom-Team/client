@@ -21,10 +21,7 @@ const MaeilMailPromotionBanner = () => {
         <LogoRow device={device}>
           <Flex align="center" gap={10}>
             <BomBomLogo src={logo} alt="봄봄" device={device} />
-            <Text
-              color="textPrimary"
-              font={device === 'mobile' ? 't5Bold' : 't8Bold'}
-            >
+            <Text color="textPrimary" font="t8Bold">
               봄봄
             </Text>
           </Flex>
@@ -35,15 +32,19 @@ const MaeilMailPromotionBanner = () => {
         </LogoRow>
 
         <HeroTitleSection>
+          <Flex
+            align="center"
+            direction={device === 'mobile' ? 'column' : 'row'}
+            gap={4}
+          >
+            <HeadlineLine device={device}>하루 한 문제,</HeadlineLine>
+            <HeadlineLine device={device}>기술면접 준비</HeadlineLine>
+          </Flex>
           <HeadlineLine device={device}>
-            이제{' '}
             <BrandGreen primaryColor={MAEIL_MAIL_LANDING_CONFIG.primaryColor}>
               매일메일
             </BrandGreen>
-            도
-          </HeadlineLine>
-          <HeadlineLine device={device}>
-            <BrandOrange>봄봄</BrandOrange>에서
+            을 <BrandOrange>봄봄</BrandOrange>에서
           </HeadlineLine>
         </HeroTitleSection>
       </Content>
@@ -73,7 +74,7 @@ const Content = styled.div<{ device: Device }>`
   padding: ${({ device }) => (device === 'mobile' ? '0 24px' : '0 32px')};
 
   display: flex;
-  gap: 4px;
+  gap: 8px;
   flex-direction: column;
   align-items: center;
 `;
@@ -103,10 +104,10 @@ const HeadlineLine = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
     device === 'mobile'
-      ? theme.fonts.t12Bold
+      ? theme.fonts.t10Bold
       : device === 'tablet'
-        ? theme.fonts.t14Bold
-        : theme.fonts.t16Bold};
+        ? theme.fonts.t12Bold
+        : theme.fonts.t13Bold};
 `;
 
 const BrandGreen = styled.span<{ primaryColor: string }>`
@@ -118,7 +119,8 @@ const BrandOrange = styled.span`
 `;
 
 const HeroTitleSection = styled(Flex)`
-  flex-direction: column;
+  gap: 4px;
+  flex-flow: column wrap;
   align-items: center;
 
   text-align: center;

@@ -51,21 +51,20 @@ const LandingHero = () => {
 
         <HeroTitleSection>
           <HeadlineLine device={device}>
-            이제{' '}
+            하루 한 문제, 기술면접 준비
+          </HeadlineLine>
+          <HeadlineLine device={device}>
             <BrandGreen primaryColor={MAEIL_MAIL_LANDING_CONFIG.primaryColor}>
               매일메일
             </BrandGreen>
-            도
-          </HeadlineLine>
-          <HeadlineLine device={device}>
-            <BrandOrange>봄봄</BrandOrange>에서
+            을 <BrandOrange>봄봄</BrandOrange>에서
           </HeadlineLine>
         </HeroTitleSection>
 
         <Description>
-          서비스 종료로 아쉬움을 남긴 매일메일을 봄봄에서 계속 만나보세요.
+          매일 하나의 기술 면접 질문을 받아보며
           <br />
-          기술 면접 질문을 한곳에서 더 편하게 읽을 수 있어요.
+          면접 감각을 꾸준히 쌓아보세요.
         </Description>
         <WarnText font="t5Bold">
           * 봄봄에서만 읽을 수 있는 뉴스레터예요.
@@ -153,10 +152,10 @@ const HeadlineLine = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, device }) =>
     device === 'mobile'
-      ? theme.fonts.t14Bold
+      ? theme.fonts.t11Bold
       : device === 'tablet'
-        ? theme.fonts.t15Bold
-        : theme.fonts.t16Bold};
+        ? theme.fonts.t12Bold
+        : theme.fonts.t13Bold};
   letter-spacing: -0.03em;
 `;
 
