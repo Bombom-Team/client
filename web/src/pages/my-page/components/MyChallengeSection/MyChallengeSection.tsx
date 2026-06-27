@@ -2,25 +2,17 @@ import styled from '@emotion/styled';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import ChallengeEmptyState from './ChallengeEmptyState';
 import ChallengeStatsHeader from './ChallengeStatsHeader';
-import CompletedChallengeCard from './CompletedChallengeCard';
+import CompletedChallengeSection from './CompletedChallengeSection';
 import OngoingChallengeCard from './OngoingChallengeCard';
 import { queries } from '@/apis/queries';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
 
 const MyChallengeSection = () => {
-  const device = useDevice();
-  const [summaryResult, ongoingResult, completedResult] = useSuspenseQueries({
-    queries: [
-      queries.myChallengeSummary(),
-      queries.myOngoingChallenges(),
-      queries.myCompletedChallenges(),
-    ],
+  const [summaryResult, ongoingResult] = useSuspenseQueries({
+    queries: [queries.myChallengeSummary(), queries.myOngoingChallenges()],
   });
 
   const summary = summaryResult.data;
   const ongoing = ongoingResult.data?.challenges ?? [];
-  const completed = completedResult.data?.content ?? [];
 
   return (
     <Container>
@@ -53,23 +45,7 @@ const MyChallengeSection = () => {
 
       <Section>
         <SectionTitle>완료한 챌린지</SectionTitle>
-        {completed.length === 0 ? (
-          <ChallengeEmptyState
-            emoji="🏆"
-            title="아직 완료한 챌린지가 없어요"
-            description="챌린지를 완료하면 이곳에 기록이 쌓여요."
-            showGoToChallengeButton={false}
-          />
-        ) : (
-          <CompletedGrid device={device}>
-            {completed.map((challenge) => (
-              <CompletedChallengeCard
-                key={challenge.challengeId}
-                challenge={challenge}
-              />
-            ))}
-          </CompletedGrid>
-        )}
+        <CompletedChallengeSection />
       </Section>
     </Container>
   );
@@ -122,12 +98,4 @@ const CardList = styled.div`
   display: flex;
   gap: 12px;
   flex-direction: column;
-`;
-
-const CompletedGrid = styled.div<{ device: Device }>`
-  display: grid;
-  gap: 12px;
-
-  grid-template-columns: ${({ device }) =>
-    device === 'pc' ? 'repeat(2, 1fr)' : '1fr'};
 `;

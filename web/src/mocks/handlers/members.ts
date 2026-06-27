@@ -88,6 +88,46 @@ const MY_COMPLETED_CHALLENGES_DATA: GetMyCompletedChallengesResponse['content'] 
       attendanceRate: 32,
       grade: 'FAIL',
     },
+    {
+      challengeId: 6,
+      title: '7월 여름 독서 챌린지',
+      startDate: '2026-07-01',
+      endDate: '2026-07-31',
+      attendanceRate: 88,
+      grade: 'GOLD',
+    },
+    {
+      challengeId: 7,
+      title: '8월 완독 챌린지',
+      startDate: '2026-08-01',
+      endDate: '2026-08-31',
+      attendanceRate: 72,
+      grade: 'SILVER',
+    },
+    {
+      challengeId: 8,
+      title: '가을 뉴스레터 챌린지',
+      startDate: '2026-09-01',
+      endDate: '2026-09-30',
+      attendanceRate: 65,
+      grade: 'BRONZE',
+    },
+    {
+      challengeId: 9,
+      title: '10월 독서 습관 챌린지',
+      startDate: '2026-10-01',
+      endDate: '2026-10-31',
+      attendanceRate: 90,
+      grade: 'GOLD',
+    },
+    {
+      challengeId: 10,
+      title: '연말 마무리 챌린지',
+      startDate: '2026-11-01',
+      endDate: '2026-11-30',
+      attendanceRate: 55,
+      grade: 'BRONZE',
+    },
   ];
 
 export const membersHandlers = [

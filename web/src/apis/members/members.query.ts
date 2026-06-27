@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import {
   getCategoryStats,
   getMonthlyReadingRank,
@@ -94,9 +94,24 @@ export const membersQueries = {
       queryFn: getMyOngoingChallenges,
     }),
 
-  myCompletedChallenges: (params?: GetMyCompletedChallengesParams) =>
-    queryOptions({
-      queryKey: ['members', 'me', 'challenges', 'completed', params],
-      queryFn: () => getMyCompletedChallenges(params),
+  infiniteMyCompletedChallenges: (
+    params?: Omit<GetMyCompletedChallengesParams, 'page'>,
+  ) =>
+    infiniteQueryOptions({
+      queryKey: [
+        'members',
+        'me',
+        'challenges',
+        'completed',
+        'infinite',
+        params,
+      ],
+      queryFn: ({ pageParam }) =>
+        getMyCompletedChallenges({ ...params, page: pageParam }),
+      getNextPageParam: (lastPage, _, lastPageParam) => {
+        if (!lastPage || lastPage.last) return undefined;
+        return (lastPageParam as number) + 1;
+      },
+      initialPageParam: 0,
     }),
 };
