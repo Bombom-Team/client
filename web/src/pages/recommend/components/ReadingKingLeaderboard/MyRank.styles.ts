@@ -44,6 +44,12 @@ export const MyReadValue = styled.div`
   font: ${({ theme }) => theme.fonts.t7Bold};
 `;
 
+export const StreakValueWrapper = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
 export const ProgressBox = styled.div`
   display: flex;
   gap: 4px;
