@@ -9,6 +9,8 @@ import EditIcon from '#/assets/svg/edit.svg';
 
 type ReviewCardProps = Review & {
   onEdit?: () => void;
+  isPrivate?: boolean;
+  isMyReview?: boolean;
 };
 
 const DELETED_USER_NICKNAME = '탈퇴한 회원';
@@ -53,7 +55,7 @@ const ReviewCard = ({
 
 export default ReviewCard;
 
-const Container = styled.article<{ isMobile: boolean; isMyReview: boolean }>`
+const Container = styled.article<{ isMobile: boolean; isMyReview?: boolean }>`
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
   border-bottom: ${({ theme, isMyReview }) =>
