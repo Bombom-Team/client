@@ -1,0 +1,6 @@
+{
+  "overall_correctness": "patch is correct",
+  "overall_explanation": "연속 읽기 보호막 UI를 연속 독서왕 내 순위 카드에 추가하는 PR입니다. StreakShieldInfo 컴포넌트는 AVAILABLE/USED 상태에 따라 아이콘을 분기하고, 키보드 접근성(tabIndex, onFocus/onBlur)과 aria-label을 적절히 처리합니다. 기존 UserBadgeInfo 패턴과 일관된 구조이며, 생성 파일(types.d.ts, openapi.d.ts) 외의 변경 범위에서 확실하게 수정이 필요한 항목을 찾지 못했습니다.",
+  "overall_confidence_score": 0.9,
+  "findings": []
+}
