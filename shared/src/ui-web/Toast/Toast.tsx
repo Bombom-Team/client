@@ -58,14 +58,22 @@ const mapPosition = (p: ToastPosition, offset: number) => {
     left: 'auto',
     right: 'auto',
     transform: '',
+    alignItems: 'stretch',
   };
   if (p.startsWith('top')) base.top = `${offset}px`;
   if (p.startsWith('bottom')) base.bottom = `${offset}px`;
-  if (p.endsWith('left')) base.left = '16px';
-  if (p.endsWith('right')) base.right = '16px';
+  if (p.endsWith('left')) {
+    base.left = '16px';
+    base.alignItems = 'flex-start';
+  }
+  if (p.endsWith('right')) {
+    base.right = '16px';
+    base.alignItems = 'flex-end';
+  }
   if (p.endsWith('center')) {
     base.left = '50%';
     base.transform = 'translateX(-50%)';
+    base.alignItems = 'center';
   }
   return base;
 };
