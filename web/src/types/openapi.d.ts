@@ -1651,6 +1651,9 @@ export interface components {
     UpdateChallengeCommentRequest: {
       comment: string;
     };
+    MarkAsReadResponse: {
+      readCountTokenConsumed?: boolean;
+    };
     MaeilMailSubscriptionResponse: {
       tracks: ('BE' | 'FE')[];
     };
@@ -4192,11 +4195,13 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description 읽음 처리 성공 */
-      204: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          '*/*': components['schemas']['MarkAsReadResponse'];
+        };
       };
       /** @description 아티클에 대한 접근 권한 없음 */
       403: {

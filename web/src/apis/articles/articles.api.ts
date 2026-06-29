@@ -51,10 +51,8 @@ export const getArticleById = async ({ id }: GetArticleByIdParams) => {
 export type PatchArticleReadParams =
   operations['updateIsRead']['parameters']['path'];
 
-export interface PatchArticleReadResponse {
-  /** 읽기 카운트 토큰 소모 여부. 너무 빠른 읽기(어뷰징) 시 false로 내려온다. */
-  readCountTokenConsumed: boolean;
-}
+export type PatchArticleReadResponse =
+  components['schemas']['MarkAsReadResponse'];
 
 export const patchArticleRead = async ({ id }: PatchArticleReadParams) => {
   return await fetcher.patch<never, PatchArticleReadResponse>({
