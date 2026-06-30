@@ -1,0 +1,6 @@
+{
+  "overall_correctness": "patch is correct",
+  "overall_explanation": "모바일 푸터 제거 및 하단 여백 보정이 일관성 있게 구현되어 있습니다. _main.tsx 레이아웃에 BottomNavSafeArea를 추가해 고정 하단 내비로 인한 콘텐츠 가림 문제를 레이아웃 단에서 전역 처리한 접근이 적절합니다. 개인정보 처리방침 접근 동선 대체(마이페이지 내 정보 하단 링크), 이메일 주소·소셜 링크 변경, privacy-policy 페이지 모바일 헤더 및 여백 조정도 모두 문제없이 반영되어 있습니다.",
+  "overall_confidence_score": 0.92,
+  "findings": []
+}
