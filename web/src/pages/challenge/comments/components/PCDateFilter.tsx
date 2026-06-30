@@ -1,7 +1,7 @@
+import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useMemo } from 'react';
 import DateTab from './DateTab';
-import { getDisplayDates } from '../utils/date';
+import useDateFilterScroll from '../hooks/useDateFilterScroll';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tabs from '@/components/Tabs/Tabs';
@@ -19,23 +19,35 @@ const PCDateFilter = ({
   selectedDate,
   onDateSelect,
 }: PCDateFilterProps) => {
-  const displayDates = useMemo(
-    () => getDisplayDates(dates, today),
-    [dates, today],
-  );
+  const { scrollRef, canScrollLeft, canScrollRight, scrollDateFilter } =
+    useDateFilterScroll();
 
   return (
     <Container>
-      <NavButton variant="transparent">
-        <ChevronIcon direction="left" width={36} height={36} />
+      <NavButton
+        variant="transparent"
+        onClick={() => scrollDateFilter('left')}
+        disabled={!canScrollLeft}
+      >
+        <ChevronIcon
+          direction="left"
+          width={36}
+          height={36}
+          fill={
+            canScrollLeft
+              ? theme.colors.primaryBomBom
+              : theme.colors.disabledText
+          }
+        />
       </NavButton>
 
-      <DateTabsWrapper>
+      <DateTabsWrapper ref={scrollRef}>
         <StyledTabs>
-          {displayDates.map((dateString) => (
+          {dates.map((dateString) => (
             <DateTab
               key={dateString}
               dateString={dateString}
+              today={today}
               selectedDate={selectedDate}
               onDateSelect={onDateSelect}
             />
@@ -43,8 +55,21 @@ const PCDateFilter = ({
         </StyledTabs>
       </DateTabsWrapper>
 
-      <NavButton variant="transparent">
-        <ChevronIcon direction="right" width={36} height={36} />
+      <NavButton
+        variant="transparent"
+        onClick={() => scrollDateFilter('right')}
+        disabled={!canScrollRight}
+      >
+        <ChevronIcon
+          direction="right"
+          width={36}
+          height={36}
+          fill={
+            canScrollRight
+              ? theme.colors.primaryBomBom
+              : theme.colors.disabledText
+          }
+        />
       </NavButton>
     </Container>
   );
