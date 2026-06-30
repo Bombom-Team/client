@@ -20,9 +20,7 @@ const OngoingChallengeCard = ({ challenge }: OngoingChallengeCardProps) => {
     remainingDays,
     progressRate,
     myTeamRank,
-    teamRank,
     myAttendanceComparison,
-    teamAttendanceComparison,
   } = challenge;
 
   const getDeltaPrefix = (value: number) => (value > 0 ? '+' : '');
@@ -78,21 +76,6 @@ const OngoingChallengeCard = ({ challenge }: OngoingChallengeCardProps) => {
           <StatCell>
             <CellLabel>
               <Text font="t4Regular" color="textSecondary">
-                전체 팀 순위
-              </Text>
-            </CellLabel>
-            <RankValue>
-              {teamRank.rank}
-              <RankUnit>위</RankUnit>
-              <RankSeparator> / </RankSeparator>
-              {teamRank.totalTeams}
-              <RankUnit>팀</RankUnit>
-            </RankValue>
-          </StatCell>
-
-          <StatCell>
-            <CellLabel>
-              <Text font="t4Regular" color="textSecondary">
                 나의 출석률
               </Text>
             </CellLabel>
@@ -107,27 +90,6 @@ const OngoingChallengeCard = ({ challenge }: OngoingChallengeCardProps) => {
               <Delta delta={myAttendanceComparison.differencePoint}>
                 {getDeltaPrefix(myAttendanceComparison.differencePoint)}
                 {myAttendanceComparison.differencePoint}%p
-              </Delta>
-            </ComparisonRow>
-          </StatCell>
-
-          <StatCell>
-            <CellLabel>
-              <Text font="t4Regular" color="textSecondary">
-                팀 출석률
-              </Text>
-            </CellLabel>
-            <AttendanceValue>
-              {teamAttendanceComparison.teamAttendanceRate}
-              <AttendanceUnit>%</AttendanceUnit>
-            </AttendanceValue>
-            <ComparisonRow>
-              <Text font="t4Regular" color="textSecondary">
-                전체 평균보다{' '}
-              </Text>
-              <Delta delta={teamAttendanceComparison.differencePoint}>
-                {getDeltaPrefix(teamAttendanceComparison.differencePoint)}
-                {teamAttendanceComparison.differencePoint}%p
               </Delta>
             </ComparisonRow>
           </StatCell>
@@ -233,7 +195,7 @@ const StatsZone = styled.div<{ device: Device }>`
   ${({ device, theme }) =>
     device === 'pc'
       ? `
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
           & > *:nth-child(2) { order: 3; }
           & > *:nth-child(3) { order: 2; }
           & > *:nth-child(4) { order: 4; }
@@ -255,7 +217,7 @@ const StatsZone = styled.div<{ device: Device }>`
           }
         `
       : `
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
 
           & > * {
             padding: 12px 16px 14px;
