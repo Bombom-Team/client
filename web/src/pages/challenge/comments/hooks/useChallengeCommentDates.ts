@@ -14,8 +14,9 @@ export const useChallengeCommentDates = ({
 
   const challengeDates = useMemo(() => {
     if (!startDate || !endDate) return [];
-    return filterWeekdays(getDatesInRange(startDate, endDate));
-  }, [endDate, startDate]);
+    const allDates = filterWeekdays(getDatesInRange(startDate, endDate));
+    return allDates.filter((date) => today >= date);
+  }, [endDate, startDate, today]);
 
   const isFirstDay = useCallback(
     (targetDate: string) => {

@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
-import { useMemo } from 'react';
 import DateTab from './DateTab';
-import { getDisplayDates } from '../utils/date';
 import Tabs from '@/components/Tabs/Tabs';
 
 interface MobileDateFilterProps {
@@ -17,11 +15,7 @@ const MobileDateFilter = ({
   selectedDate,
   onDateSelect,
 }: MobileDateFilterProps) => {
-  const displayDates = useMemo(
-    () => getDisplayDates(dates, today),
-    [dates, today],
-  );
-  const scrollableDates = displayDates.filter((date) => date !== today);
+  const scrollableDates = dates.filter((date) => date !== today);
 
   return (
     <Container>
@@ -31,6 +25,7 @@ const MobileDateFilter = ({
             <DateTab
               key={dateString}
               dateString={dateString}
+              today={today}
               selectedDate={selectedDate}
               onDateSelect={onDateSelect}
             />
@@ -41,6 +36,7 @@ const MobileDateFilter = ({
       <TodayTabWrapper>
         <DateTab
           dateString={today}
+          today={today}
           selectedDate={selectedDate}
           onDateSelect={onDateSelect}
         />

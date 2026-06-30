@@ -6,11 +6,6 @@ export const formatDate = (date: Date, separator: string = '.'): string => {
   return year + separator + month + separator + day;
 };
 
-export const isToday = (date: Date): boolean => {
-  const today = new Date();
-  return formatDate(date) === formatDate(today);
-};
-
 export const getDatesInRange = (
   startDate: string,
   endDate: string,
