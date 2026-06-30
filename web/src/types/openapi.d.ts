@@ -1839,6 +1839,15 @@ export interface components {
       /** Format: int32 */
       dayCount: number;
       badges?: components['schemas']['BadgesResponse'];
+      streakShield: components['schemas']['StreakShieldResponse'];
+    };
+    StreakShieldResponse: {
+      /** @enum {string} */
+      status?: 'AVAILABLE' | 'USED';
+      /** Format: int32 */
+      remainingCount: number;
+      /** Format: int32 */
+      monthlyLimit: number;
     };
     MemberMonthlyReadingCountResponse: {
       /** Format: int32 */

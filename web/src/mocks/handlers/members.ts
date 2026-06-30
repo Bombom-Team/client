@@ -95,8 +95,21 @@ export const membersHandlers = [
         challenge: {
           name: '뉴스레터 한달 읽기',
           generation: 1,
-          grade: 'bronze',
+          grade: 'BRONZE',
         },
+        monthlyRanking: {
+          grade: 'GOLD',
+          year: 2026,
+          month: 6,
+        },
+        streak: {
+          tier: 'THIRTY',
+        },
+      },
+      streakShield: {
+        status: 'AVAILABLE',
+        remainingCount: 1,
+        monthlyLimit: 1,
       },
     });
   }),
