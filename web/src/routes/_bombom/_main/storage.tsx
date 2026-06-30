@@ -144,12 +144,13 @@ function Storage() {
         )}
 
         <SidebarSection isPC={isPC}>
+          {isPC && <QuickMenu />}
           {!newsletterFilters ? (
             <NewsletterFilterSkeleton />
           ) : (
             <NewsLetterFilter filters={filters} />
           )}
-          <QuickMenu />
+          {!isPC && <QuickMenu />}
         </SidebarSection>
         <MainContentSection isPC={isPC}>
           {isPC ? (
