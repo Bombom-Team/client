@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="ribbon" x1="34" y1="21" x2="91" y2="78" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B92CFF"/>
+      <stop offset="1" stop-color="#6F00E8"/>
+    </linearGradient>
+    <radialGradient id="gold" cx="0" cy="0" r="1" gradientTransform="translate(54 61) rotate(48) scale(45)">
+      <stop stop-color="#FFD945"/>
+      <stop offset=".52" stop-color="#FFAF00"/>
+      <stop offset="1" stop-color="#F08000"/>
+    </radialGradient>
+  </defs>
+  <g>
+    <path d="M35 25h16l13 27-15 8-14-35Z" fill="url(#ribbon)"/>
+    <path d="M93 25H77L64 52l15 8 14-35Z" fill="url(#ribbon)"/>
+    <path d="M39 29h9l10 21-7 4-12-25ZM89 29h-9L70 50l7 4 12-25Z" fill="white" opacity=".9"/>
+    <circle cx="64" cy="78" r="30" fill="url(#gold)"/>
+    <circle cx="64" cy="78" r="25" stroke="#FFD95A" stroke-width="2.5" opacity=".75"/>
+    <path d="m64 63 4.2 9.2 10 .9-7.6 6.6 2.2 9.8-8.8-5.1-8.8 5.1 2.2-9.8-7.6-6.6 10-.9L64 63Z" fill="white"/>
+    <path d="M44 68c4-9 11-14 21-15" stroke="#FFF2A5" stroke-width="4" stroke-linecap="round" opacity=".72"/>
+  </g>
+</svg>

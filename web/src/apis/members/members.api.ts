@@ -172,3 +172,93 @@ export const postWarningVisible = async ({
     body: { isVisible },
   });
 };
+
+export type GetMyChallengeSummaryResponse = {
+  completedChallengeCount: number;
+  completionRank: {
+    topPercent: number;
+    completionRate: number;
+  };
+  attendanceRank: {
+    topPercent: number;
+    averageAttendanceRate: number;
+  };
+  medalRatio: {
+    gold: number;
+    silver: number;
+    bronze: number;
+  };
+};
+
+export const getMyChallengeSummary = async () => {
+  return await fetcher.get<GetMyChallengeSummaryResponse>({
+    path: '/members/me/challenges/summary',
+  });
+};
+
+export type MyOngoingChallenge = {
+  challengeId: number;
+  title: string;
+  startDate: string;
+  endDate: string;
+  remainingDays: number;
+  progressRate: number;
+  myTeamRank: {
+    rank: number;
+    totalMembers: number;
+  };
+  teamRank: {
+    rank: number;
+    totalTeams: number;
+  };
+  myAttendanceComparison: {
+    attendanceRate: number;
+    differencePoint: number;
+  };
+  teamAttendanceComparison: {
+    teamAttendanceRate: number;
+    differencePoint: number;
+  };
+};
+
+export type GetMyOngoingChallengesResponse = {
+  challenges: MyOngoingChallenge[];
+};
+
+export const getMyOngoingChallenges = async () => {
+  return await fetcher.get<GetMyOngoingChallengesResponse>({
+    path: '/members/me/challenges/ongoing',
+  });
+};
+
+export type MyCompletedChallenge = {
+  challengeId: number;
+  title: string;
+  startDate: string;
+  endDate: string;
+  attendanceRate: number;
+  grade: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
+};
+
+export type GetMyCompletedChallengesParams = {
+  size?: number;
+  page?: number;
+};
+
+export type GetMyCompletedChallengesResponse = {
+  totalElements: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
+  size: number;
+  content: MyCompletedChallenge[];
+};
+
+export const getMyCompletedChallenges = async (
+  params?: GetMyCompletedChallengesParams,
+) => {
+  return await fetcher.get<GetMyCompletedChallengesResponse>({
+    path: '/members/me/challenges/completed',
+    query: params,
+  });
+};

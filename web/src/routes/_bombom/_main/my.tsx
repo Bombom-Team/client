@@ -6,11 +6,14 @@ import {
   useNavigate,
   useSearch,
 } from '@tanstack/react-router';
-import { useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import MyChallengeSection from '@/pages/my-page/components/MyChallengeSection/MyChallengeSection';
+import MyChallengeSectionSkeleton from '@/pages/my-page/components/MyChallengeSection/MyChallengeSectionSkeleton';
 import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection/NotificationSettingsSection';
 import ProfileSection from '@/pages/my-page/components/ProfileSection';
 import ReadingActivitySection from '@/pages/my-page/components/ReadingActivitySection';
@@ -24,6 +27,7 @@ import AvatarIcon from '#/assets/svg/avatar.svg';
 type MyPageTab =
   | 'profile'
   | 'reading-activity'
+  | 'challenges'
   | 'newsletters'
   | 'notification'
   | 'rewards';
@@ -31,6 +35,7 @@ type MyPageTab =
 const DEFAULT_TABS = [
   { id: 'profile', label: '내 정보' },
   { id: 'reading-activity', label: '읽기 활동' },
+  { id: 'challenges', label: '나의 챌린지' },
   { id: 'newsletters', label: '구독 뉴스레터' },
   { id: 'rewards', label: '선물함' },
 ] as const;
@@ -71,6 +76,15 @@ function MyPage() {
     },
   });
 
+  useEffect(() => {
+    if (activeTabParam === 'challenges') {
+      trackEvent({
+        category: 'MyPage',
+        action: '나의 챌린지 탭 진입',
+      });
+    }
+  }, [activeTabParam]);
+
   const tabs = isWebView()
     ? [...DEFAULT_TABS, ...WEBVIEW_TABS]
     : [...DEFAULT_TABS];
@@ -97,6 +111,12 @@ function MyPage() {
             newsletters={mySubscriptions ?? []}
             device={device}
           />
+        );
+      case 'challenges':
+        return (
+          <Suspense fallback={<MyChallengeSectionSkeleton />}>
+            <MyChallengeSection />
+          </Suspense>
         );
       case 'rewards':
         return <RewardsSection />;
