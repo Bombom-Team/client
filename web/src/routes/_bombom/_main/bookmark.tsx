@@ -70,13 +70,14 @@ function BookmarkPage() {
 
         <ContentWrapper device={device}>
           <SidebarSection device={device}>
+            {device === 'pc' && <QuickMenu />}
             {!newsletterCounts ? (
               <NewsletterFilterSkeleton />
             ) : (
               <NewsLetterFilter filters={newsletterCounts} />
             )}
 
-            <QuickMenu />
+            {device !== 'pc' && <QuickMenu />}
           </SidebarSection>
 
           <MainContentSection device={device}>
@@ -145,6 +146,8 @@ const SidebarSection = styled.div<{ device: Device }>`
   display: flex;
   gap: 20px;
   flex-direction: column;
+
+  order: ${({ device }) => (device === 'pc' ? 2 : 0)};
 `;
 
 const MainContentSection = styled.div<{ device: Device }>`
@@ -153,7 +156,7 @@ const MainContentSection = styled.div<{ device: Device }>`
   flex: 1;
   flex-direction: column;
 
-  order: ${({ device }) => (device === 'pc' ? 2 : 1)};
+  order: 1;
 `;
 
 const BookmarkStorageIcon = styled(BookmarkIcon)`
