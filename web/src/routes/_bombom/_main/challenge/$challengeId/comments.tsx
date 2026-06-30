@@ -8,9 +8,10 @@ import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import AddCommentModalContent from '@/pages/challenge/comments/components/AddCommentModal/AddCommentModalContent';
-import DateFilter from '@/pages/challenge/comments/components/DateFilter';
 import MobileCommentsContent from '@/pages/challenge/comments/components/MobileCommentsContent';
+import MobileDateFilter from '@/pages/challenge/comments/components/MobileDateFilter';
 import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsContent';
+import PCDateFilter from '@/pages/challenge/comments/components/PCDateFilter';
 import StreakModalContent from '@/pages/challenge/comments/components/StreakModalContent';
 import { useChallengeCommentDates } from '@/pages/challenge/comments/hooks/useChallengeCommentDates';
 import { useCommentsPagination } from '@/pages/challenge/comments/hooks/useCommentsPagination';
@@ -68,15 +69,28 @@ function ChallengeComments() {
       selectedDate,
     });
 
+  const selectDate = (date: string) => {
+    setSelectedDate(date);
+  };
+
   return (
     <Container>
       <FilterWrapper isMobile={isMobile}>
-        <DateFilter
-          today={today}
-          dates={challengeDates}
-          selectedDate={selectedDate}
-          onDateSelect={setSelectedDate}
-        />
+        {isMobile ? (
+          <MobileDateFilter
+            today={today}
+            dates={challengeDates}
+            selectedDate={selectedDate}
+            onDateSelect={selectDate}
+          />
+        ) : (
+          <PCDateFilter
+            today={today}
+            dates={challengeDates}
+            selectedDate={selectedDate}
+            onDateSelect={selectDate}
+          />
+        )}
       </FilterWrapper>
 
       <ContentWrapper isMobile={isMobile}>
