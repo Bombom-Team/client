@@ -1,5 +1,7 @@
+import { myPageQueries } from '@bombom/shared/apis/mypage';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import DottedRankGraph from '@/pages/my-page/components/ReadingActivityStats/DottedRankGraph';
@@ -8,44 +10,129 @@ import LogoImage from '#/assets/avif/logo.avif';
 import CrownIcon from '#/assets/svg/crown.svg';
 import StreakIcon from '#/assets/svg/streak.svg';
 
-const RANK_HISTORY = {
-  streak: [
-    { label: '25.12', rank: 20 },
-    { label: '1월', rank: 14 },
-    { label: '2월', rank: 20 },
-    { label: '3월', rank: 12 },
-    { label: '4월', rank: 9 },
-    { label: '5월', rank: 3 },
-  ],
-  reading: [
-    { label: '25.12', rank: 20 },
-    { label: '1월', rank: 15 },
-    { label: '2월', rank: 19 },
-    { label: '3월', rank: 10 },
-    { label: '4월', rank: 8 },
-    { label: '5월', rank: 3 },
-  ],
-} as const;
+type MobileRankTab = 'reading' | 'streak';
 
 const ReadingActivitySection = () => {
   const device = useDevice();
   const isMobile = device !== 'pc';
-  const { data: streakRank, isLoading: isStreakLoading } = useQuery(
-    queries.myStreakReadingRank(),
+  const [activeMobileRankTab, setActiveMobileRankTab] =
+    useState<MobileRankTab>('reading');
+  const { data: rankSummary, isLoading: isRankSummaryLoading } = useQuery(
+    queries.rankSummary(),
   );
-  const { data: readingRank, isLoading: isReadingLoading } = useQuery(
-    queries.myMonthlyReadingRank(),
+  const { data: joinDays } = useQuery({
+    ...myPageQueries.getMemberJoinDays(),
+    enabled: isMobile,
+  });
+  const streakRank = rankSummary?.cards.find(({ type }) => type === 'streak');
+  const readingRank = rankSummary?.cards.find(({ type }) => type === 'reading');
+  const streakCurrentRank =
+    streakRank?.currentRank ?? streakRank?.rankHistory.at(-1)?.rank;
+  const readingCurrentRank =
+    readingRank?.currentRank ?? readingRank?.rankHistory.at(-1)?.rank;
+  const hasStreakRankHistory = (streakRank?.rankHistory.length ?? 0) > 0;
+  const hasReadingRankHistory = (readingRank?.rankHistory.length ?? 0) > 0;
+
+  const streakRankCard = (
+    <StatCard key="streak" isMobile={isMobile}>
+      {isMobile && streakCurrentRank && (
+        <MobileRankBadge>{streakCurrentRank}위</MobileRankBadge>
+      )}
+      <HeaderWrapper>
+        <StatTitleWrapper isMobile={isMobile}>
+          <StatIcon as={StreakIcon} aria-hidden="true" isMobile={isMobile} />
+          <StatTitle isMobile={isMobile}>연속왕</StatTitle>
+          {!isMobile && streakRank && (
+            <StreakSummary isMobile={isMobile}>
+              <Description>연속 읽기</Description>
+              <StreakValue>
+                {streakRank.value}
+                <StreakUnit>일째</StreakUnit>
+              </StreakValue>
+            </StreakSummary>
+          )}
+        </StatTitleWrapper>
+        {isMobile && streakRank && (
+          <StreakSummary isMobile={isMobile}>
+            <Description>연속 읽기</Description>
+            <StreakValue>
+              {streakRank.value}
+              <StreakUnit>일째</StreakUnit>
+            </StreakValue>
+          </StreakSummary>
+        )}
+      </HeaderWrapper>
+      {isRankSummaryLoading ? (
+        <LoadingMessage>연속 읽기 순위를 불러오는 중이에요.</LoadingMessage>
+      ) : !streakRank || !streakCurrentRank || !hasStreakRankHistory ? (
+        <LoadingMessage>연속 읽기 순위 이력이 없어요.</LoadingMessage>
+      ) : (
+        <GraphWrapper isMobile={isMobile}>
+          <DottedRankGraph
+            points={streakRank.rankHistory}
+            currentRank={streakCurrentRank}
+            showYAxis={false}
+            showArea
+            showBadge={!isMobile}
+            largeXAxisLabel={isMobile}
+          />
+        </GraphWrapper>
+      )}
+    </StatCard>
+  );
+
+  const readingRankCard = (
+    <StatCard key="reading" isMobile={isMobile}>
+      {isMobile && readingCurrentRank && (
+        <MobileRankBadge>{readingCurrentRank}위</MobileRankBadge>
+      )}
+      <HeaderWrapper>
+        <StatTitleWrapper isMobile={isMobile}>
+          <StatIcon as={CrownIcon} aria-hidden="true" isMobile={isMobile} />
+          <StatTitle isMobile={isMobile}>다독왕</StatTitle>
+        </StatTitleWrapper>
+        {isMobile && readingRank ? (
+          <MobileReadingSummary>
+            <Description>누적 읽은 아티클</Description>
+            <MobileReadingValue>
+              {readingRank.value}
+              <MobileReadingUnit>개</MobileReadingUnit>
+            </MobileReadingValue>
+          </MobileReadingSummary>
+        ) : (
+          <Description>읽은 아티클 수 기준 순위</Description>
+        )}
+      </HeaderWrapper>
+      {isRankSummaryLoading ? (
+        <LoadingMessage>읽기 순위를 불러오는 중이에요.</LoadingMessage>
+      ) : !readingRank || !readingCurrentRank || !hasReadingRankHistory ? (
+        <LoadingMessage>읽기 순위 이력이 없어요.</LoadingMessage>
+      ) : (
+        <GraphWrapper isMobile={isMobile}>
+          <DottedRankGraph
+            points={readingRank.rankHistory}
+            currentRank={readingCurrentRank}
+            showYAxis={!isMobile}
+            showArea={isMobile}
+            showBadge={!isMobile}
+            largeXAxisLabel={isMobile}
+          />
+        </GraphWrapper>
+      )}
+    </StatCard>
   );
 
   return (
     <Container>
       <Title>읽기 활동</Title>
-      {isMobile && (
+      {isMobile && joinDays && (
         <MobileCompanionCard>
           <MobileCompanionImage src={LogoImage} alt="" />
           <MobileCompanionTextWrapper>
             <MobileCompanionLabel>봄봄과 함께한 지</MobileCompanionLabel>
-            <MobileCompanionDays>142일째</MobileCompanionDays>
+            <MobileCompanionDays>
+              {joinDays.daysSinceJoined}일째
+            </MobileCompanionDays>
             <MobileCompanionDescription>
               꾸준한 읽기 습관이 쌓이고 있어요!
             </MobileCompanionDescription>
@@ -53,68 +140,34 @@ const ReadingActivitySection = () => {
           <MobileCompanionArrow aria-hidden="true">›</MobileCompanionArrow>
         </MobileCompanionCard>
       )}
+      {isMobile && (
+        <MobileRankTabWrapper role="tablist" aria-label="읽기 활동 랭킹">
+          <MobileRankTabButton
+            type="button"
+            role="tab"
+            aria-selected={activeMobileRankTab === 'reading'}
+            $active={activeMobileRankTab === 'reading'}
+            onClick={() => setActiveMobileRankTab('reading')}
+          >
+            다독왕
+          </MobileRankTabButton>
+          <MobileRankTabButton
+            type="button"
+            role="tab"
+            aria-selected={activeMobileRankTab === 'streak'}
+            $active={activeMobileRankTab === 'streak'}
+            onClick={() => setActiveMobileRankTab('streak')}
+          >
+            연속왕
+          </MobileRankTabButton>
+        </MobileRankTabWrapper>
+      )}
       <StatsWrapper isMobile={isMobile}>
-        <StatCard isMobile={isMobile}>
-          <HeaderWrapper>
-            <StatTitleWrapper isMobile={isMobile}>
-              <StatIcon
-                as={StreakIcon}
-                aria-hidden="true"
-                isMobile={isMobile}
-              />
-              <StatTitle isMobile={isMobile}>연속왕</StatTitle>
-              {streakRank && (
-                <StreakSummary isMobile={isMobile}>
-                  <Description>연속 읽기</Description>
-                  <StreakValue>
-                    {streakRank.dayCount}
-                    <StreakUnit>일째</StreakUnit>
-                  </StreakValue>
-                </StreakSummary>
-              )}
-            </StatTitleWrapper>
-          </HeaderWrapper>
-          {isStreakLoading || !streakRank ? (
-            <LoadingMessage>연속 읽기 순위를 불러오는 중이에요.</LoadingMessage>
-          ) : (
-            <DottedRankGraph
-              points={[...RANK_HISTORY.streak]}
-              currentRank={streakRank.rank}
-              showYAxis={false}
-              showArea
-            />
-          )}
-        </StatCard>
-
-        <StatCard isMobile={isMobile}>
-          <HeaderWrapper>
-            <StatTitleWrapper isMobile={isMobile}>
-              <StatIcon as={CrownIcon} aria-hidden="true" isMobile={isMobile} />
-              <StatTitle isMobile={isMobile}>다독왕</StatTitle>
-            </StatTitleWrapper>
-            {isMobile && readingRank ? (
-              <MobileReadingSummary>
-                <Description>누적 읽은 아티클</Description>
-                <MobileReadingValue>
-                  {readingRank.monthlyReadCount}
-                  <MobileReadingUnit>개</MobileReadingUnit>
-                </MobileReadingValue>
-              </MobileReadingSummary>
-            ) : (
-              <Description>읽은 아티클 수 기준 순위</Description>
-            )}
-          </HeaderWrapper>
-          {isReadingLoading || !readingRank ? (
-            <LoadingMessage>읽기 순위를 불러오는 중이에요.</LoadingMessage>
-          ) : (
-            <>
-              <DottedRankGraph
-                points={[...RANK_HISTORY.reading]}
-                currentRank={readingRank.rank}
-              />
-            </>
-          )}
-        </StatCard>
+        {isMobile
+          ? activeMobileRankTab === 'reading'
+            ? readingRankCard
+            : streakRankCard
+          : [streakRankCard, readingRankCard]}
       </StatsWrapper>
 
       <MonthlyReport isMobile={isMobile} />
@@ -146,28 +199,79 @@ const StatsWrapper = styled.div<{ isMobile: boolean }>`
   gap: 16px;
 
   grid-template-columns: ${({ isMobile }) =>
-    isMobile ? 'repeat(2, minmax(0, 1fr))' : 'minmax(0, 1fr) minmax(0, 1fr)'};
+    isMobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) minmax(0, 1fr)'};
+`;
+
+const MobileRankTabWrapper = styled.div`
+  width: 100%;
+  padding: 3px;
+  border-radius: 999px;
+
+  display: grid;
+
+  background-color: ${({ theme }) => theme.colors.disabledBackground};
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+`;
+
+const MobileRankTabButton = styled.button<{ $active: boolean }>`
+  height: 40px;
+  min-width: 0;
+  border: ${({ $active, theme }) =>
+    $active ? `1px solid ${theme.colors.stroke}` : '1px solid transparent'};
+  border-radius: 999px;
+  box-shadow: ${({ $active }) =>
+    $active ? '0 2px 8px rgb(0 0 0 / 8%)' : 'none'};
+
+  background-color: ${({ $active, theme }) =>
+    $active ? theme.colors.white : 'transparent'};
+  color: ${({ $active, theme }) =>
+    $active ? theme.colors.textPrimary : theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t6Bold};
+
+  cursor: pointer;
 `;
 
 const StatCard = styled.article<{ isMobile: boolean }>`
+  position: relative;
   min-width: 0;
-  padding: ${({ isMobile }) => (isMobile ? '12px' : '20px')};
+  padding: ${({ isMobile }) => (isMobile ? '22px 18px' : '20px')};
   border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 16px;
 
-  display: flex;
+  display: ${({ isMobile }) => (isMobile ? 'grid' : 'flex')};
   gap: 16px;
   flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.white};
 
   box-sizing: border-box;
+
+  grid-template-columns: ${({ isMobile }) =>
+    isMobile ? 'minmax(96px, 0.32fr) minmax(0, 1fr)' : 'none'};
 `;
 
 const HeaderWrapper = styled.div`
   display: flex;
   gap: 4px;
   flex-direction: column;
+`;
+
+const GraphWrapper = styled.div<{ isMobile: boolean }>`
+  min-width: 0;
+  margin-top: ${({ isMobile }) => (isMobile ? '26px' : '0')};
+`;
+
+const MobileRankBadge = styled.strong`
+  position: absolute;
+  top: 24px;
+  right: 22px;
+  padding: 4px 14px;
+  border-radius: 999px;
+
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const StatTitleWrapper = styled.div<{ isMobile: boolean }>`
@@ -202,8 +306,8 @@ const Description = styled.p`
 `;
 
 const StreakSummary = styled.div<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? 'calc(100% - 28px)' : 'auto')};
-  margin-left: ${({ isMobile }) => (isMobile ? '28px' : 'auto')};
+  width: auto;
+  margin-left: ${({ isMobile }) => (isMobile ? '0' : 'auto')};
 
   display: flex;
   gap: 4px;
