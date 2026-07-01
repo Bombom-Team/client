@@ -11,7 +11,16 @@ interface Props {
   params: GetCategoryStatsParams;
 }
 
-const CATEGORY_COLORS = ['#FE5E04', '#2878F0', '#7C2CF4', '#36A65C', '#FFA400'];
+const CATEGORY_COLORS = [
+  '#FE5E04',
+  '#2878F0',
+  '#7C2CF4',
+  '#36A65C',
+  '#FFA400',
+  '#E94F8A',
+  '#00A6A6',
+  '#8A6D3B',
+];
 
 const SubscribedCategoryStats = ({ isMobile, params }: Props) => {
   const { data: stats, isLoading } = useQuery(queries.categoryStats(params));
