@@ -44,11 +44,13 @@ export const Route = createFileRoute('/_bombom/_main/storage')({
     search?: string;
     sort?: Sort;
     newsletterId?: number;
+    page?: number;
   }) => {
     return {
       search: search.search,
       sort: search.sort,
       newsletterId: search.newsletterId,
+      page: search.page,
     };
   },
 });
