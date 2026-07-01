@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import useArticles from '../../hooks/useArticles';
 import { useSelectedDeleteIds } from '../../hooks/useSelectedDeleteIds';
 import { isValidKeyword } from '../../utils/isValidKeyword';
@@ -59,7 +59,12 @@ export default function PCStorageContent({
     clearSelection();
   };
 
+  const isFirstFilterEffect = useRef(true);
   useEffect(() => {
+    if (isFirstFilterEffect.current) {
+      isFirstFilterEffect.current = false;
+      return;
+    }
     resetPage();
   }, [
     baseQueryParams.newsletterId,
