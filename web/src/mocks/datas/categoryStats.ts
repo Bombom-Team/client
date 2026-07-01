@@ -1,7 +1,6 @@
 import type { CategoryStatsResponse } from '@/apis/members/members.api';
 
 export const CUMULATIVE_CATEGORY_STATS: CategoryStatsResponse = {
-  type: 'cumulative',
   total: 56,
   categories: [
     {
@@ -38,7 +37,6 @@ export const CUMULATIVE_CATEGORY_STATS: CategoryStatsResponse = {
 };
 
 export const MONTHLY_CATEGORY_STATS: CategoryStatsResponse = {
-  type: 'monthly',
   total: 48,
   categories: [
     {
