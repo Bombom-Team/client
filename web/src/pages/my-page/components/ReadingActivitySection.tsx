@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import DottedRankGraph from '@/pages/my-page/components/ReadingActivityStats/DottedRankGraph';
-import SubscribedCategoryStats from '@/pages/my-page/components/ReadingActivityStats/SubscribedCategoryStats';
+import MonthlyReport from '@/pages/my-page/components/ReadingActivityStats/MonthlyReport';
 import LogoImage from '#/assets/avif/logo.avif';
 import CrownIcon from '#/assets/svg/crown.svg';
 import StreakIcon from '#/assets/svg/streak.svg';
@@ -36,7 +36,6 @@ const ReadingActivitySection = () => {
   const { data: readingRank, isLoading: isReadingLoading } = useQuery(
     queries.myMonthlyReadingRank(),
   );
-  const { data: categoryStats } = useQuery(queries.categoryStats());
 
   return (
     <Container>
@@ -116,16 +115,9 @@ const ReadingActivitySection = () => {
             </>
           )}
         </StatCard>
-
-        {categoryStats && (
-          <SubscribedCategoryStats stats={categoryStats} isMobile={isMobile} />
-        )}
       </StatsWrapper>
 
-      <MonthlyReportImage
-        src="/assets/svg/monthly-reading-report.svg"
-        alt="2024년 6월 월간 리포트 예시. 읽은 아티클 248개, 북마크 132개, 월간 읽기 달력과 뉴스레터 카테고리 요약"
-      />
+      <MonthlyReport isMobile={isMobile} />
     </Container>
   );
 };
@@ -154,9 +146,7 @@ const StatsWrapper = styled.div<{ isMobile: boolean }>`
   gap: 16px;
 
   grid-template-columns: ${({ isMobile }) =>
-    isMobile
-      ? 'repeat(2, minmax(0, 1fr))'
-      : 'minmax(0, 1fr) minmax(0, 1fr) minmax(360px, 1.4fr)'};
+    isMobile ? 'repeat(2, minmax(0, 1fr))' : 'minmax(0, 1fr) minmax(0, 1fr)'};
 `;
 
 const StatCard = styled.article<{ isMobile: boolean }>`
@@ -254,14 +244,6 @@ const LoadingMessage = styled.p`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t4Regular};
-`;
-
-const MonthlyReportImage = styled.img`
-  width: 100%;
-  height: auto;
-  border-radius: 16px;
-
-  display: block;
 `;
 
 const MobileCompanionCard = styled.article`

@@ -1,29 +1,38 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import MaeilMailSubscriptionCard from './MaeilMailSubscriptionCard';
 import MySubscriptionCard from './MySubscriptionCard';
 import NewsletterUnsubscribeModal from './NewsletterUnsubscribeModal';
 import { useUnsubscribe } from '../../hooks/useUnsubscribe';
+import { queries } from '@/apis/queries';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
-import type { GetMySubscriptionsResponse } from '@/apis/members/members.api';
 import type { Device } from '@/hooks/useDevice';
 
 const NATIVE_NEWSLETTER_SOURCE = 'MAEIL_MAIL' as const;
 
 interface SubscribedNewslettersSectionProps {
-  newsletters: GetMySubscriptionsResponse;
   device: Device;
 }
 
 const SubscribedNewslettersSection = ({
-  newsletters,
   device,
 }: SubscribedNewslettersSectionProps) => {
+  const countRef = useRef(0);
   const [actionType, setActionType] = useState<'UNSUBSCRIBE' | 'REMOVE'>(
     'UNSUBSCRIBE',
   );
+
+  const { data: newsletters = [] } = useQuery({
+    ...queries.mySubscriptions(),
+    refetchInterval: () => {
+      if (countRef.current >= 60) return false;
+      countRef.current += 1;
+      return 5 * 1000;
+    },
+  });
 
   const { selectNewsletter, confirmUnsubscribe } = useUnsubscribe();
   const { modalRef, openModal, closeModal, isOpen } = useModal({
