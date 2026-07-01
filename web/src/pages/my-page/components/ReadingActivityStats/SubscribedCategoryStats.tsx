@@ -1,55 +1,111 @@
 import styled from '@emotion/styled';
-import type { CategoryStatsResponse } from '@/apis/members/members.api';
+import { useQuery } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
+import { queries } from '@/apis/queries';
+import Select from '@/components/Select/Select';
+import type { CategoryStat } from '@/apis/members/members.api';
 
 interface Props {
-  stats: CategoryStatsResponse;
   isMobile: boolean;
 }
 
 const CATEGORY_COLORS = ['#FE5E04', '#2878F0', '#7C2CF4', '#36A65C', '#FFA400'];
 
-const SubscribedCategoryStats = ({ stats, isMobile }: Props) => {
-  let accumulatedRate = 0;
-  const categories = [...stats.categories]
-    .sort((first, second) => second.count - first.count)
-    .map((category, index) => {
-      const start = accumulatedRate;
-      accumulatedRate += category.percent;
+const CUMULATIVE_VALUE = 'cumulative';
+const RECENT_MONTH_COUNT = 12;
 
-      return {
-        ...category,
-        color: CATEGORY_COLORS[index % CATEGORY_COLORS.length] ?? '#FE5E04',
-        segment: `${CATEGORY_COLORS[index % CATEGORY_COLORS.length] ?? '#FE5E04'} ${start}% ${accumulatedRate}%`,
-      };
-    });
+const SubscribedCategoryStats = ({ isMobile }: Props) => {
+  const [period, setPeriod] = useState<string>(CUMULATIVE_VALUE);
+
+  const periodOptions = useMemo(buildPeriodOptions, []);
+
+  const { data: stats, isLoading } = useQuery(
+    queries.categoryStats(
+      period === CUMULATIVE_VALUE ? {} : { yearMonth: period },
+    ),
+  );
+
+  const categories = buildCategorySegments(stats?.categories ?? []);
 
   return (
     <Container isMobile={isMobile}>
-      <Title>구독 중인 뉴스레터 카테고리</Title>
-      <ContentWrapper isMobile={isMobile}>
-        <DonutChart
-          segments={categories.map(({ segment }) => segment).join(', ')}
+      <Header>
+        <Title>구독 중인 뉴스레터 카테고리</Title>
+        <Select
+          options={periodOptions}
+          selectedValue={period}
+          onSelectOption={setPeriod}
+          width={120}
         />
-        <LegendList isMobile={isMobile}>
-          {categories.map((category) => (
-            <LegendItem key={category.id} isMobile={isMobile}>
-              <CategoryWrapper>
-                <ColorDot color={category.color} />
-                <CategoryName>{category.name}</CategoryName>
-              </CategoryWrapper>
-              <CategoryValue isMobile={isMobile}>
-                <CategoryCount>{category.count}개</CategoryCount>
-                <CategoryPercent>{category.percent}%</CategoryPercent>
-              </CategoryValue>
-            </LegendItem>
-          ))}
-        </LegendList>
-      </ContentWrapper>
+      </Header>
+      {isLoading ? (
+        <Message>카테고리 통계를 불러오는 중이에요.</Message>
+      ) : categories.length === 0 ? (
+        <Message>해당 기간에 구독한 카테고리가 없어요.</Message>
+      ) : (
+        <ContentWrapper isMobile={isMobile}>
+          <DonutChart
+            segments={categories.map(({ segment }) => segment).join(', ')}
+          />
+          <LegendList isMobile={isMobile}>
+            {categories.map((category) => (
+              <LegendItem key={category.id} isMobile={isMobile}>
+                <CategoryWrapper>
+                  <ColorDot color={category.color} />
+                  <CategoryName>{category.name}</CategoryName>
+                </CategoryWrapper>
+                <CategoryValue isMobile={isMobile}>
+                  <CategoryCount>{category.count}개</CategoryCount>
+                  <CategoryPercent>{category.percent}%</CategoryPercent>
+                </CategoryValue>
+              </LegendItem>
+            ))}
+          </LegendList>
+        </ContentWrapper>
+      )}
     </Container>
   );
 };
 
 export default SubscribedCategoryStats;
+
+function buildPeriodOptions() {
+  const now = new Date();
+  const monthOptions = Array.from(
+    { length: RECENT_MONTH_COUNT },
+    (_, index) => {
+      const date = new Date(now.getFullYear(), now.getMonth() - index, 1);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+
+      return {
+        value: `${year}-${String(month).padStart(2, '0')}`,
+        label: `${year}년 ${month}월`,
+      };
+    },
+  );
+
+  return [{ value: CUMULATIVE_VALUE, label: '전체' }, ...monthOptions];
+}
+
+function buildCategorySegments(categories: CategoryStat[]) {
+  let accumulatedRate = 0;
+
+  return [...categories]
+    .sort((first, second) => second.count - first.count)
+    .map((category, index) => {
+      const start = accumulatedRate;
+      accumulatedRate += category.percent;
+      const color =
+        CATEGORY_COLORS[index % CATEGORY_COLORS.length] ?? '#FE5E04';
+
+      return {
+        ...category,
+        color,
+        segment: `${color} ${start}% ${accumulatedRate}%`,
+      };
+    });
+}
 
 const Container = styled.article<{ isMobile: boolean }>`
   min-width: 0;
@@ -68,11 +124,25 @@ const Container = styled.article<{ isMobile: boolean }>`
   grid-column: ${({ isMobile }) => (isMobile ? '1 / -1' : 'auto')};
 `;
 
+const Header = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const Title = styled.h3`
   margin: 0;
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t7Bold};
+`;
+
+const Message = styled.p`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t4Regular};
 `;
 
 const ContentWrapper = styled.div<{ isMobile: boolean }>`
