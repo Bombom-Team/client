@@ -6,7 +6,6 @@ import { queries } from '@/apis/queries';
 import { useDevice } from '@/hooks/useDevice';
 import DottedRankGraph from '@/pages/my-page/components/ReadingActivityStats/DottedRankGraph';
 import MonthlyReport from '@/pages/my-page/components/ReadingActivityStats/MonthlyReport';
-import LogoImage from '#/assets/avif/logo.avif';
 import CrownIcon from '#/assets/svg/crown.svg';
 import StreakIcon from '#/assets/svg/streak.svg';
 
@@ -127,7 +126,27 @@ const ReadingActivitySection = () => {
       <Title>읽기 활동</Title>
       {isMobile && joinDays && (
         <MobileCompanionCard>
-          <MobileCompanionImage src={LogoImage} alt="" />
+          <MobileCompanionHeart viewBox="104 47 52 42" aria-hidden="true">
+            <defs>
+              <linearGradient
+                id="mobile-companion-heart"
+                x1="104"
+                y1="48"
+                x2="144"
+                y2="88"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="#FFB4C3" />
+                <stop offset="1" stopColor="#FF4E6E" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M130 88C121 83 105 74 105 62C105 54 111 48 119 48C123 48 127 50 130 54C133 50 137 48 141 48C149 48 155 54 155 62C155 74 139 83 130 88Z"
+              fill="url(#mobile-companion-heart)"
+              stroke="#FF3F62"
+              strokeWidth="2"
+            />
+          </MobileCompanionHeart>
           <MobileCompanionTextWrapper>
             <MobileCompanionLabel>봄봄과 함께한 지</MobileCompanionLabel>
             <MobileCompanionDays>
@@ -137,7 +156,6 @@ const ReadingActivitySection = () => {
               꾸준한 읽기 습관이 쌓이고 있어요!
             </MobileCompanionDescription>
           </MobileCompanionTextWrapper>
-          <MobileCompanionArrow aria-hidden="true">›</MobileCompanionArrow>
         </MobileCompanionCard>
       )}
       {isMobile && (
@@ -366,14 +384,12 @@ const MobileCompanionCard = styled.article`
   box-sizing: border-box;
 `;
 
-const MobileCompanionImage = styled.img`
+const MobileCompanionHeart = styled.svg`
   width: 72px;
   height: 72px;
-  border-radius: 20px;
 
+  display: block;
   flex-shrink: 0;
-
-  object-fit: cover;
 `;
 
 const MobileCompanionTextWrapper = styled.div`
@@ -401,13 +417,4 @@ const MobileCompanionDescription = styled.p`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t4Regular};
-`;
-
-const MobileCompanionArrow = styled.span`
-  margin-left: auto;
-
-  flex-shrink: 0;
-
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t11Regular};
 `;
