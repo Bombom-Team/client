@@ -1,47 +1,32 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
 import { queries } from '@/apis/queries';
-import Select from '@/components/Select/Select';
-import type { CategoryStat } from '@/apis/members/members.api';
+import type {
+  CategoryStatsResponse,
+  GetCategoryStatsParams,
+} from '@/apis/members/members.api';
 
 interface Props {
   isMobile: boolean;
+  params: GetCategoryStatsParams;
 }
 
 const CATEGORY_COLORS = ['#FE5E04', '#2878F0', '#7C2CF4', '#36A65C', '#FFA400'];
 
-const CUMULATIVE_VALUE = 'cumulative';
-const RECENT_MONTH_COUNT = 12;
-
-const SubscribedCategoryStats = ({ isMobile }: Props) => {
-  const [period, setPeriod] = useState<string>(CUMULATIVE_VALUE);
-
-  const periodOptions = useMemo(buildPeriodOptions, []);
-
-  const { data: stats, isLoading } = useQuery(
-    queries.categoryStats(
-      period === CUMULATIVE_VALUE ? {} : { yearMonth: period },
-    ),
-  );
+const SubscribedCategoryStats = ({ isMobile, params }: Props) => {
+  const { data: stats, isLoading } = useQuery(queries.categoryStats(params));
 
   const categories = buildCategorySegments(stats?.categories ?? []);
 
   return (
     <Container isMobile={isMobile}>
       <Header>
-        <Title>구독 중인 뉴스레터 카테고리</Title>
-        <Select
-          options={periodOptions}
-          selectedValue={period}
-          onSelectOption={setPeriod}
-          width={120}
-        />
+        <Title>이번 달에 읽은 뉴스레터 카테고리</Title>
       </Header>
       {isLoading ? (
         <Message>카테고리 통계를 불러오는 중이에요.</Message>
       ) : categories.length === 0 ? (
-        <Message>해당 기간에 구독한 카테고리가 없어요.</Message>
+        <Message>해당 기간에 읽은 카테고리가 없어요.</Message>
       ) : (
         <ContentWrapper isMobile={isMobile}>
           <DonutChart
@@ -69,26 +54,9 @@ const SubscribedCategoryStats = ({ isMobile }: Props) => {
 
 export default SubscribedCategoryStats;
 
-function buildPeriodOptions() {
-  const now = new Date();
-  const monthOptions = Array.from(
-    { length: RECENT_MONTH_COUNT },
-    (_, index) => {
-      const date = new Date(now.getFullYear(), now.getMonth() - index, 1);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-
-      return {
-        value: `${year}-${String(month).padStart(2, '0')}`,
-        label: `${year}년 ${month}월`,
-      };
-    },
-  );
-
-  return [{ value: CUMULATIVE_VALUE, label: '전체' }, ...monthOptions];
-}
-
-function buildCategorySegments(categories: CategoryStat[]) {
+const buildCategorySegments = (
+  categories: CategoryStatsResponse['categories'],
+) => {
   let accumulatedRate = 0;
 
   return [...categories]
@@ -105,7 +73,7 @@ function buildCategorySegments(categories: CategoryStat[]) {
         segment: `${color} ${start}% ${accumulatedRate}%`,
       };
     });
-}
+};
 
 const Container = styled.article<{ isMobile: boolean }>`
   min-width: 0;
@@ -177,12 +145,9 @@ const DonutChart = styled.div<{ segments: string }>`
 const LegendList = styled.ul<{ isMobile: boolean }>`
   width: 100%;
 
-  display: ${({ isMobile }) => (isMobile ? 'grid' : 'flex')};
+  display: flex;
   gap: 12px;
-  flex-direction: ${({ isMobile }) => (isMobile ? 'initial' : 'column')};
-
-  grid-template-columns: ${({ isMobile }) =>
-    isMobile ? 'repeat(2, minmax(0, 1fr))' : 'none'};
+  flex-direction: column;
 `;
 
 const LegendItem = styled.li<{ isMobile: boolean }>`
@@ -190,8 +155,7 @@ const LegendItem = styled.li<{ isMobile: boolean }>`
 
   display: flex;
   gap: 12px;
-  flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
-  align-items: ${({ isMobile }) => (isMobile ? 'flex-start' : 'center')};
+  align-items: center;
   justify-content: space-between;
 `;
 
@@ -220,7 +184,7 @@ const CategoryName = styled.span`
 `;
 
 const CategoryValue = styled.span<{ isMobile: boolean }>`
-  width: ${({ isMobile }) => (isMobile ? '100%' : 'auto')};
+  width: auto;
 
   display: flex;
   gap: 8px;
