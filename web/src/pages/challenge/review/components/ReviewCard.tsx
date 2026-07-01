@@ -8,6 +8,8 @@ import type { Review } from '../types/review';
 import EditIcon from '#/assets/svg/edit.svg';
 
 type ReviewCardProps = Review & {
+  isPrivate?: boolean;
+  isMyReview?: boolean;
   onEdit?: () => void;
 };
 
@@ -24,7 +26,7 @@ const ReviewCard = ({
   const isMobile = device === 'mobile';
 
   return (
-    <Container isMobile={isMobile} isMyReview={isMyReview}>
+    <Container isMobile={isMobile} isMyReview={!!isMyReview}>
       <Flex gap={12} align="center" justify="space-between">
         <Flex gap={4} align="center">
           <Text color="textSecondary" font="t5Regular">
