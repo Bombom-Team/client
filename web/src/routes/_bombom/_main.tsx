@@ -19,13 +19,23 @@ function RouteComponent() {
       {!isPC && <MobileMainHeader />}
       <Outlet />
       {!isPC && (
-        <BottomNavWrapper>
-          <HeaderNavButtons activeNav={activeNav} device={device} />
-        </BottomNavWrapper>
+        <>
+          <BottomNavSafeArea />
+          <BottomNavWrapper>
+            <HeaderNavButtons activeNav={activeNav} device={device} />
+          </BottomNavWrapper>
+        </>
       )}
     </>
   );
 }
+
+const BottomNavSafeArea = styled.div`
+  width: 100%;
+  height: calc(
+    ${({ theme }) => `${theme.heights.bottomNav} + ${theme.safeArea.bottom}`}
+  );
+`;
 
 const BottomNavWrapper = styled.nav`
   position: fixed;
