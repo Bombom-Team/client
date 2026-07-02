@@ -22,7 +22,17 @@ const isRenderCrash = (event: ErrorEvent) => {
 
 const isP1Status = (status: number) => status >= 500 || status === 401;
 
+const isNotFound = (event: ErrorEvent) =>
+  event.tags?.error_type === 'NOT_FOUND';
+
 const classifyError = (event: ErrorEvent, hint: EventHint): Classification => {
+  if (isNotFound(event)) {
+    return {
+      tags: { error_type: 'NOT_FOUND', priority: 'P2' },
+      level: 'warning',
+    };
+  }
+
   if (hint.originalException instanceof ApiError) {
     const { status } = hint.originalException;
     const isP1 = isP1Status(status);
