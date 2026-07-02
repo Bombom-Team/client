@@ -79,9 +79,14 @@ export default function MobileStorageContent({
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  const isFirstFilterEffect = useRef(true);
   useEffect(() => {
-    resetPage();
     clearSelection();
+    if (isFirstFilterEffect.current) {
+      isFirstFilterEffect.current = false;
+      return;
+    }
+    resetPage();
   }, [
     baseQueryParams.keyword,
     baseQueryParams.newsletterId,

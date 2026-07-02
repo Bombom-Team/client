@@ -1,5 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import {
+  getCategoryStats,
+  getRankSummary,
   getMonthlyReadingRank,
   getMyMonthlyReadingRank,
   getStreakReadingRank,
@@ -10,8 +12,19 @@ import {
   getUserProfile,
   getWarningVisible,
   type GetMonthlyReadingRankParams,
+  type GetRankSummaryParams,
   type GetStreakReadingRankParams,
+  type GetCategoryStatsParams,
 } from './members.api';
+
+const getCurrentCategoryStatsParams = (): GetCategoryStatsParams => {
+  const now = new Date();
+
+  return {
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+  };
+};
 
 export const membersQueries = {
   me: () =>
@@ -56,6 +69,20 @@ export const membersQueries = {
     queryOptions({
       queryKey: ['members', 'me', 'reading', 'streak', 'rank', 'me'],
       queryFn: () => getMyStreakReadingRank(),
+    }),
+
+  rankSummary: (params: GetRankSummaryParams = {}) =>
+    queryOptions({
+      queryKey: ['mypage', 'rank', params],
+      queryFn: () => getRankSummary(params),
+    }),
+
+  categoryStats: (
+    params: GetCategoryStatsParams = getCurrentCategoryStatsParams(),
+  ) =>
+    queryOptions({
+      queryKey: ['mypage', 'category-stats', params],
+      queryFn: () => getCategoryStats(params),
     }),
 
   mySubscriptions: () =>

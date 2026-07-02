@@ -15,7 +15,9 @@ import { Route as AdminIndexRouteImport } from './routes/_admin/index';
 import { Route as AdminResourcesRouteImport } from './routes/_admin/resources';
 import { Route as AdminNoticesRouteImport } from './routes/_admin/notices';
 import { Route as AdminMembersRouteImport } from './routes/_admin/members';
+import { Route as AdminFlywayRouteImport } from './routes/_admin/flyway';
 import { Route as AdminEventsRouteImport } from './routes/_admin/events';
+import { Route as AdminErdRouteImport } from './routes/_admin/erd';
 import { Route as AdminChallengesRouteImport } from './routes/_admin/challenges';
 import { Route as AdminBlogRouteImport } from './routes/_admin/blog';
 import { Route as AdminResourcesIndexRouteImport } from './routes/_admin/resources/index';
@@ -77,9 +79,19 @@ const AdminMembersRoute = AdminMembersRouteImport.update({
   path: '/members',
   getParentRoute: () => AdminRoute,
 } as any);
+const AdminFlywayRoute = AdminFlywayRouteImport.update({
+  id: '/flyway',
+  path: '/flyway',
+  getParentRoute: () => AdminRoute,
+} as any);
 const AdminEventsRoute = AdminEventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any);
+const AdminErdRoute = AdminErdRouteImport.update({
+  id: '/erd',
+  path: '/erd',
   getParentRoute: () => AdminRoute,
 } as any);
 const AdminChallengesRoute = AdminChallengesRouteImport.update({
@@ -260,7 +272,9 @@ export interface FileRoutesByFullPath {
   '/403': typeof R403Route;
   '/blog': typeof AdminBlogRouteWithChildren;
   '/challenges': typeof AdminChallengesRouteWithChildren;
+  '/erd': typeof AdminErdRoute;
   '/events': typeof AdminEventsRouteWithChildren;
+  '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
   '/notices': typeof AdminNoticesRouteWithChildren;
   '/resources': typeof AdminResourcesRouteWithChildren;
@@ -297,6 +311,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/403': typeof R403Route;
+  '/erd': typeof AdminErdRoute;
+  '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
@@ -330,7 +346,9 @@ export interface FileRoutesById {
   '/_admin': typeof AdminRouteWithChildren;
   '/_admin/blog': typeof AdminBlogRouteWithChildren;
   '/_admin/challenges': typeof AdminChallengesRouteWithChildren;
+  '/_admin/erd': typeof AdminErdRoute;
   '/_admin/events': typeof AdminEventsRouteWithChildren;
+  '/_admin/flyway': typeof AdminFlywayRoute;
   '/_admin/members': typeof AdminMembersRoute;
   '/_admin/notices': typeof AdminNoticesRouteWithChildren;
   '/_admin/resources': typeof AdminResourcesRouteWithChildren;
@@ -371,7 +389,9 @@ export interface FileRouteTypes {
     | '/403'
     | '/blog'
     | '/challenges'
+    | '/erd'
     | '/events'
+    | '/flyway'
     | '/members'
     | '/notices'
     | '/resources'
@@ -408,6 +428,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/403'
+    | '/erd'
+    | '/flyway'
     | '/members'
     | '/'
     | '/blog/$postId'
@@ -440,7 +462,9 @@ export interface FileRouteTypes {
     | '/_admin'
     | '/_admin/blog'
     | '/_admin/challenges'
+    | '/_admin/erd'
     | '/_admin/events'
+    | '/_admin/flyway'
     | '/_admin/members'
     | '/_admin/notices'
     | '/_admin/resources'
@@ -525,11 +549,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMembersRouteImport;
       parentRoute: typeof AdminRoute;
     };
+    '/_admin/flyway': {
+      id: '/_admin/flyway';
+      path: '/flyway';
+      fullPath: '/flyway';
+      preLoaderRoute: typeof AdminFlywayRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
     '/_admin/events': {
       id: '/_admin/events';
       path: '/events';
       fullPath: '/events';
       preLoaderRoute: typeof AdminEventsRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
+    '/_admin/erd': {
+      id: '/_admin/erd';
+      path: '/erd';
+      fullPath: '/erd';
+      preLoaderRoute: typeof AdminErdRouteImport;
       parentRoute: typeof AdminRoute;
     };
     '/_admin/challenges': {
@@ -921,7 +959,9 @@ const AdminNewslettersNewsletterIdRouteWithChildren =
 interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRouteWithChildren;
   AdminChallengesRoute: typeof AdminChallengesRouteWithChildren;
+  AdminErdRoute: typeof AdminErdRoute;
   AdminEventsRoute: typeof AdminEventsRouteWithChildren;
+  AdminFlywayRoute: typeof AdminFlywayRoute;
   AdminMembersRoute: typeof AdminMembersRoute;
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren;
   AdminResourcesRoute: typeof AdminResourcesRouteWithChildren;
@@ -935,7 +975,9 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRouteWithChildren,
   AdminChallengesRoute: AdminChallengesRouteWithChildren,
+  AdminErdRoute: AdminErdRoute,
   AdminEventsRoute: AdminEventsRouteWithChildren,
+  AdminFlywayRoute: AdminFlywayRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminResourcesRoute: AdminResourcesRouteWithChildren,

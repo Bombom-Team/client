@@ -51,12 +51,13 @@ function MemoPage() {
 
         <ContentWrapper isPC={isPC}>
           <SidebarSection isPC={isPC}>
+            {isPC && <QuickMenu />}
             {!newsletterCounts ? (
               <NewsletterFilterSkeleton />
             ) : (
               <NewsLetterFilter filters={newsletterCounts} />
             )}
-            <QuickMenu />
+            {!isPC && <QuickMenu />}
           </SidebarSection>
 
           <MainContentSection isPC={isPC}>
@@ -117,7 +118,7 @@ const SidebarSection = styled.div<{ isPC: boolean }>`
   gap: 20px;
   flex-direction: column;
 
-  order: ${({ isPC }) => (isPC ? 1 : 0)};
+  order: ${({ isPC }) => (isPC ? 2 : 0)};
 `;
 
 const MainContentSection = styled.div<{ isPC: boolean }>`
@@ -127,7 +128,7 @@ const MainContentSection = styled.div<{ isPC: boolean }>`
   flex: 1;
   flex-direction: column;
 
-  order: ${({ isPC }) => (isPC ? 2 : 1)};
+  order: 1;
 `;
 
 const BookmarkStorageIcon = styled(MemoIcon)`

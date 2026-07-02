@@ -1,5 +1,8 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
+import MobileMainHeader from '@/components/Header/MobileMainHeader';
+import { useDevice } from '@/hooks/useDevice';
+import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/privacy-policy')({
   head: () => ({
@@ -13,8 +16,12 @@ export const Route = createFileRoute('/privacy-policy')({
 });
 
 function PrivacyPolicyPage() {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+
   return (
-    <Container>
+    <Container device={device}>
+      {isMobile && <MobileMainHeader />}
       <ContentWrapper>
         <Title>개인정보 처리방침</Title>
         <Intro>
@@ -157,10 +164,16 @@ function PrivacyPolicyPage() {
   );
 }
 
-const Container = styled.main`
+const Container = styled.main<{ device: Device }>`
   width: 100%;
   min-height: 100dvh;
-  padding: 80px 20px;
+  padding: ${({ device, theme }) => {
+    if (device === 'mobile') {
+      return `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 24px) 20px 80px`;
+    }
+
+    return '80px 20px';
+  }};
 
   background-color: ${({ theme }) => theme.colors.white};
 `;

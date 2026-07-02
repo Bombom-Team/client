@@ -4,6 +4,34 @@
  */
 
 export interface paths {
+  '/api/v1/subscriptions/native/maeil-mail': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 봄봄 자체 뉴스레터 구독 여부 조회
+     * @description 매일메일 구독 여부와 구독 중인 트랙 목록을 반환합니다.
+     */
+    get: operations['getSubscription'];
+    /**
+     * 봄봄 자체 뉴스레터 구독 생성/수정
+     * @description 요청한 트랙 목록으로 구독 상태를 치환합니다. 미구독 상태에서 트랙을 보내면 신규 구독, 구독 중에 다른 트랙을 보내면 수정합니다.
+     */
+    put: operations['putSubscription'];
+    post: operations['postSubscription'];
+    /**
+     * 봄봄 자체 뉴스레터 구독 해지
+     * @description 매일메일 구독을 해지하고 구독 트랙을 삭제합니다.
+     */
+    delete: operations['deleteSubscription'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/challenges/{challengeId}/reviews/{reviewId}': {
     parameters: {
       query?: never;
@@ -58,30 +86,6 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations['handleAppleFormPost'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/subscriptions/native/maeil-mail': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 봄봄 자체 뉴스레터 구독 여부 조회
-     * @description 매일메일 구독 여부와 구독 중인 트랙 목록을 반환합니다.
-     */
-    get: operations['getSubscription'];
-    put?: never;
-    /**
-     * 봄봄 자체 뉴스레터 구독
-     * @description 봄봄 자체 뉴스레터(매일메일)를 구독합니다.
-     */
-    post: operations['subscribe'];
     delete?: never;
     options?: never;
     head?: never;
@@ -233,7 +237,7 @@ export interface paths {
     };
     /**
      * 열람 가능한 리뷰 목록 조회
-     * @description 로그인한 사용자가 직접 작성한 리뷰(비공개 포함)와 다른 사용자가 작성한 공개 리뷰 목록을 함께 조회합니다. 정렬은 항상 최신순으로 적용되며, `sort` 파라미터는 무시됩니다. 각 항목의 `isMyReview` 필드로 로그인 회원 본인 작성 여부를 분기 처리할 수 있습니다.
+     * @description 다른 사용자가 작성한 공개 리뷰 목록을 조회합니다. 로그인 회원 본인이 작성한 리뷰는 목록에서 제외되며, 본인 리뷰는 `/me` API 로 조회합니다. 정렬은 항상 최신순으로 적용되며, `sort` 파라미터는 무시됩니다.
      */
     get: operations['getReviews'];
     put?: never;
@@ -728,7 +732,7 @@ export interface paths {
     };
     /**
      * 나의 스트릭 순위 조회
-     * @description 실시간 연속 읽기 일수 기준 나의 순위를 반환합니다. day_count가 0이면 월간 순위와 같이 최하위 구간의 공동 순위로 포함됩니다. continue_reading_snapshot 행이 없으면 404입니다.
+     * @description 실시간 연속 읽기 일수 기준 나의 순위와 연속 읽기 보호막 현황을 반환합니다. day_count가 0이면 월간 순위와 같이 최하위 구간의 공동 순위로 포함됩니다. continue_reading_snapshot 행이 없으면 404입니다.
      */
     get: operations['getMemberContinueReadingRank'];
     put?: never;
@@ -799,6 +803,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/members/me/reading/dashboard': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 월간 읽기 대시보드 조회
+     * @description 로그인한 회원의 해당 연·월 읽기 통계를 조회합니다. 읽은 아티클 수(지난 달 대비 증감 포함), 북마크 수, 자주 읽은 뉴스레터를 반환합니다.
+     */
+    get: operations['getReadingDashboard'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/reading/calendar': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 월간 읽기 캘린더 조회
+     * @description 로그인한 회원의 해당 연·월 일자별 읽기 현황을 조회합니다.
+     */
+    get: operations['getReadingCalendar'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/rank': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 마이페이지 랭킹 요약 조회
+     * @description         로그인한 회원의 마이페이지 랭킹 요약 정보를 조회합니다.
+     *             - type 미입력: 연속 읽기 랭킹과 읽은 글 수 랭킹을 모두 반환합니다.
+     *             - type=streak: 연속 읽기 랭킹만 반환합니다.
+     *             - type=reading: 읽은 글 수 랭킹만 반환합니다.
+     *
+     */
+    get: operations['getRankSummary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/members/me/profile': {
     parameters: {
       query?: never;
@@ -831,6 +899,46 @@ export interface paths {
      * @description 현재 로그인한 사용자의 펫 정보를 조회합니다.
      */
     get: operations['getPet'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/join-days': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 회원 가입일 기준 경과일 조회
+     * @description 로그인한 회원의 가입일과 가입일 이래로 지난 일수를 조회합니다.
+     */
+    get: operations['getMemberJoinDays'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/category-stats': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 마이페이지 월별 카테고리 통계 조회
+     * @description 로그인한 회원이 지정한 월에 읽은 뉴스의 카테고리별 통계를 조회합니다.
+     */
+    get: operations['getCategoryStats'];
     put?: never;
     post?: never;
     delete?: never;
@@ -891,6 +999,26 @@ export interface paths {
      * @description 뉴스레터별 하이라이트 개수 정보를 조회합니다.
      */
     get: operations['getHighlightNewsletterStatistics'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/coupons/issues/me': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 내가 받은 쿠폰 목록 조회
+     * @description 로그인한 사용자가 발급받은 쿠폰 목록을 조회합니다.
+     */
+    get: operations['getIssuedCoupons'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1499,6 +1627,9 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    MaeilMailUpdateSubscriptionRequest: {
+      tracks: ('BE' | 'FE')[];
+    };
     UpdateChallengeReviewRequest: {
       comment: string;
       isPrivate?: boolean;
@@ -1506,9 +1637,6 @@ export interface components {
     ChallengeCommentLikeResponse: {
       /** Format: int32 */
       likeCount?: number;
-    };
-    MaeilMailSubscribeRequest: {
-      tracks: ('BE' | 'FE')[];
     };
     /** @description 경고 설정 변경 요청 */
     UpdateWarningSettingRequest: {
@@ -1647,6 +1775,9 @@ export interface components {
     UpdateChallengeCommentRequest: {
       comment: string;
     };
+    MarkAsReadResponse: {
+      readCountTokenConsumed?: boolean;
+    };
     MaeilMailSubscriptionResponse: {
       tracks: ('BE' | 'FE')[];
     };
@@ -1697,8 +1828,8 @@ export interface components {
     };
     SortObject: {
       empty?: boolean;
-      unsorted?: boolean;
       sorted?: boolean;
+      unsorted?: boolean;
     };
     CategoryResponse: {
       /** Format: int64 */
@@ -1752,12 +1883,13 @@ export interface components {
       name: string;
       imageUrl?: string;
       description: string;
-      category: string;
       unsubscribeUrl?: string;
       /** @enum {string} */
       status: 'SUBSCRIBED' | 'UNSUBSCRIBING' | 'UNSUBSCRIBE_FAILED';
       /** @enum {string} */
       newsletterPublicationStatus: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
+      /** @enum {string} */
+      newsletterSource: 'EXTERNAL' | 'MAEIL_MAIL';
     };
     ReadingInformationResponse: {
       /** Format: int32 */
@@ -1875,6 +2007,77 @@ export interface components {
       nextRankDifference: number;
       badges?: components['schemas']['BadgesResponse'];
     };
+    FrequentReadNewsletterResponse: {
+      /**
+       * Format: int32
+       * @description 순위 (1-base)
+       */
+      rank: number;
+      /**
+       * Format: int64
+       * @description 뉴스레터 ID
+       */
+      newsletterId: number;
+      /** @description 뉴스레터명 */
+      name: string;
+      /**
+       * Format: int64
+       * @description 이번 달 읽은 아티클 수
+       */
+      readCount: number;
+    };
+    ReadingDashboardResponse: {
+      /**
+       * Format: int64
+       * @description 이번 달 읽은 아티클 수
+       */
+      readArticleCount: number;
+      /**
+       * Format: double
+       * @description 지난 달 대비 읽은 아티클 수 증감률 (%)
+       */
+      readArticleChangeRate: number;
+      /** @enum {string} */
+      readArticleChangeDirection?: 'UP' | 'DOWN' | 'SAME';
+      /**
+       * Format: int64
+       * @description 북마크 개수
+       */
+      bookmarkCount: number;
+      /** @description 자주 읽은 뉴스레터 TOP */
+      frequentReadNewsletters: components['schemas']['FrequentReadNewsletterResponse'][];
+    };
+    ReadingCalendarDayResponse: {
+      /**
+       * Format: date
+       * @description 날짜 (yyyy-MM-dd)
+       */
+      date: string;
+      /** @description 해당 날짜에 아티클을 읽었는지 여부 */
+      read: boolean;
+      /**
+       * Format: int64
+       * @description 해당 날짜에 읽은 아티클 수
+       */
+      readCount: number;
+    };
+    RankCardResponse: {
+      type: string;
+      /** Format: int64 */
+      currentRank?: number;
+      rankHistory: components['schemas']['RankHistoryResponse'][];
+      /** Format: int32 */
+      value: number;
+    };
+    RankHistoryResponse: {
+      month: string;
+      label: string;
+      /** Format: int64 */
+      rank: number;
+    };
+    RankSummaryResponse: {
+      cards: components['schemas']['RankCardResponse'][];
+    };
     MemberProfileResponse: {
       /** Format: int64 */
       id: number;
@@ -1900,6 +2103,32 @@ export interface components {
       requiredStageScore: number;
       /** @description 출석 여부 */
       isAttended: boolean;
+    };
+    MemberJoinDaysResponse: {
+      /**
+       * Format: int32
+       * @description 가입일 이래로 지난 일수
+       */
+      daysSinceJoined: number;
+      /**
+       * Format: date
+       * @description 가입일 (yyyy-MM-dd)
+       */
+      joinedAt: string;
+    };
+    CategoryStatsItemResponse: {
+      /** Format: int64 */
+      id: number;
+      name: string;
+      /** Format: int64 */
+      count: number;
+      /** Format: int32 */
+      percent: number;
+    };
+    CategoryStatsResponse: {
+      /** Format: int64 */
+      total: number;
+      categories: components['schemas']['CategoryStatsItemResponse'][];
     };
     MaeilMailIdealAnswerResponse: {
       title: string;
@@ -1968,6 +2197,12 @@ export interface components {
       totalCount: number;
       /** @description 뉴스레터 별 하이라이트 개수 통계 */
       newsletters: components['schemas']['HighlightCountPerNewsletterResponse'][];
+    };
+    CouponIssueSummaryResponse: {
+      couponName: string;
+      imageUrl: string;
+      /** Format: date-time */
+      issuedAt: string;
     };
     ChallengeDetailResponse: {
       /** @description 참여 여부 */
@@ -2166,16 +2401,6 @@ export interface components {
        * @example 좋았어요
        */
       comment: string;
-      /**
-       * @description 비밀글 여부 (자신이 쓴 글이 비공개인지 표시할 때 사용)
-       * @example false
-       */
-      isPrivate: boolean;
-      /**
-       * @description 로그인 회원 본인이 작성한 리뷰인지 여부 (클라이언트 분기용)
-       * @example true
-       */
-      isMyReview: boolean;
     };
     PageChallengeReviewResponse: {
       /** Format: int64 */
@@ -2590,6 +2815,118 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  getSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
+        };
+      };
+    };
+  };
+  putSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MaeilMailUpdateSubscriptionRequest'];
+      };
+    };
+    responses: {
+      /** @description 처리 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 (빈 트랙, 중복 트랙) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  postSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MaeilMailUpdateSubscriptionRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 해지 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   updateReview: {
     parameters: {
       query?: never;
@@ -2755,71 +3092,6 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getSubscription: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 조회 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
-        };
-      };
-      /** @description 인증 실패 */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
-        };
-      };
-    };
-  };
-  subscribe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['MaeilMailSubscribeRequest'];
-      };
-    };
-    responses: {
-      /** @description 구독 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description 잘못된 요청 (외부 뉴스레터, 중복 구독) */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description 인증 실패 */
-      401: {
         headers: {
           [name: string]: unknown;
         };
@@ -4149,11 +4421,13 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description 읽음 처리 성공 */
-      204: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          '*/*': components['schemas']['MarkAsReadResponse'];
+        };
       };
       /** @description 아티클에 대한 접근 권한 없음 */
       403: {
@@ -4480,6 +4754,131 @@ export interface operations {
       };
     };
   };
+  getReadingDashboard: {
+    parameters: {
+      query: {
+        /** @description 조회할 연도 */
+        year: number;
+        /** @description 조회할 월 (1-12) */
+        month: number;
+        /** @description 자주 읽은 뉴스레터 조회 개수 */
+        limit: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 읽기 대시보드 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReadingDashboardResponse'];
+        };
+      };
+      /** @description 잘못된 연·월 파라미터 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ReadingDashboardResponse'];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ReadingDashboardResponse'];
+        };
+      };
+    };
+  };
+  getReadingCalendar: {
+    parameters: {
+      query: {
+        /** @description 조회할 연도 */
+        year: number;
+        /** @description 조회할 월 (1-12) */
+        month: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 읽기 캘린더 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReadingCalendarDayResponse'][];
+        };
+      };
+      /** @description 잘못된 연·월 파라미터 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ReadingCalendarDayResponse'][];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ReadingCalendarDayResponse'][];
+        };
+      };
+    };
+  };
+  getRankSummary: {
+    parameters: {
+      query?: {
+        /** @description 랭킹 타입 (미입력 시 전체) */
+        type?: 'streak' | 'reading';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 마이페이지 랭킹 요약 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['RankSummaryResponse'];
+        };
+      };
+      /** @description 잘못된 랭킹 타입 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   getMemberProfile: {
     parameters: {
       query?: never;
@@ -4533,6 +4932,72 @@ export interface operations {
         content: {
           '*/*': components['schemas']['PetResponse'];
         };
+      };
+    };
+  };
+  getMemberJoinDays: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 회원 가입일 기준 경과일 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MemberJoinDaysResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getCategoryStats: {
+    parameters: {
+      query: {
+        /** @description 조회할 연도 */
+        year: number;
+        /** @description 조회할 월 (1-12) */
+        month: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 마이페이지 월별 카테고리 통계 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CategoryStatsResponse'];
+        };
+      };
+      /** @description 잘못된 연·월 파라미터 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -4627,6 +5092,35 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getIssuedCoupons: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 쿠폰 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CouponIssueSummaryResponse'][];
+        };
+      };
+      /** @description 인증이 필요합니다. */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CouponIssueSummaryResponse'][];
+        };
       };
     };
   };

@@ -44,11 +44,13 @@ export const Route = createFileRoute('/_bombom/_main/storage')({
     search?: string;
     sort?: Sort;
     newsletterId?: number;
+    page?: number;
   }) => {
     return {
       search: search.search,
       sort: search.sort,
       newsletterId: search.newsletterId,
+      page: search.page,
     };
   },
 });
@@ -144,12 +146,13 @@ function Storage() {
         )}
 
         <SidebarSection isPC={isPC}>
+          {isPC && <QuickMenu />}
           {!newsletterFilters ? (
             <NewsletterFilterSkeleton />
           ) : (
             <NewsLetterFilter filters={filters} />
           )}
-          <QuickMenu />
+          {!isPC && <QuickMenu />}
         </SidebarSection>
         <MainContentSection isPC={isPC}>
           {isPC ? (

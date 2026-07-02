@@ -8,6 +8,8 @@ import type { Review } from '../types/review';
 import EditIcon from '#/assets/svg/edit.svg';
 
 type ReviewCardProps = Review & {
+  isPrivate?: boolean;
+  isMyReview?: boolean;
   onEdit?: () => void;
 };
 
@@ -16,8 +18,8 @@ const DELETED_USER_NICKNAME = '탈퇴한 회원';
 const ReviewCard = ({
   nickname,
   comment,
-  isPrivate,
-  isMyReview,
+  isPrivate = false,
+  isMyReview = false,
   onEdit,
 }: ReviewCardProps) => {
   const device = useDevice();
