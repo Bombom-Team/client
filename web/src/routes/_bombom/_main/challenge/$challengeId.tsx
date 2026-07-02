@@ -6,7 +6,6 @@ import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
-import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import ChallengeGuideModal from '@/pages/challenge/index/components/ChallengeGuideModal/ChallengeGuideModal';
 import ChallengeStreakCard from '@/pages/challenge/index/components/ChallengeStreakCard';
 import { useChallengeDetailTabs } from '@/pages/challenge/index/hooks/useChallengeDetailTabs';
@@ -33,10 +32,6 @@ function ChallengeDetail() {
 
   const { data: challengeInfo } = useQuery(
     queries.challengesInfo(Number(challengeId)),
-  );
-
-  const { data: memberChallengeProgressInfo } = useQuery(
-    queries.memberProgress(Number(challengeId)),
   );
 
   const isChallengeEnd = challengeInfo
@@ -91,19 +86,7 @@ function ChallengeDetail() {
           </NavigationWrapper>
 
           <TabPanel>
-            {isReviewTab ? (
-              <ReviewNotice />
-            ) : (
-              challengeInfo &&
-              memberChallengeProgressInfo && (
-                <UserChallengeInfoWrapper>
-                  <UserChallengeInfo
-                    challengeInfo={challengeInfo}
-                    memberChallengeProgressInfo={memberChallengeProgressInfo}
-                  />
-                </UserChallengeInfoWrapper>
-              )
-            )}
+            {isReviewTab && <ReviewNotice />}
             <Outlet />
           </TabPanel>
         </ContentWrapper>
@@ -158,12 +141,6 @@ const ContentWrapper = styled.div<{ device: Device }>`
   flex-direction: ${({ device }) => (device === 'mobile' ? 'column' : 'row')};
   align-items: flex-start;
   align-self: stretch;
-`;
-const UserChallengeInfoWrapper = styled.section`
-  width: 100%;
-  padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 16px;
 `;
 
 const NavigationWrapper = styled.div<{ device: Device }>`

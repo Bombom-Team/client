@@ -7,6 +7,7 @@ import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice, type Device } from '@/hooks/useDevice';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
+import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import { useChallengeTeamProgressTabs } from '@/pages/challenge/index/hooks/useChallengeTeamProgressTabs';
 import type { TeamInfoResponse } from '@/pages/challenge/dashboard/types/challengeTeamInfo';
 import type { Theme } from '@emotion/react/macro';
@@ -70,6 +71,14 @@ function ChallengeDashboardRoute() {
 
   return (
     <Container>
+      {challengeInfo && memberChallengeProgressInfo && (
+        <UserChallengeInfoWrapper>
+          <UserChallengeInfo
+            challengeInfo={challengeInfo}
+            memberChallengeProgressInfo={memberChallengeProgressInfo}
+          />
+        </UserChallengeInfoWrapper>
+      )}
       <InfoWrapper>
         <AchievementAverage>
           오늘 팀 평균 달성률 :{' '}
@@ -118,6 +127,13 @@ const Container = styled.section`
   display: flex;
   gap: 24px;
   flex-direction: column;
+`;
+
+const UserChallengeInfoWrapper = styled.section`
+  width: 100%;
+  padding: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
+  border-radius: 16px;
 `;
 
 const InfoWrapper = styled.div`

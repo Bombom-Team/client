@@ -121,6 +121,8 @@ const SidebarSection = styled.div<{ device: Device }>`
   display: flex;
   gap: 20px;
   flex-direction: column;
+
+  order: ${({ device }) => (device === 'pc' ? 2 : 0)};
 `;
 
 const ArticleList = styled.ul`
@@ -130,4 +132,6 @@ const ArticleList = styled.ul`
   gap: 16px;
   flex: 1;
   flex-direction: column;
+
+  order: 1;
 `;

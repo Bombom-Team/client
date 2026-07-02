@@ -57,9 +57,6 @@ function BookmarkPage() {
   const bookmarkContent = articles?.content ?? [];
   const haveNoContent = !isLoading && bookmarkContent.length === 0;
 
-  if (haveNoContent)
-    return <EmptyLetterCard title="북마크한 뉴스레터가 없어요" />;
-
   return (
     <Container>
       <MainSection>
@@ -70,13 +67,14 @@ function BookmarkPage() {
 
         <ContentWrapper device={device}>
           <SidebarSection device={device}>
+            {device === 'pc' && <QuickMenu />}
             {!newsletterCounts ? (
               <NewsletterFilterSkeleton />
             ) : (
               <NewsLetterFilter filters={newsletterCounts} />
             )}
 
-            <QuickMenu />
+            {device !== 'pc' && <QuickMenu />}
           </SidebarSection>
 
           <MainContentSection device={device}>
@@ -89,6 +87,8 @@ function BookmarkPage() {
             </SummaryBar>
             {isLoading ? (
               <ArticleCardListSkeleton />
+            ) : haveNoContent ? (
+              <EmptyLetterCard title="북마크한 뉴스레터가 없어요" />
             ) : (
               <ArticleList
                 articles={bookmarkContent}
@@ -145,15 +145,19 @@ const SidebarSection = styled.div<{ device: Device }>`
   display: flex;
   gap: 20px;
   flex-direction: column;
+
+  order: ${({ device }) => (device === 'pc' ? 2 : 0)};
 `;
 
 const MainContentSection = styled.div<{ device: Device }>`
+  width: 100%;
+
   display: flex;
   gap: 20px;
   flex: 1;
   flex-direction: column;
 
-  order: ${({ device }) => (device === 'pc' ? 2 : 1)};
+  order: 1;
 `;
 
 const BookmarkStorageIcon = styled(BookmarkIcon)`
