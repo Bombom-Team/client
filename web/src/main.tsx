@@ -95,6 +95,7 @@ const router = createRouter({
     queryClient,
   },
   scrollRestoration: true,
+  defaultErrorComponent: PageErrorFallback,
 });
 
 if (isProduction) {
