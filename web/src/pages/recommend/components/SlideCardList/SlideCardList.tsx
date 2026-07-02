@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import LandingIntroBanner from '../LandingIntroBanner/LandingIntroBanner';
 import BlogOpenBanner from '../PromotionBanner/BlogOpenBanner';
 import MaeilMailPromotionBanner from '../PromotionBanner/MaeilMailPromotionBanner';
 import { Carousel } from '@/components/Carousel/Carousel';
@@ -21,6 +22,11 @@ const SlideCardList = () => {
           <Carousel.Slide>
             <BannerWrapper device={device}>
               <BlogOpenBanner />
+            </BannerWrapper>
+          </Carousel.Slide>
+          <Carousel.Slide>
+            <BannerWrapper device={device}>
+              <LandingIntroBanner />
             </BannerWrapper>
           </Carousel.Slide>
         </Carousel.Slides>

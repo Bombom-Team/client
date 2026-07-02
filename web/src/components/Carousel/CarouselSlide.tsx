@@ -19,5 +19,6 @@ const CarouselSlide = ({ children }: PropsWithChildren) => {
 export default CarouselSlide;
 
 const Slide = styled.li`
+  min-width: 0;
   flex: 0 0 100%;
 `;
