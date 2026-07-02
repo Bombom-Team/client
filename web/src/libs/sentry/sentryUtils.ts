@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/named
 import { captureException, captureMessage, ErrorBoundary } from '@sentry/react';
+import { normalizeNotFoundPath } from './normalizeNotFoundPath';
 import type { QueryKey } from '@tanstack/react-query';
 
 type CaptureQueryErrorParams = {
@@ -24,7 +25,10 @@ export const captureMutationError = ({ error }: { error: unknown }) => {
 
 export const captureNotFound = ({ path }: { path: string }) => {
   captureMessage('Route not found', {
-    tags: { error_type: 'NOT_FOUND' },
+    tags: {
+      error_type: 'NOT_FOUND',
+      not_found_path: normalizeNotFoundPath(path),
+    },
     extra: { path },
   });
 };
