@@ -95,29 +95,28 @@ export const getMyStreakReadingRank = async () => {
   });
 };
 
-export interface CategoryStat {
-  id: number;
-  name: string;
-  count: number;
-  percent: number;
-}
+export type GetRankSummaryResponse =
+  components['schemas']['RankSummaryResponse'];
+export type GetRankSummaryParams = NonNullable<
+  operations['getRankSummary']['parameters']['query']
+>;
 
-export interface CategoryStatsResponse {
-  type: 'cumulative' | 'monthly';
-  total: number;
-  categories: CategoryStat[];
-}
+export const getRankSummary = async (params: GetRankSummaryParams = {}) => {
+  return await fetcher.get<GetRankSummaryResponse>({
+    path: '/members/me/rank',
+    query: params,
+  });
+};
 
-export interface GetCategoryStatsParams {
-  yearMonth?: string;
-}
+export type CategoryStatsResponse =
+  components['schemas']['CategoryStatsResponse'];
+export type GetCategoryStatsParams =
+  operations['getCategoryStats']['parameters']['query'];
 
-export const getCategoryStats = async ({
-  yearMonth,
-}: GetCategoryStatsParams = {}) => {
+export const getCategoryStats = async (params: GetCategoryStatsParams) => {
   return await fetcher.get<CategoryStatsResponse>({
-    path: '/mypage/category-stats',
-    query: yearMonth ? { yearMonth } : undefined,
+    path: '/members/me/category-stats',
+    query: params,
   });
 };
 

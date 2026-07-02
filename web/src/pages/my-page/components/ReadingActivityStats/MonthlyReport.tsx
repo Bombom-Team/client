@@ -4,6 +4,7 @@ import ChevronIcon from '@/components/icons/ChevronIcon';
 import Text from '@/components/Text';
 import MonthlyReadingCalendar from '@/pages/my-page/components/ReadingActivityStats/MonthlyReadingCalendar';
 import MonthlyReportStats from '@/pages/my-page/components/ReadingActivityStats/MonthlyReportStats';
+import SubscribedCategoryStats from '@/pages/my-page/components/ReadingActivityStats/SubscribedCategoryStats';
 
 interface Props {
   isMobile?: boolean;
@@ -91,7 +92,15 @@ const MonthlyReport = ({ isMobile = false }: Props) => {
       </Header>
 
       <MonthlyReportStats year={year} month={month} isMobile={isMobile} />
-      <MonthlyReadingCalendar year={year} month={month} isMobile={isMobile} />
+      <ReportContentWrapper isMobile={isMobile}>
+        <MonthlyReadingCalendar year={year} month={month} isMobile={isMobile} />
+        <CategoryStatsWrapper>
+          <SubscribedCategoryStats
+            isMobile={isMobile}
+            params={{ year, month }}
+          />
+        </CategoryStatsWrapper>
+      </ReportContentWrapper>
     </Container>
   );
 };
@@ -113,11 +122,24 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
+const ReportContentWrapper = styled.div<{ isMobile: boolean }>`
+  display: flex;
+  gap: 16px;
+  flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
+  align-items: stretch;
+`;
+
+const CategoryStatsWrapper = styled.div`
+  min-width: 0;
+  flex: 1;
+`;
+
 const Header = styled.div`
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
   gap: 8px;
   align-items: center;
+
+  grid-template-columns: 1fr auto 1fr;
 `;
 
 const ReportTitle = styled.h2`
@@ -152,7 +174,6 @@ const MonthNav = styled.div`
 
 const MonthLabel = styled(Text)`
   min-width: 76px;
-
   text-align: center;
 
   && {
@@ -177,7 +198,6 @@ const NavButton = styled.button`
 
   &:disabled {
     color: ${({ theme }) => theme.colors.disabledText};
-
     cursor: default;
   }
 `;

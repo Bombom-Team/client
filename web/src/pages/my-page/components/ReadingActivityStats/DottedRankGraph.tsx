@@ -10,6 +10,8 @@ interface Props {
   currentRank: number;
   showYAxis?: boolean;
   showArea?: boolean;
+  showBadge?: boolean;
+  largeXAxisLabel?: boolean;
 }
 
 const CHART_WIDTH = 320;
@@ -29,6 +31,8 @@ const DottedRankGraph = ({
   currentRank,
   showYAxis = true,
   showArea = false,
+  showBadge = true,
+  largeXAxisLabel = false,
 }: Props) => {
   const rankPoints = points.map((point, index) =>
     index === points.length - 1 ? { ...point, rank: currentRank } : point,
@@ -101,6 +105,7 @@ const DottedRankGraph = ({
         {rankPoints.map((point, index) => (
           <XAxisLabel
             key={point.label}
+            $large={largeXAxisLabel}
             x={getX(index)}
             y={PADDING.top + graphHeight + 22}
             textAnchor="middle"
@@ -118,7 +123,7 @@ const DottedRankGraph = ({
             r={4}
           />
         ))}
-        {lastPoint && (
+        {showBadge && lastPoint && (
           <RankBadge
             transform={`translate(${lastPointX - 22} ${lastPointY - 52})`}
           >
@@ -158,8 +163,9 @@ const AxisLabel = styled.text`
   fill: ${({ theme }) => theme.colors.textSecondary};
 `;
 
-const XAxisLabel = styled.text`
-  font: ${({ theme }) => theme.fonts.t2Regular};
+const XAxisLabel = styled.text<{ $large: boolean }>`
+  font: ${({ $large, theme }) =>
+    $large ? theme.fonts.t5Bold : theme.fonts.t2Regular};
   fill: ${({ theme }) => theme.colors.textPrimary};
 `;
 

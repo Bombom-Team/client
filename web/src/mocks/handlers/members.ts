@@ -13,13 +13,47 @@ import { TRENDY_NEWSLETTERS } from '../datas/trendyNewsLetter';
 const baseURL = ENV.baseUrl;
 
 export const membersHandlers = [
-  http.get(`${baseURL}/mypage/category-stats`, ({ request }) => {
+  http.get(`${baseURL}/members/me/category-stats`, ({ request }) => {
     const url = new URL(request.url);
-    const yearMonth = url.searchParams.get('yearMonth');
+    const year = url.searchParams.get('year');
+    const month = url.searchParams.get('month');
 
     return HttpResponse.json(
-      yearMonth ? MONTHLY_CATEGORY_STATS : CUMULATIVE_CATEGORY_STATS,
+      year && month ? MONTHLY_CATEGORY_STATS : CUMULATIVE_CATEGORY_STATS,
     );
+  }),
+
+  http.get(`${baseURL}/members/me/rank`, () => {
+    return HttpResponse.json({
+      cards: [
+        {
+          type: 'streak',
+          currentRank: 3,
+          rankHistory: [
+            { month: '2025-12', label: '25.12', rank: 20 },
+            { month: '2026-01', label: '1월', rank: 14 },
+            { month: '2026-02', label: '2월', rank: 20 },
+            { month: '2026-03', label: '3월', rank: 12 },
+            { month: '2026-04', label: '4월', rank: 9 },
+            { month: '2026-05', label: '5월', rank: 3 },
+          ],
+          value: 52,
+        },
+        {
+          type: 'reading',
+          currentRank: 3,
+          rankHistory: [
+            { month: '2025-12', label: '25.12', rank: 20 },
+            { month: '2026-01', label: '1월', rank: 15 },
+            { month: '2026-02', label: '2월', rank: 19 },
+            { month: '2026-03', label: '3월', rank: 10 },
+            { month: '2026-04', label: '4월', rank: 8 },
+            { month: '2026-05', label: '5월', rank: 3 },
+          ],
+          value: 248,
+        },
+      ],
+    });
   }),
 
   http.get(`${baseURL}/members/me/subscriptions`, () => {
