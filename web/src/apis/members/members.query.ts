@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import {
   getCategoryStats,
   getRankSummary,
@@ -11,10 +11,14 @@ import {
   getMySubscriptions,
   getUserProfile,
   getWarningVisible,
+  getMyChallengeSummary,
+  getMyOngoingChallenges,
+  getMyCompletedChallenges,
   type GetMonthlyReadingRankParams,
   type GetRankSummaryParams,
   type GetStreakReadingRankParams,
   type GetCategoryStatsParams,
+  type GetMyCompletedChallengesParams,
 } from './members.api';
 
 const getCurrentCategoryStatsParams = (): GetCategoryStatsParams => {
@@ -95,5 +99,38 @@ export const membersQueries = {
     queryOptions({
       queryKey: ['members', 'me', 'warning', 'near-capacity'],
       queryFn: () => getWarningVisible(),
+    }),
+
+  myChallengeSummary: () =>
+    queryOptions({
+      queryKey: ['members', 'me', 'challenges', 'summary'],
+      queryFn: getMyChallengeSummary,
+    }),
+
+  myOngoingChallenges: () =>
+    queryOptions({
+      queryKey: ['members', 'me', 'challenges', 'ongoing'],
+      queryFn: getMyOngoingChallenges,
+    }),
+
+  infiniteMyCompletedChallenges: (
+    params?: Omit<GetMyCompletedChallengesParams, 'page'>,
+  ) =>
+    infiniteQueryOptions({
+      queryKey: [
+        'members',
+        'me',
+        'challenges',
+        'completed',
+        'infinite',
+        params,
+      ],
+      queryFn: ({ pageParam }) =>
+        getMyCompletedChallenges({ ...params, page: pageParam }),
+      getNextPageParam: (lastPage, _, lastPageParam) => {
+        if (!lastPage || lastPage.last) return undefined;
+        return (lastPageParam as number) + 1;
+      },
+      initialPageParam: 0,
     }),
 };
