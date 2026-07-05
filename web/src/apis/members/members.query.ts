@@ -1,6 +1,7 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import {
   getCategoryStats,
+  getRankSummary,
   getMonthlyReadingRank,
   getMyMonthlyReadingRank,
   getStreakReadingRank,
@@ -14,10 +15,20 @@ import {
   getMyOngoingChallenges,
   getMyCompletedChallenges,
   type GetMonthlyReadingRankParams,
+  type GetRankSummaryParams,
   type GetStreakReadingRankParams,
   type GetCategoryStatsParams,
   type GetMyCompletedChallengesParams,
 } from './members.api';
+
+const getCurrentCategoryStatsParams = (): GetCategoryStatsParams => {
+  const now = new Date();
+
+  return {
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+  };
+};
 
 export const membersQueries = {
   me: () =>
@@ -64,7 +75,15 @@ export const membersQueries = {
       queryFn: () => getMyStreakReadingRank(),
     }),
 
-  categoryStats: (params: GetCategoryStatsParams = {}) =>
+  rankSummary: (params: GetRankSummaryParams = {}) =>
+    queryOptions({
+      queryKey: ['mypage', 'rank', params],
+      queryFn: () => getRankSummary(params),
+    }),
+
+  categoryStats: (
+    params: GetCategoryStatsParams = getCurrentCategoryStatsParams(),
+  ) =>
     queryOptions({
       queryKey: ['mypage', 'category-stats', params],
       queryFn: () => getCategoryStats(params),

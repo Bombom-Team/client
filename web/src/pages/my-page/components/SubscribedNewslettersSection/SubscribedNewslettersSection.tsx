@@ -1,26 +1,38 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import MaeilMailSubscriptionCard from './MaeilMailSubscriptionCard';
+import MySubscriptionCard from './MySubscriptionCard';
 import NewsletterUnsubscribeModal from './NewsletterUnsubscribeModal';
-import { useUnsubscribe } from '../hooks/useUnsubscribe';
+import { useUnsubscribe } from '../../hooks/useUnsubscribe';
+import { queries } from '@/apis/queries';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
-import MySubscriptionCard from '@/pages/my-page/MySubscriptionCard';
-import type { GetMySubscriptionsResponse } from '@/apis/members/members.api';
 import type { Device } from '@/hooks/useDevice';
 
+const NATIVE_NEWSLETTER_SOURCE = 'MAEIL_MAIL' as const;
+
 interface SubscribedNewslettersSectionProps {
-  newsletters: GetMySubscriptionsResponse;
   device: Device;
 }
 
 const SubscribedNewslettersSection = ({
-  newsletters,
   device,
 }: SubscribedNewslettersSectionProps) => {
+  const countRef = useRef(0);
   const [actionType, setActionType] = useState<'UNSUBSCRIBE' | 'REMOVE'>(
     'UNSUBSCRIBE',
   );
+
+  const { data: newsletters = [] } = useQuery({
+    ...queries.mySubscriptions(),
+    refetchInterval: () => {
+      if (countRef.current >= 60) return false;
+      countRef.current += 1;
+      return 5 * 1000;
+    },
+  });
 
   const { selectNewsletter, confirmUnsubscribe } = useUnsubscribe();
   const { modalRef, openModal, closeModal, isOpen } = useModal({
@@ -49,16 +61,23 @@ const SubscribedNewslettersSection = ({
   return (
     <>
       <Container>
-        {newsletters && newsletters.length > 0 ? (
+        {newsletters.length > 0 ? (
           <NewsletterGrid device={device}>
-            {newsletters.map((newsletter) => (
-              <MySubscriptionCard
-                key={newsletter.newsletterId}
-                newsletter={newsletter}
-                onUnsubscribeRequest={handleUnsubscribeRequest}
-                onRemoveRequest={handleRemoveRequest}
-              />
-            ))}
+            {newsletters.map((newsletter) =>
+              newsletter.newsletterSource === NATIVE_NEWSLETTER_SOURCE ? (
+                <MaeilMailSubscriptionCard
+                  key={newsletter.newsletterId}
+                  newsletter={newsletter}
+                />
+              ) : (
+                <MySubscriptionCard
+                  key={newsletter.newsletterId}
+                  newsletter={newsletter}
+                  onUnsubscribeRequest={handleUnsubscribeRequest}
+                  onRemoveRequest={handleRemoveRequest}
+                />
+              ),
+            )}
           </NewsletterGrid>
         ) : (
           <EmptyMessage>구독 중인 뉴스레터가 없습니다.</EmptyMessage>

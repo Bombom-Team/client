@@ -47,7 +47,7 @@ function Index() {
   const todayDateStr = useMemo(() => formatDate(today, '-'), [today]);
 
   const { data: todayArticles, isLoading: isArticlesLoading } = useQuery(
-    queries.articles({ date: todayDateStr }),
+    queries.articles({ date: todayDateStr, size: 50 }),
   );
 
   const { data: pet, isLoading: isPetLoading } = useQuery(queries.pet());
