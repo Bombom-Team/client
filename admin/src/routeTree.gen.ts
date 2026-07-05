@@ -19,14 +19,14 @@ import { Route as AdminFlywayRouteImport } from './routes/_admin/flyway';
 import { Route as AdminEventsRouteImport } from './routes/_admin/events';
 import { Route as AdminChallengesRouteImport } from './routes/_admin/challenges';
 import { Route as AdminBlogRouteImport } from './routes/_admin/blog';
-import { Route as AdminReviewersRouteImport } from './routes/_admin/reviewers';
-import { Route as AdminReviewersStatsRouteImport } from './routes/_admin/reviewers/stats';
+import { Route as AdminReviewersIndexRouteImport } from './routes/_admin/reviewers/index';
 import { Route as AdminResourcesIndexRouteImport } from './routes/_admin/resources/index';
 import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/index';
 import { Route as AdminNewslettersIndexRouteImport } from './routes/_admin/newsletters/index';
 import { Route as AdminEventsIndexRouteImport } from './routes/_admin/events/index';
 import { Route as AdminChallengesIndexRouteImport } from './routes/_admin/challenges/index';
 import { Route as AdminBlogIndexRouteImport } from './routes/_admin/blog/index';
+import { Route as AdminReviewersStatsRouteImport } from './routes/_admin/reviewers/stats';
 import { Route as AdminResourcesUnsubscribePatternRouteImport } from './routes/_admin/resources/unsubscribe-pattern';
 import { Route as AdminResourcesUnsubscribeParsePatternRouteImport } from './routes/_admin/resources/unsubscribe-parse-pattern';
 import { Route as AdminResourcesUnsubscribeLambdaRouteImport } from './routes/_admin/resources/unsubscribe-lambda';
@@ -100,15 +100,10 @@ const AdminBlogRoute = AdminBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => AdminRoute,
 } as any);
-const AdminReviewersRoute = AdminReviewersRouteImport.update({
-  id: '/reviewers',
-  path: '/reviewers',
+const AdminReviewersIndexRoute = AdminReviewersIndexRouteImport.update({
+  id: '/reviewers/',
+  path: '/reviewers/',
   getParentRoute: () => AdminRoute,
-} as any);
-const AdminReviewersStatsRoute = AdminReviewersStatsRouteImport.update({
-  id: '/stats',
-  path: '/stats',
-  getParentRoute: () => AdminReviewersRoute,
 } as any);
 const AdminResourcesIndexRoute = AdminResourcesIndexRouteImport.update({
   id: '/',
@@ -139,6 +134,11 @@ const AdminBlogIndexRoute = AdminBlogIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminBlogRoute,
+} as any);
+const AdminReviewersStatsRoute = AdminReviewersStatsRouteImport.update({
+  id: '/reviewers/stats',
+  path: '/reviewers/stats',
+  getParentRoute: () => AdminRoute,
 } as any);
 const AdminResourcesUnsubscribePatternRoute =
   AdminResourcesUnsubscribePatternRouteImport.update({
@@ -283,8 +283,6 @@ export interface FileRoutesByFullPath {
   '/members': typeof AdminMembersRoute;
   '/notices': typeof AdminNoticesRouteWithChildren;
   '/resources': typeof AdminResourcesRouteWithChildren;
-  '/reviewers': typeof AdminReviewersRouteWithChildren;
-  '/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
   '/challenges/$challengeId': typeof AdminChallengesChallengeIdRouteWithChildren;
@@ -298,12 +296,14 @@ export interface FileRoutesByFullPath {
   '/resources/unsubscribe-lambda': typeof AdminResourcesUnsubscribeLambdaRouteWithChildren;
   '/resources/unsubscribe-parse-pattern': typeof AdminResourcesUnsubscribeParsePatternRoute;
   '/resources/unsubscribe-pattern': typeof AdminResourcesUnsubscribePatternRoute;
+  '/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/blog/': typeof AdminBlogIndexRoute;
   '/challenges/': typeof AdminChallengesIndexRoute;
   '/events/': typeof AdminEventsIndexRoute;
   '/newsletters': typeof AdminNewslettersIndexRoute;
   '/notices/': typeof AdminNoticesIndexRoute;
   '/resources/': typeof AdminResourcesIndexRoute;
+  '/reviewers': typeof AdminReviewersIndexRoute;
   '/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute;
   '/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute;
   '/newsletters/$newsletterId/previous': typeof AdminNewslettersNewsletterIdPreviousRouteWithChildren;
@@ -320,8 +320,6 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route;
   '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
-  '/reviewers': typeof AdminReviewersRoute;
-  '/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
   '/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute;
@@ -331,12 +329,14 @@ export interface FileRoutesByTo {
   '/notices/new': typeof AdminNoticesNewRoute;
   '/resources/unsubscribe-parse-pattern': typeof AdminResourcesUnsubscribeParsePatternRoute;
   '/resources/unsubscribe-pattern': typeof AdminResourcesUnsubscribePatternRoute;
+  '/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/blog': typeof AdminBlogIndexRoute;
   '/challenges': typeof AdminChallengesIndexRoute;
   '/events': typeof AdminEventsIndexRoute;
   '/newsletters': typeof AdminNewslettersIndexRoute;
   '/notices': typeof AdminNoticesIndexRoute;
   '/resources': typeof AdminResourcesIndexRoute;
+  '/reviewers': typeof AdminReviewersIndexRoute;
   '/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute;
   '/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute;
   '/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute;
@@ -357,8 +357,6 @@ export interface FileRoutesById {
   '/_admin/events': typeof AdminEventsRouteWithChildren;
   '/_admin/flyway': typeof AdminFlywayRoute;
   '/_admin/members': typeof AdminMembersRoute;
-  '/_admin/reviewers': typeof AdminReviewersRouteWithChildren;
-  '/_admin/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/_admin/notices': typeof AdminNoticesRouteWithChildren;
   '/_admin/resources': typeof AdminResourcesRouteWithChildren;
   '/_admin/': typeof AdminIndexRoute;
@@ -374,12 +372,14 @@ export interface FileRoutesById {
   '/_admin/resources/unsubscribe-lambda': typeof AdminResourcesUnsubscribeLambdaRouteWithChildren;
   '/_admin/resources/unsubscribe-parse-pattern': typeof AdminResourcesUnsubscribeParsePatternRoute;
   '/_admin/resources/unsubscribe-pattern': typeof AdminResourcesUnsubscribePatternRoute;
+  '/_admin/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/_admin/blog/': typeof AdminBlogIndexRoute;
   '/_admin/challenges/': typeof AdminChallengesIndexRoute;
   '/_admin/events/': typeof AdminEventsIndexRoute;
   '/_admin/newsletters/': typeof AdminNewslettersIndexRoute;
   '/_admin/notices/': typeof AdminNoticesIndexRoute;
   '/_admin/resources/': typeof AdminResourcesIndexRoute;
+  '/_admin/reviewers/': typeof AdminReviewersIndexRoute;
   '/_admin/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute;
   '/_admin/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute;
   '/_admin/newsletters/$newsletterId/previous': typeof AdminNewslettersNewsletterIdPreviousRouteWithChildren;
@@ -401,8 +401,6 @@ export interface FileRouteTypes {
     | '/events'
     | '/flyway'
     | '/members'
-    | '/reviewers'
-    | '/reviewers/stats'
     | '/notices'
     | '/resources'
     | '/'
@@ -418,12 +416,14 @@ export interface FileRouteTypes {
     | '/resources/unsubscribe-lambda'
     | '/resources/unsubscribe-parse-pattern'
     | '/resources/unsubscribe-pattern'
+    | '/reviewers/stats'
     | '/blog/'
     | '/challenges/'
     | '/events/'
     | '/newsletters'
     | '/notices/'
     | '/resources/'
+    | '/reviewers'
     | '/challenges/$challengeId/teams'
     | '/newsletters/$newsletterId/edit'
     | '/newsletters/$newsletterId/previous'
@@ -440,8 +440,6 @@ export interface FileRouteTypes {
     | '/403'
     | '/flyway'
     | '/members'
-    | '/reviewers'
-    | '/reviewers/stats'
     | '/'
     | '/blog/$postId'
     | '/challenges/daily-guides'
@@ -451,12 +449,14 @@ export interface FileRouteTypes {
     | '/notices/new'
     | '/resources/unsubscribe-parse-pattern'
     | '/resources/unsubscribe-pattern'
+    | '/reviewers/stats'
     | '/blog'
     | '/challenges'
     | '/events'
     | '/newsletters'
     | '/notices'
     | '/resources'
+    | '/reviewers'
     | '/challenges/$challengeId/teams'
     | '/newsletters/$newsletterId/edit'
     | '/notices/$noticeId/edit'
@@ -476,8 +476,6 @@ export interface FileRouteTypes {
     | '/_admin/events'
     | '/_admin/flyway'
     | '/_admin/members'
-    | '/_admin/reviewers'
-    | '/_admin/reviewers/stats'
     | '/_admin/notices'
     | '/_admin/resources'
     | '/_admin/'
@@ -493,12 +491,14 @@ export interface FileRouteTypes {
     | '/_admin/resources/unsubscribe-lambda'
     | '/_admin/resources/unsubscribe-parse-pattern'
     | '/_admin/resources/unsubscribe-pattern'
+    | '/_admin/reviewers/stats'
     | '/_admin/blog/'
     | '/_admin/challenges/'
     | '/_admin/events/'
     | '/_admin/newsletters/'
     | '/_admin/notices/'
     | '/_admin/resources/'
+    | '/_admin/reviewers/'
     | '/_admin/challenges/$challengeId/teams'
     | '/_admin/newsletters/$newsletterId/edit'
     | '/_admin/newsletters/$newsletterId/previous'
@@ -561,20 +561,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMembersRouteImport;
       parentRoute: typeof AdminRoute;
     };
-    '/_admin/reviewers': {
-      id: '/_admin/reviewers';
-      path: '/reviewers';
-      fullPath: '/reviewers';
-      preLoaderRoute: typeof AdminReviewersRouteImport;
-      parentRoute: typeof AdminRoute;
-    };
-    '/_admin/reviewers/stats': {
-      id: '/_admin/reviewers/stats';
-      path: '/stats';
-      fullPath: '/reviewers/stats';
-      preLoaderRoute: typeof AdminReviewersStatsRouteImport;
-      parentRoute: typeof AdminReviewersRoute;
-    };
     '/_admin/flyway': {
       id: '/_admin/flyway';
       path: '/flyway';
@@ -601,6 +587,13 @@ declare module '@tanstack/react-router' {
       path: '/blog';
       fullPath: '/blog';
       preLoaderRoute: typeof AdminBlogRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
+    '/_admin/reviewers/': {
+      id: '/_admin/reviewers/';
+      path: '/reviewers';
+      fullPath: '/reviewers';
+      preLoaderRoute: typeof AdminReviewersIndexRouteImport;
       parentRoute: typeof AdminRoute;
     };
     '/_admin/resources/': {
@@ -644,6 +637,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/';
       preLoaderRoute: typeof AdminBlogIndexRouteImport;
       parentRoute: typeof AdminBlogRoute;
+    };
+    '/_admin/reviewers/stats': {
+      id: '/_admin/reviewers/stats';
+      path: '/reviewers/stats';
+      fullPath: '/reviewers/stats';
+      preLoaderRoute: typeof AdminReviewersStatsRouteImport;
+      parentRoute: typeof AdminRoute;
     };
     '/_admin/resources/unsubscribe-pattern': {
       id: '/_admin/resources/unsubscribe-pattern';
@@ -975,32 +975,21 @@ const AdminNewslettersNewsletterIdRouteWithChildren =
     AdminNewslettersNewsletterIdRouteChildren,
   );
 
-interface AdminReviewersRouteChildren {
-  AdminReviewersStatsRoute: typeof AdminReviewersStatsRoute;
-}
-
-const AdminReviewersRouteChildren: AdminReviewersRouteChildren = {
-  AdminReviewersStatsRoute: AdminReviewersStatsRoute,
-};
-
-const AdminReviewersRouteWithChildren = AdminReviewersRoute._addFileChildren(
-  AdminReviewersRouteChildren,
-);
-
 interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRouteWithChildren;
   AdminChallengesRoute: typeof AdminChallengesRouteWithChildren;
   AdminEventsRoute: typeof AdminEventsRouteWithChildren;
   AdminFlywayRoute: typeof AdminFlywayRoute;
   AdminMembersRoute: typeof AdminMembersRoute;
-  AdminReviewersRoute: typeof AdminReviewersRouteWithChildren;
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren;
   AdminResourcesRoute: typeof AdminResourcesRouteWithChildren;
   AdminIndexRoute: typeof AdminIndexRoute;
   AdminNewslettersNewsletterIdRoute: typeof AdminNewslettersNewsletterIdRouteWithChildren;
   AdminNewslettersCategoriesRoute: typeof AdminNewslettersCategoriesRoute;
   AdminNewslettersNewRoute: typeof AdminNewslettersNewRoute;
+  AdminReviewersStatsRoute: typeof AdminReviewersStatsRoute;
   AdminNewslettersIndexRoute: typeof AdminNewslettersIndexRoute;
+  AdminReviewersIndexRoute: typeof AdminReviewersIndexRoute;
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -1009,7 +998,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminEventsRoute: AdminEventsRouteWithChildren,
   AdminFlywayRoute: AdminFlywayRoute,
   AdminMembersRoute: AdminMembersRoute,
-  AdminReviewersRoute: AdminReviewersRouteWithChildren,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminResourcesRoute: AdminResourcesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
@@ -1017,7 +1005,9 @@ const AdminRouteChildren: AdminRouteChildren = {
     AdminNewslettersNewsletterIdRouteWithChildren,
   AdminNewslettersCategoriesRoute: AdminNewslettersCategoriesRoute,
   AdminNewslettersNewRoute: AdminNewslettersNewRoute,
+  AdminReviewersStatsRoute: AdminReviewersStatsRoute,
   AdminNewslettersIndexRoute: AdminNewslettersIndexRoute,
+  AdminReviewersIndexRoute: AdminReviewersIndexRoute,
 };
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren);
