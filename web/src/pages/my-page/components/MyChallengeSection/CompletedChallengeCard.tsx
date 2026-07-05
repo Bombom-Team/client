@@ -8,17 +8,13 @@ import MedalBronzeIcon from '#/assets/svg/medal-bronze.svg';
 import MedalGoldIcon from '#/assets/svg/medal-gold.svg';
 import MedalSilverIcon from '#/assets/svg/medal-silver.svg';
 
-type Grade = MyCompletedChallenge['grade'];
-
-const MEDAL_ICON: Partial<
-  Record<Grade, React.ComponentType<React.SVGProps<SVGSVGElement>>>
-> = {
+const MEDAL_ICON = {
   GOLD: MedalGoldIcon,
   SILVER: MedalSilverIcon,
   BRONZE: MedalBronzeIcon,
 };
 
-const GRADE_COLOR: Partial<Record<Grade, string>> = {
+const GRADE_COLOR = {
   GOLD: MEDAL_COLORS.gold,
   SILVER: MEDAL_COLORS.silver,
   BRONZE: MEDAL_COLORS.bronze,
@@ -33,8 +29,9 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
     challenge;
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
-  const MedalIcon = MEDAL_ICON[grade];
-  const gradeColor = GRADE_COLOR[grade];
+  const medalGrade = grade != null && grade !== 'FAIL' ? grade : null;
+  const MedalIcon = medalGrade ? MEDAL_ICON[medalGrade] : null;
+  const gradeColor = medalGrade ? GRADE_COLOR[medalGrade] : null;
 
   return (
     <>
@@ -68,7 +65,7 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
         </Content>
       </Container>
 
-      {grade !== 'FAIL' && (
+      {grade !== 'FAIL' && challengeId !== undefined && (
         <CertificateModal
           challengeId={challengeId}
           modalRef={modalRef}
@@ -100,7 +97,7 @@ const Content = styled.div`
   flex: 1;
 `;
 
-const MedalCircle = styled.div<{ gradeColor?: string }>`
+const MedalCircle = styled.div<{ gradeColor: string | null }>`
   width: 52px;
   height: 52px;
   border-radius: 50%;

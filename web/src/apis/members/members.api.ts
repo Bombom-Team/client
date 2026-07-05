@@ -172,22 +172,8 @@ export const postWarningVisible = async ({
   });
 };
 
-export type GetMyChallengeSummaryResponse = {
-  completedChallengeCount: number;
-  completionRank: {
-    topPercent: number;
-    completionRate: number;
-  };
-  attendanceRank: {
-    topPercent: number;
-    averageAttendanceRate: number;
-  };
-  medalRatio: {
-    gold: number;
-    silver: number;
-    bronze: number;
-  };
-};
+export type GetMyChallengeSummaryResponse =
+  components['schemas']['MyChallengeSummaryResponse'];
 
 export const getMyChallengeSummary = async () => {
   return await fetcher.get<GetMyChallengeSummaryResponse>({
@@ -195,34 +181,11 @@ export const getMyChallengeSummary = async () => {
   });
 };
 
-export type MyOngoingChallenge = {
-  challengeId: number;
-  title: string;
-  startDate: string;
-  endDate: string;
-  remainingDays: number;
-  progressRate: number;
-  myTeamRank: {
-    rank: number;
-    totalMembers: number;
-  };
-  teamRank: {
-    rank: number;
-    totalTeams: number;
-  };
-  myAttendanceComparison: {
-    attendanceRate: number;
-    differencePoint: number;
-  };
-  teamAttendanceComparison: {
-    teamAttendanceRate: number;
-    differencePoint: number;
-  };
-};
+export type MyOngoingChallenge =
+  components['schemas']['MyOngoingChallengeResponse'];
 
-export type GetMyOngoingChallengesResponse = {
-  challenges: MyOngoingChallenge[];
-};
+export type GetMyOngoingChallengesResponse =
+  components['schemas']['MyOngoingChallengesResponse'];
 
 export const getMyOngoingChallenges = async () => {
   return await fetcher.get<GetMyOngoingChallengesResponse>({
@@ -230,28 +193,13 @@ export const getMyOngoingChallenges = async () => {
   });
 };
 
-export type MyCompletedChallenge = {
-  challengeId: number;
-  title: string;
-  startDate: string;
-  endDate: string;
-  attendanceRate: number;
-  grade: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
-};
+export type MyCompletedChallenge =
+  components['schemas']['CompletedChallengeResponse'];
 
-export type GetMyCompletedChallengesParams = {
-  size?: number;
-  page?: number;
-};
+export type GetMyCompletedChallengesParams = components['schemas']['Pageable'];
 
-export type GetMyCompletedChallengesResponse = {
-  totalElements: number;
-  totalPages: number;
-  first: boolean;
-  last: boolean;
-  size: number;
-  content: MyCompletedChallenge[];
-};
+export type GetMyCompletedChallengesResponse =
+  components['schemas']['PageCompletedChallengeResponse'];
 
 export const getMyCompletedChallenges = async (
   params?: GetMyCompletedChallengesParams,

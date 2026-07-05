@@ -43,13 +43,15 @@ const OngoingChallengeCard = ({ challenge }: OngoingChallengeCardProps) => {
             </Text>
             <DDayBadge>
               <Text font="t3Bold" color="primaryBomBom">
-                {remainingDays <= 0 ? '오늘 종료' : `${remainingDays}일 남음`}
+                {(remainingDays ?? 0) <= 0
+                  ? '오늘 종료'
+                  : `${remainingDays ?? 0}일 남음`}
               </Text>
             </DDayBadge>
           </Flex>
           <ProgressRow>
             <ProgressBarWrapper>
-              <ProgressBar rate={progressRate} />
+              <ProgressBar rate={progressRate ?? 0} />
             </ProgressBarWrapper>
             <Text font="t7Bold" color="primaryBomBom">
               {progressRate}%
@@ -87,9 +89,9 @@ const OngoingChallengeCard = ({ challenge }: OngoingChallengeCardProps) => {
               <Text font="t4Regular" color="textSecondary">
                 전체 평균보다{' '}
               </Text>
-              <Delta delta={myAttendanceComparison.differencePoint}>
-                {getDeltaPrefix(myAttendanceComparison.differencePoint)}
-                {myAttendanceComparison.differencePoint}%p
+              <Delta delta={myAttendanceComparison.differencePoint ?? 0}>
+                {getDeltaPrefix(myAttendanceComparison.differencePoint ?? 0)}
+                {myAttendanceComparison.differencePoint ?? 0}%p
               </Delta>
             </ComparisonRow>
           </StatCell>

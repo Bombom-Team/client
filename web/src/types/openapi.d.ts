@@ -927,6 +927,66 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/members/me/challenges/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 나의 챌린지 요약 정보 조회
+     * @description 마이페이지 챌린지 탭에 노출할 나의 챌린지 요약 정보를 조회합니다. 종료된 챌린지만 집계 대상이며, 수료한 챌린지 수와 수료율·출석률의 상대 순위(상위 %), 메달 비율을 반환합니다. 참여한 종료 챌린지가 없으면 모든 값은 0입니다.
+     */
+    get: operations['getChallengeSummary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/challenges/ongoing': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 참여 중 챌린지 목록 조회
+     * @description 로그인한 회원이 현재 참여 중(진행 중)인 챌린지 목록을 팀 순위, 출석률 비교 정보와 함께 조회합니다. 진행 중 챌린지가 없으면 빈 배열을 반환합니다.
+     */
+    get: operations['getOngoingChallenges'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/challenges/completed': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 완료한(종료된) 챌린지 목록 조회
+     * @description 로그인한 회원이 참여한 종료된 챌린지 목록을 출석률, 수료 등급과 함께 조회합니다. 수료 실패(grade=FAIL)한 챌린지도 포함하며, 정렬은 종료일 내림차순으로 sort 파라미터는 무시됩니다.
+     */
+    get: operations['getCompletedChallenges'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/members/me/category-stats': {
     parameters: {
       query?: never;
@@ -2115,6 +2175,231 @@ export interface components {
        * @description 가입일 (yyyy-MM-dd)
        */
       joinedAt: string;
+    };
+    /** @description 챌린지 출석률 순위 정보 (다른 회원 대비 상대 순위) */
+    AttendanceRank: {
+      /**
+       * Format: double
+       * @description 상위 몇 % 인지 (소수 첫째자리)
+       * @example 7
+       */
+      topPercent?: number;
+      /**
+       * Format: int32
+       * @description 나의 평균 챌린지 출석률 (%)
+       * @example 87
+       */
+      averageAttendanceRate?: number;
+    };
+    /** @description 수료율 순위 정보 (다른 회원 대비 상대 순위) */
+    CompletionRank: {
+      /**
+       * Format: double
+       * @description 상위 몇 % 인지 (소수 첫째자리)
+       * @example 18
+       */
+      topPercent?: number;
+      /**
+       * Format: int32
+       * @description 나의 수료율 (%)
+       * @example 80
+       */
+      completionRate?: number;
+    };
+    /** @description 메달 획득 비율 (%) - 소수점 버림이라 합은 100 이하 가능, 수료 0건이면 0/0/0 */
+    MedalRatioResponse: {
+      /**
+       * Format: int32
+       * @description 금메달 획득 비율 (%)
+       * @example 40
+       */
+      gold?: number;
+      /**
+       * Format: int32
+       * @description 은메달 획득 비율 (%)
+       * @example 35
+       */
+      silver?: number;
+      /**
+       * Format: int32
+       * @description 동메달 획득 비율 (%)
+       * @example 25
+       */
+      bronze?: number;
+    };
+    MyChallengeSummaryResponse: {
+      /**
+       * Format: int32
+       * @description 완료한 챌린지 수
+       * @example 5
+       */
+      completedChallengeCount?: number;
+      /** @description 수료율 순위 정보 */
+      completionRank: components['schemas']['CompletionRank'];
+      /** @description 출석률 순위 정보 */
+      attendanceRank: components['schemas']['AttendanceRank'];
+      /** @description 메달 획득 비율 */
+      medalRatio: components['schemas']['MedalRatioResponse'];
+    };
+    /** @description 내 출석률 비교 정보 */
+    MyAttendanceComparison: {
+      /**
+       * Format: int32
+       * @description 현재 나의 출석률 (%)
+       * @example 72
+       */
+      attendanceRate?: number;
+      /**
+       * Format: int32
+       * @description 전체 참여자 평균 출석률 대비 차이 (%p, 부호 있음)
+       * @example 6
+       */
+      differencePoint?: number;
+    };
+    MyOngoingChallengeResponse: {
+      /**
+       * Format: int64
+       * @description 챌린지 식별자
+       * @example 101
+       */
+      challengeId?: number;
+      /**
+       * @description 챌린지 이름
+       * @example 한 달 뉴스레터 읽기 챌린지
+       */
+      title?: string;
+      /**
+       * Format: date
+       * @description 챌린지 시작일
+       */
+      startDate?: string;
+      /**
+       * Format: date
+       * @description 챌린지 종료일
+       */
+      endDate?: string;
+      /**
+       * Format: int32
+       * @description 종료까지 남은 일수 (D-N)
+       * @example 14
+       */
+      remainingDays?: number;
+      /**
+       * Format: int32
+       * @description 진행률 (= 출석률, %)
+       * @example 72
+       */
+      progressRate?: number;
+      /** @description 팀 내 나의 순위 정보 */
+      myTeamRank: components['schemas']['MyTeamRank'];
+      /** @description 우리 팀 순위 정보 */
+      teamRank: components['schemas']['TeamRank'];
+      /** @description 내 출석률 비교 정보 */
+      myAttendanceComparison: components['schemas']['MyAttendanceComparison'];
+      /** @description 팀 출석률 비교 정보 */
+      teamAttendanceComparison: components['schemas']['TeamAttendanceComparison'];
+    };
+    MyOngoingChallengesResponse: {
+      /** @description 참여 중 챌린지 목록 (없으면 빈 배열) */
+      challenges: components['schemas']['MyOngoingChallengeResponse'][];
+    };
+    /** @description 팀 내 나의 순위 정보 */
+    MyTeamRank: {
+      /**
+       * Format: int32
+       * @description 팀 내 나의 출석률 순위
+       * @example 3
+       */
+      rank?: number;
+      /**
+       * Format: int32
+       * @description 우리 팀 인원 수
+       * @example 12
+       */
+      totalMembers?: number;
+    };
+    /** @description 팀 출석률 비교 정보 */
+    TeamAttendanceComparison: {
+      /**
+       * Format: int32
+       * @description 우리 팀 평균 출석률 (%)
+       * @example 68
+       */
+      teamAttendanceRate?: number;
+      /**
+       * Format: int32
+       * @description 전체 팀 평균 출석률 대비 차이 (%p, 부호 있음)
+       * @example 4
+       */
+      differencePoint?: number;
+    };
+    /** @description 우리 팀 순위 정보 (팀 평균 출석률 기준) */
+    TeamRank: {
+      /**
+       * Format: int32
+       * @description 팀 평균 출석률 기준 우리 팀 순위
+       * @example 2
+       */
+      rank?: number;
+      /**
+       * Format: int32
+       * @description 해당 챌린지의 팀 개수
+       * @example 6
+       */
+      totalTeams?: number;
+    };
+    CompletedChallengeResponse: {
+      /**
+       * Format: int64
+       * @description 챌린지 식별자
+       * @example 201
+       */
+      challengeId?: number;
+      /**
+       * @description 챌린지 이름
+       * @example 30일 독서 챌린지
+       */
+      title?: string;
+      /**
+       * Format: date
+       * @description 챌린지 시작일
+       */
+      startDate?: string;
+      /**
+       * Format: date
+       * @description 챌린지 종료일
+       */
+      endDate?: string;
+      /**
+       * Format: int32
+       * @description 출석률 (%)
+       * @example 92
+       */
+      attendanceRate?: number;
+      /**
+       * @description 수료 결과 등급
+       * @example GOLD
+       * @enum {string}
+       */
+      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
+    };
+    PageCompletedChallengeResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['CompletedChallengeResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
     };
     CategoryStatsItemResponse: {
       /** Format: int64 */
@@ -4951,6 +5236,90 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['MemberJoinDaysResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getChallengeSummary: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 나의 챌린지 요약 정보 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MyChallengeSummaryResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getOngoingChallenges: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 참여 중 챌린지 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MyOngoingChallengesResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getCompletedChallenges: {
+    parameters: {
+      query: {
+        /** @description 페이징 요청 (예: ?page=0&size=20). 정렬은 항상 종료일 내림차순으로 서버 강제이며 sort 파라미터는 무시됩니다. */
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 완료한 챌린지 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageCompletedChallengeResponse'];
         };
       };
       /** @description 인증 실패 (로그인 필요) */

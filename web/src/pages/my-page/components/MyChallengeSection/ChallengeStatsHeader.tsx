@@ -85,7 +85,13 @@ const ChallengeStatsHeader = ({ summary }: ChallengeStatsHeaderProps) => {
 
       <StatCell device={device} align="center">
         <DonutWrapper>
-          <MedalDonutChart ratio={medalRatio} />
+          <MedalDonutChart
+            ratio={{
+              gold: medalRatio.gold ?? 0,
+              silver: medalRatio.silver ?? 0,
+              bronze: medalRatio.bronze ?? 0,
+            }}
+          />
         </DonutWrapper>
         <Flex direction="column" gap={4}>
           {(Object.keys(MEDAL_LABEL) as (keyof typeof MEDAL_LABEL)[]).map(
