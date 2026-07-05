@@ -53,9 +53,7 @@ function ChallengeComments() {
   const device = useDevice();
   const isMobile = device === 'mobile';
 
-  const { modalRef, openModal, closeModal, isOpen } = useModal({
-    closeOnBackdropClick: false,
-  });
+  const { modalRef, openModal, closeModal, isOpen } = useModal();
   const {
     modalRef: firstCompletionModalRef,
     openModal: openFirstCompletionModal,

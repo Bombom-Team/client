@@ -1,6 +1,7 @@
 import { useSearch } from '@tanstack/react-router';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { ARTICLE_SIZE } from '../constants/article';
+import { useSearchParamState } from '@/hooks/useSearchParamState';
 import type { GetArticlesWithSearchParams } from '@/apis/articles/articles.api';
 
 export const useStorageFilters = () => {
@@ -9,7 +10,8 @@ export const useStorageFilters = () => {
     search: searchParam,
     newsletterId: newsletterIdParams,
   } = useSearch({ from: '/_bombom/_main/storage' });
-  const [page, setPage] = useState(1);
+  const [pageParam, setPage] = useSearchParamState<number>('page');
+  const page = pageParam ?? 1;
 
   const baseQueryParams: GetArticlesWithSearchParams = {
     sort: ['arrivedDateTime', sortParam ?? 'DESC'],
@@ -19,13 +21,16 @@ export const useStorageFilters = () => {
     page,
   };
 
-  const handlePageChange = useCallback((value: number) => {
-    setPage(value);
-  }, []);
+  const handlePageChange = useCallback(
+    (value: number) => {
+      setPage(value);
+    },
+    [setPage],
+  );
 
   const resetPage = useCallback(() => {
-    setPage(1);
-  }, []);
+    setPage(null);
+  }, [setPage]);
 
   return {
     baseQueryParams,

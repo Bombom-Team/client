@@ -87,6 +87,16 @@ formatting unless the user explicitly asks.
   이 마커로 review thread를 식별. reviewer가 Codex/Claude 어느 쪽이어도 동일.
 - Preserve `<!-- REVIEW_META ... -->` because follow-up workflows and future
   learning loops may parse it. `source` 필드는 `REVIEWER` env 값을 그대로 반영한다.
+- **리뷰 산출물(`codex-review-output.json` 등)은 ephemeral이다. 절대 커밋하거나
+  PR로 만들지 않는다.** 리뷰 결과는 오직 publisher가 게시하는 PR 코멘트로만
+  남는다. 산출 JSON은 scratch 디렉터리(레포 밖, 예: `$TMPDIR`/`/tmp`)에 쓰고,
+  레포 워킹트리에는 어떤 변경도 남기지 않는다. 이 스킬은 코드를 수정하지 않는다
+  (리뷰 대상 코드 fix·리팩터 금지 — finding으로만 보고).
+  - **클라우드 라우틴(schedule/cron) 컨텍스트 주의**: 라우틴 환경은 세션 종료 시
+    워킹트리 변경을 자동 커밋·PR화한다. 리뷰 JSON을 레포 루트에 쓰면 이것이
+    "아티팩트 보관 PR"로 쓸려 들어간다 (과거 `claude/epic-*` 브랜치의 리뷰
+    아티팩트 PR이 이 경로로 생성됨). 반드시 레포 밖 경로에 산출물을 두고,
+    `git status`가 clean인 상태로 세션을 마친다.
 
 ## Review Event Decision
 
@@ -199,12 +209,22 @@ Severity labels:
 
 공용 계약:
 
-1. Review produces `codex-review-output.json` (matches
-   `.github/codex-review-output-schema.json`).
+1. Review produces a structured review JSON (matches
+   `.github/codex-review-output-schema.json`). **레포 밖 scratch 경로**에 쓴다
+   (예: `"${TMPDIR:-/tmp}/codex-review-output.json"`). 레포 루트에 두지 않는다 —
+   클라우드 라우틴의 auto-commit/auto-PR이 이를 쓸어 담아 불필요한 아티팩트
+   PR을 만든다. `.gitignore`에도 등록돼 있지만 1차 방어는 "레포 밖에 쓰기"다.
 2. `.github/scripts/publish-codex-review.sh` converts that JSON into the review
    body, inline comments, metadata, and GitHub API request.
 
 Procedure:
+
+0. 산출물 경로를 먼저 정한다. 이 스킬은 리뷰 게시만 하고 **워킹트리에 변경을
+   남기지 않는다.**
+
+   ```bash
+   REVIEW_JSON="${TMPDIR:-/tmp}/codex-review-output.json"
+   ```
 
 1. Resolve the PR repository and number. Default to `Bombom-Team/client` when
    the user only provides a number or this repository is implied.
@@ -245,16 +265,16 @@ Procedure:
      채우므로, 스킬이 발동되면 무조건 step 7의 publisher 실행까지 진행한다.
      "찾은 게 없으니 안 올리고 끝"은 금지.
 
-6. Write the review result to `codex-review-output.json` using
-   `.github/codex-review-output-schema.json`. The shared publisher owns the
-   Preferred Review Body Format, Preferred Inline Comment Format,
-   `<!-- CODEX_REVIEW_COMMENT -->`, and `<!-- REVIEW_META ... -->`.
+6. Write the review result to the scratch `$REVIEW_JSON` (step 0, 레포 밖) using
+   `.github/codex-review-output-schema.json`. **레포 루트에 쓰지 않는다.** The
+   shared publisher owns the Preferred Review Body Format, Preferred Inline
+   Comment Format, `<!-- CODEX_REVIEW_COMMENT -->`, and `<!-- REVIEW_META ... -->`.
 
 7. **반드시 publisher를 실행해 PR 코멘트를 게시한다.** 권장 경로는 `REVIEWER=claude`로
-   로컬 publisher를 직접 실행하는 것이다:
+   로컬 publisher를 직접 실행하는 것이다 (`REVIEW_JSON`은 step 0의 scratch 경로):
 
    ```bash
-   REVIEW_JSON=codex-review-output.json \
+   REVIEW_JSON="$REVIEW_JSON" \
    REPOSITORY=Bombom-Team/client \
    PR_NUMBER=<pr-number> \
    HEAD_SHA=<head-sha> \
@@ -266,7 +286,7 @@ Procedure:
    dispatch한다 (현재 `reviewer` input이 없어 default `codex` 라벨로 게시됨):
 
    ```bash
-   REVIEW_JSON_BASE64="$(base64 < codex-review-output.json | tr -d '\n')"
+   REVIEW_JSON_BASE64="$(base64 < "$REVIEW_JSON" | tr -d '\n')"
    gh workflow run codex-review-publish.yml \
      --repo Bombom-Team/client \
      --ref <default-branch> \
@@ -284,6 +304,11 @@ Procedure:
    with `comments: []` so the summary is still posted. The shared publisher
    already performs this fallback; tell the user which inline comments could not
    be attached if the logs reveal that detail.
+
+9. **마무리: 워킹트리를 clean 상태로 남긴다.** 게시 후 `git status --short`가
+   비어 있어야 한다. 리뷰용 산출물이 워킹트리에 남았다면 삭제한다. 이 스킬은
+   커밋·브랜치·PR을 만들지 않는다 — 클라우드 라우틴에서 auto-PR로 쓸려 들어가는
+   것을 막기 위함이다.
 
 Never publish mock findings as a real PR review. Never publish `APPROVE` or
 `REQUEST_CHANGES`. Avoid posting a duplicate review for the same head commit
