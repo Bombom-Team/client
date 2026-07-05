@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -29,7 +29,8 @@ type Filter = '전체' | '활성' | '휴가중';
 
 function ReviewersDashboard() {
   const { data: reviewers } = useSuspenseQuery(reviewersQueries.list());
-  const { data: prStats } = useSuspenseQuery(reviewersQueries.prStats());
+  // 장식성 위젯 — GitHub API가 느려도 핵심 테이블 렌더링을 막지 않도록 non-suspense
+  const { data: prStats } = useQuery(reviewersQueries.prStats());
   const [filter, setFilter] = useState<Filter>('전체');
   const [keyword, setKeyword] = useState('');
   const [openModal, setOpenModal] = useState<'add' | 'setting' | null>(null);

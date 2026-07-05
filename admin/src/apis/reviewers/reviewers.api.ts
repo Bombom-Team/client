@@ -49,10 +49,12 @@ export const getPrStats = async (): Promise<PrStats | null> => {
     for (let page = 1; page <= 3; page += 1) {
       const response = await fetch(
         `https://api.github.com/repos/${TARGET_REPO}/pulls?state=all&sort=created&direction=desc&per_page=100&page=${page}`,
+        { signal: AbortSignal.timeout(5000) },
       );
       if (!response.ok)
         throw new Error(`GitHub 조회 실패 (${response.status})`);
       const batch = (await response.json()) as GithubPr[];
+      if (batch.length === 0) break;
       prs.push(...batch);
       const oldest = batch[batch.length - 1];
       if (batch.length < 100 || new Date(oldest.created_at) < monthStart) {
