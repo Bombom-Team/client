@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { isOverdue } from '@/apis/reviewers/reviewers.api';
+import { TARGET_REPO, isOverdue } from '@/apis/reviewers/reviewers.api';
 import { reviewersQueries } from '@/apis/reviewers/reviewers.query';
 import { Layout } from '@/components/Layout';
 import {
@@ -29,6 +29,8 @@ type Filter = '전체' | '활성' | '휴가중';
 
 function ReviewersDashboard() {
   const { data: reviewers } = useSuspenseQuery(reviewersQueries.list());
+  // 장식성 위젯 — GitHub API가 느려도 핵심 테이블 렌더링을 막지 않도록 non-suspense
+  const { data: prStats } = useQuery(reviewersQueries.prStats());
   const [filter, setFilter] = useState<Filter>('전체');
   const [keyword, setKeyword] = useState('');
   const [openModal, setOpenModal] = useState<'add' | 'setting' | null>(null);
@@ -50,6 +52,30 @@ function ReviewersDashboard() {
 
   return (
     <Stack>
+      <InfoStrip>
+        <StripLeft>
+          <StripIcon>📦</StripIcon>
+          <StripText>
+            <strong>{TARGET_REPO.split('/')[1]}</strong> 백엔드 PR — 이번 달{' '}
+            <StripNumber>{prStats ? `${prStats.monthly}건` : '—'}</StripNumber>{' '}
+            · 이번 주{' '}
+            <StripNumber>{prStats ? `${prStats.weekly}건` : '—'}</StripNumber>
+          </StripText>
+        </StripLeft>
+        <StripLink
+          href={`https://github.com/${TARGET_REPO}/pulls`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          PR 목록 보기 →
+        </StripLink>
+      </InfoStrip>
+
+      <PollLine>
+        🔄 리뷰어 자동 배정 폴링 — <strong>5분 간격</strong>으로 새 PR을 확인해
+        배정합니다
+      </PollLine>
+
       <SummaryStatCardRow>
         <SummaryStatCard label="총 리뷰어" value={`${reviewers.length}명`} />
         <SummaryStatCard
@@ -98,7 +124,11 @@ function ReviewersDashboard() {
 
         <Table>
           <TableHead />
-          <ReviewersTableBody reviewers={filtered} maxWeekly={maxWeekly} />
+          <ReviewersTableBody
+            reviewers={filtered}
+            maxWeekly={maxWeekly}
+            prAuthorCounts={prStats?.byAuthor ?? null}
+          />
         </Table>
       </Panel>
 
@@ -161,8 +191,9 @@ const TableHead = () => (
     <HeadRow>
       <th>이름</th>
       <th>GitHub</th>
-      <th className="num">이번 달</th>
-      <th className="num">이번 주</th>
+      <th className="num">리뷰 (월)</th>
+      <th className="num">리뷰 (주)</th>
+      <th className="num">작성 PR (월·주)</th>
       <th>배정 부하</th>
       <th>상태</th>
       <th>휴가 설정</th>
@@ -297,6 +328,67 @@ const ModalErrorCard = styled.div`
   color: ${({ theme }) => theme.colors.gray700};
   font-size: ${({ theme }) => theme.fontSize.sm};
   line-height: 1.6;
+`;
+
+const InfoStrip = styled.div`
+  padding: 10px ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: ${({ theme }) => theme.colors.white};
+`;
+
+const StripLeft = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
+`;
+
+const StripIcon = styled.span`
+  font-size: ${({ theme }) => theme.fontSize.base};
+`;
+
+const StripText = styled.span`
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  strong {
+    color: ${({ theme }) => theme.colors.gray900};
+    font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  }
+`;
+
+const StripNumber = styled.strong`
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-variant-numeric: tabular-nums;
+`;
+
+const StripLink = styled.a`
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  text-decoration: none;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const PollLine = styled.p`
+  margin-top: -${({ theme }) => theme.spacing.sm};
+  padding: 0 ${({ theme }) => theme.spacing.md};
+
+  color: ${({ theme }) => theme.colors.gray400};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+
+  strong {
+    color: ${({ theme }) => theme.colors.gray600};
+    font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  }
 `;
 
 const Table = styled.table`

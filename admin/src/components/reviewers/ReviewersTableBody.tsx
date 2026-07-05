@@ -6,14 +6,20 @@ import {
   useUpdateReviewerNameMutation,
 } from '@/hooks/useReviewerAdminMutations';
 import { useToggleVacationMutation } from '@/hooks/useToggleVacationMutation';
+import type { PrAuthorCount } from '@/apis/reviewers/reviewers.api';
 import type { ReviewerWithStats } from '@/types/reviewer';
 
 type Props = {
   reviewers: ReviewerWithStats[];
   maxWeekly: number;
+  prAuthorCounts: Record<string, PrAuthorCount> | null;
 };
 
-export const ReviewersTableBody = ({ reviewers, maxWeekly }: Props) => {
+export const ReviewersTableBody = ({
+  reviewers,
+  maxWeekly,
+  prAuthorCounts,
+}: Props) => {
   const toggleMutation = useToggleVacationMutation();
   const deleteMutation = useDeleteReviewerMutation();
   const nameMutation = useUpdateReviewerNameMutation();
@@ -56,7 +62,7 @@ export const ReviewersTableBody = ({ reviewers, maxWeekly }: Props) => {
     return (
       <tbody>
         <tr>
-          <EmptyCell colSpan={8}>조건에 맞는 리뷰어가 없습니다.</EmptyCell>
+          <EmptyCell colSpan={9}>조건에 맞는 리뷰어가 없습니다.</EmptyCell>
         </tr>
       </tbody>
     );
@@ -66,7 +72,7 @@ export const ReviewersTableBody = ({ reviewers, maxWeekly }: Props) => {
     <Tbody>
       {deleteMutation.isError && (
         <tr>
-          <ErrorCell colSpan={8}>
+          <ErrorCell colSpan={9}>
             {deleteMutation.error instanceof Error
               ? deleteMutation.error.message
               : '삭제에 실패했습니다.'}
@@ -75,6 +81,7 @@ export const ReviewersTableBody = ({ reviewers, maxWeekly }: Props) => {
       )}
       {reviewers.map((reviewer) => {
         const overdueCount = reviewer.openAssignments.filter(isOverdue).length;
+        const prCount = prAuthorCounts?.[reviewer.github_username];
         return (
           <Tr key={reviewer.id}>
             <Td className="strong">
@@ -114,6 +121,16 @@ export const ReviewersTableBody = ({ reviewers, maxWeekly }: Props) => {
             </Td>
             <Td className="num">{reviewer.monthlyCount}</Td>
             <Td className="num">{reviewer.weeklyCount}</Td>
+            <Td className="num">
+              {prAuthorCounts === null ? (
+                '—'
+              ) : (
+                <>
+                  {prCount?.monthly ?? 0}
+                  <SubCount> · 주 {prCount?.weekly ?? 0}</SubCount>
+                </>
+              )}
+            </Td>
             <Td>
               <GaugeCell>
                 <GaugeTrack>
@@ -178,7 +195,7 @@ export const ReviewersTableBodyLoading = () => (
   <tbody>
     {Array.from({ length: 3 }).map((_, i) => (
       <tr key={i}>
-        {Array.from({ length: 8 }).map((_, j) => (
+        {Array.from({ length: 9 }).map((_, j) => (
           <SkeletonCell key={j}>
             <SkeletonBlock />
           </SkeletonCell>
@@ -191,7 +208,7 @@ export const ReviewersTableBodyLoading = () => (
 export const ReviewersTableBodyError = ({ message }: { message: string }) => (
   <tbody>
     <tr>
-      <ErrorCell colSpan={8}>{message}</ErrorCell>
+      <ErrorCell colSpan={9}>{message}</ErrorCell>
     </tr>
   </tbody>
 );
@@ -274,6 +291,11 @@ const StateBadge = styled.span<{ $vacation: boolean }>`
   color: ${({ $vacation }) => ($vacation ? '#92400E' : '#065F46')};
   font-size: ${({ theme }) => theme.fontSize.xs};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+`;
+
+const SubCount = styled.span`
+  color: ${({ theme }) => theme.colors.gray400};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const NameEditRow = styled.div`
