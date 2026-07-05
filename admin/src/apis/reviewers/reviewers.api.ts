@@ -4,10 +4,82 @@ import type {
   Reviewer,
   ReviewAssignment,
   ReviewerWithStats,
+  ReviewSetting,
 } from '@/types/reviewer';
 
 export const isOverdue = (assignment: ReviewAssignment) =>
   assignment.status === 'OPEN' && new Date(assignment.deadline_at) < new Date();
+
+export const getSetting = async (): Promise<ReviewSetting> => {
+  const { data, error } = await supabase
+    .from('review_setting')
+    .select('*')
+    .eq('id', 1)
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+export const updateSetting = async (params: {
+  deadlineHours: number;
+  excludeLabel: string;
+}): Promise<void> => {
+  const { error } = await supabase
+    .from('review_setting')
+    .update({
+      deadline_hours: params.deadlineHours,
+      exclude_label: params.excludeLabel,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', 1);
+
+  if (error) throw error;
+};
+
+export const addReviewer = async (params: {
+  displayName: string;
+  githubUsername: string;
+}): Promise<void> => {
+  // rotation_order 계산과 INSERT를 DB 함수에서 원자적으로 처리 (동시 추가 시 순번 중복 방지)
+  const { error } = await supabase.rpc('add_reviewer', {
+    p_display_name: params.displayName,
+    p_github_username: params.githubUsername,
+  });
+
+  if (error) throw error;
+};
+
+export const deleteReviewer = async (reviewerId: number): Promise<void> => {
+  const { error } = await supabase
+    .from('reviewer')
+    .delete()
+    .eq('id', reviewerId);
+
+  if (error) {
+    if (error.code === '23503') {
+      throw new Error(
+        '배정 이력이 있는 리뷰어는 삭제할 수 없습니다. 휴가 처리로 배정에서 제외하세요.',
+      );
+    }
+    throw error;
+  }
+};
+
+export const updateReviewerName = async (params: {
+  reviewerId: number;
+  displayName: string;
+}): Promise<void> => {
+  const { error } = await supabase
+    .from('reviewer')
+    .update({
+      display_name: params.displayName,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', params.reviewerId);
+
+  if (error) throw error;
+};
 
 export const getReviewersWithStats = async (): Promise<ReviewerWithStats[]> => {
   const now = new Date();

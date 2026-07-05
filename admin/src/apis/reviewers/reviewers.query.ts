@@ -4,6 +4,7 @@ import {
   getMonthlyStats,
   getOpenAssignments,
   getReviewersWithStats,
+  getSetting,
 } from './reviewers.api';
 
 const REVIEWERS_STALE_TIME = 1000 * 30;
@@ -36,6 +37,13 @@ export const reviewersQueries = {
     queryOptions({
       queryKey: ['reviewers', 'leaderboard'] as const,
       queryFn: getLeaderboard,
+      staleTime: REVIEWERS_STALE_TIME,
+    }),
+
+  setting: () =>
+    queryOptions({
+      queryKey: ['reviewers', 'setting'] as const,
+      queryFn: getSetting,
       staleTime: REVIEWERS_STALE_TIME,
     }),
 };

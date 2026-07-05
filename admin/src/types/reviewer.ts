@@ -23,6 +23,13 @@ export type ReviewAssignment = {
   overdue_notified_at: string | null;
 };
 
+export type ReviewSetting = {
+  id: number;
+  deadline_hours: number;
+  exclude_label: string;
+  updated_at: string;
+};
+
 export type LeaderboardEntry = {
   reviewerId: number;
   displayName: string;

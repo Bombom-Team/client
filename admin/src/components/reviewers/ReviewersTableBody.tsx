@@ -1,5 +1,10 @@
 import styled from '@emotion/styled';
+import { useEffect, useRef, useState } from 'react';
 import { isOverdue } from '@/apis/reviewers/reviewers.api';
+import {
+  useDeleteReviewerMutation,
+  useUpdateReviewerNameMutation,
+} from '@/hooks/useReviewerAdminMutations';
 import { useToggleVacationMutation } from '@/hooks/useToggleVacationMutation';
 import type { ReviewerWithStats } from '@/types/reviewer';
 
@@ -10,12 +15,48 @@ type Props = {
 
 export const ReviewersTableBody = ({ reviewers, maxWeekly }: Props) => {
   const toggleMutation = useToggleVacationMutation();
+  const deleteMutation = useDeleteReviewerMutation();
+  const nameMutation = useUpdateReviewerNameMutation();
+
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingName, setEditingName] = useState('');
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+
+  // 편집 모드 진입 시 1회만 자동 포커스 (편집 중 input은 항상 하나)
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (editingId !== null) nameInputRef.current?.focus();
+  }, [editingId]);
+
+  const startEdit = (reviewer: ReviewerWithStats) => {
+    setEditingId(reviewer.id);
+    setEditingName(reviewer.display_name);
+  };
+
+  const saveName = (reviewerId: number) => {
+    const displayName = editingName.trim();
+    if (!displayName) return;
+    nameMutation.mutate(
+      { reviewerId, displayName },
+      { onSuccess: () => setEditingId(null) },
+    );
+  };
+
+  const handleDelete = (reviewerId: number) => {
+    if (deleteConfirmId !== reviewerId) {
+      setDeleteConfirmId(reviewerId);
+      return;
+    }
+    deleteMutation.mutate(reviewerId, {
+      onSettled: () => setDeleteConfirmId(null),
+    });
+  };
 
   if (reviewers.length === 0) {
     return (
       <tbody>
         <tr>
-          <EmptyCell colSpan={7}>조건에 맞는 리뷰어가 없습니다.</EmptyCell>
+          <EmptyCell colSpan={8}>조건에 맞는 리뷰어가 없습니다.</EmptyCell>
         </tr>
       </tbody>
     );
@@ -23,11 +64,45 @@ export const ReviewersTableBody = ({ reviewers, maxWeekly }: Props) => {
 
   return (
     <Tbody>
+      {deleteMutation.isError && (
+        <tr>
+          <ErrorCell colSpan={8}>
+            {deleteMutation.error instanceof Error
+              ? deleteMutation.error.message
+              : '삭제에 실패했습니다.'}
+          </ErrorCell>
+        </tr>
+      )}
       {reviewers.map((reviewer) => {
         const overdueCount = reviewer.openAssignments.filter(isOverdue).length;
         return (
           <Tr key={reviewer.id}>
-            <Td className="strong">{reviewer.display_name}</Td>
+            <Td className="strong">
+              {editingId === reviewer.id ? (
+                <NameEditRow>
+                  <NameInput
+                    value={editingName}
+                    ref={nameInputRef}
+                    onChange={(e) => setEditingName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') saveName(reviewer.id);
+                      if (e.key === 'Escape') setEditingId(null);
+                    }}
+                  />
+                  <MiniButton
+                    onClick={() => saveName(reviewer.id)}
+                    disabled={nameMutation.isPending}
+                  >
+                    저장
+                  </MiniButton>
+                  <MiniButton onClick={() => setEditingId(null)}>
+                    취소
+                  </MiniButton>
+                </NameEditRow>
+              ) : (
+                reviewer.display_name
+              )}
+            </Td>
             <Td>
               <GithubLink
                 href={`https://github.com/${reviewer.github_username}`}
@@ -73,6 +148,25 @@ export const ReviewersTableBody = ({ reviewers, maxWeekly }: Props) => {
                 {reviewer.is_on_vacation ? '복귀' : '휴가'}
               </ToggleButton>
             </Td>
+            <Td>
+              <ManageCell>
+                <MiniButton
+                  aria-label={`${reviewer.display_name} 이름 변경`}
+                  onClick={() => startEdit(reviewer)}
+                >
+                  이름 변경
+                </MiniButton>
+                <DeleteButton
+                  aria-label={`${reviewer.display_name} 삭제`}
+                  $confirming={deleteConfirmId === reviewer.id}
+                  onClick={() => handleDelete(reviewer.id)}
+                  onBlur={() => setDeleteConfirmId(null)}
+                  disabled={deleteMutation.isPending}
+                >
+                  {deleteConfirmId === reviewer.id ? '한 번 더 클릭' : '삭제'}
+                </DeleteButton>
+              </ManageCell>
+            </Td>
           </Tr>
         );
       })}
@@ -84,7 +178,7 @@ export const ReviewersTableBodyLoading = () => (
   <tbody>
     {Array.from({ length: 3 }).map((_, i) => (
       <tr key={i}>
-        {Array.from({ length: 7 }).map((_, j) => (
+        {Array.from({ length: 8 }).map((_, j) => (
           <SkeletonCell key={j}>
             <SkeletonBlock />
           </SkeletonCell>
@@ -97,7 +191,7 @@ export const ReviewersTableBodyLoading = () => (
 export const ReviewersTableBodyError = ({ message }: { message: string }) => (
   <tbody>
     <tr>
-      <ErrorCell colSpan={7}>{message}</ErrorCell>
+      <ErrorCell colSpan={8}>{message}</ErrorCell>
     </tr>
   </tbody>
 );
@@ -180,6 +274,74 @@ const StateBadge = styled.span<{ $vacation: boolean }>`
   color: ${({ $vacation }) => ($vacation ? '#92400E' : '#065F46')};
   font-size: ${({ theme }) => theme.fontSize.xs};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+`;
+
+const NameEditRow = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
+const NameInput = styled.input`
+  width: 90px;
+  padding: 4px 8px;
+  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const ManageCell = styled.div`
+  display: flex;
+  gap: 4px;
+`;
+
+const MiniButton = styled.button`
+  padding: 4px 10px;
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+
+  background: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.gray600};
+  cursor: pointer;
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  white-space: nowrap;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.gray50};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const DeleteButton = styled.button<{ $confirming: boolean }>`
+  padding: 4px 10px;
+  border: 1px solid
+    ${({ theme, $confirming }) =>
+      $confirming ? theme.colors.error : theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+
+  background: ${({ theme, $confirming }) =>
+    $confirming ? '#FEE2E2' : theme.colors.white};
+  color: ${({ theme, $confirming }) =>
+    $confirming ? theme.colors.error : theme.colors.gray600};
+  cursor: pointer;
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  font-weight: ${({ theme, $confirming }) =>
+    $confirming ? theme.fontWeight.semibold : theme.fontWeight.normal};
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 const ToggleButton = styled.button`
