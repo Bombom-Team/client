@@ -1,4 +1,3 @@
-import { postPetAttendance } from '@bombom/shared/apis/pet';
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
@@ -7,11 +6,12 @@ import { LEVEL, PET_LABEL } from './PetCard.constants';
 import { heartAnimation, jumpAnimation } from './PetCard.keyframes';
 import Button from '../Button/Button';
 import ProgressBar from '../ProgressBar/ProgressBar';
+import { postPetAttendance } from '@/apis/pet/pet.api';
 import { useDevice } from '@/hooks/useDevice';
 import { queryClient } from '@/main';
 import { calculateRate } from '@/utils/math';
+import type { GetPetResponse } from '@/apis/pet/pet.api';
 import type { Device } from '@/hooks/useDevice';
-import type { GetPetResponse } from '@bombom/shared/apis/pet';
 import type { CSSObject, Theme } from '@emotion/react';
 import petLv1 from '#/assets/avif/pet-lv1.avif';
 import petLv10 from '#/assets/avif/pet-lv10.avif';

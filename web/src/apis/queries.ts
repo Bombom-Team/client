@@ -10,6 +10,7 @@ import { membersQueries } from './members/members.query';
 import { newslettersQueries } from './newsletters/newsletters.query';
 import { noticeQueries } from './notice/notice.query';
 import { notificationQueries } from './notification/notification.query';
+import { petQueries } from './pet/pet.query';
 import { previousArticlesQueries } from './previousArticles/previousArticles.query';
 import { subscriptionsQueries } from './subscriptions/subscriptions.query';
 
@@ -43,6 +44,9 @@ export const queries = {
 
   // notification
   ...notificationQueries,
+
+  // pet
+  ...petQueries,
 
   // previous articles
   ...previousArticlesQueries,

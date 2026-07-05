@@ -14,6 +14,8 @@ export const useUnsubscribeNewsletterMutation = () => {
       queryClient.invalidateQueries({
         queryKey: queries.mySubscriptions().queryKey,
       });
+
+      toast.success('구독이 취소되었습니다.');
     },
     onError: () => {
       toast.error('구독 취소에 실패했습니다. 다시 시도해주세요.');

@@ -6,7 +6,9 @@ import {
   MyRankLabel,
   MyRankValue,
   MyReadValue,
+  StreakValueWrapper,
 } from './MyRank.styles';
+import StreakShieldInfo from './StreakShieldInfo';
 import UserBadgeInfo from './UserBadgeInfo';
 import type { GetMyStreakReadingRankResponse } from '@/apis/members/members.api';
 
@@ -15,7 +17,7 @@ interface StreakMyRankProps {
 }
 
 const StreakMyRank = ({ userRank }: StreakMyRankProps) => {
-  const rankSummary = `현재 나의 순위 ${userRank.rank}위. 연속 독서 ${userRank.dayCount}일`;
+  const rankSummary = `현재 나의 순위 ${userRank.rank}위. 연속 독서 ${userRank.dayCount}일. 연속 읽기 보호막 ${userRank.streakShield.status === 'USED' ? '사용 완료' : '사용 가능'}`;
 
   return (
     <Container aria-label={rankSummary} tabIndex={0}>
@@ -29,7 +31,10 @@ const StreakMyRank = ({ userRank }: StreakMyRankProps) => {
         </InfoWrapper>
         <InfoWrapper>
           <MyRankValue>{userRank.rank}위</MyRankValue>
-          <MyReadValue>{userRank.dayCount}일</MyReadValue>
+          <StreakValueWrapper>
+            <StreakShieldInfo status={userRank.streakShield.status} />
+            <MyReadValue>{userRank.dayCount}일</MyReadValue>
+          </StreakValueWrapper>
         </InfoWrapper>
       </MyRankInfo>
     </Container>

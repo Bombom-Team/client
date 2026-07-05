@@ -62,7 +62,6 @@ export default NewsletterUnsubscribeModal;
 
 const Container = styled.div<{ isMobile: boolean }>`
   width: 100%;
-  min-width: ${({ isMobile }) => (isMobile ? '280px' : '440px')};
 
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '12px' : '20px')};
