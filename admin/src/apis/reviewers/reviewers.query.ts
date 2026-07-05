@@ -3,6 +3,7 @@ import {
   getLeaderboard,
   getMonthlyStats,
   getOpenAssignments,
+  getPrStats,
   getReviewersWithStats,
   getSetting,
 } from './reviewers.api';
@@ -45,5 +46,12 @@ export const reviewersQueries = {
       queryKey: ['reviewers', 'setting'] as const,
       queryFn: getSetting,
       staleTime: REVIEWERS_STALE_TIME,
+    }),
+
+  prStats: () =>
+    queryOptions({
+      queryKey: ['reviewers', 'pr-stats'] as const,
+      queryFn: getPrStats,
+      staleTime: 1000 * 60 * 5, // GitHub API rate limit 보호
     }),
 };

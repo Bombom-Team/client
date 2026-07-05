@@ -10,6 +10,79 @@ import type {
 export const isOverdue = (assignment: ReviewAssignment) =>
   assignment.status === 'OPEN' && new Date(assignment.deadline_at) < new Date();
 
+// 자동 배정이 감시하는 대상 레포/브랜치 (admin 레포 reviewer-rotation.yml과 동일)
+export const TARGET_REPO = 'woowacourse-teams/2025-bom-bom';
+const TARGET_BASE_BRANCHES = ['server-dev', 'email-server-dev'];
+
+export type PrAuthorCount = {
+  monthly: number;
+  weekly: number;
+};
+
+export type PrStats = {
+  monthly: number;
+  weekly: number;
+  byAuthor: Record<string, PrAuthorCount>;
+};
+
+type GithubPr = {
+  created_at: string;
+  base: { ref: string };
+  user: { login: string } | null;
+};
+
+/**
+ * 대상 레포의 이번 달 백엔드 PR을 목록 API로 가져와
+ * 전체/사용자별 생성 수를 집계한다. 실패(rate limit 등) 시 null — 대시보드를 깨지 않음.
+ */
+export const getPrStats = async (): Promise<PrStats | null> => {
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const weekStart = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() - now.getDay(),
+  );
+
+  try {
+    const prs: GithubPr[] = [];
+    for (let page = 1; page <= 3; page += 1) {
+      const response = await fetch(
+        `https://api.github.com/repos/${TARGET_REPO}/pulls?state=all&sort=created&direction=desc&per_page=100&page=${page}`,
+      );
+      if (!response.ok)
+        throw new Error(`GitHub 조회 실패 (${response.status})`);
+      const batch = (await response.json()) as GithubPr[];
+      prs.push(...batch);
+      const oldest = batch[batch.length - 1];
+      if (batch.length < 100 || new Date(oldest.created_at) < monthStart) {
+        break;
+      }
+    }
+
+    const stats: PrStats = { monthly: 0, weekly: 0, byAuthor: {} };
+    for (const pr of prs) {
+      const createdAt = new Date(pr.created_at);
+      if (createdAt < monthStart) continue;
+      if (!TARGET_BASE_BRANCHES.includes(pr.base.ref)) continue;
+
+      const author = pr.user?.login ?? 'unknown';
+      if (!stats.byAuthor[author]) {
+        stats.byAuthor[author] = { monthly: 0, weekly: 0 };
+      }
+      stats.monthly += 1;
+      stats.byAuthor[author].monthly += 1;
+      if (createdAt >= weekStart) {
+        stats.weekly += 1;
+        stats.byAuthor[author].weekly += 1;
+      }
+    }
+    return stats;
+  } catch {
+    return null;
+  }
+};
+
 export const getSetting = async (): Promise<ReviewSetting> => {
   const { data, error } = await supabase
     .from('review_setting')
