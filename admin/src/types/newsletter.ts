@@ -95,7 +95,8 @@ export interface CreateNewsletterRequest {
   previousExposureRatio: number;
 }
 
-export interface UpdateNewsletterRequest extends Partial<CreateNewsletterRequest> {
+export interface UpdateNewsletterRequest
+  extends Partial<CreateNewsletterRequest> {
   id: number;
 }
 

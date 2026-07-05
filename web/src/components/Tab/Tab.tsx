@@ -1,10 +1,8 @@
 import styled from '@emotion/styled';
 import type { ReactNode, LiHTMLAttributes } from 'react';
 
-export interface TabProps<T> extends Omit<
-  LiHTMLAttributes<HTMLLIElement>,
-  'value'
-> {
+export interface TabProps<T>
+  extends Omit<LiHTMLAttributes<HTMLLIElement>, 'value'> {
   value: T;
   label: string;
   onTabSelect: (value: T) => void;
