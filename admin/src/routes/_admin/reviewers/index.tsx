@@ -70,6 +70,11 @@ function ReviewersDashboard() {
         </StripLink>
       </InfoStrip>
 
+      <PollLine>
+        🔄 리뷰어 자동 배정 폴링 — <strong>5분 간격</strong>으로 새 PR을 확인해
+        배정합니다
+      </PollLine>
+
       <SummaryStatCardRow>
         <SummaryStatCard label="총 리뷰어" value={`${reviewers.length}명`} />
         <SummaryStatCard
@@ -369,6 +374,19 @@ const StripLink = styled.a`
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const PollLine = styled.p`
+  margin-top: -${({ theme }) => theme.spacing.sm};
+  padding: 0 ${({ theme }) => theme.spacing.md};
+
+  color: ${({ theme }) => theme.colors.gray400};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+
+  strong {
+    color: ${({ theme }) => theme.colors.gray600};
+    font-weight: ${({ theme }) => theme.fontWeight.semibold};
   }
 `;
 
