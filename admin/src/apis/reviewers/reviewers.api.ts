@@ -41,19 +41,10 @@ export const addReviewer = async (params: {
   displayName: string;
   githubUsername: string;
 }): Promise<void> => {
-  const { data: maxRows, error: maxError } = await supabase
-    .from('reviewer')
-    .select('rotation_order')
-    .order('rotation_order', { ascending: false })
-    .limit(1);
-
-  if (maxError) throw maxError;
-  const nextOrder = (maxRows?.[0]?.rotation_order ?? 0) + 1;
-
-  const { error } = await supabase.from('reviewer').insert({
-    display_name: params.displayName,
-    github_username: params.githubUsername,
-    rotation_order: nextOrder,
+  // rotation_order 계산과 INSERT를 DB 함수에서 원자적으로 처리 (동시 추가 시 순번 중복 방지)
+  const { error } = await supabase.rpc('add_reviewer', {
+    p_display_name: params.displayName,
+    p_github_username: params.githubUsername,
   });
 
   if (error) throw error;

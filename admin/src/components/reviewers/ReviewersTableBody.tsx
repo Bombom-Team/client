@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { isOverdue } from '@/apis/reviewers/reviewers.api';
 import {
   useDeleteReviewerMutation,
@@ -21,6 +21,12 @@ export const ReviewersTableBody = ({ reviewers, maxWeekly }: Props) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingName, setEditingName] = useState('');
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+
+  // 편집 모드 진입 시 1회만 자동 포커스 (편집 중 input은 항상 하나)
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (editingId !== null) nameInputRef.current?.focus();
+  }, [editingId]);
 
   const startEdit = (reviewer: ReviewerWithStats) => {
     setEditingId(reviewer.id);
@@ -76,7 +82,7 @@ export const ReviewersTableBody = ({ reviewers, maxWeekly }: Props) => {
                 <NameEditRow>
                   <NameInput
                     value={editingName}
-                    ref={(el) => el?.focus()}
+                    ref={nameInputRef}
                     onChange={(e) => setEditingName(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') saveName(reviewer.id);
