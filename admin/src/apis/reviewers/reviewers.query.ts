@@ -1,5 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import {
+  getLeaderboard,
   getMonthlyStats,
   getOpenAssignments,
   getReviewersWithStats,
@@ -28,6 +29,13 @@ export const reviewersQueries = {
     queryOptions({
       queryKey: ['reviewers', 'assignments', 'open'] as const,
       queryFn: getOpenAssignments,
+      staleTime: REVIEWERS_STALE_TIME,
+    }),
+
+  leaderboard: () =>
+    queryOptions({
+      queryKey: ['reviewers', 'leaderboard'] as const,
+      queryFn: getLeaderboard,
       staleTime: REVIEWERS_STALE_TIME,
     }),
 };

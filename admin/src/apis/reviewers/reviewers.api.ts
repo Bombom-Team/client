@@ -1,9 +1,21 @@
 import { supabase } from '@/lib/supabase';
-import type { Reviewer, ReviewAssignment, ReviewerWithStats } from '@/types/reviewer';
+import type {
+  LeaderboardEntry,
+  Reviewer,
+  ReviewAssignment,
+  ReviewerWithStats,
+} from '@/types/reviewer';
+
+export const isOverdue = (assignment: ReviewAssignment) =>
+  assignment.status === 'OPEN' && new Date(assignment.deadline_at) < new Date();
 
 export const getReviewersWithStats = async (): Promise<ReviewerWithStats[]> => {
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const startOfMonth = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    1,
+  ).toISOString();
   const startOfWeek = new Date(
     now.getFullYear(),
     now.getMonth(),
@@ -50,7 +62,10 @@ export const toggleVacation = async (
 ): Promise<void> => {
   const { error } = await supabase
     .from('reviewer')
-    .update({ is_on_vacation: !currentValue, updated_at: new Date().toISOString() })
+    .update({
+      is_on_vacation: !currentValue,
+      updated_at: new Date().toISOString(),
+    })
     .eq('id', reviewerId);
 
   if (error) throw error;
@@ -79,4 +94,53 @@ export const getOpenAssignments = async (): Promise<ReviewAssignment[]> => {
 
   if (error) throw error;
   return data ?? [];
+};
+
+type CompletedAssignment = ReviewAssignment & {
+  completed_at: string;
+  reviewer: { display_name: string } | null;
+};
+
+export const getLeaderboard = async (): Promise<LeaderboardEntry[]> => {
+  const { data, error } = await supabase
+    .from('review_assignment')
+    .select('*, reviewer(display_name)')
+    .eq('status', 'CLOSED')
+    .not('completed_at', 'is', null);
+
+  if (error) throw error;
+  const assignments = (data ?? []) as CompletedAssignment[];
+
+  const byReviewer = assignments.reduce(
+    (acc: Record<number, LeaderboardEntry & { totalHours: number }>, a) => {
+      if (!acc[a.reviewer_id]) {
+        acc[a.reviewer_id] = {
+          reviewerId: a.reviewer_id,
+          displayName: a.reviewer?.display_name ?? `#${a.reviewer_id}`,
+          completedCount: 0,
+          lateCount: 0,
+          avgHours: 0,
+          totalHours: 0,
+        };
+      }
+      const entry = acc[a.reviewer_id];
+      entry.completedCount += 1;
+      if (new Date(a.completed_at) > new Date(a.deadline_at)) {
+        entry.lateCount += 1;
+      }
+      entry.totalHours +=
+        (new Date(a.completed_at).getTime() -
+          new Date(a.assigned_at).getTime()) /
+        (60 * 60 * 1000);
+      return acc;
+    },
+    {},
+  );
+
+  return Object.values(byReviewer)
+    .map(({ totalHours, ...entry }) => ({
+      ...entry,
+      avgHours: Math.round((totalHours / entry.completedCount) * 10) / 10,
+    }))
+    .sort((a, b) => b.completedCount - a.completedCount);
 };

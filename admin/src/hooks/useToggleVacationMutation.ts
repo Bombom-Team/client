@@ -6,8 +6,13 @@ export const useToggleVacationMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ reviewerId, currentValue }: { reviewerId: number; currentValue: boolean }) =>
-      toggleVacation(reviewerId, currentValue),
+    mutationFn: ({
+      reviewerId,
+      currentValue,
+    }: {
+      reviewerId: number;
+      currentValue: boolean;
+    }) => toggleVacation(reviewerId, currentValue),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: reviewersQueries.all });
     },

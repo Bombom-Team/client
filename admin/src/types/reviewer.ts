@@ -18,6 +18,17 @@ export type ReviewAssignment = {
   pr_url: string;
   assigned_at: string;
   status: 'OPEN' | 'CLOSED';
+  deadline_at: string;
+  completed_at: string | null;
+  overdue_notified_at: string | null;
+};
+
+export type LeaderboardEntry = {
+  reviewerId: number;
+  displayName: string;
+  completedCount: number;
+  lateCount: number;
+  avgHours: number;
 };
 
 export type ReviewerWithStats = Reviewer & {
