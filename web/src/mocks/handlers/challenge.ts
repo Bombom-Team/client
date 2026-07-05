@@ -19,6 +19,7 @@ import type {
   GetTodayDailyGuideResponse,
   GetChallengeTeamsResponse,
   GetChallengesTeamsProgressResponse,
+  GetCertificationInfoResponse,
 } from '@/apis/challenge/challenge.api';
 
 const baseURL = ENV.baseUrl;
@@ -401,6 +402,52 @@ export const challengeHandlers = [
       return HttpResponse.json({ success: true });
     },
   ),
+
+  http.get(`${baseURL}/challenges/:challengeId/certification`, ({ params }) => {
+    const challengeId = Number(params.challengeId);
+
+    const CERTIFICATION_DATA: Record<number, GetCertificationInfoResponse> = {
+      2: {
+        nickname: 'DB',
+        challengeName: '봄봄 독서 챌린지 1기',
+        generation: 1,
+        startDate: '2026-03-01',
+        endDate: '2026-03-31',
+        medal: 'GOLD',
+        medalCondition: 90,
+      },
+      3: {
+        nickname: 'DB',
+        challengeName: '뉴스레터 완독 챌린지',
+        generation: 1,
+        startDate: '2026-04-01',
+        endDate: '2026-04-30',
+        medal: 'SILVER',
+        medalCondition: 70,
+      },
+      4: {
+        nickname: 'DB',
+        challengeName: '5월 습관 만들기 챌린지',
+        generation: 1,
+        startDate: '2026-05-01',
+        endDate: '2026-05-31',
+        medal: 'BRONZE',
+        medalCondition: 50,
+      },
+    };
+
+    const response = CERTIFICATION_DATA[challengeId] ?? {
+      nickname: 'DB',
+      challengeName: '챌린지',
+      generation: 1,
+      startDate: '2026-01-01',
+      endDate: '2026-01-31',
+      medal: 'GOLD' as const,
+      medalCondition: 90,
+    };
+
+    return HttpResponse.json(response);
+  }),
 
   http.get(`${baseURL}/challenges/:challengeId/teams`, () => {
     return HttpResponse.json(CHALLENGE_TEAMS_RESPONSE);

@@ -171,3 +171,41 @@ export const postWarningVisible = async ({
     body: { isVisible },
   });
 };
+
+export type GetMyChallengeSummaryResponse =
+  components['schemas']['MyChallengeSummaryResponse'];
+
+export const getMyChallengeSummary = async () => {
+  return await fetcher.get<GetMyChallengeSummaryResponse>({
+    path: '/members/me/challenges/summary',
+  });
+};
+
+export type MyOngoingChallenge =
+  components['schemas']['MyOngoingChallengeResponse'];
+
+export type GetMyOngoingChallengesResponse =
+  components['schemas']['MyOngoingChallengesResponse'];
+
+export const getMyOngoingChallenges = async () => {
+  return await fetcher.get<GetMyOngoingChallengesResponse>({
+    path: '/members/me/challenges/ongoing',
+  });
+};
+
+export type MyCompletedChallenge =
+  components['schemas']['CompletedChallengeResponse'];
+
+export type GetMyCompletedChallengesParams = components['schemas']['Pageable'];
+
+export type GetMyCompletedChallengesResponse =
+  components['schemas']['PageCompletedChallengeResponse'];
+
+export const getMyCompletedChallenges = async (
+  params?: GetMyCompletedChallengesParams,
+) => {
+  return await fetcher.get<GetMyCompletedChallengesResponse>({
+    path: '/members/me/challenges/completed',
+    query: params,
+  });
+};
