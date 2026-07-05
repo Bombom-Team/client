@@ -87,8 +87,11 @@ function MonthlyBarChart({ year, month }: { year: number; month: number }) {
 
   const chartData: MonthlyStatEntry[] = Object.values(
     (data ?? []).reduce((acc: Record<string, MonthlyStatEntry>, item) => {
-      const reviewArr = item.review as { display_name: string }[] | null;
-      const name = reviewArr?.[0]?.display_name ?? `#${item.reviewer_id}`;
+      // supabase-js 타입 추론은 배열이지만 to-one 임베드의 실제 응답은 단일 객체
+      const reviewer = item.review as unknown as {
+        display_name: string;
+      } | null;
+      const name = reviewer?.display_name ?? `#${item.reviewer_id}`;
       if (!acc[name]) acc[name] = { display_name: name, count: 0 };
       acc[name].count += 1;
       return acc;
