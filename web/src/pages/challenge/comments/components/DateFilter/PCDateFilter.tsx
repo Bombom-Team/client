@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import DateTab from './DateTab';
-import { useDateFilterScroll } from '../hooks/useDateFilterScroll';
+import { useDateFilterScroll } from '../../hooks/useDateFilterScroll';
 import Button from '@/components/Button/Button';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tabs from '@/components/Tabs/Tabs';
