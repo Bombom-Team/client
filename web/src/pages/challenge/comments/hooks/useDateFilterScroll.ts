@@ -6,7 +6,7 @@ import {
   useCallback,
 } from 'react';
 
-const useDateFilterScroll = () => {
+export const useDateFilterScroll = () => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -46,5 +46,3 @@ const useDateFilterScroll = () => {
 
   return { scrollRef, canScrollLeft, canScrollRight, scrollDateFilter };
 };
-
-export default useDateFilterScroll;
