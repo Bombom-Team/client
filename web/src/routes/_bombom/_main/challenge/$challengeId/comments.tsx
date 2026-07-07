@@ -73,7 +73,7 @@ function ChallengeComments() {
   const { baseQueryParams, changePage, page, resetPage } =
     useCommentsPagination({
       challengeId: Number(challengeId),
-      selectedDate,
+      selectedDate: activeDate,
     });
 
   const selectDate = (date: string) => {
