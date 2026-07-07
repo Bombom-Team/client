@@ -7,3 +7,5 @@ export const MAX_QUOTATION_LINE = {
   mobile: 3,
   default: 4,
 };
+
+export const VISIBLE_COMMENTS_UNIT = 6;
