@@ -6,10 +6,22 @@ import {
   useCallback,
 } from 'react';
 
-export const useDateFilterScroll = () => {
+export const useDateFilterScroll = (dates: string[]) => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const dateString = dates.join(',');
+
+  const updateCanScroll = useCallback(() => {
+    const filterContainer = scrollRef.current;
+    if (!filterContainer) return;
+
+    setCanScrollLeft(filterContainer.scrollLeft > 0);
+    setCanScrollRight(
+      filterContainer.scrollLeft + filterContainer.clientWidth <
+        filterContainer.scrollWidth - 1,
+    );
+  }, []);
 
   const scrollDateFilter = useCallback((direction: 'left' | 'right') => {
     const scrollAmount = (scrollRef.current?.clientWidth ?? 0) * 0.5;
@@ -20,21 +32,19 @@ export const useDateFilterScroll = () => {
   }, []);
 
   useLayoutEffect(() => {
-    if (!scrollRef.current) return;
-    scrollRef.current.scrollLeft = scrollRef.current.scrollWidth;
-  }, []);
+    const filterContainer = scrollRef.current;
+    if (!filterContainer) return;
+
+    filterContainer.scrollLeft = Math.max(
+      filterContainer.scrollWidth - filterContainer.clientWidth,
+      0,
+    );
+    updateCanScroll();
+  }, [dateString, updateCanScroll]);
 
   useEffect(() => {
     const filterContainer = scrollRef.current;
     if (!filterContainer) return;
-
-    const updateCanScroll = () => {
-      setCanScrollLeft(filterContainer.scrollLeft > 0);
-      setCanScrollRight(
-        filterContainer.scrollLeft + filterContainer.clientWidth <
-          filterContainer.scrollWidth - 1,
-      );
-    };
 
     updateCanScroll();
 
@@ -42,7 +52,7 @@ export const useDateFilterScroll = () => {
       passive: true,
     });
     return () => filterContainer.removeEventListener('scroll', updateCanScroll);
-  }, []);
+  }, [updateCanScroll]);
 
   return { scrollRef, canScrollLeft, canScrollRight, scrollDateFilter };
 };

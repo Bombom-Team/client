@@ -18,6 +18,10 @@ export const useChallengeCommentDates = ({
     return allDates.filter((date) => today >= date);
   }, [endDate, startDate, today]);
 
+  const initialSelectedDate = useMemo(() => {
+    return challengeDates[challengeDates.length - 1] ?? today;
+  }, [challengeDates, today]);
+
   const isFirstDay = useCallback(
     (targetDate: string) => {
       return targetDate === startDate;
@@ -35,6 +39,7 @@ export const useChallengeCommentDates = ({
   return {
     today,
     challengeDates,
+    initialSelectedDate,
     isFirstDay,
     isChallengeDay,
   };

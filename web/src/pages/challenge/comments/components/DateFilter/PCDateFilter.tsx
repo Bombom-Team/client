@@ -20,7 +20,7 @@ const PCDateFilter = ({
   onDateSelect,
 }: PCDateFilterProps) => {
   const { scrollRef, canScrollLeft, canScrollRight, scrollDateFilter } =
-    useDateFilterScroll();
+    useDateFilterScroll(dates);
 
   return (
     <Container>
@@ -120,5 +120,5 @@ const DateTabsWrapper = styled.div`
 
 const StyledTabs = styled(Tabs)`
   display: inline-flex;
-  gap: 24px;
+  gap: 18px;
 `;

@@ -1,17 +1,17 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import AddCommentModalContent from '@/pages/challenge/comments/components/AddCommentModal/AddCommentModalContent';
+import MobileDateFilter from '@/pages/challenge/comments/components/DateFilter/MobileDateFilter';
+import PCDateFilter from '@/pages/challenge/comments/components/DateFilter/PCDateFilter';
 import MobileCommentsContent from '@/pages/challenge/comments/components/MobileCommentsContent';
-import MobileDateFilter from '@/pages/challenge/comments/components/MobileDateFilter';
 import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsContent';
-import PCDateFilter from '@/pages/challenge/comments/components/PCDateFilter';
 import StreakModalContent from '@/pages/challenge/comments/components/StreakModalContent';
 import { useChallengeCommentDates } from '@/pages/challenge/comments/hooks/useChallengeCommentDates';
 import { useCommentsPagination } from '@/pages/challenge/comments/hooks/useCommentsPagination';
@@ -38,13 +38,20 @@ function ChallengeComments() {
     queries.challengesInfo(Number(challengeId)),
   );
 
-  const { today, challengeDates, isFirstDay, isChallengeDay } =
-    useChallengeCommentDates({
-      startDate: challengeInfo?.startDate,
-      endDate: challengeInfo?.endDate,
-    });
+  const {
+    today,
+    challengeDates,
+    initialSelectedDate,
+    isFirstDay,
+    isChallengeDay,
+  } = useChallengeCommentDates({
+    startDate: challengeInfo?.startDate,
+    endDate: challengeInfo?.endDate,
+  });
 
-  const [selectedDate, setSelectedDate] = useState(today);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const contentScrollRef = useRef<HTMLDivElement>(null);
 
   const { data: candidateArticles = [] } = useQuery(
     queries.challengeCommentCandidateArticles({ date: today }),
@@ -60,6 +67,8 @@ function ChallengeComments() {
     closeModal: closeFirstCompletionModal,
     isOpen: isFirstCompletionModalOpen,
   } = useModal();
+
+  const activeDate = selectedDate ?? initialSelectedDate;
 
   const { baseQueryParams, changePage, page, resetPage } =
     useCommentsPagination({
@@ -78,21 +87,21 @@ function ChallengeComments() {
           <MobileDateFilter
             today={today}
             dates={challengeDates}
-            selectedDate={selectedDate}
+            selectedDate={activeDate}
             onDateSelect={selectDate}
           />
         ) : (
           <PCDateFilter
             today={today}
             dates={challengeDates}
-            selectedDate={selectedDate}
+            selectedDate={activeDate}
             onDateSelect={selectDate}
           />
         )}
       </FilterWrapper>
 
-      <ContentWrapper isMobile={isMobile}>
-        {selectedDate === today && isChallengeDay(selectedDate) && (
+      <ContentWrapper isMobile={isMobile} ref={contentScrollRef}>
+        {isChallengeDay(today) && (
           <AddCommentBox>
             <AddCommentTitle>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
@@ -110,11 +119,11 @@ function ChallengeComments() {
           </AddCommentBox>
         )}
 
-        {isFirstDay(selectedDate) || !isChallengeDay(selectedDate) ? (
+        {isFirstDay(activeDate) || !isChallengeDay(activeDate) ? (
           <RestDayContent>
             <RestDayTitle>전체 코멘트</RestDayTitle>
             <RestDayMessage isMobile={isMobile}>
-              {isFirstDay(selectedDate)
+              {isFirstDay(activeDate)
                 ? '첫날에는 코멘트를 작성하지 않아요!'
                 : '오늘은 휴식일이에요. 코멘트를 작성하지 않아요!'}
             </RestDayMessage>
@@ -183,7 +192,7 @@ const FilterWrapper = styled.div<{ isMobile: boolean }>`
       : 'auto'};
   z-index: ${({ isMobile, theme }) => (isMobile ? theme.zIndex.panel : 'auto')};
   width: 100%;
-  padding: ${({ isMobile }) => (isMobile ? '12px 0' : '16px')};
+  padding: ${({ isMobile }) => (isMobile ? '12px 0' : '0 0 8px')};
   border-bottom: 2px solid ${({ theme }) => theme.colors.dividers};
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -191,6 +200,9 @@ const FilterWrapper = styled.div<{ isMobile: boolean }>`
 
 const ContentWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
+  height: ${({ isMobile }) =>
+    isMobile ? 'calc(100vh - 220px)' : 'calc(100vh - 260px)'};
+  min-height: 240px;
   padding: ${({ isMobile }) => (isMobile ? '20px 0' : '24px')};
   border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 
@@ -200,6 +212,8 @@ const ContentWrapper = styled.div<{ isMobile: boolean }>`
 
   background-color: ${({ theme, isMobile }) =>
     isMobile ? 'none' : theme.colors.backgroundHover};
+
+  overflow-y: auto;
 `;
 
 const AddCommentBox = styled.article`
