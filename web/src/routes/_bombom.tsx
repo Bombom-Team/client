@@ -3,7 +3,6 @@ import { queries } from '@/apis/queries';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
-import { landingVisitedStorage } from '@/pages/landing/constants/localStorage';
 
 let isFirstVisit = true;
 
@@ -13,11 +12,6 @@ export const Route = createFileRoute('/_bombom')({
     context,
     location,
   }): Promise<void | ReturnType<typeof redirect>> => {
-    const hasVisitedLanding = landingVisitedStorage.get();
-    if (!hasVisitedLanding) {
-      return redirect({ to: '/landing' });
-    }
-
     if (!isFirstVisit) return;
 
     const { queryClient } = context;
