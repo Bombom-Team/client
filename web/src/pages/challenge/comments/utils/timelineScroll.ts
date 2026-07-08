@@ -40,5 +40,5 @@ export const findVisibleDate = (container: HTMLElement) => {
       return elementDistance < nearestDistance ? element : nearestElement;
     });
 
-  return visibleLayer.dataset.commentDateLayer;
+  return visibleLayer.dataset.commentDateSection;
 };
