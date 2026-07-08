@@ -12,23 +12,32 @@ interface StorageType<T extends Serializable> {
   remove: () => void;
 }
 
-const storage = window.localStorage;
-
 export const createStorage = <T extends Serializable>(
   key: string,
   defaultData?: T,
 ): StorageType<T> => ({
   get() {
-    const data = storage.getItem(key);
-    return data ? JSON.parse(data) : defaultData;
+    try {
+      const data = window.localStorage.getItem(key);
+      return data ? JSON.parse(data) : defaultData;
+    } catch {
+      return defaultData;
+    }
   },
 
   set(data) {
-    const stringifyData = JSON.stringify(data);
-    storage.setItem(key, stringifyData);
+    try {
+      window.localStorage.setItem(key, JSON.stringify(data));
+    } catch {
+      // noop
+    }
   },
 
   remove() {
-    storage.removeItem(key);
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      // noop
+    }
   },
 });

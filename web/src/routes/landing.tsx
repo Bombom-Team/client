@@ -9,7 +9,7 @@ import LandingHeader from '@/pages/landing/components/LandingHeader';
 import LandingHero from '@/pages/landing/components/LandingHero';
 import LandingPopularNewsletters from '@/pages/landing/components/LandingPopularNewsletters';
 import PainPoint from '@/pages/landing/components/PainPoint';
-import { LANDING_VISITED_KEY } from '@/pages/landing/constants/localStorage';
+import { landingVisitedStorage } from '@/pages/landing/constants/localStorage';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/landing')({
@@ -23,6 +23,7 @@ export const Route = createFileRoute('/landing')({
         title: '봄봄 | 읽고 남기고 쌓는 뉴스레터 리딩 플랫폼',
       },
     ],
+    links: [{ rel: 'canonical', href: 'https://www.bombom.news/landing' }],
   }),
   component: LandingPage,
 });
@@ -31,7 +32,7 @@ function LandingPage() {
   const device = useDevice();
 
   useEffect(() => {
-    localStorage.setItem(LANDING_VISITED_KEY, 'true');
+    landingVisitedStorage.set(true);
   }, []);
 
   return (
