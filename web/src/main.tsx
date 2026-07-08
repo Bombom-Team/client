@@ -97,6 +97,7 @@ const router = createRouter({
   },
   scrollRestoration: true,
   defaultNotFoundComponent: NotFound,
+  defaultErrorComponent: PageErrorFallback,
 });
 
 if (isProduction) {
