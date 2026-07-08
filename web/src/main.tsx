@@ -20,6 +20,7 @@ import {
   captureQueryError,
   SentryErrorBoundary,
 } from './libs/sentry/sentryUtils';
+import NotFound from './pages/system/components/NotFound';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
 import { isProduction } from './utils/environment';
@@ -95,6 +96,7 @@ const router = createRouter({
     queryClient,
   },
   scrollRestoration: true,
+  defaultNotFoundComponent: NotFound,
 });
 
 if (isProduction) {
