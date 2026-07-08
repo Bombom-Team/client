@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useMemo } from 'react';
 import CommentDateSection from './CommentDateSection';
-import { useTimelineScrollBehavior } from '../hooks/useTimelineScrollBehavior';
+import { useTimeline } from '../hooks/useTimeline';
 import type { RefObject } from 'react';
 
 interface CommentTimelineProps {
@@ -31,11 +31,11 @@ const CommentTimeline = ({
 
   const {
     visibleDates,
-    topSentinelRef,
-    bottomSentinelRef,
-    showTopSentinel,
-    showBottomSentinel,
-  } = useTimelineScrollBehavior({
+    newerTimelineRef,
+    olderTimelineRef,
+    canShowNewerTimeline,
+    canShowOlderTimeline,
+  } = useTimeline({
     scrollContainerRef,
     challengeId,
     timelineDates,
@@ -46,7 +46,7 @@ const CommentTimeline = ({
 
   return (
     <Container>
-      {showTopSentinel && <Sentinel ref={topSentinelRef} />}
+      {canShowNewerTimeline && <LoadMoreTrigger ref={newerTimelineRef} />}
       <SectionList>
         {visibleDates.map((date) => (
           <CommentDateSection
@@ -58,7 +58,7 @@ const CommentTimeline = ({
           />
         ))}
       </SectionList>
-      {showBottomSentinel && <Sentinel ref={bottomSentinelRef} />}
+      {canShowOlderTimeline && <LoadMoreTrigger ref={olderTimelineRef} />}
     </Container>
   );
 };
@@ -75,7 +75,7 @@ const SectionList = styled.div`
   flex-direction: column;
 `;
 
-const Sentinel = styled.div`
+const LoadMoreTrigger = styled.div`
   width: 100%;
   height: 1px;
 `;
