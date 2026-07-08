@@ -8,13 +8,11 @@ import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { useDevice } from '@/hooks/useDevice';
 import AddCommentModalContent from '@/pages/challenge/comments/components/AddCommentModal/AddCommentModalContent';
+import CommentTimeline from '@/pages/challenge/comments/components/CommentTimeline';
 import MobileDateFilter from '@/pages/challenge/comments/components/DateFilter/MobileDateFilter';
 import PCDateFilter from '@/pages/challenge/comments/components/DateFilter/PCDateFilter';
-import MobileCommentsContent from '@/pages/challenge/comments/components/MobileCommentsContent';
-import PCCommentsContent from '@/pages/challenge/comments/components/PCCommentsContent';
 import StreakModalContent from '@/pages/challenge/comments/components/StreakModalContent';
 import { useChallengeCommentDates } from '@/pages/challenge/comments/hooks/useChallengeCommentDates';
-import { useCommentsPagination } from '@/pages/challenge/comments/hooks/useCommentsPagination';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/comments',
@@ -50,7 +48,13 @@ function ChallengeComments() {
   });
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
+  const [timeline, setTimeline] = useState<{
+    startDate: string | null;
+    key: number;
+  }>({
+    startDate: null,
+    key: 0,
+  });
   const contentScrollRef = useRef<HTMLDivElement>(null);
 
   const { data: candidateArticles = [] } = useQuery(
@@ -69,14 +73,14 @@ function ChallengeComments() {
   } = useModal();
 
   const activeDate = selectedDate ?? initialSelectedDate;
-
-  const { baseQueryParams, changePage, page, resetPage } =
-    useCommentsPagination({
-      challengeId: Number(challengeId),
-      selectedDate: activeDate,
-    });
+  const activeTimelineStart = timeline.startDate ?? initialSelectedDate;
 
   const selectDate = (date: string) => {
+    setSelectedDate(date);
+    setTimeline((prev) => ({ startDate: date, key: prev.key + 1 }));
+  };
+
+  const changeVisibleDate = (date: string) => {
     setSelectedDate(date);
   };
 
@@ -119,26 +123,22 @@ function ChallengeComments() {
           </AddCommentBox>
         )}
 
-        {isFirstDay(activeDate) || !isChallengeDay(activeDate) ? (
+        {!isChallengeDay(activeDate) ? (
           <RestDayContent>
-            <RestDayTitle>전체 코멘트</RestDayTitle>
             <RestDayMessage isMobile={isMobile}>
-              {isFirstDay(activeDate)
-                ? '첫날에는 코멘트를 작성하지 않아요!'
-                : '오늘은 휴식일이에요. 코멘트를 작성하지 않아요!'}
+              오늘은 휴식일이에요. 코멘트를 작성하지 않아요!
             </RestDayMessage>
           </RestDayContent>
-        ) : isMobile ? (
-          <MobileCommentsContent
-            baseQueryParams={baseQueryParams}
-            resetPage={resetPage}
-          />
         ) : (
-          <PCCommentsContent
-            baseQueryParams={baseQueryParams}
-            onPageChange={changePage}
-            page={page}
-            resetPage={resetPage}
+          <CommentTimeline
+            key={timeline.key}
+            challengeId={Number(challengeId)}
+            challengeDates={challengeDates}
+            initialDate={activeTimelineStart}
+            scrollContainerRef={contentScrollRef}
+            selectedDate={activeDate}
+            today={today}
+            onVisibleDateChange={changeVisibleDate}
           />
         )}
       </ContentWrapper>
@@ -243,11 +243,6 @@ const RestDayContent = styled.section`
   display: flex;
   gap: 12px;
   flex-direction: column;
-`;
-
-const RestDayTitle = styled.h3`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const RestDayMessage = styled.div<{ isMobile: boolean }>`
