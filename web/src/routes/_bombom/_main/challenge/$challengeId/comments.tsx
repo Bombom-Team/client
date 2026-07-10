@@ -13,6 +13,7 @@ import MobileDateFilter from '@/pages/challenge/comments/components/DateFilter/M
 import PCDateFilter from '@/pages/challenge/comments/components/DateFilter/PCDateFilter';
 import StreakModalContent from '@/pages/challenge/comments/components/StreakModalContent';
 import { useChallengeCommentDates } from '@/pages/challenge/comments/hooks/useChallengeCommentDates';
+import NoticeIcon from '#/assets/svg/info-circle.svg';
 
 export const Route = createFileRoute(
   '/_bombom/_main/challenge/$challengeId/comments',
@@ -40,6 +41,7 @@ function ChallengeComments() {
     today,
     challengeDates,
     initialSelectedDate,
+    isRestDay,
     isFirstDay,
     isChallengeDay,
   } = useChallengeCommentDates({
@@ -115,7 +117,7 @@ function ChallengeComments() {
               disabled={isFirstDay(today) || candidateArticles.length === 0}
             >
               {isFirstDay(today)
-                ? '첫날에는 코멘트를 작성할 수 없어요'
+                ? '첫날에는 코멘트를 작성하지 않아요!'
                 : candidateArticles.length > 0
                   ? '코멘트 작성하기'
                   : '오늘 읽은 뉴스레터가 없어요'}
@@ -123,24 +125,22 @@ function ChallengeComments() {
           </AddCommentBox>
         )}
 
-        {!isChallengeDay(activeDate) ? (
-          <RestDayContent>
-            <RestDayMessage isMobile={isMobile}>
-              오늘은 휴식일이에요. 코멘트를 작성하지 않아요!
-            </RestDayMessage>
-          </RestDayContent>
-        ) : (
-          <CommentTimeline
-            key={timeline.key}
-            challengeId={Number(challengeId)}
-            challengeDates={challengeDates}
-            initialDate={activeTimelineStart}
-            scrollContainerRef={contentScrollRef}
-            selectedDate={activeDate}
-            today={today}
-            onVisibleDateChange={changeVisibleDate}
-          />
+        {isRestDay && (
+          <NoticeLabel isMobile={isMobile}>
+            <NoticeIcon width={20} height={20} />
+            오늘은 휴식일이에요. 코멘트를 작성하지 않아요!
+          </NoticeLabel>
         )}
+        <CommentTimeline
+          key={timeline.key}
+          challengeId={Number(challengeId)}
+          challengeDates={challengeDates}
+          initialDate={activeTimelineStart}
+          scrollContainerRef={contentScrollRef}
+          selectedDate={activeDate}
+          today={today}
+          onVisibleDateChange={changeVisibleDate}
+        />
       </ContentWrapper>
 
       {candidateArticles.length > 0 && (
@@ -239,18 +239,14 @@ const AddCommentButton = styled(Button)`
   }
 `;
 
-const RestDayContent = styled.section`
+const NoticeLabel = styled.div<{ isMobile: boolean }>`
+  width: 100%;
+  padding: ${({ isMobile }) => (isMobile ? '8px 12px' : '12px 16px')};
+  border-radius: 8px;
+
   display: flex;
-  gap: 12px;
-  flex-direction: column;
-`;
+  gap: 4px;
+  align-items: center;
 
-const RestDayMessage = styled.div<{ isMobile: boolean }>`
-  padding: ${({ isMobile }) => (isMobile ? '24px' : '32px')};
-  border-radius: 12px;
-
-  background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  text-align: center;
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
 `;
