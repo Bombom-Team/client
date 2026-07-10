@@ -27,7 +27,30 @@ const renderMobileDateFilter = ({
     </ThemeProvider>,
   );
 
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
 describe('MobileDateFilter', () => {
+  it('처음 렌더링하면 누적 날짜 영역을 가장 우측으로 스크롤한다', () => {
+    jest
+      .spyOn(HTMLElement.prototype, 'scrollWidth', 'get')
+      .mockReturnValue(300);
+    jest
+      .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+      .mockReturnValue(100);
+
+    renderMobileDateFilter({
+      today: '2026-07-10',
+      dates: ['2026-07-07', '2026-07-08', '2026-07-09', '2026-07-10'],
+      selectedDate: '2026-07-10',
+    });
+
+    const scrollContainer = screen.getByRole('tablist').parentElement;
+
+    expect(scrollContainer?.scrollLeft).toBe(200);
+  });
+
   it('오늘이 유효한 챌린지 날짜이면 오늘 탭을 표시한다', () => {
     renderMobileDateFilter({
       today: '2026-07-10',
