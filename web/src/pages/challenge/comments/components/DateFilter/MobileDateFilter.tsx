@@ -15,6 +15,7 @@ const MobileDateFilter = ({
   selectedDate,
   onDateSelect,
 }: MobileDateFilterProps) => {
+  const isTodayChallengeDate = dates.includes(today);
   const scrollableDates = dates.filter((date) => date !== today);
 
   return (
@@ -33,14 +34,16 @@ const MobileDateFilter = ({
         </StyledTabs>
       </DateTabsWrapper>
 
-      <TodayTabWrapper>
-        <DateTab
-          dateString={today}
-          today={today}
-          selectedDate={selectedDate}
-          onDateSelect={onDateSelect}
-        />
-      </TodayTabWrapper>
+      {isTodayChallengeDate && (
+        <TodayTabWrapper>
+          <DateTab
+            dateString={today}
+            today={today}
+            selectedDate={selectedDate}
+            onDateSelect={onDateSelect}
+          />
+        </TodayTabWrapper>
+      )}
     </Container>
   );
 };
