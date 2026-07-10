@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useMemo } from 'react';
 import CommentDateSection from './CommentDateSection';
 import { useTimeline } from '../hooks/useTimeline';
 import type { RefObject } from 'react';
@@ -23,22 +22,18 @@ const CommentTimeline = ({
   today,
   onVisibleDateChange,
 }: CommentTimelineProps) => {
-  const timelineDates = useMemo(
-    () => [...challengeDates].reverse(),
-    [challengeDates],
-  );
   const firstChallengeDate = challengeDates[0];
 
   const {
     visibleDates,
-    newerTimelineRef,
-    olderTimelineRef,
-    canShowNewerTimeline,
-    canShowOlderTimeline,
+    newerDateTriggerRef,
+    olderDateTriggerRef,
+    canShowNewerDateTrigger,
+    canShowOlderDateTrigger,
   } = useTimeline({
     scrollContainerRef,
     challengeId,
-    timelineDates,
+    challengeDates,
     initialDate,
     selectedDate,
     onVisibleDateChange,
@@ -46,7 +41,7 @@ const CommentTimeline = ({
 
   return (
     <Container>
-      {canShowNewerTimeline && <LoadMoreTrigger ref={newerTimelineRef} />}
+      {canShowNewerDateTrigger && <LoadMoreTrigger ref={newerDateTriggerRef} />}
       <SectionList>
         {visibleDates.map((date) => (
           <CommentDateSection
@@ -58,7 +53,7 @@ const CommentTimeline = ({
           />
         ))}
       </SectionList>
-      {canShowOlderTimeline && <LoadMoreTrigger ref={olderTimelineRef} />}
+      {canShowOlderDateTrigger && <LoadMoreTrigger ref={olderDateTriggerRef} />}
     </Container>
   );
 };

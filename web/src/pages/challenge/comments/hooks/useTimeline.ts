@@ -3,30 +3,17 @@ import {
   useIsFetching,
   useQueryClient,
 } from '@tanstack/react-query';
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { useTimelineScrollSync } from './useTimelineScrollSync';
 import { VISIBLE_COMMENTS_UNIT } from '../constants/comment';
-import {
-  canPreservePrependScroll,
-  findVisibleDate,
-  preservePrependScrollPosition,
-} from '../utils/timelineScroll';
 import { queries } from '@/apis/queries';
 import { useIntersectionTrigger } from '@/hooks/useIntersectionTrigger';
 import type { RefObject } from 'react';
 
-const TIMELINE_EXPAND_UNIT = 1;
-
-interface useTimelineParams {
+interface UseTimelineParams {
   scrollContainerRef: RefObject<HTMLDivElement | null>;
   challengeId: number;
-  timelineDates: string[];
+  challengeDates: string[];
   initialDate: string;
   selectedDate: string;
   onVisibleDateChange: (date: string) => void;
@@ -35,161 +22,127 @@ interface useTimelineParams {
 export const useTimeline = ({
   scrollContainerRef,
   challengeId,
-  timelineDates,
+  challengeDates,
   initialDate,
   selectedDate,
   onVisibleDateChange,
-}: useTimelineParams) => {
-  const [visibleRange, setVisibleRange] = useState(() => {
+}: UseTimelineParams) => {
+  const timelineDates = useMemo(
+    () => [...challengeDates].reverse(),
+    [challengeDates],
+  );
+  const [renderedRange, setRenderedRange] = useState(() => {
     const initialDateIndex = Math.max(timelineDates.indexOf(initialDate), 0);
-    return { newestIndex: initialDateIndex, oldestIndex: initialDateIndex };
+    return { startIndex: initialDateIndex, endIndex: initialDateIndex };
   });
 
-  const newerTimelineRef = useRef<HTMLDivElement>(null);
-  const olderTimelineRef = useRef<HTMLDivElement>(null);
-  const prependScrollHeightRef = useRef<number | null>(null);
-  const ScrollSyncRef = useRef(false);
+  const newerDateTriggerRef = useRef<HTMLDivElement>(null);
+  const olderDateTriggerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+  const { captureScrollBeforePrepend } = useTimelineScrollSync({
+    scrollContainerRef,
+    resetKey: initialDate,
+    selectedDate,
+    onVisibleDateChange,
+  });
 
   const visibleDates = useMemo(
     () =>
-      timelineDates.slice(
-        visibleRange.newestIndex,
-        visibleRange.oldestIndex + 1,
-      ),
-    [visibleRange, timelineDates],
+      timelineDates.slice(renderedRange.startIndex, renderedRange.endIndex + 1),
+    [renderedRange, timelineDates],
   );
 
-  const visibleOldestDate = visibleDates.at(-1);
-  const oldestDateQuery = useInfiniteQuery({
-    ...queries.comments.infiniteList({
+  const lastVisibleDate = visibleDates.at(-1);
+  const nextNewerDate =
+    renderedRange.startIndex > 0
+      ? timelineDates[renderedRange.startIndex - 1]
+      : null;
+  const hasOlderDate = Boolean(timelineDates[renderedRange.endIndex + 1]);
+
+  const getDateCommentsQueryOptions = (challengeId: number, date: string) =>
+    queries.comments.infiniteList({
       challengeId,
-      start: visibleOldestDate ?? '',
-      end: visibleOldestDate ?? '',
+      start: date,
+      end: date,
       size: VISIBLE_COMMENTS_UNIT,
-    }),
+    });
+
+  // CommentDateSection에서 실행하는 동일 query key의 캐시 상태만 구독한다.
+  const lastVisibleDateCommentsState = useInfiniteQuery({
+    ...getDateCommentsQueryOptions(challengeId, lastVisibleDate ?? ''),
     enabled: false,
   });
 
-  const newerDate =
-    visibleRange.newestIndex > 0
-      ? timelineDates[visibleRange.newestIndex - 1]
-      : null;
-  const canExpandNewer = Boolean(newerDate);
-  const canExpandOlder = Boolean(timelineDates[visibleRange.oldestIndex + 1]);
+  const canShowOlderDateTrigger =
+    hasOlderDate &&
+    Boolean(lastVisibleDate) &&
+    lastVisibleDateCommentsState.isSuccess &&
+    !lastVisibleDateCommentsState.hasNextPage;
 
-  const canShowOlderTimeline =
-    canExpandOlder &&
-    Boolean(visibleOldestDate) &&
-    oldestDateQuery.isSuccess &&
-    !oldestDateQuery.hasNextPage;
-
-  const expandNewer = useCallback(() => {
-    setVisibleRange((prev) => {
-      return prev.newestIndex > 0
-        ? { ...prev, newestIndex: prev.newestIndex - TIMELINE_EXPAND_UNIT }
+  const expandToNewerDate = useCallback(() => {
+    setRenderedRange((prev) => {
+      return prev.startIndex > 0
+        ? { ...prev, startIndex: prev.startIndex - 1 }
         : prev;
     });
   }, []);
 
-  const expandOlder = useCallback(() => {
-    setVisibleRange((prev) => {
-      return prev.oldestIndex < timelineDates.length - 1
-        ? { ...prev, oldestIndex: prev.oldestIndex + TIMELINE_EXPAND_UNIT }
+  const expandToOlderDate = useCallback(() => {
+    setRenderedRange((prev) => {
+      return prev.endIndex < timelineDates.length - 1
+        ? { ...prev, endIndex: prev.endIndex + 1 }
         : prev;
     });
   }, [timelineDates.length]);
 
-  const prependNewerDate = useCallback(() => {
-    if (!newerDate) return;
-    const container = scrollContainerRef.current;
-    if (!container || !canPreservePrependScroll(container)) return;
+  const loadNewerDate = useCallback(() => {
+    if (!nextNewerDate) return;
 
-    const doExpand = () => {
-      prependScrollHeightRef.current = container.scrollHeight;
-      expandNewer();
+    const prependNewerDate = () => {
+      if (!captureScrollBeforePrepend()) return;
+      expandToNewerDate();
     };
 
-    const newestDateQuery = queries.comments.infiniteList({
+    const nextNewerDateQuery = getDateCommentsQueryOptions(
       challengeId,
-      start: newerDate,
-      end: newerDate,
-      size: VISIBLE_COMMENTS_UNIT,
-    });
+      nextNewerDate,
+    );
 
-    if (queryClient.getQueryData(newestDateQuery.queryKey)) {
-      doExpand();
+    if (queryClient.getQueryData(nextNewerDateQuery.queryKey)) {
+      prependNewerDate();
     } else {
-      queryClient.prefetchInfiniteQuery(newestDateQuery).then(doExpand);
+      queryClient
+        .prefetchInfiniteQuery(nextNewerDateQuery)
+        .then(prependNewerDate);
     }
-  }, [challengeId, expandNewer, newerDate, queryClient, scrollContainerRef]);
+  }, [
+    captureScrollBeforePrepend,
+    challengeId,
+    expandToNewerDate,
+    nextNewerDate,
+    queryClient,
+  ]);
 
-  const isFetchingComments =
+  const isAnyCommentQueryFetching =
     useIsFetching({ queryKey: queries.comments.all(challengeId) }) > 0;
 
   useIntersectionTrigger({
-    targetRef: newerTimelineRef,
-    enabled: canExpandNewer && !isFetchingComments,
-    onIntersect: prependNewerDate,
+    targetRef: newerDateTriggerRef,
+    enabled: Boolean(nextNewerDate) && !isAnyCommentQueryFetching,
+    onIntersect: loadNewerDate,
   });
 
   useIntersectionTrigger({
-    targetRef: olderTimelineRef,
-    enabled: canShowOlderTimeline && !isFetchingComments,
-    onIntersect: expandOlder,
+    targetRef: olderDateTriggerRef,
+    enabled: canShowOlderDateTrigger && !isAnyCommentQueryFetching,
+    onIntersect: expandToOlderDate,
   });
-
-  useLayoutEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    container.scrollTop = 0;
-  }, [initialDate, scrollContainerRef]);
-
-  useLayoutEffect(() => {
-    const container = scrollContainerRef.current;
-    const prependScrollHeight = prependScrollHeightRef.current;
-    if (!container || prependScrollHeight === null) return;
-
-    const didPreserveScroll = preservePrependScrollPosition(
-      container,
-      prependScrollHeight,
-    );
-    prependScrollHeightRef.current = null;
-
-    if (didPreserveScroll) {
-      ScrollSyncRef.current = true;
-    }
-  });
-
-  const syncVisibleDate = useCallback(() => {
-    if (ScrollSyncRef.current) {
-      ScrollSyncRef.current = false;
-      return;
-    }
-
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const visibleDate = findVisibleDate(container);
-    if (visibleDate && visibleDate !== selectedDate) {
-      onVisibleDateChange(visibleDate);
-    }
-  }, [onVisibleDateChange, scrollContainerRef, selectedDate]);
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    container.addEventListener('scroll', syncVisibleDate);
-    return () => container.removeEventListener('scroll', syncVisibleDate);
-  }, [scrollContainerRef, syncVisibleDate]);
 
   return {
     visibleDates,
-    newerTimelineRef,
-    olderTimelineRef,
-    canShowNewerTimeline: canExpandNewer,
-    canShowOlderTimeline,
+    newerDateTriggerRef,
+    olderDateTriggerRef,
+    canShowNewerDateTrigger: Boolean(nextNewerDate),
+    canShowOlderDateTrigger,
   };
 };
