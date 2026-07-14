@@ -119,8 +119,14 @@ const Container = styled.button<{ disabled?: boolean }>`
 `;
 
 const Content = styled.div`
+  width: 100%;
   min-width: 0;
+
+  display: flex;
+  gap: 4px;
   flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
 const MedalCircle = styled.div<{ gradeColor: string | null }>`
@@ -152,11 +158,13 @@ const MedalPlaceholder = styled.div`
 `;
 
 const Info = styled.div`
+  width: 100%;
   min-width: 0;
 
   display: flex;
   gap: 4px;
   flex-direction: column;
+  align-items: flex-start;
 `;
 
 const Title = styled.h3`
@@ -193,6 +201,8 @@ const FailBadge = styled.span`
 `;
 
 const BottomRow = styled.div`
+  width: 100%;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
