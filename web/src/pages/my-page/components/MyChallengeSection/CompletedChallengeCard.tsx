@@ -38,7 +38,7 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
   const gradeColor = medalGrade ? GRADE_COLOR[medalGrade] : null;
 
   const handleCardClick = () => {
-    if (isFail) return;
+    if (isFail || !challengeId) return;
 
     navigate({
       to: '/challenge/$challengeId/dashboard',
