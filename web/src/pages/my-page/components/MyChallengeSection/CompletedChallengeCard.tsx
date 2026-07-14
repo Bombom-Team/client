@@ -101,7 +101,7 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
 
 export default CompletedChallengeCard;
 
-const Container = styled.div<{ disabled?: boolean }>`
+const Container = styled.button<{ disabled?: boolean }>`
   width: 100%;
   padding: 12px 16px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
