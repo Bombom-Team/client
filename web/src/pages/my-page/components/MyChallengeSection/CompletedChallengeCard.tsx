@@ -5,7 +5,7 @@ import { MEDAL_COLORS } from '../../constants/challenge';
 import Button from '@/components/Button/Button';
 import useModal from '@/components/Modal/useModal';
 import type { MyCompletedChallenge } from '@/apis/members/members.api';
-import type { MouseEvent } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import MedalBronzeIcon from '#/assets/svg/medal-bronze.svg';
 import MedalGoldIcon from '#/assets/svg/medal-gold.svg';
 import MedalSilverIcon from '#/assets/svg/medal-silver.svg';
@@ -51,9 +51,22 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
     openModal();
   };
 
+  const handleCardKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleCardClick();
+    }
+  };
+
   return (
     <>
-      <Container disabled={isFail} onClick={handleCardClick}>
+      <Container
+        disabled={isFail}
+        onClick={handleCardClick}
+        onKeyDown={handleCardKeyDown}
+        role="button"
+        tabIndex={isFail ? -1 : 0}
+      >
         <MedalCircle gradeColor={gradeColor}>
           {MedalIcon ? (
             <MedalIcon width={36} height={36} />
@@ -101,7 +114,7 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
 
 export default CompletedChallengeCard;
 
-const Container = styled.button<{ disabled?: boolean }>`
+const Container = styled.div<{ disabled?: boolean }>`
   width: 100%;
   padding: 12px 16px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
