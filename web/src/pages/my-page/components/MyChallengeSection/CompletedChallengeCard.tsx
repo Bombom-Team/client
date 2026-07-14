@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
+import { useNavigate } from '@tanstack/react-router';
 import CertificateModal from './CertificateModal';
 import { MEDAL_COLORS } from '../../constants/challenge';
 import Button from '@/components/Button/Button';
 import useModal from '@/components/Modal/useModal';
 import type { MyCompletedChallenge } from '@/apis/members/members.api';
+import type { MouseEvent } from 'react';
 import MedalBronzeIcon from '#/assets/svg/medal-bronze.svg';
 import MedalGoldIcon from '#/assets/svg/medal-gold.svg';
 import MedalSilverIcon from '#/assets/svg/medal-silver.svg';
@@ -28,14 +30,30 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
   const { challengeId, title, startDate, endDate, attendanceRate, grade } =
     challenge;
   const { modalRef, isOpen, openModal, closeModal } = useModal();
+  const navigate = useNavigate();
 
-  const medalGrade = grade != null && grade !== 'FAIL' ? grade : null;
+  const isFail = grade === 'FAIL';
+  const medalGrade = grade != null && !isFail ? grade : null;
   const MedalIcon = medalGrade ? MEDAL_ICON[medalGrade] : null;
   const gradeColor = medalGrade ? GRADE_COLOR[medalGrade] : null;
 
+  const handleCardClick = () => {
+    if (isFail) return;
+
+    navigate({
+      to: '/challenge/$challengeId/dashboard',
+      params: { challengeId: String(challengeId) },
+    });
+  };
+
+  const handleCertButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    openModal();
+  };
+
   return (
     <>
-      <Container>
+      <Container disabled={isFail} onClick={handleCardClick}>
         <MedalCircle gradeColor={gradeColor}>
           {MedalIcon ? (
             <MedalIcon width={36} height={36} />
@@ -56,7 +74,11 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
                 {grade === 'FAIL' && <FailBadge>(탈락)</FailBadge>}
               </AttendanceText>
               {grade !== 'FAIL' && (
-                <CertButton variant="transparent" onClick={openModal}>
+                <CertButton
+                  variant="transparent"
+                  onClick={handleCertButtonClick}
+                  disabled={isFail}
+                >
                   수료증 확인
                 </CertButton>
               )}
@@ -79,7 +101,7 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
 
 export default CompletedChallengeCard;
 
-const Container = styled.div`
+const Container = styled.div<{ disabled?: boolean }>`
   width: 100%;
   padding: 12px 16px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
@@ -89,7 +111,11 @@ const Container = styled.div`
   gap: 12px;
   align-items: center;
 
+  background-color: ${({ theme, disabled }) =>
+    disabled ? theme.colors.disabledBackground : theme.colors.white};
+
   box-sizing: border-box;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 `;
 
 const Content = styled.div`
@@ -108,7 +134,7 @@ const MedalCircle = styled.div<{ gradeColor: string | null }>`
   justify-content: center;
 
   background-color: ${({ theme, gradeColor }) =>
-    gradeColor ? `${gradeColor}20` : theme.colors.dividers};
+    gradeColor ? `${gradeColor}20` : theme.colors.stroke};
 `;
 
 const MedalPlaceholder = styled.div`
