@@ -149,11 +149,13 @@ const Panel = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
   border: 1px solid ${({ theme }) => theme.colors.warning};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+
   background-color: #fffdf7;
 `;
 
 const PanelHeader = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.md};
+
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
@@ -166,58 +168,66 @@ const PanelHeader = styled.div`
 
 const CloseButton = styled.button`
   margin-left: auto;
+
   color: ${({ theme }) => theme.colors.gray500};
+
   cursor: pointer;
 `;
 
 const Row = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
-  align-items: flex-end;
   flex-wrap: wrap;
+  align-items: flex-end;
 `;
 
 const Field = styled.div<{ $grow?: boolean }>`
+  min-width: 140px;
+
   display: flex;
-  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xs};
   flex: ${({ $grow }) => ($grow ? 1 : 'none')};
-  min-width: 140px;
+  flex-direction: column;
 `;
 
 const Label = styled.span`
   color: ${({ theme }) => theme.colors.gray500};
-  font-size: ${({ theme }) => theme.fontSize.xs};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const Input = styled.input`
   padding: ${({ theme }) => theme.spacing.sm};
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
+
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const Segment = styled.div`
-  display: inline-flex;
+  overflow: hidden;
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  overflow: hidden;
+
+  display: inline-flex;
 `;
 
 const SegmentButton = styled.button<{ $active: boolean }>`
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-  cursor: pointer;
+
   background-color: ${({ theme, $active }) =>
     $active ? theme.colors.primary : theme.colors.white};
   color: ${({ theme, $active }) =>
     $active ? theme.colors.white : theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
 `;
 
 const Notice = styled.p<{ $error?: boolean }>`
   margin-top: ${({ theme }) => theme.spacing.md};
-  font-size: ${({ theme }) => theme.fontSize.sm};
+
   color: ${({ theme, $error }) =>
     $error ? theme.colors.error : theme.colors.success};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;

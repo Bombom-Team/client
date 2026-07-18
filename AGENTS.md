@@ -177,6 +177,11 @@ These rules apply to commits and pull requests in **any** package.
 
 When Codex reviews a pull request, it MUST act as a high-signal reviewer.
 
+Before reviewing, read `docs/architecture.md`. It is the repository behavior map
+for workspace boundaries, authentication, API, routing, WebView, and notification
+contracts. If the document and code disagree, the code is authoritative and the
+reviewer MUST propose updating the document.
+
 Focus on:
 
 - Production bugs, runtime crashes, and broken user flows

@@ -230,8 +230,8 @@ const Td = styled.td`
   text-align: left;
 
   &.num {
-    font-variant-numeric: tabular-nums;
     text-align: right;
+    font-variant-numeric: tabular-nums;
   }
 
   &.strong {
@@ -256,11 +256,10 @@ const GaugeCell = styled.div`
 `;
 
 const GaugeTrack = styled.div`
+  overflow: hidden;
   width: 80px;
   height: 6px;
   border-radius: ${({ theme }) => theme.borderRadius.full};
-
-  overflow: hidden;
 
   background: ${({ theme }) => theme.colors.gray100};
 `;
@@ -275,6 +274,7 @@ const GaugeFill = styled.div`
 const GaugeText = styled.span`
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
+
   font-variant-numeric: tabular-nums;
 `;
 
@@ -289,8 +289,8 @@ const StateBadge = styled.span<{ $vacation: boolean }>`
 
   background: ${({ $vacation }) => ($vacation ? '#FEF3C7' : '#D1FAE5')};
   color: ${({ $vacation }) => ($vacation ? '#92400E' : '#065F46')};
-  font-size: ${({ theme }) => theme.fontSize.xs};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const SubCount = styled.span`
@@ -329,17 +329,18 @@ const MiniButton = styled.button`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.gray600};
-  cursor: pointer;
   font-size: ${({ theme }) => theme.fontSize.xs};
   white-space: nowrap;
+
+  cursor: pointer;
 
   &:hover {
     background: ${({ theme }) => theme.colors.gray50};
   }
 
   &:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
+    opacity: 0.5;
   }
 `;
 
@@ -354,15 +355,16 @@ const DeleteButton = styled.button<{ $confirming: boolean }>`
     $confirming ? '#FEE2E2' : theme.colors.white};
   color: ${({ theme, $confirming }) =>
     $confirming ? theme.colors.error : theme.colors.gray600};
-  cursor: pointer;
-  font-size: ${({ theme }) => theme.fontSize.xs};
   font-weight: ${({ theme, $confirming }) =>
     $confirming ? theme.fontWeight.semibold : theme.fontWeight.normal};
+  font-size: ${({ theme }) => theme.fontSize.xs};
   white-space: nowrap;
 
+  cursor: pointer;
+
   &:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
+    opacity: 0.5;
   }
 `;
 
@@ -373,16 +375,17 @@ const ToggleButton = styled.button`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.gray600};
-  cursor: pointer;
   font-size: ${({ theme }) => theme.fontSize.xs};
+
+  cursor: pointer;
 
   &:hover {
     background: ${({ theme }) => theme.colors.gray50};
   }
 
   &:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
+    opacity: 0.5;
   }
 `;
 
