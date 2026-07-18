@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import PreviousArticleListItem from './PreviousArticleListItem';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { pushWebViewPreviousArticle } from '@/libs/stackflow/navigation';
 import { openExternalLink } from '@/utils/externalLink';
 import type { GetPreviousArticlesResponse } from '@/apis/previousArticles/previousArticles.api';
 import sadBom from '#/assets/avif/sad-bom.avif';
@@ -43,15 +44,16 @@ const PreviousArticles = ({
         title={article.title}
         contentsSummary={article.contentsSummary}
         expectedReadTime={article.expectedReadTime}
-        onClick={() =>
+        onClick={() => {
+          if (pushWebViewPreviousArticle(String(article.articleId))) return;
           navigate({
             to: '/articles/previous/$articleId',
             params: { articleId: String(article.articleId) },
             state: {
               subscribeUrl: newsletterSubscribeUrl,
             },
-          })
-        }
+          });
+        }}
       />
     ));
   }

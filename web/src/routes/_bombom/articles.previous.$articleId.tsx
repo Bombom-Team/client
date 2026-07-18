@@ -27,10 +27,10 @@ export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
       },
     ],
   }),
-  component: RouteComponent,
+  component: PreviousArticlePage,
 });
 
-function RouteComponent() {
+function PreviousArticlePage() {
   const device = useDevice();
   const { userProfile, isLoggedIn } = useAuth();
   const { articleId } = Route.useParams();

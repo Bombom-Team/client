@@ -24,6 +24,7 @@ import NotFound from './pages/system/components/NotFound';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
 import { isProduction } from './utils/environment';
+import '@stackflow/plugin-basic-ui/index.css';
 
 if (isProduction) Clarity.init(ENV.clarityProjectId);
 

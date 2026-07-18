@@ -1,5 +1,6 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
+import { replaceWebViewChallengeTab } from '@/libs/stackflow/navigation';
 
 const CHALLENGE_TABS = [
   { id: 'review', label: '리뷰', path: 'review' },
@@ -49,6 +50,7 @@ export const useChallengeDetailTabs = ({
 
   const goToTab = useCallback(
     (tabPath: ChallengeTabPath) => {
+      if (replaceWebViewChallengeTab(challengeId, tabPath)) return;
       navigate({
         to: `/challenge/$challengeId/${tabPath}`,
         params: { challengeId },

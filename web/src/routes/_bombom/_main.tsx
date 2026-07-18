@@ -4,12 +4,25 @@ import HeaderNavButtons from '@/components/Header/HeaderNavButtons';
 import MobileMainHeader from '@/components/Header/MobileMainHeader';
 import { useActiveNav } from '@/hooks/useActiveNav';
 import { useDevice } from '@/hooks/useDevice';
+import type { ReactNode } from 'react';
 
 export const Route = createFileRoute('/_bombom/_main')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  return (
+    <MainPageLayout>
+      <Outlet />
+    </MainPageLayout>
+  );
+}
+
+interface MainPageLayoutProps {
+  children: ReactNode;
+}
+
+export const MainPageLayout = ({ children }: MainPageLayoutProps) => {
   const activeNav = useActiveNav();
   const device = useDevice();
   const isPC = device === 'pc';
@@ -17,7 +30,7 @@ function RouteComponent() {
   return (
     <>
       {!isPC && <MobileMainHeader />}
-      <Outlet />
+      {children}
       {!isPC && (
         <>
           <BottomNavSafeArea />
@@ -28,7 +41,7 @@ function RouteComponent() {
       )}
     </>
   );
-}
+};
 
 const BottomNavSafeArea = styled.div`
   width: 100%;

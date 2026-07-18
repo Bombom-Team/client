@@ -5,8 +5,10 @@ import {
   createRootRouteWithContext,
   HeadContent,
   Outlet,
+  useRouterState,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { lazy, Suspense } from 'react';
 import Toast from '@/components/Toast/Toast';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { useChannelTalk } from '@/hooks/useChannelTalk';
@@ -15,6 +17,7 @@ import usePageTracking from '@/libs/googleAnalytics/usePageTracking';
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
 import { useWebViewRouting } from '@/libs/webview/useWebViewRouting';
 import { queryClient } from '@/main';
+import { isWebView } from '@/utils/device';
 import type { QueryClient } from '@tanstack/react-query';
 import type { redirect } from '@tanstack/react-router';
 
@@ -26,8 +29,26 @@ interface BomBomRouterContext {
 // 채널톡 버튼은 PC에서만 노출되므로 PC에서만 간격을 띄운다.
 const CHANNEL_TALK_TOAST_OFFSET = 96;
 
+const WebViewStack = lazy(async () => {
+  const stackflowModule = await import('../libs/stackflow/stackflow.tsx');
+  return { default: stackflowModule.WebViewStack };
+});
+
+const STACKFLOW_PATHS = [
+  /^\/$/,
+  /^\/today$/,
+  /^\/(bookmark|memo)$/,
+  /^\/articles\/(previous\/)?[^/]+$/,
+  /^\/newsletters\/[^/]+$/,
+  /^\/challenge$/,
+  /^\/challenge\/[^/]+\/(landing|dashboard|daily|comments|review|certification)$/,
+];
+
 const RootComponent = () => {
   const device = useDevice();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
 
   usePageTracking();
   useWebViewAuth();
@@ -35,13 +56,21 @@ const RootComponent = () => {
   useChannelTalk();
 
   const toastOffset = device === 'pc' ? CHANNEL_TALK_TOAST_OFFSET : undefined;
+  const shouldUseStackflow =
+    isWebView() && STACKFLOW_PATHS.some((pattern) => pattern.test(pathname));
 
   return (
     <>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <AuthProvider>
-            <Outlet />
+            {shouldUseStackflow ? (
+              <Suspense fallback={null}>
+                <WebViewStack />
+              </Suspense>
+            ) : (
+              <Outlet />
+            )}
             <Toast offset={toastOffset} />
           </AuthProvider>
         </ThemeProvider>

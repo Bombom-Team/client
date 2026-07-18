@@ -12,6 +12,7 @@ import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { pushWebViewChallengeLanding } from '@/libs/stackflow/navigation';
 import useChallengeApplyMutation from '@/pages/challenge/index/hooks/useChallengeApplyMutation';
 import useChallengeCancelMutation from '@/pages/challenge/index/hooks/useChallengeCancelMutation';
 import { getDatesDiff } from '@/utils/date';
@@ -53,6 +54,7 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
         'https://maroon-geranium-880.notion.site/1-2fb03dcf20568089a20ad05cd3de78fe?pvs=74',
       );
     } else {
+      if (pushWebViewChallengeLanding(String(id))) return;
       navigate({
         to: '/challenge/$challengeId/landing',
         params: { challengeId: id.toString() },

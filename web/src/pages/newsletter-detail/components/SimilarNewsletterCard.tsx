@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { pushWebViewNewsletter } from '@/libs/stackflow/navigation';
 import type { Newsletter } from '@/types/newsletter';
 
 interface SimilarNewsletterCardProps {
@@ -17,6 +18,7 @@ const SimilarNewsletterCard = ({ newsletter }: SimilarNewsletterCardProps) => {
       action: '비슷한 뉴스레터 카드 클릭',
       label: newsletter.name,
     });
+    if (pushWebViewNewsletter(String(newsletter.newsletterId))) return;
     navigate({
       to: '/newsletters/$newsletterId',
       params: { newsletterId: String(newsletter.newsletterId) },

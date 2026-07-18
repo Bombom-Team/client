@@ -5,6 +5,7 @@ import { CardDetailButton, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { pushWebViewChallengeDetail } from '@/libs/stackflow/navigation';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 type GradeType = 'GOLD' | 'SILVER' | 'BRONZE';
@@ -30,6 +31,7 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
       label: title,
     });
 
+    if (pushWebViewChallengeDetail(String(id), 'certification')) return;
     navigate({
       to: '/challenge/$challengeId/certification',
       params: { challengeId: String(id) },

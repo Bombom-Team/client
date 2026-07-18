@@ -37,12 +37,12 @@ export const Route = createFileRoute('/_bombom/_main/today')({
   }),
   component: () => (
     <RequireLogin>
-      <Index />
+      <TodayPage />
     </RequireLogin>
   ),
 });
 
-function Index() {
+function TodayPage() {
   const today = useMemo(() => new Date(), []);
   const todayDateStr = useMemo(() => formatDate(today, '-'), [today]);
 

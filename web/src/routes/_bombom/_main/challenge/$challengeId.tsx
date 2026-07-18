@@ -23,10 +23,10 @@ export const Route = createFileRoute('/_bombom/_main/challenge/$challengeId')({
       },
     ],
   }),
-  component: ChallengeDetail,
+  component: ChallengeDetailPage,
 });
 
-function ChallengeDetail() {
+function ChallengeDetailPage() {
   const { challengeId } = Route.useParams();
   const device = useDevice();
 

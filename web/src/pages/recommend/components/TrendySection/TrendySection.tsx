@@ -10,6 +10,7 @@ import SearchInput from '@/components/SearchInput/SearchInput';
 import { NEWSLETTER_COUNT } from '@/constants/newsletter';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { pushWebViewNewsletter } from '@/libs/stackflow/navigation';
 import type { Device } from '@/hooks/useDevice';
 import type { Newsletter } from '@/types/newsletter';
 import type { ChangeEvent } from 'react';
@@ -65,6 +66,7 @@ const TrendySection = () => {
       action: '뉴스레터 카드 클릭',
       label: newsletter.name ?? 'Unknown Newsletter',
     });
+    if (pushWebViewNewsletter(String(newsletter.newsletterId))) return;
     navigate({
       to: '/newsletters/$newsletterId',
       params: { newsletterId: String(newsletter.newsletterId) },

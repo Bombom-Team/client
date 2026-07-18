@@ -5,6 +5,7 @@ import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
 import Text from '@/components/Text';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { pushWebViewChallengeLanding } from '@/libs/stackflow/navigation';
 import { getDatesDiff } from '@/utils/date';
 import { openExternalLink } from '@/utils/externalLink';
 import type { ChallengeCardProps } from '../ChallengeCard';
@@ -28,6 +29,7 @@ const ChallengeCardComingSoon = (props: ChallengeCardProps) => {
         'https://maroon-geranium-880.notion.site/1-2fb03dcf20568089a20ad05cd3de78fe?pvs=74',
       );
     } else {
+      if (pushWebViewChallengeLanding(String(id))) return;
       navigate({
         to: '/challenge/$challengeId/landing',
         params: { challengeId: id.toString() },

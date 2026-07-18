@@ -15,10 +15,10 @@ export const Route = createFileRoute('/_bombom/_main/challenge/')({
       },
     ],
   }),
-  component: RouteComponent,
+  component: ChallengeListPage,
 });
 
-function RouteComponent() {
+function ChallengeListPage() {
   const device = useDevice();
   const { data: challenges } = useQuery(queries.challenges());
 
