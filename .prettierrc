@@ -8,6 +8,7 @@
   "jsxSingleQuote": false,
   "trailingComma": "all",
   "singleAttributePerLine": false,
+  "embeddedLanguageFormatting": "off",
   "proseWrap": "preserve",
   "printWidth": 80,
   "tabWidth": 2,
