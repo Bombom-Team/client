@@ -47,7 +47,8 @@ const ArticleListControls = ({
   });
   const [unreadOnlyParam, setUnreadOnlyParam] =
     useSearchParamState<boolean>('unreadOnly');
-  const showUnreadOnly = unreadOnlyParam ?? false;
+  const hasSearch = Boolean(search || searchParam);
+  const showUnreadOnly = (unreadOnlyParam ?? false) && !hasSearch;
   const debouncedSearchInput = useDebouncedValue(search, 500);
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
@@ -70,6 +71,7 @@ const ArticleListControls = ({
 
   const handleUnreadOnlyToggle = () => {
     setUnreadOnlyParam((prev) => (prev ? null : true));
+    if (!showUnreadOnly) setIsSearchExpanded(false);
   };
 
   useEffect(() => {
@@ -92,6 +94,7 @@ const ArticleListControls = ({
           placeholder="뉴스레터 제목으로 검색하세요..."
           value={search}
           onChange={handleSearchChange}
+          disabled={showUnreadOnly}
         />
       )}
       <SummaryBar isMobile={isMobile}>
@@ -114,6 +117,7 @@ const ArticleListControls = ({
             <SearchIconButton
               type="button"
               aria-label="검색 열기"
+              disabled={showUnreadOnly}
               onClick={() => setIsSearchExpanded(true)}
             >
               <ReadingGlassesIcon width={20} height={20} />
@@ -126,6 +130,7 @@ const ArticleListControls = ({
                 placeholder="뉴스레터 제목으로 검색하세요..."
                 value={search}
                 onChange={handleSearchChange}
+                disabled={showUnreadOnly}
                 onBlur={() => {
                   if (search === '') setIsSearchExpanded(false);
                 }}
@@ -158,6 +163,7 @@ const ArticleListControls = ({
               type="button"
               aria-pressed={showUnreadOnly}
               isActive={showUnreadOnly}
+              disabled={hasSearch}
               onClick={handleUnreadOnlyToggle}
             >
               안 읽은 뉴스레터만
@@ -212,6 +218,11 @@ const SearchIconButton = styled.button`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
+
+  &:disabled {
+    color: ${({ theme }) => theme.colors.textTertiary};
+    cursor: not-allowed;
+  }
 `;
 
 const ExpandableSearchWrapper = styled.div<{ isExpanded: boolean }>`
@@ -290,6 +301,15 @@ const UnreadFilterButton = styled.button<{ isActive: boolean }>`
   &:focus-visible {
     outline: 2px solid ${({ theme }) => theme.colors.primaryLight};
     outline-offset: 2px;
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.disabledBackground};
+    color: ${({ theme }) => theme.colors.textTertiary};
+
+    border-color: ${({ theme }) => theme.colors.stroke};
+
+    cursor: not-allowed;
   }
 `;
 
