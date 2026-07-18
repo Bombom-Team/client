@@ -16,8 +16,10 @@ export const getArticles = async (params: GetArticlesParams) => {
 
 export type GetArticlesWithSearchParams =
   components['schemas']['ArticleSearchOptionsRequest'] &
-    components['schemas']['Pageable'] &
-    Pick<components['schemas']['ArticlesOptionsRequest'], 'unreadOnly'>;
+    components['schemas']['Pageable'];
+
+export type GetStorageArticlesParams = GetArticlesParams &
+  Pick<components['schemas']['ArticleSearchOptionsRequest'], 'keyword'>;
 
 export const getArticlesWithSearch = async (
   params: GetArticlesWithSearchParams,

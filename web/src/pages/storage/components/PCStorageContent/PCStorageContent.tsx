@@ -9,10 +9,10 @@ import InvalidSearchCard from '../InvalidSearchCard/InvalidSearchCard';
 import Pagination from '@/components/Pagination/Pagination';
 import ArticleCardListSkeleton from '@/pages/today/components/ArticleCardList/ArticleCardListSkeleton';
 import EmptyLetterCard from '@/pages/today/components/EmptyLetterCard/EmptyLetterCard';
-import type { GetArticlesWithSearchParams } from '@/apis/articles/articles.api';
+import type { GetStorageArticlesParams } from '@/apis/articles/articles.api';
 
 interface PCStorageContentProps {
-  baseQueryParams: GetArticlesWithSearchParams;
+  baseQueryParams: GetStorageArticlesParams;
   editMode: boolean;
   enableEditMode: () => void;
   disableEditMode: () => void;
