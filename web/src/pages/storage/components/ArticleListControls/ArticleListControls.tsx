@@ -38,6 +38,7 @@ const ArticleListControls = ({
   totalStorageCount,
 }: ArticleListControlsProps) => {
   const [search, setSearch] = useState('');
+  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
   const [, setSearchParam] = useSearchParamState('search');
   const [sort, setSort] = useSearchParamState<Sort>('sort', {
     defaultValue: 'DESC',
@@ -56,18 +57,33 @@ const ArticleListControls = ({
     setSort(value);
   };
 
+  const handleUnreadOnlyToggle = () => {
+    setShowUnreadOnly((prev) => !prev);
+  };
+
   useEffect(() => {
     setSearchParam(debouncedSearchInput);
   }, [debouncedSearchInput, setSearchParam]);
 
+  const unreadFilterButton = (
+    <UnreadFilterButton
+      type="button"
+      aria-pressed={showUnreadOnly}
+      isActive={showUnreadOnly}
+      onClick={handleUnreadOnlyToggle}
+    >
+      안 읽은 뉴스레터만
+    </UnreadFilterButton>
+  );
+
   return (
     <Container>
-      <SearchInput
+      <StorageSearchInput
         placeholder="뉴스레터 제목으로 검색하세요..."
         value={search}
         onChange={handleSearchChange}
       />
-      <SummaryBar>
+      <SummaryBar isMobile={isMobile}>
         <SummaryBox isMobile={isMobile}>
           {editMode ? (
             <DeleteWrapper>
@@ -106,14 +122,17 @@ const ArticleListControls = ({
           </StorageUsageBarWrapper>
         </SummaryBox>
 
-        <Select
-          options={[
-            { value: 'DESC', label: '최신순' },
-            { value: 'ASC', label: '오래된순' },
-          ]}
-          selectedValue={sort as Sort}
-          onSelectOption={handleSortChange}
-        />
+        <ListViewControls isMobile={isMobile}>
+          {unreadFilterButton}
+          <Select
+            options={[
+              { value: 'DESC', label: '최신순' },
+              { value: 'ASC', label: '오래된순' },
+            ]}
+            selectedValue={sort as Sort}
+            onSelectOption={handleSortChange}
+          />
+        </ListViewControls>
       </SummaryBar>
       <ArticleDeleteModal
         modalRef={modalRef}
@@ -136,12 +155,51 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const SummaryBar = styled.div`
+const StorageSearchInput = styled(SearchInput)`
+  &::placeholder {
+    font: ${({ theme }) => theme.fonts.t5Regular};
+  }
+`;
+
+const SummaryBar = styled.div<{ isMobile: boolean }>`
   width: 100%;
 
   display: flex;
-  align-items: center;
+  gap: ${({ isMobile }) => (isMobile ? '8px' : 0)};
+  flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
+  align-items: ${({ isMobile }) => (isMobile ? 'stretch' : 'center')};
   justify-content: space-between;
+`;
+
+const ListViewControls = styled.div<{ isMobile: boolean }>`
+  width: ${({ isMobile }) => (isMobile ? '100%' : 'fit-content')};
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: ${({ isMobile }) =>
+    isMobile ? 'space-between' : 'flex-start'};
+`;
+
+const UnreadFilterButton = styled.button<{ isActive: boolean }>`
+  width: fit-content;
+  padding: 8px 16px;
+  border: 1px solid
+    ${({ theme, isActive }) =>
+      isActive ? theme.colors.primaryBomBom : theme.colors.stroke};
+  border-radius: 16px;
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme, isActive }) =>
+    isActive ? theme.colors.primaryBomBom : theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t4Regular};
+
+  transition: all 0.2s ease-in-out;
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primaryLight};
+    outline-offset: 2px;
+  }
 `;
 
 const SummaryBox = styled.div<{ isMobile: boolean }>`
