@@ -24,10 +24,8 @@ const TodayUnreadArticlesSection = ({
   const unreadArticles = todayArticles?.content?.filter(
     (article) => !article.isRead && article.articleId !== articleId,
   );
-  const visibleUnreadArticles = unreadArticles?.slice(
-    0,
-    device === 'pc' ? 4 : 2,
-  );
+  const visibleUnreadArticles =
+    device === 'pc' ? unreadArticles : unreadArticles?.slice(0, 2);
 
   return (
     <Container>
