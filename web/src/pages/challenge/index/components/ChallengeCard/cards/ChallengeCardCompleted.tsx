@@ -4,6 +4,7 @@ import CardContainer from '../CardContainer';
 import { CardDetailButton, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
+import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { pushWebViewChallengeDetail } from '@/libs/stackflow/navigation';
 import type { ChallengeCardProps } from '../ChallengeCard';
@@ -18,6 +19,7 @@ const GRADE_CONFIG: Record<GradeType, string> = {
 
 const ChallengeCardCompleted = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
+  const device = useDevice();
 
   const { participationInfo, id, generation, title } = props;
 
@@ -31,7 +33,14 @@ const ChallengeCardCompleted = (props: ChallengeCardProps) => {
       label: title,
     });
 
-    if (pushWebViewChallengeDetail(String(id), 'certification')) return;
+    if (
+      pushWebViewChallengeDetail(
+        String(id),
+        'certification',
+        device === 'mobile',
+      )
+    )
+      return;
     navigate({
       to: '/challenge/$challengeId/certification',
       params: { challengeId: String(id) },

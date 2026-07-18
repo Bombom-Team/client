@@ -66,7 +66,13 @@ const TrendySection = () => {
       action: '뉴스레터 카드 클릭',
       label: newsletter.name ?? 'Unknown Newsletter',
     });
-    if (pushWebViewNewsletter(String(newsletter.newsletterId))) return;
+    if (
+      pushWebViewNewsletter(
+        String(newsletter.newsletterId),
+        device === 'mobile',
+      )
+    )
+      return;
     navigate({
       to: '/newsletters/$newsletterId',
       params: { newsletterId: String(newsletter.newsletterId) },

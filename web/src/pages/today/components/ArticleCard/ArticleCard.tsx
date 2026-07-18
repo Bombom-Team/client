@@ -41,7 +41,11 @@ const ArticleCard = ({
 
   const handleClick: ArticleCardProps['onClick'] = (event) => {
     props.onClick?.(event);
-    if (event.defaultPrevented || to || !pushWebViewArticle(String(articleId)))
+    if (
+      event.defaultPrevented ||
+      to ||
+      !pushWebViewArticle(String(articleId), isMobile)
+    )
       return;
     event.preventDefault();
   };

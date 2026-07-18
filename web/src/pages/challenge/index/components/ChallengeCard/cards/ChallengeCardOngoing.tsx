@@ -12,6 +12,7 @@ import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
+import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import {
   pushWebViewChallengeDetail,
@@ -22,6 +23,7 @@ import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
+  const device = useDevice();
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const {
@@ -47,8 +49,8 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
 
     const challengeId = String(id);
     const handled = participationInfo?.isJoined
-      ? pushWebViewChallengeDetail(challengeId, 'daily')
-      : pushWebViewChallengeLanding(challengeId);
+      ? pushWebViewChallengeDetail(challengeId, 'daily', device === 'mobile')
+      : pushWebViewChallengeLanding(challengeId, device === 'mobile');
     if (handled) return;
 
     navigate({

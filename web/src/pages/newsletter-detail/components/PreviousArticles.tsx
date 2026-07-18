@@ -45,7 +45,8 @@ const PreviousArticles = ({
         contentsSummary={article.contentsSummary}
         expectedReadTime={article.expectedReadTime}
         onClick={() => {
-          if (pushWebViewPreviousArticle(String(article.articleId))) return;
+          if (pushWebViewPreviousArticle(String(article.articleId), isMobile))
+            return;
           navigate({
             to: '/articles/previous/$articleId',
             params: { articleId: String(article.articleId) },
