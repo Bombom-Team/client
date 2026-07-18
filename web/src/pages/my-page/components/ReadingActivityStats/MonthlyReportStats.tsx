@@ -146,9 +146,8 @@ const IconBox = styled.div`
   height: 40px;
   border-radius: 10px;
 
-  flex-shrink: 0;
-
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
 
@@ -191,10 +190,11 @@ const StatUnit = styled(Text)`
 `;
 
 const ChangePill = styled(Text)`
-  align-self: flex-start;
   padding: 6px 12px;
   border: 1px solid ${COLORS.pillBorder};
   border-radius: 12px;
+
+  align-self: flex-start;
 
   && {
     color: ${COLORS.pillText};
@@ -249,9 +249,8 @@ const RankBadge = styled(Text)`
   height: 18px;
   border-radius: 50%;
 
-  flex-shrink: 0;
-
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
 
@@ -259,12 +258,12 @@ const RankBadge = styled(Text)`
 `;
 
 const NewsletterName = styled(Text)`
+  overflow: hidden;
   min-width: 0;
 
-  overflow: hidden;
+  white-space: nowrap;
 
   text-overflow: ellipsis;
-  white-space: nowrap;
 
   && {
     color: ${COLORS.newsletterText};
@@ -273,7 +272,6 @@ const NewsletterName = styled(Text)`
 
 const NewsletterCount = styled(Text)`
   margin-left: auto;
-
   flex-shrink: 0;
 
   && {
