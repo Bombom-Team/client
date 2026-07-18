@@ -21,8 +21,6 @@ interface PCStorageContentProps {
   page: number;
   resetPage: () => void;
   totalStorageCount: number;
-  showUnreadOnly: boolean;
-  onToggleUnreadOnly: () => void;
 }
 
 export default function PCStorageContent({
@@ -35,8 +33,6 @@ export default function PCStorageContent({
   page,
   resetPage,
   totalStorageCount,
-  showUnreadOnly,
-  onToggleUnreadOnly,
 }: PCStorageContentProps) {
   const queryParams = {
     ...baseQueryParams,
@@ -103,8 +99,6 @@ export default function PCStorageContent({
         onToggleSelectAll={toggleSelectAll}
         hasBookmarkedArticles={hasBookmarkedArticles}
         totalStorageCount={totalStorageCount}
-        showUnreadOnly={showUnreadOnly}
-        onToggleUnreadOnly={onToggleUnreadOnly}
       />
       {isLoading ? (
         <ArticleCardListSkeleton />

@@ -9,6 +9,7 @@ export const useStorageFilters = () => {
     sort: sortParam,
     search: searchParam,
     newsletterId: newsletterIdParams,
+    unreadOnly: unreadOnlyParam,
   } = useSearch({ from: '/_bombom/_main/storage' });
   const [pageParam, setPage] = useSearchParamState<number>('page');
   const page = pageParam ?? 1;
@@ -18,6 +19,7 @@ export const useStorageFilters = () => {
     keyword: searchParam ?? '',
     size: ARTICLE_SIZE,
     newsletterId: newsletterIdParams,
+    unreadOnly: unreadOnlyParam ?? false,
     page,
   };
 

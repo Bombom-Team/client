@@ -1,8 +1,7 @@
-import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
+import SelectionControl from './SelectionControl';
 import ArticleDeleteModal from '../ArticleDeleteModal/ArticleDeleteModal';
-import Checkbox from '@/components/Checkbox/Checkbox';
 import useModal from '@/components/Modal/useModal';
 import SearchInput from '@/components/SearchInput/SearchInput';
 import Select from '@/components/Select/Select';
@@ -12,7 +11,6 @@ import { useSearchParamState } from '@/hooks/useSearchParamState';
 import StorageUsageBar from '@/pages/storage/components/StorageUsageBar/StorageUsageBar';
 import type { Sort } from './ArticleListControls.types';
 import CancelIcon from '#/assets/svg/close.svg';
-import DeleteIcon from '#/assets/svg/delete.svg';
 import ReadingGlassesIcon from '#/assets/svg/reading-glasses.svg';
 
 interface ArticleListControlsProps {
@@ -25,8 +23,6 @@ interface ArticleListControlsProps {
   onToggleSelectAll: () => void;
   hasBookmarkedArticles?: boolean;
   totalStorageCount: number;
-  showUnreadOnly: boolean;
-  onToggleUnreadOnly: () => void;
 }
 
 const ArticleListControls = ({
@@ -39,8 +35,6 @@ const ArticleListControls = ({
   onToggleSelectAll,
   hasBookmarkedArticles = false,
   totalStorageCount,
-  showUnreadOnly,
-  onToggleUnreadOnly,
 }: ArticleListControlsProps) => {
   const [searchParam, setSearchParam] = useSearchParamState('search');
   const [search, setSearch] = useState(searchParam ?? '');
@@ -51,6 +45,9 @@ const ArticleListControls = ({
   const [sort, setSort] = useSearchParamState<Sort>('sort', {
     defaultValue: 'DESC',
   });
+  const [unreadOnlyParam, setUnreadOnlyParam] =
+    useSearchParamState<boolean>('unreadOnly');
+  const showUnreadOnly = unreadOnlyParam ?? false;
   const debouncedSearchInput = useDebouncedValue(search, 500);
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
@@ -71,6 +68,10 @@ const ArticleListControls = ({
     setIsSearchExpanded(false);
   };
 
+  const handleUnreadOnlyToggle = () => {
+    setUnreadOnlyParam((prev) => (prev ? null : true));
+  };
+
   useEffect(() => {
     setSearchParam(debouncedSearchInput || null);
   }, [debouncedSearchInput, setSearchParam]);
@@ -84,45 +85,6 @@ const ArticleListControls = ({
     if (isMobile && isSearchExpanded) searchInputRef.current?.focus();
   }, [isMobile, isSearchExpanded]);
 
-  const unreadFilterButton = (
-    <UnreadFilterButton
-      type="button"
-      aria-pressed={showUnreadOnly}
-      isActive={showUnreadOnly}
-      onClick={onToggleUnreadOnly}
-    >
-      안 읽은 뉴스레터만
-    </UnreadFilterButton>
-  );
-
-  const selectionControl = editMode ? (
-    <DeleteWrapper>
-      <Checkbox id="all" checked={isAllSelected} onChange={onToggleSelectAll} />
-      <DeleteCount>{checkedCount}개 선택됨</DeleteCount>
-      <HorizontalDivider />
-      <DeleteIconButton
-        disabled={checkedCount === 0}
-        onClick={() => {
-          if (checkedCount === 0) return;
-
-          openModal();
-        }}
-      >
-        <DeleteIcon
-          fill={
-            checkedCount === 0
-              ? theme.colors.disabledBackground
-              : theme.colors.error
-          }
-        />
-      </DeleteIconButton>
-
-      <CancelIcon fill={theme.colors.black} onClick={onExitEditMode} />
-    </DeleteWrapper>
-  ) : (
-    <TextButton onClick={onEnterEditMode}>선택 삭제</TextButton>
-  );
-
   return (
     <Container>
       {!isMobile && (
@@ -134,7 +96,17 @@ const ArticleListControls = ({
       )}
       <SummaryBar isMobile={isMobile}>
         <SummaryBox isMobile={isMobile}>
-          {!isMobile && selectionControl}
+          {!isMobile && (
+            <SelectionControl
+              editMode={editMode}
+              checkedCount={checkedCount}
+              isAllSelected={isAllSelected}
+              onEnterEditMode={onEnterEditMode}
+              onExitEditMode={onExitEditMode}
+              onToggleSelectAll={onToggleSelectAll}
+              onDeleteClick={openModal}
+            />
+          )}
           <StorageUsageBarWrapper>
             <StorageUsageBar cur={totalStorageCount ?? 0} max={500} />
           </StorageUsageBarWrapper>
@@ -170,9 +142,26 @@ const ArticleListControls = ({
         </SummaryBox>
 
         <ListViewControls isMobile={isMobile}>
-          {isMobile && selectionControl}
+          {isMobile && (
+            <SelectionControl
+              editMode={editMode}
+              checkedCount={checkedCount}
+              isAllSelected={isAllSelected}
+              onEnterEditMode={onEnterEditMode}
+              onExitEditMode={onExitEditMode}
+              onToggleSelectAll={onToggleSelectAll}
+              onDeleteClick={openModal}
+            />
+          )}
           <FilterControls>
-            {unreadFilterButton}
+            <UnreadFilterButton
+              type="button"
+              aria-pressed={showUnreadOnly}
+              isActive={showUnreadOnly}
+              onClick={handleUnreadOnlyToggle}
+            >
+              안 읽은 뉴스레터만
+            </UnreadFilterButton>
             <Select
               options={[
                 { value: 'DESC', label: '최신순' },
@@ -318,42 +307,3 @@ const StorageUsageBarWrapper = styled.div`
   max-width: 160px;
   display: flex;
 `;
-
-const DeleteWrapper = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-`;
-
-const DeleteCount = styled.p`
-  min-width: 68px;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-`;
-
-const HorizontalDivider = styled.div`
-  width: 2px;
-  height: 16px;
-
-  background-color: ${({ theme }) => theme.colors.stroke};
-`;
-
-const TextButton = styled.button`
-  padding-left: 8px;
-
-  display: flex;
-  gap: 4px;
-  align-items: center;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  white-space: nowrap;
-
-  &:hover {
-    text-decoration: underline;
-    transition: all 0.2s ease-in-out;
-  }
-`;
-
-const DeleteIconButton = styled.button``;
