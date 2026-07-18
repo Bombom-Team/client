@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useRouterState } from '@tanstack/react-router';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { useDevice } from '@/hooks/useDevice';
 import type { ReactNode } from 'react';
@@ -53,30 +53,19 @@ const RouteTransition = ({ children }: RouteTransitionProps) => {
   if (device !== 'mobile') return children;
 
   return (
-    <AnimatePresence initial={false} custom={direction} mode="popLayout">
-      <AnimatedPage
-        key={location.state.__TSR_key ?? location.href}
-        custom={direction}
-        initial={shouldAnimate ? 'initial' : false}
-        animate="visible"
-        exit={shouldAnimate ? 'exit' : undefined}
-        variants={{
-          initial: (navigationDirection: NavigationDirection) => ({
-            x: navigationDirection === 'push' ? '100%' : '-20%',
-          }),
-          visible: { x: 0 },
-          exit: (navigationDirection: NavigationDirection) => ({
-            x: navigationDirection === 'pop' ? '100%' : '-20%',
-          }),
-        }}
-        transition={{
-          duration: 0.28,
-          ease: [0.32, 0.72, 0, 1],
-        }}
-      >
-        {children}
-      </AnimatedPage>
-    </AnimatePresence>
+    <AnimatedPage
+      key={location.state.__TSR_key ?? location.href}
+      initial={
+        shouldAnimate ? { x: direction === 'push' ? '100%' : '-20%' } : false
+      }
+      animate={{ x: 0 }}
+      transition={{
+        duration: 0.28,
+        ease: [0.32, 0.72, 0, 1],
+      }}
+    >
+      {children}
+    </AnimatedPage>
   );
 };
 
