@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import { useRouter, useRouterState } from '@tanstack/react-router';
+import { useRouterState } from '@tanstack/react-router';
 import { motion, useReducedMotion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useDevice } from '@/hooks/useDevice';
 import type { ReactNode } from 'react';
 
@@ -23,72 +23,58 @@ interface RouteTransitionProps {
   children: ReactNode;
 }
 
-interface TransitionSnapshot {
-  direction: NavigationDirection;
-  fromKey: string;
+interface PageSnapshot {
   html: string;
   scrollY: number;
 }
 
 const RouteTransition = ({ children }: RouteTransitionProps) => {
   const device = useDevice();
-  const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
   const location = useRouterState({ select: (state) => state.location });
   const pageRef = useRef<HTMLDivElement>(null);
-  const [snapshot, setSnapshot] = useState<TransitionSnapshot | null>(null);
+  const previousLocationRef = useRef(location);
+  const previousPageRef = useRef<PageSnapshot>({ html: '', scrollY: 0 });
+  const [, setTransitionFinishedKey] = useState<string>();
   const locationKey = location.state.__TSR_key ?? location.href;
-  const isTransitioning = !!snapshot && snapshot.fromKey !== locationKey;
+  const previousLocation = previousLocationRef.current;
+  const previousLocationKey =
+    previousLocation.state.__TSR_key ?? previousLocation.href;
+  const hasLocationChanged = previousLocationKey !== locationKey;
+  const direction: NavigationDirection =
+    location.state.__TSR_index < previousLocation.state.__TSR_index
+      ? 'pop'
+      : 'push';
+  const currentChallengeId = getChallengeId(location.pathname);
+  const previousChallengeId = getChallengeId(previousLocation.pathname);
+  const isSameChallenge =
+    !!currentChallengeId && currentChallengeId === previousChallengeId;
+  const isTransitioning =
+    hasLocationChanged &&
+    device === 'mobile' &&
+    !shouldReduceMotion &&
+    !isSameChallenge &&
+    (isDetailPath(location.pathname) ||
+      isDetailPath(previousLocation.pathname));
+  const snapshot = previousPageRef.current;
 
-  useEffect(() => {
-    return router.subscribe(
-      'onBeforeNavigate',
-      ({ fromLocation, toLocation, pathChanged }) => {
-        const fromIndex = fromLocation?.state.__TSR_index;
-        const toIndex = toLocation.state.__TSR_index;
-        const currentPage = pageRef.current;
+  useLayoutEffect(() => {
+    const currentPage = pageRef.current;
 
-        if (
-          device !== 'mobile' ||
-          shouldReduceMotion ||
-          !pathChanged ||
-          !fromLocation ||
-          !currentPage
-        ) {
-          setSnapshot(null);
-          return;
-        }
-
-        const currentChallengeId = getChallengeId(fromLocation.pathname);
-        const nextChallengeId = getChallengeId(toLocation.pathname);
-        const isSameChallenge =
-          !!currentChallengeId && currentChallengeId === nextChallengeId;
-        const shouldAnimate =
-          !isSameChallenge &&
-          (isDetailPath(fromLocation.pathname) ||
-            isDetailPath(toLocation.pathname));
-
-        if (!shouldAnimate) {
-          setSnapshot(null);
-          return;
-        }
-
-        setSnapshot({
-          direction:
-            fromIndex !== undefined && toIndex < fromIndex ? 'pop' : 'push',
-          fromKey: fromLocation.state.__TSR_key ?? fromLocation.href,
-          html: currentPage.innerHTML,
-          scrollY: window.scrollY,
-        });
-      },
-    );
-  }, [device, router, shouldReduceMotion]);
+    if (currentPage) {
+      previousPageRef.current = {
+        html: currentPage.innerHTML,
+        scrollY: window.scrollY,
+      };
+    }
+    previousLocationRef.current = location;
+  }, [location]);
 
   if (device !== 'mobile') return children;
 
   return (
     <Container>
-      {snapshot?.direction === 'push' && (
+      {isTransitioning && direction === 'push' && (
         <SnapshotPage
           aria-hidden
           $scrollY={snapshot.scrollY}
@@ -100,37 +86,35 @@ const RouteTransition = ({ children }: RouteTransitionProps) => {
         ref={pageRef}
         key={locationKey}
         initial={
-          isTransitioning && snapshot.direction === 'push'
-            ? { x: '100%' }
-            : false
+          isTransitioning && direction === 'push' ? { x: '100%' } : false
         }
         animate={{ x: 0 }}
         transition={{
           duration: 0.28,
           ease: [0.32, 0.72, 0, 1],
         }}
-        onAnimationComplete={() => {
-          if (isTransitioning && snapshot.direction === 'push') {
-            setSnapshot(null);
-          }
-        }}
+        onAnimationComplete={
+          isTransitioning && direction === 'push'
+            ? () => setTransitionFinishedKey(locationKey)
+            : undefined
+        }
       >
         {children}
       </AnimatedPage>
-      {snapshot?.direction === 'pop' && (
+      {isTransitioning && direction === 'pop' && (
         <SnapshotPage
           aria-hidden
-          key={snapshot.fromKey}
+          key={previousLocationKey}
           $scrollY={snapshot.scrollY}
           $isOverlay
           initial={{ x: 0 }}
-          animate={{ x: isTransitioning ? '100%' : 0 }}
+          animate={{ x: '100%' }}
           transition={{
             duration: 0.28,
             ease: [0.32, 0.72, 0, 1],
           }}
           onAnimationComplete={() => {
-            if (isTransitioning) setSnapshot(null);
+            setTransitionFinishedKey(locationKey);
           }}
           dangerouslySetInnerHTML={{ __html: snapshot.html }}
         />
