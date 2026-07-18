@@ -3,9 +3,7 @@ import type { components, operations } from '@/types/openapi';
 
 export type GetArticlesParams =
   components['schemas']['ArticlesOptionsRequest'] &
-    components['schemas']['Pageable'] & {
-      unreadOnly?: boolean;
-    };
+    components['schemas']['Pageable'];
 
 export type GetArticlesResponse = components['schemas']['PageArticleResponse'];
 
@@ -21,9 +19,8 @@ export const getArticles = async (params: GetArticlesParams) => {
 
 export type GetArticlesWithSearchParams =
   components['schemas']['ArticleSearchOptionsRequest'] &
-    components['schemas']['Pageable'] & {
-      unreadOnly?: boolean;
-    };
+    components['schemas']['Pageable'] &
+    Pick<components['schemas']['ArticlesOptionsRequest'], 'unreadOnly'>;
 
 export const getArticlesWithSearch = async (
   params: GetArticlesWithSearchParams,
