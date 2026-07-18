@@ -95,37 +95,37 @@ const ArticleListControls = ({
     </UnreadFilterButton>
   );
 
+  const selectionControl = editMode ? (
+    <DeleteWrapper>
+      <Checkbox id="all" checked={isAllSelected} onChange={onToggleSelectAll} />
+      <DeleteCount>{checkedCount}개 선택됨</DeleteCount>
+      <HorizontalDivider />
+      <DeleteIconButton
+        disabled={checkedCount === 0}
+        onClick={() => {
+          if (checkedCount === 0) return;
+
+          openModal();
+        }}
+      >
+        <DeleteIcon
+          fill={
+            checkedCount === 0
+              ? theme.colors.disabledBackground
+              : theme.colors.error
+          }
+        />
+      </DeleteIconButton>
+
+      <CancelIcon fill={theme.colors.black} onClick={onExitEditMode} />
+    </DeleteWrapper>
+  ) : (
+    <TextButton onClick={onEnterEditMode}>선택 삭제</TextButton>
+  );
+
   return (
     <Container>
-      {isMobile ? (
-        <MobileSearchWrapper>
-          <SearchIconButton
-            type="button"
-            aria-label="검색 열기"
-            onClick={() => setIsSearchExpanded(true)}
-          >
-            <ReadingGlassesIcon width={20} height={20} />
-          </SearchIconButton>
-          <ExpandableSearchWrapper isExpanded={isSearchExpanded}>
-            <StorageSearchInput
-              ref={searchInputRef}
-              placeholder="뉴스레터 제목으로 검색하세요..."
-              value={search}
-              onChange={handleSearchChange}
-              onBlur={() => {
-                if (search === '') setIsSearchExpanded(false);
-              }}
-            />
-            <CloseSearchButton
-              type="button"
-              aria-label="검색 닫기"
-              onClick={handleSearchClose}
-            >
-              <CancelIcon width={20} height={20} />
-            </CloseSearchButton>
-          </ExpandableSearchWrapper>
-        </MobileSearchWrapper>
-      ) : (
+      {!isMobile && (
         <StorageSearchInput
           placeholder="뉴스레터 제목으로 검색하세요..."
           value={search}
@@ -134,53 +134,54 @@ const ArticleListControls = ({
       )}
       <SummaryBar isMobile={isMobile}>
         <SummaryBox isMobile={isMobile}>
-          {editMode ? (
-            <DeleteWrapper>
-              <Checkbox
-                id="all"
-                checked={isAllSelected}
-                onChange={onToggleSelectAll}
-              />
-              <DeleteCount>{checkedCount}개 선택됨</DeleteCount>
-              <HorizontalDivider />
-              <DeleteIconButton
-                disabled={checkedCount === 0}
-                onClick={() => {
-                  if (checkedCount === 0) return;
-
-                  openModal();
-                }}
-              >
-                <DeleteIcon
-                  fill={
-                    checkedCount === 0
-                      ? theme.colors.disabledBackground
-                      : theme.colors.error
-                  }
-                />
-              </DeleteIconButton>
-
-              <CancelIcon fill={theme.colors.black} onClick={onExitEditMode} />
-            </DeleteWrapper>
-          ) : (
-            <TextButton onClick={onEnterEditMode}>선택 삭제</TextButton>
-          )}
-
+          {!isMobile && selectionControl}
           <StorageUsageBarWrapper>
             <StorageUsageBar cur={totalStorageCount ?? 0} max={500} />
           </StorageUsageBarWrapper>
+          {isMobile && !isSearchExpanded && (
+            <SearchIconButton
+              type="button"
+              aria-label="검색 열기"
+              onClick={() => setIsSearchExpanded(true)}
+            >
+              <ReadingGlassesIcon width={20} height={20} />
+            </SearchIconButton>
+          )}
+          {isMobile && (
+            <ExpandableSearchWrapper isExpanded={isSearchExpanded}>
+              <StorageSearchInput
+                ref={searchInputRef}
+                placeholder="뉴스레터 제목으로 검색하세요..."
+                value={search}
+                onChange={handleSearchChange}
+                onBlur={() => {
+                  if (search === '') setIsSearchExpanded(false);
+                }}
+              />
+              <CloseSearchButton
+                type="button"
+                aria-label="검색 닫기"
+                onClick={handleSearchClose}
+              >
+                <CancelIcon width={20} height={20} />
+              </CloseSearchButton>
+            </ExpandableSearchWrapper>
+          )}
         </SummaryBox>
 
         <ListViewControls isMobile={isMobile}>
-          {unreadFilterButton}
-          <Select
-            options={[
-              { value: 'DESC', label: '최신순' },
-              { value: 'ASC', label: '오래된순' },
-            ]}
-            selectedValue={sort as Sort}
-            onSelectOption={handleSortChange}
-          />
+          {isMobile && selectionControl}
+          <FilterControls>
+            {unreadFilterButton}
+            <Select
+              options={[
+                { value: 'DESC', label: '최신순' },
+                { value: 'ASC', label: '오래된순' },
+              ]}
+              selectedValue={sort as Sort}
+              onSelectOption={handleSortChange}
+            />
+          </FilterControls>
         </ListViewControls>
       </SummaryBar>
       <ArticleDeleteModal
@@ -210,18 +211,10 @@ const StorageSearchInput = styled(SearchInput)`
   }
 `;
 
-const MobileSearchWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  height: 32px;
-
-  display: flex;
-  justify-content: flex-end;
-`;
-
 const SearchIconButton = styled.button`
   width: 32px;
   height: 32px;
+  margin-left: auto;
   padding: 0;
   border-radius: 8px;
 
@@ -284,6 +277,12 @@ const ListViewControls = styled.div<{ isMobile: boolean }>`
     isMobile ? 'space-between' : 'flex-start'};
 `;
 
+const FilterControls = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
 const UnreadFilterButton = styled.button<{ isActive: boolean }>`
   width: fit-content;
   padding: 8px 16px;
@@ -306,6 +305,10 @@ const UnreadFilterButton = styled.button<{ isActive: boolean }>`
 `;
 
 const SummaryBox = styled.div<{ isMobile: boolean }>`
+  position: relative;
+  width: ${({ isMobile }) => (isMobile ? '100%' : 'fit-content')};
+  min-height: ${({ isMobile }) => (isMobile ? '32px' : 0)};
+
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '12px' : '16px')};
   align-items: center;
