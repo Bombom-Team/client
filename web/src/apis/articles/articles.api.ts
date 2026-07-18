@@ -10,10 +10,7 @@ export type GetArticlesResponse = components['schemas']['PageArticleResponse'];
 export const getArticles = async (params: GetArticlesParams) => {
   return await fetcher.get<GetArticlesResponse>({
     path: '/articles',
-    query: {
-      ...params,
-      unreadOnly: params.unreadOnly?.toString(),
-    },
+    query: params,
   });
 };
 
@@ -27,10 +24,7 @@ export const getArticlesWithSearch = async (
 ) => {
   return await fetcher.get<GetArticlesResponse>({
     path: '/articles/search',
-    query: {
-      ...params,
-      unreadOnly: params.unreadOnly?.toString(),
-    },
+    query: params,
   });
 };
 
