@@ -8,7 +8,7 @@
     "dev:msw": "VITE_ENABLE_MSW=true vite",
     "build": "tsc --noEmit && vite build",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
+    "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix && stylelint './src/**/*.tsx' --fix",
     "stylelint:fix": "stylelint './src/**/*.tsx' --fix",
     "format": "prettier --write . && stylelint './src/**/*.tsx' --fix",
     "preview": "vite preview",

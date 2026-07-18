@@ -86,11 +86,11 @@ AI agents MUST treat linting as a BLOCKING requirement.
 
 Before considering any task complete, the AI MUST:
 
-1. Run ESLint auto-fix:
+1. Run sequential ESLint → Stylelint auto-fix:
    - `pnpm --filter {workspace} lint:fix`
-2. Run Stylelint auto-fix:
-   - `pnpm --filter {workspace} stylelint:fix`
-3. Re-run lint checks:
+   - In workspaces with Stylelint, this script MUST run ESLint first and
+     Stylelint second. The two fixers MUST NOT run in parallel.
+2. Re-run lint checks:
    - ESLint / Stylelint MUST pass with ZERO errors
 
 Rules:
