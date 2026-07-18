@@ -24,13 +24,17 @@ const TodayUnreadArticlesSection = ({
   const unreadArticles = todayArticles?.content?.filter(
     (article) => !article.isRead && article.articleId !== articleId,
   );
+  const visibleUnreadArticles = unreadArticles?.slice(
+    0,
+    device === 'pc' ? 4 : 2,
+  );
 
   return (
     <Container>
       <TodayArticleTitle>오늘 읽지 않은 다른 아티클</TodayArticleTitle>
       {unreadArticles?.length && unreadArticles.length > 0 ? (
         <TodayArticleList device={device}>
-          {unreadArticles?.map((article) => (
+          {visibleUnreadArticles?.map((article) => (
             <NewsletterItemCard key={article.articleId} data={article} />
           ))}
         </TodayArticleList>
