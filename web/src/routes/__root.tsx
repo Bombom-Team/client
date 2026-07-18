@@ -57,7 +57,8 @@ const RootComponent = () => {
 
   const toastOffset = device === 'pc' ? CHANNEL_TALK_TOAST_OFFSET : undefined;
   const shouldUseStackflow =
-    isWebView() && STACKFLOW_PATHS.some((pattern) => pattern.test(pathname));
+    (isWebView() || device === 'mobile') &&
+    STACKFLOW_PATHS.some((pattern) => pattern.test(pathname));
 
   return (
     <>
