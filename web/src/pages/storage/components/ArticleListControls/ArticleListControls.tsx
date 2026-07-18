@@ -1,6 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import ArticleDeleteModal from '../ArticleDeleteModal/ArticleDeleteModal';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import useModal from '@/components/Modal/useModal';
@@ -13,6 +13,7 @@ import StorageUsageBar from '@/pages/storage/components/StorageUsageBar/StorageU
 import type { Sort } from './ArticleListControls.types';
 import CancelIcon from '#/assets/svg/close.svg';
 import DeleteIcon from '#/assets/svg/delete.svg';
+import ReadingGlassesIcon from '#/assets/svg/reading-glasses.svg';
 
 interface ArticleListControlsProps {
   editMode: boolean;
@@ -41,8 +42,12 @@ const ArticleListControls = ({
   showUnreadOnly,
   onToggleUnreadOnly,
 }: ArticleListControlsProps) => {
-  const [search, setSearch] = useState('');
-  const [, setSearchParam] = useSearchParamState('search');
+  const [searchParam, setSearchParam] = useSearchParamState('search');
+  const [search, setSearch] = useState(searchParam ?? '');
+  const [isSearchExpanded, setIsSearchExpanded] = useState(
+    Boolean(searchParam),
+  );
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [sort, setSort] = useSearchParamState<Sort>('sort', {
     defaultValue: 'DESC',
   });
@@ -60,9 +65,24 @@ const ArticleListControls = ({
     setSort(value);
   };
 
+  const handleSearchClose = () => {
+    setSearch('');
+    setSearchParam(null);
+    setIsSearchExpanded(false);
+  };
+
   useEffect(() => {
     setSearchParam(debouncedSearchInput || null);
   }, [debouncedSearchInput, setSearchParam]);
+
+  useEffect(() => {
+    setSearch(searchParam ?? '');
+    if (searchParam) setIsSearchExpanded(true);
+  }, [searchParam]);
+
+  useEffect(() => {
+    if (isMobile && isSearchExpanded) searchInputRef.current?.focus();
+  }, [isMobile, isSearchExpanded]);
 
   const unreadFilterButton = (
     <UnreadFilterButton
@@ -77,11 +97,41 @@ const ArticleListControls = ({
 
   return (
     <Container>
-      <StorageSearchInput
-        placeholder="뉴스레터 제목으로 검색하세요..."
-        value={search}
-        onChange={handleSearchChange}
-      />
+      {isMobile ? (
+        <MobileSearchWrapper>
+          <SearchIconButton
+            type="button"
+            aria-label="검색 열기"
+            onClick={() => setIsSearchExpanded(true)}
+          >
+            <ReadingGlassesIcon width={20} height={20} />
+          </SearchIconButton>
+          <ExpandableSearchWrapper isExpanded={isSearchExpanded}>
+            <StorageSearchInput
+              ref={searchInputRef}
+              placeholder="뉴스레터 제목으로 검색하세요..."
+              value={search}
+              onChange={handleSearchChange}
+              onBlur={() => {
+                if (search === '') setIsSearchExpanded(false);
+              }}
+            />
+            <CloseSearchButton
+              type="button"
+              aria-label="검색 닫기"
+              onClick={handleSearchClose}
+            >
+              <CancelIcon width={20} height={20} />
+            </CloseSearchButton>
+          </ExpandableSearchWrapper>
+        </MobileSearchWrapper>
+      ) : (
+        <StorageSearchInput
+          placeholder="뉴스레터 제목으로 검색하세요..."
+          value={search}
+          onChange={handleSearchChange}
+        />
+      )}
       <SummaryBar isMobile={isMobile}>
         <SummaryBox isMobile={isMobile}>
           {editMode ? (
@@ -158,6 +208,60 @@ const StorageSearchInput = styled(SearchInput)`
   &::placeholder {
     font: ${({ theme }) => theme.fonts.t5Regular};
   }
+`;
+
+const MobileSearchWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 32px;
+
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const SearchIconButton = styled.button`
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+`;
+
+const ExpandableSearchWrapper = styled.div<{ isExpanded: boolean }>`
+  position: absolute;
+  z-index: ${({ theme }) => theme.zIndex.elevated};
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  background-color: ${({ theme }) => theme.colors.white};
+
+  inset: 0;
+  opacity: ${({ isExpanded }) => (isExpanded ? 1 : 0)};
+  pointer-events: ${({ isExpanded }) => (isExpanded ? 'auto' : 'none')};
+  transform: translateX(${({ isExpanded }) => (isExpanded ? '0' : '20px')});
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+`;
+
+const CloseSearchButton = styled.button`
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 8px;
+
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  background-color: ${({ theme }) => theme.colors.dividers};
+  color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
 const SummaryBar = styled.div<{ isMobile: boolean }>`
