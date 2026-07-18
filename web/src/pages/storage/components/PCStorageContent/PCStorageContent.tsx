@@ -21,6 +21,8 @@ interface PCStorageContentProps {
   page: number;
   resetPage: () => void;
   totalStorageCount: number;
+  showUnreadOnly: boolean;
+  onToggleUnreadOnly: () => void;
 }
 
 export default function PCStorageContent({
@@ -33,6 +35,8 @@ export default function PCStorageContent({
   page,
   resetPage,
   totalStorageCount,
+  showUnreadOnly,
+  onToggleUnreadOnly,
 }: PCStorageContentProps) {
   const queryParams = {
     ...baseQueryParams,
@@ -69,6 +73,7 @@ export default function PCStorageContent({
   }, [
     baseQueryParams.newsletterId,
     baseQueryParams.keyword,
+    baseQueryParams.unreadOnly,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(baseQueryParams.sort),
     resetPage,
@@ -79,6 +84,7 @@ export default function PCStorageContent({
   }, [
     baseQueryParams.newsletterId,
     baseQueryParams.keyword,
+    baseQueryParams.unreadOnly,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(baseQueryParams.sort),
     baseQueryParams.page,
@@ -97,6 +103,8 @@ export default function PCStorageContent({
         onToggleSelectAll={toggleSelectAll}
         hasBookmarkedArticles={hasBookmarkedArticles}
         totalStorageCount={totalStorageCount}
+        showUnreadOnly={showUnreadOnly}
+        onToggleUnreadOnly={onToggleUnreadOnly}
       />
       {isLoading ? (
         <ArticleCardListSkeleton />

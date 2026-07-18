@@ -24,6 +24,8 @@ interface ArticleListControlsProps {
   onToggleSelectAll: () => void;
   hasBookmarkedArticles?: boolean;
   totalStorageCount: number;
+  showUnreadOnly: boolean;
+  onToggleUnreadOnly: () => void;
 }
 
 const ArticleListControls = ({
@@ -36,9 +38,10 @@ const ArticleListControls = ({
   onToggleSelectAll,
   hasBookmarkedArticles = false,
   totalStorageCount,
+  showUnreadOnly,
+  onToggleUnreadOnly,
 }: ArticleListControlsProps) => {
   const [search, setSearch] = useState('');
-  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
   const [, setSearchParam] = useSearchParamState('search');
   const [sort, setSort] = useSearchParamState<Sort>('sort', {
     defaultValue: 'DESC',
@@ -57,12 +60,8 @@ const ArticleListControls = ({
     setSort(value);
   };
 
-  const handleUnreadOnlyToggle = () => {
-    setShowUnreadOnly((prev) => !prev);
-  };
-
   useEffect(() => {
-    setSearchParam(debouncedSearchInput);
+    setSearchParam(debouncedSearchInput || null);
   }, [debouncedSearchInput, setSearchParam]);
 
   const unreadFilterButton = (
@@ -70,7 +69,7 @@ const ArticleListControls = ({
       type="button"
       aria-pressed={showUnreadOnly}
       isActive={showUnreadOnly}
-      onClick={handleUnreadOnlyToggle}
+      onClick={onToggleUnreadOnly}
     >
       안 읽은 뉴스레터만
     </UnreadFilterButton>

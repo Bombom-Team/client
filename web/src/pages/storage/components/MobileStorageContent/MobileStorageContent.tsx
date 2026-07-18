@@ -19,6 +19,8 @@ interface MobileStorageContentProps {
   deleteArticles: (articleIds: number[]) => void;
   resetPage: () => void;
   totalStorageCount: number;
+  showUnreadOnly: boolean;
+  onToggleUnreadOnly: () => void;
 }
 
 export default function MobileStorageContent({
@@ -29,6 +31,8 @@ export default function MobileStorageContent({
   deleteArticles,
   resetPage,
   totalStorageCount,
+  showUnreadOnly,
+  onToggleUnreadOnly,
 }: MobileStorageContentProps) {
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
@@ -90,6 +94,7 @@ export default function MobileStorageContent({
   }, [
     baseQueryParams.keyword,
     baseQueryParams.newsletterId,
+    baseQueryParams.unreadOnly,
     baseQueryParams.sort,
     clearSelection,
     resetPage,
@@ -107,6 +112,8 @@ export default function MobileStorageContent({
         onToggleSelectAll={toggleSelectAll}
         hasBookmarkedArticles={hasBookmarkedArticles}
         totalStorageCount={totalStorageCount}
+        showUnreadOnly={showUnreadOnly}
+        onToggleUnreadOnly={onToggleUnreadOnly}
       />
       {isInfiniteLoading ? (
         <ArticleCardListSkeleton />

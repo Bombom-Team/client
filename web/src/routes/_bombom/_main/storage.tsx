@@ -7,6 +7,7 @@ import { queries } from '@/apis/queries';
 import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
 import RequireLogin from '@/hocs/RequireLogin';
 import { useDevice } from '@/hooks/useDevice';
+import { useSearchParamState } from '@/hooks/useSearchParamState';
 import MobileStorageContent from '@/pages/storage/components/MobileStorageContent/MobileStorageContent';
 import NewsLetterFilter from '@/pages/storage/components/NewsletterFilter/NewsletterFilter';
 import NewsletterFilterSkeleton from '@/pages/storage/components/NewsletterFilter/NewsletterFilterSkeleton';
@@ -45,12 +46,14 @@ export const Route = createFileRoute('/_bombom/_main/storage')({
     sort?: Sort;
     newsletterId?: number;
     page?: number;
+    unreadOnly?: boolean;
   }) => {
     return {
       search: search.search,
       sort: search.sort,
       newsletterId: search.newsletterId,
       page: search.page,
+      unreadOnly: search.unreadOnly,
     };
   },
 });
@@ -60,6 +63,9 @@ function Storage() {
   const isPC = device === 'pc';
   const isMobile = device === 'mobile';
   const [editMode, setEditMode] = useState(false);
+  const [unreadOnlyParam, setUnreadOnlyParam] =
+    useSearchParamState<boolean>('unreadOnly');
+  const showUnreadOnly = unreadOnlyParam ?? false;
   const { data: warningVisibleStatus } = useQuery(
     queries.warningVisibleStatus(),
   );
@@ -113,6 +119,14 @@ function Storage() {
 
   const { baseQueryParams, handlePageChange, page, resetPage } =
     useStorageFilters();
+  const storageQueryParams = {
+    ...baseQueryParams,
+    unreadOnly: showUnreadOnly,
+  };
+
+  const handleUnreadOnlyToggle = () => {
+    setUnreadOnlyParam((prev) => (prev ? null : true));
+  };
 
   return (
     <Container>
@@ -157,7 +171,7 @@ function Storage() {
         <MainContentSection isPC={isPC}>
           {isPC ? (
             <PCStorageContent
-              baseQueryParams={baseQueryParams}
+              baseQueryParams={storageQueryParams}
               editMode={editMode}
               enableEditMode={enableEditMode}
               disableEditMode={disableEditMode}
@@ -166,16 +180,20 @@ function Storage() {
               page={page}
               resetPage={resetPage}
               totalStorageCount={newsletterFilters?.totalCount ?? 0}
+              showUnreadOnly={showUnreadOnly}
+              onToggleUnreadOnly={handleUnreadOnlyToggle}
             />
           ) : (
             <MobileStorageContent
-              baseQueryParams={baseQueryParams}
+              baseQueryParams={storageQueryParams}
               editMode={editMode}
               enableEditMode={enableEditMode}
               disableEditMode={disableEditMode}
               deleteArticles={(articleIds) => deleteArticles(articleIds)}
               resetPage={resetPage}
               totalStorageCount={newsletterFilters?.totalCount ?? 0}
+              showUnreadOnly={showUnreadOnly}
+              onToggleUnreadOnly={handleUnreadOnlyToggle}
             />
           )}
         </MainContentSection>

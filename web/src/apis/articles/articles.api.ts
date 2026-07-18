@@ -3,27 +3,37 @@ import type { components, operations } from '@/types/openapi';
 
 export type GetArticlesParams =
   components['schemas']['ArticlesOptionsRequest'] &
-    components['schemas']['Pageable'];
+    components['schemas']['Pageable'] & {
+      unreadOnly?: boolean;
+    };
 
 export type GetArticlesResponse = components['schemas']['PageArticleResponse'];
 
 export const getArticles = async (params: GetArticlesParams) => {
   return await fetcher.get<GetArticlesResponse>({
     path: '/articles',
-    query: params,
+    query: {
+      ...params,
+      unreadOnly: params.unreadOnly?.toString(),
+    },
   });
 };
 
 export type GetArticlesWithSearchParams =
   components['schemas']['ArticleSearchOptionsRequest'] &
-    components['schemas']['Pageable'];
+    components['schemas']['Pageable'] & {
+      unreadOnly?: boolean;
+    };
 
 export const getArticlesWithSearch = async (
   params: GetArticlesWithSearchParams,
 ) => {
   return await fetcher.get<GetArticlesResponse>({
     path: '/articles/search',
-    query: params,
+    query: {
+      ...params,
+      unreadOnly: params.unreadOnly?.toString(),
+    },
   });
 };
 
