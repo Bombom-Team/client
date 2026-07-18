@@ -44,8 +44,6 @@ If any rule conflicts, higher priority rules ALWAYS win.
 - In workspaces with Stylelint, `lint:fix` MUST run ESLint first and Stylelint
   second in the same script. They MUST NOT run in parallel because both tools
   can write `.tsx` files.
-- `pnpm --filter {workspace} stylelint:fix` MAY be used separately when only
-  CSS-in-JS declarations need fixing.
 
 - If auto-fix produces changes:
   - Those changes MUST be reviewed.
