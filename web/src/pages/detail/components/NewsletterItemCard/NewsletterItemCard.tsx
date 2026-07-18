@@ -24,7 +24,6 @@ export default function NewsletterItemCard({ data }: NewsletterItemCardProps) {
       <NewsletterImage
         src={thumbnailUrl ?? newsletter?.imageUrl ?? ''}
         alt={title ?? ''}
-        height={180}
       />
 
       <ContentWrapper>
@@ -68,6 +67,8 @@ const Container = styled(Link)`
 const NewsletterImage = styled(ImageWithFallback)`
   width: 100%;
 
+  aspect-ratio: 16 / 9;
+
   object-fit: cover;
   object-position: center;
 `;
@@ -92,7 +93,7 @@ const Title = styled.h3`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t7Bold};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
