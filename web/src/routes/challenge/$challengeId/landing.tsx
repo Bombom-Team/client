@@ -35,10 +35,10 @@ export const Route = createFileRoute('/challenge/$challengeId/landing')({
       },
     ],
   }),
-  component: ChallengeLandingPage,
+  component: ChallengeLanding,
 });
 
-function ChallengeLandingPage() {
+function ChallengeLanding() {
   const device = useDevice();
   const { challengeId: stringChallengeId } = useParams({
     from: '/challenge/$challengeId/landing',

@@ -11,9 +11,7 @@ import Button from '@/components/Button/Button';
 import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { pushWebViewChallengeLanding } from '@/libs/stackflow/navigation';
 import useChallengeApplyMutation from '@/pages/challenge/index/hooks/useChallengeApplyMutation';
 import useChallengeCancelMutation from '@/pages/challenge/index/hooks/useChallengeCancelMutation';
 import { getDatesDiff } from '@/utils/date';
@@ -31,7 +29,6 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
     id,
   } = props;
   const navigate = useNavigate();
-  const device = useDevice();
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const { mutate: applyChallenge } = useChallengeApplyMutation({
@@ -56,7 +53,6 @@ const ChallengeCardBeforeStart = (props: ChallengeCardProps) => {
         'https://maroon-geranium-880.notion.site/1-2fb03dcf20568089a20ad05cd3de78fe?pvs=74',
       );
     } else {
-      if (pushWebViewChallengeLanding(String(id), device === 'mobile')) return;
       navigate({
         to: '/challenge/$challengeId/landing',
         params: { challengeId: id.toString() },

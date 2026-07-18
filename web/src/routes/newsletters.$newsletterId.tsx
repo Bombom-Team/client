@@ -63,7 +63,7 @@ export const Route = createFileRoute('/newsletters/$newsletterId')({
       links: [{ rel: 'canonical', href: url }],
     };
   },
-  component: NewsletterDetailPage,
+  component: NewsletterDetailRoute,
   pendingComponent: NewsletterDetailPending,
   validateSearch: (search: NewsletterDetailSearch & SearchSchemaInput) => ({
     tab: search?.tab,
@@ -79,7 +79,7 @@ function NewsletterDetailPending() {
   );
 }
 
-function NewsletterDetailPage() {
+function NewsletterDetailRoute() {
   const { newsletterId } = Route.useParams();
   const id = Number(newsletterId);
   const device = useDevice();

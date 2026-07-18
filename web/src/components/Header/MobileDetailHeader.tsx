@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { useRouter } from '@tanstack/react-router';
 import ChevronIcon from '@/components/icons/ChevronIcon';
-import { useStackflowBack } from '@/libs/stackflow/StackflowBackContext';
 import type { ReactNode } from 'react';
 
 interface MobileDetailHeaderProps {
@@ -11,13 +10,8 @@ interface MobileDetailHeaderProps {
 
 const MobileDetailHeader = ({ left, right }: MobileDetailHeaderProps) => {
   const router = useRouter();
-  const stackflowBack = useStackflowBack();
 
   const handleBackClick = () => {
-    if (stackflowBack) {
-      stackflowBack();
-      return;
-    }
     router.history.back();
   };
 

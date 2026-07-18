@@ -12,18 +12,12 @@ import Flex from '@/components/Flex';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import {
-  pushWebViewChallengeDetail,
-  pushWebViewChallengeLanding,
-} from '@/libs/stackflow/navigation';
 import useChallengeApplyMutation from '@/pages/challenge/index/hooks/useChallengeApplyMutation';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardOngoing = (props: ChallengeCardProps) => {
   const navigate = useNavigate();
-  const device = useDevice();
   const { modalRef, openModal, closeModal, isOpen } = useModal();
 
   const {
@@ -46,12 +40,6 @@ const ChallengeCardOngoing = (props: ChallengeCardProps) => {
       action: 'ONGOING 카드 클릭',
       label: title,
     });
-
-    const challengeId = String(id);
-    const handled = participationInfo?.isJoined
-      ? pushWebViewChallengeDetail(challengeId, 'daily', device === 'mobile')
-      : pushWebViewChallengeLanding(challengeId, device === 'mobile');
-    if (handled) return;
 
     navigate({
       to: participationInfo?.isJoined

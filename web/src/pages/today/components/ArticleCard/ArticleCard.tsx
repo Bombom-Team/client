@@ -3,7 +3,6 @@ import { Link } from '@tanstack/react-router';
 import Badge from '@/components/Badge/Badge';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { useDevice } from '@/hooks/useDevice';
-import { pushWebViewArticle } from '@/libs/stackflow/navigation';
 import { formatDate } from '@/utils/date';
 import type { components } from '@/types/openapi';
 import type { ComponentProps } from 'react';
@@ -37,27 +36,14 @@ const ArticleCard = ({
   } = data;
   const device = useDevice();
   const isMobile = device === 'mobile';
-  const articlePath = to ?? `/articles/${articleId}`;
-
-  const handleClick: ArticleCardProps['onClick'] = (event) => {
-    props.onClick?.(event);
-    if (
-      event.defaultPrevented ||
-      to ||
-      !pushWebViewArticle(String(articleId), isMobile)
-    )
-      return;
-    event.preventDefault();
-  };
 
   return (
     <Container
       isRead={isRead ?? false}
       readVariant={readVariant}
       isMobile={isMobile}
-      to={articlePath}
+      to={to ?? `/articles/${articleId}`}
       {...props}
-      onClick={handleClick}
     >
       <InfoWrapper isMobile={isMobile}>
         <Title isMobile={isMobile}>{title}</Title>

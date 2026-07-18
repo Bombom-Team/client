@@ -20,10 +20,10 @@ export const Route = createFileRoute('/_bombom/_main/')({
       },
     ],
   }),
-  component: RecommendPage,
+  component: Index,
 });
 
-function RecommendPage() {
+function Index() {
   const device = useDevice();
   const { data: notices } = useQuery(queries.notices());
 

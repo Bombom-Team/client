@@ -1,7 +1,5 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
-import { useDevice } from '@/hooks/useDevice';
-import { replaceWebViewChallengeTab } from '@/libs/stackflow/navigation';
 
 const CHALLENGE_TABS = [
   { id: 'review', label: '리뷰', path: 'review' },
@@ -26,7 +24,6 @@ export const useChallengeDetailTabs = ({
   isLastDayOrAfter,
 }: UseChallengeDetailTabsProps) => {
   const navigate = useNavigate();
-  const device = useDevice();
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
 
@@ -52,14 +49,12 @@ export const useChallengeDetailTabs = ({
 
   const goToTab = useCallback(
     (tabPath: ChallengeTabPath) => {
-      if (replaceWebViewChallengeTab(challengeId, tabPath, device === 'mobile'))
-        return;
       navigate({
         to: `/challenge/$challengeId/${tabPath}`,
         params: { challengeId },
       });
     },
-    [challengeId, device, navigate],
+    [challengeId, navigate],
   );
 
   return {
