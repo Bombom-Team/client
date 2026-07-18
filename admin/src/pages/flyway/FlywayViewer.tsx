@@ -1,6 +1,6 @@
 import { EditorView } from '@codemirror/view';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CodeMirror from '@uiw/react-codemirror';
 import { useMemo, useState } from 'react';
 import { WipRegisterForm } from './WipRegisterForm';
@@ -51,7 +51,14 @@ const parseVersion = (version: string) =>
     .map((token) => Number(token) || 0);
 
 export const FlywayViewer = () => {
+  const queryClient = useQueryClient();
   const { data, isLoading, isError } = useQuery(flywayQueries.overview());
+  const { mutate: refresh, isPending: isRefreshing } = useMutation({
+    ...flywayQueries.mutation.refreshCache(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: flywayQueries.all });
+    },
+  });
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | MigrationStatus>(
     'ALL',
@@ -118,6 +125,13 @@ export const FlywayViewer = () => {
           <strong>{data.integrationBranch}</strong>
         </Chip>
         <Spacer />
+        <Button
+          type="button"
+          onClick={() => refresh()}
+          disabled={isRefreshing}
+        >
+          {isRefreshing ? '새로고침 중...' : '🔄 새로고침'}
+        </Button>
         <Button type="button" onClick={() => setShowForm((prev) => !prev)}>
           🏷 작업중 등록
         </Button>
