@@ -42,7 +42,7 @@ export default function NewsletterItemCard({ data }: NewsletterItemCardProps) {
         </TextContent>
 
         <MetaContent>
-          {device === 'pc' && <Badge text={newsletter?.category ?? ''} />}
+          {device !== 'mobile' && <Badge text={newsletter?.category ?? ''} />}
           <MetaInfo>
             <NewsletterName>from {newsletter?.name ?? ''}</NewsletterName>
             <ReadTimeBox>
