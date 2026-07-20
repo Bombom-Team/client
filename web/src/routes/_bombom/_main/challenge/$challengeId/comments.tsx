@@ -101,7 +101,7 @@ function ChallengeComments() {
       </FilterWrapper>
 
       <ContentWrapper isMobile={isMobile} ref={contentScrollRef}>
-        {isChallengeDay(today) && (
+        {activeDate === today && isChallengeDay(today) && (
           <AddCommentBox>
             <AddCommentTitle>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
