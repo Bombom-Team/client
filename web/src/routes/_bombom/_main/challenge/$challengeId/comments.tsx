@@ -155,6 +155,7 @@ function ChallengeComments() {
             closeCommentModal={closeModal}
             candidateArticles={candidateArticles}
             onFirstCompletion={openFirstCompletionModal}
+            onAddComplete={() => selectDate(today)}
           />
         </Modal>
       )}
