@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 import { processContent } from './ArticleContent.utils';
 import { useAutoScaleContent } from '../../hooks/useAutoScaleContent';
 import { useHighlightHoverEffect } from '../../hooks/useHighlightHoverEffect';
@@ -17,26 +17,37 @@ const ArticleContent = ({
   newsletterName,
   content,
 }: ArticleContentProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const bodyContent = extractBodyContent(content ?? '');
-  const scale = useAutoScaleContent(ref);
+  const scale = useAutoScaleContent({
+    layoutRef: containerRef,
+    contentRef: ref,
+  });
 
   useHighlightHoverEffect();
 
   return (
-    <Container
-      ref={ref}
-      scale={scale}
-      dangerouslySetInnerHTML={{
-        __html: processContent(newsletterName, bodyContent),
-      }}
-    />
+    <Container ref={containerRef}>
+      <Content
+        ref={ref}
+        scale={scale}
+        dangerouslySetInnerHTML={{
+          __html: processContent(newsletterName, bodyContent),
+        }}
+      />
+    </Container>
   );
 };
 
 export default memo(ArticleContent);
 
-const Container = styled.div<{ scale: number }>`
-  overflow: visible;
+const Container = styled.div`
+  overflow: hidden;
+  width: 100%;
+`;
+
+const Content = styled.div<{ scale: number }>`
+  width: 100%;
 
   display: flex;
   flex-direction: column;
@@ -46,7 +57,7 @@ const Container = styled.div<{ scale: number }>`
   -webkit-touch-callout: default;
 
   transform: ${({ scale }) => `scale(${scale})`};
-  transform-origin: top;
+  transform-origin: top left;
   user-select: text;
 
   word-break: break-all;
