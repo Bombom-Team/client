@@ -1,20 +1,19 @@
 import { act, renderHook } from '@testing-library/react';
 import { useTimelineScrollSync } from './useTimelineScrollSync';
 import {
-  canPreservePrependScroll,
+  captureTopSectionAnchor,
   findVisibleDate,
-  preservePrependScrollPosition,
+  restoreTopSectionAnchor,
 } from '../utils/timelineScroll';
 
 jest.mock('../utils/timelineScroll');
 
-const mockCanPreservePrependScroll = jest.mocked(canPreservePrependScroll);
-const mockPreservePrependScrollPosition = jest.mocked(
-  preservePrependScrollPosition,
-);
+const mockCaptureTopSectionAnchor = jest.mocked(captureTopSectionAnchor);
+const mockRestoreTopSectionAnchor = jest.mocked(restoreTopSectionAnchor);
 const mockFindVisibleDate = jest.mocked(findVisibleDate);
 
 const SELECTED_DATE = '2026-07-09';
+const TOP_SECTION_ANCHOR = { date: SELECTED_DATE, gap: 5 };
 
 const createScrollContainer = () => {
   const container = document.createElement('div');
@@ -61,8 +60,8 @@ describe('날짜 선택 시 스크롤 리셋', () => {
 });
 
 describe('최신 날짜 prepend 시 스크롤 위치 유지', () => {
-  it('컨테이너가 스크롤 가능하면 현재 높이를 기억하고 true를 반환한다', () => {
-    mockCanPreservePrependScroll.mockReturnValue(true);
+  it('최상단 섹션을 앵커로 기록할 수 있으면 true를 반환한다', () => {
+    mockCaptureTopSectionAnchor.mockReturnValue(TOP_SECTION_ANCHOR);
     const container = createScrollContainer();
     const { result } = renderScrollSync(container);
 
@@ -74,8 +73,8 @@ describe('최신 날짜 prepend 시 스크롤 위치 유지', () => {
     expect(captured).toBe(true);
   });
 
-  it('위에 최신 날짜 섹션이 추가된 뒤 렌더링되면 기억해 둔 높이로 보던 위치를 보정한다', () => {
-    mockCanPreservePrependScroll.mockReturnValue(true);
+  it('위에 최신 날짜 섹션이 추가된 뒤 렌더링되면 기록해 둔 앵커로 보던 위치를 보정한다', () => {
+    mockCaptureTopSectionAnchor.mockReturnValue(TOP_SECTION_ANCHOR);
     const container = createScrollContainer();
     const { result, rerender } = renderScrollSync(container);
 
@@ -84,14 +83,14 @@ describe('최신 날짜 prepend 시 스크롤 위치 유지', () => {
     });
     rerender({ resetKey: SELECTED_DATE });
 
-    expect(mockPreservePrependScrollPosition).toHaveBeenCalledWith(
+    expect(mockRestoreTopSectionAnchor).toHaveBeenCalledWith(
       container,
-      900,
+      TOP_SECTION_ANCHOR,
     );
   });
 
-  it('컨테이너가 스크롤 불가능하면 false를 반환하고 위치를 보정하지 않는다', () => {
-    mockCanPreservePrependScroll.mockReturnValue(false);
+  it('앵커로 기록할 섹션이 없으면 false를 반환하고 위치를 보정하지 않는다', () => {
+    mockCaptureTopSectionAnchor.mockReturnValue(null);
     const container = createScrollContainer();
     const { result, rerender } = renderScrollSync(container);
 
@@ -102,7 +101,7 @@ describe('최신 날짜 prepend 시 스크롤 위치 유지', () => {
     rerender({ resetKey: SELECTED_DATE });
 
     expect(captured).toBe(false);
-    expect(mockPreservePrependScrollPosition).not.toHaveBeenCalled();
+    expect(mockRestoreTopSectionAnchor).not.toHaveBeenCalled();
   });
 });
 
@@ -128,8 +127,8 @@ describe('스크롤 시 보이는 날짜를 필터에 동기화', () => {
   });
 
   it('prepend 위치 보정 직후의 스크롤은 무시해 필터가 되돌아가지 않도록 한다', () => {
-    mockCanPreservePrependScroll.mockReturnValue(true);
-    mockPreservePrependScrollPosition.mockReturnValue(true);
+    mockCaptureTopSectionAnchor.mockReturnValue(TOP_SECTION_ANCHOR);
+    mockRestoreTopSectionAnchor.mockReturnValue(true);
     mockFindVisibleDate.mockReturnValue('2026-07-08');
     const container = createScrollContainer();
     const { result, rerender, onVisibleDateChange } =

@@ -1,18 +1,41 @@
 const VISIBLE_DATE_LINE_OFFSET = 80;
 
-export const canPreservePrependScroll = (container: HTMLElement) => {
-  return container.scrollHeight > container.clientHeight;
+export interface TopSectionAnchor {
+  date: string;
+  gap: number;
+}
+
+export const captureTopSectionAnchor = (
+  container: HTMLElement,
+): TopSectionAnchor | null => {
+  const section = container.querySelector<HTMLElement>(
+    '[data-comment-date-section]',
+  );
+  if (!section) return null;
+
+  const containerTop = container.getBoundingClientRect().top;
+  return {
+    date: section.dataset.commentDateSection ?? '',
+    gap: section.getBoundingClientRect().top - containerTop,
+  };
 };
 
-export const preservePrependScrollPosition = (
+export const restoreTopSectionAnchor = (
   container: HTMLElement,
-  previousScrollHeight: number,
+  anchor: TopSectionAnchor,
 ) => {
-  const previousScrollTop = container.scrollTop;
+  const section = container.querySelector<HTMLElement>(
+    `[data-comment-date-section="${anchor.date}"]`,
+  );
+  if (!section) return false;
 
-  container.scrollTop += container.scrollHeight - previousScrollHeight;
+  const containerTop = container.getBoundingClientRect().top;
+  const currentGap = section.getBoundingClientRect().top - containerTop;
+  const delta = currentGap - anchor.gap;
+  if (delta === 0) return false;
 
-  return container.scrollTop !== previousScrollTop;
+  container.scrollTop += delta;
+  return true;
 };
 
 export const findVisibleDate = (container: HTMLElement) => {

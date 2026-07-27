@@ -99,7 +99,7 @@ export const useTimeline = ({
     if (!nextNewerDate) return;
 
     const prependNewerDate = () => {
-      if (!captureScrollBeforePrepend()) return;
+      captureScrollBeforePrepend();
       expandToNewerDate();
     };
 

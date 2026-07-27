@@ -1,7 +1,7 @@
 import {
-  canPreservePrependScroll,
+  captureTopSectionAnchor,
   findVisibleDate,
-  preservePrependScrollPosition,
+  restoreTopSectionAnchor,
 } from './timelineScroll';
 
 const createContainer = ({
@@ -41,37 +41,85 @@ const createDateSection = (
   return section;
 };
 
-describe('canPreservePrependScroll', () => {
-  it('컨테이너가 스크롤 가능하면 true를 반환한다', () => {
-    const container = createContainer({
-      scrollHeight: 1000,
-      clientHeight: 600,
+describe('captureTopSectionAnchor', () => {
+  it('최상단 섹션의 날짜와 컨테이너 상단으로부터의 거리를 기록한다', () => {
+    const container = createContainer();
+    mockRect(container, { top: 0, bottom: 800 });
+    container.appendChild(
+      createDateSection('2026-07-16', { top: 5, bottom: 305 }),
+    );
+    container.appendChild(
+      createDateSection('2026-07-15', { top: 305, bottom: 605 }),
+    );
+
+    expect(captureTopSectionAnchor(container)).toEqual({
+      date: '2026-07-16',
+      gap: 5,
     });
-    expect(canPreservePrependScroll(container)).toBe(true);
   });
 
-  it('컨테이너 내용이 화면보다 작으면 false를 반환한다', () => {
-    const container = createContainer({ scrollHeight: 600, clientHeight: 600 });
-    expect(canPreservePrependScroll(container)).toBe(false);
+  it('날짜 섹션이 없으면 null을 반환한다', () => {
+    const container = createContainer();
+    mockRect(container, { top: 0, bottom: 800 });
+
+    expect(captureTopSectionAnchor(container)).toBeNull();
   });
 });
 
-describe('preservePrependScrollPosition', () => {
-  it('위에 내용이 추가되어 높이가 늘어난 만큼 스크롤을 내려 보던 위치를 유지한다', () => {
-    const container = createContainer({ scrollHeight: 1000 });
+describe('restoreTopSectionAnchor', () => {
+  it('앵커 섹션이 위쪽 prepend로 밀려난 만큼 스크롤을 보정한다', () => {
+    const container = createContainer();
+    mockRect(container, { top: 0, bottom: 800 });
+    // 위에 150px 섹션이 추가되어 앵커(7/16)가 gap 5 → 155로 밀려난 상태
+    container.appendChild(
+      createDateSection('2026-07-17', { top: 5, bottom: 155 }),
+    );
+    container.appendChild(
+      createDateSection('2026-07-16', { top: 155, bottom: 455 }),
+    );
     container.scrollTop = 0;
 
-    const didPreserve = preservePrependScrollPosition(container, 600);
+    const didPreserve = restoreTopSectionAnchor(container, {
+      date: '2026-07-16',
+      gap: 5,
+    });
 
-    expect(container.scrollTop).toBe(400);
+    expect(container.scrollTop).toBe(150);
     expect(didPreserve).toBe(true);
   });
 
-  it('높이 변화가 없으면 스크롤을 이동하지 않고 false를 반환한다', () => {
-    const container = createContainer({ scrollHeight: 600 });
+  it('앵커 위치가 그대로면(아래쪽만 변함) 스크롤을 이동하지 않고 false를 반환한다', () => {
+    const container = createContainer();
+    mockRect(container, { top: 0, bottom: 800 });
+    container.appendChild(
+      createDateSection('2026-07-16', { top: 5, bottom: 305 }),
+    );
+    container.appendChild(
+      createDateSection('2026-07-15', { top: 305, bottom: 605 }),
+    );
     container.scrollTop = 100;
 
-    const didPreserve = preservePrependScrollPosition(container, 600);
+    const didPreserve = restoreTopSectionAnchor(container, {
+      date: '2026-07-16',
+      gap: 5,
+    });
+
+    expect(container.scrollTop).toBe(100);
+    expect(didPreserve).toBe(false);
+  });
+
+  it('앵커 섹션을 더 이상 찾을 수 없으면 false를 반환한다', () => {
+    const container = createContainer();
+    mockRect(container, { top: 0, bottom: 800 });
+    container.appendChild(
+      createDateSection('2026-07-15', { top: 5, bottom: 305 }),
+    );
+    container.scrollTop = 100;
+
+    const didPreserve = restoreTopSectionAnchor(container, {
+      date: '2026-07-16',
+      gap: 5,
+    });
 
     expect(container.scrollTop).toBe(100);
     expect(didPreserve).toBe(false);

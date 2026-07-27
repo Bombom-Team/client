@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
+import { useRef } from 'react';
 import CommentDateSection from './CommentDateSection';
 import { useTimeline } from '../hooks/useTimeline';
+import { useTimelineBottomSpacer } from '../hooks/useTimelineBottomSpacer';
 import type { RefObject } from 'react';
 
 interface CommentTimelineProps {
@@ -39,10 +41,17 @@ const CommentTimeline = ({
     onVisibleDateChange,
   });
 
+  const sectionListRef = useRef<HTMLDivElement>(null);
+  const spacerHeight = useTimelineBottomSpacer({
+    scrollContainerRef,
+    sectionListRef,
+    visibleDates,
+  });
+
   return (
     <Container>
       {canShowNewerDateTrigger && <LoadMoreTrigger ref={newerDateTriggerRef} />}
-      <SectionList>
+      <SectionList ref={sectionListRef}>
         {visibleDates.map((date) => (
           <CommentDateSection
             key={date}
@@ -54,6 +63,7 @@ const CommentTimeline = ({
         ))}
       </SectionList>
       {canShowOlderDateTrigger && <LoadMoreTrigger ref={olderDateTriggerRef} />}
+      <BottomSpacer height={spacerHeight} aria-hidden />
     </Container>
   );
 };
@@ -73,4 +83,11 @@ const SectionList = styled.div`
 const LoadMoreTrigger = styled.div`
   width: 100%;
   height: 1px;
+`;
+
+const BottomSpacer = styled.div<{ height: number }>`
+  width: 100%;
+  height: ${({ height }) => height}px;
+
+  flex-shrink: 0;
 `;

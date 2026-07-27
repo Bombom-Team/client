@@ -5,8 +5,12 @@ import { useTimeline } from './useTimeline';
 import { VISIBLE_COMMENTS_UNIT } from '../constants/comment';
 import { queries } from '@/apis/queries';
 
+const mockCaptureScrollBeforePrepend = jest.fn(() => true);
+
 jest.mock('./useTimelineScrollSync', () => ({
-  useTimelineScrollSync: () => ({ captureScrollBeforePrepend: () => true }),
+  useTimelineScrollSync: () => ({
+    captureScrollBeforePrepend: mockCaptureScrollBeforePrepend,
+  }),
 }));
 
 // ENV는 번들러(DefinePlugin·vite define)가 주입하므로 jest에서는 목킹이 필요하다.
@@ -37,6 +41,7 @@ beforeAll(() => {
 
 afterEach(() => {
   observedElements.clear();
+  mockCaptureScrollBeforePrepend.mockReturnValue(true);
 });
 
 const intersect = async (element: Element) => {
@@ -179,6 +184,16 @@ describe('위로 스크롤 — 더 최신 날짜 탐색', () => {
     await intersect(screen.getByTestId('newer-trigger'));
 
     expect(screen.queryByTestId('newer-trigger')).toBeNull();
+  });
+
+  it('콘텐츠가 짧아 스크롤 보정이 불필요해도(캡처가 false) 최신 날짜 섹션을 추가한다', async () => {
+    mockCaptureScrollBeforePrepend.mockReturnValue(false);
+    const { queryClient } = renderTimeline('2026-07-09');
+    seedComments(queryClient, '2026-07-10');
+
+    await intersect(screen.getByTestId('newer-trigger'));
+
+    expect(visibleDateTexts()).toEqual(['2026-07-10', '2026-07-09']);
   });
 });
 

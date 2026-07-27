@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import {
-  canPreservePrependScroll,
+  captureTopSectionAnchor,
   findVisibleDate,
-  preservePrependScrollPosition,
+  restoreTopSectionAnchor,
 } from '../utils/timelineScroll';
+import type { TopSectionAnchor } from '../utils/timelineScroll';
 import type { RefObject } from 'react';
 
 interface UseTimelineScrollSyncParams {
@@ -19,14 +20,17 @@ export const useTimelineScrollSync = ({
   selectedDate,
   onVisibleDateChange,
 }: UseTimelineScrollSyncParams) => {
-  const scrollHeightBeforePrependRef = useRef<number | null>(null);
+  const prependAnchorRef = useRef<TopSectionAnchor | null>(null);
   const shouldSkipNextDateSyncRef = useRef(false);
 
   const captureScrollBeforePrepend = useCallback(() => {
     const container = scrollContainerRef.current;
-    if (!container || !canPreservePrependScroll(container)) return false;
+    if (!container) return false;
 
-    scrollHeightBeforePrependRef.current = container.scrollHeight;
+    const anchor = captureTopSectionAnchor(container);
+    if (!anchor) return false;
+
+    prependAnchorRef.current = anchor;
     return true;
   }, [scrollContainerRef]);
 
@@ -39,14 +43,11 @@ export const useTimelineScrollSync = ({
 
   useLayoutEffect(() => {
     const container = scrollContainerRef.current;
-    const scrollHeightBeforePrepend = scrollHeightBeforePrependRef.current;
-    if (!container || scrollHeightBeforePrepend === null) return;
+    const anchor = prependAnchorRef.current;
+    if (!container || !anchor) return;
 
-    const didPreserveScroll = preservePrependScrollPosition(
-      container,
-      scrollHeightBeforePrepend,
-    );
-    scrollHeightBeforePrependRef.current = null;
+    const didPreserveScroll = restoreTopSectionAnchor(container, anchor);
+    prependAnchorRef.current = null;
 
     if (didPreserveScroll) {
       shouldSkipNextDateSyncRef.current = true;
