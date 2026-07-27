@@ -88,26 +88,26 @@ function ChallengeComments() {
 
   return (
     <Container>
-      <FilterWrapper isMobile={isMobile}>
-        {isMobile ? (
-          <MobileDateFilter
-            today={today}
-            dates={challengeDates}
-            selectedDate={activeDate}
-            onDateSelect={selectDate}
-          />
-        ) : (
-          <PCDateFilter
-            today={today}
-            dates={challengeDates}
-            selectedDate={activeDate}
-            onDateSelect={selectDate}
-          />
-        )}
-      </FilterWrapper>
+      <StickyHeader isMobile={isMobile}>
+        <FilterWrapper isMobile={isMobile}>
+          {isMobile ? (
+            <MobileDateFilter
+              today={today}
+              dates={challengeDates}
+              selectedDate={activeDate}
+              onDateSelect={selectDate}
+            />
+          ) : (
+            <PCDateFilter
+              today={today}
+              dates={challengeDates}
+              selectedDate={activeDate}
+              onDateSelect={selectDate}
+            />
+          )}
+        </FilterWrapper>
 
-      <ContentWrapper isMobile={isMobile}>
-        {activeDate === today && isChallengeDay(today) && (
+        {isChallengeDay(today) && (
           <AddCommentBox>
             <AddCommentTitle>
               오늘 읽은 뉴스레터, 한 줄만 남겨요.
@@ -131,6 +131,9 @@ function ChallengeComments() {
             오늘은 휴식일이에요. 코멘트를 작성하지 않아요!
           </NoticeLabel>
         )}
+      </StickyHeader>
+
+      <ContentWrapper isMobile={isMobile}>
         <CommentListWrapper ref={contentScrollRef}>
           <CommentTimeline
             key={timeline.key}
@@ -187,13 +190,19 @@ const Container = styled.section`
   justify-content: center;
 `;
 
-const FilterWrapper = styled.div<{ isMobile: boolean }>`
-  position: ${({ isMobile }) => (isMobile ? 'sticky' : 'static')};
+const StickyHeader = styled.div<{ isMobile: boolean }>`
+  position: sticky;
   top: ${({ isMobile, theme }) =>
     isMobile
       ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`
-      : 'auto'};
-  z-index: ${({ isMobile, theme }) => (isMobile ? theme.zIndex.panel : 'auto')};
+      : `calc(${theme.heights.headerPC} + 40px)`};
+  z-index: ${({ theme }) => theme.zIndex.panel};
+  width: 100%;
+
+  background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const FilterWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
   padding: ${({ isMobile }) => (isMobile ? '12px 0' : '0 0 8px')};
   border-bottom: 2px solid ${({ theme }) => theme.colors.dividers};
@@ -229,6 +238,7 @@ const CommentListWrapper = styled.div`
 
 const AddCommentBox = styled.article`
   width: 100%;
+  padding: 16px 0;
 
   display: flex;
   gap: 12px;
@@ -252,6 +262,7 @@ const AddCommentButton = styled(Button)`
 
 const NoticeLabel = styled.div<{ isMobile: boolean }>`
   width: 100%;
+  margin: 16px 0;
   padding: ${({ isMobile }) => (isMobile ? '8px 12px' : '12px 16px')};
   border-radius: 8px;
 
