@@ -12,11 +12,4 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- 소개 페이지 -->
-  <url>
-    <loc>https://www.bombom.news/landing</loc>
-    <lastmod>2026-03-25T00:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
 </urlset>

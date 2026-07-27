@@ -11,11 +11,12 @@ const DEFAULT_ERROR_MESSAGES: Record<number, string> = {
 };
 
 type JsonBody = Record<string, unknown> | unknown[];
+type Query = Record<string, string | number | boolean | undefined | string[]>;
 
 type FetcherOptions<TRequest extends JsonBody> = {
   path: string;
   baseUrl?: string;
-  query?: Record<string, string | number | undefined | string[]>;
+  query?: Query;
   body?: TRequest;
   headers?: HeadersInit;
 };
@@ -69,7 +70,7 @@ type RequestOptions<TRequest> = {
   path: string;
   baseUrl?: string;
   method: FetchMethod;
-  query?: Record<string, string | number | undefined | string[]>;
+  query?: Query;
   body?: TRequest;
   headers?: HeadersInit;
 };

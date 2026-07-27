@@ -51,4 +51,29 @@ describe('createStorage', () => {
     expect(window.localStorage.removeItem).toHaveBeenCalledWith(KEY);
     expect(window.localStorage.getItem(KEY)).toBeNull();
   });
+
+  it('get: storage 접근이 예외를 던지면 defaultData를 반환한다.', () => {
+    jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new DOMException('Access is denied.', 'SecurityError');
+    });
+
+    expect(() => storage.get()).not.toThrow();
+    expect(storage.get()).toEqual(DEFAULT_DATA);
+  });
+
+  it('set: storage 접근이 예외를 던져도 throw하지 않는다.', () => {
+    jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('Access is denied.', 'SecurityError');
+    });
+
+    expect(() => storage.set({ count: 1 })).not.toThrow();
+  });
+
+  it('remove: storage 접근이 예외를 던져도 throw하지 않는다.', () => {
+    jest.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
+      throw new DOMException('Access is denied.', 'SecurityError');
+    });
+
+    expect(() => storage.remove()).not.toThrow();
+  });
 });

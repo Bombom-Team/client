@@ -5,6 +5,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useRef } from 'react';
 import { queries } from '@/apis/queries';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
+import { MOBILE_HORIZONTAL_PADDING } from '@/components/PageLayout/PageLayout.constants';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import Spacing from '@/components/Spacing/Spacing';
 import { useDevice } from '@/hooks/useDevice';
@@ -111,13 +112,15 @@ function ArticleDetailPage() {
           />
           <Divider />
 
-          <ArticleBody
-            contentRef={contentRef}
-            articleId={articleIdNumber}
-            articleTitle={currentArticle.title}
-            newsletterName={currentArticle.newsletter.name}
-            articleContent={currentArticle.contents}
-          />
+          <ArticleBodyWrapper device={device}>
+            <ArticleBody
+              contentRef={contentRef}
+              articleId={articleIdNumber}
+              articleTitle={currentArticle.title}
+              newsletterName={currentArticle.newsletter.name}
+              articleContent={currentArticle.contents}
+            />
+          </ArticleBodyWrapper>
           <Spacing size={24} />
           <Divider />
 
@@ -161,6 +164,15 @@ const ArticleContent = styled.div<{ device: Device }>`
   gap: 20px;
   flex-direction: column;
   align-items: center;
+`;
+
+const ArticleBodyWrapper = styled.div<{ device: Device }>`
+  width: ${({ device }) =>
+    device === 'mobile'
+      ? `calc(100% + ${MOBILE_HORIZONTAL_PADDING}px)`
+      : '100%'};
+  margin: ${({ device }) =>
+    device === 'mobile' ? `0 -${MOBILE_HORIZONTAL_PADDING / 2}px` : '0'};
 `;
 
 const ArticleProgressBar = styled(ProgressBar)<{ device: Device }>`

@@ -7,10 +7,10 @@ interface ProgressBarSkeletonProps {
 
 const ProgressBarSkeleton = ({ hasCaption }: ProgressBarSkeletonProps) => {
   return (
-    <Container>
+    <Container hasCaption={Boolean(hasCaption)}>
       <SkeletonBox
         width="100%"
-        height="100%"
+        height={hasCaption ? '10px' : '100%'}
         borderRadius="10px"
         as={ProgressGauge}
       />

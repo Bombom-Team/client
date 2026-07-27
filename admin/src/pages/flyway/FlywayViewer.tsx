@@ -367,6 +367,7 @@ const collectTables = (migrations: MigrationItem[]) => {
 
 const Header = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.md};
+
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
@@ -376,6 +377,7 @@ const Chip = styled.span`
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius.full};
+
   color: ${({ theme }) => theme.colors.gray600};
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
@@ -386,52 +388,60 @@ const Spacer = styled.div`
 
 const Pipeline = styled.div`
   margin: ${({ theme }) => theme.spacing.md} 0;
+
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
 `;
 
 const Stage = styled.div`
-  flex: 1;
   padding: ${({ theme }) => theme.spacing.md};
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  flex: 1;
+
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const StageTop = styled.div`
-  font-size: ${({ theme }) => theme.fontSize.sm};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const StageCount = styled.div`
   margin-top: ${({ theme }) => theme.spacing.xs};
-  font-size: ${({ theme }) => theme.fontSize['2xl']};
+
   font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize['2xl']};
 `;
 
 const Banner = styled.div<{ $variant: 'error' | 'warning' }>`
   margin-bottom: ${({ theme }) => theme.spacing.md};
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-size: ${({ theme }) => theme.fontSize.sm};
+
   background-color: ${({ $variant }) =>
     $variant === 'error' ? '#FDEAEA' : '#FFF4E5'};
   color: ${({ theme, $variant }) =>
     $variant === 'error' ? theme.colors.error : '#B45309'};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const Toolbar = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.md};
+
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
 `;
 
 const SearchInput = styled.input`
-  flex: 1;
   padding: ${({ theme }) => theme.spacing.sm};
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  flex: 1;
+
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
@@ -439,6 +449,7 @@ const Select = styled.select`
   padding: ${({ theme }) => theme.spacing.sm};
   border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
+
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
@@ -453,17 +464,19 @@ const NextSafe = styled.span`
 `;
 
 const Panes = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
   height: calc(100vh - 400px);
   min-height: 400px;
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
 const List = styled.div`
-  width: 46%;
   overflow: auto;
+  width: 46%;
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
@@ -490,19 +503,6 @@ const RowButton = styled.button<{
   width: 100%;
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
-
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
-  align-items: center;
-
-  cursor: pointer;
-  text-align: left;
-  background-color: ${({ theme, $active, $conflict, $leapfrogSeverity }) => {
-    if ($conflict) return '#FDEAEA';
-    const leap = leapfrogBackground($leapfrogSeverity, $active);
-    if (leap) return leap;
-    return $active ? theme.colors.gray50 : theme.colors.white;
-  }};
   box-shadow: ${({ theme, $active, $conflict, $leapfrogSeverity }) =>
     $conflict
       ? `inset 3px 0 0 ${theme.colors.error}`
@@ -512,6 +512,20 @@ const RowButton = styled.button<{
           ? `inset 3px 0 0 ${theme.colors.primary}`
           : 'none'};
 
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
+
+  background-color: ${({ theme, $active, $conflict, $leapfrogSeverity }) => {
+    if ($conflict) return '#FDEAEA';
+    const leap = leapfrogBackground($leapfrogSeverity, $active);
+    if (leap) return leap;
+    return $active ? theme.colors.gray50 : theme.colors.white;
+  }};
+  text-align: left;
+
+  cursor: pointer;
+
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray50};
   }
@@ -519,54 +533,62 @@ const RowButton = styled.button<{
 
 const Version = styled.span`
   min-width: 64px;
+
   font-family: monospace;
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const Desc = styled.span`
-  flex: 1;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+
+  flex: 1;
+
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.sm};
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
 `;
 
 const LeapfrogBadge = styled.span<{ $severity: ConflictSeverity }>`
-  flex-shrink: 0;
   padding: 1px ${({ theme }) => theme.spacing.xs};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
-  font-size: ${({ theme }) => theme.fontSize.xs};
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  white-space: nowrap;
-  color: ${({ $severity }) => ($severity === 'COLUMN' ? '#B91C1C' : '#92400E')};
+
+  flex-shrink: 0;
+
   background-color: ${({ $severity }) =>
     $severity === 'COLUMN' ? '#FEE2E2' : '#FEF3C7'};
+  color: ${({ $severity }) => ($severity === 'COLUMN' ? '#B91C1C' : '#92400E')};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  white-space: nowrap;
 `;
 
 const Tag = styled.span`
   padding: 0 ${({ theme }) => theme.spacing.xs};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
+
   background-color: ${({ theme }) => theme.colors.gray100};
   color: ${({ theme }) => theme.colors.gray600};
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const Source = styled.span`
+  color: ${({ theme }) => theme.colors.gray500};
   font-family: monospace;
   font-size: ${({ theme }) => theme.fontSize.xs};
-  color: ${({ theme }) => theme.colors.gray500};
 `;
 
 const StatusBadge = styled.span<{ $status: MigrationStatus }>`
   padding: 0 ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
-  font-size: ${({ theme }) => theme.fontSize.xs};
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  white-space: nowrap;
-  color: ${({ theme, $status }) => statusColor(theme, $status)};
+
   background-color: ${({ $status }) => statusBackground($status)};
+  color: ${({ theme, $status }) => statusColor(theme, $status)};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  white-space: nowrap;
 `;
 
 const statusColor = (
@@ -587,30 +609,34 @@ const statusBackground = (status: MigrationStatus) => {
 };
 
 const Detail = styled.div`
-  flex: 1;
   overflow: auto;
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+
+  flex: 1;
+
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const DetailBar = styled.div`
   padding: ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
+
   display: flex;
-  align-items: center;
   gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
 `;
 
 const FileName = styled.span`
   font-family: monospace;
-  font-size: ${({ theme }) => theme.fontSize.sm};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const DetailMeta = styled.div`
   padding: ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
+
   color: ${({ theme }) => theme.colors.gray600};
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
@@ -619,38 +645,43 @@ const LeapfrogWarning = styled.div<{ $severity: ConflictSeverity }>`
   margin: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.md}
     0;
   padding: ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
   border: 1px solid
     ${({ $severity }) => ($severity === 'COLUMN' ? '#FCA5A5' : '#FCD34D')};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
   background-color: ${({ $severity }) =>
     $severity === 'COLUMN' ? '#FFF5F5' : '#FFFBEB'};
 `;
 
 const LeapfrogWarningTitle = styled.div`
-  font-size: ${({ theme }) => theme.fontSize.sm};
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
   margin-bottom: ${({ theme }) => theme.spacing.xs};
+
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const LeapfrogWarningBody = styled.p`
-  font-size: ${({ theme }) => theme.fontSize.sm};
-  color: ${({ theme }) => theme.colors.gray700};
   margin-bottom: ${({ theme }) => theme.spacing.xs};
+
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.sm};
   line-height: 1.5;
 `;
 
 const LeapfrogWarningDetail = styled.div`
-  font-size: ${({ theme }) => theme.fontSize.xs};
-  color: ${({ theme }) => theme.colors.gray600};
   display: flex;
-  align-items: center;
   gap: ${({ theme }) => theme.spacing.xs};
   flex-wrap: wrap;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const LeapfrogTag = styled.code<{ $severity: ConflictSeverity }>`
   padding: 1px 5px;
   border-radius: ${({ theme }) => theme.borderRadius.sm};
+
   background-color: ${({ $severity }) =>
     $severity === 'COLUMN' ? '#FEE2E2' : '#FEF3C7'};
   font-size: ${({ theme }) => theme.fontSize.xs};
@@ -662,6 +693,7 @@ const ScriptArea = styled.div`
 
 const PendingNote = styled.p`
   padding: ${({ theme }) => theme.spacing.lg};
+
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;
@@ -673,6 +705,7 @@ const StateText = styled.p`
 
 const Empty = styled.p`
   padding: ${({ theme }) => theme.spacing.lg};
+
   color: ${({ theme }) => theme.colors.gray400};
   font-size: ${({ theme }) => theme.fontSize.sm};
 `;

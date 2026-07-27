@@ -297,17 +297,17 @@ const Panel = styled.section`
   padding: ${({ theme }) => theme.spacing.lg};
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.sm};
 
   background: ${({ theme }) => theme.colors.white};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
 
 const TwoColumn = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr;
   gap: ${({ theme }) => theme.spacing.md};
-
   align-items: start;
+
+  grid-template-columns: 2fr 1fr;
 `;
 
 const PanelHead = styled.div`
@@ -320,8 +320,8 @@ const PanelHead = styled.div`
 
 const PanelTitle = styled.h2`
   color: ${({ theme }) => theme.colors.gray900};
-  font-size: ${({ theme }) => theme.fontSize.base};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.base};
 `;
 
 const SelectRow = styled.div`
@@ -374,14 +374,14 @@ const RankBadge = styled.span<{ $first?: boolean }>`
     $first ? theme.colors.primary : theme.colors.gray200};
   color: ${({ theme, $first }) =>
     $first ? theme.colors.white : theme.colors.gray600};
-  font-size: ${({ theme }) => theme.fontSize.xs};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const RankName = styled.span`
   color: ${({ theme }) => theme.colors.gray900};
-  font-size: ${({ theme }) => theme.fontSize.sm};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const RankMeta = styled.span`
@@ -389,6 +389,7 @@ const RankMeta = styled.span`
 
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
+
   font-variant-numeric: tabular-nums;
 `;
 
@@ -412,19 +413,20 @@ const PrCard = styled.div<{ $overdue: boolean }>`
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
   display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto auto;
-  column-gap: ${({ theme }) => theme.spacing.md};
 
   background: ${({ theme }) => theme.colors.white};
+
+  column-gap: ${({ theme }) => theme.spacing.md};
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
 `;
 
 const PrTitle = styled.a`
-  grid-column: 1;
-
   color: ${({ theme }) => theme.colors.gray900};
-  font-size: ${({ theme }) => theme.fontSize.sm};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  grid-column: 1;
   text-decoration: none;
 
   &:hover {
@@ -435,24 +437,24 @@ const PrTitle = styled.a`
 const PrMeta = styled.span`
   margin-top: 2px;
 
-  grid-column: 1;
-
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
+
+  grid-column: 1;
 `;
 
 const PrDeadline = styled.span<{ $overdue: boolean }>`
-  grid-row: 1 / 3;
-  grid-column: 2;
-
   align-self: center;
 
   color: ${({ theme, $overdue }) =>
     $overdue ? theme.colors.error : theme.colors.gray500};
-  font-size: ${({ theme }) => theme.fontSize.xs};
   font-weight: ${({ theme, $overdue }) =>
     $overdue ? theme.fontWeight.semibold : theme.fontWeight.normal};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+
   font-variant-numeric: tabular-nums;
+  grid-column: 2;
+  grid-row: 1 / 3;
 `;
 
 const EmptyText = styled.p`
@@ -469,6 +471,7 @@ const BackLink = styled(Link)`
 
   color: ${({ theme }) => theme.colors.gray700};
   font-size: ${({ theme }) => theme.fontSize.sm};
+
   text-decoration: none;
 
   &:hover {

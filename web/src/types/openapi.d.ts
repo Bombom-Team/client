@@ -2982,6 +2982,7 @@ export interface components {
       date?: string;
       /** Format: int64 */
       newsletterId?: number;
+      unreadOnly?: boolean;
     };
     ArticleResponse: {
       /** Format: int64 */
