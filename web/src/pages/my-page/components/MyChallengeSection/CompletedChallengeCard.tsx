@@ -38,7 +38,7 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
   const gradeColor = medalGrade ? GRADE_COLOR[medalGrade] : null;
 
   const handleCardClick = () => {
-    if (isFail || !challengeId) return;
+    if (isFail || challengeId == null) return;
 
     navigate({
       to: '/challenge/$challengeId/dashboard',
@@ -66,6 +66,7 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
         onKeyDown={handleCardKeyDown}
         role="button"
         tabIndex={isFail ? -1 : 0}
+        aria-disabled={isFail}
       >
         <MedalCircle gradeColor={gradeColor}>
           {MedalIcon ? (
@@ -84,9 +85,9 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
             <BottomRow>
               <AttendanceText>
                 출석률 <AttendanceValue>{attendanceRate}%</AttendanceValue>
-                {grade === 'FAIL' && <FailBadge>(탈락)</FailBadge>}
+                {isFail && <FailBadge>(탈락)</FailBadge>}
               </AttendanceText>
-              {grade !== 'FAIL' && (
+              {!isFail && (
                 <CertButton
                   variant="transparent"
                   onClick={handleCertButtonClick}
@@ -99,7 +100,7 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
         </Content>
       </Container>
 
-      {grade !== 'FAIL' && challengeId !== undefined && (
+      {!isFail && challengeId != null && (
         <CertificateModal
           challengeId={challengeId}
           modalRef={modalRef}
