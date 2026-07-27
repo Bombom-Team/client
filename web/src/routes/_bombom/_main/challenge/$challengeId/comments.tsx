@@ -133,19 +133,17 @@ function ChallengeComments() {
         )}
       </StickyHeader>
 
-      <ContentWrapper isMobile={isMobile}>
-        <CommentListWrapper ref={contentScrollRef}>
-          <CommentTimeline
-            key={timeline.key}
-            challengeId={Number(challengeId)}
-            challengeDates={challengeDates}
-            initialDate={activeTimelineStart}
-            scrollContainerRef={contentScrollRef}
-            selectedDate={activeDate}
-            today={today}
-            onVisibleDateChange={changeVisibleDate}
-          />
-        </CommentListWrapper>
+      <ContentWrapper isMobile={isMobile} ref={contentScrollRef}>
+        <CommentTimeline
+          key={timeline.key}
+          challengeId={Number(challengeId)}
+          challengeDates={challengeDates}
+          initialDate={activeTimelineStart}
+          scrollContainerRef={contentScrollRef}
+          selectedDate={activeDate}
+          today={today}
+          onVisibleDateChange={changeVisibleDate}
+        />
       </ContentWrapper>
 
       {candidateArticles.length > 0 && (
@@ -211,7 +209,6 @@ const FilterWrapper = styled.div<{ isMobile: boolean }>`
 `;
 
 const ContentWrapper = styled.div<{ isMobile: boolean }>`
-  overflow: hidden;
   width: 100%;
   height: ${({ isMobile }) =>
     isMobile ? 'calc(100vh - 220px)' : 'calc(100vh - 260px)'};
@@ -219,19 +216,8 @@ const ContentWrapper = styled.div<{ isMobile: boolean }>`
   padding: ${({ isMobile }) => (isMobile ? '20px 0' : '24px')};
   border-top: 1px solid ${({ theme }) => theme.colors.dividers};
 
-  display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '32px' : '44px')};
-  flex-direction: column;
-
   background-color: ${({ theme, isMobile }) =>
     isMobile ? 'none' : theme.colors.backgroundHover};
-`;
-
-const CommentListWrapper = styled.div`
-  width: 100%;
-  min-height: 0;
-
-  flex: 1;
 
   overflow-y: auto;
 `;
