@@ -90,7 +90,6 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
                 <CertButton
                   variant="transparent"
                   onClick={handleCertButtonClick}
-                  disabled={isFail}
                 >
                   수료증 확인
                 </CertButton>
@@ -129,6 +128,11 @@ const Container = styled.div<{ disabled?: boolean }>`
 
   box-sizing: border-box;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primaryBomBom};
+    outline-offset: 2px;
+  }
 `;
 
 const Content = styled.div`
