@@ -86,11 +86,11 @@ AI agents MUST treat linting as a BLOCKING requirement.
 
 Before considering any task complete, the AI MUST:
 
-1. Run ESLint auto-fix:
+1. Run sequential ESLint → Stylelint auto-fix:
    - `pnpm --filter {workspace} lint:fix`
-2. Run Stylelint auto-fix:
-   - `pnpm --filter {workspace} stylelint:fix`
-3. Re-run lint checks:
+   - In workspaces with Stylelint, this script MUST run ESLint first and
+     Stylelint second. The two fixers MUST NOT run in parallel.
+2. Re-run lint checks:
    - ESLint / Stylelint MUST pass with ZERO errors
 
 Rules:
@@ -176,6 +176,11 @@ These rules apply to commits and pull requests in **any** package.
 ## 13. Codex Review Policy
 
 When Codex reviews a pull request, it MUST act as a high-signal reviewer.
+
+Before reviewing, read `docs/architecture.md`. It is the repository behavior map
+for workspace boundaries, authentication, API, routing, WebView, and notification
+contracts. If the document and code disagree, the code is authoritative and the
+reviewer MUST propose updating the document.
 
 Focus on:
 

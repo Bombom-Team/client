@@ -227,9 +227,9 @@ const Panel = styled.section`
   padding: ${({ theme }) => theme.spacing.lg};
   border: 1px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.sm};
 
   background: ${({ theme }) => theme.colors.white};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
 
 const FilterBar = styled.div`
@@ -254,17 +254,18 @@ const TabButton = styled.button<{ $selected: boolean }>`
   padding: 6px 16px;
   border: none;
   border-radius: 6px;
+  box-shadow: ${({ theme, $selected }) =>
+    $selected ? theme.shadows.sm : 'none'};
 
   background: ${({ theme, $selected }) =>
     $selected ? theme.colors.white : 'transparent'};
-  box-shadow: ${({ theme, $selected }) =>
-    $selected ? theme.shadows.sm : 'none'};
   color: ${({ theme, $selected }) =>
     $selected ? theme.colors.gray900 : theme.colors.gray500};
-  cursor: pointer;
-  font-size: ${({ theme }) => theme.fontSize.sm};
   font-weight: ${({ theme, $selected }) =>
     $selected ? theme.fontWeight.semibold : theme.fontWeight.normal};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
 
   transition: all 0.2s ease-in-out;
 `;
@@ -298,9 +299,10 @@ const ActionButton = styled.button`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.gray700};
-  cursor: pointer;
   font-size: ${({ theme }) => theme.fontSize.sm};
   white-space: nowrap;
+
+  cursor: pointer;
 
   &:hover {
     background: ${({ theme }) => theme.colors.gray50};
@@ -309,14 +311,15 @@ const ActionButton = styled.button`
 
 const ModalErrorOverlay = styled.div`
   position: fixed;
-  inset: 0;
   z-index: 100;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: rgba(17, 24, 39, 0.4);
+  background: rgb(17 24 39 / 40%);
+
+  inset: 0;
 `;
 
 const ModalErrorCard = styled.div`
@@ -365,12 +368,14 @@ const StripText = styled.span`
 const StripNumber = styled.strong`
   color: ${({ theme }) => theme.colors.primary};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
+
   font-variant-numeric: tabular-nums;
 `;
 
 const StripLink = styled.a`
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
+
   text-decoration: none;
 
   &:hover {
@@ -404,8 +409,8 @@ const HeadRow = styled.tr`
 
     background: ${({ theme }) => theme.colors.gray50};
     color: ${({ theme }) => theme.colors.gray600};
-    font-size: ${({ theme }) => theme.fontSize.xs};
     font-weight: ${({ theme }) => theme.fontWeight.semibold};
+    font-size: ${({ theme }) => theme.fontSize.xs};
     text-align: left;
   }
 
@@ -421,6 +426,7 @@ const StatsLink = styled(Link)`
 
   color: ${({ theme }) => theme.colors.gray700};
   font-size: ${({ theme }) => theme.fontSize.sm};
+
   text-decoration: none;
 
   &:hover {

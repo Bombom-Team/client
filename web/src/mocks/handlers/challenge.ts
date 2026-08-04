@@ -12,6 +12,7 @@ import type {
   GetChallengeCommentsResponse,
   GetChallengeCommentRepliesResponse,
   GetChallengeEligibilityResponse,
+  GetChallengeInfoResponse,
   GetMemberChallengeProgressResponse,
   GetMemberChallengeStreakResponse,
   GetDailyGuideCommentsResponse,
@@ -124,6 +125,24 @@ const buildTeamProgressResponse = (
   };
 };
 
+const buildChallengeInfoResponse = (
+  challengeId: number,
+): GetChallengeInfoResponse => {
+  const challenge = CHALLENGES.find((item) => item.id === challengeId);
+  const startDate = challenge?.startDate ?? '2026-01-05';
+  const endDate = challenge?.endDate ?? '2026-02-04';
+  const totalDays = buildWeekdayDates(startDate, endDate).length;
+
+  return {
+    name: challenge?.title ?? '한달 뉴스레터 읽기 챌린지',
+    startDate,
+    endDate,
+    generation: challenge?.generation ?? 1,
+    totalDays,
+    requiredDays: Math.ceil(totalDays * 0.8),
+  };
+};
+
 export const challengeHandlers = [
   http.get(`${baseURL}/challenges`, ({ request }) => {
     const url = new URL(request.url);
@@ -139,6 +158,12 @@ export const challengeHandlers = [
     }
 
     return HttpResponse.json(CHALLENGES);
+  }),
+
+  http.get(`${baseURL}/challenges/:challengeId`, ({ params }) => {
+    const response = buildChallengeInfoResponse(Number(params.challengeId));
+
+    return HttpResponse.json(response);
   }),
 
   http.get(`${baseURL}/challenges/:challengeId/eligibility`, ({ params }) => {

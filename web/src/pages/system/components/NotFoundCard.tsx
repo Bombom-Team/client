@@ -67,8 +67,8 @@ const DescriptionWrapper = styled.div`
 const Description = styled.p``;
 
 const GoHomeButton = styled(Button)`
-  margin-top: 12px;
   max-width: 380px;
+  margin-top: 12px;
 
   font: ${({ theme }) => theme.fonts.t7Bold};
 `;
