@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
+import { useNavigate } from '@tanstack/react-router';
 import CertificateModal from './CertificateModal';
 import { MEDAL_COLORS } from '../../constants/challenge';
 import Button from '@/components/Button/Button';
 import useModal from '@/components/Modal/useModal';
 import type { MyCompletedChallenge } from '@/apis/members/members.api';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import MedalBronzeIcon from '#/assets/svg/medal-bronze.svg';
 import MedalGoldIcon from '#/assets/svg/medal-gold.svg';
 import MedalSilverIcon from '#/assets/svg/medal-silver.svg';
@@ -28,14 +30,44 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
   const { challengeId, title, startDate, endDate, attendanceRate, grade } =
     challenge;
   const { modalRef, isOpen, openModal, closeModal } = useModal();
+  const navigate = useNavigate();
 
-  const medalGrade = grade != null && grade !== 'FAIL' ? grade : null;
+  const isFail = grade === 'FAIL';
+  const medalGrade = grade != null && !isFail ? grade : null;
   const MedalIcon = medalGrade ? MEDAL_ICON[medalGrade] : null;
   const gradeColor = medalGrade ? GRADE_COLOR[medalGrade] : null;
 
+  const handleCardClick = () => {
+    if (isFail || challengeId == null) return;
+
+    navigate({
+      to: '/challenge/$challengeId/dashboard',
+      params: { challengeId: String(challengeId) },
+    });
+  };
+
+  const handleCertButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    openModal();
+  };
+
+  const handleCardKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleCardClick();
+    }
+  };
+
   return (
     <>
-      <Container>
+      <Container
+        disabled={isFail}
+        onClick={handleCardClick}
+        onKeyDown={handleCardKeyDown}
+        role="button"
+        tabIndex={isFail ? -1 : 0}
+        aria-disabled={isFail}
+      >
         <MedalCircle gradeColor={gradeColor}>
           {MedalIcon ? (
             <MedalIcon width={36} height={36} />
@@ -53,10 +85,13 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
             <BottomRow>
               <AttendanceText>
                 출석률 <AttendanceValue>{attendanceRate}%</AttendanceValue>
-                {grade === 'FAIL' && <FailBadge>(탈락)</FailBadge>}
+                {isFail && <FailBadge>(탈락)</FailBadge>}
               </AttendanceText>
-              {grade !== 'FAIL' && (
-                <CertButton variant="transparent" onClick={openModal}>
+              {!isFail && (
+                <CertButton
+                  variant="transparent"
+                  onClick={handleCertButtonClick}
+                >
                   수료증 확인
                 </CertButton>
               )}
@@ -65,7 +100,7 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
         </Content>
       </Container>
 
-      {grade !== 'FAIL' && challengeId !== undefined && (
+      {!isFail && challengeId != null && (
         <CertificateModal
           challengeId={challengeId}
           modalRef={modalRef}
@@ -79,7 +114,7 @@ const CompletedChallengeCard = ({ challenge }: CompletedChallengeCardProps) => {
 
 export default CompletedChallengeCard;
 
-const Container = styled.div`
+const Container = styled.div<{ disabled?: boolean }>`
   width: 100%;
   padding: 12px 16px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
@@ -89,12 +124,27 @@ const Container = styled.div`
   gap: 12px;
   align-items: center;
 
+  background-color: ${({ theme, disabled }) =>
+    disabled ? theme.colors.disabledBackground : theme.colors.white};
+
   box-sizing: border-box;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primaryBomBom};
+    outline-offset: 2px;
+  }
 `;
 
 const Content = styled.div`
+  width: 100%;
   min-width: 0;
+
+  display: flex;
+  gap: 4px;
   flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
 const MedalCircle = styled.div<{ gradeColor: string | null }>`
@@ -108,7 +158,7 @@ const MedalCircle = styled.div<{ gradeColor: string | null }>`
   justify-content: center;
 
   background-color: ${({ theme, gradeColor }) =>
-    gradeColor ? `${gradeColor}20` : theme.colors.dividers};
+    gradeColor ? `${gradeColor}20` : theme.colors.stroke};
 `;
 
 const MedalPlaceholder = styled.div`
@@ -126,11 +176,13 @@ const MedalPlaceholder = styled.div`
 `;
 
 const Info = styled.div`
+  width: 100%;
   min-width: 0;
 
   display: flex;
   gap: 4px;
   flex-direction: column;
+  align-items: flex-start;
 `;
 
 const Title = styled.h3`
@@ -167,6 +219,8 @@ const FailBadge = styled.span`
 `;
 
 const BottomRow = styled.div`
+  width: 100%;
+
   display: flex;
   align-items: center;
   justify-content: space-between;

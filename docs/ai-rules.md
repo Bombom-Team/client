@@ -39,9 +39,11 @@ If any rule conflicts, higher priority rules ALWAYS win.
 ## Lint & Auto-Fix (Blocking)
 
 - ESLint and Stylelint MUST be auto-fixed before task completion.
-- Auto-fix MUST be executed using workspace scripts:
+- Auto-fix MUST be executed using the workspace script:
   - `pnpm --filter {workspace} lint:fix`
-  - `pnpm --filter {workspace} stylelint:fix`
+- In workspaces with Stylelint, `lint:fix` MUST run ESLint first and Stylelint
+  second in the same script. They MUST NOT run in parallel because both tools
+  can write `.tsx` files.
 
 - If auto-fix produces changes:
   - Those changes MUST be reviewed.

@@ -157,7 +157,6 @@ const Weekday = styled(Text)`
 
 const Divider = styled.div`
   height: 1px;
-
   background-color: ${COLORS.divider};
 `;
 
@@ -168,7 +167,6 @@ const Grid = styled.div`
 
 const DayCell = styled.div`
   position: relative;
-
   height: 28px;
 
   display: flex;
@@ -186,7 +184,6 @@ const MostReadCircle = styled(Text)`
   position: absolute;
   top: 50%;
   left: 50%;
-
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -204,7 +201,6 @@ const ReadUnderline = styled.span`
   position: absolute;
   bottom: 0;
   left: 50%;
-
   width: 26px;
   height: 4px;
   border-radius: 2px;

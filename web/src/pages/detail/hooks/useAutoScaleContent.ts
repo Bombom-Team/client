@@ -1,25 +1,45 @@
 import { useEffect, useState } from 'react';
-import { PC_HORIZONTAL_PADDING } from '@/components/PageLayout/PageLayout.constants';
 import type { RefObject } from 'react';
 
-export const useAutoScaleContent = (ref: RefObject<HTMLDivElement | null>) => {
+interface UseAutoScaleContentParams {
+  layoutRef: RefObject<HTMLDivElement | null>;
+  contentRef: RefObject<HTMLDivElement | null>;
+}
+
+export const useAutoScaleContent = ({
+  layoutRef,
+  contentRef,
+}: UseAutoScaleContentParams) => {
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    if (!ref.current) return;
+    const layout = layoutRef.current;
+    const content = contentRef.current;
+    if (!layout || !content) return;
 
-    const screenWidth = window.outerWidth - PC_HORIZONTAL_PADDING;
-    const contentWidth = ref.current.clientWidth;
+    const recompute = () => {
+      const layoutWidth = layout.clientWidth;
+      const contentWidth = content.scrollWidth;
+      const newScale =
+        contentWidth > layoutWidth ? layoutWidth / contentWidth : 1;
 
-    const newScale =
-      contentWidth > screenWidth ? screenWidth / contentWidth : 1;
+      setScale(newScale);
 
-    if (newScale === 1) return;
+      layout.style.height =
+        newScale === 1 ? '' : `${content.scrollHeight * newScale}px`;
+    };
 
-    const newHeight = ref.current.scrollHeight * newScale;
-    ref.current.style.height = `${newHeight}px`;
-    setScale(newScale);
-  }, [ref]);
+    recompute();
+
+    const observer = new ResizeObserver(recompute);
+    observer.observe(content);
+    window.addEventListener('resize', recompute);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', recompute);
+    };
+  }, [layoutRef, contentRef]);
 
   return scale;
 };

@@ -22,7 +22,7 @@ const NewsletterFilterSkeleton = () => {
   const isPC = device === 'pc';
 
   return (
-    <Container aria-label="뉴스레터" isPc={isPC}>
+    <Container aria-label="뉴스레터" isPc={isPC} isMobile={device === 'mobile'}>
       {isPC && (
         <TitleWrapper>
           <IconWrapper>
@@ -31,7 +31,10 @@ const NewsletterFilterSkeleton = () => {
           <Title>뉴스레터</Title>
         </TitleWrapper>
       )}
-      <StyledTabs direction={device === 'pc' ? 'vertical' : 'horizontal'}>
+      <StyledTabs
+        direction={device === 'pc' ? 'vertical' : 'horizontal'}
+        isMobile={device === 'mobile'}
+      >
         {Array.from({
           length: isPC ? SKELETON_LENGTH.pc : SKELETON_LENGTH.mobile,
         }).map((_, index) => (

@@ -24,30 +24,35 @@ const ProgressBar = ({
   variant = 'rounded',
   ...props
 }: ProgressBarProps) => {
+  const hasCaption = Boolean(caption);
+
   return (
-    <Container {...props}>
-      <ProgressOverlay variant={variant}>
+    <Container hasCaption={hasCaption} {...props}>
+      <ProgressOverlay variant={variant} hasCaption={hasCaption}>
         <ProgressGauge
           rate={rate}
           transitionDuration={transition === true ? 0.5 : transition}
           variant={variant}
         />
       </ProgressOverlay>
-      <ProgressCaption>{caption}</ProgressCaption>
+      {caption && <ProgressCaption>{caption}</ProgressCaption>}
     </Container>
   );
 };
 
 export default ProgressBar;
 
-export const Container = styled.div`
+export const Container = styled.div<{ hasCaption: boolean }>`
   width: 100%;
-  height: 10px;
+  height: ${({ hasCaption }) => (hasCaption ? 'auto' : '10px')};
 `;
 
-const ProgressOverlay = styled.div<{ variant: 'rounded' | 'rectangular' }>`
+const ProgressOverlay = styled.div<{
+  variant: 'rounded' | 'rectangular';
+  hasCaption: boolean;
+}>`
   width: 100%;
-  height: 100%;
+  height: ${({ hasCaption }) => (hasCaption ? '10px' : '100%')};
   border-radius: ${({ variant }) => (variant === 'rounded' ? '10px' : '0')};
 
   background-color: ${({ theme }) => theme.colors.primaryLight};

@@ -5,13 +5,18 @@ import { RANKING } from './ReadingKingLeaderboard.constants';
 import { LeaderboardList, Divider } from './ReadingKingLeaderboard.styles';
 import { queries } from '@/apis/queries';
 import { Carousel } from '@/components/Carousel/Carousel';
+import { useAuth } from '@/contexts/AuthContext';
 import { chunk } from '@/utils/array';
 
 const MonthlyRankingContent = () => {
+  const { isLoggedIn } = useAuth();
   const { data: monthlyReadingRank } = useSuspenseQuery(
     queries.monthlyReadingRank({ limit: RANKING.maxRank }),
   );
-  const { data: userRank } = useQuery(queries.myMonthlyReadingRank());
+  const { data: userRank } = useQuery({
+    ...queries.myMonthlyReadingRank(),
+    enabled: isLoggedIn,
+  });
 
   const monthlyContent = monthlyReadingRank?.data ?? [];
 

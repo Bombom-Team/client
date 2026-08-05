@@ -5,13 +5,18 @@ import { LeaderboardList, Divider } from './ReadingKingLeaderboard.styles';
 import StreakMyRank from './StreakMyRank';
 import { queries } from '@/apis/queries';
 import { Carousel } from '@/components/Carousel/Carousel';
+import { useAuth } from '@/contexts/AuthContext';
 import { chunk } from '@/utils/array';
 
 const StreakRankingContent = () => {
+  const { isLoggedIn } = useAuth();
   const { data: streakReadingRank } = useSuspenseQuery(
     queries.streakReadingRank({ limit: RANKING.maxRank }),
   );
-  const { data: streakUserRank } = useQuery(queries.myStreakReadingRank());
+  const { data: streakUserRank } = useQuery({
+    ...queries.myStreakReadingRank(),
+    enabled: isLoggedIn,
+  });
 
   const streakContent = streakReadingRank?.data ?? [];
 

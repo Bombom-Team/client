@@ -158,8 +158,8 @@ export const CHALLENGES: Challenge[] = [
     id: 8,
     title: '매일 아침 뉴스레터 읽기',
     generation: 2,
-    startDate: '2026-01-06',
-    endDate: '2026-01-20',
+    startDate: '2026-07-07',
+    endDate: '2026-07-18',
     participantCount: 35,
     newsletters: [
       {
