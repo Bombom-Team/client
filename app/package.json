@@ -8,7 +8,7 @@
     "build:android": "eas build --platform android --local",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo prebuild --platform android --clean && expo run:android",
-    "ios": "expo prebuild --platform ios --clean && expo run:ios",
+    "ios": "expo prebuild --platform ios --clean && eas build:version:sync --platform ios --profile production && expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
     "format": "prettier --write .",
