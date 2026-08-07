@@ -131,6 +131,14 @@ const MY_COMPLETED_CHALLENGES_DATA: GetMyCompletedChallengesResponse['content'] 
   ];
 
 export const membersHandlers = [
+  http.get(`${baseURL}/members/me/profile`, () => {
+    return HttpResponse.json({
+      id: 1,
+      email: 'mock@example.com',
+      nickname: 'mock-user',
+    });
+  }),
+
   http.get(`${baseURL}/members/me/category-stats`, ({ request }) => {
     const url = new URL(request.url);
     const year = url.searchParams.get('year');
