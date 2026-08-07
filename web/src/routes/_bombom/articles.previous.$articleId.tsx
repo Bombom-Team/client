@@ -2,7 +2,7 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useRouterState } from '@tanstack/react-router';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
@@ -11,7 +11,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
+import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
+import { useArticleContentFontScale } from '@/pages/detail/hooks/useArticleContentFontScale';
+import { useArticleFontSize } from '@/pages/detail/hooks/useArticleFontSize';
 import { openSubscribeLink } from '@/pages/newsletter-detail/utils';
 import { cutHtmlByTextRatio } from '@/utils/element';
 
@@ -32,6 +35,14 @@ export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
 
 function RouteComponent() {
   const device = useDevice();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const {
+    percentage,
+    canDecrease,
+    canIncrease,
+    decreaseFontSize,
+    increaseFontSize,
+  } = useArticleFontSize();
   const { userProfile, isLoggedIn } = useAuth();
   const { articleId } = Route.useParams();
   const { subscribeUrl } = useRouterState({
@@ -51,8 +62,20 @@ function RouteComponent() {
     () => cutHtmlByTextRatio(article?.contents, article?.exposureRatio),
     [article?.contents, article?.exposureRatio],
   );
+  const processedContent = useMemo(
+    () => processContent(article?.newsletter.name ?? '', bodyContent),
+    [article?.newsletter.name, bodyContent],
+  );
+
+  useArticleContentFontScale({
+    ref: contentRef,
+    content: processedContent,
+    percentage,
+  });
 
   if (!article) return null;
+
+  const hasArticleContent = !!processedContent.trim();
 
   const handleSubscribeClick = () => {
     trackEvent({
@@ -89,12 +112,22 @@ function RouteComponent() {
         arrivedDateTime={new Date(article.arrivedDateTime)}
         expectedReadTime={article.expectedReadTime}
       />
+      {hasArticleContent && (
+        <ArticleFontSizeControl
+          percentage={percentage}
+          canDecrease={canDecrease}
+          canIncrease={canIncrease}
+          onDecrease={decreaseFontSize}
+          onIncrease={increaseFontSize}
+        />
+      )}
       <Divider />
 
       <Content
+        ref={contentRef}
         showGradient={shouldShowSubscribePrompt}
         dangerouslySetInnerHTML={{
-          __html: processContent(article.newsletter.name, bodyContent),
+          __html: processedContent,
         }}
       />
 
