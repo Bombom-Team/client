@@ -14,10 +14,12 @@ import useScrollRestoration from '@/hooks/useScrollRestoration';
 import { useScrollThreshold } from '@/hooks/useScrollThreshold';
 import ArticleActionButtons from '@/pages/detail/components/ArticleActionButtons/ArticleActionButtons';
 import ArticleBody from '@/pages/detail/components/ArticleBody/ArticleBody';
+import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
 import TodayUnreadArticlesSection from '@/pages/detail/components/TodayUnreadArticlesSection/TodayUnreadArticlesSection';
 import useArticleAsReadMutation from '@/pages/detail/hooks/useArticleAsReadMutation';
 import { useArticleBookmark } from '@/pages/detail/hooks/useArticleBookmark';
+import { useArticleFontSize } from '@/pages/detail/hooks/useArticleFontSize';
 import type { Device } from '@/hooks/useDevice';
 import BookmarkActiveIcon from '#/assets/svg/bookmark-active.svg';
 import BookmarkInactiveIcon from '#/assets/svg/bookmark-inactive.svg';
@@ -44,6 +46,13 @@ function ArticleDetailPage() {
   const articleIdNumber = Number(articleId);
   const contentRef = useRef<HTMLDivElement>(null);
   const device = useDevice();
+  const {
+    percentage,
+    canDecrease,
+    canIncrease,
+    decreaseFontSize,
+    increaseFontSize,
+  } = useArticleFontSize();
 
   const { data: currentArticle } = useQuery(
     queries.articleById({ id: articleIdNumber }),
@@ -68,6 +77,8 @@ function ArticleDetailPage() {
   useScrollRestoration({ pathname: articleId, enabled: !!currentArticle });
 
   if (!currentArticle) return null;
+
+  const hasArticleContent = !!currentArticle.contents?.trim();
 
   return (
     <>
@@ -110,6 +121,15 @@ function ArticleDetailPage() {
             arrivedDateTime={new Date(currentArticle.arrivedDateTime ?? '')}
             expectedReadTime={currentArticle.expectedReadTime ?? 1}
           />
+          {hasArticleContent && (
+            <ArticleFontSizeControl
+              percentage={percentage}
+              canDecrease={canDecrease}
+              canIncrease={canIncrease}
+              onDecrease={decreaseFontSize}
+              onIncrease={increaseFontSize}
+            />
+          )}
           <Divider />
 
           <ArticleBodyWrapper device={device}>
@@ -119,6 +139,7 @@ function ArticleDetailPage() {
               articleTitle={currentArticle.title}
               newsletterName={currentArticle.newsletter.name}
               articleContent={currentArticle.contents}
+              fontSizePercentage={percentage}
             />
           </ArticleBodyWrapper>
           <Spacing size={24} />
