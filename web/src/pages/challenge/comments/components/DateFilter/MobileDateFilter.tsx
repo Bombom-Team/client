@@ -18,7 +18,7 @@ const MobileDateFilter = ({
 }: MobileDateFilterProps) => {
   const isTodayChallengeDate = dates.includes(today);
   const scrollableDates = dates.filter((date) => date !== today);
-  const { scrollRef } = useDateFilterScroll(scrollableDates);
+  const { scrollRef } = useDateFilterScroll(scrollableDates, selectedDate);
 
   return (
     <Container>

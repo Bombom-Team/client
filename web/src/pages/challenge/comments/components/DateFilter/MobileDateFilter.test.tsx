@@ -34,6 +34,33 @@ afterEach(() => {
 });
 
 describe('MobileDateFilter', () => {
+  it('선택된 날짜가 변경되면 활성 탭이 보이도록 스크롤한다', () => {
+    const scrollIntoView = jest.fn();
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+      configurable: true,
+      value: scrollIntoView,
+    });
+    const { rerender } = renderMobileDateFilter({
+      today: '2026-07-10',
+      dates: ['2026-07-07', '2026-07-08', '2026-07-09', '2026-07-10'],
+      selectedDate: '2026-07-09',
+    });
+
+    scrollIntoView.mockClear();
+    rerender(
+      <ThemeProvider theme={theme}>
+        <MobileDateFilter
+          today="2026-07-10"
+          dates={['2026-07-07', '2026-07-08', '2026-07-09', '2026-07-10']}
+          selectedDate="2026-07-07"
+          onDateSelect={jest.fn()}
+        />
+      </ThemeProvider>,
+    );
+
+    expect(scrollIntoView).toHaveBeenCalledWith({ inline: 'nearest' });
+  });
+
   it('날짜 탭을 누르면 해당 날짜의 코멘트로 이동할 수 있도록 선택한 날짜를 전달한다', () => {
     const onDateSelect = jest.fn();
     renderMobileDateFilter({
