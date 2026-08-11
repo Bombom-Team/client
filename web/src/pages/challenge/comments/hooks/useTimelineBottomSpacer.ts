@@ -1,6 +1,8 @@
 import { useLayoutEffect, useState } from 'react';
 import type { RefObject } from 'react';
 
+const MIN_SCROLL_OVERFLOW_PX = 1;
+
 interface UseTimelineBottomSpacerParams {
   scrollContainerRef: RefObject<HTMLDivElement | null>;
   sectionListRef: RefObject<HTMLDivElement | null>;
@@ -24,7 +26,10 @@ export const useTimelineBottomSpacer = ({
       const lastSectionHeight = lastSection?.offsetHeight ?? 0;
 
       setSpacerHeight(
-        Math.max(0, container.clientHeight - lastSectionHeight + 1),
+        Math.max(
+          0,
+          container.clientHeight - lastSectionHeight + MIN_SCROLL_OVERFLOW_PX,
+        ),
       );
     };
 
