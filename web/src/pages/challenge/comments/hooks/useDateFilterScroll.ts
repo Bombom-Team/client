@@ -67,7 +67,11 @@ export const useDateFilterScroll = ({
       `[data-date="${selectedDate}"]`,
     );
 
-    selectedTab?.scrollIntoView({ inline: 'nearest' });
+    selectedTab?.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'nearest',
+      block: 'nearest',
+    });
   }, [selectedDate]);
 
   return { scrollRef, canScrollLeft, canScrollRight, scrollDateFilter };
