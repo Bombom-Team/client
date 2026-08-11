@@ -20,7 +20,7 @@ const PCDateFilter = ({
   onDateSelect,
 }: PCDateFilterProps) => {
   const { scrollRef, canScrollLeft, canScrollRight, scrollDateFilter } =
-    useDateFilterScroll(dates, selectedDate);
+    useDateFilterScroll({ dates, selectedDate });
 
   return (
     <Container>
