@@ -35,6 +35,24 @@ describe('useArticleFontSize', () => {
     expect(result.current.canIncrease).toBe(true);
   });
 
+  it('상태가 같으면 반환 객체와 조절 함수 참조를 유지한다.', () => {
+    const { result, rerender } = renderHook(() => useArticleFontSize());
+    const initialResult = result.current;
+
+    rerender();
+
+    expect(result.current).toBe(initialResult);
+
+    act(() => result.current.increaseFontSize());
+
+    expect(result.current.decreaseFontSize).toBe(
+      initialResult.decreaseFontSize,
+    );
+    expect(result.current.increaseFontSize).toBe(
+      initialResult.increaseFontSize,
+    );
+  });
+
   it('지원 범위의 최솟값과 최댓값을 넘지 않는다.', () => {
     const { result } = renderHook(() => useArticleFontSize());
 

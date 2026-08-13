@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import {
   ARTICLE_FONT_SIZE_PERCENTAGES,
   DEFAULT_ARTICLE_FONT_SIZE_PERCENTAGE,
@@ -26,25 +27,48 @@ export const useArticleFontSize = () => {
     : DEFAULT_ARTICLE_FONT_SIZE_PERCENTAGE;
   const currentIndex = ARTICLE_FONT_SIZE_PERCENTAGES.indexOf(percentage);
 
-  const updateFontSize = (nextPercentage: ArticleFontSizePercentage) => {
-    setStoredPercentage(nextPercentage);
-  };
+  const decreaseFontSize = useCallback(() => {
+    setStoredPercentage((currentPercentage) => {
+      const normalizedPercentage = isArticleFontSizePercentage(
+        currentPercentage,
+      )
+        ? currentPercentage
+        : DEFAULT_ARTICLE_FONT_SIZE_PERCENTAGE;
+      const normalizedIndex =
+        ARTICLE_FONT_SIZE_PERCENTAGES.indexOf(normalizedPercentage);
 
-  const decreaseFontSize = () => {
-    const previousPercentage = ARTICLE_FONT_SIZE_PERCENTAGES[currentIndex - 1];
-    if (previousPercentage !== undefined) updateFontSize(previousPercentage);
-  };
+      return (
+        ARTICLE_FONT_SIZE_PERCENTAGES[normalizedIndex - 1] ??
+        normalizedPercentage
+      );
+    });
+  }, [setStoredPercentage]);
 
-  const increaseFontSize = () => {
-    const nextPercentage = ARTICLE_FONT_SIZE_PERCENTAGES[currentIndex + 1];
-    if (nextPercentage !== undefined) updateFontSize(nextPercentage);
-  };
+  const increaseFontSize = useCallback(() => {
+    setStoredPercentage((currentPercentage) => {
+      const normalizedPercentage = isArticleFontSizePercentage(
+        currentPercentage,
+      )
+        ? currentPercentage
+        : DEFAULT_ARTICLE_FONT_SIZE_PERCENTAGE;
+      const normalizedIndex =
+        ARTICLE_FONT_SIZE_PERCENTAGES.indexOf(normalizedPercentage);
 
-  return {
-    percentage,
-    canDecrease: currentIndex > 0,
-    canIncrease: currentIndex < ARTICLE_FONT_SIZE_PERCENTAGES.length - 1,
-    decreaseFontSize,
-    increaseFontSize,
-  };
+      return (
+        ARTICLE_FONT_SIZE_PERCENTAGES[normalizedIndex + 1] ??
+        normalizedPercentage
+      );
+    });
+  }, [setStoredPercentage]);
+
+  return useMemo(
+    () => ({
+      percentage,
+      canDecrease: currentIndex > 0,
+      canIncrease: currentIndex < ARTICLE_FONT_SIZE_PERCENTAGES.length - 1,
+      decreaseFontSize,
+      increaseFontSize,
+    }),
+    [currentIndex, decreaseFontSize, increaseFontSize, percentage],
+  );
 };

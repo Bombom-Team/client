@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { RefObject } from 'react';
 
 interface UseAutoScaleContentParams {
@@ -42,5 +42,8 @@ export const useAutoScaleContent = ({
     };
   }, [contentRef, recalculateScale]);
 
-  return { scale, recalculateScale };
+  return useMemo(
+    () => ({ scale, recalculateScale }),
+    [recalculateScale, scale],
+  );
 };
