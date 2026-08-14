@@ -19,7 +19,8 @@ export const useAutoScaleContent = ({
 
     const layoutWidth = layout.clientWidth;
     const contentWidth = content.scrollWidth;
-    const newScale = contentWidth > layoutWidth ? layoutWidth / contentWidth : 1;
+    const newScale =
+      contentWidth > layoutWidth ? layoutWidth / contentWidth : 1;
 
     setScale(newScale);
     layout.style.height =
