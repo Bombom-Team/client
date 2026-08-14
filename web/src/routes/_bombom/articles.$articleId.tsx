@@ -114,22 +114,24 @@ function ArticleDetailPage() {
             variant="rectangular"
             device={device}
           />
-          <ArticleHeader
-            title={currentArticle.title ?? ''}
-            newsletterCategory={currentArticle.newsletter?.category ?? ''}
-            newsletterName={currentArticle.newsletter?.name ?? ''}
-            arrivedDateTime={new Date(currentArticle.arrivedDateTime ?? '')}
-            expectedReadTime={currentArticle.expectedReadTime ?? 1}
-          />
-          {hasArticleContent && (
-            <ArticleFontSizeControl
-              percentage={percentage}
-              canDecrease={canDecrease}
-              canIncrease={canIncrease}
-              onDecrease={decreaseFontSize}
-              onIncrease={increaseFontSize}
+          <ArticleReadingIntro>
+            <ArticleHeader
+              title={currentArticle.title ?? ''}
+              newsletterCategory={currentArticle.newsletter?.category ?? ''}
+              newsletterName={currentArticle.newsletter?.name ?? ''}
+              arrivedDateTime={new Date(currentArticle.arrivedDateTime ?? '')}
+              expectedReadTime={currentArticle.expectedReadTime ?? 1}
             />
-          )}
+            {hasArticleContent && (
+              <ArticleFontSizeControl
+                percentage={percentage}
+                canDecrease={canDecrease}
+                canIncrease={canIncrease}
+                onDecrease={decreaseFontSize}
+                onIncrease={increaseFontSize}
+              />
+            )}
+          </ArticleReadingIntro>
           <Divider />
 
           <ArticleBodyWrapper device={device}>
@@ -194,6 +196,11 @@ const ArticleBodyWrapper = styled.div<{ device: Device }>`
       : '100%'};
   margin: ${({ device }) =>
     device === 'mobile' ? `0 -${MOBILE_HORIZONTAL_PADDING / 2}px` : '0'};
+`;
+
+const ArticleReadingIntro = styled.div`
+  width: 100%;
+  margin-bottom: 4px;
 `;
 
 const ArticleProgressBar = styled(ProgressBar)<{ device: Device }>`

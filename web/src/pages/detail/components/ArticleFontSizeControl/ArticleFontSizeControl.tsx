@@ -23,13 +23,14 @@ const ArticleFontSizeControl = ({
     <Container
       role="group"
       aria-label="본문 글자 크기 조절"
-      justify="space-between"
       align="center"
+      gap={16}
+      justify="flex-end"
     >
       <Text color="textSecondary" font="t5Regular">
         글자 크기
       </Text>
-      <Flex align="center" gap={8}>
+      <Flex align="center" gap={4}>
         <SizeButton
           variant="outlined"
           aria-label="본문 글자 크기 줄이기"
@@ -44,7 +45,7 @@ const ArticleFontSizeControl = ({
           aria-atomic="true"
           aria-label={`본문 글자 크기 ${percentage}퍼센트`}
         >
-          ({percentage}%)
+          {percentage}%
         </CurrentStep>
         <SizeButton
           variant="outlined"
@@ -66,9 +67,9 @@ const Container = styled(Flex)`
 `;
 
 const SizeButton = styled(Button)`
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
   padding: 0;
   border-radius: 4px;
 
@@ -95,6 +96,9 @@ const SizeButton = styled(Button)`
 `;
 
 const CurrentStep = styled(Text)`
+  min-width: 52px;
+
   flex-shrink: 0;
+
   text-align: center;
 `;

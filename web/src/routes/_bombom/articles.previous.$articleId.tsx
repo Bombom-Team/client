@@ -105,22 +105,24 @@ function RouteComponent() {
         />
       )}
 
-      <ArticleHeader
-        title={article.title}
-        newsletterCategory={article.newsletter.category}
-        newsletterName={article.newsletter.name}
-        arrivedDateTime={new Date(article.arrivedDateTime)}
-        expectedReadTime={article.expectedReadTime}
-      />
-      {hasArticleContent && (
-        <ArticleFontSizeControl
-          percentage={percentage}
-          canDecrease={canDecrease}
-          canIncrease={canIncrease}
-          onDecrease={decreaseFontSize}
-          onIncrease={increaseFontSize}
+      <ArticleReadingIntro>
+        <ArticleHeader
+          title={article.title}
+          newsletterCategory={article.newsletter.category}
+          newsletterName={article.newsletter.name}
+          arrivedDateTime={new Date(article.arrivedDateTime)}
+          expectedReadTime={article.expectedReadTime}
         />
-      )}
+        {hasArticleContent && (
+          <ArticleFontSizeControl
+            percentage={percentage}
+            canDecrease={canDecrease}
+            canIncrease={canIncrease}
+            onDecrease={decreaseFontSize}
+            onIncrease={increaseFontSize}
+          />
+        )}
+      </ArticleReadingIntro>
       <Divider />
 
       <Content
@@ -182,6 +184,11 @@ const Container = styled.div`
   gap: 20px;
   flex-direction: column;
   align-items: center;
+`;
+
+const ArticleReadingIntro = styled.div`
+  width: 100%;
+  margin-bottom: 4px;
 `;
 
 const Divider = styled.div`
