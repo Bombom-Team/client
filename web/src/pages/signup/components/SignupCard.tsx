@@ -14,16 +14,64 @@ import type { ChangeEvent, FormEvent } from 'react';
 import HelpIcon from '#/assets/svg/help.svg';
 
 const EMAIL_DOMAIN = '@bombom.news';
+const SIGNUP_FORM_STORAGE_KEY = 'signup-form-draft';
+
+interface SignupFormDraft {
+  nickname: string;
+  emailPart: string;
+  birthDate: string;
+  gender: Gender;
+  termsAgreed: boolean;
+}
+
+const getSignupFormDraft = (): SignupFormDraft => {
+  const defaultDraft: SignupFormDraft = {
+    nickname: '',
+    emailPart: '',
+    birthDate: '',
+    gender: 'NONE',
+    termsAgreed: false,
+  };
+
+  try {
+    const storedDraft = window.sessionStorage.getItem(SIGNUP_FORM_STORAGE_KEY);
+
+    if (!storedDraft) return defaultDraft;
+
+    const parsedDraft = JSON.parse(storedDraft) as Partial<SignupFormDraft>;
+    const gender = parsedDraft.gender;
+
+    return {
+      nickname:
+        typeof parsedDraft.nickname === 'string' ? parsedDraft.nickname : '',
+      emailPart:
+        typeof parsedDraft.emailPart === 'string' ? parsedDraft.emailPart : '',
+      birthDate:
+        typeof parsedDraft.birthDate === 'string' ? parsedDraft.birthDate : '',
+      gender:
+        gender === 'MALE' || gender === 'FEMALE' || gender === 'NONE'
+          ? gender
+          : 'NONE',
+      termsAgreed:
+        typeof parsedDraft.termsAgreed === 'boolean'
+          ? parsedDraft.termsAgreed
+          : false,
+    };
+  } catch {
+    return defaultDraft;
+  }
+};
 
 const SignupCard = () => {
   const device = useDevice();
+  const [initialFormDraft] = useState(getSignupFormDraft);
 
-  const [nickname, setNickname] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [emailPart, setEmailPart] = useState('');
-  const [gender, setGender] = useState<Gender>('NONE');
+  const [nickname, setNickname] = useState(initialFormDraft.nickname);
+  const [birthDate, setBirthDate] = useState(initialFormDraft.birthDate);
+  const [emailPart, setEmailPart] = useState(initialFormDraft.emailPart);
+  const [gender, setGender] = useState<Gender>(initialFormDraft.gender);
   const [emailHelpOpened, setEmailHelpOpened] = useState(false);
-  const [termsAgreed, setTermsAgreed] = useState(false);
+  const [termsAgreed, setTermsAgreed] = useState(initialFormDraft.termsAgreed);
   const { email: emailParam, name: nameParam } = useSearch({ from: '/signup' });
   const emailHelpButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -63,7 +111,11 @@ const SignupCard = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    signup();
+    signup(undefined, {
+      onSuccess: () => {
+        window.sessionStorage.removeItem(SIGNUP_FORM_STORAGE_KEY);
+      },
+    });
   };
 
   const openEmailHelp = () => setEmailHelpOpened(true);
@@ -87,6 +139,21 @@ const SignupCard = () => {
       window.history.replaceState({}, '', cleanUrl);
     }
   }, [emailParam, nameParam]);
+
+  useEffect(() => {
+    const formDraft: SignupFormDraft = {
+      nickname,
+      emailPart,
+      birthDate,
+      gender,
+      termsAgreed,
+    };
+
+    window.sessionStorage.setItem(
+      SIGNUP_FORM_STORAGE_KEY,
+      JSON.stringify(formDraft),
+    );
+  }, [birthDate, emailPart, gender, nickname, termsAgreed]);
 
   return (
     <Container device={device}>
