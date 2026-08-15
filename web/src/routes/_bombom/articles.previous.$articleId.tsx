@@ -2,7 +2,7 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useRouterState } from '@tanstack/react-router';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
@@ -12,6 +12,7 @@ import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
+import { useAutoScaleContent } from '@/pages/detail/hooks/useAutoScaleContent';
 import { openSubscribeLink } from '@/pages/newsletter-detail/utils';
 import { cutHtmlByTextRatio } from '@/utils/element';
 
@@ -91,11 +92,9 @@ function RouteComponent() {
       />
       <Divider />
 
-      <Content
+      <PreviousArticleContent
+        content={processContent(article.newsletter.name, bodyContent)}
         showGradient={shouldShowSubscribePrompt}
-        dangerouslySetInnerHTML={{
-          __html: processContent(article.newsletter.name, bodyContent),
-        }}
       />
 
       {shouldShowSubscribePrompt && (
@@ -138,7 +137,33 @@ function RouteComponent() {
   );
 }
 
+interface PreviousArticleContentProps {
+  content: string;
+  showGradient: boolean;
+}
+
+const PreviousArticleContent = ({
+  content,
+  showGradient,
+}: PreviousArticleContentProps) => {
+  const layoutRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const scale = useAutoScaleContent({ layoutRef, contentRef });
+
+  return (
+    <ContentLayout ref={layoutRef}>
+      <Content
+        ref={contentRef}
+        scale={scale}
+        showGradient={showGradient}
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    </ContentLayout>
+  );
+};
+
 const Container = styled.div`
+  width: 100%;
   max-width: 700px;
   margin: 0 auto;
   padding: 28px;
@@ -158,9 +183,14 @@ const Divider = styled.div`
   background-color: ${({ theme }) => theme.colors.dividers};
 `;
 
-const Content = styled.div<{ showGradient: boolean }>`
-  overflow: visible;
+const ContentLayout = styled.div`
+  overflow: hidden;
+  width: 100%;
+`;
+
+const Content = styled.div<{ scale: number; showGradient: boolean }>`
   position: relative;
+  width: 100%;
 
   display: flex;
   flex-direction: column;
@@ -169,6 +199,8 @@ const Content = styled.div<{ showGradient: boolean }>`
   -webkit-tap-highlight-color: rgb(0 0 0 / 10%);
   -webkit-touch-callout: default;
 
+  transform: ${({ scale }) => `scale(${scale})`};
+  transform-origin: top left;
   user-select: text;
 
   word-break: break-all;
