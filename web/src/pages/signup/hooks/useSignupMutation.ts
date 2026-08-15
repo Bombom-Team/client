@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { postSignup } from '@/apis/auth/auth.api';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { markSignUpPending } from '@/libs/googleAnalytics/retentionEvents';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { GUIDE_MAIL_STORAGE_KEY } from '@/pages/guide-detail/constants/guideMail';
 import { formatDate } from '@/utils/date';
@@ -42,19 +43,14 @@ export const useSignupMutation = ({
       sendMessageToRN({
         type: 'LOGIN_SUCCESS',
       });
+      markSignUpPending();
       navigate({ to: '/today' });
-      trackEvent({
-        category: 'Authentication',
-        action: '회원가입 성공',
-        label: '회원가입 완료 후 메인 페이지 이동',
-      });
     },
-    onError: (e) => {
-      const errorMessage = e.message;
+    onError: () => {
       trackEvent({
         category: 'Authentication',
         action: '회원가입 실패',
-        label: `회원가입 실패 에러메시지: ${errorMessage}`,
+        label: '회원가입 요청 실패',
       });
     },
   });
