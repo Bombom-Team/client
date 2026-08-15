@@ -1,47 +1,35 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
 import {
   createFileRoute,
+  Outlet,
+  useMatchRoute,
   useNavigate,
-  useSearch,
 } from '@tanstack/react-router';
-import { Suspense, useEffect } from 'react';
-import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
-import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import MyChallengeSection from '@/pages/my-page/components/MyChallengeSection/MyChallengeSection';
-import MyChallengeSectionSkeleton from '@/pages/my-page/components/MyChallengeSection/MyChallengeSectionSkeleton';
-import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection/NotificationSettingsSection';
-import ProfileSection from '@/pages/my-page/components/ProfileSection';
-import ReadingActivitySection from '@/pages/my-page/components/ReadingActivitySection';
 import ReadingCompanionCard from '@/pages/my-page/components/ReadingCompanionCard';
-import RewardsSection from '@/pages/my-page/components/RewardsSection';
-import SubscribedNewslettersSection from '@/pages/my-page/components/SubscribedNewslettersSection/SubscribedNewslettersSection';
 import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
 import AvatarIcon from '#/assets/svg/avatar.svg';
 
-type MyPageTab =
-  | 'profile'
-  | 'reading-activity'
-  | 'challenges'
-  | 'newsletters'
-  | 'notification'
-  | 'rewards';
-
 const DEFAULT_TABS = [
-  { id: 'profile', label: '내 정보' },
-  { id: 'reading-activity', label: '읽기 활동' },
-  { id: 'challenges', label: '나의 챌린지' },
-  { id: 'newsletters', label: '구독 뉴스레터' },
-  { id: 'rewards', label: '선물함' },
+  { id: 'profile', label: '내 정보', to: '/my/profile' },
+  { id: 'reading-activity', label: '읽기 활동', to: '/my/reading-activity' },
+  { id: 'challenges', label: '나의 챌린지', to: '/my/challenges' },
+  { id: 'newsletters', label: '구독 뉴스레터', to: '/my/newsletters' },
+  { id: 'rewards', label: '선물함', to: '/my/rewards' },
 ] as const;
 
-const WEBVIEW_TABS = [{ id: 'notification', label: '알림 설정' }] as const;
+const WEBVIEW_TABS = [
+  { id: 'notification', label: '알림 설정', to: '/my/notification' },
+] as const;
+
+type MyPageTabTo =
+  | (typeof DEFAULT_TABS)[number]['to']
+  | (typeof WEBVIEW_TABS)[number]['to'];
 
 export const Route = createFileRoute('/_bombom/_main/my')({
   head: () => ({
@@ -55,63 +43,23 @@ export const Route = createFileRoute('/_bombom/_main/my')({
       },
     ],
   }),
-  validateSearch: (search: { tab?: MyPageTab }) => {
-    return { tab: search.tab ?? 'profile' };
-  },
   component: MyPage,
 });
 
 function MyPage() {
   const device = useDevice();
+  const matchRoute = useMatchRoute();
   const navigate = useNavigate();
-  const { tab: activeTabParam } = useSearch({ from: '/_bombom/_main/my' });
-
-  const { data: userInfo } = useQuery(queries.me());
-
-  useEffect(() => {
-    if (activeTabParam === 'challenges') {
-      trackEvent({
-        category: 'MyPage',
-        action: '나의 챌린지 탭 진입',
-      });
-    }
-  }, [activeTabParam]);
 
   const tabs = isWebView()
     ? [...DEFAULT_TABS, ...WEBVIEW_TABS]
     : [...DEFAULT_TABS];
 
-  if (!userInfo) return null;
+  const activeTabId =
+    tabs.find((tab) => matchRoute({ to: tab.to }))?.id ?? 'profile';
 
-  const handleTabSelect = (tabId: MyPageTab) => {
-    navigate({
-      to: '/my',
-      search: { tab: tabId },
-      replace: true,
-    });
-  };
-
-  const renderTabContent = () => {
-    switch (activeTabParam) {
-      case 'profile':
-        return <ProfileSection userInfo={userInfo} />;
-      case 'reading-activity':
-        return <ReadingActivitySection />;
-      case 'newsletters':
-        return <SubscribedNewslettersSection device={device} />;
-      case 'challenges':
-        return (
-          <Suspense fallback={<MyChallengeSectionSkeleton />}>
-            <MyChallengeSection />
-          </Suspense>
-        );
-      case 'rewards':
-        return <RewardsSection />;
-      case 'notification':
-        return <NotificationSettingsSection />;
-      default:
-        return null;
-    }
+  const handleTabSelect = (to: MyPageTabTo) => {
+    navigate({ to, replace: true });
   };
 
   return (
@@ -132,8 +80,8 @@ function MyPage() {
                   key={tab.id}
                   value={tab.id}
                   label={tab.label}
-                  onTabSelect={() => handleTabSelect(tab.id)}
-                  selected={activeTabParam === tab.id}
+                  onTabSelect={() => handleTabSelect(tab.to)}
+                  selected={activeTabId === tab.id}
                   aria-controls={`panel-${tab.id}`}
                   textAlign="start"
                 />
@@ -144,11 +92,11 @@ function MyPage() {
         </SideColumn>
 
         <TabPanel
-          id={`panel-${activeTabParam}`}
+          id={`panel-${activeTabId}`}
           role="tabpanel"
-          aria-labelledby={`tab-${activeTabParam}`}
+          aria-labelledby={`tab-${activeTabId}`}
         >
-          {renderTabContent()}
+          <Outlet />
         </TabPanel>
       </ContentWrapper>
     </Container>
