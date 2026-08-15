@@ -148,7 +148,7 @@ const PostProgressBar = styled(ProgressBar)<{ device: Device }>`
   top: ${({ device, theme }) =>
     device === 'pc'
       ? `calc(${theme.heights.headerPC} + 40px)`
-      : theme.heights.headerMobile};
+      : `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`};
   z-index: ${({ theme }) => theme.zIndex.floating};
   width: 100vw;
   height: 4px;
