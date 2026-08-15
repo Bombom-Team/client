@@ -6,9 +6,9 @@ import { useDevice } from '@/hooks/useDevice';
 import { getRedirectPathFromSearch, navigateToOAuthLogin } from '@/utils/auth';
 import { isIOS, isWebView } from '@/utils/device';
 import { isInAppBrowser } from '@/utils/inAppBrowser';
+import logo from '#/assets/avif/logo.avif';
 import AppleIcon from '#/assets/svg/apple.svg';
 import GoogleIcon from '#/assets/svg/google.svg';
-import SparklesIcon from '#/assets/svg/sparkles.svg';
 
 const LoginCard = () => {
   const device = useDevice();
@@ -28,14 +28,7 @@ const LoginCard = () => {
   return (
     <Container isMobile={isMobile}>
       <GreetingWrapper isMobile={isMobile}>
-        <IconWrapper>
-          <SparklesIcon
-            width={24}
-            height={24}
-            fill={theme.colors.white}
-            color={theme.colors.white}
-          />
-        </IconWrapper>
+        <LogoImage src={logo} alt="봄봄 로고" />
         <GreetingTitle>봄봄에 오신 걸 환영해요</GreetingTitle>
         <GreetingMessage isMobile={isMobile}>
           당신의 하루에 찾아오는 작은 설렘{'\n'}뉴스레터를 한 곳에서 쉽게
@@ -97,27 +90,16 @@ const GreetingWrapper = styled.div<{ isMobile: boolean }>`
   justify-content: center;
 `;
 
-const IconWrapper = styled.div`
-  padding: 18px;
-  border-radius: 50%;
-  box-shadow:
-    0 20px 25px -5px ${({ theme }) => `${theme.colors.primaryLight}40`},
-    0 10px 10px -5px ${({ theme }) => `${theme.colors.primaryLight}20`};
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: ${({ theme }) => theme.colors.primaryBomBom};
+const LogoImage = styled.img`
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
 `;
 
 const GreetingTitle = styled.h2`
-  background: linear-gradient(107deg, #181818 0%, #f96 100%);
-  background-clip: text;
+  color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t11Bold};
   text-align: center;
-
-  -webkit-text-fill-color: transparent;
 `;
 
 const GreetingMessage = styled.p<{ isMobile: boolean }>`
