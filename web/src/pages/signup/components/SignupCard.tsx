@@ -1,10 +1,9 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
-import { useSearch } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { useSignupMutation } from '../hooks/useSignupMutation';
 import Checkbox from '@/components/Checkbox/Checkbox';
-import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
 import InputField from '@/components/InputField/InputField';
 import Tooltip from '@/components/Tooltip/Tooltip';
 import { useDevice } from '@/hooks/useDevice';
@@ -15,8 +14,6 @@ import type { ChangeEvent, FormEvent } from 'react';
 import HelpIcon from '#/assets/svg/help.svg';
 
 const EMAIL_DOMAIN = '@bombom.news';
-const TERMS_URL =
-  'https://guesung.notion.site/26a89de02fde80cda21dec7e51d5de89?pvs=74';
 
 const SignupCard = () => {
   const device = useDevice();
@@ -99,43 +96,51 @@ const SignupCard = () => {
           <Description>봄봄과 함께 오늘의 뉴스레터를 시작해요.</Description>
         </HeaderWrapper>
 
-        <FieldGroup>
-          <Label>닉네임</Label>
-          <TextValue>{nickname}</TextValue>
-        </FieldGroup>
+        <AccountInfoSection>
+          <AccountInfoTitle>계정 정보</AccountInfoTitle>
 
-        <FieldGroup>
-          <LabelRow>
-            <Label htmlFor="email">이메일</Label>
-            <TooltipButton
-              type="button"
-              aria-label="이메일을 수집하는 이유 안내"
-              aria-expanded={emailHelpOpened}
-              aria-describedby="email-why-tooltip"
-              onMouseEnter={openEmailHelp}
-              onMouseLeave={closeEmailHelp}
-              onFocus={openEmailHelp}
-              onBlur={closeEmailHelp}
-              ref={emailHelpButtonRef}
-            >
-              <EmailHelpIcon fill={theme.colors.primaryBomBom} />
-            </TooltipButton>
-            <InfoText>이 주소로 뉴스레터가 도착해요!</InfoText>
+          <AccountInfoBox>
+            <AccountInfoRow>
+              <AccountInfoLabel>닉네임</AccountInfoLabel>
+              <AccountInfoValue>{nickname}</AccountInfoValue>
+            </AccountInfoRow>
 
-            <Tooltip
-              id="email-help-tooltip"
-              opened={emailHelpOpened}
-              anchorRef={emailHelpButtonRef}
-            >
-              봄봄은 <b>개인 메일</b>이 아닌 <b>봄봄 전용 메일</b>(
-              <b>{EMAIL_DOMAIN}</b>)로 뉴스레터를 <b>수신</b>해요.
-              <br />- 뉴스레터 전용이라 깔끔하게 관리돼요.
-              <br />- 구독/알림/차단 같은 관리 기능에 이 주소를 사용해요.
-              <br />- 일반 메일 송수신은 지원하지 않아요. (수신 전용)
-            </Tooltip>
-          </LabelRow>
-          <TextValue>{emailPart + EMAIL_DOMAIN}</TextValue>
-        </FieldGroup>
+            <AccountInfoDivider />
+
+            <AccountInfoRow>
+              <LabelRow>
+                <AccountInfoLabel>이메일</AccountInfoLabel>
+                <TooltipButton
+                  type="button"
+                  aria-label="이메일을 수집하는 이유 안내"
+                  aria-expanded={emailHelpOpened}
+                  aria-describedby="email-why-tooltip"
+                  onMouseEnter={openEmailHelp}
+                  onMouseLeave={closeEmailHelp}
+                  onFocus={openEmailHelp}
+                  onBlur={closeEmailHelp}
+                  ref={emailHelpButtonRef}
+                >
+                  <EmailHelpIcon fill={theme.colors.primaryBomBom} />
+                </TooltipButton>
+                <InfoText>이 주소로 뉴스레터가 도착해요!</InfoText>
+
+                <Tooltip
+                  id="email-help-tooltip"
+                  opened={emailHelpOpened}
+                  anchorRef={emailHelpButtonRef}
+                >
+                  봄봄은 <b>개인 메일</b>이 아닌 <b>봄봄 전용 메일</b>(
+                  <b>{EMAIL_DOMAIN}</b>)로 뉴스레터를 <b>수신</b>해요.
+                  <br />- 뉴스레터 전용이라 깔끔하게 관리돼요.
+                  <br />- 구독/알림/차단 같은 관리 기능에 이 주소를 사용해요.
+                  <br />- 일반 메일 송수신은 지원하지 않아요. (수신 전용)
+                </Tooltip>
+              </LabelRow>
+              <AccountInfoValue>{emailPart + EMAIL_DOMAIN}</AccountInfoValue>
+            </AccountInfoRow>
+          </AccountInfoBox>
+        </AccountInfoSection>
 
         <InputField
           name="생년월일(선택)"
@@ -192,9 +197,11 @@ const SignupCard = () => {
           onChange={handleTermsChange}
         >
           <TermsText>
-            이용약관 동의 (<RequiredMark>*</RequiredMark>
-            필수)
-            <ExternalLink to={TERMS_URL}>내용보기</ExternalLink>
+            이용약관 동의
+            <RequiredText>
+              (<RequiredMark>*</RequiredMark>필수)
+            </RequiredText>
+            <Link to="/privacy-policy">내용보기</Link>
           </TermsText>
         </Checkbox>
 
@@ -210,7 +217,7 @@ export default SignupCard;
 
 const Container = styled.div<{ device: Device }>`
   width: min(100%, 420px);
-  padding: 28px 24px;
+  padding: ${({ device }) => (device === 'mobile' ? '28px 24px' : '48px 40px')};
 
   background-color: ${({ theme }) => theme.colors.white};
 
@@ -218,7 +225,7 @@ const Container = styled.div<{ device: Device }>`
     device !== 'mobile' &&
     `
     border-radius: 20px;
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
+    box-shadow: 0 8px 24px -12px rgb(0 0 0 / 12%);
   `}
 `;
 
@@ -257,11 +264,50 @@ const Label = styled.label`
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
-const TextValue = styled.p`
+const AccountInfoSection = styled.section`
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+`;
+
+const AccountInfoTitle = styled.h5`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t5Bold};
+`;
+
+const AccountInfoBox = styled.div`
+  padding: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  border-radius: 12px;
+
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.backgroundHover};
+`;
+
+const AccountInfoRow = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+`;
+
+const AccountInfoLabel = styled.span`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t4Regular};
+`;
+
+const AccountInfoValue = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t6Regular};
 
   user-select: text;
+`;
+
+const AccountInfoDivider = styled.div`
+  height: 1px;
+  background-color: ${({ theme }) => theme.colors.dividers};
 `;
 
 const LabelRow = styled.div`
@@ -393,10 +439,11 @@ const TermsText = styled.span`
   font: ${({ theme }) => theme.fonts.t5Regular};
 
   a {
-    color: ${({ theme }) => theme.colors.primaryBomBom};
+    color: ${({ theme }) => theme.colors.textPrimary};
+    text-decoration: underline;
 
     &:hover {
-      color: ${({ theme }) => theme.colors.primaryDark};
+      color: ${({ theme }) => theme.colors.textSecondary};
     }
   }
 `;
@@ -404,3 +451,5 @@ const TermsText = styled.span`
 const RequiredMark = styled.span`
   color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
+
+const RequiredText = styled.span``;
