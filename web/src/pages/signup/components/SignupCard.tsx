@@ -192,8 +192,9 @@ const SignupCard = () => {
           onChange={handleTermsChange}
         >
           <TermsText>
-            이용약관 동의 (필수)
-            <ViewTermsLink to={TERMS_URL}>내용보기</ViewTermsLink>
+            이용약관 동의 (<RequiredMark>*</RequiredMark>
+            필수)
+            <ExternalLink to={TERMS_URL}>내용보기</ExternalLink>
           </TermsText>
         </Checkbox>
 
@@ -390,13 +391,16 @@ const TermsText = styled.span`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Regular};
+
+  a {
+    color: ${({ theme }) => theme.colors.primaryBomBom};
+
+    &:hover {
+      color: ${({ theme }) => theme.colors.primaryDark};
+    }
+  }
 `;
 
-const ViewTermsLink = styled(ExternalLink)`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.textSecondary};
-  }
+const RequiredMark = styled.span`
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
