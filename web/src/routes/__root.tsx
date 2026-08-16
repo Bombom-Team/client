@@ -12,6 +12,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { useChannelTalk } from '@/hooks/useChannelTalk';
 import { useDevice } from '@/hooks/useDevice';
 import usePageTracking from '@/libs/googleAnalytics/usePageTracking';
+import { useReferrerTracking } from '@/libs/googleAnalytics/useReferrerTracking';
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
 import { useWebViewRouting } from '@/libs/webview/useWebViewRouting';
 import { queryClient } from '@/main';
@@ -30,6 +31,7 @@ const RootComponent = () => {
   const device = useDevice();
 
   usePageTracking();
+  useReferrerTracking();
   useWebViewAuth();
   useWebViewRouting();
   useChannelTalk();
