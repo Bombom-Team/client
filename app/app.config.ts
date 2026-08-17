@@ -89,7 +89,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         'expo-apple-authentication',
         {
-          appleTeamId: 'F6XK836QA8',
+          appleTeamId: '95A4G29D26',
         },
       ],
       'expo-secure-store',
