@@ -292,7 +292,6 @@ const Container = styled.div<{ device: Device }>`
     device !== 'mobile' &&
     `
     border-radius: 20px;
-    box-shadow: 0 8px 24px -12px rgb(0 0 0 / 12%);
   `}
 `;
 

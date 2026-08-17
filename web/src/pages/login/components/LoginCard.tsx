@@ -76,7 +76,6 @@ const Container = styled.section<{ isMobile: boolean }>`
     !isMobile &&
     `
     border-radius: 20px;
-    box-shadow: 0 8px 24px -12px rgb(0 0 0 / 12%);
     background-color: ${theme.colors.white};
   
   `}
