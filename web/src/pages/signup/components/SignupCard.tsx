@@ -24,19 +24,21 @@ interface SignupFormDraft {
   termsAgreed: boolean;
 }
 
-const getSignupFormDraft = (): SignupFormDraft => {
-  const defaultDraft: SignupFormDraft = {
-    nickname: '',
-    emailPart: '',
-    birthDate: '',
-    gender: 'NONE',
-    termsAgreed: false,
-  };
+const createEmptySignupFormDraft = (): SignupFormDraft => ({
+  nickname: '',
+  emailPart: '',
+  birthDate: '',
+  gender: 'NONE',
+  termsAgreed: false,
+});
+
+const readSignupFormDraft = (): SignupFormDraft => {
+  const emptyDraft = createEmptySignupFormDraft();
 
   try {
     const storedDraft = window.sessionStorage.getItem(SIGNUP_FORM_STORAGE_KEY);
 
-    if (!storedDraft) return defaultDraft;
+    if (!storedDraft) return emptyDraft;
 
     const parsedDraft = JSON.parse(storedDraft) as Partial<SignupFormDraft>;
     const gender = parsedDraft.gender;
@@ -58,13 +60,48 @@ const getSignupFormDraft = (): SignupFormDraft => {
           : false,
     };
   } catch {
-    return defaultDraft;
+    return emptyDraft;
+  }
+};
+
+const getInitialSignupFormDraft = (
+  emailParam?: string,
+  nameParam?: string,
+): SignupFormDraft => {
+  if (!emailParam && !nameParam) return readSignupFormDraft();
+
+  return {
+    ...createEmptySignupFormDraft(),
+    nickname: nameParam ?? '',
+    emailPart: emailParam ?? '',
+  };
+};
+
+const saveSignupFormDraft = (formDraft: SignupFormDraft) => {
+  try {
+    window.sessionStorage.setItem(
+      SIGNUP_FORM_STORAGE_KEY,
+      JSON.stringify(formDraft),
+    );
+  } catch {
+    // noop
+  }
+};
+
+const removeSignupFormDraft = () => {
+  try {
+    window.sessionStorage.removeItem(SIGNUP_FORM_STORAGE_KEY);
+  } catch {
+    // noop
   }
 };
 
 const SignupCard = () => {
   const device = useDevice();
-  const [initialFormDraft] = useState(getSignupFormDraft);
+  const { email: emailParam, name: nameParam } = useSearch({ from: '/signup' });
+  const [initialFormDraft] = useState(() =>
+    getInitialSignupFormDraft(emailParam, nameParam),
+  );
 
   const [nickname, setNickname] = useState(initialFormDraft.nickname);
   const [birthDate, setBirthDate] = useState(initialFormDraft.birthDate);
@@ -72,7 +109,6 @@ const SignupCard = () => {
   const [gender, setGender] = useState<Gender>(initialFormDraft.gender);
   const [emailHelpOpened, setEmailHelpOpened] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(initialFormDraft.termsAgreed);
-  const { email: emailParam, name: nameParam } = useSearch({ from: '/signup' });
   const emailHelpButtonRef = useRef<HTMLButtonElement>(null);
 
   const {
@@ -113,7 +149,7 @@ const SignupCard = () => {
 
     signup(undefined, {
       onSuccess: () => {
-        window.sessionStorage.removeItem(SIGNUP_FORM_STORAGE_KEY);
+        removeSignupFormDraft();
       },
     });
   };
@@ -126,18 +162,16 @@ const SignupCard = () => {
   };
 
   useEffect(() => {
-    if (emailParam) {
-      setEmailPart(emailParam);
-    }
+    if (!emailParam && !nameParam) return;
 
-    if (nameParam) {
-      setNickname(nameParam);
-    }
+    setNickname(nameParam ?? '');
+    setEmailPart(emailParam ?? '');
+    setBirthDate('');
+    setGender('NONE');
+    setTermsAgreed(false);
 
-    if (emailParam || nameParam) {
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, '', cleanUrl);
-    }
+    const cleanUrl = window.location.pathname;
+    window.history.replaceState({}, '', cleanUrl);
   }, [emailParam, nameParam]);
 
   useEffect(() => {
@@ -149,10 +183,7 @@ const SignupCard = () => {
       termsAgreed,
     };
 
-    window.sessionStorage.setItem(
-      SIGNUP_FORM_STORAGE_KEY,
-      JSON.stringify(formDraft),
-    );
+    saveSignupFormDraft(formDraft);
   }, [birthDate, emailPart, gender, nickname, termsAgreed]);
 
   return (
