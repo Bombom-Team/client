@@ -443,6 +443,7 @@ const InfoText = styled.p`
 `;
 
 const EmailHelpIcon = styled(HelpIcon)`
+  border-radius: 50%;
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
