@@ -2,7 +2,7 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useRouterState } from '@tanstack/react-router';
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
@@ -12,7 +12,7 @@ import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
-import { useAutoScaleContent } from '@/pages/detail/hooks/useAutoScaleContent';
+import PreviousArticleContent from '@/pages/newsletter-detail/components/PreviousArticleContent';
 import { openSubscribeLink } from '@/pages/newsletter-detail/utils';
 import { cutHtmlByTextRatio } from '@/utils/element';
 
@@ -137,31 +137,6 @@ function RouteComponent() {
   );
 }
 
-interface PreviousArticleContentProps {
-  content: string;
-  showGradient: boolean;
-}
-
-const PreviousArticleContent = ({
-  content,
-  showGradient,
-}: PreviousArticleContentProps) => {
-  const layoutRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const scale = useAutoScaleContent({ layoutRef, contentRef });
-
-  return (
-    <ContentLayout ref={layoutRef}>
-      <Content
-        ref={contentRef}
-        scale={scale}
-        showGradient={showGradient}
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
-    </ContentLayout>
-  );
-};
-
 const Container = styled.div`
   width: 100%;
   max-width: 700px;
@@ -181,61 +156,6 @@ const Divider = styled.div`
   height: 1px;
 
   background-color: ${({ theme }) => theme.colors.dividers};
-`;
-
-const ContentLayout = styled.div`
-  overflow: hidden;
-  width: 100%;
-`;
-
-const Content = styled.div<{ scale: number; showGradient: boolean }>`
-  position: relative;
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  -webkit-tap-highlight-color: rgb(0 0 0 / 10%);
-  -webkit-touch-callout: default;
-
-  transform: ${({ scale }) => `scale(${scale})`};
-  transform-origin: top left;
-  user-select: text;
-
-  word-break: break-all;
-  word-wrap: break-word;
-
-  &::after {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 200px;
-
-    display: ${({ showGradient }) => (showGradient ? 'block' : 'none')};
-
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      ${({ theme }) => theme.colors.white}
-    );
-
-    content: '';
-
-    pointer-events: none;
-  }
-
-  a {
-    color: ${({ theme }) => theme.colors.info};
-
-    cursor: pointer;
-    text-decoration: underline;
-
-    &:hover {
-      text-decoration: none;
-    }
-  }
 `;
 
 const ActionButtonWrapper = styled.div`
