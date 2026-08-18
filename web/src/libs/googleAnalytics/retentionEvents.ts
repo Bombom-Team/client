@@ -5,6 +5,7 @@ const PENDING_SIGN_UP_STORAGE_KEY = 'ga_pending_sign_up';
 interface RetentionEventParamsMap {
   sign_up: { method: 'oauth' };
   article_read_completed: { newsletter_category?: string };
+  challenge_application_completed: { challenge_id: string };
   challenge_activity_started: {
     challenge_id: string;
     day_index?: number;
