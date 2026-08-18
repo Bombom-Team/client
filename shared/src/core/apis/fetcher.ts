@@ -21,9 +21,13 @@ type FetcherOptions<TRequest extends JsonBody> = {
   headers?: HeadersInit;
 };
 
+type GetFetcherOptions = FetcherOptions<never> & {
+  credentials?: RequestCredentials;
+};
+
 export const fetcher = {
-  get: async <TResponse>({ path, baseUrl, query }: FetcherOptions<never>) =>
-    request<never, TResponse>({ path, baseUrl, query, method: 'GET' }),
+  get: async <TResponse>({ path, baseUrl, query, credentials }: GetFetcherOptions) =>
+    request<never, TResponse>({ path, baseUrl, query, credentials, method: 'GET', }),
   post: async <TRequest extends JsonBody, TResponse>({
     path,
     baseUrl,
@@ -73,6 +77,7 @@ type RequestOptions<TRequest> = {
   query?: Query;
   body?: TRequest;
   headers?: HeadersInit;
+  credentials?: RequestCredentials;
 };
 
 const request = async <TRequest, TResponse>({
@@ -82,6 +87,7 @@ const request = async <TRequest, TResponse>({
   query = {},
   body,
   headers,
+  credentials = 'include',
 }: RequestOptions<TRequest>): Promise<TResponse> => {
   try {
     const url = new URL(baseUrl + path);
@@ -94,7 +100,7 @@ const request = async <TRequest, TResponse>({
 
     const config: RequestInit = {
       method,
-      credentials: 'include',
+      credentials,
       headers: {
         'Content-Type': 'application/json',
         ...headers,
