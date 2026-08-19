@@ -17,7 +17,6 @@ import HelpIcon from '#/assets/svg/help.svg';
 
 const EMAIL_DOMAIN = '@bombom.news';
 const SIGNUP_ACCOUNT_STORAGE_KEY = 'signup-account';
-const TERMS_URL = 'https://www.bombom.news/privacy-policy';
 
 type SignupAccount = {
   nickname: string;
@@ -27,6 +26,7 @@ type SignupAccount = {
 const SignupCard = () => {
   const device = useDevice();
   const { email: emailParam, name: nameParam } = useSearch({ from: '/signup' });
+  const termsUrl = `${window.location.origin}/privacy-policy?from=signup`;
   const [storedSignupAccount, setStoredSignupAccount] =
     useSessionStorageState<SignupAccount | null>(
       SIGNUP_ACCOUNT_STORAGE_KEY,
@@ -225,7 +225,7 @@ const SignupCard = () => {
             <RequiredText>
               (<RequiredMark>*</RequiredMark>필수)
             </RequiredText>
-            <ViewTermsLink to={TERMS_URL} openInNewTab>
+            <ViewTermsLink to={termsUrl} openInNewTab>
               내용보기
             </ViewTermsLink>
           </TermsText>
