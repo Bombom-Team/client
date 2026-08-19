@@ -1,4 +1,3 @@
-import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useSearch } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
@@ -145,7 +144,7 @@ const SignupCard = () => {
                   onBlur={closeEmailHelp}
                   ref={emailHelpButtonRef}
                 >
-                  <EmailHelpIcon fill={theme.colors.primaryBomBom} />
+                  <EmailHelpIcon aria-hidden="true" />
                 </TooltipButton>
                 <InfoText>이 주소로 뉴스레터가 도착해요!</InfoText>
 
@@ -371,8 +370,14 @@ const InfoText = styled.p`
 `;
 
 const EmailHelpIcon = styled(HelpIcon)`
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
+
+  flex: none;
+
   background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const SubmitButton = styled.button`
