@@ -78,7 +78,8 @@ export const LoginScreen = () => {
               <LogoImage source={logo} accessibilityLabel="봄봄 로고" />
               <Title>봄봄에 오신 걸 환영해요</Title>
               <Subtitle>
-                당신의 하루에 찾아오는 작은 설렘 뉴스레터를 한 곳에서 쉽게 관리하세요
+                당신의 하루에 찾아오는 작은 설렘{'\n'}
+                뉴스레터를 한 곳에서 쉽게 관리하세요
               </Subtitle>
             </GreetingWrapper>
 
