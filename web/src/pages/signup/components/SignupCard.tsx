@@ -1,12 +1,14 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
-import { Link, useSearch } from '@tanstack/react-router';
+import { useSearch } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { useSignupMutation } from '../hooks/useSignupMutation';
 import Checkbox from '@/components/Checkbox/Checkbox';
+import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
 import InputField from '@/components/InputField/InputField';
 import Tooltip from '@/components/Tooltip/Tooltip';
 import { useDevice } from '@/hooks/useDevice';
+import { useSessionStorageState } from '@/hooks/useSessionStorageState';
 import { useUserInfoValidation } from '@/hooks/useUserInfoValidation';
 import type { Gender } from './SignupCard.types';
 import type { Device } from '@/hooks/useDevice';
@@ -14,101 +16,36 @@ import type { ChangeEvent, FormEvent } from 'react';
 import HelpIcon from '#/assets/svg/help.svg';
 
 const EMAIL_DOMAIN = '@bombom.news';
-const SIGNUP_FORM_STORAGE_KEY = 'signup-form-draft';
+const SIGNUP_ACCOUNT_STORAGE_KEY = 'signup-account';
+const TERMS_URL = 'https://www.bombom.news/privacy-policy';
 
-interface SignupFormDraft {
+type SignupAccount = {
   nickname: string;
   emailPart: string;
-  birthDate: string;
-  gender: Gender;
-  termsAgreed: boolean;
-}
-
-const createEmptySignupFormDraft = (): SignupFormDraft => ({
-  nickname: '',
-  emailPart: '',
-  birthDate: '',
-  gender: 'NONE',
-  termsAgreed: false,
-});
-
-const readSignupFormDraft = (): SignupFormDraft => {
-  const emptyDraft = createEmptySignupFormDraft();
-
-  try {
-    const storedDraft = window.sessionStorage.getItem(SIGNUP_FORM_STORAGE_KEY);
-
-    if (!storedDraft) return emptyDraft;
-
-    const parsedDraft = JSON.parse(storedDraft) as Partial<SignupFormDraft>;
-    const gender = parsedDraft.gender;
-
-    return {
-      nickname:
-        typeof parsedDraft.nickname === 'string' ? parsedDraft.nickname : '',
-      emailPart:
-        typeof parsedDraft.emailPart === 'string' ? parsedDraft.emailPart : '',
-      birthDate:
-        typeof parsedDraft.birthDate === 'string' ? parsedDraft.birthDate : '',
-      gender:
-        gender === 'MALE' || gender === 'FEMALE' || gender === 'NONE'
-          ? gender
-          : 'NONE',
-      termsAgreed:
-        typeof parsedDraft.termsAgreed === 'boolean'
-          ? parsedDraft.termsAgreed
-          : false,
-    };
-  } catch {
-    return emptyDraft;
-  }
-};
-
-const getInitialSignupFormDraft = (
-  emailParam?: string,
-  nameParam?: string,
-): SignupFormDraft => {
-  if (!emailParam && !nameParam) return readSignupFormDraft();
-
-  return {
-    ...createEmptySignupFormDraft(),
-    nickname: nameParam ?? '',
-    emailPart: emailParam ?? '',
-  };
-};
-
-const saveSignupFormDraft = (formDraft: SignupFormDraft) => {
-  try {
-    window.sessionStorage.setItem(
-      SIGNUP_FORM_STORAGE_KEY,
-      JSON.stringify(formDraft),
-    );
-  } catch {
-    // noop
-  }
-};
-
-const removeSignupFormDraft = () => {
-  try {
-    window.sessionStorage.removeItem(SIGNUP_FORM_STORAGE_KEY);
-  } catch {
-    // noop
-  }
 };
 
 const SignupCard = () => {
   const device = useDevice();
   const { email: emailParam, name: nameParam } = useSearch({ from: '/signup' });
-  const [initialFormDraft] = useState(() =>
-    getInitialSignupFormDraft(emailParam, nameParam),
-  );
+  const [storedSignupAccount, setStoredSignupAccount] =
+    useSessionStorageState<SignupAccount | null>(
+      SIGNUP_ACCOUNT_STORAGE_KEY,
+      null,
+    );
+  const signupAccount =
+    emailParam || nameParam
+      ? {
+          nickname: nameParam ?? '',
+          emailPart: emailParam ?? '',
+        }
+      : storedSignupAccount;
 
-  const [nickname, setNickname] = useState(initialFormDraft.nickname);
-  const [birthDate, setBirthDate] = useState(initialFormDraft.birthDate);
-  const [emailPart, setEmailPart] = useState(initialFormDraft.emailPart);
-  const [gender, setGender] = useState<Gender>(initialFormDraft.gender);
+  const nickname = signupAccount?.nickname ?? '';
+  const emailPart = signupAccount?.emailPart ?? '';
+  const [birthDate, setBirthDate] = useState('');
+  const [gender, setGender] = useState<Gender>('NONE');
   const [emailHelpOpened, setEmailHelpOpened] = useState(false);
-  const [termsAgreed, setTermsAgreed] = useState(initialFormDraft.termsAgreed);
+  const [termsAgreed, setTermsAgreed] = useState(false);
   const emailHelpButtonRef = useRef<HTMLButtonElement>(null);
 
   const {
@@ -127,6 +64,9 @@ const SignupCard = () => {
     email,
     gender,
     birthDate,
+    onSignupSuccess: () => {
+      setStoredSignupAccount(null);
+    },
   });
 
   const handleBirthDateBlur = () => {
@@ -147,11 +87,7 @@ const SignupCard = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    signup(undefined, {
-      onSuccess: () => {
-        removeSignupFormDraft();
-      },
-    });
+    signup();
   };
 
   const openEmailHelp = () => setEmailHelpOpened(true);
@@ -164,27 +100,17 @@ const SignupCard = () => {
   useEffect(() => {
     if (!emailParam && !nameParam) return;
 
-    setNickname(nameParam ?? '');
-    setEmailPart(emailParam ?? '');
+    setStoredSignupAccount({
+      nickname: nameParam ?? '',
+      emailPart: emailParam ?? '',
+    });
     setBirthDate('');
     setGender('NONE');
     setTermsAgreed(false);
 
     const cleanUrl = window.location.pathname;
     window.history.replaceState({}, '', cleanUrl);
-  }, [emailParam, nameParam]);
-
-  useEffect(() => {
-    const formDraft: SignupFormDraft = {
-      nickname,
-      emailPart,
-      birthDate,
-      gender,
-      termsAgreed,
-    };
-
-    saveSignupFormDraft(formDraft);
-  }, [birthDate, emailPart, gender, nickname, termsAgreed]);
+  }, [emailParam, nameParam, setStoredSignupAccount]);
 
   return (
     <Container device={device}>
@@ -299,7 +225,9 @@ const SignupCard = () => {
             <RequiredText>
               (<RequiredMark>*</RequiredMark>필수)
             </RequiredText>
-            <Link to="/privacy-policy">내용보기</Link>
+            <ViewTermsLink to={TERMS_URL} openInNewTab>
+              내용보기
+            </ViewTermsLink>
           </TermsText>
         </Checkbox>
 
@@ -543,6 +471,15 @@ const TermsText = styled.span`
     &:hover {
       color: ${({ theme }) => theme.colors.textSecondary};
     }
+  }
+`;
+
+const ViewTermsLink = styled(ExternalLink)`
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.t5Regular};
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.textSecondary};
   }
 `;
 
