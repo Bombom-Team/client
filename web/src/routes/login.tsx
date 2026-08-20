@@ -41,11 +41,6 @@ function Login() {
     <Container device={device}>
       <ContentWrapper device={device}>
         <LoginCard />
-        <InfoText device={device}>
-          {device === 'mobile'
-            ? '이미 계정이 있으신가요? \n Google로 로그인하면 자동으로 연결됩니다.'
-            : '이미 계정이 있으신가요? Google로 로그인하면 자동으로 연결됩니다.'}
-        </InfoText>
       </ContentWrapper>
     </Container>
   );
@@ -59,10 +54,7 @@ const Container = styled.main<{ device: Device }>`
   align-items: center;
   justify-content: center;
 
-  background: ${({ device, theme }) =>
-    device === 'mobile'
-      ? theme.colors.white
-      : `linear-gradient(135deg, ${theme.colors.primaryBomBom} 0%, #f74 25%, ${theme.colors.primaryLight} 100%)`};
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`
@@ -76,14 +68,4 @@ const ContentWrapper = styled.div<{ device: Device }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-const InfoText = styled.p<{ device: Device }>`
-  max-width: 320px;
-  margin: 0;
-
-  color: ${({ device, theme }) =>
-    device === 'mobile' ? theme.colors.textSecondary : theme.colors.white};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  text-align: center;
 `;
