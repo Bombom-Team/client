@@ -146,7 +146,9 @@ const ContentWrapper = styled.div<{ device: Device }>`
 const PostProgressBar = styled(ProgressBar)<{ device: Device }>`
   position: sticky;
   top: ${({ device, theme }) =>
-    device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile};
+    device === 'pc'
+      ? `calc(${theme.heights.headerPC} + 40px)`
+      : `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`};
   z-index: ${({ theme }) => theme.zIndex.floating};
   width: 100vw;
   height: 4px;

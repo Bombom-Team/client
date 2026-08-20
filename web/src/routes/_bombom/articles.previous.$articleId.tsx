@@ -2,7 +2,7 @@ import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useRouterState } from '@tanstack/react-router';
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
@@ -13,8 +13,8 @@ import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
 import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
-import { useArticleContentFontScale } from '@/pages/detail/hooks/useArticleContentFontScale';
 import { useArticleFontSize } from '@/pages/detail/hooks/useArticleFontSize';
+import PreviousArticleContent from '@/pages/newsletter-detail/components/PreviousArticleContent';
 import { openSubscribeLink } from '@/pages/newsletter-detail/utils';
 import { cutHtmlByTextRatio } from '@/utils/element';
 
@@ -35,7 +35,6 @@ export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
 
 function RouteComponent() {
   const device = useDevice();
-  const contentRef = useRef<HTMLDivElement>(null);
   const {
     percentage,
     canDecrease,
@@ -66,12 +65,6 @@ function RouteComponent() {
     () => processContent(article?.newsletter.name ?? '', bodyContent),
     [article?.newsletter.name, bodyContent],
   );
-
-  useArticleContentFontScale({
-    ref: contentRef,
-    content: processedContent,
-    percentage,
-  });
 
   if (!article) return null;
 
@@ -125,12 +118,10 @@ function RouteComponent() {
       </ArticleReadingIntro>
       <Divider />
 
-      <Content
-        ref={contentRef}
+      <PreviousArticleContent
+        content={processedContent}
         showGradient={shouldShowSubscribePrompt}
-        dangerouslySetInnerHTML={{
-          __html: processedContent,
-        }}
+        fontSizePercentage={percentage}
       />
 
       {shouldShowSubscribePrompt && (
@@ -174,6 +165,7 @@ function RouteComponent() {
 }
 
 const Container = styled.div`
+  width: 100%;
   max-width: 700px;
   margin: 0 auto;
   padding: 28px;
@@ -196,54 +188,6 @@ const Divider = styled.div`
   height: 1px;
 
   background-color: ${({ theme }) => theme.colors.dividers};
-`;
-
-const Content = styled.div<{ showGradient: boolean }>`
-  overflow: visible;
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  -webkit-tap-highlight-color: rgb(0 0 0 / 10%);
-  -webkit-touch-callout: default;
-
-  user-select: text;
-
-  word-break: break-all;
-  word-wrap: break-word;
-
-  &::after {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 200px;
-
-    display: ${({ showGradient }) => (showGradient ? 'block' : 'none')};
-
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      ${({ theme }) => theme.colors.white}
-    );
-
-    content: '';
-
-    pointer-events: none;
-  }
-
-  a {
-    color: ${({ theme }) => theme.colors.info};
-
-    cursor: pointer;
-    text-decoration: underline;
-
-    &:hover {
-      text-decoration: none;
-    }
-  }
 `;
 
 const ActionButtonWrapper = styled.div`
