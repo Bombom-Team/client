@@ -31,6 +31,7 @@ const DateTab = ({
       selected={selectedDate === dateString}
       onTabSelect={onDateSelect}
       device={device}
+      data-date={dateString}
     />
   );
 };

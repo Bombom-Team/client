@@ -12,24 +12,38 @@ export interface ServiceSwitcherProps {
 
 const ServiceSwitcher = ({ activeService }: ServiceSwitcherProps) => {
   const device = useDevice();
+  const isMaeilMailActive = activeService === 'maeil-mail';
 
   return (
     <Container>
       <Inner device={device}>
-        <ServiceLink href={BOMBOM_URL} isActive={activeService === 'bombom'}>
-          <img
-            src={bombomTextLogo}
-            alt="봄봄"
-            style={{ height: 16, width: 'auto' }}
-          />
-        </ServiceLink>
+        {isMaeilMailActive ? (
+          <ServiceLink href={MAEIL_MAIL_URL} isActive>
+            <MaeilMailLogo width="auto" height={18} />
+          </ServiceLink>
+        ) : (
+          <ServiceLink href={BOMBOM_URL} isActive>
+            <img
+              src={bombomTextLogo}
+              alt="봄봄"
+              style={{ height: 16, width: 'auto' }}
+            />
+          </ServiceLink>
+        )}
         <Divider />
-        <ServiceLink
-          href={MAEIL_MAIL_URL}
-          isActive={activeService === 'maeil-mail'}
-        >
-          <MaeilMailLogo width="auto" height={18} />
-        </ServiceLink>
+        {isMaeilMailActive ? (
+          <ServiceLink href={BOMBOM_URL} isActive={false}>
+            <img
+              src={bombomTextLogo}
+              alt="봄봄"
+              style={{ height: 16, width: 'auto' }}
+            />
+          </ServiceLink>
+        ) : (
+          <ServiceLink href={MAEIL_MAIL_URL} isActive={false}>
+            <MaeilMailLogo width="auto" height={18} />
+          </ServiceLink>
+        )}
       </Inner>
     </Container>
   );

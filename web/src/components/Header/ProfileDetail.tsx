@@ -71,20 +71,20 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
 
       <Divider />
 
-      <MyPageButton to="/my?tab=profile" onClick={onClose}>
+      <MyPageButton to="/my/profile" onClick={onClose}>
         내 정보
       </MyPageButton>
 
-      <MyPageButton to="/my?tab=newsletters" onClick={onClose}>
+      <MyPageButton to="/my/newsletters" onClick={onClose}>
         구독 뉴스레터
       </MyPageButton>
 
-      <MyPageButton to="/my?tab=rewards" onClick={onClose}>
+      <MyPageButton to="/my/rewards" onClick={onClose}>
         선물함
       </MyPageButton>
 
       {isWebView() && (
-        <MyPageButton to="/my?tab=notification" onClick={onClose}>
+        <MyPageButton to="/my/notification" onClick={onClose}>
           알림 설정
         </MyPageButton>
       )}
