@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import DateTab from './DateTab';
+import { useDateFilterScroll } from '../../hooks/useDateFilterScroll';
 import Tabs from '@/components/Tabs/Tabs';
 
 interface MobileDateFilterProps {
@@ -17,10 +18,14 @@ const MobileDateFilter = ({
 }: MobileDateFilterProps) => {
   const isTodayChallengeDate = dates.includes(today);
   const scrollableDates = dates.filter((date) => date !== today);
+  const { scrollRef } = useDateFilterScroll({
+    dates: scrollableDates,
+    selectedDate,
+  });
 
   return (
     <Container>
-      <DateTabsWrapper>
+      <DateTabsWrapper ref={scrollRef}>
         <StyledTabs>
           {scrollableDates.map((dateString) => (
             <DateTab

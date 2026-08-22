@@ -13,7 +13,11 @@ import { createRoot } from 'react-dom/client';
 import { ENV } from './apis/env';
 import { queries } from './apis/queries';
 import PageErrorFallback from './components/PageErrorFallback/PageErrorFallback';
-import GAInitializer from './libs/googleAnalytics/GAInitializer';
+import {
+  DEV_GOOGLE_ANALYTICS_ID,
+  GOOGLE_ANALYTICS_ID,
+} from './libs/googleAnalytics/constants';
+import { initGA } from './libs/googleAnalytics/initGA';
 import { initSentry } from './libs/sentry/initSentry';
 import {
   captureMutationError,
@@ -23,9 +27,13 @@ import {
 import NotFound from './pages/system/components/NotFound';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
-import { isProduction } from './utils/environment';
+import { isDevelopment, isProduction } from './utils/environment';
 
 if (isProduction) Clarity.init(ENV.clarityProjectId);
+
+if (isDevelopment) initGA(DEV_GOOGLE_ANALYTICS_ID);
+
+if (isProduction) initGA(GOOGLE_ANALYTICS_ID);
 
 const EXPECTED_UNAUTHORIZED_QUERY_KEYS = [
   queries.userProfile().queryKey,
@@ -137,7 +145,6 @@ enableMocking().then(() => {
       <SentryErrorBoundary fallback={PageErrorFallback}>
         <RouterProvider router={router} />
       </SentryErrorBoundary>
-      <GAInitializer />
     </StrictMode>,
   );
 });

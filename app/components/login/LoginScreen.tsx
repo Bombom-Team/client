@@ -1,8 +1,8 @@
 import styled from '@emotion/native';
-import { Ionicons } from '@expo/vector-icons';
 
 import {
   Dimensions,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -14,7 +14,8 @@ import { GoogleIcon } from '@/components/icons/GoogleIcon';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebView } from '@/contexts/WebViewContext';
 import { loginWithApple, loginWithGoogle } from '@/utils/auth';
-import { theme } from '@bombom/shared/theme';
+
+const logo = require('@/app/assets/images/logo.png');
 
 export const LoginScreen = () => {
   const { showLogin } = useAuth();
@@ -74,17 +75,11 @@ export const LoginScreen = () => {
         >
           <MainCard>
             <GreetingWrapper>
-              <IconContainer>
-                <Ionicons
-                  name="sparkles"
-                  size={24}
-                  color={theme.colors.white}
-                />
-              </IconContainer>
+              <LogoImage source={logo} accessibilityLabel="봄봄 로고" />
               <Title>봄봄에 오신 걸 환영해요</Title>
               <Subtitle>
-                당신의 하루에 찾아오는 작은 설렘{'\n'}뉴스레터를 한 곳에서 쉽게
-                관리하세요
+                당신의 하루에 찾아오는 작은 설렘{'\n'}
+                뉴스레터를 한 곳에서 쉽게 관리하세요
               </Subtitle>
             </GreetingWrapper>
 
@@ -148,41 +143,41 @@ const MainCard = styled.View`
 
 const GreetingWrapper = styled.View`
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
-const IconContainer = styled.View`
-  padding: 18px;
-  border-radius: 50px;
-  justify-content: center;
-  align-items: center;
-  background-color: ${(props) => props.theme.colors.primaryBomBom};
+const LogoImage = styled(Image)`
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
 `;
 
 const Title = styled.Text`
   font-size: 28px;
   font-weight: 700;
+  line-height: 38px;
   text-align: center;
   color: ${(props) => props.theme.colors.textPrimary};
   background-color: transparent;
 `;
 
 const Subtitle = styled.Text`
-  margin: 34px 0;
+  width: 100%;
+  max-width: 380px;
   color: ${(props) => props.theme.colors.textSecondary};
   font-size: 18px;
   font-weight: 400;
   text-align: center;
-  line-height: 28px;
+  line-height: 24px;
 `;
 
 const Divider = styled.View`
   width: 100%;
   height: 2px;
-  margin-bottom: 34px;
+  margin: 16px 0;
   background-color: ${(props) => props.theme.colors.dividers};
   opacity: 0.3;
 `;

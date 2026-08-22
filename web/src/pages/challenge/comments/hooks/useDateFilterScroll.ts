@@ -6,7 +6,15 @@ import {
   useCallback,
 } from 'react';
 
-export const useDateFilterScroll = (dates: string[]) => {
+interface UseDateFilterScrollParams {
+  dates: string[];
+  selectedDate: string;
+}
+
+export const useDateFilterScroll = ({
+  dates,
+  selectedDate,
+}: UseDateFilterScrollParams) => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -53,6 +61,18 @@ export const useDateFilterScroll = (dates: string[]) => {
     });
     return () => filterContainer.removeEventListener('scroll', updateCanScroll);
   }, [updateCanScroll]);
+
+  useEffect(() => {
+    const selectedTab = scrollRef.current?.querySelector<HTMLElement>(
+      `[data-date="${selectedDate}"]`,
+    );
+
+    selectedTab?.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'nearest',
+      block: 'nearest',
+    });
+  }, [selectedDate]);
 
   return { scrollRef, canScrollLeft, canScrollRight, scrollDateFilter };
 };

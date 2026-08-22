@@ -77,10 +77,7 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
             height={20}
             color={activeNav === 'blog' ? 'white' : 'black'}
           />
-          <BlogLabel>
-            <p>{NAV_LABEL.blog}</p>
-            <BetaBadge active={activeNav === 'blog'}>Beta</BetaBadge>
-          </BlogLabel>
+          <p>{NAV_LABEL.blog}</p>
         </NavButton>
       )}
       <NavButton
@@ -101,25 +98,6 @@ const HeaderNavButtons = ({ activeNav, device }: HeaderNavButtonsProps) => {
 };
 
 export default HeaderNavButtons;
-
-const BlogLabel = styled.div`
-  position: relative;
-
-  display: flex;
-  align-items: center;
-`;
-
-const BetaBadge = styled.span<{ active?: boolean }>`
-  position: absolute;
-  top: -12px;
-  right: -12px;
-  padding: 2px 4px;
-
-  background: none;
-  color: ${({ theme }) => theme.colors.primaryBomBom};
-  font: ${({ theme }) => theme.fonts.t1Regular};
-  font-weight: 700;
-`;
 
 const NavButton = styled(Link, {
   shouldForwardProp: (prop) => prop !== 'active' && prop !== 'isPC',

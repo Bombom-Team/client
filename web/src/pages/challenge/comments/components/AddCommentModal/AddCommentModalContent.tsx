@@ -17,12 +17,14 @@ interface AddCommentModalContentProps {
   closeCommentModal: () => void;
   candidateArticles: CandidateArticles;
   onFirstCompletion: () => void;
+  onAddComplete: () => void;
 }
 
 const AddCommentModalContent = ({
   closeCommentModal,
   candidateArticles,
   onFirstCompletion,
+  onAddComplete,
 }: AddCommentModalContentProps) => {
   const [selectedArticleId, setSelectedArticleId] = useState<number | null>(
     null,
@@ -55,6 +57,7 @@ const AddCommentModalContent = ({
   const { mutate: addChallengeComment } = useAddChallengeCommentMutation({
     challengeId: Number(challengeId),
     onSuccess: (response) => {
+      onAddComplete();
       if (response.isFirstCompletion) {
         onFirstCompletion();
       }

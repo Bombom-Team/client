@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
-import { useDevice } from '@bombom/shared/ui-web';
+import { ServiceSwitcher, useDevice } from '@bombom/shared/ui-web';
 import type { Device } from '@bombom/shared/ui-web';
 import { useRouter } from '@tanstack/react-router';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
-
-const BOMBOM_SERVICE_URL = 'https://www.bombom.news';
 
 const Header = () => {
   const device = useDevice();
@@ -17,6 +15,7 @@ const Header = () => {
 
   return (
     <Container device={device}>
+      {device === 'pc' && <ServiceSwitcher activeService="maeil-mail" />}
       <HeaderRow device={device}>
         {device === 'mobile' ? (
           <BackButton
@@ -31,7 +30,6 @@ const Header = () => {
             <LogoBox aria-label="매일메일">
               <MaeilMailLogo width={120} />
             </LogoBox>
-            <GoToService href={BOMBOM_SERVICE_URL}>서비스 이동</GoToService>
           </PCHeaderInner>
         )}
       </HeaderRow>
@@ -102,26 +100,4 @@ const PCHeaderInner = styled.div`
 const LogoBox = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const GoToService = styled.a`
-  padding: 8px 16px;
-  border: none;
-  border-radius: 12px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: ${({ theme }) => theme.colors.primaryMaeilMail};
-  color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primaryDark};
-  }
 `;
