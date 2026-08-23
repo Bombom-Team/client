@@ -54,7 +54,7 @@ const Content = styled.div<{ scale: number }>`
   align-items: flex-start;
 
   -webkit-tap-highlight-color: rgb(0 0 0 / 10%);
-  -webkit-touch-callout: default;
+  -webkit-touch-callout: none;
 
   transform: ${({ scale }) => `scale(${scale})`};
   transform-origin: top left;

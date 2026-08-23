@@ -9,17 +9,21 @@ import { formatDate } from '@/utils/date';
 import { createStorage } from '@/utils/localStorage';
 import type { Gender } from '../components/SignupCard.types';
 
+type UseSignupMutationParams = {
+  nickname: string;
+  email: string;
+  gender: Gender;
+  birthDate: string;
+  onSignupSuccess?: () => void;
+};
+
 export const useSignupMutation = ({
   nickname,
   email,
   gender,
   birthDate,
-}: {
-  nickname: string;
-  email: string;
-  gender: Gender;
-  birthDate: string;
-}) => {
+  onSignupSuccess,
+}: UseSignupMutationParams) => {
   const navigate = useNavigate();
 
   const initializeGuideMailStorage = () => {
@@ -38,6 +42,7 @@ export const useSignupMutation = ({
         birthDate,
       }),
     onSuccess: () => {
+      onSignupSuccess?.();
       initializeGuideMailStorage();
 
       sendMessageToRN({
