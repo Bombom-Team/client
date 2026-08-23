@@ -7,7 +7,6 @@ import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import Flex from '@/components/Flex/Flex';
 import Text from '@/components/Text/Text';
-import { useChallengeActivityStartTracking } from '@/pages/challenge/hooks/useChallengeActivityStartTracking';
 import type { ChangeEvent } from 'react';
 
 type ReviewWriterProps = {
@@ -30,11 +29,6 @@ const ReviewWriter = ({
   const [showError, setShowError] = useState(false);
 
   const isEditing = mode === 'edit';
-  const trackActivityStart = useChallengeActivityStartTracking({
-    challengeId,
-    enabled: !isEditing,
-    todoType: 'REVIEW',
-  });
 
   const { mutate: addReview } = useAddReviewMutation({
     challengeId,
@@ -57,7 +51,6 @@ const ReviewWriter = ({
 
   const handleReviewChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    trackActivityStart(value);
 
     if (value.length >= REVIEW_VALIDATION.minLength) {
       setShowError(false);
