@@ -3,37 +3,30 @@ import { trackRetentionEvent } from '@/libs/googleAnalytics/retentionEvents';
 
 interface UseChallengeActivityStartTrackingParams {
   challengeId: number;
-  dayIndex?: number;
-  enabled?: boolean;
-  todoType: string;
+  isAttendanceEligible: boolean;
 }
 
 export const useChallengeActivityStartTracking = ({
   challengeId,
-  dayIndex,
-  enabled = true,
-  todoType,
+  isAttendanceEligible,
 }: UseChallengeActivityStartTrackingParams) => {
-  const trackedActivityKeysRef = useRef(new Set<string>());
-  const activityKey = `${challengeId}:${dayIndex ?? ''}:${todoType}`;
+  const trackedChallengeIdsRef = useRef(new Set<number>());
 
   return useCallback(
     (value: string) => {
       if (
-        !enabled ||
-        trackedActivityKeysRef.current.has(activityKey) ||
-        !value.trim()
+        trackedChallengeIdsRef.current.has(challengeId) ||
+        !value.trim() ||
+        !isAttendanceEligible
       ) {
         return;
       }
 
       trackRetentionEvent('challenge_activity_started', {
         challenge_id: String(challengeId),
-        ...(dayIndex !== undefined && { day_index: dayIndex }),
-        todo_type: todoType,
       });
-      trackedActivityKeysRef.current.add(activityKey);
+      trackedChallengeIdsRef.current.add(challengeId);
     },
-    [activityKey, challengeId, dayIndex, enabled, todoType],
+    [challengeId, isAttendanceEligible],
   );
 };

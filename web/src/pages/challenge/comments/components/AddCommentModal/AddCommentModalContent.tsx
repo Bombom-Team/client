@@ -43,9 +43,21 @@ const AddCommentModalContent = ({
   const { challengeId } = useParams({
     from: '/_bombom/_main/challenge/$challengeId/comments',
   });
+
+  const { data: memberProgress } = useQuery(
+    queries.memberProgress(Number(challengeId)),
+  );
+
+  const isAttendanceEligible =
+    memberProgress?.todayTodos?.some(
+      (todo) =>
+        todo.challengeTodoType === 'COMMENT' &&
+        todo.challengeTodoStatus === 'INCOMPLETE',
+    ) ?? false;
+
   const trackActivityStart = useChallengeActivityStartTracking({
     challengeId: Number(challengeId),
-    todoType: 'COMMENT',
+    isAttendanceEligible,
   });
 
   const { data: highlights } = useQuery({

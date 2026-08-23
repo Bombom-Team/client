@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postChallengeComment } from '@/apis/challenge/challenge.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
+import { trackRetentionEvent } from '@/libs/googleAnalytics/retentionEvents';
 import type {
   PostChallengeCommentParams,
   PostChallengeCommentResponse,
@@ -22,6 +23,12 @@ const useAddChallengeCommentMutation = ({
     mutationFn: (params: PostChallengeCommentParams) =>
       postChallengeComment(challengeId, params),
     onSuccess: (response) => {
+      if (response.isFirstCompletion) {
+        trackRetentionEvent('challenge_attendance_completed', {
+          challenge_id: String(challengeId),
+        });
+      }
+
       queryClient.invalidateQueries({
         queryKey: queries.comments.all(challengeId),
       });
