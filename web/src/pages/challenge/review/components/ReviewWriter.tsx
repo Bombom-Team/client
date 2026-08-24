@@ -51,7 +51,6 @@ const ReviewWriter = ({
 
   const handleReviewChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-
     if (value.length >= REVIEW_VALIDATION.minLength) {
       setShowError(false);
     }
