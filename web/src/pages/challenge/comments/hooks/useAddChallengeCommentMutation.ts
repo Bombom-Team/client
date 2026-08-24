@@ -29,6 +29,12 @@ const useAddChallengeCommentMutation = ({
         });
       }
 
+      if (response.isChallengeCompleted) {
+        trackRetentionEvent('challenge_completed', {
+          challenge_id: String(challengeId),
+        });
+      }
+
       queryClient.invalidateQueries({
         queryKey: queries.comments.all(challengeId),
       });

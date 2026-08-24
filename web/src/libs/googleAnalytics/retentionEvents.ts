@@ -12,6 +12,7 @@ interface RetentionEventParamsMap {
   challenge_application_completed: { challenge_id: string };
   challenge_activity_started: { challenge_id: string };
   challenge_attendance_completed: { challenge_id: string };
+  challenge_completed: { challenge_id: string };
 }
 
 export const trackRetentionEvent = <
