@@ -15,8 +15,9 @@ Claude Code, Cursor 등 도구와 관계없이 적용합니다.
      [frontend coding standards](docs/frontend-coding-standards.md)
    - `app/` React Native UI 코드: app/AGENTS.md와 작업 대상의 인접 구현
    - Commit message: [git commit convention](docs/git-commit-convention.md)
-   - Pull request review: `ai-review-workflow` skill. cross-workspace·auth·API·routing 등
-     경계는 [architecture map](docs/architecture.md)
+   - Pull request review: [architecture map](docs/architecture.md)과 관련 workspace 규칙을
+     읽습니다. Claude Code PR review workflow의 유지·수정·장애 확인은
+     `ai-review-workflow` skill을 사용합니다.
    - Workspace 작업: 아래 표에서 대상 workspace를 찾고 해당 AGENTS.md 확인
 5. 아래 '작업 범위 파악' 순서로 관련 code, configuration, test를 확인
 
