@@ -1,19 +1,20 @@
 ---
 name: ai-review-workflow
-description: Manage the Bombom client PR review workflow used by AI reviewers, including Codex and Claude Code. This skill is the ONLY way to invoke a PR review — manual triggers like `/codex-review` slash command and workflow_dispatch have been removed. Use this skill whenever the user asks to review a PR with the team's standard format, post review comments, change review behavior, review comment format, inline review style, generated-file exclusions, approve/request-changes behavior, mock-test review output, resolve/unresolved tracking, or to diagnose review Action failures in this repository.
+description: Manage the Bombom client PR review workflow used by AI reviewers (Codex 자동·Claude 수동 모두 포괄). This skill is the ONLY way to invoke a PR review — manual triggers like `/codex-review` slash command and workflow_dispatch have been removed. Use this skill whenever the user asks to review a PR with the team's standard format, post review comments, change review behavior, review comment format, inline review style, generated-file exclusions, approve/request-changes behavior, mock-test review output, resolve/unresolved tracking, or to diagnose review Action failures in this repository.
 ---
 
 # PR Review Workflow (skill-only)
 
 이 스킬은 Bombom client PR 리뷰의 **유일한 invocation 경로**다. `/codex-review`
 슬래시 커맨드와 `workflow_dispatch` 같은 수동 트리거는 제거되었다
-(`codex-review.yml` 파일도 삭제). PR 리뷰는 이 스킬을 실행한 AI agent가
+(`codex-review.yml` 파일도 삭제). PR 리뷰는 Claude(수동)가 이 스킬을 통해
 직접 진행하며, 게시는 `publish-codex-review.sh`를 로컬에서 실행하거나
 `codex-review-publish.yml`(publish-only workflow)을 dispatch하는 두 경로 중 하나로 한다.
 
 Use this skill for changes around:
 
 - `.github/workflows/codex-review-publish.yml` (스킬이 호출하는 publish-only workflow)
+- `.github/workflows/codex-resolve.yml` (resolve 워크플로우, 마커 의존)
 - `.github/codex-review-output-schema.json` (review JSON 스키마)
 - `.github/scripts/publish-codex-review.sh` (공용 publisher)
 - `.review-learnings/REVIEW.md` (리뷰 학습 메모, 선택적 참조)
@@ -25,9 +26,10 @@ post comments only, never approve or request changes, and always post a review
 ## Reviewer Identity
 
 The publisher (`publish-codex-review.sh`) accepts a `REVIEWER` env
-(default `codex`). 로컬 publisher를 실행할 때는 현재 리뷰어에 맞는 값을 명시합니다
-(`REVIEWER=codex` 또는 `REVIEWER=claude`). `codex` default는 reviewer input 없이
-publish-only workflow를 dispatch하는 경우에도 사용됩니다.
+(default `codex`). 현재 invocation 경로상 실질적으로는 항상 `REVIEWER=claude`로
+호출된다 (스킬이 유일한 진입점이고 Claude가 수동 리뷰어). `codex` default는
+publish-only workflow가 reviewer input 없이 dispatch되는 경우 + 미래 Codex
+재활성화 대비로 보존된다.
 
 `REVIEWER`는 다음을 reviewer-aware로 치환한다:
 
@@ -39,7 +41,7 @@ publish-only workflow를 dispatch하는 경우에도 사용됩니다.
 
 These conventions stay identical regardless of reviewer (do **not** change them):
 
-- `<!-- CODEX_REVIEW_COMMENT -->` inline marker — publisher의 inline comment format과 호환
+- `<!-- CODEX_REVIEW_COMMENT -->` inline marker — `codex-resolve.yml`가 의존
 - 파일명 / 스키마 / 호출 계약 (`REVIEW_JSON`, `REPOSITORY`, `PR_NUMBER`, `HEAD_SHA`)
 - review event는 항상 `COMMENT`
 
@@ -58,13 +60,14 @@ formatting unless the user explicitly asks.
 ## Current Design
 
 - **Invocation**: 오직 이 스킬을 통해서만 리뷰가 시작된다. 사용자가
-  `이 PR 리뷰해줘` 같이 요청하면 AI agent가 본 스킬을 실행한다.
-- AI agent가 PR diff·메타데이터를 직접 분석해 `.github/codex-review-output-schema.json`
+  `이 PR 리뷰해줘` 같이 요청하면 Claude가 본 스킬을 실행한다.
+- Claude가 PR diff·메타데이터를 직접 분석해 `.github/codex-review-output-schema.json`
   스키마에 맞는 JSON을 로컬에 작성한다 (`codex-review-output.json`).
 - `.github/scripts/publish-codex-review.sh`가 그 JSON을 GitHub review body와
-  inline comment로 변환해 게시한다. `REVIEWER` 값에 맞는 reviewer label로 표시된다.
+  inline comment로 변환해 게시한다. `REVIEWER=claude`로 호출하면 Claude 라벨로
+  표시된다.
 - 게시 경로는 두 가지:
-  1. **로컬 publisher 직접 실행** (권장): AI agent가 로컬에서 publisher를 실행하고
+  1. **로컬 publisher 직접 실행** (권장): Claude가 로컬에서 publisher를 실행하고
      publisher가 `gh api`로 직접 게시.
   2. **publish-only workflow dispatch**: `.github/workflows/codex-review-publish.yml`이
      로컬에서 만든 JSON을 GitHub Actions 환경에서 publisher로 실행해 게시.
@@ -81,8 +84,8 @@ formatting unless the user explicitly asks.
 - Only `critical` and `major` findings should become inline comments.
 - `minor` findings should appear in the review summary `### 참고` section.
 - Generated OpenAPI type declarations and lock files should not be reviewed.
-- Keep `<!-- CODEX_REVIEW_COMMENT -->` in inline comments — publisher의 inline comment
-  format과 호환을 위해 유지한다. reviewer가 Codex/Claude 어느 쪽이어도 동일.
+- Keep `<!-- CODEX_REVIEW_COMMENT -->` in inline comments — `codex-resolve.yml`
+  이 마커로 review thread를 식별. reviewer가 Codex/Claude 어느 쪽이어도 동일.
 - Preserve `<!-- REVIEW_META ... -->` because follow-up workflows and future
   learning loops may parse it. `source` 필드는 `REVIEWER` env 값을 그대로 반영한다.
 - **리뷰 산출물(`codex-review-output.json` 등)은 ephemeral이다. 절대 커밋하거나
@@ -292,16 +295,15 @@ Procedure:
    shared publisher owns the Preferred Review Body Format, Preferred Inline
    Comment Format, `<!-- CODEX_REVIEW_COMMENT -->`, and `<!-- REVIEW_META ... -->`.
 
-8. **반드시 publisher를 실행해 PR 코멘트를 게시한다.** 권장 경로는 현재 reviewer에
-   맞는 `REVIEWER` 값으로 로컬 publisher를 직접 실행하는 것이다 (`REVIEW_JSON`은 step
-   0의 scratch 경로):
+8. **반드시 publisher를 실행해 PR 코멘트를 게시한다.** 권장 경로는 `REVIEWER=claude`로
+   로컬 publisher를 직접 실행하는 것이다 (`REVIEW_JSON`은 step 0의 scratch 경로):
 
    ```bash
    REVIEW_JSON="$REVIEW_JSON" \
    REPOSITORY=Bombom-Team/client \
    PR_NUMBER=<pr-number> \
    HEAD_SHA=<head-sha> \
-   REVIEWER=<codex-or-claude> \
+   REVIEWER=claude \
    bash .github/scripts/publish-codex-review.sh
    ```
 
@@ -345,8 +347,8 @@ unless the user explicitly asks.
    목록을 희석하지 않는다.
 3. 리뷰 중 `docs/architecture.md`와 코드가 어긋나면 코드를 기준으로 리뷰하고 사용자에게
    architecture 문서 갱신을 별도 제안한다.
-4. `<!-- REVIEW_META -->` finding id와 `<!-- CODEX_REVIEW_COMMENT -->` 마커는 기존 review
-   metadata와 inline comment format의 호환을 위해 유지한다.
+4. `<!-- REVIEW_META -->` finding id와 `<!-- CODEX_REVIEW_COMMENT -->` 마커는 과거 finding
+   추적 키이므로 유지한다.
 
 ## Generated File Exclusions
 
@@ -412,7 +414,7 @@ Common failures:
   publishing. The publisher performs this normalization automatically.
 - publish-only workflow가 reviewer 라벨을 codex로 표시: 의도된 동작.
   현재 `codex-review-publish.yml`은 `reviewer` input이 없어 default `codex`로 게시된다.
-  다른 label로 게시하려면 로컬 publisher에서 `REVIEWER` 값을 명시한다.
+  Claude 라벨로 게시하려면 로컬 publisher (`REVIEWER=claude`) 경로를 사용한다.
 
 ## Verification
 
@@ -421,9 +423,10 @@ publisher / publish-only workflow / SKILL 수정 시 최소 검증:
 ```bash
 bash -n .github/scripts/publish-codex-review.sh
 ruby -e 'require "yaml"; YAML.load_file(".github/workflows/codex-review-publish.yml"); puts "yaml ok"'
+ruby -e 'require "yaml"; YAML.load_file(".github/workflows/codex-resolve.yml"); puts "yaml ok"'
 git diff --check
 rg -n "REQUEST_CHANGES" .github/scripts/publish-codex-review.sh \
-  .github/workflows/codex-review-publish.yml
+  .github/workflows/codex-review-publish.yml .github/workflows/codex-resolve.yml
 ```
 
 `REQUEST_CHANGES`는 절대 등장하면 안 된다. `APPROVE`는 publisher의 조건부 로직과
