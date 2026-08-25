@@ -35,12 +35,6 @@ export default RequestNewsletterButton;
 const Container = styled(Button)`
   padding: 8px 12px;
 
-  color: ${({ theme }) => theme.colors.textSecondary};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t6Regular};
-
-  transition: color 0.2s ease-in-out;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primaryBomBom};
-  }
 `;

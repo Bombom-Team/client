@@ -316,6 +316,7 @@ const TrendyGrid = styled.div<{ device: Device; hasContent: boolean }>`
 
   display: grid;
   gap: 12px;
+  align-content: ${({ hasContent }) => (hasContent ? 'start' : 'center')};
 
   grid-auto-rows: min-content;
 

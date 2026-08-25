@@ -1,13 +1,19 @@
-import { Flex } from '@bombom/shared/ui-web';
+import { Flex, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import RequestNewsletterButton from './RequestNewsletterButton';
+import type { Device } from '@bombom/shared/ui-web';
 import EmptySearchIcon from '#/assets/svg/empty-search.svg';
 
 const EmptyNewsletter = () => {
+  const device = useDevice();
+
   return (
-    <Container>
+    <Container device={device}>
       <EmptySearchIconWrapper>
-        <EmptySearchIcon width={80} height={80} />
+        <EmptySearchIcon
+          width={device === 'mobile' ? 80 : 120}
+          height={device === 'mobile' ? 80 : 120}
+        />
       </EmptySearchIconWrapper>
 
       <Flex direction="column" align="center" gap={8}>
@@ -22,13 +28,13 @@ const EmptyNewsletter = () => {
 
 export default EmptyNewsletter;
 
-const Container = styled.div`
+const Container = styled.div<{ device: Device }>`
   width: 100%;
   height: 100%;
   padding: 60px 24px;
 
   display: flex;
-  gap: 20px;
+  gap: ${({ device }) => (device === 'mobile' ? 12 : 20)}px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -51,4 +57,6 @@ const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t6Regular};
   text-align: center;
+
+  word-break: keep-all;
 `;
