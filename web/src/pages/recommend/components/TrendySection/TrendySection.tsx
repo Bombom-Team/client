@@ -1,10 +1,9 @@
-import { Flex, Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import NewsletterList from './NewsletterList';
-import { NEWSLETTER_REQUEST_FORM_URL } from '../../constants/newsletter';
+import RequestNewsletterButton from './RequestNewsletterButton';
 import { queries } from '@/apis/queries';
 import Chip from '@/components/Chip/Chip';
 import ImageInfoCardSkeleton from '@/components/ImageInfoCard/ImageInfoCardSkeleton';
@@ -16,8 +15,6 @@ import type { Device } from '@/hooks/useDevice';
 import type { Newsletter } from '@/types/newsletter';
 import type { ChangeEvent } from 'react';
 import CloseIcon from '#/assets/svg/close.svg';
-import MailIcon from '#/assets/svg/mail.svg';
-import PlusIcon from '#/assets/svg/plus.svg';
 import ReadingGlassesIcon from '#/assets/svg/reading-glasses.svg';
 import TrendingUpIcon from '#/assets/svg/trending-up.svg';
 
@@ -52,6 +49,8 @@ const TrendySection = () => {
         newsletter.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
+  const isEmpty = !isLoading && (filteredNewsletters?.length ?? 0) === 0;
+
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (selectedCategory !== ALL_NEWSLETTERS)
       setSelectedCategory(ALL_NEWSLETTERS);
@@ -73,10 +72,6 @@ const TrendySection = () => {
       to: '/newsletters/$newsletterId',
       params: { newsletterId: String(newsletter.newsletterId) },
     });
-  };
-
-  const requestAddNewsletter = () => {
-    navigate({ href: NEWSLETTER_REQUEST_FORM_URL });
   };
 
   useEffect(() => {
@@ -165,24 +160,11 @@ const TrendySection = () => {
           />
         )}
       </TrendyGrid>
-      <SectionFooter>
-        <RequestNewsletterButton
-          variant="transparent"
-          onClick={requestAddNewsletter}
-        >
-          <Flex align="center">
-            <PlusIcon
-              width={device === 'mobile' ? 12 : 14}
-              height={device === 'mobile' ? 12 : 14}
-            />
-            <MailIcon
-              width={device === 'mobile' ? 20 : 24}
-              height={device === 'mobile' ? 20 : 24}
-            />
-          </Flex>
-          뉴스레터 등록 요청
-        </RequestNewsletterButton>
-      </SectionFooter>
+      {!isEmpty && (
+        <SectionFooter>
+          <RequestNewsletterButton />
+        </SectionFooter>
+      )}
     </Container>
   );
 };
@@ -319,19 +301,6 @@ const SectionFooter = styled.div`
 
   display: flex;
   justify-content: flex-end;
-`;
-
-const RequestNewsletterButton = styled(Button)`
-  padding: 8px 12px;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-
-  transition: color 0.2s ease-in-out;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primaryBomBom};
-  }
 `;
 
 const TagContainer = styled.div`
