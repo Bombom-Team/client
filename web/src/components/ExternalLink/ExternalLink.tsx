@@ -9,12 +9,14 @@ interface ExternalLinkProps {
   to: string;
   children: ReactNode;
   underline?: boolean;
+  openInNewTab?: boolean;
 }
 
 export const ExternalLink = ({
   to,
   children,
   underline = true,
+  openInNewTab = false,
 }: ExternalLinkProps) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isWebView()) return;
@@ -24,7 +26,13 @@ export const ExternalLink = ({
   };
 
   return (
-    <StyledLink to={to} onClick={handleClick} underline={underline}>
+    <StyledLink
+      to={to}
+      onClick={handleClick}
+      underline={underline}
+      target={openInNewTab ? '_blank' : undefined}
+      rel={openInNewTab ? 'noopener noreferrer' : undefined}
+    >
       {children}
     </StyledLink>
   );

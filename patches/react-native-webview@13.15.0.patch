@@ -1,0 +1,19 @@
+diff --git a/apple/RNCWebViewImpl.m b/apple/RNCWebViewImpl.m
+index 7f5c24d6e2cfb26eddbc513bf17a81c24a7273e2..aac4e085c11845789b251d51a99aa9f0e9b987de 100644
+--- a/apple/RNCWebViewImpl.m
++++ b/apple/RNCWebViewImpl.m
+@@ -95,9 +95,13 @@ - (BOOL)canPerformAction:(SEL)action
+ }
+ - (void)buildMenuWithBuilder:(id<UIMenuBuilder>)builder API_AVAILABLE(ios(13.0))  {
+     if (@available(iOS 16.0, *)) {
+-      if(self.menuItems){
++      if(self.menuItems || self.suppressMenuItems){
+         [builder removeMenuForIdentifier:UIMenuLookup];
+       }
++      if (self.suppressMenuItems) {
++        [builder removeMenuForIdentifier:UIMenuStandardEdit];
++        [builder removeMenuForIdentifier:UIMenuShare];
++      }
+     }
+     [super buildMenuWithBuilder:builder];
+ }
