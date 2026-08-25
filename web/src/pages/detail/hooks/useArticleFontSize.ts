@@ -25,50 +25,19 @@ export const useArticleFontSize = () => {
   const percentage = isArticleFontSizePercentage(storedPercentage)
     ? storedPercentage
     : DEFAULT_ARTICLE_FONT_SIZE_PERCENTAGE;
-  const currentIndex = ARTICLE_FONT_SIZE_PERCENTAGES.indexOf(percentage);
 
-  const decreaseFontSize = useCallback(() => {
-    setStoredPercentage((currentPercentage) => {
-      const normalizedPercentage = isArticleFontSizePercentage(
-        currentPercentage,
-      )
-        ? currentPercentage
-        : DEFAULT_ARTICLE_FONT_SIZE_PERCENTAGE;
-      const normalizedIndex =
-        ARTICLE_FONT_SIZE_PERCENTAGES.indexOf(normalizedPercentage);
-
-      return (
-        ARTICLE_FONT_SIZE_PERCENTAGES[normalizedIndex - 1] ??
-        normalizedPercentage
-      );
-    });
-  }, [setStoredPercentage]);
-
-  const increaseFontSize = useCallback(() => {
-    setStoredPercentage((currentPercentage) => {
-      const normalizedPercentage = isArticleFontSizePercentage(
-        currentPercentage,
-      )
-        ? currentPercentage
-        : DEFAULT_ARTICLE_FONT_SIZE_PERCENTAGE;
-      const normalizedIndex =
-        ARTICLE_FONT_SIZE_PERCENTAGES.indexOf(normalizedPercentage);
-
-      return (
-        ARTICLE_FONT_SIZE_PERCENTAGES[normalizedIndex + 1] ??
-        normalizedPercentage
-      );
-    });
-  }, [setStoredPercentage]);
+  const selectFontSize = useCallback(
+    (nextPercentage: ArticleFontSizePercentage) => {
+      setStoredPercentage(nextPercentage);
+    },
+    [setStoredPercentage],
+  );
 
   return useMemo(
     () => ({
       percentage,
-      canDecrease: currentIndex > 0,
-      canIncrease: currentIndex < ARTICLE_FONT_SIZE_PERCENTAGES.length - 1,
-      decreaseFontSize,
-      increaseFontSize,
+      selectFontSize,
     }),
-    [currentIndex, decreaseFontSize, increaseFontSize, percentage],
+    [percentage, selectFontSize],
   );
 };

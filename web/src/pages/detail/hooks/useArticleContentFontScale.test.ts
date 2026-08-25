@@ -43,10 +43,10 @@ describe('useArticleContentFontScale', () => {
     expect(firstParagraph?.style.fontSize).toBe('18px');
     expect(firstParagraph?.style.lineHeight).toBe('27px');
 
-    rerender({ content: '첫 본문 HTML', percentage: 120 });
+    rerender({ content: '첫 본문 HTML', percentage: 115 });
 
-    expect(firstParagraph?.style.fontSize).toBe('14.4px');
-    expect(firstParagraph?.style.lineHeight).toBe('21.6px');
+    expect(firstParagraph?.style.fontSize).toBe('13.8px');
+    expect(firstParagraph?.style.lineHeight).toBe('20.7px');
 
     container.innerHTML =
       '<p style="font-size: 20px; line-height: 30px">새 본문</p>';

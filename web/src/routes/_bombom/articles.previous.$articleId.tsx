@@ -35,13 +35,7 @@ export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
 
 function RouteComponent() {
   const device = useDevice();
-  const {
-    percentage,
-    canDecrease,
-    canIncrease,
-    decreaseFontSize,
-    increaseFontSize,
-  } = useArticleFontSize();
+  const { percentage, selectFontSize } = useArticleFontSize();
   const { userProfile, isLoggedIn } = useAuth();
   const { articleId } = Route.useParams();
   const { subscribeUrl } = useRouterState({
@@ -68,8 +62,6 @@ function RouteComponent() {
 
   if (!article) return null;
 
-  const hasArticleContent = !!processedContent.trim();
-
   const handleSubscribeClick = () => {
     trackEvent({
       category: 'Newsletter',
@@ -94,7 +86,15 @@ function RouteComponent() {
     <Container>
       {device !== 'pc' && (
         <MobileDetailHeader
-          right={<Button onClick={handleSubscribeClick}>구독하기</Button>}
+          right={
+            <MobileHeaderActions>
+              <ArticleFontSizeControl
+                percentage={percentage}
+                onSelect={selectFontSize}
+              />
+              <Button onClick={handleSubscribeClick}>구독하기</Button>
+            </MobileHeaderActions>
+          }
         />
       )}
 
@@ -106,15 +106,6 @@ function RouteComponent() {
           arrivedDateTime={new Date(article.arrivedDateTime)}
           expectedReadTime={article.expectedReadTime}
         />
-        {hasArticleContent && (
-          <ArticleFontSizeControl
-            percentage={percentage}
-            canDecrease={canDecrease}
-            canIncrease={canIncrease}
-            onDecrease={decreaseFontSize}
-            onIncrease={increaseFontSize}
-          />
-        )}
       </ArticleReadingIntro>
       <Divider />
 
@@ -142,6 +133,10 @@ function RouteComponent() {
 
       {device === 'pc' && (
         <ActionButtonWrapper>
+          <ArticleFontSizeControl
+            percentage={percentage}
+            onSelect={selectFontSize}
+          />
           <SubscribeButton
             type="button"
             onClick={handleSubscribeClick}
@@ -207,6 +202,12 @@ const ActionButtonWrapper = styled.div`
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.dividers};
+`;
+
+const MobileHeaderActions = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
 `;
 
 const ActionButton = styled.button`

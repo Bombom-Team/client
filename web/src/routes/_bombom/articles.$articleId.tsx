@@ -46,13 +46,7 @@ function ArticleDetailPage() {
   const articleIdNumber = Number(articleId);
   const contentRef = useRef<HTMLDivElement>(null);
   const device = useDevice();
-  const {
-    percentage,
-    canDecrease,
-    canIncrease,
-    decreaseFontSize,
-    increaseFontSize,
-  } = useArticleFontSize();
+  const { percentage, selectFontSize } = useArticleFontSize();
 
   const { data: currentArticle } = useQuery(
     queries.articleById({ id: articleIdNumber }),
@@ -78,8 +72,6 @@ function ArticleDetailPage() {
 
   if (!currentArticle) return null;
 
-  const hasArticleContent = !!currentArticle.contents?.trim();
-
   return (
     <>
       {device !== 'pc' && (
@@ -94,6 +86,10 @@ function ArticleDetailPage() {
                   autoplay
                 />
               )}
+              <ArticleFontSizeControl
+                percentage={percentage}
+                onSelect={selectFontSize}
+              />
               <BookmarkButton type="button" onClick={toggleBookmark}>
                 <BookmarkIcon
                   as={isBookmarked ? BookmarkActiveIcon : BookmarkInactiveIcon}
@@ -122,15 +118,6 @@ function ArticleDetailPage() {
               arrivedDateTime={new Date(currentArticle.arrivedDateTime ?? '')}
               expectedReadTime={currentArticle.expectedReadTime ?? 1}
             />
-            {hasArticleContent && (
-              <ArticleFontSizeControl
-                percentage={percentage}
-                canDecrease={canDecrease}
-                canIncrease={canIncrease}
-                onDecrease={decreaseFontSize}
-                onIncrease={increaseFontSize}
-              />
-            )}
           </ArticleReadingIntro>
           <Divider />
 
@@ -159,7 +146,9 @@ function ArticleDetailPage() {
           <ArticleActionButtons
             isRead={currentArticle.isRead}
             bookmarked={isBookmarked}
+            percentage={percentage}
             onBookmarkClick={toggleBookmark}
+            onFontSizeSelect={selectFontSize}
           />
         )}
       </Container>
