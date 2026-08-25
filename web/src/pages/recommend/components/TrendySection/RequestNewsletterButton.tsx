@@ -1,17 +1,16 @@
 import { Flex, Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useNavigate } from '@tanstack/react-router';
 import { NEWSLETTER_REQUEST_FORM_URL } from '../../constants/newsletter';
 import { useDevice } from '@/hooks/useDevice';
+import { openExternalLink } from '@/utils/externalLink';
 import MailIcon from '#/assets/svg/mail.svg';
 import PlusIcon from '#/assets/svg/plus.svg';
 
 const RequestNewsletterButton = () => {
   const device = useDevice();
-  const navigate = useNavigate();
 
   const requestAddNewsletter = () => {
-    navigate({ href: NEWSLETTER_REQUEST_FORM_URL });
+    openExternalLink(NEWSLETTER_REQUEST_FORM_URL);
   };
 
   return (
