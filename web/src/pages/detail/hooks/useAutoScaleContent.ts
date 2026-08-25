@@ -33,13 +33,27 @@ export const useAutoScaleContent = ({
 
     recalculateScale();
 
-    const observer = new ResizeObserver(recalculateScale);
+    let animationFrameId: number | null = null;
+
+    const scheduleRecalculateScale = () => {
+      if (animationFrameId !== null) return;
+
+      animationFrameId = window.requestAnimationFrame(() => {
+        animationFrameId = null;
+        recalculateScale();
+      });
+    };
+
+    const observer = new ResizeObserver(scheduleRecalculateScale);
     observer.observe(content);
     window.addEventListener('resize', recalculateScale);
 
     return () => {
       observer.disconnect();
       window.removeEventListener('resize', recalculateScale);
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
     };
   }, [contentRef, recalculateScale]);
 
