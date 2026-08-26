@@ -46,7 +46,10 @@ function FaqDetailContent() {
   });
 
   const goToList = () => {
-    navigate({ to: '/faqs', search: { page: 0, size: 10 } });
+    navigate({
+      to: '/faqs',
+      search: { page: 0, size: 10, faqCategory: undefined },
+    });
   };
 
   const handleEdit = () => {

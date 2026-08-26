@@ -6,6 +6,7 @@ export type GetFaqsParams = {
   page?: number;
   size?: number;
   sort?: string[];
+  faqCategory?: FaqCategoryType;
 };
 
 export type GetFaqsResponse = PageableResponse<Faq>;

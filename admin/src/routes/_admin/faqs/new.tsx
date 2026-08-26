@@ -42,7 +42,10 @@ function NewFaqPage() {
 
     try {
       await createFaqMutation({ question, answer, faqCategory });
-      navigate({ to: '/faqs', search: { page: 0, size: 10 } });
+      navigate({
+        to: '/faqs',
+        search: { page: 0, size: 10, faqCategory: undefined },
+      });
     } catch (error) {
       let message = 'FAQ 등록에 실패했습니다. 잠시 후 다시 시도해주세요.';
       if (error instanceof Error && error.message) {
@@ -54,12 +57,18 @@ function NewFaqPage() {
 
   const handleCancel = () => {
     if (!question.trim() && !answer.trim()) {
-      navigate({ to: '/faqs', search: { page: 0, size: 10 } });
+      navigate({
+        to: '/faqs',
+        search: { page: 0, size: 10, faqCategory: undefined },
+      });
       return;
     }
 
     if (confirm('작성 중인 내용이 사라집니다. 취소하시겠습니까?')) {
-      navigate({ to: '/faqs', search: { page: 0, size: 10 } });
+      navigate({
+        to: '/faqs',
+        search: { page: 0, size: 10, faqCategory: undefined },
+      });
     }
   };
 
