@@ -6,7 +6,6 @@ import { createFaq } from '@/apis/faqs/faqs.api';
 import { faqsQueries } from '@/apis/faqs/faqs.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
-import { FaqDetailView } from '@/pages/faqs/FaqDetailView';
 import { type FaqCategoryType, FAQ_CATEGORY_LABELS } from '@/types/faq';
 
 export const Route = createFileRoute('/_admin/faqs/new')({
@@ -26,7 +25,6 @@ function NewFaqPage() {
   const [faqCategory, setFaqCategory] = useState(
     FAQ_CATEGORY_OPTIONS[0]?.value ?? 'INTRODUCTION',
   );
-  const [isPreview, setIsPreview] = useState(false);
 
   const queryClient = useQueryClient();
   const { mutateAsync: createFaqMutation, isPending } = useMutation({
@@ -36,15 +34,12 @@ function NewFaqPage() {
     },
   });
 
-  const handleDisplayPreview = () => {
+  const handleRegister = async () => {
     if (!question.trim() || !answer.trim()) {
       alert('질문과 답변을 모두 입력해주세요.');
       return;
     }
-    setIsPreview(true);
-  };
 
-  const handleRegister = async () => {
     try {
       await createFaqMutation({ question, answer, faqCategory });
       navigate({ to: '/faqs', search: { page: 0, size: 10 } });
@@ -68,38 +63,13 @@ function NewFaqPage() {
     }
   };
 
-  if (isPreview) {
-    return (
-      <Layout title="새 FAQ 미리보기">
-        <FaqDetailView
-          faq={{
-            id: 0,
-            question,
-            answer,
-            faqCategory,
-            createdAt: new Date().toISOString(),
-          }}
-        >
-          <ButtonGroup>
-            <Button variant="secondary" onClick={() => setIsPreview(false)}>
-              수정 계속하기
-            </Button>
-            <Button onClick={handleRegister} disabled={isPending}>
-              {isPending ? '등록 중...' : '등록'}
-            </Button>
-          </ButtonGroup>
-        </FaqDetailView>
-      </Layout>
-    );
-  }
-
   return (
     <Layout title="새 FAQ 작성">
       <Container>
         <Form
           onSubmit={(e) => {
             e.preventDefault();
-            handleDisplayPreview();
+            handleRegister();
           }}
         >
           <FormGroup>
@@ -145,7 +115,9 @@ function NewFaqPage() {
             <Button type="button" variant="secondary" onClick={handleCancel}>
               취소
             </Button>
-            <Button type="submit">등록</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? '등록 중...' : '등록'}
+            </Button>
           </ButtonGroup>
         </Form>
       </Container>

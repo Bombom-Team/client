@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { faqsQueries } from '@/apis/faqs/faqs.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
-import { FaqDetailView } from '@/pages/faqs/FaqDetailView';
 import {
   type Faq,
   type FaqCategoryType,
@@ -50,8 +49,6 @@ function FaqEditForm({ faq, id }: { faq: Faq; id: number }) {
     isFaqCategory(faq.faqCategory) ? faq.faqCategory : 'INTRODUCTION',
   );
 
-  const [isPreview, setIsPreview] = useState(false);
-
   const { mutateAsync: updateFaqMutation, isPending } = useMutation({
     ...faqsQueries.mutation.update(),
     onSuccess: () => {
@@ -62,15 +59,12 @@ function FaqEditForm({ faq, id }: { faq: Faq; id: number }) {
     },
   });
 
-  const handleDisplayPreview = () => {
+  const handleUpdate = async () => {
     if (!question.trim() || !answer.trim()) {
       alert('질문과 답변을 모두 입력해주세요.');
       return;
     }
-    setIsPreview(true);
-  };
 
-  const handleUpdate = async () => {
     try {
       await updateFaqMutation({
         faqId: id,
@@ -96,38 +90,13 @@ function FaqEditForm({ faq, id }: { faq: Faq; id: number }) {
     });
   };
 
-  if (isPreview) {
-    return (
-      <Layout title="FAQ 수정 미리보기">
-        <FaqDetailView
-          faq={{
-            id,
-            question,
-            answer,
-            faqCategory,
-            createdAt: faq.createdAt,
-          }}
-        >
-          <ButtonGroup>
-            <Button variant="secondary" onClick={() => setIsPreview(false)}>
-              수정 계속하기
-            </Button>
-            <Button onClick={handleUpdate} disabled={isPending}>
-              {isPending ? '게시 중...' : '게시'}
-            </Button>
-          </ButtonGroup>
-        </FaqDetailView>
-      </Layout>
-    );
-  }
-
   return (
     <Layout title="FAQ 수정">
       <Container>
         <Form
           onSubmit={(e) => {
             e.preventDefault();
-            handleDisplayPreview();
+            handleUpdate();
           }}
         >
           <FormGroup>
@@ -173,7 +142,9 @@ function FaqEditForm({ faq, id }: { faq: Faq; id: number }) {
             <Button type="button" variant="secondary" onClick={handleCancel}>
               취소
             </Button>
-            <Button type="submit">수정 완료</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? '수정 중...' : '수정 완료'}
+            </Button>
           </ButtonGroup>
         </Form>
       </Container>
