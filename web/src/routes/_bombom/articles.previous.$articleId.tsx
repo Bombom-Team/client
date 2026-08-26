@@ -11,7 +11,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
+import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
+import { useArticleFontSize } from '@/pages/detail/hooks/useArticleFontSize';
 import PreviousArticleContent from '@/pages/newsletter-detail/components/PreviousArticleContent';
 import { openSubscribeLink } from '@/pages/newsletter-detail/utils';
 import { cutHtmlByTextRatio } from '@/utils/element';
@@ -33,6 +35,7 @@ export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
 
 function RouteComponent() {
   const device = useDevice();
+  const { percentage, selectFontSize } = useArticleFontSize();
   const { userProfile, isLoggedIn } = useAuth();
   const { articleId } = Route.useParams();
   const { subscribeUrl } = useRouterState({
@@ -51,6 +54,10 @@ function RouteComponent() {
   const bodyContent = useMemo(
     () => cutHtmlByTextRatio(article?.contents, article?.exposureRatio),
     [article?.contents, article?.exposureRatio],
+  );
+  const processedContent = useMemo(
+    () => processContent(article?.newsletter.name ?? '', bodyContent),
+    [article?.newsletter.name, bodyContent],
   );
 
   if (!article) return null;
@@ -79,22 +86,33 @@ function RouteComponent() {
     <Container>
       {device !== 'pc' && (
         <MobileDetailHeader
-          right={<Button onClick={handleSubscribeClick}>구독하기</Button>}
+          right={
+            <MobileHeaderActions>
+              <ArticleFontSizeControl
+                percentage={percentage}
+                onSelect={selectFontSize}
+              />
+              <Button onClick={handleSubscribeClick}>구독하기</Button>
+            </MobileHeaderActions>
+          }
         />
       )}
 
-      <ArticleHeader
-        title={article.title}
-        newsletterCategory={article.newsletter.category}
-        newsletterName={article.newsletter.name}
-        arrivedDateTime={new Date(article.arrivedDateTime)}
-        expectedReadTime={article.expectedReadTime}
-      />
+      <ArticleReadingIntro>
+        <ArticleHeader
+          title={article.title}
+          newsletterCategory={article.newsletter.category}
+          newsletterName={article.newsletter.name}
+          arrivedDateTime={new Date(article.arrivedDateTime)}
+          expectedReadTime={article.expectedReadTime}
+        />
+      </ArticleReadingIntro>
       <Divider />
 
       <PreviousArticleContent
-        content={processContent(article.newsletter.name, bodyContent)}
+        content={processedContent}
         showGradient={shouldShowSubscribePrompt}
+        fontSizePercentage={percentage}
       />
 
       {shouldShowSubscribePrompt && (
@@ -115,6 +133,10 @@ function RouteComponent() {
 
       {device === 'pc' && (
         <ActionButtonWrapper>
+          <ArticleFontSizeControl
+            percentage={percentage}
+            onSelect={selectFontSize}
+          />
           <SubscribeButton
             type="button"
             onClick={handleSubscribeClick}
@@ -151,6 +173,11 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const ArticleReadingIntro = styled.div`
+  width: 100%;
+  margin-bottom: 4px;
+`;
+
 const Divider = styled.div`
   width: 100%;
   height: 1px;
@@ -175,6 +202,12 @@ const ActionButtonWrapper = styled.div`
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.dividers};
+`;
+
+const MobileHeaderActions = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
 `;
 
 const ActionButton = styled.button`
