@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
-import { FAQ_CATEGORY_LABELS, type Faq } from '@/types/faq';
+import {
+  FAQ_CATEGORY_LABELS,
+  getFaqCategoryColor,
+  type Faq,
+} from '@/types/faq';
 
 interface FaqDetailViewProps {
   faq: Faq;
@@ -10,7 +14,7 @@ export function FaqDetailView({ faq, children }: FaqDetailViewProps) {
   return (
     <Container>
       <HeaderContainer>
-        <CategoryBadge>
+        <CategoryBadge color={getFaqCategoryColor(faq.faqCategory)}>
           {FAQ_CATEGORY_LABELS[
             faq.faqCategory as keyof typeof FAQ_CATEGORY_LABELS
           ] ?? faq.faqCategory}
@@ -68,14 +72,14 @@ const HeaderContainer = styled.div`
   align-items: flex-start;
 `;
 
-const CategoryBadge = styled.span`
+const CategoryBadge = styled.span<{ color: string }>`
   margin-top: 6px;
   padding: 4px 8px;
   border-radius: 4px;
 
   flex-shrink: 0;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ color }) => color};
   color: ${({ theme }) => theme.colors.white};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   font-size: ${({ theme }) => theme.fontSize.xs};

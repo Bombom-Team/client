@@ -3,7 +3,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { faqsQueries } from '@/apis/faqs/faqs.query';
-import { type Faq, FAQ_CATEGORY_LABELS } from '@/types/faq';
+import {
+  type Faq,
+  FAQ_CATEGORY_LABELS,
+  getFaqCategoryColor,
+} from '@/types/faq';
 
 export function FaqList({ faqs }: { faqs: Faq[] }) {
   const navigate = useNavigate();
@@ -43,7 +47,7 @@ export function FaqList({ faqs }: { faqs: Faq[] }) {
         >
           <FaqHeader>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <CategoryBadge>
+              <CategoryBadge color={getFaqCategoryColor(faq.faqCategory)}>
                 {FAQ_CATEGORY_LABELS[
                   faq.faqCategory as keyof typeof FAQ_CATEGORY_LABELS
                 ] ?? faq.faqCategory}
@@ -152,11 +156,11 @@ const FaqMeta = styled.div`
   align-items: center;
 `;
 
-const CategoryBadge = styled.span`
+const CategoryBadge = styled.span<{ color: string }>`
   padding: 4px 8px;
   border-radius: 4px;
 
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ color }) => color};
   color: ${({ theme }) => theme.colors.white};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   font-size: ${({ theme }) => theme.fontSize.xs};
