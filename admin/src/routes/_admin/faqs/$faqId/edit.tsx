@@ -10,11 +10,18 @@ import { faqsQueries } from '@/apis/faqs/faqs.query';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { FaqDetailView } from '@/pages/faqs/FaqDetailView';
-import { type FaqCategoryType, FAQ_CATEGORY_LABELS } from '@/types/faq';
+import {
+  type Faq,
+  type FaqCategoryType,
+  FAQ_CATEGORY_LABELS,
+} from '@/types/faq';
 
 export const Route = createFileRoute('/_admin/faqs/$faqId/edit')({
   component: FaqEditPage,
 });
+
+const isFaqCategory = (value: string): value is FaqCategoryType =>
+  value in FAQ_CATEGORY_LABELS;
 
 const FAQ_CATEGORY_OPTIONS: { label: string; value: FaqCategoryType }[] =
   Object.entries(FAQ_CATEGORY_LABELS).map(([value, label]) => ({
@@ -33,25 +40,14 @@ function FaqEditPage() {
   return <FaqEditForm faq={faq} id={id} />;
 }
 
-function FaqEditForm({
-  faq,
-  id,
-}: {
-  faq: {
-    question: string;
-    answer?: string;
-    faqCategory: string;
-    createdAt: string;
-  };
-  id: number;
-}) {
+function FaqEditForm({ faq, id }: { faq: Faq; id: number }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const [question, setQuestion] = useState(faq.question);
   const [answer, setAnswer] = useState(faq.answer ?? '');
   const [faqCategory, setFaqCategory] = useState<FaqCategoryType>(
-    faq.faqCategory as FaqCategoryType,
+    isFaqCategory(faq.faqCategory) ? faq.faqCategory : 'INTRODUCTION',
   );
 
   const [isPreview, setIsPreview] = useState(false);
