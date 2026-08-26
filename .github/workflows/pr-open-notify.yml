@@ -39,7 +39,7 @@ jobs:
         with:
           configuration-path: .github/auto_assign_frontend.yml
 
-      # notify_ids.json frontend 그룹 상위 3명 기반 멘션 구성
+      # notify_ids.json frontend 그룹 상위 2명 기반 멘션 구성
       - name: Load Reviewers from JSON
         id: get-reviewers
         uses: actions/github-script@v6
@@ -48,7 +48,7 @@ jobs:
             const fs = require('fs');
             const mapping = JSON.parse(fs.readFileSync('.github/notify_ids.json', 'utf8'));
             const members = Object.keys(mapping);
-            const frontends = members.slice(0, 3);
+            const frontends = members.slice(0, 2);
 
             const author = context.payload.pull_request.user.login;
             const filtered = frontends.filter(member => member !== author);
@@ -65,7 +65,7 @@ jobs:
         uses: ./.github/actions/discord-notify
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_PR }}
-          content: "🚀 새 PR이 생성되었습니다! 리뷰 부탁드립니다 🙏"
+          content: '🚀 새 PR이 생성되었습니다! 리뷰 부탁드립니다 🙏'
           mentions: ${{ steps.get-reviewers.outputs.discord_mentions }}
           title: ${{ github.event.pull_request.title }}
           url: ${{ github.event.pull_request.html_url }}
