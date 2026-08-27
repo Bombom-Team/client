@@ -1,27 +1,39 @@
 import styled from '@emotion/styled';
 import { memo, useRef } from 'react';
 import { processContent } from './ArticleContent.utils';
+import { useArticleContentFontScale } from '../../hooks/useArticleContentFontScale';
 import { useAutoScaleContent } from '../../hooks/useAutoScaleContent';
 import { useHighlightHoverEffect } from '../../hooks/useHighlightHoverEffect';
 import { extractBodyContent } from '@/utils/element';
+import type { ArticleFontSizePercentage } from '../../constants/articleFontSize';
 import type { RefObject } from 'react';
 
 interface ArticleContentProps {
   ref: RefObject<HTMLDivElement | null>;
   newsletterName: string;
   content?: string;
+  fontSizePercentage: ArticleFontSizePercentage;
 }
 
 const ArticleContent = ({
   ref,
   newsletterName,
   content,
+  fontSizePercentage,
 }: ArticleContentProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const bodyContent = extractBodyContent(content ?? '');
-  const scale = useAutoScaleContent({
+  const processedContent = processContent(newsletterName, bodyContent);
+  const { scale, recalculateScale } = useAutoScaleContent({
     layoutRef: containerRef,
     contentRef: ref,
+  });
+
+  useArticleContentFontScale({
+    ref,
+    content: processedContent,
+    percentage: fontSizePercentage,
+    onLayoutChange: recalculateScale,
   });
 
   useHighlightHoverEffect();
@@ -32,7 +44,7 @@ const ArticleContent = ({
         ref={ref}
         scale={scale}
         dangerouslySetInnerHTML={{
-          __html: processContent(newsletterName, bodyContent),
+          __html: processedContent,
         }}
       />
     </Container>
@@ -54,7 +66,7 @@ const Content = styled.div<{ scale: number }>`
   align-items: flex-start;
 
   -webkit-tap-highlight-color: rgb(0 0 0 / 10%);
-  -webkit-touch-callout: default;
+  -webkit-touch-callout: none;
 
   transform: ${({ scale }) => `scale(${scale})`};
   transform-origin: top left;

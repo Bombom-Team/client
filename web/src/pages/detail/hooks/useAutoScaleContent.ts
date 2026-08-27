@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { RefObject } from 'react';
 
 interface UseAutoScaleContentParams {
@@ -12,34 +12,53 @@ export const useAutoScaleContent = ({
 }: UseAutoScaleContentParams) => {
   const [scale, setScale] = useState(1);
 
-  useEffect(() => {
+  const recalculateScale = useCallback(() => {
     const layout = layoutRef.current;
     const content = contentRef.current;
     if (!layout || !content) return;
 
-    const recompute = () => {
-      const layoutWidth = layout.clientWidth;
-      const contentWidth = content.scrollWidth;
-      const newScale =
-        contentWidth > layoutWidth ? layoutWidth / contentWidth : 1;
+    const layoutWidth = layout.clientWidth;
+    const contentWidth = content.scrollWidth;
+    const newScale =
+      contentWidth > layoutWidth ? layoutWidth / contentWidth : 1;
 
-      setScale(newScale);
+    setScale(newScale);
+    layout.style.height =
+      newScale === 1 ? '' : `${content.scrollHeight * newScale}px`;
+  }, [contentRef, layoutRef]);
 
-      layout.style.height =
-        newScale === 1 ? '' : `${content.scrollHeight * newScale}px`;
+  useEffect(() => {
+    const content = contentRef.current;
+    if (!content) return;
+
+    recalculateScale();
+
+    let animationFrameId: number | null = null;
+
+    const scheduleRecalculateScale = () => {
+      if (animationFrameId !== null) return;
+
+      animationFrameId = window.requestAnimationFrame(() => {
+        animationFrameId = null;
+        recalculateScale();
+      });
     };
 
-    recompute();
-
-    const observer = new ResizeObserver(recompute);
+    const observer = new ResizeObserver(scheduleRecalculateScale);
     observer.observe(content);
-    window.addEventListener('resize', recompute);
+    window.addEventListener('resize', recalculateScale);
 
     return () => {
       observer.disconnect();
-      window.removeEventListener('resize', recompute);
+      window.removeEventListener('resize', recalculateScale);
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
     };
-  }, [layoutRef, contentRef]);
+  }, [contentRef, recalculateScale]);
 
-  return scale;
+  return useMemo(
+    () => ({ scale, recalculateScale }),
+    [recalculateScale, scale],
+  );
 };

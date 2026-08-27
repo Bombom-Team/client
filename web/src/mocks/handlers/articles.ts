@@ -4,6 +4,10 @@ import {
   MAEIL_MAIL_ARTICLE_DETAIL,
   MAEIL_MAIL_ARTICLE_ID,
 } from '../datas/articleDetail';
+import {
+  ARTICLE_FONT_SIZE_ARTICLES,
+  ARTICLE_FONT_SIZE_MOCKS,
+} from '../datas/articleFontSizeMocks';
 import { ARTICLES as ORIGINAL_ARTICLES } from '../datas/articles';
 import {
   PREVIOUS_ARTICLE_DETAILS,
@@ -12,7 +16,7 @@ import {
 import { ENV } from '@/apis/env';
 
 const baseURL = ENV.baseUrl;
-let ARTICLES = [...ORIGINAL_ARTICLES];
+let ARTICLES = [...ARTICLE_FONT_SIZE_ARTICLES, ...ORIGINAL_ARTICLES];
 
 export const articleHandlers = [
   // 뉴스레터 통계
@@ -82,6 +86,13 @@ export const articleHandlers = [
   // 아티클 상세
   http.get(`${baseURL}/articles/:id`, ({ params }) => {
     const { id } = params;
+    const articleFontSizeMock = ARTICLE_FONT_SIZE_MOCKS.find(
+      ({ articleId }) => articleId === Number(id),
+    );
+
+    if (articleFontSizeMock) {
+      return HttpResponse.json(articleFontSizeMock.detail);
+    }
 
     if (Number(id) === MAEIL_MAIL_ARTICLE_ID) {
       return HttpResponse.json(MAEIL_MAIL_ARTICLE_DETAIL);

@@ -43,6 +43,9 @@
   "pnpm": {
     "overrides": {
       "@tiptap/pm": "3.22.5"
+    },
+    "patchedDependencies": {
+      "react-native-webview@13.15.0": "patches/react-native-webview@13.15.0.patch"
     }
   }
 }

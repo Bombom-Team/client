@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFloatingToolbarSelection } from './useFloatingToolbarSelection';
 import { getMaeilMailAnswerUrl } from '../../constants/maeilMail';
 import { useAddHighlightMutation } from '../../hooks/useAddHighlightMutation';
@@ -19,6 +19,7 @@ import { queries } from '@/apis/queries';
 import useModal from '@/components/Modal/useModal';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import type { ArticleFontSizePercentage } from '../../constants/articleFontSize';
 import type { GetArticleByIdResponse } from '@/apis/articles/articles.api';
 import type { RefObject } from 'react';
 
@@ -28,6 +29,7 @@ interface ArticleBodyProps {
   articleTitle: string;
   newsletterName: string;
   articleContent: GetArticleByIdResponse['contents'];
+  fontSizePercentage: ArticleFontSizePercentage;
 }
 
 const ArticleBody = ({
@@ -36,6 +38,7 @@ const ArticleBody = ({
   articleTitle,
   newsletterName,
   articleContent,
+  fontSizePercentage,
 }: ArticleBodyProps) => {
   const navigate = useNavigate();
   const {
@@ -46,6 +49,7 @@ const ArticleBody = ({
     hideToolbar,
   } = useFloatingToolbarState();
   const [panelOpen, setPanelOpen] = useState(false);
+  const previousFontSizePercentageRef = useRef(fontSizePercentage);
   const { highlights, isHighlightLoaded } = useHighlights({ articleId });
   const { mutate: addHighlight } = useAddHighlightMutation();
   const { mutate: updateHighlight } = useUpdateHighlightMutation();
@@ -89,6 +93,21 @@ const ArticleBody = ({
     contentRef,
     onAnswerButtonClick: checkMaeilMailAnswer,
   });
+
+  useEffect(() => {
+    if (previousFontSizePercentageRef.current === fontSizePercentage) return;
+
+    previousFontSizePercentageRef.current = fontSizePercentage;
+
+    hideToolbar();
+    const selection = window.getSelection();
+    if (
+      selection?.anchorNode &&
+      contentRef.current?.contains(selection.anchorNode)
+    ) {
+      selection.removeAllRanges();
+    }
+  }, [contentRef, fontSizePercentage, hideToolbar]);
 
   const updateMemo = (id: number, memo: string) => {
     updateHighlight({ id, memo });
@@ -159,6 +178,7 @@ const ArticleBody = ({
         ref={contentRef}
         newsletterName={newsletterName}
         content={articleContent}
+        fontSizePercentage={fontSizePercentage}
       />
       <FloatingToolbar
         opened={toolbarOpened}
