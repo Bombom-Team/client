@@ -5,10 +5,11 @@
   "version": "1.1.9",
   "scripts": {
     "start": "expo start",
+    "build:ios": "expo prebuild --platform ios --clean",
     "build:android": "eas build --platform android --local",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo prebuild --platform android --clean && expo run:android",
     "ios": "expo run:ios",
+    "android": "expo prebuild --platform android --clean && expo run:android",
     "web": "expo start --web",
     "submit:ios": "eas build --platform ios --profile production --auto-submit",
     "submit:android": "eas build --platform android --profile production --auto-submit",
