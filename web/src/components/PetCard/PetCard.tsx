@@ -1,13 +1,14 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LEVEL, PET_LABEL } from './PetCard.constants';
 import { heartAnimation, jumpAnimation } from './PetCard.keyframes';
 import Button from '../Button/Button';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import { postPetAttendance } from '@/apis/pet/pet.api';
 import { useDevice } from '@/hooks/useDevice';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { queryClient } from '@/main';
 import { calculateRate } from '@/utils/math';
 import type { GetPetResponse } from '@/apis/pet/pet.api';
@@ -45,10 +46,17 @@ interface PetCardProps {
 const PetCard = ({ pet }: PetCardProps) => {
   const device = useDevice();
   const [isAnimating, setIsAnimating] = useState(false);
+  const hasTrackedAttendanceImpression = useRef(false);
 
   const { mutate: mutatePetAttendance } = useMutation({
     mutationFn: postPetAttendance,
     onSuccess: () => {
+      trackEvent({
+        category: 'Attendance',
+        action: 'attendance_success',
+        label: '출석하기',
+      });
+
       setIsAnimating(true);
 
       queryClient.invalidateQueries({ queryKey: ['pet'] });
@@ -58,7 +66,24 @@ const PetCard = ({ pet }: PetCardProps) => {
   const { level, isAttended, currentStageScore, requiredStageScore } = pet;
   const levelPercentage = calculateRate(currentStageScore, requiredStageScore);
 
+  useEffect(() => {
+    if (isAttended || hasTrackedAttendanceImpression.current) return;
+
+    trackEvent({
+      category: 'Attendance',
+      action: 'attendance_button_impression',
+      label: '출석하기',
+    });
+    hasTrackedAttendanceImpression.current = true;
+  }, [isAttended]);
+
   const handleAttendanceClick = () => {
+    trackEvent({
+      category: 'Attendance',
+      action: 'attendance_button_click',
+      label: '출석하기',
+    });
+
     mutatePetAttendance();
   };
 
