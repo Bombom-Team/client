@@ -66,24 +66,27 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
               <NoticeTitle>{notice.title}</NoticeTitle>
             </div>
             <NoticeActions>
-              <IconButton
-                $active={notice.isRepresentative}
-                title={
-                  notice.isRepresentative
-                    ? '대표 공지 해제'
-                    : '대표 공지로 지정'
-                }
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleToggleRepresentative(notice);
-                }}
-              >
-                {notice.isRepresentative ? (
-                  <MdStar size={18} />
-                ) : (
-                  <MdStarBorder size={18} />
-                )}
-              </IconButton>
+              {/* 대표 지정은 공개 공지만 가능 — 비공개는 별 버튼 자체를 숨김 */}
+              {notice.visibility === 'PUBLIC' && (
+                <IconButton
+                  $active={notice.isRepresentative}
+                  title={
+                    notice.isRepresentative
+                      ? '대표 공지 해제'
+                      : '대표 공지로 지정'
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleRepresentative(notice);
+                  }}
+                >
+                  {notice.isRepresentative ? (
+                    <MdStar size={18} />
+                  ) : (
+                    <MdStarBorder size={18} />
+                  )}
+                </IconButton>
+              )}
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
