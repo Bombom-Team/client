@@ -1,5 +1,5 @@
 diff --git a/apple/RNCWebViewImpl.m b/apple/RNCWebViewImpl.m
-index 7f5c24d6e2cfb26eddbc513bf17a81c24a7273e2..5b1cb0aed7af363f3d9b759372dcb4989cd659a3 100644
+index 7f5c24d6..76d2cf49 100644
 --- a/apple/RNCWebViewImpl.m
 +++ b/apple/RNCWebViewImpl.m
 @@ -95,9 +95,13 @@ - (BOOL)canPerformAction:(SEL)action
@@ -17,13 +17,16 @@ index 7f5c24d6e2cfb26eddbc513bf17a81c24a7273e2..5b1cb0aed7af363f3d9b759372dcb498
      }
      [super buildMenuWithBuilder:builder];
  }
-@@ -893,6 +897,9 @@ -(void)setMenuItems:(NSArray<NSDictionary *> *)menuItems {
- -(void)setSuppressMenuItems:(NSArray<NSString *> *)suppressMenuItems {
-     _suppressMenuItems = suppressMenuItems;
-     _webView.suppressMenuItems = suppressMenuItems;
-+    if (@available(iOS 18.0, *)) {
-+        _webView.writingToolsBehavior = suppressMenuItems ? UIWritingToolsBehaviorNone : UIWritingToolsBehaviorDefault;
-+    }
- }
- 
- #if TARGET_OS_IOS
+@@ -456,6 +460,12 @@ - (WKWebViewConfiguration *)setUpWkWebViewConfig
+     }
+   }
+ #endif
++#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 180000 /* iOS 18 */
++  if (@available(iOS 18.0, *)) {
++    wkWebViewConfig.writingToolsBehavior = UIWritingToolsBehaviorNone;
++  }
++#endif
++
+   if (_prefsUsed) {
+     wkWebViewConfig.preferences = prefs;
+   }
