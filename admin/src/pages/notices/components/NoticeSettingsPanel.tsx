@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import {
   NOTICE_CATEGORY_LABELS,
   type NoticeCategoryType,
-  type NoticeVisibility,
 } from '@/types/notice';
 
 const NOTICE_CATEGORY_OPTIONS: { label: string; value: NoticeCategoryType }[] =
@@ -13,16 +12,12 @@ const NOTICE_CATEGORY_OPTIONS: { label: string; value: NoticeCategoryType }[] =
 
 interface NoticeSettingsPanelProps {
   category: NoticeCategoryType;
-  visibility: NoticeVisibility;
   onCategoryChange: (category: NoticeCategoryType) => void;
-  onVisibilityChange: (visibility: NoticeVisibility) => void;
 }
 
 export const NoticeSettingsPanel = ({
   category,
-  visibility,
   onCategoryChange,
-  onVisibilityChange,
 }: NoticeSettingsPanelProps) => {
   return (
     <Panel>
@@ -42,26 +37,6 @@ export const NoticeSettingsPanel = ({
             </option>
           ))}
         </Select>
-      </Section>
-
-      <Section>
-        <Label>공개 범위</Label>
-        <VisibilityToggle>
-          <VisibilityButton
-            $isActive={visibility === 'PUBLIC'}
-            onClick={() => onVisibilityChange('PUBLIC')}
-            type="button"
-          >
-            공개
-          </VisibilityButton>
-          <VisibilityButton
-            $isActive={visibility === 'PRIVATE'}
-            onClick={() => onVisibilityChange('PRIVATE')}
-            type="button"
-          >
-            비공개
-          </VisibilityButton>
-        </VisibilityToggle>
       </Section>
     </Panel>
   );
@@ -119,30 +94,4 @@ const Select = styled.select`
     outline: 2px solid ${({ theme }) => theme.colors.primary};
     outline-offset: 2px;
   }
-`;
-
-const VisibilityToggle = styled.div`
-  overflow: hidden;
-  border: 1px solid ${({ theme }) => theme.colors.gray300};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-
-  display: flex;
-`;
-
-const VisibilityButton = styled.button<{ $isActive: boolean }>`
-  padding: 6px;
-  border: none;
-
-  flex: 1;
-
-  background: ${({ theme, $isActive }) =>
-    $isActive ? theme.colors.primary : 'white'};
-  color: ${({ theme, $isActive }) =>
-    $isActive ? 'white' : theme.colors.gray700};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-
-  cursor: pointer;
-  transition:
-    color 0.15s,
-    background-color 0.15s;
 `;

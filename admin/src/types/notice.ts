@@ -8,6 +8,8 @@ export interface Notice {
   content?: string;
   createdAt: string;
   noticeCategory: NoticeCategoryType;
+  visibility?: NoticeVisibility;
+  isRepresentative?: boolean;
 }
 
 export const NOTICE_CATEGORY_LABELS: Record<NoticeCategoryType, string> = {

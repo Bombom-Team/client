@@ -18,6 +18,8 @@ function NoticeEditPage() {
       initialTitle={notice.title}
       initialContent={notice.content}
       initialCategory={notice.noticeCategory}
+      // 기존 공지는 모두 공개 상태 — 백엔드에 visibility 생기면 notice.visibility로 교체
+      initialVisibility="PUBLIC"
     />
   );
 }

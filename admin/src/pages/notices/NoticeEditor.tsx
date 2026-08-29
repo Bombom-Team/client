@@ -167,17 +167,30 @@ export const NoticeEditor = ({
     goBack();
   };
 
-  // TODO: 백엔드 연동 시 (신규) createDraft → saveDraft → publish / (수정) saveDraft
-  const handleSubmit = () => {
+  const isPublic = visibility === 'PUBLIC';
+
+  // 저장 = PUT /notices/{id} (visibility 포함). 발행 개념은 visibility로 표현
+  // TODO: 백엔드 연동 시 JSON.stringify(editor.getJSON())로 content 직렬화 후 저장
+  const save = (nextVisibility: NoticeVisibility) => {
     if (!title.trim()) {
       alert('제목을 입력해주세요.');
       return;
     }
-    alert(
-      `${isEdit ? '수정' : '발행'} API는 아직 연동되지 않았습니다. (UI 미리보기)`,
-    );
+    setVisibility(nextVisibility);
     setIsDirty(false);
+    alert(
+      `저장 API 미연동 (UI 미리보기)\n공개 상태: ${
+        nextVisibility === 'PUBLIC' ? '공개' : '비공개'
+      }`,
+    );
   };
+
+  // 임시저장/저장 — 현재 공개 상태 유지한 채 저장
+  const handleSave = () => save(visibility);
+  // 공개하기 — 비공개→공개 전환하며 저장
+  const handlePublish = () => save('PUBLIC');
+  // 비공개 전환 — 공개→비공개 되돌리며 저장
+  const handleUnpublish = () => save('PRIVATE');
 
   return (
     <PageLayout>
@@ -188,9 +201,21 @@ export const NoticeEditor = ({
             ← {isEdit ? '공지사항 상세' : '공지사항 목록'}
           </BackButton>
           <Actions>
-            <PublishButton onClick={handleSubmit} type="button">
-              {isEdit ? '수정 완료' : '발행하기'}
-            </PublishButton>
+            <StatusBadge $isPublic={isPublic}>
+              {isPublic ? '공개' : '비공개'}
+            </StatusBadge>
+            <SaveButton onClick={handleSave} type="button">
+              {isPublic ? '저장' : '임시저장'}
+            </SaveButton>
+            {isPublic ? (
+              <SaveButton onClick={handleUnpublish} type="button">
+                비공개 전환
+              </SaveButton>
+            ) : (
+              <PublishButton onClick={handlePublish} type="button">
+                공개하기
+              </PublishButton>
+            )}
           </Actions>
         </TopBar>
 
@@ -212,9 +237,7 @@ export const NoticeEditor = ({
 
           <NoticeSettingsPanel
             category={category}
-            visibility={visibility}
             onCategoryChange={setCategory}
-            onVisibilityChange={setVisibility}
           />
         </EditorLayout>
       </EditorMain>
@@ -269,6 +292,38 @@ const Actions = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
+`;
+
+const StatusBadge = styled.span<{ $isPublic: boolean }>`
+  margin-right: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+
+  background: ${({ theme, $isPublic }) =>
+    $isPublic ? theme.colors.primary : theme.colors.gray100};
+  color: ${({ theme, $isPublic }) => ($isPublic ? 'white' : theme.colors.gray600)};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+const SaveButton = styled.button`
+  padding: 8px 16px;
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  background: ${({ theme }) => theme.colors.gray100};
+  color: ${({ theme }) => theme.colors.gray700};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.gray200};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 `;
 
 const PublishButton = styled.button`
