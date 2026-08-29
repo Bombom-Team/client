@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import { MdStar, MdStarBorder } from 'react-icons/md';
 import { noticesQueries } from '@/apis/notices/notices.query';
 import { type Notice, NOTICE_CATEGORY_LABELS } from '@/types/notice';
 
@@ -15,10 +16,25 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
     },
   });
 
+  const { mutate: setRepresentative } = useMutation({
+    ...noticesQueries.mutation.setRepresentative(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: noticesQueries.all });
+    },
+  });
+
   const handleDelete = (noticeId: number) => {
     if (confirm('정말 삭제하시겠습니까?')) {
       deleteNotice(noticeId);
     }
+  };
+
+  // 대표는 딱 1개 — 활성 별을 다시 누르면 해제, 다른 걸 누르면 교체(서버가 이전 대표 해제)
+  const handleToggleRepresentative = (notice: Notice) => {
+    setRepresentative({
+      noticeId: notice.id,
+      isRepresentative: !notice.isRepresentative,
+    });
   };
 
   if (notices.length === 0) {
@@ -50,6 +66,24 @@ export function NoticeList({ notices }: { notices: Notice[] }) {
               <NoticeTitle>{notice.title}</NoticeTitle>
             </div>
             <NoticeActions>
+              <IconButton
+                $active={notice.isRepresentative}
+                title={
+                  notice.isRepresentative
+                    ? '대표 공지 해제'
+                    : '대표 공지로 지정'
+                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggleRepresentative(notice);
+                }}
+              >
+                {notice.isRepresentative ? (
+                  <MdStar size={18} />
+                ) : (
+                  <MdStarBorder size={18} />
+                )}
+              </IconButton>
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
@@ -121,18 +155,19 @@ const NoticeActions = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
-const IconButton = styled.button`
+const IconButton = styled.button<{ $active?: boolean }>`
   padding: ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
   background-color: transparent;
-  color: ${({ theme }) => theme.colors.gray600};
+  color: ${({ theme, $active }) => ($active ? '#F59E0B' : theme.colors.gray600)};
 
   transition: all 0.2s;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray100};
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme, $active }) =>
+      $active ? '#F59E0B' : theme.colors.primary};
   }
 `;
 
