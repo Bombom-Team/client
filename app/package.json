@@ -10,6 +10,8 @@
     "android": "expo prebuild --platform android --clean && expo run:android",
     "ios": "expo prebuild --platform ios --clean && eas build:version:sync --platform ios --profile production && expo run:ios",
     "web": "expo start --web",
+    "submit:ios": "eas build --platform ios --profile production --auto-submit",
+    "submit:android": "eas build --platform android --profile production --auto-submit",
     "lint": "expo lint",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit"
