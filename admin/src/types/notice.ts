@@ -1,5 +1,7 @@
 export type NoticeCategoryType = 'NOTICE' | 'UPDATE' | 'EVENT' | 'CHECK';
 
+export type NoticeVisibility = 'PUBLIC' | 'PRIVATE';
+
 export interface Notice {
   id: number;
   title: string;

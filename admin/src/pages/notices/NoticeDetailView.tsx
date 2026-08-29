@@ -1,5 +1,26 @@
 import styled from '@emotion/styled';
+import { Node, mergeAttributes } from '@tiptap/core';
+import HighlightExtension from '@tiptap/extension-highlight';
+import ImageExtension from '@tiptap/extension-image';
+import LinkExtension from '@tiptap/extension-link';
+import UnderlineExtension from '@tiptap/extension-underline';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKitExtension from '@tiptap/starter-kit';
+import { parseTiptapDoc } from './noticeContent';
 import { NOTICE_CATEGORY_LABELS, type Notice } from '@/types/notice';
+
+// 캡션 블럭 노드 — 에디터와 동일하게 등록해야 렌더 스타일이 맞음
+const Caption = Node.create({
+  name: 'caption',
+  group: 'block',
+  content: 'inline*',
+  parseHTML() {
+    return [{ tag: 'p[data-caption]' }];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ['p', mergeAttributes(HTMLAttributes, { 'data-caption': '' }), 0];
+  },
+});
 
 interface NoticeDetailViewProps {
   notice: Notice;
@@ -7,6 +28,25 @@ interface NoticeDetailViewProps {
 }
 
 export function NoticeDetailView({ notice, children }: NoticeDetailViewProps) {
+  const hasContent = Boolean(notice.content?.trim());
+  const richDoc = parseTiptapDoc(notice.content);
+
+  const editor = useEditor(
+    {
+      editable: false,
+      extensions: [
+        StarterKitExtension,
+        ImageExtension,
+        LinkExtension.configure({ openOnClick: true }),
+        UnderlineExtension,
+        HighlightExtension.configure({ multicolor: true }),
+        Caption,
+      ],
+      content: richDoc ?? '',
+    },
+    [notice.content],
+  );
+
   return (
     <Container>
       <HeaderContainer>
@@ -18,7 +58,16 @@ export function NoticeDetailView({ notice, children }: NoticeDetailViewProps) {
         <DateText>{notice.createdAt}</DateText>
       </HeaderContainer>
 
-      <Content>{notice.content}</Content>
+      <Content>
+        {!hasContent ? (
+          <EmptyState>내용이 없습니다.</EmptyState>
+        ) : richDoc ? (
+          <EditorContent editor={editor} />
+        ) : (
+          // 기존 평문 공지 — 줄바꿈 보존(pre-wrap)
+          <PlainText>{notice.content}</PlainText>
+        )}
+      </Content>
 
       {children}
     </Container>
@@ -38,10 +87,123 @@ const Container = styled.div`
 const Content = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.xl};
 
+  /* stylelint-disable-next-line selector-class-pattern */
+  .ProseMirror {
+    outline: none;
+
+    color: ${({ theme }) => theme.colors.gray700};
+    font-size: ${({ theme }) => theme.fontSize.base};
+    line-height: 1.7;
+
+    p {
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 20px 0 8px;
+
+      font-weight: bold;
+      font-size: 28px;
+    }
+
+    h2 {
+      margin: 18px 0 8px;
+
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    h3 {
+      margin: 16px 0 8px;
+
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    ul,
+    ol {
+      margin-bottom: 12px;
+      padding-left: 24px;
+    }
+
+    blockquote {
+      padding-left: 16px;
+      border-left: 3px solid ${({ theme }) => theme.colors.gray300};
+
+      color: ${({ theme }) => theme.colors.gray600};
+    }
+
+    img {
+      max-width: 100%;
+      margin: 8px 0;
+      border-radius: 8px;
+    }
+
+    a {
+      color: ${({ theme }) => theme.colors.primary};
+      text-decoration: underline;
+    }
+
+    p[data-caption] {
+      margin-bottom: 8px;
+
+      color: ${({ theme }) => theme.colors.gray400};
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    code {
+      padding: 1px 5px;
+      border-radius: 4px;
+
+      background: ${({ theme }) => theme.colors.gray100};
+      color: ${({ theme }) => theme.colors.gray700};
+      font-family: 'Courier New', Consolas, monospace;
+      font-size: 0.875em;
+    }
+
+    pre {
+      margin-bottom: 12px;
+      padding: 16px;
+      border-radius: 8px;
+
+      background: #1e1e2e;
+
+      overflow-x: auto;
+
+      code {
+        padding: 0;
+        border-radius: 0;
+
+        background: none;
+        color: #cdd6f4;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+    }
+
+    hr {
+      margin: 24px 0;
+      border: none;
+      border-top: 1px solid ${({ theme }) => theme.colors.gray200};
+    }
+
+    s {
+      color: ${({ theme }) => theme.colors.gray400};
+    }
+  }
+`;
+
+const PlainText = styled.div`
   color: ${({ theme }) => theme.colors.gray700};
   font-size: ${({ theme }) => theme.fontSize.base};
   line-height: 1.6;
   white-space: pre-wrap;
+`;
+
+const EmptyState = styled.p`
+  color: ${({ theme }) => theme.colors.gray500};
+  text-align: center;
 `;
 
 const Title = styled.h1`
