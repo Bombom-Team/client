@@ -103,7 +103,9 @@ const ProductCard = () => {};
 
 ## 6. Component documentation / Storybook
 
-- 모든 컴포넌트는 Storybook story를 작성합니다.
+- 디자인 시스템 공통 컴포넌트는 `shared/src/ui-web`에서 관리합니다.
+- Storybook을 사용하는 workspace에서는 디자인 시스템 공통 컴포넌트에만 Storybook story를 작성합니다.
+- 각 workspace의 `src/components`에 있는 페이지·기능 전용 컴포넌트와 단순 재사용 또는 분리 목적의 컴포넌트는 Storybook 관리 대상이 아닙니다.
 
 ---
 
