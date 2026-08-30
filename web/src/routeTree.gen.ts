@@ -26,6 +26,7 @@ import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/inde
 import { Route as ChallengeChallengeIdLandingRouteImport } from './routes/challenge/$challengeId/landing';
 import { Route as BombomArticlesArticleIdRouteImport } from './routes/_bombom/articles.$articleId';
 import { Route as BombomMainTodayRouteImport } from './routes/_bombom/_main/today';
+import { Route as BombomMainSupportRouteImport } from './routes/_bombom/_main/support';
 import { Route as BombomMainStorageRouteImport } from './routes/_bombom/_main/storage';
 import { Route as BombomMainNoticeRouteImport } from './routes/_bombom/_main/notice';
 import { Route as BombomMainMyRouteImport } from './routes/_bombom/_main/my';
@@ -134,6 +135,11 @@ const BombomArticlesArticleIdRoute = BombomArticlesArticleIdRouteImport.update({
 const BombomMainTodayRoute = BombomMainTodayRouteImport.update({
   id: '/today',
   path: '/today',
+  getParentRoute: () => BombomMainRoute,
+} as any);
+const BombomMainSupportRoute = BombomMainSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => BombomMainRoute,
 } as any);
 const BombomMainStorageRoute = BombomMainStorageRouteImport.update({
@@ -293,6 +299,7 @@ export interface FileRoutesByFullPath {
   '/my': typeof BombomMainMyRouteWithChildren;
   '/notice': typeof BombomMainNoticeRoute;
   '/storage': typeof BombomMainStorageRoute;
+  '/support': typeof BombomMainSupportRoute;
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
@@ -332,6 +339,7 @@ export interface FileRoutesByTo {
   '/memo': typeof BombomMainMemoRoute;
   '/notice': typeof BombomMainNoticeRoute;
   '/storage': typeof BombomMainStorageRoute;
+  '/support': typeof BombomMainSupportRoute;
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
@@ -376,6 +384,7 @@ export interface FileRoutesById {
   '/_bombom/_main/my': typeof BombomMainMyRouteWithChildren;
   '/_bombom/_main/notice': typeof BombomMainNoticeRoute;
   '/_bombom/_main/storage': typeof BombomMainStorageRoute;
+  '/_bombom/_main/support': typeof BombomMainSupportRoute;
   '/_bombom/_main/today': typeof BombomMainTodayRoute;
   '/_bombom/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
@@ -420,6 +429,7 @@ export interface FileRouteTypes {
     | '/my'
     | '/notice'
     | '/storage'
+    | '/support'
     | '/today'
     | '/articles/$articleId'
     | '/challenge/$challengeId/landing'
@@ -459,6 +469,7 @@ export interface FileRouteTypes {
     | '/memo'
     | '/notice'
     | '/storage'
+    | '/support'
     | '/today'
     | '/articles/$articleId'
     | '/challenge/$challengeId/landing'
@@ -502,6 +513,7 @@ export interface FileRouteTypes {
     | '/_bombom/_main/my'
     | '/_bombom/_main/notice'
     | '/_bombom/_main/storage'
+    | '/_bombom/_main/support'
     | '/_bombom/_main/today'
     | '/_bombom/articles/$articleId'
     | '/challenge/$challengeId/landing'
@@ -660,6 +672,13 @@ declare module '@tanstack/react-router' {
       path: '/today';
       fullPath: '/today';
       preLoaderRoute: typeof BombomMainTodayRouteImport;
+      parentRoute: typeof BombomMainRoute;
+    };
+    '/_bombom/_main/support': {
+      id: '/_bombom/_main/support';
+      path: '/support';
+      fullPath: '/support';
+      preLoaderRoute: typeof BombomMainSupportRouteImport;
       parentRoute: typeof BombomMainRoute;
     };
     '/_bombom/_main/storage': {
@@ -916,6 +935,7 @@ interface BombomMainRouteChildren {
   BombomMainMyRoute: typeof BombomMainMyRouteWithChildren;
   BombomMainNoticeRoute: typeof BombomMainNoticeRoute;
   BombomMainStorageRoute: typeof BombomMainStorageRoute;
+  BombomMainSupportRoute: typeof BombomMainSupportRoute;
   BombomMainTodayRoute: typeof BombomMainTodayRoute;
   BombomMainIndexRoute: typeof BombomMainIndexRoute;
 }
@@ -928,6 +948,7 @@ const BombomMainRouteChildren: BombomMainRouteChildren = {
   BombomMainMyRoute: BombomMainMyRouteWithChildren,
   BombomMainNoticeRoute: BombomMainNoticeRoute,
   BombomMainStorageRoute: BombomMainStorageRoute,
+  BombomMainSupportRoute: BombomMainSupportRoute,
   BombomMainTodayRoute: BombomMainTodayRoute,
   BombomMainIndexRoute: BombomMainIndexRoute,
 };
