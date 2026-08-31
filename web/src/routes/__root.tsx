@@ -7,6 +7,7 @@ import {
   Outlet,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import RouteTransition from '@/components/RouteTransition/RouteTransition';
 import Toast from '@/components/Toast/Toast';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { useChannelTalk } from '@/hooks/useChannelTalk';
@@ -43,7 +44,9 @@ const RootComponent = () => {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <AuthProvider>
-            <Outlet />
+            <RouteTransition>
+              <Outlet />
+            </RouteTransition>
             <Toast offset={toastOffset} />
           </AuthProvider>
         </ThemeProvider>
