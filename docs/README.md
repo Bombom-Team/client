@@ -116,10 +116,13 @@
 </td>
   </tr>
 
-  <!-- Challenge -->
+  <!-- Row 5 -->
   <tr>
     <td style="width: 50%; vertical-align: top; text-align: center;">
-      <!-- 챌린지 이미지 추가 예정 -->
+      <img
+        src="https://github.com/user-attachments/assets/d9a8df0b-f628-42b3-af3a-2b1dfc205296"
+        height="300"
+      />
     </td>
     <td style="width: 50%; vertical-align: top;">
 
@@ -132,10 +135,13 @@
 </td>
   </tr>
 
-  <!-- Maeil Mail -->
+  <!-- Row 6 -->
   <tr>
     <td style="width: 50%; vertical-align: top; text-align: center;">
-      <!-- 매일메일 이미지 추가 예정 -->
+      <img
+        src="https://github.com/user-attachments/assets/a4b42c05-4540-48f4-9404-962fc63c2b06"
+        height="300"
+      />
     </td>
     <td style="width: 50%; vertical-align: top;">
 
