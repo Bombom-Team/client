@@ -1,16 +1,17 @@
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
 import Accordion from '@/components/Accordion/Accordion';
+import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
 import MobileMainHeader from '@/components/Header/MobileMainHeader';
 import PCHeader from '@/components/Header/PCHeader';
 import { useDevice } from '@/hooks/useDevice';
 import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
+import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 import FaqCategoryFilter from '@/pages/support/components/FaqCategoryFilter';
 import SupportContactCta from '@/pages/support/components/SupportContactCta';
-import type { Device } from '@/hooks/useDevice';
 import type { FaqCategoryType } from '@/types/faq';
 
 export const Route = createFileRoute('/support')({
@@ -31,18 +32,49 @@ export const Route = createFileRoute('/support')({
 type SupportTab = 'FAQ' | 'CHAT';
 
 function SupportPage() {
+  useWebViewRegisterToken();
+
   const device = useDevice();
+  const isMobile = device !== 'pc';
   const [activeTab, setActiveTab] = useState<SupportTab>('FAQ');
   const [activeCategory, setActiveCategory] = useState<FaqCategoryType | 'ALL'>(
     'ALL',
   );
   const [openFaqId, setOpenFaqId] = useState<number | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const { data: faqs } = useQuery(
-    queries.faqs({
+  const {
+    data: faqPages,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    queries.infiniteFaqs({
       faqCategory: activeCategory === 'ALL' ? undefined : activeCategory,
     }),
   );
+
+  const faqs = useMemo(
+    () => faqPages?.pages.flatMap((page) => page?.content ?? []) ?? [],
+    [faqPages],
+  );
+
+  useEffect(() => {
+    if (!loadMoreRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleToggleFaq = (faqId: number) => {
     setOpenFaqId((prev) => (prev === faqId ? null : faqId));
@@ -56,7 +88,7 @@ function SupportPage() {
   return (
     <>
       {device === 'pc' ? <PCHeader activeNav={null} /> : <MobileMainHeader />}
-      <Main device={device}>
+      <Main isMobile={isMobile}>
         <Title>고객센터</Title>
 
         <TabWrapper>
@@ -84,7 +116,7 @@ function SupportPage() {
             />
 
             <FaqListWrapper>
-              {faqs?.content?.map((faq) => {
+              {faqs.map((faq) => {
                 const isOpen = openFaqId === faq.faqId;
 
                 return (
@@ -105,6 +137,7 @@ function SupportPage() {
                   </Accordion>
                 );
               })}
+              <LoadMoreTrigger ref={loadMoreRef} />
             </FaqListWrapper>
 
             <SupportContactCta onContactClick={handleContactClick} />
@@ -115,25 +148,20 @@ function SupportPage() {
           <ChatGuideBox>채널톡 상담원과 연결됩니다.</ChatGuideBox>
         )}
       </Main>
+
+      <AppInstallPromptModal />
     </>
   );
 }
 
-const Main = styled.main<{ device: Device }>`
+const Main = styled.main<{ isMobile: boolean }>`
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: ${({ device, theme }) => {
-    if (device === 'mobile') {
-      return `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 24px) 16px 24px`;
-    }
-
-    if (device === 'tablet') {
-      return `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 24px) 16px 24px`;
-    }
-
-    return `calc(${theme.heights.headerPC} + 40px + 24px) 16px 24px`;
-  }};
+  padding: ${({ isMobile, theme }) =>
+    isMobile
+      ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 24px) 16px 24px`
+      : `calc(${theme.heights.headerPC} + 40px + 24px) 16px 24px`};
 
   display: flex;
   gap: 24px;
@@ -169,6 +197,11 @@ const ContentWrapper = styled.div`
   display: flex;
   gap: 16px;
   flex-direction: column;
+`;
+
+const LoadMoreTrigger = styled.div`
+  width: 100%;
+  height: 20px;
 `;
 
 const FaqListWrapper = styled.div`
