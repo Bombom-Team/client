@@ -93,7 +93,10 @@ function SupportPage() {
                       isOpen={isOpen}
                       onToggle={() => handleToggleFaq(faq.faqId)}
                     >
-                      <QuestionText>{faq.question}</QuestionText>
+                      <QuestionText>
+                        <CategoryText>[{faq.categoryName}]</CategoryText>{' '}
+                        {faq.question}
+                      </QuestionText>
                     </Accordion.Header>
 
                     <Accordion.Content isOpen={isOpen}>
@@ -170,11 +173,16 @@ const ContentWrapper = styled.div`
 
 const FaqListWrapper = styled.div`
   display: flex;
+  gap: 8px;
   flex-direction: column;
 `;
 
 const QuestionText = styled.span`
   font: ${({ theme }) => theme.fonts.t6Bold};
+`;
+
+const CategoryText = styled.span`
+  color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
 const AnswerText = styled.p`
