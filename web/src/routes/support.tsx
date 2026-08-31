@@ -88,7 +88,7 @@ function SupportPage() {
   return (
     <>
       {device === 'pc' ? <PCHeader activeNav={null} /> : <MobileMainHeader />}
-      <Main isMobile={isMobile}>
+      <Container isMobile={isMobile}>
         <Title>고객센터</Title>
 
         <TabWrapper>
@@ -147,14 +147,14 @@ function SupportPage() {
         {activeTab === 'CHAT' && (
           <ChatGuideBox>채널톡 상담원과 연결됩니다.</ChatGuideBox>
         )}
-      </Main>
+      </Container>
 
       <AppInstallPromptModal />
     </>
   );
 }
 
-const Main = styled.main<{ isMobile: boolean }>`
+const Container = styled.main<{ isMobile: boolean }>`
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
