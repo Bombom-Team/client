@@ -89,7 +89,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         'expo-apple-authentication',
         {
-          appleTeamId: 'F6XK836QA8',
+          appleTeamId: '95A4G29D26',
         },
       ],
       'expo-secure-store',
@@ -105,6 +105,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         {
           android: {
             usesCleartextTraffic: true,
+            enableMinifyInReleaseBuilds: true,
+            enableShrinkResourcesInReleaseBuilds: true,
           },
           ios: {
             useFrameworks: 'static',
@@ -126,7 +128,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           savePhotosPermission:
             '다운로드한 이미지를 사진 앱에 저장하기 위해 접근 권한이 필요합니다.',
           isAccessMediaLocationEnabled: false,
-          granularPermissions: ['photo'],
+          granularPermissions: [],
         },
       ],
       '@react-native-firebase/app',

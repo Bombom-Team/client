@@ -11,18 +11,23 @@ const DEFAULT_ERROR_MESSAGES: Record<number, string> = {
 };
 
 type JsonBody = Record<string, unknown> | unknown[];
+type Query = Record<string, string | number | boolean | undefined | string[]>;
 
 type FetcherOptions<TRequest extends JsonBody> = {
   path: string;
   baseUrl?: string;
-  query?: Record<string, string | number | undefined | string[]>;
+  query?: Query;
   body?: TRequest;
   headers?: HeadersInit;
 };
 
+type GetFetcherOptions = FetcherOptions<never> & {
+  credentials?: RequestCredentials;
+};
+
 export const fetcher = {
-  get: async <TResponse>({ path, baseUrl, query }: FetcherOptions<never>) =>
-    request<never, TResponse>({ path, baseUrl, query, method: 'GET' }),
+  get: async <TResponse>({ path, baseUrl, query, credentials }: GetFetcherOptions) =>
+    request<never, TResponse>({ path, baseUrl, query, credentials, method: 'GET', }),
   post: async <TRequest extends JsonBody, TResponse>({
     path,
     baseUrl,
@@ -69,9 +74,10 @@ type RequestOptions<TRequest> = {
   path: string;
   baseUrl?: string;
   method: FetchMethod;
-  query?: Record<string, string | number | undefined | string[]>;
+  query?: Query;
   body?: TRequest;
   headers?: HeadersInit;
+  credentials?: RequestCredentials;
 };
 
 const request = async <TRequest, TResponse>({
@@ -81,6 +87,7 @@ const request = async <TRequest, TResponse>({
   query = {},
   body,
   headers,
+  credentials = 'include',
 }: RequestOptions<TRequest>): Promise<TResponse> => {
   try {
     const url = new URL(baseUrl + path);
@@ -93,7 +100,7 @@ const request = async <TRequest, TResponse>({
 
     const config: RequestInit = {
       method,
-      credentials: 'include',
+      credentials,
       headers: {
         'Content-Type': 'application/json',
         ...headers,

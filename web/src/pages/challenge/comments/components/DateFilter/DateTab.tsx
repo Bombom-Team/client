@@ -1,31 +1,37 @@
 import styled from '@emotion/styled';
 import Tab from '@/components/Tab/Tab';
 import { useDevice, type Device } from '@/hooks/useDevice';
-import { isToday } from '@/utils/date';
 import type { TabProps } from '@/components/Tab/Tab';
 
 interface DateTabProps {
   dateString: string;
+  today: string;
   selectedDate: string;
   onDateSelect: (date: string) => void;
 }
 
-const DateTab = ({ dateString, selectedDate, onDateSelect }: DateTabProps) => {
+const DateTab = ({
+  dateString,
+  today,
+  selectedDate,
+  onDateSelect,
+}: DateTabProps) => {
   const device = useDevice();
-
   const date = new Date(dateString);
-  const label = isToday(date)
-    ? '오늘'
-    : `${date.getMonth() + 1}/${date.getDate()}`;
 
   return (
     <StyledTab
       key={dateString}
       value={dateString}
-      label={label}
+      label={
+        dateString === today
+          ? '오늘'
+          : `${date.getMonth() + 1}/${date.getDate()}`
+      }
       selected={selectedDate === dateString}
       onTabSelect={onDateSelect}
       device={device}
+      data-date={dateString}
     />
   );
 };
@@ -37,9 +43,8 @@ const StyledTab = styled(stringTab, {
   shouldForwardProp: (prop) => prop !== 'device',
 })<{ device: Device }>`
   min-width: ${({ device }) => (device === 'mobile' ? '52px' : 'fit-content')};
-  padding: ${({ device }) => (device === 'mobile' ? '8px' : '12px 16px')};
+  padding: ${({ device }) => (device === 'mobile' ? '8px' : '10px 14px')};
   border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '24px')};
 
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

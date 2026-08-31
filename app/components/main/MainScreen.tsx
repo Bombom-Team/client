@@ -1,8 +1,9 @@
 import styled from '@emotion/native';
-import { Alert, PixelRatio } from 'react-native';
+import { Alert, PixelRatio, Platform } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
+import type { SuppressMenuItem } from 'react-native-webview/lib/WebViewTypes';
 
 import { useAuth } from '../../contexts/AuthContext';
 import { useWebView } from '../../contexts/WebViewContext';
@@ -24,6 +25,21 @@ import { useDeviceInfo } from '@/hooks/useDeviceInfo';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import ForceUpdateScreen from './ForceUpdateScreen';
 import { useNotificationPermission } from '@/hooks/useNotificationPermission';
+
+const IOS_SUPPRESSED_MENU_ITEMS: SuppressMenuItem[] = [
+  'cut',
+  'copy',
+  'paste',
+  'replace',
+  'bold',
+  'italic',
+  'underline',
+  'select',
+  'selectAll',
+  'lookup',
+  'translate',
+  'share',
+];
 
 const saveImageToGallery = async (base64: string, fileName: string) => {
   try {
@@ -169,6 +185,9 @@ export const MainScreen = () => {
           ref={webViewRef}
           source={{ uri: ENV.webUrl }}
           applicationNameForUserAgent={WEBVIEW_USER_AGENT}
+          suppressMenuItems={
+            Platform.OS === 'ios' ? IOS_SUPPRESSED_MENU_ITEMS : undefined
+          }
           scalesPageToFit={false}
           automaticallyAdjustsScrollIndicatorInsets={false}
           injectedJavaScript={`

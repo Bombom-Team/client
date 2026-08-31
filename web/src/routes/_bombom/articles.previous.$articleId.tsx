@@ -11,7 +11,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
+import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
+import { useArticleFontSize } from '@/pages/detail/hooks/useArticleFontSize';
+import PreviousArticleContent from '@/pages/newsletter-detail/components/PreviousArticleContent';
 import { openSubscribeLink } from '@/pages/newsletter-detail/utils';
 import { cutHtmlByTextRatio } from '@/utils/element';
 
@@ -32,6 +35,7 @@ export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
 
 function RouteComponent() {
   const device = useDevice();
+  const { percentage, selectFontSize } = useArticleFontSize();
   const { userProfile, isLoggedIn } = useAuth();
   const { articleId } = Route.useParams();
   const { subscribeUrl } = useRouterState({
@@ -50,6 +54,10 @@ function RouteComponent() {
   const bodyContent = useMemo(
     () => cutHtmlByTextRatio(article?.contents, article?.exposureRatio),
     [article?.contents, article?.exposureRatio],
+  );
+  const processedContent = useMemo(
+    () => processContent(article?.newsletter.name ?? '', bodyContent),
+    [article?.newsletter.name, bodyContent],
   );
 
   if (!article) return null;
@@ -78,24 +86,33 @@ function RouteComponent() {
     <Container>
       {device !== 'pc' && (
         <MobileDetailHeader
-          right={<Button onClick={handleSubscribeClick}>구독하기</Button>}
+          right={
+            <MobileHeaderActions>
+              <ArticleFontSizeControl
+                percentage={percentage}
+                onSelect={selectFontSize}
+              />
+              <Button onClick={handleSubscribeClick}>구독하기</Button>
+            </MobileHeaderActions>
+          }
         />
       )}
 
-      <ArticleHeader
-        title={article.title}
-        newsletterCategory={article.newsletter.category}
-        newsletterName={article.newsletter.name}
-        arrivedDateTime={new Date(article.arrivedDateTime)}
-        expectedReadTime={article.expectedReadTime}
-      />
+      <ArticleReadingIntro>
+        <ArticleHeader
+          title={article.title}
+          newsletterCategory={article.newsletter.category}
+          newsletterName={article.newsletter.name}
+          arrivedDateTime={new Date(article.arrivedDateTime)}
+          expectedReadTime={article.expectedReadTime}
+        />
+      </ArticleReadingIntro>
       <Divider />
 
-      <Content
+      <PreviousArticleContent
+        content={processedContent}
         showGradient={shouldShowSubscribePrompt}
-        dangerouslySetInnerHTML={{
-          __html: processContent(article.newsletter.name, bodyContent),
-        }}
+        fontSizePercentage={percentage}
       />
 
       {shouldShowSubscribePrompt && (
@@ -116,6 +133,10 @@ function RouteComponent() {
 
       {device === 'pc' && (
         <ActionButtonWrapper>
+          <ArticleFontSizeControl
+            percentage={percentage}
+            onSelect={selectFontSize}
+          />
           <SubscribeButton
             type="button"
             onClick={handleSubscribeClick}
@@ -139,6 +160,7 @@ function RouteComponent() {
 }
 
 const Container = styled.div`
+  width: 100%;
   max-width: 700px;
   margin: 0 auto;
   padding: 28px;
@@ -151,59 +173,16 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const ArticleReadingIntro = styled.div`
+  width: 100%;
+  margin-bottom: 4px;
+`;
+
 const Divider = styled.div`
   width: 100%;
   height: 1px;
 
   background-color: ${({ theme }) => theme.colors.dividers};
-`;
-
-const Content = styled.div<{ showGradient: boolean }>`
-  overflow: visible;
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  -webkit-tap-highlight-color: rgb(0 0 0 / 10%);
-  -webkit-touch-callout: default;
-
-  user-select: text;
-
-  word-break: break-all;
-  word-wrap: break-word;
-
-  &::after {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 200px;
-
-    display: ${({ showGradient }) => (showGradient ? 'block' : 'none')};
-
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      ${({ theme }) => theme.colors.white}
-    );
-
-    content: '';
-
-    pointer-events: none;
-  }
-
-  a {
-    color: ${({ theme }) => theme.colors.info};
-
-    cursor: pointer;
-    text-decoration: underline;
-
-    &:hover {
-      text-decoration: none;
-    }
-  }
 `;
 
 const ActionButtonWrapper = styled.div`
@@ -223,6 +202,12 @@ const ActionButtonWrapper = styled.div`
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.dividers};
+`;
+
+const MobileHeaderActions = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
 `;
 
 const ActionButton = styled.button`

@@ -45,12 +45,14 @@ export const Route = createFileRoute('/_bombom/_main/storage')({
     sort?: Sort;
     newsletterId?: number;
     page?: number;
+    unreadOnly?: boolean;
   }) => {
     return {
       search: search.search,
       sort: search.sort,
       newsletterId: search.newsletterId,
       page: search.page,
+      unreadOnly: search.unreadOnly,
     };
   },
 });

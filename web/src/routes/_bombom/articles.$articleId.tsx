@@ -5,6 +5,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useRef } from 'react';
 import { queries } from '@/apis/queries';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
+import { MOBILE_HORIZONTAL_PADDING } from '@/components/PageLayout/PageLayout.constants';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import Spacing from '@/components/Spacing/Spacing';
 import { useDevice } from '@/hooks/useDevice';
@@ -13,10 +14,12 @@ import useScrollRestoration from '@/hooks/useScrollRestoration';
 import { useScrollThreshold } from '@/hooks/useScrollThreshold';
 import ArticleActionButtons from '@/pages/detail/components/ArticleActionButtons/ArticleActionButtons';
 import ArticleBody from '@/pages/detail/components/ArticleBody/ArticleBody';
+import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
 import TodayUnreadArticlesSection from '@/pages/detail/components/TodayUnreadArticlesSection/TodayUnreadArticlesSection';
 import useArticleAsReadMutation from '@/pages/detail/hooks/useArticleAsReadMutation';
 import { useArticleBookmark } from '@/pages/detail/hooks/useArticleBookmark';
+import { useArticleFontSize } from '@/pages/detail/hooks/useArticleFontSize';
 import type { Device } from '@/hooks/useDevice';
 import BookmarkActiveIcon from '#/assets/svg/bookmark-active.svg';
 import BookmarkInactiveIcon from '#/assets/svg/bookmark-inactive.svg';
@@ -43,6 +46,7 @@ function ArticleDetailPage() {
   const articleIdNumber = Number(articleId);
   const contentRef = useRef<HTMLDivElement>(null);
   const device = useDevice();
+  const { percentage, selectFontSize } = useArticleFontSize();
 
   const { data: currentArticle } = useQuery(
     queries.articleById({ id: articleIdNumber }),
@@ -82,6 +86,10 @@ function ArticleDetailPage() {
                   autoplay
                 />
               )}
+              <ArticleFontSizeControl
+                percentage={percentage}
+                onSelect={selectFontSize}
+              />
               <BookmarkButton type="button" onClick={toggleBookmark}>
                 <BookmarkIcon
                   as={isBookmarked ? BookmarkActiveIcon : BookmarkInactiveIcon}
@@ -102,22 +110,27 @@ function ArticleDetailPage() {
             variant="rectangular"
             device={device}
           />
-          <ArticleHeader
-            title={currentArticle.title ?? ''}
-            newsletterCategory={currentArticle.newsletter?.category ?? ''}
-            newsletterName={currentArticle.newsletter?.name ?? ''}
-            arrivedDateTime={new Date(currentArticle.arrivedDateTime ?? '')}
-            expectedReadTime={currentArticle.expectedReadTime ?? 1}
-          />
+          <ArticleReadingIntro>
+            <ArticleHeader
+              title={currentArticle.title ?? ''}
+              newsletterCategory={currentArticle.newsletter?.category ?? ''}
+              newsletterName={currentArticle.newsletter?.name ?? ''}
+              arrivedDateTime={new Date(currentArticle.arrivedDateTime ?? '')}
+              expectedReadTime={currentArticle.expectedReadTime ?? 1}
+            />
+          </ArticleReadingIntro>
           <Divider />
 
-          <ArticleBody
-            contentRef={contentRef}
-            articleId={articleIdNumber}
-            articleTitle={currentArticle.title}
-            newsletterName={currentArticle.newsletter.name}
-            articleContent={currentArticle.contents}
-          />
+          <ArticleBodyWrapper device={device}>
+            <ArticleBody
+              contentRef={contentRef}
+              articleId={articleIdNumber}
+              articleTitle={currentArticle.title}
+              newsletterName={currentArticle.newsletter.name}
+              articleContent={currentArticle.contents}
+              fontSizePercentage={percentage}
+            />
+          </ArticleBodyWrapper>
           <Spacing size={24} />
           <Divider />
 
@@ -133,7 +146,9 @@ function ArticleDetailPage() {
           <ArticleActionButtons
             isRead={currentArticle.isRead}
             bookmarked={isBookmarked}
+            percentage={percentage}
             onBookmarkClick={toggleBookmark}
+            onFontSizeSelect={selectFontSize}
           />
         )}
       </Container>
@@ -161,6 +176,20 @@ const ArticleContent = styled.div<{ device: Device }>`
   gap: 20px;
   flex-direction: column;
   align-items: center;
+`;
+
+const ArticleBodyWrapper = styled.div<{ device: Device }>`
+  width: ${({ device }) =>
+    device === 'mobile'
+      ? `calc(100% + ${MOBILE_HORIZONTAL_PADDING}px)`
+      : '100%'};
+  margin: ${({ device }) =>
+    device === 'mobile' ? `0 -${MOBILE_HORIZONTAL_PADDING / 2}px` : '0'};
+`;
+
+const ArticleReadingIntro = styled.div`
+  width: 100%;
+  margin-bottom: 4px;
 `;
 
 const ArticleProgressBar = styled(ProgressBar)<{ device: Device }>`

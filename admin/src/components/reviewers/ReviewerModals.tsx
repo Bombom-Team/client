@@ -145,31 +145,32 @@ export const AddReviewerModal = ({ onClose }: { onClose: () => void }) => {
 
 const Overlay = styled.div`
   position: fixed;
-  inset: 0;
   z-index: 100;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: rgba(17, 24, 39, 0.4);
+  background: rgb(17 24 39 / 40%);
+
+  inset: 0;
 `;
 
 const ModalCard = styled.div`
   width: 400px;
   padding: ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.lg};
 
   background: ${({ theme }) => theme.colors.white};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
 `;
 
 const ModalTitle = styled.h2`
   margin-bottom: ${({ theme }) => theme.spacing.md};
 
   color: ${({ theme }) => theme.colors.gray900};
-  font-size: ${({ theme }) => theme.fontSize.lg};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.lg};
 `;
 
 const Field = styled.div`
@@ -182,8 +183,8 @@ const Field = styled.div`
 
 const FieldLabel = styled.label`
   color: ${({ theme }) => theme.colors.gray700};
-  font-size: ${({ theme }) => theme.fontSize.sm};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 
 const FieldInput = styled.input`
@@ -227,17 +228,18 @@ const PrimaryButton = styled.button`
 
   background: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  cursor: pointer;
-  font-size: ${({ theme }) => theme.fontSize.sm};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
 
   &:hover {
     background: ${({ theme }) => theme.colors.primaryHover};
   }
 
   &:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
+    opacity: 0.5;
   }
 `;
 
@@ -248,8 +250,9 @@ const SecondaryButton = styled.button`
 
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.gray600};
-  cursor: pointer;
   font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
 
   &:hover {
     background: ${({ theme }) => theme.colors.gray50};

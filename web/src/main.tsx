@@ -13,7 +13,11 @@ import { createRoot } from 'react-dom/client';
 import { ENV } from './apis/env';
 import { queries } from './apis/queries';
 import PageErrorFallback from './components/PageErrorFallback/PageErrorFallback';
-import GAInitializer from './libs/googleAnalytics/GAInitializer';
+import {
+  DEV_GOOGLE_ANALYTICS_ID,
+  GOOGLE_ANALYTICS_ID,
+} from './libs/googleAnalytics/constants';
+import { initGA } from './libs/googleAnalytics/initGA';
 import { initSentry } from './libs/sentry/initSentry';
 import {
   captureMutationError,
@@ -23,9 +27,13 @@ import {
 import NotFound from './pages/system/components/NotFound';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
-import { isProduction } from './utils/environment';
+import { isDevelopment, isProduction } from './utils/environment';
 
 if (isProduction) Clarity.init(ENV.clarityProjectId);
+
+if (isDevelopment) initGA(DEV_GOOGLE_ANALYTICS_ID);
+
+if (isProduction) initGA(GOOGLE_ANALYTICS_ID);
 
 const EXPECTED_UNAUTHORIZED_QUERY_KEYS = [
   queries.userProfile().queryKey,
@@ -75,8 +83,8 @@ export const queryClient = new QueryClient({
         // ApiError가 아니라면 네트워크 등 일반 오류 → 최대 3번까지 재시도
         if (!(error instanceof ApiError)) return failureCount < 3;
 
-        // 401은 인증 문제 → 재시도해도 해결되지 않으므로 즉시 실패
-        if (error.status === 401) return false;
+        // 인증·권한·리소스 오류 → 재시도해도 해결되지 않으므로 즉시 실패
+        if ([401, 403, 404].includes(error.status)) return false;
 
         // 그 외 ApiError(500, 503 등) → 일시적 서버 오류로 보고 최대 3번 재시도
         return failureCount < 3;
@@ -137,7 +145,6 @@ enableMocking().then(() => {
       <SentryErrorBoundary fallback={PageErrorFallback}>
         <RouterProvider router={router} />
       </SentryErrorBoundary>
-      <GAInitializer />
     </StrictMode>,
   );
 });

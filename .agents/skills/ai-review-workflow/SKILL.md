@@ -19,9 +19,10 @@ Use this skill for changes around:
 - `.github/scripts/publish-codex-review.sh` (공용 publisher)
 - `.review-learnings/REVIEW.md` (리뷰 학습 메모, 선택적 참조)
 
-The goal is to keep the PR review bot high signal, readable, and safe:
-post comments only, never approve or request changes, and always post a review
-(findings 0개여도 summary는 게시).
+The goal is to keep the PR review bot high signal, readable, and safe.
+GitHub 게시가 명시적으로 요청된 경우에만 comment/approve review를 게시한다.
+일반 대화에서의 검토 요청은 채팅 안에서 결과만 전달하며, findings가 0개여도
+게시용 summary를 만들지 않는다.
 
 ## Reviewer Identity
 
@@ -51,17 +52,25 @@ Before editing, read:
 
 1. `CONVENTIONS.md`
 2. `docs/ai-rules.md`
-3. `docs/git-commit-convention.md` before committing
+3. `docs/architecture.md` — 워크스페이스 경계·인증·API·WebView·알림 동작 지도
+4. `docs/git-commit-convention.md` before committing
 
 Keep scope tight. Do not touch frontend code while working on review workflow
 formatting unless the user explicitly asks.
 
 ## Current Design
 
-- **Invocation**: 오직 이 스킬을 통해서만 리뷰가 시작된다. 사용자가
-  `이 PR 리뷰해줘` 같이 요청하면 Claude가 본 스킬을 실행한다.
+- **Invocation**: 오직 이 스킬을 통해서만 리뷰가 시작된다. 단, 요청은 두 모드로
+  구분한다.
+  - **채팅 검토(기본)**: `이 PR 리뷰해줘`, `리뷰 포인트 봐줘`, PR URL만 전달 같은
+    요청은 diff와 컨텍스트를 분석하고 결과를 이 채팅에만 전달한다. GitHub API write,
+    publisher 실행, workflow dispatch를 하지 않는다.
+  - **GitHub 게시(명시적 opt-in)**: 사용자가 같은 요청에서 `PR에 리뷰 게시해줘`,
+    `GitHub에 코멘트 달아줘`, `승인 리뷰 남겨줘`처럼 외부 게시를 분명히 요청할 때만
+    structured review JSON과 publisher를 사용한다.
 - Claude가 PR diff·메타데이터를 직접 분석해 `.github/codex-review-output-schema.json`
-  스키마에 맞는 JSON을 로컬에 작성한다 (`codex-review-output.json`).
+  스키마에 맞는 JSON을 로컬에 작성하는 것은 **GitHub 게시 모드에서만** 필요하다
+  (`codex-review-output.json`).
 - `.github/scripts/publish-codex-review.sh`가 그 JSON을 GitHub review body와
   inline comment로 변환해 게시한다. `REVIEWER=claude`로 호출하면 Claude 라벨로
   표시된다.
@@ -77,6 +86,10 @@ formatting unless the user explicitly asks.
 
 ## Hard Constraints
 
+- 사용자의 현재 메시지에 GitHub 게시 의사가 명시되어 있지 않으면 절대 publisher,
+  `gh api` write 요청, `gh workflow run`을 실행하지 않는다. 채팅 검토 결과만
+  반환한다. 과거 대화에서의 게시 요청이나 기본 스킬 동작으로 게시 권한을 추론하지
+  않는다.
 - Never publish `REQUEST_CHANGES`.
 - `APPROVE`는 **조건부**로만 허용된다 (아래 "Review Event Decision" 참조).
   그 외엔 항상 `COMMENT`.
@@ -169,9 +182,9 @@ publisher 스크립트의 `EVENT` 결정 로직 한 곳만 수정.
 Omit `### 이전 리뷰 이슈 추적` when no previous issue data exists. The publisher
 tolerates `.previous_issues` being absent by using `(.previous_issues // [])`.
 
-When findings are empty (no critical/major/minor), the publisher still posts a
-summary with `> ✅ 확실하게 수정이 필요한 항목을 찾지 못했습니다.` — **리뷰는
-무조건 게시된다.**
+GitHub 게시 모드에서 findings가 비어 있으면(no critical/major/minor), publisher는
+`> ✅ 확실하게 수정이 필요한 항목을 찾지 못했습니다.` summary를 게시한다. 채팅
+검토 모드에서는 이 summary를 채팅 결과로만 전달하고 publisher를 실행하지 않는다.
 
 ## Preferred Inline Comment Format
 
@@ -247,31 +260,58 @@ Procedure:
      ':(glob,exclude)**/generated/**/*.d.ts'
    ```
 
-4. Review high-signal issues only:
+4. **컨텍스트 수집 — diff만 보고 리뷰하지 않는다.** finding을 확정하기 전에 head 기준
+   실제 코드를 읽는다:
+   - `docs/architecture.md`를 먼저 읽고 관련 워크스페이스의 동작 계약을 파악한다.
+   - PR body의 의도와 `👀 Review Point`를 확인한다.
+   - 변경 파일은 hunk뿐 아니라 파일 전체를 읽는다: `git show <head>:<path>`.
+   - 변경된 export·hook·API·공용 type의 호출처를 추적한다:
+     `git grep -n '<symbol>' <head> -- web app admin maeil-mail shared`.
+   - 같은 워크스페이스·도메인의 이웃 구현 1~2개와 비교한다. 다른 워크스페이스의
+     우연히 같은 이름인 구현을 표준으로 오인하지 않는다.
+   - 이전 AI 리뷰가 있으면 답글과 resolve 상태를 읽고 반박된 finding을 반복하지 않는다.
+
+5. Review high-signal issues only:
    - Comment only on likely production issues, security problems, data
      corruption risks, broken user flows, or severe maintainability risks.
    - Do not comment on generated files, style nits, formatting, subjective
      naming, unchanged code, or speculative refactors.
    - Only report issues introduced by the PR diff.
+   - **Repository-specific high-signal areas** (근거는 `docs/architecture.md`와 실제 코드):
+     - `shared` fetcher·generated API·theme·WebView union 변경 후 소비처 누락.
+     - WebView message 송수신 한쪽만 변경, 브라우저 optional guard 제거, 로그인 분기 파손.
+     - cookie 인증을 bearer/local storage로 잘못 전제하거나 최초 profile probe를 상시
+       route guard로 오인한 변경.
+     - mutation invalidation 누락, 워크스페이스별 retry/cache 정책 혼동, 공용 `ApiError`
+       대신 axios 오류 shape 전제.
+     - FCM의 memberId/deviceUuid/token 연결, notificationType→route mapping, listener cleanup
+       중 하나가 빠진 변경.
+     - admin 외부 adapter를 공용 API로 오인하거나 Supabase lazy 초기화를 깨는 변경.
+   - **제네릭 필터**: 아무 React/React Native 모노레포에도 성립하는 코멘트면 버리거나,
+     실제 호출 흐름·워크스페이스 계약·file:line 근거를 붙여 서비스 특화 finding으로
+     다시 쓴다. 일반론 체크리스트는 게시하지 않는다.
 
-5. Decide comment placement:
+6. Decide comment placement:
    - `critical` and `major`: inline comments when the path and changed line are
      valid.
    - `minor`: summary only.
    - If a finding cannot be tied to a valid changed line, keep it in the
      summary instead of forcing an inline comment.
-   - **항상 PR 코멘트(리뷰)를 게시한다.** Findings가 0개여도 publisher가
+   - **채팅 검토 모드**에서는 여기서 멈추고 findings와 근거를 채팅에 반환한다.
+     JSON을 쓰거나 PR 코멘트를 게시하지 않는다.
+   - **GitHub 게시 모드**에서는 findings가 0개여도 publisher가
      `> ✅ 확실하게 수정이 필요한 항목을 찾지 못했습니다.` summary를 자동으로
-     채우므로, 스킬이 발동되면 무조건 step 7의 publisher 실행까지 진행한다.
-     "찾은 게 없으니 안 올리고 끝"은 금지.
+     채우므로 step 8까지 진행한다.
 
-6. Write the review result to the scratch `$REVIEW_JSON` (step 0, 레포 밖) using
-   `.github/codex-review-output-schema.json`. **레포 루트에 쓰지 않는다.** The
-   shared publisher owns the Preferred Review Body Format, Preferred Inline
-   Comment Format, `<!-- CODEX_REVIEW_COMMENT -->`, and `<!-- REVIEW_META ... -->`.
+7. **GitHub 게시 모드에서만** review result를 scratch `$REVIEW_JSON` (step 0,
+   레포 밖)에 쓴다. `.github/codex-review-output-schema.json`을 사용한다.
+   **레포 루트에 쓰지 않는다.** The shared publisher owns the Preferred Review
+   Body Format, Preferred Inline Comment Format, `<!-- CODEX_REVIEW_COMMENT -->`,
+   and `<!-- REVIEW_META ... -->`.
 
-7. **반드시 publisher를 실행해 PR 코멘트를 게시한다.** 권장 경로는 `REVIEWER=claude`로
-   로컬 publisher를 직접 실행하는 것이다 (`REVIEW_JSON`은 step 0의 scratch 경로):
+8. **GitHub 게시 모드에서만 publisher를 실행해 PR 코멘트를 게시한다.** 권장 경로는
+   `REVIEWER=claude`로 로컬 publisher를 직접 실행하는 것이다 (`REVIEW_JSON`은 step
+   0의 scratch 경로):
 
    ```bash
    REVIEW_JSON="$REVIEW_JSON" \
@@ -300,12 +340,12 @@ Procedure:
    `OPENAI_API_KEY`, and must only decode the local structured review result
    and run `.github/scripts/publish-codex-review.sh`.
 
-8. If inline publishing fails because of invalid positions or paths, retry once
+9. If inline publishing fails because of invalid positions or paths, retry once
    with `comments: []` so the summary is still posted. The shared publisher
    already performs this fallback; tell the user which inline comments could not
    be attached if the logs reveal that detail.
 
-9. **마무리: 워킹트리를 clean 상태로 남긴다.** 게시 후 `git status --short`가
+10. **마무리: 워킹트리를 clean 상태로 남긴다.** 게시 후 `git status --short`가
    비어 있어야 한다. 리뷰용 산출물이 워킹트리에 남았다면 삭제한다. 이 스킬은
    커밋·브랜치·PR을 만들지 않는다 — 클라우드 라우틴에서 auto-PR로 쓸려 들어가는
    것을 막기 위함이다.
@@ -313,6 +353,17 @@ Procedure:
 Never publish mock findings as a real PR review. Never publish `APPROVE` or
 `REQUEST_CHANGES`. Avoid posting a duplicate review for the same head commit
 unless the user explicitly asks.
+
+## Architecture Learning Loop
+
+1. finding이 사람 답글로 반박·정정되거나 다른 리뷰어가 놓친 실제 이슈를 찾으면,
+   재현 근거가 있는 항목만 `.review-learnings/REVIEW.md`에 다음 리뷰 규칙으로 적립한다.
+2. 실제 회귀가 확인된 영역만 repository-specific high-signal 목록에 추가한다. 일반론으로
+   목록을 희석하지 않는다.
+3. 리뷰 중 `docs/architecture.md`와 코드가 어긋나면 코드를 기준으로 리뷰하고 사용자에게
+   architecture 문서 갱신을 별도 제안한다.
+4. `<!-- REVIEW_META -->` finding id와 `<!-- CODEX_REVIEW_COMMENT -->` 마커는 과거 finding
+   추적 키이므로 유지한다.
 
 ## Generated File Exclusions
 

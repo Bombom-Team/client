@@ -15,8 +15,9 @@ export const SummaryStatCard = ({ label, value, emphasis }: Props) => (
 
 export const SummaryStatCardRow = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: ${({ theme }) => theme.spacing.md};
+
+  grid-template-columns: repeat(4, 1fr);
 `;
 
 export const SummaryStatCardSkeleton = () => (
@@ -35,17 +36,17 @@ const Card = styled.div<{ $emphasis?: 'default' | 'error' }>`
     ${({ theme, $emphasis }) =>
       $emphasis === 'error' ? theme.colors.error : theme.colors.primary};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.sm};
 
   background: ${({ theme }) => theme.colors.white};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
 
 const Label = styled.span`
   display: block;
 
   color: ${({ theme }) => theme.colors.gray500};
-  font-size: ${({ theme }) => theme.fontSize.xs};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.xs};
   letter-spacing: 0.04em;
 `;
 
@@ -56,13 +57,13 @@ const Value = styled.span<{ $emphasis?: 'default' | 'error' }>`
 
   color: ${({ theme, $emphasis }) =>
     $emphasis === 'error' ? theme.colors.error : theme.colors.gray900};
-  font-size: 28px;
   font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: 28px;
+
   font-variant-numeric: tabular-nums;
 `;
 
 const SkeletonBlock = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.sm};
-
   background: ${({ theme }) => theme.colors.gray100};
 `;
