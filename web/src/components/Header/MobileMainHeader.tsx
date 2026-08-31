@@ -5,6 +5,7 @@ import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
+import HeadsetIcon from '#/assets/svg/headset.svg';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 
 const MobileMainHeader = () => {
@@ -16,6 +17,12 @@ const MobileMainHeader = () => {
       <MainRow>
         <HeaderLogo />
         <UserInfoWrapper>
+          <NavButton
+            onClick={() => navigate({ to: '/support' })}
+            variant="transparent"
+          >
+            <HeadsetIcon width={20} height={20} />
+          </NavButton>
           <NavButton
             onClick={() => navigate({ to: '/notice' })}
             variant="transparent"

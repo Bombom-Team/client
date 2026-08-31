@@ -8,6 +8,7 @@ import LoginButton from './LoginButton';
 import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
+import HeadsetIcon from '#/assets/svg/headset.svg';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 
 interface PCHeaderProps {
@@ -29,6 +30,12 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
           </NavWrapper>
 
           <UserInfoWrapper>
+            <Button
+              onClick={() => navigate({ to: '/support' })}
+              variant={'transparent'}
+            >
+              <HeadsetIcon width={22} height={24} />
+            </Button>
             <Button
               onClick={() => navigate({ to: '/notice' })}
               variant={'transparent'}

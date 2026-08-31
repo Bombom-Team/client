@@ -7,7 +7,6 @@ import { postLogout } from '@/apis/auth/auth.api';
 import { copyToClipboard } from '@/utils/copy';
 import { isWebView } from '@/utils/device';
 import type { UserProfile } from '@/types/me';
-import ChatIcon from '#/assets/svg/chat.svg';
 import CopyIcon from '#/assets/svg/copy.svg';
 import LogoutIcon from '#/assets/svg/logout.svg';
 import MailIcon from '#/assets/svg/mail.svg';
@@ -87,11 +86,6 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
           알림 설정
         </MyPageButton>
       )}
-
-      <MyPageButton to="/support" onClick={onClose}>
-        <ChatIcon width={16} height={16} />
-        고객센터
-      </MyPageButton>
 
       <LogoutButton type="button" onClick={handleLogoutClick}>
         <LogoutIcon width={16} height={16} />
