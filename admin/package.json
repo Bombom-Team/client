@@ -12,6 +12,7 @@
     "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix && stylelint './src/**/*.tsx' --fix",
     "format": "prettier --write . && stylelint './src/**/*.tsx' --fix",
     "type-check": "tsc --noEmit",
+    "generate-dashboard-types": "openapi-typescript ./openapi/dashboard.json -o ./src/types/dashboard.gen.ts && prettier --write ./src/types/dashboard.gen.ts",
     "generate-openapi-types": "dotenv -e .env -- bash -c 'openapi-typescript $VITE_OPEN_API_DOCS -o ./src/types/openapi.d.ts && prettier --write ./src/types/openapi.d.ts'"
   },
   "keywords": [],

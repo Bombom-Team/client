@@ -3,6 +3,7 @@ import '@seed-design/css/base.css';
 import { useQuery } from '@tanstack/react-query';
 import { FiRefreshCw } from 'react-icons/fi';
 import Metric from './components/Metric';
+import SignupTrend from './components/SignupTrend';
 import { dashboardQueries } from '@/apis/dashboard/dashboard.query';
 
 const DashboardPage = () => {
@@ -24,6 +25,17 @@ const DashboardPage = () => {
           <DescriptionBox>가입과 활동 현황을 한눈에 확인하세요.</DescriptionBox>
         </div>
         <RefreshWrapper>
+          {data?.aggregatedAt && (
+            <DescriptionBox>
+              서버 집계{' '}
+              <time dateTime={data.aggregatedAt}>
+                {new Date(data.aggregatedAt).toLocaleString('ko-KR', {
+                  timeZone: 'Asia/Seoul',
+                })}
+              </time>
+              {' · 최대 5분 캐시'}
+            </DescriptionBox>
+          )}
           {dataUpdatedAt > 0 && (
             <DescriptionBox>
               마지막 조회{' '}
@@ -101,19 +113,7 @@ const DashboardPage = () => {
             </MetricsWrapper>
           </section>
 
-          <TrendWrapper aria-labelledby="trend-heading">
-            <SectionHeadingWrapper>
-              <SectionTitle id="trend-heading">일별 가입 추이</SectionTitle>
-              <PendingBox>데이터 연동 예정</PendingBox>
-            </SectionHeadingWrapper>
-            <TrendMessageBox>
-              <strong>날짜별 가입 데이터가 아직 제공되지 않아요.</strong>
-              <DescriptionBox>
-                현재는 기간별 합계만 확인할 수 있어요. 일별 집계가 연결되면 최근
-                7일·30일 추이를 표시할 예정이에요.
-              </DescriptionBox>
-            </TrendMessageBox>
-          </TrendWrapper>
+          <SignupTrend data={data.dailyJoinedTrend} />
 
           <section aria-labelledby="members-heading">
             <SectionTitle id="members-heading">회원 상세 현황</SectionTitle>
@@ -131,12 +131,12 @@ const DashboardPage = () => {
               <Metric
                 label="이번 달 탈퇴"
                 value={data.withdrawnMembersThisMonth}
-                description="이번 달 1일부터"
+                description="이번 달 1일부터 · 테스트 계정 포함"
               />
               <Metric
                 label="오늘 활동 회원"
                 value={data.todayActiveMembers}
-                description="오늘 접근한 유효 세션 기준"
+                description="유효 세션 기준 · 테스트 계정 포함"
               />
             </MetricsWrapper>
           </section>
@@ -157,8 +157,9 @@ const DashboardPage = () => {
                 만료로 줄어들 수 있어요. 과거 일별 활동 수는 제공하지 않아요.
               </li>
               <li>
-                테스트 계정 제외 여부는 현재 응답에서 확인할 수 없어요. 권한
-                기준을 확정하고 서버 집계에 반영해야 해요.
+                {data.dailyJoinedTrend
+                  ? '전체 회원·가입 집계는 테스트 계정(role_id=4)을 제외해요. 탈퇴·오늘 활동 집계는 아직 테스트 계정을 제외하지 않아요.'
+                  : '서버 업데이트 전 응답이에요. 테스트 계정 제외 여부를 확인할 수 없어요.'}
               </li>
             </ul>
           </DefinitionBox>
@@ -287,40 +288,6 @@ const LoadingBox = styled.div`
   color: var(--seed-color-fg-neutral-muted);
 
   place-items: center;
-`;
-const TrendWrapper = styled.section`
-  padding: var(--seed-dimension-x6);
-  border: 1px solid var(--seed-color-palette-gray-300);
-  border-radius: var(--seed-radius-r4);
-
-  background-color: var(--seed-color-bg-layer-default);
-`;
-const SectionHeadingWrapper = styled.div`
-  display: flex;
-  gap: var(--seed-dimension-x3);
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-`;
-const PendingBox = styled.span`
-  padding: var(--seed-dimension-x1) var(--seed-dimension-x2);
-  border-radius: var(--seed-radius-r1);
-
-  background-color: var(--seed-color-bg-layer-fill);
-  color: var(--seed-color-fg-neutral-muted);
-  font-size: var(--seed-font-size-t3);
-`;
-const TrendMessageBox = styled.div`
-  min-height: 160px;
-
-  display: flex;
-  gap: var(--seed-dimension-x2);
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  text-align: center;
-  p { max-width: 480px; }
 `;
 const DefinitionBox = styled.details`
   padding: var(--seed-dimension-x4);
