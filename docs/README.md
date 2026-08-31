@@ -139,7 +139,7 @@
   <tr>
     <td style="width: 50%; vertical-align: top; text-align: center;">
       <img
-        src="https://github.com/user-attachments/assets/a4b42c05-4540-48f4-9404-962fc63c2b06"
+        src="https://github.com/user-attachments/assets/71913742-6239-4b16-b7e1-4ed8070b8421"
         height="300"
       />
     </td>
