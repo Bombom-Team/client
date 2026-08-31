@@ -4,12 +4,16 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { queries } from '@/apis/queries';
 import Accordion from '@/components/Accordion/Accordion';
+import MobileMainHeader from '@/components/Header/MobileMainHeader';
+import PCHeader from '@/components/Header/PCHeader';
+import { useDevice } from '@/hooks/useDevice';
 import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import FaqCategoryFilter from '@/pages/support/components/FaqCategoryFilter';
 import SupportContactCta from '@/pages/support/components/SupportContactCta';
+import type { Device } from '@/hooks/useDevice';
 import type { FaqCategoryType } from '@/types/faq';
 
-export const Route = createFileRoute('/_bombom/_main/support')({
+export const Route = createFileRoute('/support')({
   head: () => ({
     meta: [
       {
@@ -27,6 +31,7 @@ export const Route = createFileRoute('/_bombom/_main/support')({
 type SupportTab = 'FAQ' | 'CHAT';
 
 function SupportPage() {
+  const device = useDevice();
   const [activeTab, setActiveTab] = useState<SupportTab>('FAQ');
   const [activeCategory, setActiveCategory] = useState<FaqCategoryType | 'ALL'>(
     'ALL',
@@ -49,70 +54,83 @@ function SupportPage() {
   };
 
   return (
-    <Container>
-      <Title>고객센터</Title>
+    <>
+      {device === 'pc' ? <PCHeader activeNav={null} /> : <MobileMainHeader />}
+      <Main device={device}>
+        <Title>고객센터</Title>
 
-      <TabWrapper>
-        <TabButton
-          type="button"
-          isActive={activeTab === 'FAQ'}
-          onClick={() => setActiveTab('FAQ')}
-        >
-          FAQ
-        </TabButton>
-        <TabButton
-          type="button"
-          isActive={activeTab === 'CHAT'}
-          onClick={handleContactClick}
-        >
-          1:1 문의하기
-        </TabButton>
-      </TabWrapper>
+        <TabWrapper>
+          <TabButton
+            type="button"
+            isActive={activeTab === 'FAQ'}
+            onClick={() => setActiveTab('FAQ')}
+          >
+            FAQ
+          </TabButton>
+          <TabButton
+            type="button"
+            isActive={activeTab === 'CHAT'}
+            onClick={handleContactClick}
+          >
+            1:1 문의하기
+          </TabButton>
+        </TabWrapper>
 
-      {activeTab === 'FAQ' && (
-        <ContentWrapper>
-          <FaqCategoryFilter
-            activeCategory={activeCategory}
-            onCategoryChange={setActiveCategory}
-          />
+        {activeTab === 'FAQ' && (
+          <ContentWrapper>
+            <FaqCategoryFilter
+              activeCategory={activeCategory}
+              onCategoryChange={setActiveCategory}
+            />
 
-          <FaqListWrapper>
-            {faqs?.content?.map((faq) => {
-              const isOpen = openFaqId === faq.faqId;
+            <FaqListWrapper>
+              {faqs?.content?.map((faq) => {
+                const isOpen = openFaqId === faq.faqId;
 
-              return (
-                <Accordion key={faq.faqId}>
-                  <Accordion.Header
-                    isOpen={isOpen}
-                    onToggle={() => handleToggleFaq(faq.faqId)}
-                  >
-                    <QuestionText>{faq.question}</QuestionText>
-                  </Accordion.Header>
+                return (
+                  <Accordion key={faq.faqId}>
+                    <Accordion.Header
+                      isOpen={isOpen}
+                      onToggle={() => handleToggleFaq(faq.faqId)}
+                    >
+                      <QuestionText>{faq.question}</QuestionText>
+                    </Accordion.Header>
 
-                  <Accordion.Content isOpen={isOpen}>
-                    <AnswerText>{faq.answer}</AnswerText>
-                  </Accordion.Content>
-                </Accordion>
-              );
-            })}
-          </FaqListWrapper>
+                    <Accordion.Content isOpen={isOpen}>
+                      <AnswerText>{faq.answer}</AnswerText>
+                    </Accordion.Content>
+                  </Accordion>
+                );
+              })}
+            </FaqListWrapper>
 
-          <SupportContactCta onContactClick={handleContactClick} />
-        </ContentWrapper>
-      )}
+            <SupportContactCta onContactClick={handleContactClick} />
+          </ContentWrapper>
+        )}
 
-      {activeTab === 'CHAT' && (
-        <ChatGuideBox>채널톡 상담원과 연결됩니다.</ChatGuideBox>
-      )}
-    </Container>
+        {activeTab === 'CHAT' && (
+          <ChatGuideBox>채널톡 상담원과 연결됩니다.</ChatGuideBox>
+        )}
+      </Main>
+    </>
   );
 }
 
-const Container = styled.div`
+const Main = styled.main<{ device: Device }>`
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: ${({ device, theme }) => {
+    if (device === 'mobile') {
+      return `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 24px) 16px 24px`;
+    }
+
+    if (device === 'tablet') {
+      return `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 24px) 16px 24px`;
+    }
+
+    return `calc(${theme.heights.headerPC} + 40px + 24px) 16px 24px`;
+  }};
 
   display: flex;
   gap: 24px;
