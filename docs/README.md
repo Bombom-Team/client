@@ -79,22 +79,47 @@
   <tr>
     <td style="width: 50%; vertical-align: top; text-align: center;">
       <img
-        src="https://github.com/user-attachments/assets/84ada23a-818c-4395-92f2-5fe1fdfd8b56"
-        alt="읽기 활동 화면"
+        src="https://github.com/user-attachments/assets/d9a8df0b-f628-42b3-af3a-2b1dfc205296"
+        alt="챌린지 화면"
         height="300"
       />
     </td>
     <td style="width: 50%; vertical-align: top;">
 
-### 📅 월간 리포트로 읽기 습관을 돌아봐요
+### 🔥 뉴스레터 읽기 챌린지에 참여해요
 
-- 월간 리포트에서 읽은 아티클과 뉴스레터를 한눈에 확인해요.
-- 읽기 캘린더와 통계로 나의 읽기 패턴을 돌아봐요.
+- 챌린지에 신청하고, 기간 동안 매일 한 편 이상 읽어요.
+- 인상 깊었던 내용이나 생각을 코멘트로 남겨요.
+- 팀 현황을 확인하며 함께 읽고, 80% 이상 달성하면 수료증을 받아요.
 
 </td>
   </tr>
 
   <!-- Row 4 -->
+  <tr>
+    <td style="width: 50%; vertical-align: top; text-align: center;">
+      <img
+        src="https://github.com/user-attachments/assets/71913742-6239-4b16-b7e1-4ed8070b8421"
+        alt="매일메일 화면"
+        height="300"
+      />
+    </td>
+    <td style="width: 50%; vertical-align: top;">
+
+### ✉️ 매일메일로 기술 면접을 준비해요
+
+- 프론트엔드 또는 백엔드 분야를 선택해 구독해요.
+- 매일 질문을 확인하고 답변을 먼저 작성해요.
+- 모범 답변과 비교하며 매일메일에서 개념을 정리해요.
+
+<br/>
+
+[매일메일 바로가기](https://maeilmail.bombom.news)
+
+</td>
+  </tr>
+
+  <!-- Row 5 -->
   <tr>
     <td style="width: 50%; vertical-align: top; text-align: center;">
       <img
@@ -119,45 +144,21 @@
 </td>
   </tr>
 
-  <!-- Row 5 -->
-  <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
-      <img
-        src="https://github.com/user-attachments/assets/d9a8df0b-f628-42b3-af3a-2b1dfc205296"
-        alt="챌린지 화면"
-        height="300"
-      />
-    </td>
-    <td style="width: 50%; vertical-align: top;">
-
-### 🔥 뉴스레터 읽기 챌린지에 참여해요
-
-- 챌린지에 신청하고, 기간 동안 매일 한 편 이상 읽어요.
-- 인상 깊었던 내용이나 생각을 코멘트로 남겨요.
-- 팀 현황을 확인하며 함께 읽고, 80% 이상 달성하면 수료증을 받아요.
-
-</td>
-  </tr>
-
   <!-- Row 6 -->
   <tr>
     <td style="width: 50%; vertical-align: top; text-align: center;">
       <img
-        src="https://github.com/user-attachments/assets/71913742-6239-4b16-b7e1-4ed8070b8421"
+        src="https://github.com/user-attachments/assets/84ada23a-818c-4395-92f2-5fe1fdfd8b56"
+        alt="읽기 활동 화면"
         height="300"
       />
     </td>
     <td style="width: 50%; vertical-align: top;">
 
-### ✉️ 매일메일로 기술 면접을 준비해요
+### 📅 월간 리포트로 읽기 습관을 돌아봐요
 
-- 프론트엔드 또는 백엔드 분야를 선택해 구독해요.
-- 매일 질문을 확인하고 답변을 먼저 작성해요.
-- 모범 답변과 비교하며 매일메일에서 개념을 정리해요.
-
-<br/>
-
-[매일메일 바로가기](https://maeilmail.bombom.news)
+- 월간 리포트에서 읽은 아티클과 뉴스레터를 한눈에 확인해요.
+- 읽기 캘린더와 통계로 나의 읽기 패턴을 돌아봐요.
 
 </td>
   </tr>
