@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LEVEL, PET_LABEL } from './PetCard.constants';
 import { heartAnimation, jumpAnimation } from './PetCard.keyframes';
 import Button from '../Button/Button';
@@ -46,7 +46,6 @@ interface PetCardProps {
 const PetCard = ({ pet }: PetCardProps) => {
   const device = useDevice();
   const [isAnimating, setIsAnimating] = useState(false);
-  const hasTrackedAttendanceImpression = useRef(false);
 
   const { mutate: mutatePetAttendance } = useMutation({
     mutationFn: postPetAttendance,
@@ -67,14 +66,13 @@ const PetCard = ({ pet }: PetCardProps) => {
   const levelPercentage = calculateRate(currentStageScore, requiredStageScore);
 
   useEffect(() => {
-    if (isAttended || hasTrackedAttendanceImpression.current) return;
+    if (isAttended) return;
 
     trackEvent({
       category: 'Attendance',
       action: 'attendance_button_impression',
       label: '출석하기',
     });
-    hasTrackedAttendanceImpression.current = true;
   }, [isAttended]);
 
   const handleAttendanceClick = () => {
