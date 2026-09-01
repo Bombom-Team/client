@@ -1,5 +1,6 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
+import { RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import ArticleCard from '../ArticleCard/ArticleCard';
 import EmptyLetterCard from '../EmptyLetterCard/EmptyLetterCard';
@@ -17,12 +18,16 @@ type ExtendedArticle = Article & {
 
 interface ArticleCardListProps {
   articles: ExtendedArticle[];
+  isRefreshing?: boolean;
   onDeleteArticles?: (articleIds: number[]) => void;
+  onRefresh?: () => void;
 }
 
 const ArticleCardList = ({
   articles,
+  isRefreshing = false,
   onDeleteArticles,
+  onRefresh,
 }: ArticleCardListProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
@@ -56,8 +61,37 @@ const ArticleCardList = ({
     }
   };
 
-  if (articles.length === 0)
-    return <EmptyLetterCard title="새로운 뉴스레터가 없어요" />;
+  const refreshButton = onRefresh && (
+    <RefreshButton
+      type="button"
+      onClick={onRefresh}
+      disabled={isRefreshing}
+      aria-label="새 아티클 확인"
+      title="새 아티클 확인"
+    >
+      <StyledRefreshIcon
+        isRefreshing={isRefreshing}
+        aria-hidden="true"
+        size={20}
+        strokeWidth={2}
+      />
+    </RefreshButton>
+  );
+
+  if (articles.length === 0) {
+    return (
+      <Container>
+        <LettersWrapper>
+          <ListTitleBox>
+            <LetterIcon width={32} height={32} color={theme.colors.white} />
+            <ListTitle>새로운 뉴스레터 (0개)</ListTitle>
+            {refreshButton}
+          </ListTitleBox>
+          <EmptyLetterCard title="새로운 뉴스레터가 없어요" />
+        </LettersWrapper>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -65,6 +99,7 @@ const ArticleCardList = ({
         <ListTitleBox>
           <LetterIcon width={32} height={32} color={theme.colors.white} />
           <ListTitle>새로운 뉴스레터 ({grouped.unread.length}개)</ListTitle>
+          {refreshButton}
         </ListTitleBox>
         <CardList isMobile={isMobile}>
           {grouped.unread.map((article) => (
@@ -159,6 +194,59 @@ const ListTitleBox = styled.div`
   display: flex;
   gap: 12px;
   align-items: center;
+`;
+
+const RefreshButton = styled.button`
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.textSecondary};
+
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.dividers};
+    color: ${({ theme }) => theme.colors.textPrimary};
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.6;
+  }
+`;
+
+const StyledRefreshIcon = styled(RefreshCw, {
+  shouldForwardProp: (prop) => prop !== 'isRefreshing',
+})<{ isRefreshing: boolean }>`
+  width: 20px;
+  height: 20px;
+
+  animation: ${({ isRefreshing }) =>
+    isRefreshing ? 'spin 0.8s linear infinite' : 'none'};
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
 `;
 
 const ListTitle = styled.h5`
