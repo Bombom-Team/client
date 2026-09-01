@@ -105,7 +105,7 @@ const NavWrapper = styled.nav`
 
 const UserInfoWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
   justify-content: flex-end;
 `;

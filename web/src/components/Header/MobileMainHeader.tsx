@@ -73,12 +73,12 @@ const MainRow = styled.div`
 
 const UserInfoWrapper = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 4px;
   justify-content: center;
 `;
 
 const NavButton = styled(Button)`
-  padding: 0;
+  padding: 8px 12px;
 
   display: flex;
   gap: 0;
