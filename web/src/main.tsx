@@ -79,6 +79,10 @@ export const queryClient = new QueryClient({
   }),
   defaultOptions: {
     queries: {
+      staleTime: 5 * 60 * 1000,
+      refetchOnMount: true,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
       retry: (failureCount, error) => {
         // ApiError가 아니라면 네트워크 등 일반 오류 → 최대 3번까지 재시도
         if (!(error instanceof ApiError)) return failureCount < 3;
