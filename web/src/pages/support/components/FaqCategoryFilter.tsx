@@ -55,5 +55,3 @@ const FilterButton = styled.button<{ isActive: boolean }>`
     isActive ? theme.colors.white : theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t4Regular};
 `;
-
-export type { FaqCategoryFilterProps };

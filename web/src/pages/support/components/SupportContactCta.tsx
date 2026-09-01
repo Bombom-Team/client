@@ -19,8 +19,6 @@ const SupportContactCta = ({ onContactClick }: SupportContactCtaProps) => {
 
 export default SupportContactCta;
 
-export type { SupportContactCtaProps };
-
 const Container = styled.div`
   width: 100%;
   margin-top: 16px;
