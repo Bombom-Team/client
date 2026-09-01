@@ -60,6 +60,25 @@
   <tr>
     <td style="width: 50%; vertical-align: top; text-align: center;">
       <img
+        src="https://github.com/user-attachments/assets/7bb1b5dd-ac68-42fd-9e25-580d340ebad9"
+        alt="하이라이트와 메모 화면"
+        height="300"
+      />
+    </td>
+    <td style="width: 50%; vertical-align: top;">
+
+### 📝 중요한 문장을 하이라이트하고 메모해요
+
+- 중요한 구절을 **하이라이트**하고 메모를 남겨요.
+- 원하는 문장을 드래그하면 하이라이트와 메모를 사용할 수 있는 퀵 메뉴가 나타나요.
+
+</td>
+  </tr>
+
+  <!-- Row 3 -->
+  <tr>
+    <td style="width: 50%; vertical-align: top; text-align: center;">
+      <img
         src="https://github.com/user-attachments/assets/84ada23a-818c-4395-92f2-5fe1fdfd8b56"
         alt="읽기 활동 화면"
         height="300"
@@ -75,36 +94,18 @@
 </td>
   </tr>
 
-  <!-- Row 3 -->
-  <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
-      <img
-        src="https://github.com/user-attachments/assets/7bb1b5dd-ac68-42fd-9e25-580d340ebad9"
-        height="300"
-      />
-    </td>
-    <td style="width: 50%; vertical-align: top;">
-
-### 📝 중요한 문장을 하이라이트하고 메모해요
-
-- 중요한 구절을 **하이라이트**하고 메모를 남겨요.
-- 원하는 문장을 드래그하면 하이라이트와 메모를 사용할 수 있는 퀵 메뉴가 나타나요.
-
-</td>
-  </tr>
-
   <!-- Row 4 -->
   <tr>
     <td style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/58cfff2c-1047-469b-812c-b6c8ccc7521a"
         alt="읽기 랭킹 화면"
-        width="70%"
+        height="300"
       />
       <img
         src="https://github.com/user-attachments/assets/f84c0281-b1c4-48a2-a1c3-0e54cf7809a0"
         alt="출석 화면"
-        width="30%"
+        height="220"
       />
     </td>
     <td style="width: 50%; vertical-align: top;">
