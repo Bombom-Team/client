@@ -125,12 +125,12 @@
       <img
         src="https://github.com/user-attachments/assets/58cfff2c-1047-469b-812c-b6c8ccc7521a"
         alt="읽기 랭킹 화면"
-        height="300"
+        height="200"
       />
       <img
         src="https://github.com/user-attachments/assets/f84c0281-b1c4-48a2-a1c3-0e54cf7809a0"
         alt="출석 화면"
-        height="220"
+        height="100"
       />
     </td>
     <td style="width: 50%; vertical-align: top;">
