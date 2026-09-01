@@ -23,16 +23,6 @@
 
 뉴스레터를 읽는 데서 끝나지 않고, 읽은 내용을 나만의 지식 자산으로 쌓을 수 있어요.
 
-## 핵심 기능
-
-| 기능 | 설명 |
-| --- | --- |
-| 뉴스레터 통합 수신 | 봄봄에서 발급한 이메일 주소로 구독한 뉴스레터를 한곳에서 읽어요 |
-| 읽기 기록 | 아티클별 읽기 진행률, 읽은 시간과 날짜를 자동으로 기록해요 |
-| 읽기 목표 | 매일 또는 매주 읽기 목표를 설정하고 진행률을 확인해요 |
-| 하이라이트와 메모 | 중요한 문장을 하이라이트하고 메모를 남겨 다시 찾아봐요 |
-| 챌린지 | 정해진 기간 동안 하루 한 편을 읽고 한 줄 코멘트를 남겨요. 팀 현황판과 참여자들의 코멘트로 함께 읽는 습관을 만들어요 |
-| 매일메일 | 프론트엔드 또는 백엔드 기술 면접 질문을 매일 읽고 답변을 정리해요 |
 
 ## 봄봄이 주는 가치
 
@@ -43,7 +33,7 @@
 | 혼자서는 읽기 습관을 만들기 어렵다 | 챌린지 + 팀 현황판 | 지속적인 읽기 동기 |
 | 읽은 내용을 다시 활용하기 어렵다 | 하이라이트 + 메모 + 아카이빙 | 지식 자산화 |
 
-## 🤠 How to use?
+## 주요 기능
 
 <table>
 
@@ -70,16 +60,17 @@
   <tr>
     <td style="width: 50%; vertical-align: top; text-align: center;">
       <img
-        src="https://github.com/user-attachments/assets/48b6e101-3f7d-49f4-ac65-b6946ba01003"
+        src="https://github.com/user-attachments/assets/84ada23a-818c-4395-92f2-5fe1fdfd8b56"
+        alt="읽기 활동 화면"
         height="300"
       />
     </td>
     <td style="width: 50%; vertical-align: top;">
 
-### 🌱 매일 읽으며 습관을 만들어요
+### 📅 월간 리포트로 읽기 습관을 돌아봐요
 
-- 매일 출석하고 아티클을 읽으면 봄이가 자라요.
-- 읽기 기록을 확인하며 꾸준한 읽기 습관을 만들어가요.
+- 월간 리포트에서 읽은 아티클과 뉴스레터를 한눈에 확인해요.
+- 읽기 캘린더와 통계로 나의 읽기 패턴을 돌아봐요.
 
 </td>
   </tr>
@@ -106,16 +97,23 @@
   <tr>
     <td style="width: 50%; vertical-align: top; text-align: center;">
       <img
-        src="https://github.com/user-attachments/assets/e0871376-147f-4da2-af73-6dbef30e46fc"
+        src="https://github.com/user-attachments/assets/58cfff2c-1047-469b-812c-b6c8ccc7521a"
+        alt="읽기 랭킹 화면"
+        height="300"
+      />
+      <img
+        src="https://github.com/user-attachments/assets/f84c0281-b1c4-48a2-a1c3-0e54cf7809a0"
+        alt="출석 화면"
         height="300"
       />
     </td>
     <td style="width: 50%; vertical-align: top;">
 
-### 📚 읽기 기록으로 꾸준함을 확인해요
+### 🏆 읽기 랭킹으로 꾸준히 읽어요
 
-- 매달 갱신되는 **읽기 랭킹**에서 나의 순위를 확인해요.
-- 기록을 돌아보며 꾸준히 읽는 습관을 이어가요.
+- 매일 또는 매주 읽기 목표를 설정해요.
+- 출석하고 아티클을 읽으며 연속 읽기 기록을 쌓아요.
+- 연속왕과 다독왕 순위에서 나의 순위를 확인해요.
 
 </td>
   </tr>
@@ -125,6 +123,7 @@
     <td style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/d9a8df0b-f628-42b3-af3a-2b1dfc205296"
+        alt="챌린지 화면"
         height="300"
       />
     </td>
@@ -132,8 +131,8 @@
 
 ### 🔥 뉴스레터 읽기 챌린지에 참여해요
 
-- 챌린지에 신청하고, 기간 동안 하루 한 편을 읽어요.
-- 인상 깊었던 내용이나 생각을 한 줄 코멘트로 남겨요.
+- 챌린지에 신청하고, 기간 동안 매일 한 편 이상 읽어요.
+- 인상 깊었던 내용이나 생각을 코멘트로 남겨요.
 - 팀 현황을 확인하며 함께 읽고, 80% 이상 달성하면 수료증을 받아요.
 
 </td>
@@ -152,8 +151,8 @@
 ### ✉️ 매일메일로 기술 면접을 준비해요
 
 - 프론트엔드 또는 백엔드 분야를 선택해 구독해요.
-- 매일 질문을 확인하고 나만의 답변을 먼저 작성해요.
-- 모범 답변과 비교하며 봄봄에서 개념을 정리해요.
+- 매일 질문을 확인하고 답변을 먼저 작성해요.
+- 모범 답변과 비교하며 매일메일에서 개념을 정리해요.
 
 <br/>
 
@@ -166,23 +165,24 @@
 <br/>
 <br/>
 
-## 디렉터리 구조
+## 클라이언트 구성
+### 워크스페이스
 
-| 경로 | 역할 |
+| 워크스페이스 | 역할 |
 | --- | --- |
-| `web/` | 뉴스레터·아티클·챌린지를 제공하는 사용자용 웹 |
-| `app/` | 모바일 앱과 WebView 기능 |
-| `admin/` | 회원·콘텐츠·챌린지를 관리하는 운영 도구 |
+| `web/` | 뉴스레터·아티클·챌린지 등을 제공하는 봄봄 웹 |
+| `app/` | 봄봄과 매일메일을 이용할 수 있는 WebView 기반 모바일 앱 |
+| `admin/` | 회원·콘텐츠·챌린지를 관리하는 관리자 웹 |
 | `maeil-mail/` | 매일메일 구독·콘텐츠용 독립 웹 |
-| `shared/` | 웹과 앱에서 함께 사용하는 UI·유틸리티 |
+| `shared/` | 각 클라이언트가 공통적으로 사용하는 API·UI·유틸리티 |
 
-## 아키텍처(Client)
+### 아키텍처
 
 <img width="2048" height="1842" alt="클라이언트 아키텍처" src="https://github.com/user-attachments/assets/ebbebd7f-f0ce-4a61-bbc4-ceaa11fe0ebb" />
 
 <br/>
 
-## 기술 스택(Client)
+### 기술 스택
 
 **Web**
 
@@ -192,10 +192,15 @@
 ![TanStack Query](https://img.shields.io/badge/TanStack%20Query-%23FF4154.svg?style=for-the-badge&logo=reactquery&logoColor=white)
 ![Emotion CSS](https://img.shields.io/badge/Emotion-%23F786AD.svg?style=for-the-badge&logo=styledcomponents&logoColor=white)
 
-**Build tools**
-
 ![Webpack(봄봄 Web)](https://img.shields.io/badge/webpack-%238DD6F9.svg?style=for-the-badge&logo=webpack&logoColor=000)
 ![Vite(매일메일, 운영도구)](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+
+
+![Jest](https://img.shields.io/badge/Jest-%23C21325.svg?style=for-the-badge&logo=jest&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-%2345BA4.svg?style=for-the-badge)
+![Storybook](https://img.shields.io/badge/Storybook-%23FF4785.svg?style=for-the-badge&logo=storybook&logoColor=white)
+![MSW](https://img.shields.io/badge/MSW-%23FF6A33.svg?style=for-the-badge&logo=mockserviceworker&logoColor=white)
+
 
 **App**
 
@@ -203,18 +208,14 @@
 ![React Native](https://img.shields.io/badge/React%20Native-61DAFB?style=for-the-badge&logo=React&logoColor=black)
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=Firebase&logoColor=black)
 
-**Testing**
 
-![Jest](https://img.shields.io/badge/Jest-%23C21325.svg?style=for-the-badge&logo=jest&logoColor=white)
-![Playwright](https://img.shields.io/badge/Playwright-%2345BA4.svg?style=for-the-badge&logo=playwright&logoColor=white)
-![Storybook](https://img.shields.io/badge/Storybook-%23FF4785.svg?style=for-the-badge&logo=storybook&logoColor=white)
 
 **Observability & analytics**
 
 ![Sentry](https://img.shields.io/badge/Sentry-%23362D59.svg?style=for-the-badge&logo=sentry&logoColor=white)
 ![Google Analytics](https://img.shields.io/badge/Google%20Analytics-%23E37400.svg?style=for-the-badge&logo=googleanalytics&logoColor=white)
 
-## 팀
+## 팀원
 
 ### Frontend 🎨
 
