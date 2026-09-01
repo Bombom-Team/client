@@ -125,7 +125,7 @@
       <img
         src="https://github.com/user-attachments/assets/58cfff2c-1047-469b-812c-b6c8ccc7521a"
         alt="읽기 랭킹 화면"
-        height="200"
+        height="300"
       />
       <img
         src="https://github.com/user-attachments/assets/f84c0281-b1c4-48a2-a1c3-0e54cf7809a0"
