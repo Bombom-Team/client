@@ -8,10 +8,8 @@ import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstall
 import MobileMainHeader from '@/components/Header/MobileMainHeader';
 import PCHeader from '@/components/Header/PCHeader';
 import { useDevice } from '@/hooks/useDevice';
-import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 import FaqCategoryFilter from '@/pages/support/components/FaqCategoryFilter';
-import SupportContactCta from '@/pages/support/components/SupportContactCta';
 import type { FaqCategoryType } from '@/types/faq';
 
 export const Route = createFileRoute('/support')({
@@ -29,14 +27,11 @@ export const Route = createFileRoute('/support')({
   component: SupportPage,
 });
 
-type SupportTab = 'FAQ' | 'CHAT';
-
 function SupportPage() {
   useWebViewRegisterToken();
 
   const device = useDevice();
   const isMobile = device !== 'pc';
-  const [activeTab, setActiveTab] = useState<SupportTab>('FAQ');
   const [activeCategory, setActiveCategory] = useState<FaqCategoryType | 'ALL'>(
     'ALL',
   );
@@ -80,73 +75,43 @@ function SupportPage() {
     setOpenFaqId((prev) => (prev === faqId ? null : faqId));
   };
 
-  const handleContactClick = () => {
-    setActiveTab('CHAT');
-    showMessenger();
-  };
-
   return (
     <>
       {device === 'pc' ? <PCHeader activeNav={null} /> : <MobileMainHeader />}
       <Container isMobile={isMobile}>
         <Title>고객센터</Title>
 
-        <TabWrapper>
-          <TabButton
-            type="button"
-            isActive={activeTab === 'FAQ'}
-            onClick={() => setActiveTab('FAQ')}
-          >
-            FAQ
-          </TabButton>
-          <TabButton
-            type="button"
-            isActive={activeTab === 'CHAT'}
-            onClick={handleContactClick}
-          >
-            1:1 문의하기
-          </TabButton>
-        </TabWrapper>
+        <ContentWrapper>
+          <FaqCategoryFilter
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+          />
 
-        {activeTab === 'FAQ' && (
-          <ContentWrapper>
-            <FaqCategoryFilter
-              activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
-            />
+          <FaqListWrapper>
+            {faqs.map((faq) => {
+              const isOpen = openFaqId === faq.faqId;
 
-            <FaqListWrapper>
-              {faqs.map((faq) => {
-                const isOpen = openFaqId === faq.faqId;
+              return (
+                <Accordion key={faq.faqId}>
+                  <Accordion.Header
+                    isOpen={isOpen}
+                    onToggle={() => handleToggleFaq(faq.faqId)}
+                  >
+                    <QuestionText>
+                      <CategoryText>[{faq.categoryName}]</CategoryText>{' '}
+                      {faq.question}
+                    </QuestionText>
+                  </Accordion.Header>
 
-                return (
-                  <Accordion key={faq.faqId}>
-                    <Accordion.Header
-                      isOpen={isOpen}
-                      onToggle={() => handleToggleFaq(faq.faqId)}
-                    >
-                      <QuestionText>
-                        <CategoryText>[{faq.categoryName}]</CategoryText>{' '}
-                        {faq.question}
-                      </QuestionText>
-                    </Accordion.Header>
-
-                    <Accordion.Content isOpen={isOpen}>
-                      <AnswerText>{faq.answer}</AnswerText>
-                    </Accordion.Content>
-                  </Accordion>
-                );
-              })}
-              <LoadMoreTrigger ref={loadMoreRef} />
-            </FaqListWrapper>
-
-            <SupportContactCta onContactClick={handleContactClick} />
-          </ContentWrapper>
-        )}
-
-        {activeTab === 'CHAT' && (
-          <ChatGuideBox>채널톡 상담원과 연결됩니다.</ChatGuideBox>
-        )}
+                  <Accordion.Content isOpen={isOpen}>
+                    <AnswerText>{faq.answer}</AnswerText>
+                  </Accordion.Content>
+                </Accordion>
+              );
+            })}
+            <LoadMoreTrigger ref={loadMoreRef} />
+          </FaqListWrapper>
+        </ContentWrapper>
       </Container>
 
       <AppInstallPromptModal />
@@ -172,25 +137,6 @@ const Container = styled.main<{ isMobile: boolean }>`
 
 const Title = styled.h1`
   font: ${({ theme }) => theme.fonts.t11Bold};
-`;
-
-const TabWrapper = styled.div`
-  border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
-
-  display: flex;
-  gap: 8px;
-`;
-
-const TabButton = styled.button<{ isActive: boolean }>`
-  padding: 12px 16px;
-  border-bottom: 2px solid
-    ${({ isActive, theme }) =>
-      isActive ? theme.colors.primaryBomBom : 'transparent'};
-
-  color: ${({ isActive, theme }) =>
-    isActive ? theme.colors.textPrimary : theme.colors.textSecondary};
-  font: ${({ isActive, theme }) =>
-    isActive ? theme.fonts.t6Bold : theme.fonts.t6Regular};
 `;
 
 const ContentWrapper = styled.div`
@@ -220,14 +166,4 @@ const CategoryText = styled.span`
 
 const AnswerText = styled.p`
   width: 100%;
-`;
-
-const ChatGuideBox = styled.div`
-  padding: 24px 16px;
-  border-radius: 12px;
-
-  background-color: ${({ theme }) => theme.colors.disabledBackground};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  text-align: center;
 `;
