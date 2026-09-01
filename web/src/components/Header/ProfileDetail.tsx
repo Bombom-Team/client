@@ -4,9 +4,11 @@ import { Link } from '@tanstack/react-router';
 import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
 import { toast } from '../Toast/utils/toastActions';
 import { postLogout } from '@/apis/auth/auth.api';
+import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { copyToClipboard } from '@/utils/copy';
 import { isWebView } from '@/utils/device';
 import type { UserProfile } from '@/types/me';
+import ChatIcon from '#/assets/svg/chat.svg';
 import CopyIcon from '#/assets/svg/copy.svg';
 import LogoutIcon from '#/assets/svg/logout.svg';
 import MailIcon from '#/assets/svg/mail.svg';
@@ -85,6 +87,13 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
         <MyPageButton to="/my/notification" onClick={onClose}>
           알림 설정
         </MyPageButton>
+      )}
+
+      {isWebView() && (
+        <ChannelTalkButton type="button" onClick={showMessenger}>
+          <ChatIcon width={16} height={16} />
+          문의하기
+        </ChannelTalkButton>
       )}
 
       <LogoutButton type="button" onClick={handleLogoutClick}>
@@ -173,6 +182,20 @@ const ProfileEmail = styled.button`
 const EmailText = styled.div`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t5Regular};
+`;
+
+const ChannelTalkButton = styled.button`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t5Regular};
+
+  &:hover {
+    text-decoration: underline;
+    transition: all 0.2s ease-in-out;
+  }
 `;
 
 const MyPageButton = styled(Link)`
