@@ -136,7 +136,7 @@ const DashboardPage = () => {
               <Metric
                 label="오늘 활동 회원"
                 value={data.todayActiveMembers}
-                description="유효 세션 기준 · 테스트 계정 포함"
+                description="유효 세션 기준 · 테스트 계정 제외"
               />
             </MetricsWrapper>
           </section>
@@ -158,7 +158,7 @@ const DashboardPage = () => {
               </li>
               <li>
                 {data.dailyJoinedTrend
-                  ? '전체 회원·가입 집계는 테스트 계정(role_id=4)을 제외해요. 탈퇴·오늘 활동 집계는 아직 테스트 계정을 제외하지 않아요.'
+                  ? '전체 회원·가입·오늘 활동 집계는 테스트 계정(role_id=4)을 제외해요. 탈퇴 집계에는 테스트 계정이 포함돼요.'
                   : '서버 업데이트 전 응답이에요. 테스트 계정 제외 여부를 확인할 수 없어요.'}
               </li>
             </ul>
