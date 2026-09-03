@@ -97,7 +97,9 @@ function SupportPage() {
                     isOpen={isOpen}
                     onToggle={() => handleToggleFaq(faq.faqId)}
                   >
-                    <QuestionText>{faq.question}</QuestionText>
+                    <QuestionText>
+                      <QuestionMark>Q.</QuestionMark> {faq.question}
+                    </QuestionText>
                   </Accordion.Header>
 
                   <Accordion.Content isOpen={isOpen}>
@@ -154,6 +156,11 @@ const FaqListWrapper = styled.div`
 
 const QuestionText = styled.span`
   font: ${({ theme }) => theme.fonts.t6Regular};
+`;
+
+const QuestionMark = styled.span`
+  color: ${({ theme }) => theme.colors.primaryBomBom};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const AnswerText = styled.p`
