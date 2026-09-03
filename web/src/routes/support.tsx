@@ -152,7 +152,6 @@ const LoadMoreTrigger = styled.div`
 
 const FaqListWrapper = styled.div`
   display: flex;
-  gap: 8px;
   flex-direction: column;
 `;
 
