@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root';
+import { Route as SupportRouteImport } from './routes/support';
 import { Route as SignupRouteImport } from './routes/signup';
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy';
 import { Route as MaintenanceRouteImport } from './routes/maintenance';
@@ -52,6 +53,11 @@ import { Route as BombomMainChallengeChallengeIdDailyRouteImport } from './route
 import { Route as BombomMainChallengeChallengeIdCommentsRouteImport } from './routes/_bombom/_main/challenge/$challengeId/comments';
 import { Route as BombomMainChallengeChallengeIdCertificationRouteImport } from './routes/_bombom/_main/challenge/$challengeId/certification';
 
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any);
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -283,6 +289,7 @@ export interface FileRoutesByFullPath {
   '/maintenance': typeof MaintenanceRoute;
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
+  '/support': typeof SupportRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog/': typeof BlogIndexRoute;
@@ -324,6 +331,7 @@ export interface FileRoutesByTo {
   '/maintenance': typeof MaintenanceRoute;
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
+  '/support': typeof SupportRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog': typeof BlogIndexRoute;
@@ -365,6 +373,7 @@ export interface FileRoutesById {
   '/maintenance': typeof MaintenanceRoute;
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
+  '/support': typeof SupportRoute;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
@@ -410,6 +419,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/privacy-policy'
     | '/signup'
+    | '/support'
     | '/maeil-mail/landing'
     | '/newsletters/$newsletterId'
     | '/blog/'
@@ -451,6 +461,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/privacy-policy'
     | '/signup'
+    | '/support'
     | '/maeil-mail/landing'
     | '/newsletters/$newsletterId'
     | '/blog'
@@ -491,6 +502,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/privacy-policy'
     | '/signup'
+    | '/support'
     | '/_bombom/_main'
     | '/maeil-mail/landing'
     | '/newsletters/$newsletterId'
@@ -536,6 +548,7 @@ export interface RootRouteChildren {
   MaintenanceRoute: typeof MaintenanceRoute;
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute;
   SignupRoute: typeof SignupRoute;
+  SupportRoute: typeof SupportRoute;
   MaeilMailLandingRoute: typeof MaeilMailLandingRoute;
   NewslettersNewsletterIdRoute: typeof NewslettersNewsletterIdRoute;
   ChallengeChallengeIdLandingRoute: typeof ChallengeChallengeIdLandingRoute;
@@ -543,6 +556,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/support': {
+      id: '/support';
+      path: '/support';
+      fullPath: '/support';
+      preLoaderRoute: typeof SupportRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/signup': {
       id: '/signup';
       path: '/signup';
@@ -975,6 +995,7 @@ const rootRouteChildren: RootRouteChildren = {
   MaintenanceRoute: MaintenanceRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SignupRoute: SignupRoute,
+  SupportRoute: SupportRoute,
   MaeilMailLandingRoute: MaeilMailLandingRoute,
   NewslettersNewsletterIdRoute: NewslettersNewsletterIdRoute,
   ChallengeChallengeIdLandingRoute: ChallengeChallengeIdLandingRoute,
