@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
 import Accordion from '@/components/Accordion/Accordion';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
+import BomBomFooter from '@/components/Footer/BomBomFooter';
 import MobileMainHeader from '@/components/Header/MobileMainHeader';
 import PCHeader from '@/components/Header/PCHeader';
 import { useDevice } from '@/hooks/useDevice';
@@ -112,6 +113,8 @@ function SupportPage() {
           </FaqListWrapper>
         </ContentWrapper>
       </Container>
+
+      <BomBomFooter />
 
       <AppInstallPromptModal />
     </>
