@@ -5,13 +5,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
 import Accordion from '@/components/Accordion/Accordion';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
+import Button from '@/components/Button/Button';
 import BomBomFooter from '@/components/Footer/BomBomFooter';
 import MobileMainHeader from '@/components/Header/MobileMainHeader';
 import PCHeader from '@/components/Header/PCHeader';
 import { useDevice } from '@/hooks/useDevice';
+import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 import FaqCategoryFilter from '@/pages/support/components/FaqCategoryFilter';
 import type { FaqCategoryType } from '@/types/faq';
+import ChatIcon from '#/assets/svg/chat.svg';
 
 export const Route = createFileRoute('/support')({
   head: () => ({
@@ -109,6 +112,14 @@ function SupportPage() {
                 </Accordion>
               );
             })}
+
+            {isMobile && (
+              <InquiryButton variant="transparent" onClick={showMessenger}>
+                <ChatIcon width={18} height={18} />
+                1:1 문의하기
+              </InquiryButton>
+            )}
+
             <LoadMoreTrigger ref={loadMoreRef} />
           </FaqListWrapper>
         </ContentWrapper>
@@ -168,4 +179,12 @@ const QuestionMark = styled.span`
 
 const AnswerText = styled.p`
   width: 100%;
+`;
+
+const InquiryButton = styled(Button)`
+  width: 100%;
+  margin-top: 16px;
+
+  color: ${({ theme }) => theme.colors.primaryBomBom};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
