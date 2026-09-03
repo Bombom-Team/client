@@ -156,7 +156,7 @@ const FaqListWrapper = styled.div`
 `;
 
 const QuestionText = styled.span`
-  font: ${({ theme }) => theme.fonts.t6Bold};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
 const CategoryText = styled.span`
