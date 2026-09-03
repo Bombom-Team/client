@@ -38,6 +38,7 @@
     "@storybook/react-webpack5": "^9.0.17",
     "@svgr/webpack": "^8.1.0",
     "@swc/core": "^1.14.0",
+    "@tanstack/react-query-devtools": "5.90.2",
     "@tanstack/router-plugin": "^1.128.3",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.3.0",
@@ -95,6 +96,7 @@
     "@tanstack/react-router-devtools": "^1.128.3",
     "dotenv": "^17.2.0",
     "html2canvas": "^1.4.1",
+    "lucide-react": "^1.38.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-google-recaptcha": "^3.1.0"

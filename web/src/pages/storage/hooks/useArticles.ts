@@ -8,8 +8,8 @@ const useArticles = (params: GetStorageArticlesParams) => {
 
   return useQuery(
     isValidKeyword(keyword)
-      ? queries.articlesWithSearch({ keyword, ...commonParams })
-      : queries.articles({ unreadOnly, date, ...commonParams }),
+      ? queries.storageArticlesWithSearch({ keyword, ...commonParams })
+      : queries.storageArticles({ unreadOnly, date, ...commonParams }),
   );
 };
 

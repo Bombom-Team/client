@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchArticleRead } from '@/apis/articles/articles.api';
+import { updateArticleReadStatus } from '@/apis/articles/articles.cache';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
-import { formatDate } from '@/utils/date';
 
 interface UseArticleAsReadMutationParams {
   articleId: number;
@@ -21,13 +21,10 @@ const useArticleAsReadMutation = ({
         toast.info('너무 빠르게 읽으면 읽기 활동에 반영되지 않아요');
       }
 
-      const today = new Date();
+      updateArticleReadStatus(queryClient, articleId);
 
       queryClient.invalidateQueries({
         queryKey: queries.articleById({ id: articleId }).queryKey,
-      });
-      queryClient.invalidateQueries({
-        queryKey: queries.articles({ date: formatDate(today, '-') }).queryKey,
       });
     },
   });

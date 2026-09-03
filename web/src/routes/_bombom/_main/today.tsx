@@ -1,11 +1,13 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo } from 'react';
+import { requestStorageArticleRefresh } from '@/apis/articles/articles.cache';
 import { queries } from '@/apis/queries';
 import PetCard from '@/components/PetCard/PetCard';
 import PetCardSkeleton from '@/components/PetCard/PetCardSkeleton';
+import { toast } from '@/components/Toast/utils/toastActions';
 import RequireLogin from '@/hocs/RequireLogin';
 import { useDevice } from '@/hooks/useDevice';
 import {
@@ -43,16 +45,45 @@ export const Route = createFileRoute('/_bombom/_main/today')({
 });
 
 function Index() {
+  const queryClient = useQueryClient();
   const today = useMemo(() => new Date(), []);
   const todayDateStr = useMemo(() => formatDate(today, '-'), [today]);
 
-  const { data: todayArticles, isLoading: isArticlesLoading } = useQuery(
-    queries.articles({ date: todayDateStr, size: 50 }),
-  );
+  const {
+    data: todayArticles,
+    isLoading: isArticlesLoading,
+    isFetching: isArticlesFetching,
+    refetch: refetchTodayArticles,
+  } = useQuery(queries.articles({ date: todayDateStr, size: 50 }));
 
   const { data: pet, isLoading: isPetLoading } = useQuery(queries.pet());
 
   const { mutate: deleteArticles } = useDeleteArticlesMutation('today');
+
+  const handleRefreshArticles = async () => {
+    const previousArticleIds = new Set(
+      todayArticles?.content?.map((article) => article.articleId) ?? [],
+    );
+    const result = await refetchTodayArticles();
+
+    if (result.isError) {
+      toast.error('새 아티클을 확인하지 못했어요. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+
+    const newArticleCount =
+      result.data?.content?.filter(
+        (article) => !previousArticleIds.has(article.articleId),
+      ).length ?? 0;
+
+    if (newArticleCount > 0) {
+      requestStorageArticleRefresh(queryClient);
+      toast.success(`새 아티클 ${newArticleCount}개를 확인했어요.`);
+      return;
+    }
+
+    toast.info('새로 도착한 아티클이 없어요.');
+  };
 
   const guideMails = createStorage<LocalGuideMail>(
     GUIDE_MAIL_STORAGE_KEY,
@@ -99,7 +130,9 @@ function Index() {
         ) : (
           <ArticleCardList
             articles={mergedArticles}
+            isRefreshing={isArticlesFetching}
             onDeleteArticles={(articleIds) => deleteArticles(articleIds)}
+            onRefresh={handleRefreshArticles}
           />
         )}
         <ReaderCompanion device={device}>
