@@ -20,6 +20,7 @@ import { Route as EventRouteImport } from './routes/event';
 import { Route as BlogRouteImport } from './routes/blog';
 import { Route as BombomRouteImport } from './routes/_bombom';
 import { Route as BlogIndexRouteImport } from './routes/blog/index';
+import { Route as SupportInquiryRouteImport } from './routes/support.inquiry';
 import { Route as NewslettersNewsletterIdRouteImport } from './routes/newsletters.$newsletterId';
 import { Route as MaeilMailLandingRouteImport } from './routes/maeil-mail/landing';
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
@@ -106,6 +107,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => BlogRoute,
+} as any);
+const SupportInquiryRoute = SupportInquiryRouteImport.update({
+  id: '/inquiry',
+  path: '/inquiry',
+  getParentRoute: () => SupportRoute,
 } as any);
 const NewslettersNewsletterIdRoute = NewslettersNewsletterIdRouteImport.update({
   id: '/newsletters/$newsletterId',
@@ -289,9 +295,10 @@ export interface FileRoutesByFullPath {
   '/maintenance': typeof MaintenanceRoute;
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
-  '/support': typeof SupportRoute;
+  '/support': typeof SupportRouteWithChildren;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
+  '/support/inquiry': typeof SupportInquiryRoute;
   '/blog/': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/challenge': typeof BombomMainChallengeRouteWithChildren;
@@ -331,9 +338,10 @@ export interface FileRoutesByTo {
   '/maintenance': typeof MaintenanceRoute;
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
-  '/support': typeof SupportRoute;
+  '/support': typeof SupportRouteWithChildren;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
+  '/support/inquiry': typeof SupportInquiryRoute;
   '/blog': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/guide': typeof BombomMainGuideRoute;
@@ -373,10 +381,11 @@ export interface FileRoutesById {
   '/maintenance': typeof MaintenanceRoute;
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
-  '/support': typeof SupportRoute;
+  '/support': typeof SupportRouteWithChildren;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
   '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
+  '/support/inquiry': typeof SupportInquiryRoute;
   '/blog/': typeof BlogIndexRoute;
   '/_bombom/_main/bookmark': typeof BombomMainBookmarkRoute;
   '/_bombom/_main/challenge': typeof BombomMainChallengeRouteWithChildren;
@@ -422,6 +431,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/maeil-mail/landing'
     | '/newsletters/$newsletterId'
+    | '/support/inquiry'
     | '/blog/'
     | '/bookmark'
     | '/challenge'
@@ -464,6 +474,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/maeil-mail/landing'
     | '/newsletters/$newsletterId'
+    | '/support/inquiry'
     | '/blog'
     | '/bookmark'
     | '/guide'
@@ -506,6 +517,7 @@ export interface FileRouteTypes {
     | '/_bombom/_main'
     | '/maeil-mail/landing'
     | '/newsletters/$newsletterId'
+    | '/support/inquiry'
     | '/blog/'
     | '/_bombom/_main/bookmark'
     | '/_bombom/_main/challenge'
@@ -548,7 +560,7 @@ export interface RootRouteChildren {
   MaintenanceRoute: typeof MaintenanceRoute;
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute;
   SignupRoute: typeof SignupRoute;
-  SupportRoute: typeof SupportRoute;
+  SupportRoute: typeof SupportRouteWithChildren;
   MaeilMailLandingRoute: typeof MaeilMailLandingRoute;
   NewslettersNewsletterIdRoute: typeof NewslettersNewsletterIdRoute;
   ChallengeChallengeIdLandingRoute: typeof ChallengeChallengeIdLandingRoute;
@@ -632,6 +644,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/';
       preLoaderRoute: typeof BlogIndexRouteImport;
       parentRoute: typeof BlogRoute;
+    };
+    '/support/inquiry': {
+      id: '/support/inquiry';
+      path: '/inquiry';
+      fullPath: '/support/inquiry';
+      preLoaderRoute: typeof SupportInquiryRouteImport;
+      parentRoute: typeof SupportRoute;
     };
     '/newsletters/$newsletterId': {
       id: '/newsletters/$newsletterId';
@@ -985,6 +1004,17 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren);
 
+interface SupportRouteChildren {
+  SupportInquiryRoute: typeof SupportInquiryRoute;
+}
+
+const SupportRouteChildren: SupportRouteChildren = {
+  SupportInquiryRoute: SupportInquiryRoute,
+};
+
+const SupportRouteWithChildren =
+  SupportRoute._addFileChildren(SupportRouteChildren);
+
 const rootRouteChildren: RootRouteChildren = {
   BombomRoute: BombomRouteWithChildren,
   BlogRoute: BlogRouteWithChildren,
@@ -995,7 +1025,7 @@ const rootRouteChildren: RootRouteChildren = {
   MaintenanceRoute: MaintenanceRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SignupRoute: SignupRoute,
-  SupportRoute: SupportRoute,
+  SupportRoute: SupportRouteWithChildren,
   MaeilMailLandingRoute: MaeilMailLandingRoute,
   NewslettersNewsletterIdRoute: NewslettersNewsletterIdRoute,
   ChallengeChallengeIdLandingRoute: ChallengeChallengeIdLandingRoute,
