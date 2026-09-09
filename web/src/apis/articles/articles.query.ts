@@ -10,10 +10,11 @@ import {
   type GetArticlesWithSearchParams,
 } from './articles.api';
 
+const STORAGE_ARTICLES_GC_TIME = 1000 * 60 * 5;
+
 const STORAGE_ARTICLES_QUERY_OPTIONS = {
   staleTime: Infinity,
-  gcTime: 1000 * 60 * 30,
-  refetchOnMount: false,
+  gcTime: STORAGE_ARTICLES_GC_TIME,
   refetchOnWindowFocus: false,
   refetchOnReconnect: false,
 } as const;
@@ -29,6 +30,22 @@ export const articlesQueries = {
     queryOptions({
       queryKey: ['articles', 'search', params],
       queryFn: () => getArticlesWithSearch(params),
+    }),
+
+  latestArticle: () =>
+    queryOptions({
+      queryKey: ['articles', 'latest'],
+      queryFn: () =>
+        getArticles({
+          page: 0,
+          size: 1,
+          sort: ['arrivedDateTime', 'DESC'],
+        }),
+      staleTime: 0,
+      gcTime: STORAGE_ARTICLES_GC_TIME,
+      refetchOnMount: 'always',
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     }),
 
   storageArticles: (params: GetArticlesParams) =>
@@ -91,5 +108,6 @@ export const articlesQueries = {
     queryOptions({
       queryKey: ['articles', 'statistics', 'newsletters', params],
       queryFn: () => getArticlesStatisticsNewsletters(params),
+      staleTime: Infinity,
     }),
 };

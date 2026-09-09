@@ -4,9 +4,8 @@ import {
   type InfiniteData,
 } from '@tanstack/react-query';
 import {
-  consumeStorageArticleRefreshRequest,
   removeArticlesFromArticleCache,
-  requestStorageArticleRefresh,
+  syncNewArticleStorageCaches,
   syncDeletedArticleCaches,
   updateArticleBookmarkStatus,
   updateArticleReadStatus,
@@ -148,17 +147,72 @@ describe('articles cache', () => {
     });
   });
 
-  it('새 아티클 확인 시 보관함 캐시만 제거하고 새로고침 요청을 기억한다', () => {
+  it('새 아티클 확인 시 보관함 캐시를 유지한 채 stale 처리한다', async () => {
     setArticles(queryClient, STORAGE_ARTICLES_QUERY_KEY);
+    queryClient.setQueryData(ARTICLE_STATISTICS_QUERY_KEY, { totalCount: 3 });
 
-    requestStorageArticleRefresh(queryClient);
+    await syncNewArticleStorageCaches(queryClient);
 
-    expect(
-      queryClient.getQueryData(STORAGE_ARTICLES_QUERY_KEY),
-    ).toBeUndefined();
+    expect(queryClient.getQueryData(STORAGE_ARTICLES_QUERY_KEY)).toBeDefined();
     expect(queryClient.getQueryData(NORMAL_ARTICLES_QUERY_KEY)).toBeDefined();
-    expect(consumeStorageArticleRefreshRequest()).toBe(true);
-    expect(consumeStorageArticleRefreshRequest()).toBe(false);
+    expect(
+      queryClient.getQueryState(STORAGE_ARTICLES_QUERY_KEY)?.isInvalidated,
+    ).toBe(true);
+    expect(
+      queryClient.getQueryState(ARTICLE_STATISTICS_QUERY_KEY)?.isInvalidated,
+    ).toBe(true);
+  });
+
+  it('활성 무한 보관함의 캐시된 페이지를 모두 다시 요청한다', async () => {
+    const refetchedPages = [createPage([4, 5]), createPage([6, 7])];
+    const queryFn = jest
+      .fn()
+      .mockImplementation(({ pageParam }: { pageParam: number }) =>
+        Promise.resolve(refetchedPages[pageParam] ?? createPage([])),
+      );
+    const observer = new InfiniteQueryObserver(queryClient, {
+      queryKey: INFINITE_ARTICLES_QUERY_KEY,
+      queryFn,
+      initialPageParam: 0,
+      getNextPageParam: (lastPage) =>
+        lastPage.last ? undefined : (lastPage.number ?? 0) + 1,
+      staleTime: Infinity,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+
+    await syncNewArticleStorageCaches(queryClient);
+
+    expect(queryFn).toHaveBeenCalledTimes(2);
+    expect(observer.getCurrentResult().data?.pages).toEqual(refetchedPages);
+
+    unsubscribe();
+  });
+
+  it('비활성 무한 보관함은 요청하지 않고 캐시를 유지한 채 stale 처리한다', async () => {
+    const existingInfiniteArticles = queryClient.getQueryData(
+      INFINITE_ARTICLES_QUERY_KEY,
+    );
+    const queryFn = jest.fn();
+    const observer = new InfiniteQueryObserver(queryClient, {
+      queryKey: INFINITE_ARTICLES_QUERY_KEY,
+      queryFn,
+      initialPageParam: 0,
+      getNextPageParam: (lastPage) =>
+        lastPage.last ? undefined : (lastPage.number ?? 0) + 1,
+      staleTime: Infinity,
+    });
+
+    await syncNewArticleStorageCaches(queryClient);
+
+    expect(queryFn).not.toHaveBeenCalled();
+    expect(queryClient.getQueryData(INFINITE_ARTICLES_QUERY_KEY)).toEqual(
+      existingInfiniteArticles,
+    );
+    expect(
+      queryClient.getQueryState(INFINITE_ARTICLES_QUERY_KEY)?.isInvalidated,
+    ).toBe(true);
+
+    observer.destroy();
   });
 
   it('삭제 후 inactive 보관함 캐시를 비워 다음 진입을 첫 페이지부터 시작한다', async () => {

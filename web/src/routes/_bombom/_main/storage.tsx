@@ -14,6 +14,7 @@ import PCStorageContent from '@/pages/storage/components/PCStorageContent/PCStor
 import QuickMenu from '@/pages/storage/components/QuickMenu/QuickMenu';
 import { warningVisible } from '@/pages/storage/constants/announceMessage';
 import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticlesMutation';
+import { useStorageArticleFreshness } from '@/pages/storage/hooks/useStorageArticleFreshness';
 import { useStorageFilters } from '@/pages/storage/hooks/useStorageFilters';
 import useWarningVisibleMutation from '@/pages/storage/hooks/useWarningVisibleMutation';
 import { isValidKeyword } from '@/pages/storage/utils/isValidKeyword';
@@ -61,6 +62,7 @@ function Storage() {
   const device = useDevice();
   const isPC = device === 'pc';
   const isMobile = device === 'mobile';
+  useStorageArticleFreshness();
   const [editMode, setEditMode] = useState(false);
   const { data: warningVisibleStatus } = useQuery(
     queries.warningVisibleStatus(),

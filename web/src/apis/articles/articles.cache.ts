@@ -4,7 +4,7 @@
  *
  * - 캐시 직접 수정: 읽음/북마크 변경 시 서버 재요청 없이 UI 즉시 반영
  * - 삭제 정합성: Offset 페이징 누락 방지 및 메타데이터(총 개수, 마지막 페이지 등) 보정
- * - 보관함 갱신: 투데이 새 글 도착 시 보관함 캐시 리셋 플래그 관리
+ * - 보관함 갱신: 새 아티클 확인 후 열린 목록만 background refetch
  */
 
 import type { GetArticlesResponse } from './articles.api';
@@ -13,9 +13,6 @@ import type {
   QueryClient,
   QueryKey,
 } from '@tanstack/react-query';
-
-/** 투데이 화면에서 '새 아티클' 감지 시 보관함 캐시 리셋 여부를 관리하는 세션 플래그 */
-let storageArticleRefreshRequested = false;
 
 const isObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && value !== null;
@@ -73,31 +70,21 @@ export const isStorageNormalArticleListQueryKey = (
 };
 
 /**
- * 투데이에서 새 아티클 발견 시 보관함 캐시 갱신을 요청
- * - 보관함 캐시 제거 (`removeQueries`) -> 다음 보관함 진입 시 1페이지부터 조회
- * - 통계 쿼리 무효화 (`invalidateQueries`)
- * - `storageArticleRefreshRequested` 플래그를 `true`로 설정
+ * 최신 아티클 변경 후 활성 보관함 캐시를 다시 조회
+ * @description 캐시·스크롤 위치를 유지한 채 현재 열린 PC/모바일 보관함 목록을 background refetch합니다.
  */
-export const requestStorageArticleRefresh = (
+export const syncNewArticleStorageCaches = (
   queryClient: QueryClient,
-): void => {
-  storageArticleRefreshRequested = true;
-  queryClient.removeQueries({
+): Promise<void> => {
+  const refetchStorageArticles = queryClient.invalidateQueries({
     predicate: (query) => isStorageArticleQueryKey(query.queryKey),
+    refetchType: 'active',
   });
   queryClient.invalidateQueries({
     queryKey: ['articles', 'statistics', 'newsletters'],
   });
-};
 
-/**
- * 보관함 진입 시 갱신 플래그를 조회하고 `false`로 리셋
- * @returns {boolean} 갱신 요청이 있었는지 여부 (true면 첫 페이지로 스크롤/진입 처리)
- */
-export const consumeStorageArticleRefreshRequest = (): boolean => {
-  const requested = storageArticleRefreshRequested;
-  storageArticleRefreshRequested = false;
-  return requested;
+  return refetchStorageArticles;
 };
 
 /**
