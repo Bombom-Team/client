@@ -59,6 +59,7 @@ export const fetcher = {
     baseUrl,
     query,
     body,
+    headers,
   }: FetcherOptions<TRequest>) =>
     request<TRequest, TResponse>({
       path,
@@ -66,6 +67,7 @@ export const fetcher = {
       query,
       body,
       method: 'PATCH',
+      headers,
     }),
   put: async <TRequest extends JsonBody, TResponse>({
     path,
@@ -77,8 +79,9 @@ export const fetcher = {
     path,
     baseUrl,
     body,
+    headers,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, baseUrl, body, method: 'DELETE' }),
+    request<TRequest, TResponse>({ path, baseUrl, body, method: 'DELETE', headers }),
 };
 
 type FetchMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
