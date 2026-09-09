@@ -1,12 +1,12 @@
 import { fetcher } from '@bombom/shared/apis';
 import { ENV } from '@bombom/shared/env';
+import { getOrCreateGuestId } from '@/utils/guestId';
 import type { PageableResponse } from '@/apis/types/PageableResponse';
 import type {
   InquiryCategory,
   InquiryMessage,
   InquiryRoom,
 } from '@/types/inquiry';
-import { getOrCreateGuestId } from '@/utils/guestId';
 
 const guestHeaders = (): HeadersInit => ({
   'X-Guest-Id': getOrCreateGuestId(),

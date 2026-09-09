@@ -72,11 +72,11 @@ const Title = styled.h2`
 `;
 
 const CategoryList = styled.div`
+  margin: 16px 0;
+
   display: flex;
   gap: 12px;
   flex-direction: column;
-
-  margin: 16px 0;
 `;
 
 const CategoryOption = styled.label`
