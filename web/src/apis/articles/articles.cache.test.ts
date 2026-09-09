@@ -1,6 +1,7 @@
 import {
   InfiniteQueryObserver,
   QueryClient,
+  QueryObserver,
   type InfiniteData,
 } from '@tanstack/react-query';
 import {
@@ -35,6 +36,17 @@ const INFINITE_SEARCH_ARTICLES_QUERY_KEY = [
   'search',
   'infinite',
   {},
+] as const;
+const UNREAD_ONLY_STORAGE_QUERY_KEY = [
+  'articles',
+  'storage',
+  { unreadOnly: true, page: 0 },
+] as const;
+const UNREAD_ONLY_INFINITE_ARTICLES_QUERY_KEY = [
+  'articles',
+  'storage',
+  'infinite',
+  { unreadOnly: true },
 ] as const;
 const ARTICLE_DETAIL_QUERY_KEY = ['articles', 1] as const;
 const ARTICLE_STATISTICS_QUERY_KEY = [
@@ -147,6 +159,31 @@ describe('articles cache', () => {
     });
   });
 
+  it('읽음 처리한 기사를 안 읽은 글 전용 보관함 캐시에서 제거한다', () => {
+    setArticles(queryClient, UNREAD_ONLY_STORAGE_QUERY_KEY);
+    setInfiniteArticles(queryClient, UNREAD_ONLY_INFINITE_ARTICLES_QUERY_KEY);
+
+    updateArticleReadStatus(queryClient, 1);
+
+    const normalArticles = queryClient.getQueryData<GetArticlesResponse>(
+      UNREAD_ONLY_STORAGE_QUERY_KEY,
+    );
+    const infiniteArticles = queryClient.getQueryData<
+      InfiniteData<GetArticlesResponse>
+    >(UNREAD_ONLY_INFINITE_ARTICLES_QUERY_KEY);
+
+    expect(normalArticles?.content?.map(({ articleId }) => articleId)).toEqual([
+      2,
+    ]);
+    expect(normalArticles?.totalElements).toBe(2);
+    expect(
+      infiniteArticles?.pages.flatMap((page) =>
+        page.content?.map(({ articleId }) => articleId),
+      ),
+    ).toEqual([2, 3]);
+    expect(infiniteArticles?.pages[0]?.totalElements).toBe(2);
+  });
+
   it('새 아티클 확인 시 보관함 캐시를 유지한 채 stale 처리한다', async () => {
     setArticles(queryClient, STORAGE_ARTICLES_QUERY_KEY);
     queryClient.setQueryData(ARTICLE_STATISTICS_QUERY_KEY, { totalCount: 3 });
@@ -184,6 +221,24 @@ describe('articles cache', () => {
 
     expect(queryFn).toHaveBeenCalledTimes(2);
     expect(observer.getCurrentResult().data?.pages).toEqual(refetchedPages);
+
+    unsubscribe();
+  });
+
+  it('활성 PC 보관함의 현재 페이지를 다시 요청한다', async () => {
+    const refetchedPage = createPage([4, 5]);
+    const queryFn = jest.fn().mockResolvedValue(refetchedPage);
+    const observer = new QueryObserver(queryClient, {
+      queryKey: STORAGE_ARTICLES_QUERY_KEY,
+      queryFn,
+      staleTime: Infinity,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+
+    await syncNewArticleStorageCaches(queryClient);
+
+    expect(queryFn).toHaveBeenCalledTimes(1);
+    expect(observer.getCurrentResult().data).toEqual(refetchedPage);
 
     unsubscribe();
   });

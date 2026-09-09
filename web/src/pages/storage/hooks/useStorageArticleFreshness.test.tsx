@@ -44,7 +44,7 @@ const createResponse = (articleId: number): GetArticlesResponse => ({
   ],
 });
 
-const renderFreshnessHook = (cachedArticleId?: number) => {
+const renderFreshnessHook = (cachedArticleId?: number | null) => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -53,7 +53,9 @@ const renderFreshnessHook = (cachedArticleId?: number) => {
   if (cachedArticleId !== undefined) {
     queryClient.setQueryData(
       latestArticleQuery.queryKey,
-      createResponse(cachedArticleId),
+      cachedArticleId === null
+        ? { content: [] }
+        : createResponse(cachedArticleId),
     );
   }
 
@@ -91,8 +93,16 @@ describe('useStorageArticleFreshness', () => {
     unmount();
   });
 
-  it('날짜가 바뀌어도 동일한 최신 아티클 query key를 사용한다', () => {
-    expect(queries.latestArticle().queryKey).toEqual(['articles', 'latest']);
+  it('비어 있던 보관함에 첫 아티클이 생기면 캐시 동기화를 요청한다', async () => {
+    mockGetArticles.mockResolvedValue(createResponse(1));
+    const { queryClient, unmount } = renderFreshnessHook(null);
+
+    await waitFor(() => {
+      expect(mockSyncNewArticleStorageCaches).toHaveBeenCalledTimes(1);
+      expect(mockSyncNewArticleStorageCaches).toHaveBeenCalledWith(queryClient);
+    });
+
+    unmount();
   });
 
   it('최신 아티클 ID가 같으면 보관함 캐시를 동기화하지 않는다', async () => {

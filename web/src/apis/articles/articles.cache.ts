@@ -18,6 +18,13 @@ const isObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && value !== null;
 };
 
+const hasUnreadOnlyFilter = (queryKey: QueryKey): boolean => {
+  return queryKey.some(
+    (queryKeyPart) =>
+      isObject(queryKeyPart) && queryKeyPart.unreadOnly === true,
+  );
+};
+
 /**
  * 아티클 무한 스크롤(useInfiniteQuery) 쿼리 키 여부 확인
  * @description 일반/검색 무한 스크롤 쿼리를 모두 판별합니다.
@@ -91,15 +98,19 @@ export const syncNewArticleStorageCaches = (
  * 일반 목록과 무한 스크롤 목록 캐시의 모든 페이지에 변환 함수 일괄 적용
  * @param queryClient TanStack QueryClient
  * @param updatePage 단일 페이지 변환 함수
+ * @param shouldUpdateQuery 변환을 적용할 목록 query 조건
  */
 const updateArticlePages = (
   queryClient: QueryClient,
   updatePage: (page: GetArticlesResponse) => GetArticlesResponse,
+  shouldUpdateQuery: (queryKey: QueryKey) => boolean = () => true,
 ): void => {
   // 1) 일반 페이지네이션 목록 캐시 수정
   queryClient.setQueriesData<GetArticlesResponse>(
     {
-      predicate: (query) => isNormalArticleListQueryKey(query.queryKey),
+      predicate: (query) =>
+        isNormalArticleListQueryKey(query.queryKey) &&
+        shouldUpdateQuery(query.queryKey),
     },
     (data) => (data ? updatePage(data) : data),
   );
@@ -107,7 +118,9 @@ const updateArticlePages = (
   // 2) 무한 스크롤(InfiniteData) 목록 캐시의 모든 페이지 수정
   queryClient.setQueriesData<InfiniteData<GetArticlesResponse>>(
     {
-      predicate: (query) => isInfiniteArticleQueryKey(query.queryKey),
+      predicate: (query) =>
+        isInfiniteArticleQueryKey(query.queryKey) &&
+        shouldUpdateQuery(query.queryKey),
     },
     (data) => {
       if (!data) return data;
@@ -254,18 +267,32 @@ export const syncDeletedArticleCaches = (
 };
 
 /**
- * 아티클 읽음 상태 캐시 수동 패치 (`isRead = true`)
+ * 아티클 읽음 상태를 캐시에 반영한다.
+ * @description 일반 목록은 `isRead = true`로 바꾸고, 안 읽은 글 전용 목록에서는 해당 아티클을 제거한다.
  */
 export const updateArticleReadStatus = (
   queryClient: QueryClient,
   articleId: number,
 ): void => {
-  updateArticlePages(queryClient, (page) => ({
-    ...page,
-    content: page.content?.map((article) =>
-      article.articleId === articleId ? { ...article, isRead: true } : article,
-    ),
-  }));
+  updateArticlePages(
+    queryClient,
+    (page) => ({
+      ...page,
+      content: page.content?.map((article) =>
+        article.articleId === articleId
+          ? { ...article, isRead: true }
+          : article,
+      ),
+    }),
+    (queryKey) => !hasUnreadOnlyFilter(queryKey),
+  );
+
+  const articleIdSet = new Set([articleId]);
+  updateArticlePages(
+    queryClient,
+    (page) => removeArticlesFromPage(page, articleIdSet),
+    hasUnreadOnlyFilter,
+  );
 };
 
 /**
