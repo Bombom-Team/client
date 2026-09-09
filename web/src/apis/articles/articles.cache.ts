@@ -1,0 +1,336 @@
+/**
+ * @file articles.cache.ts
+ * @summary 아티클 TanStack Query 캐시 수동 패치 및 정합성 동기화 모듈
+ *
+ * - 캐시 직접 수정: 읽음/북마크 변경 시 서버 재요청 없이 UI 즉시 반영
+ * - 삭제 정합성: Offset 페이징 누락 방지 및 메타데이터(총 개수, 마지막 페이지 등) 보정
+ * - 보관함 갱신: 새 아티클 확인 후 열린 목록만 background refetch
+ */
+
+import type { GetArticlesResponse } from './articles.api';
+import type {
+  InfiniteData,
+  QueryClient,
+  QueryKey,
+} from '@tanstack/react-query';
+
+const isObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null;
+};
+
+const hasUnreadOnlyFilter = (queryKey: QueryKey): boolean => {
+  return queryKey.some(
+    (queryKeyPart) =>
+      isObject(queryKeyPart) && queryKeyPart.unreadOnly === true,
+  );
+};
+
+/**
+ * 아티클 무한 스크롤(useInfiniteQuery) 쿼리 키 여부 확인
+ * @description 일반/검색 무한 스크롤 쿼리를 모두 판별합니다.
+ * @example `['articles', 'storage', 'infinite', ...]`, `['articles', 'storage', 'search', 'infinite', ...]`
+ */
+const isInfiniteArticleQueryKey = (queryKey: QueryKey): boolean => {
+  return (
+    queryKey[0] === 'articles' &&
+    queryKey[1] === 'storage' &&
+    (queryKey[2] === 'infinite' || queryKey[3] === 'infinite')
+  );
+};
+
+/**
+ * 일반 페이지네이션(비-무한스크롤) 아티클 목록 쿼리 키 여부 확인
+ * @description 투데이 목록, PC 보관함 목록, 검색 목록 포함
+ */
+export const isNormalArticleListQueryKey = (queryKey: QueryKey): boolean => {
+  if (queryKey[0] !== 'articles') return false;
+
+  if (queryKey[1] === 'storage') {
+    return (
+      isObject(queryKey[2]) ||
+      (queryKey[2] === 'search' && isObject(queryKey[3]))
+    );
+  }
+
+  return (
+    isObject(queryKey[1]) || (queryKey[1] === 'search' && isObject(queryKey[2]))
+  );
+};
+
+/**
+ * 보관함 아티클 쿼리 키 여부 확인
+ * @example `['articles', 'storage', ...]`
+ */
+const isStorageArticleQueryKey = (queryKey: QueryKey): boolean => {
+  return queryKey[0] === 'articles' && queryKey[1] === 'storage';
+};
+
+const isUnreadOnlyStorageArticleQueryKey = (queryKey: QueryKey): boolean => {
+  return isStorageArticleQueryKey(queryKey) && hasUnreadOnlyFilter(queryKey);
+};
+
+/**
+ * PC 보관함(일반 페이지네이션) 쿼리 키 여부 확인
+ */
+export const isStorageNormalArticleListQueryKey = (
+  queryKey: QueryKey,
+): boolean => {
+  return (
+    isStorageArticleQueryKey(queryKey) && isNormalArticleListQueryKey(queryKey)
+  );
+};
+
+/**
+ * 최신 아티클 변경 후 활성 보관함 캐시를 다시 조회
+ * @description 캐시·스크롤 위치를 유지한 채 현재 열린 PC/모바일 보관함 목록을 background refetch합니다.
+ */
+export const syncNewArticleStorageCaches = (
+  queryClient: QueryClient,
+): Promise<void> => {
+  const refetchStorageArticles = queryClient.invalidateQueries({
+    predicate: (query) => isStorageArticleQueryKey(query.queryKey),
+    refetchType: 'active',
+  });
+  queryClient.invalidateQueries({
+    queryKey: ['articles', 'statistics', 'newsletters'],
+  });
+
+  return refetchStorageArticles;
+};
+
+/**
+ * 일반 목록과 무한 스크롤 목록 캐시의 모든 페이지에 변환 함수 일괄 적용
+ * @param queryClient TanStack QueryClient
+ * @param updatePage 단일 페이지 변환 함수
+ * @param shouldUpdateQuery 변환을 적용할 목록 query 조건
+ */
+const updateArticlePages = (
+  queryClient: QueryClient,
+  updatePage: (page: GetArticlesResponse) => GetArticlesResponse,
+  shouldUpdateQuery: (queryKey: QueryKey) => boolean = () => true,
+): void => {
+  // 1) 일반 페이지네이션 목록 캐시 수정
+  queryClient.setQueriesData<GetArticlesResponse>(
+    {
+      predicate: (query) =>
+        isNormalArticleListQueryKey(query.queryKey) &&
+        shouldUpdateQuery(query.queryKey),
+    },
+    (data) => (data ? updatePage(data) : data),
+  );
+
+  // 2) 무한 스크롤(InfiniteData) 목록 캐시의 모든 페이지 수정
+  queryClient.setQueriesData<InfiniteData<GetArticlesResponse>>(
+    {
+      predicate: (query) =>
+        isInfiniteArticleQueryKey(query.queryKey) &&
+        shouldUpdateQuery(query.queryKey),
+    },
+    (data) => {
+      if (!data) return data;
+
+      return {
+        ...data,
+        pages: data.pages.map(updatePage),
+      };
+    },
+  );
+};
+
+/**
+ * 아티클 삭제 후 페이지 메타데이터(총 개수, 총 페이지 수, 마지막 페이지 여부) 재계산
+ */
+const updatePageMetadata = (
+  page: GetArticlesResponse,
+  content: NonNullable<GetArticlesResponse['content']>,
+  removedCount: number,
+): GetArticlesResponse => {
+  const totalElements =
+    typeof page.totalElements === 'number'
+      ? Math.max(0, page.totalElements - removedCount)
+      : page.totalElements;
+  const totalPages =
+    typeof totalElements === 'number' && page.size
+      ? Math.ceil(totalElements / page.size)
+      : page.totalPages;
+
+  return {
+    ...page,
+    content,
+    numberOfElements: content.length,
+    totalElements,
+    totalPages,
+    empty: content.length === 0,
+    last:
+      typeof page.number === 'number' && typeof totalPages === 'number'
+        ? page.number >= totalPages - 1
+        : page.last,
+  };
+};
+
+/**
+ * 단일 페이지에서 특정 아티클 ID들을 제외하고 메타데이터 갱신
+ */
+const removeArticlesFromPage = (
+  page: GetArticlesResponse,
+  articleIdSet: Set<number>,
+): GetArticlesResponse => {
+  const content = page.content ?? [];
+  const nextContent = content.filter(
+    (article) => !articleIdSet.has(article.articleId),
+  );
+  const removedCount = content.length - nextContent.length;
+
+  if (removedCount === 0) return page;
+
+  return updatePageMetadata(page, nextContent, removedCount);
+};
+
+/**
+ * 캐시된 모든 목록(일반/무한 스크롤)에서 지정한 아티클 ID들을 직접 제거
+ * @description 서버 응답 대기 없이 UI에서 글을 즉시 숨김 처리
+ */
+export const removeArticlesFromArticleCache = (
+  queryClient: QueryClient,
+  articleIds: number[],
+): void => {
+  const articleIdSet = new Set(articleIds);
+
+  // 일반 목록 캐시 처리
+  queryClient.setQueriesData<GetArticlesResponse>(
+    {
+      predicate: (query) => isNormalArticleListQueryKey(query.queryKey),
+    },
+    (data) => (data ? removeArticlesFromPage(data, articleIdSet) : data),
+  );
+
+  // 무한 스크롤 캐시 처리
+  queryClient.setQueriesData<InfiniteData<GetArticlesResponse>>(
+    {
+      predicate: (query) => isInfiniteArticleQueryKey(query.queryKey),
+    },
+    (data) => {
+      if (!data) return data;
+
+      const contents = data.pages.map((page) => page.content ?? []);
+      const nextContents = contents.map((content) =>
+        content.filter((article) => !articleIdSet.has(article.articleId)),
+      );
+      const removedCount = contents.reduce(
+        (count, content, index) =>
+          count + content.length - (nextContents[index]?.length ?? 0),
+        0,
+      );
+
+      if (removedCount === 0) return data;
+
+      return {
+        ...data,
+        pages: data.pages.map((page, index) =>
+          updatePageMetadata(page, nextContents[index] ?? [], removedCount),
+        ),
+      };
+    },
+  );
+};
+
+/**
+ * 아티클 삭제 후 캐시 정합성 동기화
+ *
+ * 1. `removeArticlesFromArticleCache`: 캐시에서 ID 즉시 삭제 (UI 즉시 반영)
+ * 2. `removeQueries`: 비활성(Inactive) 보관함 캐시 제거 (다음 진입 시 1페이지부터)
+ * 3. `invalidateQueries({ refetchType: 'active' })`: 활성 무한 목록 백그라운드 재조회 (Offset 누락 복구)
+ * 4. `invalidateQueries`: 통계 및 북마크 쿼리 최신화
+ *
+ * @returns 활성 무한 목록의 refetch Promise
+ */
+export const syncDeletedArticleCaches = (
+  queryClient: QueryClient,
+  articleIds: number[],
+) => {
+  removeArticlesFromArticleCache(queryClient, articleIds);
+
+  queryClient.removeQueries({
+    predicate: (query) =>
+      isStorageArticleQueryKey(query.queryKey) && !query.isActive(),
+  });
+
+  const refetchActiveInfiniteStorage = queryClient.invalidateQueries({
+    predicate: (query) => isInfiniteArticleQueryKey(query.queryKey),
+    refetchType: 'active',
+  });
+
+  queryClient.invalidateQueries({
+    queryKey: ['articles', 'statistics'],
+  });
+  queryClient.invalidateQueries({
+    queryKey: ['bookmarks'],
+  });
+
+  return refetchActiveInfiniteStorage;
+};
+
+/**
+ * 아티클 읽음 상태를 캐시에 반영한다.
+ * @description 일반 목록은 `isRead = true`로 바꾸고, 안 읽은 글 전용 목록에서는 해당 아티클을 제거한다.
+ */
+export const updateArticleReadStatus = (
+  queryClient: QueryClient,
+  articleId: number,
+): void => {
+  updateArticlePages(
+    queryClient,
+    (page) => ({
+      ...page,
+      content: page.content?.map((article) =>
+        article.articleId === articleId
+          ? { ...article, isRead: true }
+          : article,
+      ),
+    }),
+    (queryKey) => !hasUnreadOnlyFilter(queryKey),
+  );
+
+  const articleIdSet = new Set([articleId]);
+  updateArticlePages(
+    queryClient,
+    (page) => removeArticlesFromPage(page, articleIdSet),
+    hasUnreadOnlyFilter,
+  );
+};
+
+/**
+ * 읽음 처리 뒤 안 읽은 글 전용 보관함의 offset 페이지 경계를 동기화한다.
+ * @description
+ * `unreadOnly` 목록에서는 읽은 글이 제외되면서 이후 페이지의 글이 앞으로
+ * 이동한다. inactive 캐시는 제거하고, active 목록은 서버에서 다시 조회한다.
+ */
+export const syncReadArticleUnreadOnlyStorageCaches = (
+  queryClient: QueryClient,
+): Promise<void> => {
+  queryClient.removeQueries({
+    predicate: (query) =>
+      isUnreadOnlyStorageArticleQueryKey(query.queryKey) && !query.isActive(),
+  });
+
+  return queryClient.invalidateQueries({
+    predicate: (query) => isUnreadOnlyStorageArticleQueryKey(query.queryKey),
+    refetchType: 'active',
+  });
+};
+
+/**
+ * 아티클 북마크 상태 캐시 수동 패치 (`isBookmarked = true / false`)
+ */
+export const updateArticleBookmarkStatus = (
+  queryClient: QueryClient,
+  articleId: number,
+  isBookmarked: boolean,
+): void => {
+  updateArticlePages(queryClient, (page) => ({
+    ...page,
+    content: page.content?.map((article) =>
+      article.articleId === articleId ? { ...article, isBookmarked } : article,
+    ),
+  }));
+};

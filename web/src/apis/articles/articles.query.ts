@@ -10,6 +10,15 @@ import {
   type GetArticlesWithSearchParams,
 } from './articles.api';
 
+const STORAGE_ARTICLES_GC_TIME = 1000 * 60 * 5;
+
+const STORAGE_ARTICLES_QUERY_OPTIONS = {
+  staleTime: Infinity,
+  gcTime: STORAGE_ARTICLES_GC_TIME,
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: false,
+} as const;
+
 export const articlesQueries = {
   articles: (params: GetArticlesParams) =>
     queryOptions({
@@ -23,9 +32,39 @@ export const articlesQueries = {
       queryFn: () => getArticlesWithSearch(params),
     }),
 
+  latestArticle: () =>
+    queryOptions({
+      queryKey: ['articles', 'latest'],
+      queryFn: () =>
+        getArticles({
+          page: 0,
+          size: 1,
+          sort: ['arrivedDateTime', 'DESC'],
+        }),
+      staleTime: 0,
+      gcTime: STORAGE_ARTICLES_GC_TIME,
+      refetchOnMount: 'always',
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }),
+
+  storageArticles: (params: GetArticlesParams) =>
+    queryOptions({
+      queryKey: ['articles', 'storage', { keyword: '', ...params }],
+      queryFn: () => getArticles(params),
+      ...STORAGE_ARTICLES_QUERY_OPTIONS,
+    }),
+
+  storageArticlesWithSearch: (params: GetArticlesWithSearchParams) =>
+    queryOptions({
+      queryKey: ['articles', 'storage', 'search', params],
+      queryFn: () => getArticlesWithSearch(params),
+      ...STORAGE_ARTICLES_QUERY_OPTIONS,
+    }),
+
   infiniteArticles: (params: GetArticlesParams) =>
     infiniteQueryOptions({
-      queryKey: ['articles', 'infinite', { keyword: '', ...params }],
+      queryKey: ['articles', 'storage', 'infinite', { keyword: '', ...params }],
       queryFn: ({ pageParam = 0 }) =>
         getArticles({
           ...params,
@@ -37,11 +76,12 @@ export const articlesQueries = {
         return (lastPage.number ?? 0) + 1;
       },
       initialPageParam: 0,
+      ...STORAGE_ARTICLES_QUERY_OPTIONS,
     }),
 
   infiniteArticlesWithSearch: (params: GetArticlesWithSearchParams) =>
     infiniteQueryOptions({
-      queryKey: ['articles', 'search', 'infinite', params],
+      queryKey: ['articles', 'storage', 'search', 'infinite', params],
       queryFn: ({ pageParam = 0 }) =>
         getArticlesWithSearch({
           ...params,
@@ -53,6 +93,7 @@ export const articlesQueries = {
         return (lastPage.number ?? 0) + 1;
       },
       initialPageParam: 0,
+      ...STORAGE_ARTICLES_QUERY_OPTIONS,
     }),
 
   articleById: (params: GetArticleByIdParams) =>
@@ -67,5 +108,6 @@ export const articlesQueries = {
     queryOptions({
       queryKey: ['articles', 'statistics', 'newsletters', params],
       queryFn: () => getArticlesStatisticsNewsletters(params),
+      staleTime: Infinity,
     }),
 };

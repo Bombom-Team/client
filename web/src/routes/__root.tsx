@@ -1,6 +1,7 @@
 import { theme } from '@bombom/shared/theme';
 import { ThemeProvider } from '@emotion/react';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   createRootRouteWithContext,
   HeadContent,
@@ -16,6 +17,7 @@ import { useReferrerTracking } from '@/libs/googleAnalytics/useReferrerTracking'
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
 import { useWebViewRouting } from '@/libs/webview/useWebViewRouting';
 import { queryClient } from '@/main';
+import { isDevelopment, isLocal } from '@/utils/environment';
 import type { QueryClient } from '@tanstack/react-query';
 import type { redirect } from '@tanstack/react-router';
 
@@ -37,6 +39,7 @@ const RootComponent = () => {
   useChannelTalk();
 
   const toastOffset = device === 'pc' ? CHANNEL_TALK_TOAST_OFFSET : undefined;
+  const showDevtools = isLocal || isDevelopment;
 
   return (
     <>
@@ -47,8 +50,14 @@ const RootComponent = () => {
             <Toast offset={toastOffset} />
           </AuthProvider>
         </ThemeProvider>
+        {showDevtools && (
+          <ReactQueryDevtools
+            initialIsOpen={false}
+            buttonPosition="bottom-left"
+          />
+        )}
       </QueryClientProvider>
-      <TanStackRouterDevtools />
+      <TanStackRouterDevtools position="bottom-right" />
     </>
   );
 };
