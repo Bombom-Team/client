@@ -8,6 +8,7 @@ import {
   removeArticlesFromArticleCache,
   syncNewArticleStorageCaches,
   syncDeletedArticleCaches,
+  syncReadArticleUnreadOnlyStorageCaches,
   updateArticleBookmarkStatus,
   updateArticleReadStatus,
 } from './articles.cache';
@@ -182,6 +183,68 @@ describe('articles cache', () => {
       ),
     ).toEqual([2, 3]);
     expect(infiniteArticles?.pages[0]?.totalElements).toBe(2);
+  });
+
+  it('읽음 처리 후 inactive 안 읽은 글 전용 보관함 캐시를 제거한다', async () => {
+    setArticles(queryClient, UNREAD_ONLY_STORAGE_QUERY_KEY);
+    setInfiniteArticles(queryClient, UNREAD_ONLY_INFINITE_ARTICLES_QUERY_KEY);
+
+    updateArticleReadStatus(queryClient, 1);
+    await syncReadArticleUnreadOnlyStorageCaches(queryClient);
+
+    expect(
+      queryClient.getQueryData(UNREAD_ONLY_STORAGE_QUERY_KEY),
+    ).toBeUndefined();
+    expect(
+      queryClient.getQueryData(UNREAD_ONLY_INFINITE_ARTICLES_QUERY_KEY),
+    ).toBeUndefined();
+  });
+
+  it('읽음 처리 후 활성 PC 안 읽은 글 전용 보관함을 다시 요청한다', async () => {
+    setArticles(queryClient, UNREAD_ONLY_STORAGE_QUERY_KEY);
+    const refetchedPage = createPage([2, 3]);
+    const queryFn = jest.fn().mockResolvedValue(refetchedPage);
+    const observer = new QueryObserver(queryClient, {
+      queryKey: UNREAD_ONLY_STORAGE_QUERY_KEY,
+      queryFn,
+      staleTime: Infinity,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+
+    updateArticleReadStatus(queryClient, 1);
+    await syncReadArticleUnreadOnlyStorageCaches(queryClient);
+
+    expect(queryFn).toHaveBeenCalledTimes(1);
+    expect(observer.getCurrentResult().data).toEqual(refetchedPage);
+
+    unsubscribe();
+  });
+
+  it('읽음 처리 후 활성 무한 안 읽은 글 전용 보관함의 로드한 페이지를 다시 요청한다', async () => {
+    setInfiniteArticles(queryClient, UNREAD_ONLY_INFINITE_ARTICLES_QUERY_KEY);
+    const refetchedPages = [createPage([2, 3]), createPage([4, 5])];
+    const queryFn = jest
+      .fn()
+      .mockImplementation(({ pageParam }: { pageParam: number }) =>
+        Promise.resolve(refetchedPages[pageParam] ?? createPage([])),
+      );
+    const observer = new InfiniteQueryObserver(queryClient, {
+      queryKey: UNREAD_ONLY_INFINITE_ARTICLES_QUERY_KEY,
+      queryFn,
+      initialPageParam: 0,
+      getNextPageParam: (lastPage) =>
+        lastPage.last ? undefined : (lastPage.number ?? 0) + 1,
+      staleTime: Infinity,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+
+    updateArticleReadStatus(queryClient, 1);
+    await syncReadArticleUnreadOnlyStorageCaches(queryClient);
+
+    expect(queryFn).toHaveBeenCalledTimes(2);
+    expect(observer.getCurrentResult().data?.pages).toEqual(refetchedPages);
+
+    unsubscribe();
   });
 
   it('새 아티클 확인 시 보관함 캐시를 유지한 채 stale 처리한다', async () => {

@@ -65,6 +65,10 @@ const isStorageArticleQueryKey = (queryKey: QueryKey): boolean => {
   return queryKey[0] === 'articles' && queryKey[1] === 'storage';
 };
 
+const isUnreadOnlyStorageArticleQueryKey = (queryKey: QueryKey): boolean => {
+  return isStorageArticleQueryKey(queryKey) && hasUnreadOnlyFilter(queryKey);
+};
+
 /**
  * PC 보관함(일반 페이지네이션) 쿼리 키 여부 확인
  */
@@ -293,6 +297,26 @@ export const updateArticleReadStatus = (
     (page) => removeArticlesFromPage(page, articleIdSet),
     hasUnreadOnlyFilter,
   );
+};
+
+/**
+ * 읽음 처리 뒤 안 읽은 글 전용 보관함의 offset 페이지 경계를 동기화한다.
+ * @description
+ * `unreadOnly` 목록에서는 읽은 글이 제외되면서 이후 페이지의 글이 앞으로
+ * 이동한다. inactive 캐시는 제거하고, active 목록은 서버에서 다시 조회한다.
+ */
+export const syncReadArticleUnreadOnlyStorageCaches = (
+  queryClient: QueryClient,
+): Promise<void> => {
+  queryClient.removeQueries({
+    predicate: (query) =>
+      isUnreadOnlyStorageArticleQueryKey(query.queryKey) && !query.isActive(),
+  });
+
+  return queryClient.invalidateQueries({
+    predicate: (query) => isUnreadOnlyStorageArticleQueryKey(query.queryKey),
+    refetchType: 'active',
+  });
 };
 
 /**

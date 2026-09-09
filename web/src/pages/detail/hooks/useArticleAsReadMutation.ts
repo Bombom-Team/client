@@ -1,6 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchArticleRead } from '@/apis/articles/articles.api';
-import { updateArticleReadStatus } from '@/apis/articles/articles.cache';
+import {
+  syncReadArticleUnreadOnlyStorageCaches,
+  updateArticleReadStatus,
+} from '@/apis/articles/articles.cache';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 
@@ -22,6 +25,7 @@ const useArticleAsReadMutation = ({
       }
 
       updateArticleReadStatus(queryClient, articleId);
+      void syncReadArticleUnreadOnlyStorageCaches(queryClient);
 
       queryClient.invalidateQueries({
         queryKey: queries.articleById({ id: articleId }).queryKey,
