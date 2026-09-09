@@ -56,19 +56,8 @@ const ArticleCardList = ({
     }
   };
 
-  if (articles.length === 0) {
-    return (
-      <Container>
-        <LettersWrapper>
-          <ListTitleBox>
-            <LetterIcon width={32} height={32} color={theme.colors.white} />
-            <ListTitle>새로운 뉴스레터 (0개)</ListTitle>
-          </ListTitleBox>
-          <EmptyLetterCard title="새로운 뉴스레터가 없어요" />
-        </LettersWrapper>
-      </Container>
-    );
-  }
+  if (articles.length === 0)
+    return <EmptyLetterCard title="새로운 뉴스레터가 없어요" />;
 
   return (
     <Container>
