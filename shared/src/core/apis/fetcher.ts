@@ -26,8 +26,21 @@ type GetFetcherOptions = FetcherOptions<never> & {
 };
 
 export const fetcher = {
-  get: async <TResponse>({ path, baseUrl, query, credentials }: GetFetcherOptions) =>
-    request<never, TResponse>({ path, baseUrl, query, credentials, method: 'GET', }),
+  get: async <TResponse>({
+    path,
+    baseUrl,
+    query,
+    credentials,
+    headers,
+  }: GetFetcherOptions) =>
+    request<never, TResponse>({
+      path,
+      baseUrl,
+      query,
+      credentials,
+      headers,
+      method: 'GET',
+    }),
   post: async <TRequest extends JsonBody, TResponse>({
     path,
     baseUrl,

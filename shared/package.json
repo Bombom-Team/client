@@ -6,7 +6,8 @@
   "types": "./src/core/index.ts",
   "scripts": {
     "type-check": "pnpm exec tsc --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "jest"
   },
   "dependencies": {
     "semver": "^7.7.3"
@@ -18,9 +19,16 @@
     "react": "^19.1.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
+    "@jest/globals": "^30.0.4",
     "@tanstack/react-query": "^5.82.0",
+    "@types/jest": "^30.0.0",
     "@types/react": "^19.1.8",
     "@types/semver": "^7.7.1",
+    "jest": "^30.0.4",
     "typescript": "^5.8.3"
   },
   "exports": {
