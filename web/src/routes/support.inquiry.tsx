@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { queries } from '@/apis/queries';
 import { createInquiryRoom } from '@/apis/inquiry/inquiry.api';
+import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import BomBomFooter from '@/components/Footer/BomBomFooter';
 import MobileMainHeader from '@/components/Header/MobileMainHeader';
@@ -27,6 +27,7 @@ export const Route = createFileRoute('/support/inquiry')({
 function InquiryRoomListPage() {
   useWebViewRegisterToken();
   const device = useDevice();
+  const isMobile = device !== 'pc';
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
@@ -55,7 +56,7 @@ function InquiryRoomListPage() {
     <>
       {device === 'pc' ? <PCHeader activeNav={null} /> : <MobileMainHeader />}
 
-      <Container>
+      <Container isMobile={isMobile}>
         <Header>
           <Title>1:1 문의하기</Title>
           <Button onClick={openModal}>새 문의</Button>
@@ -85,11 +86,14 @@ function InquiryRoomListPage() {
   );
 }
 
-const Container = styled.main`
+const Container = styled.main<{ isMobile: boolean }>`
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: ${({ isMobile, theme }) =>
+    isMobile
+      ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 24px) 16px 24px`
+      : `calc(${theme.heights.headerPC} + 40px + 24px) 16px 24px`};
 
   display: flex;
   gap: 24px;
