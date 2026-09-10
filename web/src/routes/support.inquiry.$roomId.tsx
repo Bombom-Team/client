@@ -13,12 +13,7 @@ import {
   updateInquiryMessage,
 } from '@/apis/inquiry/inquiry.api';
 import { queries } from '@/apis/queries';
-import BomBomFooter from '@/components/Footer/BomBomFooter';
-import MobileMainHeader from '@/components/Header/MobileMainHeader';
-import PCHeader from '@/components/Header/PCHeader';
 import { toast } from '@/components/Toast/utils/toastActions';
-import { useDevice } from '@/hooks/useDevice';
-import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 import InquiryMessageBubble from '@/pages/support/inquiry/components/InquiryMessageBubble';
 import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessageInput';
 import { INQUIRY_ROOM_STATUS_LABELS } from '@/types/inquiry';
@@ -34,9 +29,6 @@ export const Route = createFileRoute('/support/inquiry/$roomId')({
 });
 
 function InquiryRoomDetailPage() {
-  useWebViewRegisterToken();
-  const device = useDevice();
-  const isMobile = device !== 'pc';
   const { roomId: roomIdParam } = Route.useParams();
   const roomId = Number(roomIdParam);
   const queryClient = useQueryClient();
@@ -116,64 +108,43 @@ function InquiryRoomDetailPage() {
   const isClosed = room?.status === 'DONE';
 
   return (
-    <>
-      {device === 'pc' ? <PCHeader activeNav={null} /> : <MobileMainHeader />}
+    <ChatCard>
+      <Header>
+        {room && (
+          <StatusText>{INQUIRY_ROOM_STATUS_LABELS[room.status]}</StatusText>
+        )}
+      </Header>
 
-      <Container isMobile={isMobile}>
-        <ChatCard>
-          <Header>
-            <Title>1:1 문의하기</Title>
-            {room && (
-              <StatusText>{INQUIRY_ROOM_STATUS_LABELS[room.status]}</StatusText>
-            )}
-          </Header>
+      <MessageList>
+        <LoadMoreTrigger ref={loadMoreRef} />
+        {messages.map((message) => (
+          <InquiryMessageBubble
+            key={message.id}
+            message={message}
+            isOwnMessage={message.senderType === 'USER'}
+            onEdit={(messageId, content) =>
+              mutateUpdateMessage({ messageId, content })
+            }
+            onDelete={(messageId) => mutateDeleteMessage(messageId)}
+          />
+        ))}
+      </MessageList>
 
-          <MessageList>
-            <LoadMoreTrigger ref={loadMoreRef} />
-            {messages.map((message) => (
-              <InquiryMessageBubble
-                key={message.id}
-                message={message}
-                isOwnMessage={message.senderType === 'USER'}
-                onEdit={(messageId, content) =>
-                  mutateUpdateMessage({ messageId, content })
-                }
-                onDelete={(messageId) => mutateDeleteMessage(messageId)}
-              />
-            ))}
-          </MessageList>
-
-          {isClosed ? (
-            <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
-          ) : (
-            <InquiryMessageInput
-              isSubmitting={isSending}
-              onSubmit={mutateSendMessage}
-            />
-          )}
-        </ChatCard>
-      </Container>
-
-      <BomBomFooter />
-    </>
+      {isClosed ? (
+        <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
+      ) : (
+        <InquiryMessageInput
+          isSubmitting={isSending}
+          onSubmit={mutateSendMessage}
+        />
+      )}
+    </ChatCard>
   );
 }
 
-const Container = styled.main<{ isMobile: boolean }>`
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: ${({ isMobile, theme }) =>
-    isMobile
-      ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 24px) 16px 24px`
-      : `calc(${theme.heights.headerPC} + 40px + 24px) 16px 24px`};
-
-  box-sizing: border-box;
-`;
-
 const ChatCard = styled.div`
   width: 100%;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 320px);
   max-width: 800px;
   margin: 0 auto;
 
@@ -182,16 +153,12 @@ const ChatCard = styled.div`
 `;
 
 const Header = styled.div`
-  padding: 16px;
+  padding: 0 0 16px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.stroke};
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
-`;
-
-const Title = styled.h1`
-  font: ${({ theme }) => theme.fonts.t8Bold};
+  justify-content: flex-end;
 `;
 
 const StatusText = styled.span`
@@ -200,7 +167,7 @@ const StatusText = styled.span`
 `;
 
 const MessageList = styled.div`
-  padding: 16px;
+  padding: 16px 0;
 
   display: flex;
   gap: 12px;

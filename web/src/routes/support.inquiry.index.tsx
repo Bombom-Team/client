@@ -4,13 +4,8 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { createInquiryRoom } from '@/apis/inquiry/inquiry.api';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
-import BomBomFooter from '@/components/Footer/BomBomFooter';
-import MobileMainHeader from '@/components/Header/MobileMainHeader';
-import PCHeader from '@/components/Header/PCHeader';
 import useModal from '@/components/Modal/useModal';
 import { toast } from '@/components/Toast/utils/toastActions';
-import { useDevice } from '@/hooks/useDevice';
-import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 import InquiryCategoryModal from '@/pages/support/inquiry/components/InquiryCategoryModal';
 import InquiryRoomListItem from '@/pages/support/inquiry/components/InquiryRoomListItem';
 
@@ -25,9 +20,6 @@ export const Route = createFileRoute('/support/inquiry/')({
 });
 
 function InquiryRoomListPage() {
-  useWebViewRegisterToken();
-  const device = useDevice();
-  const isMobile = device !== 'pc';
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
@@ -53,63 +45,42 @@ function InquiryRoomListPage() {
   const rooms = roomsPage?.content ?? [];
 
   return (
-    <>
-      {device === 'pc' ? <PCHeader activeNav={null} /> : <MobileMainHeader />}
+    <ContentWrapper>
+      <Header>
+        <Button onClick={openModal}>새 문의</Button>
+      </Header>
 
-      <Container isMobile={isMobile}>
-        <Header>
-          <Title>1:1 문의하기</Title>
-          <Button onClick={openModal}>새 문의</Button>
-        </Header>
+      {rooms.length === 0 ? (
+        <EmptyState>아직 문의 내역이 없어요</EmptyState>
+      ) : (
+        <RoomList>
+          {rooms.map((room) => (
+            <InquiryRoomListItem key={room.id} room={room} />
+          ))}
+        </RoomList>
+      )}
 
-        {rooms.length === 0 ? (
-          <EmptyState>아직 문의 내역이 없어요</EmptyState>
-        ) : (
-          <RoomList>
-            {rooms.map((room) => (
-              <InquiryRoomListItem key={room.id} room={room} />
-            ))}
-          </RoomList>
-        )}
-
-        <InquiryCategoryModal
-          isOpen={isOpen}
-          modalRef={modalRef}
-          closeModal={closeModal}
-          isSubmitting={isPending}
-          onSelectCategory={mutateCreateRoom}
-        />
-      </Container>
-
-      <BomBomFooter />
-    </>
+      <InquiryCategoryModal
+        isOpen={isOpen}
+        modalRef={modalRef}
+        closeModal={closeModal}
+        isSubmitting={isPending}
+        onSelectCategory={mutateCreateRoom}
+      />
+    </ContentWrapper>
   );
 }
 
-const Container = styled.main<{ isMobile: boolean }>`
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: ${({ isMobile, theme }) =>
-    isMobile
-      ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 24px) 16px 24px`
-      : `calc(${theme.heights.headerPC} + 40px + 24px) 16px 24px`};
-
+const ContentWrapper = styled.div`
   display: flex;
-  gap: 24px;
+  gap: 16px;
   flex-direction: column;
-
-  box-sizing: border-box;
 `;
 
 const Header = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-`;
-
-const Title = styled.h1`
-  font: ${({ theme }) => theme.fonts.t11Bold};
+  justify-content: flex-end;
 `;
 
 const RoomList = styled.div`
