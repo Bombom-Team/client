@@ -73,8 +73,15 @@ export const fetcher = {
     path,
     baseUrl,
     body,
+    headers,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, baseUrl, body, method: 'PUT' }),
+    request<TRequest, TResponse>({
+      path,
+      baseUrl,
+      body,
+      method: 'PUT',
+      headers,
+    }),
   delete: async <TRequest extends JsonBody, TResponse>({
     path,
     baseUrl,
