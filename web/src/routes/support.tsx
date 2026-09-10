@@ -1,6 +1,11 @@
 import styled from '@emotion/styled';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  useMatches,
+} from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
 import Accordion from '@/components/Accordion/Accordion';
@@ -31,6 +36,9 @@ export const Route = createFileRoute('/support')({
 
 function SupportPage() {
   useWebViewRegisterToken();
+
+  const matches = useMatches();
+  const isChildRouteActive = matches.at(-1)?.routeId !== '/support';
 
   const device = useDevice();
   const isMobile = device !== 'pc';
@@ -76,6 +84,10 @@ function SupportPage() {
   const handleToggleFaq = (faqId: number) => {
     setOpenFaqId((prev) => (prev === faqId ? null : faqId));
   };
+
+  if (isChildRouteActive) {
+    return <Outlet />;
+  }
 
   return (
     <>
