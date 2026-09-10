@@ -20,7 +20,8 @@ export function InquiryCategoryManager() {
     useCreateInquiryCategoryMutation();
   const { mutate: updateCategory, isPending: isUpdatePending } =
     useUpdateInquiryCategoryMutation();
-  const { mutate: deleteCategory } = useDeleteInquiryCategoryMutation();
+  const { mutate: deleteCategory, isPending: isDeletePending } =
+    useDeleteInquiryCategoryMutation();
 
   const [newCategoryName, setNewCategoryName] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -147,7 +148,10 @@ export function InquiryCategoryManager() {
                   >
                     <FiEdit2 size={18} />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteCategory(category.id)}>
+                  <IconButton
+                    onClick={() => handleDeleteCategory(category.id)}
+                    disabled={isDeletePending}
+                  >
                     <FiTrash2 size={18} />
                   </IconButton>
                 </RowActions>
