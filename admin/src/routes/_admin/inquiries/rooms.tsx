@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { InquiryRoomListPanel } from '@/pages/inquiries/InquiryRoomListPanel';
 
@@ -13,7 +14,14 @@ function InquiryRoomsPage() {
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
 
   return (
-    <Layout title="문의 채팅방">
+    <Layout
+      title="문의 채팅방"
+      rightAction={
+        <Link to="/inquiries">
+          <Button variant="secondary">카테고리 관리</Button>
+        </Link>
+      }
+    >
       <ErrorBoundary fallback={<div>에러가 발생했습니다.</div>}>
         <Suspense fallback={<div>로딩 중...</div>}>
           <SplitContainer>

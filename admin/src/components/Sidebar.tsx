@@ -49,7 +49,7 @@ export const Sidebar = () => {
           <span>FAQ</span>
         </NavItem>
         <NavItem
-          to="/inquiries"
+          to="/inquiries/rooms"
           $isActive={currentPath.startsWith('/inquiries')}
         >
           <FiMessageSquare />
