@@ -12,12 +12,18 @@ import {
   type InquiryStatus,
 } from '@/types/inquiry';
 
-const STATUS_TABS: InquiryStatus[] = [
+const STATUS_TABS: (InquiryStatus | undefined)[] = [
+  undefined,
   'UNCONFIRMED',
   'IN_PROGRESS',
   'DONE',
   'ON_HOLD',
 ];
+
+const STATUS_TAB_LABELS: Record<'ALL' | InquiryStatus, string> = {
+  ALL: '전체',
+  ...INQUIRY_STATUS_LABELS,
+};
 
 interface InquiryRoomListPanelProps {
   selectedRoomId: number | null;
@@ -28,7 +34,7 @@ export function InquiryRoomListPanel({
   selectedRoomId,
   onSelectRoom,
 }: InquiryRoomListPanelProps) {
-  const [status, setStatus] = useState<InquiryStatus>('UNCONFIRMED');
+  const [status, setStatus] = useState<InquiryStatus | undefined>(undefined);
   const [assigneeId, setAssigneeId] = useState<number | undefined>(undefined);
   const [categoryId, setCategoryId] = useState<number | undefined>(undefined);
   const [page, setPage] = useState(0);
@@ -49,7 +55,7 @@ export function InquiryRoomListPanel({
     membersQueries.list({ role: 'ADMIN', size: 100 }),
   );
 
-  const handleStatusChange = (nextStatus: InquiryStatus) => {
+  const handleStatusChange = (nextStatus: InquiryStatus | undefined) => {
     setStatus(nextStatus);
     setPage(0);
   };
@@ -59,12 +65,12 @@ export function InquiryRoomListPanel({
       <StatusTabs>
         {STATUS_TABS.map((tab) => (
           <StatusTab
-            key={tab}
+            key={tab ?? 'ALL'}
             type="button"
             $active={status === tab}
             onClick={() => handleStatusChange(tab)}
           >
-            {INQUIRY_STATUS_LABELS[tab]}
+            {STATUS_TAB_LABELS[tab ?? 'ALL']}
           </StatusTab>
         ))}
       </StatusTabs>
