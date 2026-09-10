@@ -8,8 +8,6 @@ import {
 import BomBomFooter from '@/components/Footer/BomBomFooter';
 import MobileMainHeader from '@/components/Header/MobileMainHeader';
 import PCHeader from '@/components/Header/PCHeader';
-import Tab from '@/components/Tab/Tab';
-import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 
@@ -43,20 +41,26 @@ function SupportLayout() {
       <Container isMobile={isMobile}>
         <Title>고객센터</Title>
 
-        <Tabs>
-          <Tab
-            value="FAQ"
-            label="FAQ"
+        <TabList role="tablist">
+          <TabButton
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'FAQ'}
             selected={activeTab === 'FAQ'}
-            onTabSelect={handleTabSelect}
-          />
-          <Tab
-            value="INQUIRY"
-            label="1:1 문의하기"
+            onClick={() => handleTabSelect('FAQ')}
+          >
+            FAQ
+          </TabButton>
+          <TabButton
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'INQUIRY'}
             selected={activeTab === 'INQUIRY'}
-            onTabSelect={handleTabSelect}
-          />
-        </Tabs>
+            onClick={() => handleTabSelect('INQUIRY')}
+          >
+            1:1 문의하기
+          </TabButton>
+        </TabList>
 
         <Outlet />
       </Container>
@@ -84,4 +88,32 @@ const Container = styled.main<{ isMobile: boolean }>`
 
 const Title = styled.h1`
   font: ${({ theme }) => theme.fonts.t11Bold};
+`;
+
+const TabList = styled.div`
+  border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
+
+  display: flex;
+  gap: 24px;
+`;
+
+const TabButton = styled.button<{ selected: boolean }>`
+  margin-bottom: -1px;
+  padding: 12px 4px;
+  border-bottom: 2px solid
+    ${({ selected, theme }) =>
+      selected ? theme.colors.primaryBomBom : 'transparent'};
+
+  color: ${({ selected, theme }) =>
+    selected ? theme.colors.textPrimary : theme.colors.textSecondary};
+  font: ${({ selected, theme }) =>
+    selected ? theme.fonts.t6Bold : theme.fonts.t6Regular};
+
+  transition:
+    color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.textPrimary};
+  }
 `;
