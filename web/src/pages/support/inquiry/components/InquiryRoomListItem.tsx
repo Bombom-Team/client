@@ -11,7 +11,7 @@ interface InquiryRoomListItemProps {
 
 const InquiryRoomListItem = ({ room }: InquiryRoomListItemProps) => {
   return (
-    <Container to="/support/inquiry/$roomId" params={{ roomId: String(room.id) }}>
+    <Container to={`/support/inquiry/${room.id}`}>
       <Badge text={INQUIRY_ROOM_STATUS_LABELS[room.status]} />
       <CreatedAt>{formatDate(new Date(room.createdAt))}</CreatedAt>
     </Container>
