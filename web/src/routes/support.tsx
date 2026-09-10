@@ -1,16 +1,14 @@
 import styled from '@emotion/styled';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
 import Accordion from '@/components/Accordion/Accordion';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
-import Button from '@/components/Button/Button';
 import BomBomFooter from '@/components/Footer/BomBomFooter';
 import MobileMainHeader from '@/components/Header/MobileMainHeader';
 import PCHeader from '@/components/Header/PCHeader';
 import { useDevice } from '@/hooks/useDevice';
-import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 import FaqCategoryFilter from '@/pages/support/components/FaqCategoryFilter';
 import type { FaqCategoryType } from '@/types/faq';
@@ -114,7 +112,7 @@ function SupportPage() {
             })}
 
             {isMobile && (
-              <InquiryButton variant="transparent" onClick={showMessenger}>
+              <InquiryButton to="/support/inquiry">
                 <ChatIcon width={18} height={18} />
                 1:1 문의하기
               </InquiryButton>
@@ -181,10 +179,24 @@ const AnswerText = styled.p`
   width: 100%;
 `;
 
-const InquiryButton = styled(Button)`
+const InquiryButton = styled(Link)`
   width: 100%;
   margin-top: 16px;
+  padding: 8px 16px;
+  border-radius: 16px;
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
 
   color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
+
+  text-decoration: none;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.disabledBackground};
+    transition: background-color 0.5s ease;
+  }
 `;
