@@ -33,6 +33,8 @@ function InquiryRoomDetailPage() {
   const roomId = Number(roomIdParam);
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const messageListRef = useRef<HTMLDivElement>(null);
+  const hasScrolledToBottomRef = useRef(false);
 
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
   const room = roomsPage?.content.find((r) => r.id === roomId);
@@ -50,6 +52,14 @@ function InquiryRoomDetailPage() {
       [],
     [messagePages],
   );
+
+  useEffect(() => {
+    if (hasScrolledToBottomRef.current) return;
+    if (!messageListRef.current || messages.length === 0) return;
+
+    messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    hasScrolledToBottomRef.current = true;
+  }, [messages]);
 
   const invalidateMessages = () => {
     queryClient.invalidateQueries({
@@ -89,7 +99,8 @@ function InquiryRoomDetailPage() {
   });
 
   useEffect(() => {
-    if (!loadMoreRef.current) return;
+    if (!loadMoreRef.current || !messageListRef.current) return;
+    if (!hasScrolledToBottomRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -97,15 +108,16 @@ function InquiryRoomDetailPage() {
           fetchNextPage();
         }
       },
-      { threshold: 0.1 },
+      { root: messageListRef.current, threshold: 0.1 },
     );
 
     observer.observe(loadMoreRef.current);
 
     return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, messages.length]);
 
-  const isClosed = room?.status === 'DONE';
+  const isRoomsLoaded = roomsPage !== undefined;
+  const canSendMessage = room?.status !== undefined && room.status !== 'DONE';
 
   return (
     <ChatCard>
@@ -115,7 +127,7 @@ function InquiryRoomDetailPage() {
         )}
       </Header>
 
-      <MessageList>
+      <MessageList ref={messageListRef}>
         <LoadMoreTrigger ref={loadMoreRef} />
         {messages.map((message) => (
           <InquiryMessageBubble
@@ -130,10 +142,11 @@ function InquiryRoomDetailPage() {
         ))}
       </MessageList>
 
-      {isClosed ? (
+      {isRoomsLoaded && !canSendMessage ? (
         <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
       ) : (
         <InquiryMessageInput
+          disabled={!isRoomsLoaded}
           isSubmitting={isSending}
           onSubmit={mutateSendMessage}
         />

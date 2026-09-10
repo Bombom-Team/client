@@ -1,4 +1,4 @@
-import { fetcher } from '@bombom/shared/apis';
+import { ApiError, fetcher } from '@bombom/shared/apis';
 import { ENV } from '@bombom/shared/env';
 import { getOrCreateGuestId } from '@/utils/guestId';
 import type { PageableResponse } from '@/apis/types/PageableResponse';
@@ -20,10 +20,14 @@ export const getInquiryCategories = () =>
 
 export type GetInquiryRoomsParams = { page?: number; size?: number };
 
+// 상세 화면에서 room의 status를 조회하기 위해 목록도 조회하므로(단일 room 조회
+// API가 없음), 모든 room이 한 페이지에 들어오도록 넉넉한 size를 기본값으로 쓴다.
+export const INQUIRY_ROOMS_DEFAULT_SIZE = 100;
+
 export const getInquiryRooms = (params: GetInquiryRoomsParams = {}) =>
   fetcher.get<PageableResponse<InquiryRoom>>({
     path: '/inquiries/rooms',
-    query: params,
+    query: { size: INQUIRY_ROOMS_DEFAULT_SIZE, ...params },
     headers: guestHeaders(),
   });
 
@@ -85,16 +89,32 @@ export const deleteInquiryMessage = (roomId: number, messageId: number) =>
 
 export type InquiryImageUploadResponse = { imageUrls: string[] };
 
-export const uploadInquiryImages = (
+export const uploadInquiryImages = async (
   images: File[],
 ): Promise<InquiryImageUploadResponse> => {
   const formData = new FormData();
   images.forEach((image) => formData.append('images', image));
 
-  return fetch(`${ENV.baseUrl}/inquiries/images`, {
+  const res = await fetch(`${ENV.baseUrl}/inquiries/images`, {
     method: 'POST',
     credentials: 'include',
     headers: guestHeaders(),
     body: formData,
-  }).then((res) => res.json() as Promise<InquiryImageUploadResponse>);
+  });
+
+  if (!res.ok) {
+    let rawBody;
+    try {
+      rawBody = await res.json();
+    } catch {
+      rawBody = await res.text();
+    }
+    throw new ApiError(
+      res.status,
+      rawBody?.message ?? '이미지 업로드에 실패했습니다.',
+      rawBody,
+    );
+  }
+
+  return res.json() as Promise<InquiryImageUploadResponse>;
 };

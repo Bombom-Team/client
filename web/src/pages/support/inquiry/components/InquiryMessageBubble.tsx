@@ -65,7 +65,14 @@ const InquiryMessageBubble = ({
           <ActionButton type="button" onClick={() => setIsEditing(true)}>
             수정
           </ActionButton>
-          <ActionButton type="button" onClick={() => onDelete(message.id)}>
+          <ActionButton
+            type="button"
+            onClick={() => {
+              if (window.confirm('메시지를 삭제할까요?')) {
+                onDelete(message.id);
+              }
+            }}
+          >
             삭제
           </ActionButton>
         </ActionMenu>
