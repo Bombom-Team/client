@@ -11,6 +11,7 @@ import {
   FiHelpCircle,
   FiHome,
   FiMail,
+  FiMessageSquare,
   FiUsers,
 } from 'react-icons/fi';
 
@@ -46,6 +47,13 @@ export const Sidebar = () => {
         <NavItem to="/faqs" $isActive={currentPath.startsWith('/faqs')}>
           <FiHelpCircle />
           <span>FAQ</span>
+        </NavItem>
+        <NavItem
+          to="/inquiries"
+          $isActive={currentPath.startsWith('/inquiries')}
+        >
+          <FiMessageSquare />
+          <span>문의 관리</span>
         </NavItem>
         <NavItem to="/flyway" $isActive={currentPath.startsWith('/flyway')}>
           <FiDatabase />
