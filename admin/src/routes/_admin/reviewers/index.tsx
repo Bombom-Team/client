@@ -72,8 +72,8 @@ function ReviewersDashboard() {
       </InfoStrip>
 
       <PollLine>
-        🔄 리뷰어 자동 배정 폴링 — <strong>5분 간격</strong>으로 새 PR을 확인해
-        배정합니다
+        🔄 리뷰어 자동 배정 — 백엔드 PR이 열리면 <strong>즉시</strong> 순번에
+        따라 배정됩니다
       </PollLine>
 
       <SummaryStatCardRow>
