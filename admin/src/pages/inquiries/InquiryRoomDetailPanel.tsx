@@ -96,7 +96,6 @@ export function InquiryRoomDetailPanel({
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const category = categories.find((c) => c.id === room.categoryId);
   const isClosed = room.status === 'DONE' || room.status === 'ON_HOLD';
 
   // 서버는 최신순(id desc)으로 페이지를 내려주므로, 오래된 페이지가 뒤에 오도록 뒤집고
@@ -180,9 +179,20 @@ export function InquiryRoomDetailPanel({
                 ? `회원 #${room.memberId}`
                 : `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`}
           </RoomIdentity>
-          <CategoryText>{category?.name ?? '카테고리 없음'}</CategoryText>
         </HeaderInfo>
         <HeaderControls>
+          <HeaderSelect
+            value={room.categoryId}
+            disabled
+            title="카테고리 변경 기능은 준비 중입니다."
+            onChange={() => {}}
+          >
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </HeaderSelect>
           <HeaderSelect
             value={room.assigneeId ?? ''}
             onChange={(e) =>
@@ -273,11 +283,6 @@ const RoomIdentity = styled.span`
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
 `;
 
-const CategoryText = styled.span`
-  color: ${({ theme }) => theme.colors.gray500};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-`;
-
 const HeaderControls = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
@@ -311,6 +316,11 @@ const HeaderSelect = styled.select`
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary};
     background-color: ${({ theme }) => theme.colors.white};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 `;
 
