@@ -128,6 +128,14 @@ export function InquiryRoomListPanel({
                 </StatusBadge>
                 <RoomTime>{formatRelativeTime(room.createdAt)}</RoomTime>
               </RoomItemTop>
+              <RoomRequester>
+                {/* TODO: 회원 정보 API 연동 후 회원 닉네임/이메일로 교체 */}
+                문의자 #{room.id}
+              </RoomRequester>
+              <RoomLastMessagePreview>
+                {/* TODO: 최근 메시지 API 연동 후 실제 본문으로 교체 */}
+                최근 메시지 미리보기 준비 중
+              </RoomLastMessagePreview>
               <RoomItemBottom>
                 <RoomCategoryName>
                   {category?.name ?? '카테고리 없음'}
@@ -219,8 +227,12 @@ const RoomList = styled.div`
 const RoomItem = styled('div', {
   shouldForwardProp: (prop) => prop !== '$selected',
 })<{ $selected: boolean }>`
-  padding: ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.md}`};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 
   background-color: ${({ $selected, theme }) =>
     $selected ? theme.colors.gray50 : theme.colors.white};
@@ -233,8 +245,6 @@ const RoomItem = styled('div', {
 `;
 
 const RoomItemTop = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
-
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -255,7 +265,28 @@ const RoomTime = styled.span`
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
+const RoomRequester = styled.div`
+  overflow: hidden;
+
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const RoomLastMessagePreview = styled.div`
+  overflow: hidden;
+
+  color: ${({ theme }) => theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
 const RoomItemBottom = styled.div`
+  margin-top: 2px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -265,9 +296,8 @@ const RoomItemBottom = styled.div`
 const RoomCategoryName = styled.div`
   overflow: hidden;
 
-  color: ${({ theme }) => theme.colors.gray900};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
-  font-size: ${({ theme }) => theme.fontSize.sm};
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
