@@ -67,6 +67,7 @@ export function InquiryRoomDetailPanel({
   };
 
   const topSentinelRef = useRef<HTMLDivElement | null>(null);
+  const timelineRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const sentinel = topSentinelRef.current;
@@ -93,6 +94,17 @@ export function InquiryRoomDetailPanel({
   const orderedMessages = [...messagePages.pages]
     .reverse()
     .flatMap((page) => [...page.messages].reverse());
+
+  const latestMessageId =
+    orderedMessages[orderedMessages.length - 1]?.id;
+
+  // 최초 진입 시, 그리고 최신 메시지(끝쪽)가 새로 추가됐을 때만 맨 아래로 스크롤한다.
+  // 위로 스크롤해서 과거 메시지를 불러온 경우(latestMessageId 불변)에는 스크롤 위치를 건드리지 않는다.
+  useEffect(() => {
+    const timeline = timelineRef.current;
+    if (!timeline) return;
+    timeline.scrollTop = timeline.scrollHeight;
+  }, [latestMessageId]);
 
   const handleAssigneeChange = (assigneeId: number) => {
     assignRoom(
@@ -170,7 +182,7 @@ export function InquiryRoomDetailPanel({
         </HeaderControls>
       </DetailHeader>
 
-      <MessageTimeline>
+      <MessageTimeline ref={timelineRef}>
         <div ref={topSentinelRef} />
         {isFetchingNextPage && (
           <LoadingMore>이전 메시지 불러오는 중...</LoadingMore>

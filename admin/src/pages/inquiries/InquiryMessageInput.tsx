@@ -67,6 +67,8 @@ export function InquiryMessageInput({
   };
 
   const handleSend = () => {
+    if (isSending) return;
+
     const trimmed = content.trim();
     if (!trimmed) {
       alert('메시지 내용을 입력해주세요.');
@@ -93,7 +95,7 @@ export function InquiryMessageInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleSend();
     }
