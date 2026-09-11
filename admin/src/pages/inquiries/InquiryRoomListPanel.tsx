@@ -149,7 +149,11 @@ export function InquiryRoomListPanel({
                 <StatusBadge color={INQUIRY_STATUS_COLORS[room.status]}>
                   {INQUIRY_STATUS_LABELS[room.status]}
                 </StatusBadge>
-                <RoomTime>{formatRelativeTime(room.createdAt)}</RoomTime>
+                <RoomTime>
+                  {formatRelativeTime(
+                    room.lastMessage?.createdAt ?? room.createdAt,
+                  )}
+                </RoomTime>
               </RoomItemTop>
               <RoomRequester>{getRequesterLabel(room)}</RoomRequester>
               <RoomLastMessagePreview>
