@@ -18,6 +18,7 @@ import {
 } from '@/apis/inquiries/inquiryRooms.query';
 import { membersQueries } from '@/apis/members/members.query';
 import { InquiryMessageBubble } from '@/pages/inquiries/InquiryMessageBubble';
+import { InquiryMessageInput } from '@/pages/inquiries/InquiryMessageInput';
 import { INQUIRY_STATUS_LABELS, type InquiryStatus } from '@/types/inquiry';
 
 interface InquiryRoomDetailPanelProps {
@@ -190,8 +191,11 @@ export function InquiryRoomDetailPanel({
         </ClosedNotice>
       )}
 
-      {/* Task 6에서 InquiryMessageInput으로 교체 */}
-      <InputPlaceholder>입력창은 다음 태스크에서 구현됩니다.</InputPlaceholder>
+      <InquiryMessageInput
+        roomId={roomId}
+        disabled={isClosed}
+        onSent={invalidateMessages}
+      />
     </DetailContainer>
   );
 }
@@ -269,10 +273,3 @@ const ClosedNotice = styled.div`
   text-align: center;
 `;
 
-const InputPlaceholder = styled.div`
-  padding: ${({ theme }) => theme.spacing.md};
-  border-top: 1px solid ${({ theme }) => theme.colors.gray200};
-
-  color: ${({ theme }) => theme.colors.gray400};
-  font-size: ${({ theme }) => theme.fontSize.xs};
-`;
