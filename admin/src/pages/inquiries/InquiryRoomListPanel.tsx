@@ -68,6 +68,7 @@ export function InquiryRoomListPanel({
             key={tab ?? 'ALL'}
             type="button"
             $active={status === tab}
+            $color={tab ? INQUIRY_STATUS_COLORS[tab] : undefined}
             onClick={() => handleStatusChange(tab)}
           >
             {STATUS_TAB_LABELS[tab ?? 'ALL']}
@@ -174,14 +175,14 @@ const StatusTabs = styled.div`
 `;
 
 const StatusTab = styled('button', {
-  shouldForwardProp: (prop) => prop !== '$active',
-})<{ $active: boolean }>`
+  shouldForwardProp: (prop) => prop !== '$active' && prop !== '$color',
+})<{ $active: boolean; $color?: string }>`
   padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
   border: none;
   border-radius: ${({ theme }) => theme.borderRadius.full};
 
-  background-color: ${({ $active, theme }) =>
-    $active ? theme.colors.primary : theme.colors.gray100};
+  background-color: ${({ $active, $color, theme }) =>
+    $active ? ($color ?? theme.colors.primary) : theme.colors.gray100};
   color: ${({ $active, theme }) =>
     $active ? theme.colors.white : theme.colors.gray700};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
