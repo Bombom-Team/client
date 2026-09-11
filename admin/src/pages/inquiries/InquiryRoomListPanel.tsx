@@ -308,7 +308,9 @@ const RoomAssignee = styled('span', {
   flex-shrink: 0;
 
   color: ${({ $unassigned, theme }) =>
-    $unassigned ? theme.colors.gray400 : theme.colors.gray600};
+    $unassigned ? theme.colors.gray400 : theme.colors.primary};
+  font-weight: ${({ $unassigned, theme }) =>
+    $unassigned ? theme.fontWeight.normal : theme.fontWeight.medium};
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
