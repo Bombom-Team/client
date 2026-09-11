@@ -150,9 +150,9 @@ export function InquiryRoomListPanel({
                   {INQUIRY_STATUS_LABELS[room.status]}
                 </StatusBadge>
                 <RoomTime>
-                  {formatRelativeTime(
-                    room.lastMessage?.createdAt ?? room.createdAt,
-                  )}
+                  {room.lastMessage
+                    ? formatRelativeTime(room.lastMessage.createdAt)
+                    : '없음'}
                 </RoomTime>
               </RoomItemTop>
               <RoomRequester>{getRequesterLabel(room)}</RoomRequester>
