@@ -151,7 +151,9 @@ export function InquiryRoomDetailPanel({
       <DetailHeader>
         <HeaderInfo>
           <RoomIdentity>
-            {room.memberId ? `회원 #${room.memberId}` : `비회원 (${room.guestId})`}
+            {room.memberId
+              ? `회원 #${room.memberId}`
+              : `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`}
           </RoomIdentity>
           <CategoryText>{category?.name ?? '카테고리 없음'}</CategoryText>
         </HeaderInfo>

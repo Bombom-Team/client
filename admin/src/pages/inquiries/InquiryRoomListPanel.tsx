@@ -112,6 +112,9 @@ export function InquiryRoomListPanel({
         )}
         {rooms.content.map((room) => {
           const category = categories.find((c) => c.id === room.categoryId);
+          const assignee = admins.content.find(
+            (admin) => admin.id === room.assigneeId,
+          );
           return (
             <RoomItem
               key={room.id}
@@ -124,9 +127,14 @@ export function InquiryRoomListPanel({
                 </StatusBadge>
                 <RoomTime>{formatRelativeTime(room.createdAt)}</RoomTime>
               </RoomItemTop>
-              <RoomCategoryName>
-                {category?.name ?? '카테고리 없음'}
-              </RoomCategoryName>
+              <RoomItemBottom>
+                <RoomCategoryName>
+                  {category?.name ?? '카테고리 없음'}
+                </RoomCategoryName>
+                <RoomAssignee $unassigned={!assignee}>
+                  {assignee ? assignee.nickname : '담당자 미지정'}
+                </RoomAssignee>
+              </RoomItemBottom>
             </RoomItem>
           );
         })}
@@ -246,10 +254,31 @@ const RoomTime = styled.span`
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
+const RoomItemBottom = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
 const RoomCategoryName = styled.div`
+  overflow: hidden;
+
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
   font-size: ${({ theme }) => theme.fontSize.sm};
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const RoomAssignee = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$unassigned',
+})<{ $unassigned: boolean }>`
+  flex-shrink: 0;
+
+  color: ${({ $unassigned, theme }) =>
+    $unassigned ? theme.colors.gray400 : theme.colors.gray600};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const EmptyState = styled.div`
