@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
+import { InquiryRoomDetailPanel } from '@/pages/inquiries/InquiryRoomDetailPanel';
 import { InquiryRoomListPanel } from '@/pages/inquiries/InquiryRoomListPanel';
 
 export const Route = createFileRoute('/_admin/inquiries/rooms')({
@@ -29,11 +30,11 @@ function InquiryRoomsPage() {
               selectedRoomId={selectedRoomId}
               onSelectRoom={setSelectedRoomId}
             />
-            <DetailPlaceholder>
-              {selectedRoomId
-                ? `선택된 방: ${selectedRoomId}`
-                : '왼쪽에서 문의를 선택하세요.'}
-            </DetailPlaceholder>
+            {selectedRoomId ? (
+              <InquiryRoomDetailPanel key={selectedRoomId} roomId={selectedRoomId} />
+            ) : (
+              <DetailPlaceholder>왼쪽에서 문의를 선택하세요.</DetailPlaceholder>
+            )}
           </SplitContainer>
         </Suspense>
       </ErrorBoundary>
