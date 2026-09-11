@@ -17,6 +17,7 @@ import {
   useUpdateInquiryRoomStatusMutation,
 } from '@/apis/inquiries/inquiryRooms.query';
 import { membersQueries } from '@/apis/members/members.query';
+import { formatDateDivider, isSameDay } from '@/lib/formatRelativeTime';
 import { getRequesterLabel } from '@/lib/inquiryDisplay';
 import { InquiryMessageBubble } from '@/pages/inquiries/InquiryMessageBubble';
 import { InquiryMessageInput } from '@/pages/inquiries/InquiryMessageInput';
@@ -103,6 +104,19 @@ export function InquiryRoomDetailPanel({
   const orderedMessages = [...messagePages.pages]
     .reverse()
     .flatMap((page) => [...page.messages].reverse());
+
+  // 이전 메시지와 날짜(연-월-일)가 다르면 그 앞에 날짜 구분자를 끼워 넣는다.
+  const timelineItems = orderedMessages.flatMap((message, index) => {
+    const previousMessage = orderedMessages[index - 1];
+    const needsDateDivider =
+      !previousMessage || !isSameDay(previousMessage.createdAt, message.createdAt);
+    return needsDateDivider
+      ? [
+          { type: 'divider' as const, key: `divider-${message.id}`, date: message.createdAt },
+          { type: 'message' as const, key: message.id, message },
+        ]
+      : [{ type: 'message' as const, key: message.id, message }];
+  });
 
   const latestMessageId =
     orderedMessages[orderedMessages.length - 1]?.id;
@@ -200,14 +214,20 @@ export function InquiryRoomDetailPanel({
         {isFetchingNextPage && (
           <LoadingMore>이전 메시지 불러오는 중...</LoadingMore>
         )}
-        {orderedMessages.map((message) => (
-          <InquiryMessageBubble
-            key={message.id}
-            message={message}
-            onEdit={handleEditMessage}
-            onDelete={handleDeleteMessage}
-          />
-        ))}
+        {timelineItems.map((item) =>
+          item.type === 'divider' ? (
+            <DateDivider key={item.key}>
+              <DateDividerLabel>{formatDateDivider(item.date)}</DateDividerLabel>
+            </DateDivider>
+          ) : (
+            <InquiryMessageBubble
+              key={item.key}
+              message={item.message}
+              onEdit={handleEditMessage}
+              onDelete={handleDeleteMessage}
+            />
+          ),
+        )}
       </MessageTimeline>
 
       {isClosed && (
@@ -310,6 +330,23 @@ const LoadingMore = styled.div`
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
   text-align: center;
+`;
+
+const DateDivider = styled.div`
+  margin: ${({ theme }) => theme.spacing.xs} 0;
+
+  display: flex;
+  justify-content: center;
+`;
+
+const DateDividerLabel = styled.span`
+  padding: 4px 12px;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+
+  background-color: ${({ theme }) => theme.colors.gray100};
+  color: ${({ theme }) => theme.colors.gray600};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const ClosedNotice = styled.div`
