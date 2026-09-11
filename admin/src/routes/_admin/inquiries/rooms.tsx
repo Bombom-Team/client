@@ -6,13 +6,14 @@ import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import { InquiryRoomDetailPanel } from '@/pages/inquiries/InquiryRoomDetailPanel';
 import { InquiryRoomListPanel } from '@/pages/inquiries/InquiryRoomListPanel';
+import type { InquiryRoom } from '@/types/inquiry';
 
 export const Route = createFileRoute('/_admin/inquiries/rooms')({
   component: InquiryRoomsPage,
 });
 
 function InquiryRoomsPage() {
-  const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<InquiryRoom | null>(null);
 
   return (
     <Layout
@@ -27,11 +28,15 @@ function InquiryRoomsPage() {
         <Suspense fallback={<div>로딩 중...</div>}>
           <SplitContainer>
             <InquiryRoomListPanel
-              selectedRoomId={selectedRoomId}
-              onSelectRoom={setSelectedRoomId}
+              selectedRoomId={selectedRoom?.id ?? null}
+              onSelectRoom={setSelectedRoom}
             />
-            {selectedRoomId ? (
-              <InquiryRoomDetailPanel key={selectedRoomId} roomId={selectedRoomId} />
+            {selectedRoom ? (
+              <InquiryRoomDetailPanel
+                key={selectedRoom.id}
+                roomId={selectedRoom.id}
+                listRoom={selectedRoom}
+              />
             ) : (
               <DetailPlaceholder>왼쪽에서 문의를 선택하세요.</DetailPlaceholder>
             )}

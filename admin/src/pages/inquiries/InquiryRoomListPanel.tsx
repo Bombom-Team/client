@@ -9,36 +9,15 @@ import { inquiryRoomsQueries } from '@/apis/inquiries/inquiryRooms.query';
 import { membersQueries } from '@/apis/members/members.query';
 import { formatRelativeTime } from '@/lib/formatRelativeTime';
 import {
+  getLastMessagePreviewLabel,
+  getRequesterLabel,
+} from '@/lib/inquiryDisplay';
+import {
   INQUIRY_STATUS_COLORS,
   INQUIRY_STATUS_LABELS,
   type InquiryRoom,
   type InquiryStatus,
 } from '@/types/inquiry';
-
-// inquirerType이 MEMBER인데 inquirerNickname이 없으면 탈퇴한 회원(Member.nickname은 not-null이라
-// 정상 회원이면 반드시 값이 있다)으로 간주한다.
-const getRequesterLabel = (room: InquiryRoom): string => {
-  if (room.inquirerType === 'GUEST') {
-    return `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`;
-  }
-  if (!room.inquirerNickname) {
-    return '탈퇴한 회원';
-  }
-  return room.inquirerEmail
-    ? `${room.inquirerNickname} (${room.inquirerEmail})`
-    : room.inquirerNickname;
-};
-
-const getLastMessagePreviewLabel = (room: InquiryRoom): string => {
-  if (!room.lastMessage) {
-    return '메시지가 없습니다.';
-  }
-  const prefix =
-    room.lastMessage.senderType === 'ADMIN'
-      ? `${room.lastMessage.adminNickname ?? '탈퇴한 관리자'}: `
-      : '';
-  return `${prefix}${room.lastMessage.content}`;
-};
 
 const STATUS_TABS: (InquiryStatus | undefined)[] = [
   undefined,
@@ -55,7 +34,7 @@ const STATUS_TAB_LABELS: Record<'ALL' | InquiryStatus, string> = {
 
 interface InquiryRoomListPanelProps {
   selectedRoomId: number | null;
-  onSelectRoom: (roomId: number) => void;
+  onSelectRoom: (room: InquiryRoom) => void;
 }
 
 export function InquiryRoomListPanel({
@@ -164,7 +143,7 @@ export function InquiryRoomListPanel({
             <RoomItem
               key={room.id}
               $selected={room.id === selectedRoomId}
-              onClick={() => onSelectRoom(room.id)}
+              onClick={() => onSelectRoom(room)}
             >
               <RoomItemTop>
                 <StatusBadge color={INQUIRY_STATUS_COLORS[room.status]}>

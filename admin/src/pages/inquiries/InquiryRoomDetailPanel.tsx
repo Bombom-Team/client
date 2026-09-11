@@ -17,12 +17,20 @@ import {
   useUpdateInquiryRoomStatusMutation,
 } from '@/apis/inquiries/inquiryRooms.query';
 import { membersQueries } from '@/apis/members/members.query';
+import { getRequesterLabel } from '@/lib/inquiryDisplay';
 import { InquiryMessageBubble } from '@/pages/inquiries/InquiryMessageBubble';
 import { InquiryMessageInput } from '@/pages/inquiries/InquiryMessageInput';
-import { INQUIRY_STATUS_LABELS, type InquiryStatus } from '@/types/inquiry';
+import {
+  INQUIRY_STATUS_LABELS,
+  type InquiryRoom,
+  type InquiryStatus,
+} from '@/types/inquiry';
 
 interface InquiryRoomDetailPanelProps {
   roomId: number;
+  // 목록에서 이미 받아온 문의자/담당자 등 정보. 상세 조회 API가 아직 같은 정보를
+  // 내려주지 않으므로, 있으면 이 값을 우선 사용해 추가 API 호출 없이 표시한다.
+  listRoom?: InquiryRoom;
 }
 
 const STATUS_OPTIONS: InquiryStatus[] = [
@@ -34,6 +42,7 @@ const STATUS_OPTIONS: InquiryStatus[] = [
 
 export function InquiryRoomDetailPanel({
   roomId,
+  listRoom,
 }: InquiryRoomDetailPanelProps) {
   const queryClient = useQueryClient();
   const { data: room } = useSuspenseQuery(inquiryRoomsQueries.detail(roomId));
@@ -151,9 +160,11 @@ export function InquiryRoomDetailPanel({
       <DetailHeader>
         <HeaderInfo>
           <RoomIdentity>
-            {room.memberId
-              ? `회원 #${room.memberId}`
-              : `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`}
+            {listRoom
+              ? getRequesterLabel(listRoom)
+              : room.memberId
+                ? `회원 #${room.memberId}`
+                : `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`}
           </RoomIdentity>
           <CategoryText>{category?.name ?? '카테고리 없음'}</CategoryText>
         </HeaderInfo>
