@@ -54,3 +54,16 @@ export const updateInquiryRoomStatus = async ({
     body: { status },
   });
 };
+
+export const updateInquiryRoomCategory = async ({
+  roomId,
+  categoryId,
+}: {
+  roomId: number;
+  categoryId: number;
+}) => {
+  return fetcher.patch<{ categoryId: number }, void>({
+    path: `/inquiries/rooms/${roomId}/category`,
+    body: { categoryId },
+  });
+};

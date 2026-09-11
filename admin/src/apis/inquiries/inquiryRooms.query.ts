@@ -8,6 +8,7 @@ import {
   assignInquiryRoom,
   getInquiryRoomDetail,
   getInquiryRooms,
+  updateInquiryRoomCategory,
   updateInquiryRoomStatus,
 } from './inquiryRooms.api';
 import type { GetInquiryRoomsParams } from './inquiryRooms.api';
@@ -68,5 +69,11 @@ export const useAssignInquiryRoomMutation = () => {
 export const useUpdateInquiryRoomStatusMutation = () => {
   return useMutation({
     mutationFn: updateInquiryRoomStatus,
+  });
+};
+
+export const useUpdateInquiryRoomCategoryMutation = () => {
+  return useMutation({
+    mutationFn: updateInquiryRoomCategory,
   });
 };

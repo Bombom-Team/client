@@ -14,6 +14,7 @@ import {
 import {
   inquiryRoomsQueries,
   useAssignInquiryRoomMutation,
+  useUpdateInquiryRoomCategoryMutation,
   useUpdateInquiryRoomStatusMutation,
 } from '@/apis/inquiries/inquiryRooms.query';
 import { membersQueries } from '@/apis/members/members.query';
@@ -63,6 +64,7 @@ export function InquiryRoomDetailPanel({
 
   const { mutate: assignRoom } = useAssignInquiryRoomMutation();
   const { mutate: changeStatus } = useUpdateInquiryRoomStatusMutation();
+  const { mutate: changeCategory } = useUpdateInquiryRoomCategoryMutation();
   const { mutate: updateMessage } = useUpdateInquiryMessageMutation();
   const { mutate: deleteMessage } = useDeleteInquiryMessageMutation();
 
@@ -148,6 +150,16 @@ export function InquiryRoomDetailPanel({
     );
   };
 
+  const handleCategoryChange = (categoryId: number) => {
+    changeCategory(
+      { roomId, categoryId },
+      {
+        onSuccess: invalidateRoom,
+        onError: (error) => alert(`카테고리 변경 실패: ${error.message}`),
+      },
+    );
+  };
+
   const handleEditMessage = (messageId: number, content: string) => {
     updateMessage(
       { roomId, messageId, content },
@@ -183,9 +195,7 @@ export function InquiryRoomDetailPanel({
         <HeaderControls>
           <HeaderSelect
             value={room.categoryId}
-            disabled
-            title="카테고리 변경 기능은 준비 중입니다."
-            onChange={() => {}}
+            onChange={(e) => handleCategoryChange(Number(e.target.value))}
           >
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
