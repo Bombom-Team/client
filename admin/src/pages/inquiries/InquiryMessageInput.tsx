@@ -238,7 +238,7 @@ const MessageTextarea = styled.textarea`
 
   flex: 1;
   min-height: 40px;
-  max-height: 160px;
+  max-height: 320px;
   overflow-y: auto;
 
   font-size: ${({ theme }) => theme.fontSize.sm};

@@ -9,8 +9,34 @@ import { formatRelativeTime } from '@/lib/formatRelativeTime';
 import {
   INQUIRY_STATUS_COLORS,
   INQUIRY_STATUS_LABELS,
+  type InquiryRoom,
   type InquiryStatus,
 } from '@/types/inquiry';
+
+// inquirerType이 MEMBER인데 inquirerNickname이 없으면 탈퇴한 회원(Member.nickname은 not-null이라
+// 정상 회원이면 반드시 값이 있다)으로 간주한다.
+const getRequesterLabel = (room: InquiryRoom): string => {
+  if (room.inquirerType === 'GUEST') {
+    return `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`;
+  }
+  if (!room.inquirerNickname) {
+    return '탈퇴한 회원';
+  }
+  return room.inquirerEmail
+    ? `${room.inquirerNickname} (${room.inquirerEmail})`
+    : room.inquirerNickname;
+};
+
+const getLastMessagePreviewLabel = (room: InquiryRoom): string => {
+  if (!room.lastMessage) {
+    return '메시지가 없습니다.';
+  }
+  const prefix =
+    room.lastMessage.senderType === 'ADMIN'
+      ? `${room.lastMessage.adminNickname ?? '탈퇴한 관리자'}: `
+      : '';
+  return `${prefix}${room.lastMessage.content}`;
+};
 
 const STATUS_TABS: (InquiryStatus | undefined)[] = [
   undefined,
@@ -113,9 +139,6 @@ export function InquiryRoomListPanel({
         )}
         {rooms.content.map((room) => {
           const category = categories.find((c) => c.id === room.categoryId);
-          const assignee = admins.content.find(
-            (admin) => admin.id === room.assigneeId,
-          );
           return (
             <RoomItem
               key={room.id}
@@ -128,20 +151,17 @@ export function InquiryRoomListPanel({
                 </StatusBadge>
                 <RoomTime>{formatRelativeTime(room.createdAt)}</RoomTime>
               </RoomItemTop>
-              <RoomRequester>
-                {/* TODO: 회원 정보 API 연동 후 회원 닉네임/이메일로 교체 */}
-                문의자 #{room.id}
-              </RoomRequester>
+              <RoomRequester>{getRequesterLabel(room)}</RoomRequester>
               <RoomLastMessagePreview>
-                {/* TODO: 최근 메시지 API 연동 후 실제 본문으로 교체 */}
-                최근 메시지 미리보기 준비 중
+                {getLastMessagePreviewLabel(room)}
               </RoomLastMessagePreview>
               <RoomItemBottom>
                 <RoomCategoryName>
                   {category?.name ?? '카테고리 없음'}
                 </RoomCategoryName>
-                <RoomAssignee $unassigned={!assignee}>
-                  {assignee ? assignee.nickname : '담당자 미지정'}
+                <RoomAssignee $unassigned={!room.assigneeNickname}>
+                  {room.assigneeNickname ??
+                    (room.assigneeId ? '탈퇴한 담당자' : '담당자 미지정')}
                 </RoomAssignee>
               </RoomItemBottom>
             </RoomItem>
