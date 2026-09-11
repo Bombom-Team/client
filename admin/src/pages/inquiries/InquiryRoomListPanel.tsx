@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import {
+  useSuspenseInfiniteQuery,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
+import { useEffect, useRef, useState } from 'react';
 import { inquiryCategoriesQueries } from '@/apis/inquiries/inquiryCategories.query';
 import { inquiryRoomsQueries } from '@/apis/inquiries/inquiryRooms.query';
 import { membersQueries } from '@/apis/members/members.query';
-import Pagination from '@/components/Pagination';
 import { formatRelativeTime } from '@/lib/formatRelativeTime';
 import {
   INQUIRY_STATUS_COLORS,
@@ -63,16 +65,14 @@ export function InquiryRoomListPanel({
   const [status, setStatus] = useState<InquiryStatus | undefined>(undefined);
   const [assigneeId, setAssigneeId] = useState<number | undefined>(undefined);
   const [categoryId, setCategoryId] = useState<number | undefined>(undefined);
-  const [page, setPage] = useState(0);
 
-  const { data: rooms } = useSuspenseQuery(
-    inquiryRoomsQueries.list({
-      status,
-      assigneeId,
-      categoryId,
-      page,
-      size: 20,
-    }),
+  const {
+    data: roomPages,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useSuspenseInfiniteQuery(
+    inquiryRoomsQueries.infiniteList({ status, assigneeId, categoryId }),
   );
   const { data: categories } = useSuspenseQuery(
     inquiryCategoriesQueries.list(),
@@ -81,9 +81,30 @@ export function InquiryRoomListPanel({
     membersQueries.list({ role: 'ADMIN', size: 100 }),
   );
 
+  const rooms = roomPages.pages.flatMap((page) => page.content);
+  const totalCount = roomPages.pages[0]?.totalElements ?? 0;
+
+  const bottomSentinelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const sentinel = bottomSentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   const handleStatusChange = (nextStatus: InquiryStatus | undefined) => {
     setStatus(nextStatus);
-    setPage(0);
   };
 
   return (
@@ -107,7 +128,6 @@ export function InquiryRoomListPanel({
           value={assigneeId ?? ''}
           onChange={(e) => {
             setAssigneeId(e.target.value ? Number(e.target.value) : undefined);
-            setPage(0);
           }}
         >
           <option value="">담당자 전체</option>
@@ -121,7 +141,6 @@ export function InquiryRoomListPanel({
           value={categoryId ?? ''}
           onChange={(e) => {
             setCategoryId(e.target.value ? Number(e.target.value) : undefined);
-            setPage(0);
           }}
         >
           <option value="">카테고리 전체</option>
@@ -133,11 +152,13 @@ export function InquiryRoomListPanel({
         </FilterSelect>
       </FilterRow>
 
+      <RoomCount>총 {totalCount.toLocaleString()}건</RoomCount>
+
       <RoomList>
-        {rooms.content.length === 0 && (
+        {rooms.length === 0 && (
           <EmptyState>해당 조건의 문의가 없습니다.</EmptyState>
         )}
-        {rooms.content.map((room) => {
+        {rooms.map((room) => {
           const category = categories.find((c) => c.id === room.categoryId);
           return (
             <RoomItem
@@ -167,17 +188,11 @@ export function InquiryRoomListPanel({
             </RoomItem>
           );
         })}
+        <div ref={bottomSentinelRef} />
+        {isFetchingNextPage && (
+          <LoadingMore>다음 목록 불러오는 중...</LoadingMore>
+        )}
       </RoomList>
-
-      {rooms.totalElements > 0 && (
-        <Pagination
-          totalCount={rooms.totalElements}
-          totalPages={rooms.totalPages}
-          currentPage={rooms.number}
-          onPageChange={setPage}
-          countUnitLabel="건"
-        />
-      )}
     </Panel>
   );
 }
@@ -238,10 +253,25 @@ const FilterSelect = styled.select`
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
+const RoomCount = styled.div`
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
 const RoomList = styled.div`
   overflow-y: auto;
 
   flex: 1;
+`;
+
+const LoadingMore = styled.div`
+  padding: ${({ theme }) => theme.spacing.sm};
+
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  text-align: center;
 `;
 
 const RoomItem = styled('div', {
