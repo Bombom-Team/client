@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FiImage, FiSend, FiX } from 'react-icons/fi';
 import { uploadInquiryImages } from '@/apis/inquiries/inquiryMessages.api';
 import { useSendInquiryMessageMutation } from '@/apis/inquiries/inquiryMessages.query';
@@ -26,6 +26,14 @@ export function InquiryMessageInput({
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }, [content]);
 
   const { mutate: sendMessage, isPending: isSending } =
     useSendInquiryMessageMutation();
@@ -134,11 +142,13 @@ export function InquiryMessageInput({
           onChange={handleFileSelect}
         />
         <MessageTextarea
+          ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={disabled ? '종료된 문의입니다.' : '메시지를 입력하세요'}
           disabled={disabled}
+          rows={1}
         />
         <SendButton
           type="button"
@@ -228,9 +238,11 @@ const MessageTextarea = styled.textarea`
 
   flex: 1;
   min-height: 40px;
-  max-height: 120px;
+  max-height: 160px;
+  overflow-y: auto;
 
   font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.4;
   resize: none;
 
   &:focus {
