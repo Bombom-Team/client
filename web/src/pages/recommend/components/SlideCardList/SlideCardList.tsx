@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import BannerNavigation from './BannerNavigation';
 import LandingIntroBanner from '../LandingIntroBanner/LandingIntroBanner';
 import BlogOpenBanner from '../PromotionBanner/BlogOpenBanner';
 import InstagramPromotionBanner from '../PromotionBanner/InstagramPromotionBanner';
@@ -36,7 +37,7 @@ const SlideCardList = () => {
             </BannerWrapper>
           </Carousel.Slide>
         </Carousel.Slides>
-        <CarouselNavButtons />
+        {device === 'pc' ? <CarouselNavButtons /> : <BannerNavigation />}
       </Carousel.Root>
     </>
   );
