@@ -46,10 +46,20 @@ const SlideCardList = () => {
 export default SlideCardList;
 
 const BannerWrapper = styled.div<{ device: Device }>`
+  position: relative;
   width: 100%;
-  height: ${({ device }) => (device === 'mobile' ? '210px' : '280px')};
+  max-height: ${({ device }) => (device === 'mobile' ? '260px' : 'none')};
+
+  aspect-ratio: ${({ device }) => (device === 'mobile' ? '3 / 2' : '3 / 1')};
+  container-type: inline-size;
 
   > * {
+    position: absolute;
+    width: 100%;
     height: 100%;
+    min-width: 0;
+    min-height: 0;
+
+    inset: 0;
   }
 `;

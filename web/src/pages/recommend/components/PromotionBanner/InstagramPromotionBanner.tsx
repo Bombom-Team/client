@@ -23,11 +23,15 @@ const Container = styled.div`
   height: 100%;
   border-radius: 24px;
 
+  background-color: #fffdf8;
+
   cursor: pointer;
 
   > img {
     width: 100%;
     height: 100%;
+
+    display: block;
 
     object-fit: contain;
   }
