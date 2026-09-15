@@ -63,6 +63,7 @@ const Container = styled.div<{ device: Device }>`
 `;
 
 const MainContent = styled.div<{ device: Device }>`
+  width: 100%;
   max-width: 100%;
 
   display: flex;
