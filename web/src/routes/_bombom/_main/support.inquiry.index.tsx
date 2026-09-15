@@ -10,7 +10,7 @@ import InquiryCategoryModal from '@/pages/support/inquiry/components/InquiryCate
 import InquiryRoomListItem from '@/pages/support/inquiry/components/InquiryRoomListItem';
 import PlusIcon from '#/assets/svg/plus.svg';
 
-export const Route = createFileRoute('/support/inquiry/')({
+export const Route = createFileRoute('/_bombom/_main/support/inquiry/')({
   head: () => ({
     meta: [
       { title: '봄봄 | 1:1 문의하기' },
@@ -49,8 +49,7 @@ function InquiryRoomListPage() {
     <ContentWrapper>
       <Header>
         <NewInquiryButton variant="transparent" onClick={openModal}>
-          <PlusIcon width={16} height={16} />
-          새 문의
+          <PlusIcon width={16} height={16} />새 문의
         </NewInquiryButton>
       </Header>
 

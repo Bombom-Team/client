@@ -4,11 +4,10 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
 import Accordion from '@/components/Accordion/Accordion';
-import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
 import FaqCategoryFilter from '@/pages/support/components/FaqCategoryFilter';
 import type { FaqCategoryType } from '@/types/faq';
 
-export const Route = createFileRoute('/support/')({
+export const Route = createFileRoute('/_bombom/_main/support/')({
   head: () => ({
     meta: [
       {
@@ -98,8 +97,6 @@ function FaqPage() {
 
         <LoadMoreTrigger ref={loadMoreRef} />
       </FaqListWrapper>
-
-      <AppInstallPromptModal />
     </ContentWrapper>
   );
 }

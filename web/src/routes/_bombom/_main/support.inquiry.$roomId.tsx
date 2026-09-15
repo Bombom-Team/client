@@ -21,7 +21,7 @@ import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessa
 import { INQUIRY_ROOM_STATUS_LABELS } from '@/types/inquiry';
 import { compareDates } from '@/utils/date';
 
-export const Route = createFileRoute('/support/inquiry/$roomId')({
+export const Route = createFileRoute('/_bombom/_main/support/inquiry/$roomId')({
   head: () => ({
     meta: [
       { title: '봄봄 | 1:1 문의하기' },
@@ -38,7 +38,6 @@ function InquiryRoomDetailPage() {
   const isMobile = device !== 'pc';
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
-  const messageListRef = useRef<HTMLDivElement>(null);
   const hasScrolledToBottomRef = useRef(false);
 
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
@@ -60,9 +59,9 @@ function InquiryRoomDetailPage() {
 
   useEffect(() => {
     if (hasScrolledToBottomRef.current) return;
-    if (!messageListRef.current || messages.length === 0) return;
+    if (messages.length === 0) return;
 
-    messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    window.scrollTo(0, document.body.scrollHeight);
     hasScrolledToBottomRef.current = true;
   }, [messages]);
 
@@ -104,7 +103,7 @@ function InquiryRoomDetailPage() {
   });
 
   useEffect(() => {
-    if (!loadMoreRef.current || !messageListRef.current) return;
+    if (!loadMoreRef.current) return;
     if (!hasScrolledToBottomRef.current) return;
 
     const observer = new IntersectionObserver(
@@ -113,7 +112,7 @@ function InquiryRoomDetailPage() {
           fetchNextPage();
         }
       },
-      { root: messageListRef.current, threshold: 0.1 },
+      { threshold: 0.1 },
     );
 
     observer.observe(loadMoreRef.current);
@@ -132,7 +131,7 @@ function InquiryRoomDetailPage() {
         )}
       </Header>
 
-      <MessageList ref={messageListRef}>
+      <MessageList>
         <LoadMoreTrigger ref={loadMoreRef} />
         {messages.map((message, index) => {
           const prevMessage = messages[index - 1];
@@ -175,7 +174,6 @@ function InquiryRoomDetailPage() {
 
 const ChatCard = styled.div`
   width: 100%;
-  height: calc(100vh - 320px);
   max-width: 800px;
   margin: 0 auto;
 
@@ -202,10 +200,7 @@ const MessageList = styled.div`
 
   display: flex;
   gap: 12px;
-  flex: 1;
   flex-direction: column;
-
-  overflow-y: auto;
 `;
 
 const LoadMoreTrigger = styled.div`
