@@ -106,22 +106,23 @@ const InquiryMessageInput = ({
           disabled={disabled}
         />
 
-        <Button
-          onClick={handleSubmit}
-          disabled={
-            disabled ||
-            isSubmitting ||
-            isUploading ||
-            (!content.trim() && imageUrls.length === 0)
-          }
-        >
-          전송
-        </Button>
+        <SubmitColumn>
+          <CharCount>
+            {content.length} / {MAX_CONTENT_LENGTH}
+          </CharCount>
+          <Button
+            onClick={handleSubmit}
+            disabled={
+              disabled ||
+              isSubmitting ||
+              isUploading ||
+              (!content.trim() && imageUrls.length === 0)
+            }
+          >
+            전송
+          </Button>
+        </SubmitColumn>
       </InputRow>
-
-      <CharCount>
-        {content.length} / {MAX_CONTENT_LENGTH}
-      </CharCount>
     </Container>
   );
 };
@@ -183,11 +184,16 @@ const Textarea = styled.textarea`
   }
 `;
 
-const CharCount = styled.span`
-  align-self: flex-end;
+const SubmitColumn = styled.div`
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+  align-items: flex-end;
+`;
 
+const CharCount = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t3Regular};
+  font: ${({ theme }) => theme.fonts.t2Regular};
 `;
 
 const PreviewRow = styled.div`
