@@ -8,6 +8,7 @@ import useModal from '@/components/Modal/useModal';
 import { toast } from '@/components/Toast/utils/toastActions';
 import InquiryCategoryModal from '@/pages/support/inquiry/components/InquiryCategoryModal';
 import InquiryRoomListItem from '@/pages/support/inquiry/components/InquiryRoomListItem';
+import PlusIcon from '#/assets/svg/plus.svg';
 
 export const Route = createFileRoute('/support/inquiry/')({
   head: () => ({
@@ -47,7 +48,10 @@ function InquiryRoomListPage() {
   return (
     <ContentWrapper>
       <Header>
-        <Button onClick={openModal}>새 문의</Button>
+        <NewInquiryButton variant="transparent" onClick={openModal}>
+          <PlusIcon width={16} height={16} />
+          새 문의
+        </NewInquiryButton>
       </Header>
 
       {rooms.length === 0 ? (
@@ -81,6 +85,11 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+`;
+
+const NewInquiryButton = styled(Button)`
+  color: ${({ theme }) => theme.colors.primaryBomBom};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const RoomList = styled.div`
