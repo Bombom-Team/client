@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import Flex from '@/components/Flex';
+import { INSTAGRAM_URL } from '@/constants/socialLinks';
 import { useDevice } from '@/hooks/useDevice';
 import type { Device } from '@/hooks/useDevice';
 import InstagramIcon from '#/assets/svg/instagram.svg';
@@ -50,7 +51,7 @@ const BlogFooter = () => {
               />
             </SocialLink>
             <SocialLink
-              href="https://www.instagram.com/bombom___official"
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
