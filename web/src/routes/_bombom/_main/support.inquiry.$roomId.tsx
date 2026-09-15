@@ -5,8 +5,8 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
-import { Fragment, useEffect, useMemo, useRef } from 'react';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import {
   deleteInquiryMessage,
   sendInquiryMessage,
@@ -14,6 +14,7 @@ import {
 } from '@/apis/inquiry/inquiry.api';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
+import ChevronIcon from '@/components/icons/ChevronIcon';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { useDevice } from '@/hooks/useDevice';
 import InquiryMessageBubble from '@/pages/support/inquiry/components/InquiryMessageBubble';
@@ -43,6 +44,10 @@ function InquiryRoomDetailPage() {
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const hasScrolledToBottomRef = useRef(false);
+  const [editingMessage, setEditingMessage] = useState<{
+    id: number;
+    content: string;
+  } | null>(null);
 
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
   const room = roomsPage?.content.find((r) => r.id === roomId);
@@ -88,7 +93,7 @@ function InquiryRoomDetailPage() {
     },
   });
 
-  const { mutate: mutateUpdateMessage } = useMutation({
+  const { mutate: mutateUpdateMessage, isPending: isUpdating } = useMutation({
     mutationFn: ({
       messageId,
       content,
@@ -96,7 +101,10 @@ function InquiryRoomDetailPage() {
       messageId: number;
       content: string;
     }) => updateInquiryMessage(roomId, messageId, content),
-    onSuccess: invalidateMessages,
+    onSuccess: () => {
+      invalidateMessages();
+      setEditingMessage(null);
+    },
     onError: () => {
       toast.error('메시지 수정에 실패했습니다.');
     },
@@ -134,6 +142,11 @@ function InquiryRoomDetailPage() {
   return (
     <ChatCard>
       <Header>
+        <BackLink to="/support/inquiry">
+          <ChevronIcon direction="left" width={20} height={20} />
+          목록으로
+        </BackLink>
+
         {room && (
           <CreatedAtText>
             {formatDateToKorean(new Date(room.createdAt))}
@@ -172,8 +185,12 @@ function InquiryRoomDetailPage() {
                 message={message}
                 isOwnMessage={message.senderType === 'USER'}
                 isMobile={isMobile}
-                onEdit={(messageId, content) =>
-                  mutateUpdateMessage({ messageId, content })
+                isEditing={editingMessage?.id === message.id}
+                onStartEdit={() =>
+                  setEditingMessage({
+                    id: message.id,
+                    content: message.content,
+                  })
                 }
                 onDelete={(messageId) => mutateDeleteMessage(messageId)}
               />
@@ -189,6 +206,13 @@ function InquiryRoomDetailPage() {
           disabled={!isRoomsLoaded}
           isSubmitting={isSending}
           onSubmit={mutateSendMessage}
+          editingMessage={editingMessage}
+          isUpdating={isUpdating}
+          onSubmitEdit={(content) =>
+            editingMessage &&
+            mutateUpdateMessage({ messageId: editingMessage.id, content })
+          }
+          onCancelEdit={() => setEditingMessage(null)}
         />
       )}
     </ChatCard>
@@ -211,6 +235,18 @@ const Header = styled.div`
   display: flex;
   gap: 2px;
   flex-direction: column;
+`;
+
+const BackLink = styled(Link)`
+  margin-bottom: 8px;
+
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t5Regular};
+  text-decoration: none;
 `;
 
 const CreatedAtText = styled.span`
@@ -238,7 +274,7 @@ const CategoryText = styled.span`
 `;
 
 const MessageList = styled.div`
-  padding: 16px 0;
+  padding: 4px 0;
 
   display: flex;
   gap: 12px;

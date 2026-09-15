@@ -1,7 +1,6 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
@@ -14,7 +13,8 @@ interface InquiryMessageBubbleProps {
   message: InquiryMessage;
   isOwnMessage: boolean;
   isMobile: boolean;
-  onEdit: (messageId: number, content: string) => void;
+  isEditing: boolean;
+  onStartEdit: () => void;
   onDelete: (messageId: number) => void;
 }
 
@@ -22,18 +22,12 @@ const InquiryMessageBubble = ({
   message,
   isOwnMessage,
   isMobile,
-  onEdit,
+  isEditing,
+  onStartEdit,
   onDelete,
 }: InquiryMessageBubbleProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(message.content);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { modalRef, isOpen, openModal, closeModal } = useModal();
-
-  const handleSubmitEdit = () => {
-    onEdit(message.id, editValue);
-    setIsEditing(false);
-  };
 
   const handleImageClick = (url: string) => {
     setPreviewUrl(url);
@@ -48,7 +42,7 @@ const InquiryMessageBubble = ({
             <ActionButton
               type="button"
               aria-label="메시지 수정"
-              onClick={() => setIsEditing(true)}
+              onClick={onStartEdit}
             >
               <EditIcon
                 fill={theme.colors.textSecondary}
@@ -74,42 +68,30 @@ const InquiryMessageBubble = ({
           </ActionMenu>
         )}
 
-        <Bubble isOwnMessage={isOwnMessage} isMobile={isMobile}>
-          {isEditing ? (
-            <EditWrapper>
-              <EditTextarea
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                maxLength={500}
-              />
-              <Button onClick={handleSubmitEdit}>저장</Button>
-              <Button variant="transparent" onClick={() => setIsEditing(false)}>
-                취소
-              </Button>
-            </EditWrapper>
-          ) : (
-            <>
-              {message.content && <Content>{message.content}</Content>}
-              {message.imageUrls.length > 0 && (
-                <ImageGrid>
-                  {message.imageUrls.map((url) => (
-                    <ImageThumbnailButton
-                      key={url}
-                      type="button"
-                      aria-label="첨부 이미지 크게 보기"
-                      onClick={() => handleImageClick(url)}
-                    >
-                      <ImageWithFallback
-                        src={url}
-                        alt="첨부 이미지"
-                        width={140}
-                        height={140}
-                      />
-                    </ImageThumbnailButton>
-                  ))}
-                </ImageGrid>
-              )}
-            </>
+        <Bubble
+          isOwnMessage={isOwnMessage}
+          isMobile={isMobile}
+          isEditing={isEditing}
+        >
+          {message.content && <Content>{message.content}</Content>}
+          {message.imageUrls.length > 0 && (
+            <ImageGrid>
+              {message.imageUrls.map((url) => (
+                <ImageThumbnailButton
+                  key={url}
+                  type="button"
+                  aria-label="첨부 이미지 크게 보기"
+                  onClick={() => handleImageClick(url)}
+                >
+                  <ImageWithFallback
+                    src={url}
+                    alt="첨부 이미지"
+                    width={140}
+                    height={140}
+                  />
+                </ImageThumbnailButton>
+              ))}
+            </ImageGrid>
           )}
         </Bubble>
       </BubbleRow>
@@ -154,18 +136,26 @@ const BubbleRow = styled.div<{ isOwnMessage: boolean }>`
     isOwnMessage ? 'flex-end' : 'flex-start'};
 `;
 
-const Bubble = styled.div<{ isOwnMessage: boolean; isMobile: boolean }>`
+const Bubble = styled.div<{
+  isOwnMessage: boolean;
+  isMobile: boolean;
+  isEditing: boolean;
+}>`
   flex-shrink: 0;
   width: fit-content;
   max-width: ${({ isMobile }) => (isMobile ? 'calc(100% - 60px)' : '520px')};
   padding: 12px 16px;
   border-radius: 16px;
+  outline: ${({ isEditing, theme }) =>
+    isEditing ? `2px solid ${theme.colors.primaryBomBom}` : 'none'};
+  outline-offset: 2px;
 
   background: ${({ isOwnMessage, theme }) =>
     isOwnMessage ? theme.colors.primaryBomBom : theme.colors.dividers};
   color: ${({ isOwnMessage, theme }) =>
     isOwnMessage ? theme.colors.white : theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t6Regular};
+  opacity: ${({ isEditing }) => (isEditing ? 0.6 : 1)};
 `;
 
 const Content = styled.p`
@@ -235,19 +225,4 @@ const ActionButton = styled.button`
 const DateText = styled.span<{ isOwnMessage: boolean }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t2Regular};
-`;
-
-const EditWrapper = styled.div`
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-`;
-
-const EditTextarea = styled.textarea`
-  width: 100%;
-  min-height: 60px;
-  padding: 8px;
-  border-radius: 8px;
-
-  font: ${({ theme }) => theme.fonts.t6Regular};
 `;

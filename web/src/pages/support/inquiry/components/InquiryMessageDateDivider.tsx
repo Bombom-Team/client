@@ -14,7 +14,7 @@ const InquiryMessageDateDivider = ({
 export default InquiryMessageDateDivider;
 
 const DateDivider = styled.div`
-  margin: 8px 0;
+  margin: 4px 0;
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t2Regular};
