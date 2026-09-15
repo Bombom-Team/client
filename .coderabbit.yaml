@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: ko-KR
+
+tone_instructions: >
+  한국어로 간결하게 작성하세요. 실제 변경 라인, 발생 조건, 사용자 또는 운영 영향을
+  설명하고, 근거 없는 개선 제안과 스타일 의견은 남기지 마세요.
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - files: 'CONVENTIONS.md'
+        applyTo: '**/*'
+      - files: 'docs/ai-rules.md'
+        applyTo: '**/*'
+      - files: 'docs/architecture.md'
+        applyTo: '{web,app,admin,maeil-mail,shared}/**/*'
+      - files: 'docs/frontend-coding-standards.md'
+        applyTo: '{web,admin,maeil-mail}/**/*'
+      - files: '.review-learnings/REVIEW.md'
+        applyTo: '**/*'
+      - files: '.review-learnings/additional-rules.md'
+        applyTo: 'web/**/*'
+      - files: '.review-learnings/false-positives.md'
+        applyTo: '{web,admin,maeil-mail}/**/*'
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+    base_branches:
+      - 'dev'
+    auto_pause_after_reviewed_commits: 0
+    ignore_title_keywords:
+      - 'WIP'
+      - '[skip review]'
+  path_filters:
+    - '!**/*.gen.ts'
+    - '!**/*.generated.*'
+    - '!**/openapi.d.ts'
+    - '!**/generated/**'
+    - '!**/pnpm-lock.yaml'
+    - '!**/*.lock'
