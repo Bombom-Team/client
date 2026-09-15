@@ -3,6 +3,8 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
+import Modal from '@/components/Modal/Modal';
+import useModal from '@/components/Modal/useModal';
 import { formatTimeToKorean } from '@/utils/date';
 import type { InquiryMessage } from '@/types/inquiry';
 import DeleteIcon from '#/assets/svg/delete.svg';
@@ -25,10 +27,17 @@ const InquiryMessageBubble = ({
 }: InquiryMessageBubbleProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(message.content);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const { modalRef, isOpen, openModal, closeModal } = useModal();
 
   const handleSubmitEdit = () => {
     onEdit(message.id, editValue);
     setIsEditing(false);
+  };
+
+  const handleImageClick = (url: string) => {
+    setPreviewUrl(url);
+    openModal();
   };
 
   return (
@@ -84,13 +93,19 @@ const InquiryMessageBubble = ({
               {message.imageUrls.length > 0 && (
                 <ImageGrid>
                   {message.imageUrls.map((url) => (
-                    <ImageWithFallback
+                    <ImageThumbnailButton
                       key={url}
-                      src={url}
-                      alt="첨부 이미지"
-                      width={96}
-                      height={96}
-                    />
+                      type="button"
+                      aria-label="첨부 이미지 크게 보기"
+                      onClick={() => handleImageClick(url)}
+                    >
+                      <ImageWithFallback
+                        src={url}
+                        alt="첨부 이미지"
+                        width={140}
+                        height={140}
+                      />
+                    </ImageThumbnailButton>
                   ))}
                 </ImageGrid>
               )}
@@ -102,6 +117,17 @@ const InquiryMessageBubble = ({
       <DateText isOwnMessage={isOwnMessage}>
         {formatTimeToKorean(new Date(message.createdAt))}
       </DateText>
+
+      <Modal
+        isOpen={isOpen}
+        modalRef={modalRef}
+        closeModal={closeModal}
+        position="center"
+      >
+        {previewUrl && (
+          <PreviewImage src={previewUrl} alt="첨부 이미지 크게 보기" />
+        )}
+      </Modal>
     </BubbleColumn>
   );
 };
@@ -153,8 +179,36 @@ const ImageGrid = styled.div`
   margin-top: 8px;
 
   display: flex;
-  gap: 4px;
+  gap: 8px;
   flex-wrap: wrap;
+`;
+
+const ImageThumbnailButton = styled.button`
+  overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
+  border-radius: 12px;
+
+  display: block;
+
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  img {
+    display: block;
+
+    object-fit: cover;
+  }
+`;
+
+const PreviewImage = styled.img`
+  max-width: 90vw;
+  max-height: 80vh;
+  border-radius: 12px;
+
+  object-fit: contain;
 `;
 
 const ActionMenu = styled.div`
