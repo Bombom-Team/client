@@ -45,7 +45,6 @@ jobs:
       - name: Build
         if: inputs.run-build == true
         env:
-          CHANNEL_TALK_PLUGIN_KEY: ${{ secrets.CHANNEL_TALK_PLUGIN_KEY }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
