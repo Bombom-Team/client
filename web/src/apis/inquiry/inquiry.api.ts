@@ -8,7 +8,7 @@ import type {
   InquiryRoom,
 } from '@/types/inquiry';
 
-const guestHeaders = (): HeadersInit => ({
+const guestHeaders = (): Record<string, string> => ({
   'X-Guest-Id': getOrCreateGuestId(),
 });
 

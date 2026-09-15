@@ -18,7 +18,7 @@ type FetcherOptions<TRequest extends JsonBody> = {
   baseUrl?: string;
   query?: Query;
   body?: TRequest;
-  headers?: HeadersInit;
+  headers?: Record<string, string>;
 };
 
 type GetFetcherOptions = FetcherOptions<never> & {
@@ -99,7 +99,7 @@ type RequestOptions<TRequest> = {
   method: FetchMethod;
   query?: Query;
   body?: TRequest;
-  headers?: HeadersInit;
+  headers?: Record<string, string>;
   credentials?: RequestCredentials;
 };
 
