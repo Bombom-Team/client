@@ -13,12 +13,16 @@ import {
   updateInquiryMessage,
 } from '@/apis/inquiry/inquiry.api';
 import { queries } from '@/apis/queries';
+import Badge from '@/components/Badge/Badge';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { useDevice } from '@/hooks/useDevice';
 import InquiryMessageBubble from '@/pages/support/inquiry/components/InquiryMessageBubble';
 import InquiryMessageDateDivider from '@/pages/support/inquiry/components/InquiryMessageDateDivider';
 import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessageInput';
-import { INQUIRY_ROOM_STATUS_LABELS } from '@/types/inquiry';
+import {
+  INQUIRY_ROOM_STATUS_BADGE_VARIANTS,
+  INQUIRY_ROOM_STATUS_LABELS,
+} from '@/types/inquiry';
 import { compareDates } from '@/utils/date';
 
 export const Route = createFileRoute('/_bombom/_main/support/inquiry/$roomId')({
@@ -42,6 +46,10 @@ function InquiryRoomDetailPage() {
 
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
   const room = roomsPage?.content.find((r) => r.id === roomId);
+  const { data: categories } = useQuery(queries.inquiryCategories());
+  const categoryName = categories?.find(
+    (category) => category.id === room?.categoryId,
+  )?.name;
 
   const {
     data: messagePages,
@@ -126,8 +134,12 @@ function InquiryRoomDetailPage() {
   return (
     <ChatCard>
       <Header>
+        {categoryName && <CategoryText>{categoryName}</CategoryText>}
         {room && (
-          <StatusText>{INQUIRY_ROOM_STATUS_LABELS[room.status]}</StatusText>
+          <Badge
+            text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
+            variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
+          />
         )}
       </Header>
 
@@ -187,12 +199,12 @@ const Header = styled.div`
 
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
 `;
 
-const StatusText = styled.span`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
+const CategoryText = styled.span`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t5Bold};
 `;
 
 const MessageList = styled.div`

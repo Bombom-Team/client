@@ -24,6 +24,7 @@ function InquiryRoomListPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
+  const { data: categories } = useQuery(queries.inquiryCategories());
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
   const { mutate: mutateCreateRoom, isPending } = useMutation({
@@ -58,7 +59,14 @@ function InquiryRoomListPage() {
       ) : (
         <RoomList>
           {rooms.map((room) => (
-            <InquiryRoomListItem key={room.id} room={room} />
+            <InquiryRoomListItem
+              key={room.id}
+              room={room}
+              categoryName={
+                categories?.find((category) => category.id === room.categoryId)
+                  ?.name
+              }
+            />
           ))}
         </RoomList>
       )}

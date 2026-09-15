@@ -35,3 +35,13 @@ export const INQUIRY_ROOM_STATUS_LABELS: Record<InquiryRoomStatus, string> = {
   DONE: '답변완료',
   ON_HOLD: '보류',
 };
+
+export const INQUIRY_ROOM_STATUS_BADGE_VARIANTS: Record<
+  InquiryRoomStatus,
+  'default' | 'outlinePrimary'
+> = {
+  UNCONFIRMED: 'outlinePrimary',
+  IN_PROGRESS: 'outlinePrimary',
+  DONE: 'default',
+  ON_HOLD: 'default',
+};

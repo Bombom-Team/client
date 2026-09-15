@@ -97,31 +97,31 @@ const InquiryMessageInput = ({
           onChange={handleFileChange}
         />
 
-        <Textarea
-          value={content}
-          onChange={(e) =>
-            setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
-          }
-          placeholder="문의 내용을 입력해주세요"
-          disabled={disabled}
-        />
-
-        <SubmitColumn>
+        <TextareaWrapper>
+          <Textarea
+            value={content}
+            onChange={(e) =>
+              setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
+            }
+            placeholder="문의 내용을 입력해주세요"
+            disabled={disabled}
+          />
           <CharCount>
             {content.length} / {MAX_CONTENT_LENGTH}
           </CharCount>
-          <Button
-            onClick={handleSubmit}
-            disabled={
-              disabled ||
-              isSubmitting ||
-              isUploading ||
-              (!content.trim() && imageUrls.length === 0)
-            }
-          >
-            전송
-          </Button>
-        </SubmitColumn>
+        </TextareaWrapper>
+
+        <Button
+          onClick={handleSubmit}
+          disabled={
+            disabled ||
+            isSubmitting ||
+            isUploading ||
+            (!content.trim() && imageUrls.length === 0)
+          }
+        >
+          전송
+        </Button>
       </InputRow>
     </Container>
   );
@@ -166,14 +166,19 @@ const HiddenFileInput = styled.input`
   display: none;
 `;
 
-const Textarea = styled.textarea`
-  min-height: 36px;
-  max-height: 120px;
-  padding: 8px 12px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 12px;
+const TextareaWrapper = styled.div`
+  position: relative;
 
   flex: 1;
+`;
+
+const Textarea = styled.textarea`
+  width: 100%;
+  min-height: 36px;
+  max-height: 120px;
+  padding: 8px 44px 20px 12px;
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
+  border-radius: 12px;
 
   font: ${({ theme }) => theme.fonts.t6Regular};
 
@@ -184,16 +189,15 @@ const Textarea = styled.textarea`
   }
 `;
 
-const SubmitColumn = styled.div`
-  display: flex;
-  gap: 4px;
-  flex-direction: column;
-  align-items: flex-end;
-`;
-
 const CharCount = styled.span`
+  position: absolute;
+  right: 12px;
+  bottom: 6px;
+
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t2Regular};
+
+  pointer-events: none;
 `;
 
 const PreviewRow = styled.div`
