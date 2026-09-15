@@ -1,5 +1,4 @@
-import { ApiError, fetcher } from '@bombom/shared/apis';
-import { ENV } from '@bombom/shared/env';
+import { fetcher } from '@bombom/shared/apis';
 import { getOrCreateGuestId } from '@/utils/guestId';
 import type { PageableResponse } from '@/apis/types/PageableResponse';
 import type {
@@ -89,32 +88,13 @@ export const deleteInquiryMessage = (roomId: number, messageId: number) =>
 
 export type InquiryImageUploadResponse = { imageUrls: string[] };
 
-export const uploadInquiryImages = async (
-  images: File[],
-): Promise<InquiryImageUploadResponse> => {
+export const uploadInquiryImages = (images: File[]) => {
   const formData = new FormData();
   images.forEach((image) => formData.append('images', image));
 
-  const res = await fetch(`${ENV.baseUrl}/inquiries/images`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: guestHeaders(),
+  return fetcher.post<FormData, InquiryImageUploadResponse>({
+    path: '/inquiries/images',
     body: formData,
+    headers: guestHeaders(),
   });
-
-  if (!res.ok) {
-    let rawBody;
-    try {
-      rawBody = await res.json();
-    } catch {
-      rawBody = await res.text();
-    }
-    throw new ApiError(
-      res.status,
-      rawBody?.message ?? '이미지 업로드에 실패했습니다.',
-      rawBody,
-    );
-  }
-
-  return res.json() as Promise<InquiryImageUploadResponse>;
 };

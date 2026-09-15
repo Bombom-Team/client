@@ -10,7 +10,7 @@ const DEFAULT_ERROR_MESSAGES: Record<number, string> = {
   500: '서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
 };
 
-type JsonBody = Record<string, unknown> | unknown[];
+type JsonBody = Record<string, unknown> | unknown[] | FormData;
 type Query = Record<string, string | number | boolean | undefined | string[]>;
 
 type FetcherOptions<TRequest extends JsonBody> = {
@@ -88,7 +88,13 @@ export const fetcher = {
     body,
     headers,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, baseUrl, body, method: 'DELETE', headers }),
+    request<TRequest, TResponse>({
+      path,
+      baseUrl,
+      body,
+      method: 'DELETE',
+      headers,
+    }),
 };
 
 type FetchMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
@@ -121,17 +127,19 @@ const request = async <TRequest, TResponse>({
     );
     url.search = new URLSearchParams(stringifiedQuery).toString();
 
+    const isFormData = body instanceof FormData;
+
     const config: RequestInit = {
       method,
       credentials,
       headers: {
-        'Content-Type': 'application/json',
+        ...(!isFormData && { 'Content-Type': 'application/json' }),
         ...headers,
       },
     };
 
     if (body && (method === 'POST' || method === 'PATCH' || method === 'PUT')) {
-      config.body = JSON.stringify(body);
+      config.body = isFormData ? body : JSON.stringify(body);
     }
 
     const response = await fetch(url, config);
