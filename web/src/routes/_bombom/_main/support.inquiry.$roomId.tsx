@@ -23,7 +23,7 @@ import {
   INQUIRY_ROOM_STATUS_BADGE_VARIANTS,
   INQUIRY_ROOM_STATUS_LABELS,
 } from '@/types/inquiry';
-import { compareDates } from '@/utils/date';
+import { compareDates, formatDateToKorean } from '@/utils/date';
 
 export const Route = createFileRoute('/_bombom/_main/support/inquiry/$roomId')({
   head: () => ({
@@ -134,13 +134,24 @@ function InquiryRoomDetailPage() {
   return (
     <ChatCard>
       <Header>
-        {categoryName && <CategoryText>{categoryName}</CategoryText>}
         {room && (
-          <Badge
-            text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
-            variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
-          />
+          <CreatedAtText>
+            {formatDateToKorean(new Date(room.createdAt))}
+          </CreatedAtText>
         )}
+
+        <HeaderRow>
+          <HeaderSpacer />
+          {categoryName && <CategoryText>{categoryName}</CategoryText>}
+          <HeaderSpacer>
+            {room && (
+              <Badge
+                text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
+                variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
+              />
+            )}
+          </HeaderSpacer>
+        </HeaderRow>
       </Header>
 
       <MessageList>
@@ -194,17 +205,36 @@ const ChatCard = styled.div`
 `;
 
 const Header = styled.div`
-  padding: 0 0 16px;
+  padding: 0 0 12px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.stroke};
 
+  display: flex;
+  gap: 2px;
+  flex-direction: column;
+`;
+
+const CreatedAtText = styled.span`
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.t3Regular};
+  text-align: center;
+`;
+
+const HeaderRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
+const HeaderSpacer = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+`;
+
 const CategoryText = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Bold};
+  text-align: center;
 `;
 
 const MessageList = styled.div`

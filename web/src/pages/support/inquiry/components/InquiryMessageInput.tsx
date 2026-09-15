@@ -1,9 +1,32 @@
+import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useRef, useState } from 'react';
 import { uploadInquiryImages } from '@/apis/inquiry/inquiry.api';
 import Button from '@/components/Button/Button';
 import { toast } from '@/components/Toast/utils/toastActions';
 import type { ChangeEvent } from 'react';
+
+const PhotoIcon = ({ color }: { color: string }) => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <rect
+      x="2.5"
+      y="3.75"
+      width="15"
+      height="12.5"
+      rx="2"
+      stroke={color}
+      strokeWidth="1.5"
+    />
+    <circle cx="6.5" cy="7.5" r="1.25" fill={color} />
+    <path
+      d="M4 15l4.5-5 3 3.5 2-2.5 3.5 4"
+      stroke={color}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 interface InquiryMessageInputProps {
   disabled?: boolean;
@@ -80,15 +103,6 @@ const InquiryMessageInput = ({
       )}
 
       <InputRow>
-        <AttachButton
-          type="button"
-          disabled={
-            disabled || isUploading || imageUrls.length >= MAX_IMAGE_COUNT
-          }
-          onClick={() => fileInputRef.current?.click()}
-        >
-          +
-        </AttachButton>
         <HiddenFileInput
           ref={fileInputRef}
           type="file"
@@ -106,6 +120,16 @@ const InquiryMessageInput = ({
             placeholder="문의 내용을 입력해주세요"
             disabled={disabled}
           />
+          <AttachButton
+            type="button"
+            aria-label="이미지 첨부"
+            disabled={
+              disabled || isUploading || imageUrls.length >= MAX_IMAGE_COUNT
+            }
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <PhotoIcon color={theme.colors.textSecondary} />
+          </AttachButton>
           <CharCount>
             {content.length} / {MAX_CONTENT_LENGTH}
           </CharCount>
@@ -145,16 +169,13 @@ const InputRow = styled.div`
 `;
 
 const AttachButton = styled.button`
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background: ${({ theme }) => theme.colors.dividers};
-  font: ${({ theme }) => theme.fonts.t6Bold};
 
   &:disabled {
     cursor: not-allowed;
@@ -174,12 +195,13 @@ const TextareaWrapper = styled.div`
 
 const Textarea = styled.textarea`
   width: 100%;
-  min-height: 36px;
+  min-height: 44px;
   max-height: 120px;
-  padding: 8px 44px 20px 12px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
-  border-radius: 12px;
+  padding: 12px 44px 20px 16px;
+  border: none;
+  border-radius: 22px;
 
+  background: ${({ theme }) => theme.colors.dividers};
   font: ${({ theme }) => theme.fonts.t6Regular};
 
   resize: none;
@@ -191,8 +213,8 @@ const Textarea = styled.textarea`
 
 const CharCount = styled.span`
   position: absolute;
-  right: 12px;
-  bottom: 6px;
+  bottom: 8px;
+  left: 16px;
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t2Regular};
