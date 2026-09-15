@@ -17,6 +17,7 @@ import Badge from '@/components/Badge/Badge';
 import ChevronIcon from '@/components/icons/ChevronIcon';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { useDevice } from '@/hooks/useDevice';
+import { useIntersectionTrigger } from '@/hooks/useIntersectionTrigger';
 import InquiryMessageBubble from '@/pages/support/inquiry/components/InquiryMessageBubble';
 import InquiryMessageDateDivider from '@/pages/support/inquiry/components/InquiryMessageDateDivider';
 import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessageInput';
@@ -118,23 +119,14 @@ function InquiryRoomDetailPage() {
     },
   });
 
-  useEffect(() => {
-    if (!loadMoreRef.current) return;
-    if (!hasScrolledToBottomRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    observer.observe(loadMoreRef.current);
-
-    return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage, messages.length]);
+  useIntersectionTrigger({
+    targetRef: loadMoreRef,
+    enabled:
+      hasScrolledToBottomRef.current &&
+      Boolean(hasNextPage) &&
+      !isFetchingNextPage,
+    onIntersect: fetchNextPage,
+  });
 
   const isRoomsLoaded = roomsPage !== undefined;
   const canSendMessage = room?.status !== undefined && room.status !== 'DONE';

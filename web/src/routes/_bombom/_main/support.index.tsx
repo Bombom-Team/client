@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
 import Accordion from '@/components/Accordion/Accordion';
+import { useIntersectionTrigger } from '@/hooks/useIntersectionTrigger';
 import FaqCategoryFilter from '@/pages/support/components/FaqCategoryFilter';
 import type { FaqCategoryType } from '@/types/faq';
 
@@ -45,22 +46,11 @@ function FaqPage() {
     [faqPages],
   );
 
-  useEffect(() => {
-    if (!loadMoreRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    observer.observe(loadMoreRef.current);
-
-    return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  useIntersectionTrigger({
+    targetRef: loadMoreRef,
+    enabled: Boolean(hasNextPage) && !isFetchingNextPage,
+    onIntersect: fetchNextPage,
+  });
 
   const handleToggleFaq = (faqId: number) => {
     setOpenFaqId((prev) => (prev === faqId ? null : faqId));
