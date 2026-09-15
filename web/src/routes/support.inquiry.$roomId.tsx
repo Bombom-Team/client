@@ -6,7 +6,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useMemo, useRef } from 'react';
+import { Fragment, useEffect, useMemo, useRef } from 'react';
 import {
   deleteInquiryMessage,
   sendInquiryMessage,
@@ -14,9 +14,12 @@ import {
 } from '@/apis/inquiry/inquiry.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
+import { useDevice } from '@/hooks/useDevice';
 import InquiryMessageBubble from '@/pages/support/inquiry/components/InquiryMessageBubble';
+import InquiryMessageDateDivider from '@/pages/support/inquiry/components/InquiryMessageDateDivider';
 import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessageInput';
 import { INQUIRY_ROOM_STATUS_LABELS } from '@/types/inquiry';
+import { compareDates } from '@/utils/date';
 
 export const Route = createFileRoute('/support/inquiry/$roomId')({
   head: () => ({
@@ -31,6 +34,8 @@ export const Route = createFileRoute('/support/inquiry/$roomId')({
 function InquiryRoomDetailPage() {
   const { roomId: roomIdParam } = Route.useParams();
   const roomId = Number(roomIdParam);
+  const device = useDevice();
+  const isMobile = device !== 'pc';
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const messageListRef = useRef<HTMLDivElement>(null);
@@ -129,17 +134,30 @@ function InquiryRoomDetailPage() {
 
       <MessageList ref={messageListRef}>
         <LoadMoreTrigger ref={loadMoreRef} />
-        {messages.map((message) => (
-          <InquiryMessageBubble
-            key={message.id}
-            message={message}
-            isOwnMessage={message.senderType === 'USER'}
-            onEdit={(messageId, content) =>
-              mutateUpdateMessage({ messageId, content })
-            }
-            onDelete={(messageId) => mutateDeleteMessage(messageId)}
-          />
-        ))}
+        {messages.map((message, index) => {
+          const prevMessage = messages[index - 1];
+          const messageDate = new Date(message.createdAt);
+          const showDateDivider =
+            !prevMessage ||
+            compareDates(new Date(prevMessage.createdAt), messageDate) !== 0;
+
+          return (
+            <Fragment key={message.id}>
+              {showDateDivider && (
+                <InquiryMessageDateDivider date={messageDate} />
+              )}
+              <InquiryMessageBubble
+                message={message}
+                isOwnMessage={message.senderType === 'USER'}
+                isMobile={isMobile}
+                onEdit={(messageId, content) =>
+                  mutateUpdateMessage({ messageId, content })
+                }
+                onDelete={(messageId) => mutateDeleteMessage(messageId)}
+              />
+            </Fragment>
+          );
+        })}
       </MessageList>
 
       {isRoomsLoaded && !canSendMessage ? (
