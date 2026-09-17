@@ -45,7 +45,7 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
             {userProfile ? (
               <HeaderProfile userProfile={userProfile} device="pc" />
             ) : (
-              <LoginButton />
+              <HeaderLoginButton />
             )}
           </UserInfoWrapper>
         </HeaderInner>
@@ -108,4 +108,8 @@ const UserInfoWrapper = styled.div`
   gap: 4px;
   align-items: center;
   justify-content: flex-end;
+`;
+
+const HeaderLoginButton = styled(LoginButton)`
+  margin-left: 12px;
 `;
