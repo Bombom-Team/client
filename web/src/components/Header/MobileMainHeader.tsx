@@ -32,7 +32,7 @@ const MobileMainHeader = () => {
           {userProfile ? (
             <HeaderProfile userProfile={userProfile} device="mobile" />
           ) : (
-            <LoginButton />
+            <HeaderLoginButton />
           )}
         </UserInfoWrapper>
       </MainRow>
@@ -87,4 +87,8 @@ const NavButton = styled(Button)`
   :hover {
     background: none;
   }
+`;
+
+const HeaderLoginButton = styled(LoginButton)`
+  margin-left: 8px;
 `;
