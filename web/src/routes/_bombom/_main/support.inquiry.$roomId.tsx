@@ -65,9 +65,6 @@ function InquiryRoomDetailPage() {
     if (!isMessagesLoaded) return;
 
     queryClient.invalidateQueries({
-      queryKey: queries.inquiryUnreadStatus().queryKey,
-    });
-    queryClient.invalidateQueries({
       queryKey: queries.inquiryRooms().queryKey,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
