@@ -69,17 +69,6 @@ export const sendInquiryMessage = (
     headers: guestHeaders(),
   });
 
-export const updateInquiryMessage = (
-  roomId: number,
-  messageId: number,
-  content: string,
-) =>
-  fetcher.patch<{ content: string }, InquiryMessage>({
-    path: `/inquiries/rooms/${roomId}/messages/${messageId}`,
-    body: { content },
-    headers: guestHeaders(),
-  });
-
 export const deleteInquiryMessage = (roomId: number, messageId: number) =>
   fetcher.delete<never, void>({
     path: `/inquiries/rooms/${roomId}/messages/${messageId}`,

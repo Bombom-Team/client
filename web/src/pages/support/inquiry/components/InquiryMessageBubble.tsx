@@ -7,14 +7,11 @@ import useModal from '@/components/Modal/useModal';
 import { formatTimeToKorean } from '@/utils/date';
 import type { InquiryMessage } from '@/types/inquiry';
 import DeleteIcon from '#/assets/svg/delete.svg';
-import EditIcon from '#/assets/svg/edit.svg';
 
 interface InquiryMessageBubbleProps {
   message: InquiryMessage;
   isOwnMessage: boolean;
   isMobile: boolean;
-  isEditing: boolean;
-  onStartEdit: () => void;
   onDelete: (messageId: number) => void;
 }
 
@@ -22,8 +19,6 @@ const InquiryMessageBubble = ({
   message,
   isOwnMessage,
   isMobile,
-  isEditing,
-  onStartEdit,
   onDelete,
 }: InquiryMessageBubbleProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -37,19 +32,8 @@ const InquiryMessageBubble = ({
   return (
     <BubbleColumn isOwnMessage={isOwnMessage}>
       <BubbleRow isOwnMessage={isOwnMessage}>
-        {isOwnMessage && !isEditing && (
+        {isOwnMessage && (
           <ActionMenu>
-            <ActionButton
-              type="button"
-              aria-label="메시지 수정"
-              onClick={onStartEdit}
-            >
-              <EditIcon
-                fill={theme.colors.textSecondary}
-                width={16}
-                height={16}
-              />
-            </ActionButton>
             <ActionButton
               type="button"
               aria-label="메시지 삭제"
@@ -68,11 +52,7 @@ const InquiryMessageBubble = ({
           </ActionMenu>
         )}
 
-        <Bubble
-          isOwnMessage={isOwnMessage}
-          isMobile={isMobile}
-          isEditing={isEditing}
-        >
+        <Bubble isOwnMessage={isOwnMessage} isMobile={isMobile}>
           {message.content && <Content>{message.content}</Content>}
           {message.imageUrls.length > 0 && (
             <ImageGrid>
@@ -139,23 +119,18 @@ const BubbleRow = styled.div<{ isOwnMessage: boolean }>`
 const Bubble = styled.div<{
   isOwnMessage: boolean;
   isMobile: boolean;
-  isEditing: boolean;
 }>`
   flex-shrink: 0;
   width: fit-content;
   max-width: ${({ isMobile }) => (isMobile ? 'calc(100% - 60px)' : '520px')};
   padding: 12px 16px;
   border-radius: 16px;
-  outline: ${({ isEditing, theme }) =>
-    isEditing ? `2px solid ${theme.colors.primaryBomBom}` : 'none'};
-  outline-offset: 2px;
 
   background: ${({ isOwnMessage, theme }) =>
     isOwnMessage ? theme.colors.primaryBomBom : theme.colors.dividers};
   color: ${({ isOwnMessage, theme }) =>
     isOwnMessage ? theme.colors.white : theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t6Regular};
-  opacity: ${({ isEditing }) => (isEditing ? 0.6 : 1)};
 `;
 
 const Content = styled.p`

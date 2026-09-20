@@ -6,11 +6,10 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef } from 'react';
 import {
   deleteInquiryMessage,
   sendInquiryMessage,
-  updateInquiryMessage,
 } from '@/apis/inquiry/inquiry.api';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
@@ -45,10 +44,6 @@ function InquiryRoomDetailPage() {
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const hasScrolledToBottomRef = useRef(false);
-  const [editingMessage, setEditingMessage] = useState<{
-    id: number;
-    content: string;
-  } | null>(null);
 
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
   const room = roomsPage?.content.find((r) => r.id === roomId);
@@ -63,6 +58,20 @@ function InquiryRoomDetailPage() {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery(queries.inquiryMessages(roomId));
+
+  const isMessagesLoaded = messagePages !== undefined;
+
+  useEffect(() => {
+    if (!isMessagesLoaded) return;
+
+    queryClient.invalidateQueries({
+      queryKey: queries.inquiryUnreadStatus().queryKey,
+    });
+    queryClient.invalidateQueries({
+      queryKey: queries.inquiryRooms().queryKey,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMessagesLoaded]);
 
   const messages = useMemo(
     () =>
@@ -91,23 +100,6 @@ function InquiryRoomDetailPage() {
     onSuccess: invalidateMessages,
     onError: () => {
       toast.error('메시지 전송에 실패했습니다.');
-    },
-  });
-
-  const { mutate: mutateUpdateMessage, isPending: isUpdating } = useMutation({
-    mutationFn: ({
-      messageId,
-      content,
-    }: {
-      messageId: number;
-      content: string;
-    }) => updateInquiryMessage(roomId, messageId, content),
-    onSuccess: () => {
-      invalidateMessages();
-      setEditingMessage(null);
-    },
-    onError: () => {
-      toast.error('메시지 수정에 실패했습니다.');
     },
   });
 
@@ -177,13 +169,6 @@ function InquiryRoomDetailPage() {
                 message={message}
                 isOwnMessage={message.senderType === 'USER'}
                 isMobile={isMobile}
-                isEditing={editingMessage?.id === message.id}
-                onStartEdit={() =>
-                  setEditingMessage({
-                    id: message.id,
-                    content: message.content,
-                  })
-                }
                 onDelete={(messageId) => mutateDeleteMessage(messageId)}
               />
             </Fragment>
@@ -198,13 +183,6 @@ function InquiryRoomDetailPage() {
           disabled={!isRoomsLoaded}
           isSubmitting={isSending}
           onSubmit={mutateSendMessage}
-          editingMessage={editingMessage}
-          isUpdating={isUpdating}
-          onSubmitEdit={(content) =>
-            editingMessage &&
-            mutateUpdateMessage({ messageId: editingMessage.id, content })
-          }
-          onCancelEdit={() => setEditingMessage(null)}
         />
       )}
     </ChatCard>
@@ -233,11 +211,12 @@ const BackLink = styled(Link)`
   margin-bottom: 8px;
 
   display: flex;
-  align-items: center;
   gap: 2px;
+  align-items: center;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t5Regular};
+
   text-decoration: none;
 `;
 

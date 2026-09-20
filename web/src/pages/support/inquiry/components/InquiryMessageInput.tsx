@@ -1,11 +1,10 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { uploadInquiryImages } from '@/apis/inquiry/inquiry.api';
 import Button from '@/components/Button/Button';
 import { toast } from '@/components/Toast/utils/toastActions';
 import type { ChangeEvent } from 'react';
-import CloseIcon from '#/assets/svg/close.svg';
 
 const PhotoIcon = ({ color }: { color: string }) => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -29,19 +28,10 @@ const PhotoIcon = ({ color }: { color: string }) => (
   </svg>
 );
 
-interface EditingMessage {
-  id: number;
-  content: string;
-}
-
 interface InquiryMessageInputProps {
   disabled?: boolean;
   isSubmitting?: boolean;
   onSubmit: (body: { content?: string; imageUrls?: string[] }) => void;
-  editingMessage?: EditingMessage | null;
-  isUpdating?: boolean;
-  onSubmitEdit?: (content: string) => void;
-  onCancelEdit?: () => void;
 }
 
 const MAX_CONTENT_LENGTH = 500;
@@ -51,22 +41,11 @@ const InquiryMessageInput = ({
   disabled = false,
   isSubmitting = false,
   onSubmit,
-  editingMessage,
-  isUpdating = false,
-  onSubmitEdit,
-  onCancelEdit,
 }: InquiryMessageInputProps) => {
-  const isEditMode = !!editingMessage;
   const [content, setContent] = useState('');
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (editingMessage) {
-      setContent(editingMessage.content);
-    }
-  }, [editingMessage]);
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -95,12 +74,6 @@ const InquiryMessageInput = ({
   };
 
   const handleSubmit = () => {
-    if (isEditMode) {
-      if (!content.trim()) return;
-      onSubmitEdit?.(content.trim());
-      return;
-    }
-
     if (!content.trim() && imageUrls.length === 0) return;
 
     onSubmit({
@@ -111,14 +84,9 @@ const InquiryMessageInput = ({
     setImageUrls([]);
   };
 
-  const handleCancelEdit = () => {
-    setContent('');
-    onCancelEdit?.();
-  };
-
   return (
     <Container>
-      {!isEditMode && imageUrls.length > 0 && (
+      {imageUrls.length > 0 && (
         <PreviewRow>
           {imageUrls.map((url) => (
             <PreviewImageWrapper key={url}>
@@ -143,23 +111,7 @@ const InquiryMessageInput = ({
           onChange={handleFileChange}
         />
 
-        <TextareaWrapper isEditMode={isEditMode}>
-          {isEditMode && (
-            <EditingHeader>
-              <EditingLabel>메시지 수정</EditingLabel>
-              <CancelEditButton
-                type="button"
-                aria-label="수정 취소"
-                onClick={handleCancelEdit}
-              >
-                <CloseIcon
-                  fill={theme.colors.textSecondary}
-                  width={14}
-                  height={14}
-                />
-              </CancelEditButton>
-            </EditingHeader>
-          )}
+        <TextareaWrapper>
           <Textarea
             value={content}
             onChange={(e) =>
@@ -167,20 +119,17 @@ const InquiryMessageInput = ({
             }
             placeholder="문의 내용을 입력해주세요"
             disabled={disabled}
-            isEditMode={isEditMode}
           />
-          {!isEditMode && (
-            <AttachButton
-              type="button"
-              aria-label="이미지 첨부"
-              disabled={
-                disabled || isUploading || imageUrls.length >= MAX_IMAGE_COUNT
-              }
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <PhotoIcon color={theme.colors.textSecondary} />
-            </AttachButton>
-          )}
+          <AttachButton
+            type="button"
+            aria-label="이미지 첨부"
+            disabled={
+              disabled || isUploading || imageUrls.length >= MAX_IMAGE_COUNT
+            }
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <PhotoIcon color={theme.colors.textSecondary} />
+          </AttachButton>
           <CharCount>
             {content.length} / {MAX_CONTENT_LENGTH}
           </CharCount>
@@ -191,12 +140,11 @@ const InquiryMessageInput = ({
           disabled={
             disabled ||
             isSubmitting ||
-            isUpdating ||
             isUploading ||
             (!content.trim() && imageUrls.length === 0)
           }
         >
-          {isEditMode ? '저장' : '전송'}
+          전송
         </Button>
       </InputRow>
     </Container>
@@ -238,57 +186,27 @@ const HiddenFileInput = styled.input`
   display: none;
 `;
 
-const TextareaWrapper = styled.div<{ isEditMode: boolean }>`
+const TextareaWrapper = styled.div`
   position: relative;
 
   flex: 1;
-
-  ${({ isEditMode, theme }) =>
-    isEditMode &&
-    `
-      overflow: hidden;
-      border-radius: 22px;
-      background: ${theme.colors.dividers};
-    `}
 `;
 
-const EditingHeader = styled.div`
-  padding: 8px 16px 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const EditingLabel = styled.span`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-`;
-
-const CancelEditButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Textarea = styled.textarea<{ isEditMode: boolean }>`
+const Textarea = styled.textarea`
   width: 100%;
   min-height: 44px;
   max-height: 120px;
-  padding: ${({ isEditMode }) =>
-    isEditMode ? '4px 44px 20px 16px' : '12px 44px 20px 16px'};
+  padding: 12px 44px 20px 16px;
   border: none;
-  border-radius: ${({ isEditMode }) => (isEditMode ? '0 0 22px 22px' : '22px')};
+  border-radius: 22px;
 
-  background: ${({ isEditMode, theme }) =>
-    isEditMode ? 'transparent' : theme.colors.dividers};
+  background: ${({ theme }) => theme.colors.dividers};
   font: ${({ theme }) => theme.fonts.t6Regular};
 
   resize: none;
 
   &:disabled {
-    background-color: ${({ isEditMode, theme }) =>
-      isEditMode ? 'transparent' : theme.colors.disabledBackground};
+    background-color: ${({ theme }) => theme.colors.disabledBackground};
   }
 `;
 
