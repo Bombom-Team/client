@@ -1,5 +1,5 @@
 diff --git a/apple/RNCWebViewImpl.m b/apple/RNCWebViewImpl.m
-index 7f5c24d6e2cfb26eddbc513bf17a81c24a7273e2..aac4e085c11845789b251d51a99aa9f0e9b987de 100644
+index 7f5c24d6..76d2cf49 100644
 --- a/apple/RNCWebViewImpl.m
 +++ b/apple/RNCWebViewImpl.m
 @@ -95,9 +95,13 @@ - (BOOL)canPerformAction:(SEL)action
@@ -17,3 +17,16 @@ index 7f5c24d6e2cfb26eddbc513bf17a81c24a7273e2..aac4e085c11845789b251d51a99aa9f0
      }
      [super buildMenuWithBuilder:builder];
  }
+@@ -456,6 +460,12 @@ - (WKWebViewConfiguration *)setUpWkWebViewConfig
+     }
+   }
+ #endif
++#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 180000 /* iOS 18 */
++  if (@available(iOS 18.0, *)) {
++    wkWebViewConfig.writingToolsBehavior = UIWritingToolsBehaviorNone;
++  }
++#endif
++
+   if (_prefsUsed) {
+     wkWebViewConfig.preferences = prefs;
+   }

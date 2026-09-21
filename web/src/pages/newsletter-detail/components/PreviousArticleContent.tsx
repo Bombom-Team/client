@@ -1,19 +1,33 @@
 import styled from '@emotion/styled';
 import { useRef } from 'react';
+import { useArticleContentFontScale } from '@/pages/detail/hooks/useArticleContentFontScale';
 import { useAutoScaleContent } from '@/pages/detail/hooks/useAutoScaleContent';
+import type { ArticleFontSizePercentage } from '@/pages/detail/constants/articleFontSize';
 
 interface PreviousArticleContentProps {
   content: string;
   showGradient: boolean;
+  fontSizePercentage: ArticleFontSizePercentage;
 }
 
 const PreviousArticleContent = ({
   content,
   showGradient,
+  fontSizePercentage,
 }: PreviousArticleContentProps) => {
   const layoutRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const scale = useAutoScaleContent({ layoutRef, contentRef });
+  const { scale, recalculateScale } = useAutoScaleContent({
+    layoutRef,
+    contentRef,
+  });
+
+  useArticleContentFontScale({
+    ref: contentRef,
+    content,
+    percentage: fontSizePercentage,
+    onLayoutChange: recalculateScale,
+  });
 
   return (
     <Container ref={layoutRef}>

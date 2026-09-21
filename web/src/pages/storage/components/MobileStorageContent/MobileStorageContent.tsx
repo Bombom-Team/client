@@ -36,6 +36,7 @@ export default function MobileStorageContent({
     data: infiniteArticles,
     fetchNextPage,
     hasNextPage,
+    isFetching,
     isFetchingNextPage,
     isLoading: isInfiniteLoading,
   } = useInfiniteArticles(baseQueryParams);
@@ -67,7 +68,7 @@ export default function MobileStorageContent({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetching) {
           fetchNextPage();
         }
       },
@@ -77,7 +78,7 @@ export default function MobileStorageContent({
     observer.observe(loadMoreRef.current);
 
     return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [hasNextPage, isFetching, fetchNextPage]);
 
   const isFirstFilterEffect = useRef(true);
   useEffect(() => {

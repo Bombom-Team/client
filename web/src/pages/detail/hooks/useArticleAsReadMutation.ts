@@ -1,9 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchArticleRead } from '@/apis/articles/articles.api';
+import {
+  syncReadArticleUnreadOnlyStorageCaches,
+  updateArticleReadStatus,
+} from '@/apis/articles/articles.cache';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { trackRetentionEvent } from '@/libs/googleAnalytics/retentionEvents';
-import { formatDate } from '@/utils/date';
 
 interface UseArticleAsReadMutationParams {
   articleId: number;
@@ -32,13 +35,11 @@ const useArticleAsReadMutation = ({
         });
       }
 
-      const today = new Date();
+      updateArticleReadStatus(queryClient, articleId);
+      void syncReadArticleUnreadOnlyStorageCaches(queryClient);
 
       queryClient.invalidateQueries({
         queryKey: queries.articleById({ id: articleId }).queryKey,
-      });
-      queryClient.invalidateQueries({
-        queryKey: queries.articles({ date: formatDate(today, '-') }).queryKey,
       });
     },
   });

@@ -1,3 +1,5 @@
-AGENTS.md
+# Claude Code compatibility
 
-Before composing or reviewing any commit message, read `docs/git-commit-convention.md` (format: `type: 한국어 명사형 설명` — no scope, no ticket prefix, no `Co-Authored-By` trailer).
+이 파일은 Claude Code가 repository 공통 지침을 직접 불러오기 위한 호환 진입점입니다.
+
+@AGENTS.md

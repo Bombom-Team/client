@@ -8,6 +8,7 @@ import {
   FiEdit,
   FiFlag,
   FiGitPullRequest,
+  FiHelpCircle,
   FiHome,
   FiMail,
   FiUsers,
@@ -41,6 +42,10 @@ export const Sidebar = () => {
         <NavItem to="/notices" $isActive={currentPath.startsWith('/notices')}>
           <FiBell />
           <span>공지사항</span>
+        </NavItem>
+        <NavItem to="/faqs" $isActive={currentPath.startsWith('/faqs')}>
+          <FiHelpCircle />
+          <span>FAQ</span>
         </NavItem>
         <NavItem to="/flyway" $isActive={currentPath.startsWith('/flyway')}>
           <FiDatabase />

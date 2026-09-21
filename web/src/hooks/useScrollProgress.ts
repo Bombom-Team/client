@@ -20,12 +20,31 @@ const useScrollProgress = () => {
   }, []);
 
   useEffect(() => {
-    calculateProgress();
+    let animationFrameId: number | null = null;
 
-    window.addEventListener('scroll', calculateProgress);
+    const scheduleCalculation = () => {
+      if (animationFrameId !== null) return;
+
+      animationFrameId = window.requestAnimationFrame(() => {
+        animationFrameId = null;
+        calculateProgress();
+      });
+    };
+
+    const resizeObserver = new ResizeObserver(scheduleCalculation);
+    resizeObserver.observe(document.body);
+
+    scheduleCalculation();
+    window.addEventListener('scroll', scheduleCalculation, { passive: true });
+    window.addEventListener('resize', scheduleCalculation);
 
     return () => {
-      window.removeEventListener('scroll', calculateProgress);
+      resizeObserver.disconnect();
+      window.removeEventListener('scroll', scheduleCalculation);
+      window.removeEventListener('resize', scheduleCalculation);
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
     };
   }, [calculateProgress]);
 

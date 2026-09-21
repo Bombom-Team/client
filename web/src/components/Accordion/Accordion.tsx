@@ -44,7 +44,7 @@ const Container = styled.div`
 `;
 
 const HeaderWrapper = styled.div`
-  padding: 10px;
+  padding: 20px 10px;
 
   display: flex;
   justify-content: space-between;

@@ -3,6 +3,7 @@ import GuideArticleContent from './GuideArticleContent';
 import { useFloatingToolbarSelection } from '@/pages/detail/components/ArticleBody/useFloatingToolbarSelection';
 import FloatingToolbar from '@/pages/detail/components/FloatingToolbar/FloatingToolbar';
 import MemoPanel from '@/pages/detail/components/MemoPanel/MemoPanel';
+import { useArticleContentFontScale } from '@/pages/detail/hooks/useArticleContentFontScale';
 import { useFloatingToolbarState } from '@/pages/detail/hooks/useFloatingToolbarState';
 import { useHighlightHoverEffect } from '@/pages/detail/hooks/useHighlightHoverEffect';
 import {
@@ -10,13 +11,19 @@ import {
   saveSelection,
 } from '@/pages/detail/utils/highlight';
 import { useLocalHighlightData } from '@/pages/guide-detail/hooks/useLocalHighlightData';
+import type { ArticleFontSizePercentage } from '@/pages/detail/constants/articleFontSize';
 
 interface ArticleBodyProps {
   articleId: number;
+  fontSizePercentage: ArticleFontSizePercentage;
 }
 
-const GuideArticleBody = ({ articleId }: ArticleBodyProps) => {
+const GuideArticleBody = ({
+  articleId,
+  fontSizePercentage,
+}: ArticleBodyProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
+  const previousFontSizePercentageRef = useRef(fontSizePercentage);
   const {
     opened: toolbarOpened,
     position,
@@ -71,6 +78,27 @@ const GuideArticleBody = ({ articleId }: ArticleBodyProps) => {
   };
 
   useHighlightHoverEffect();
+
+  useArticleContentFontScale({
+    ref: contentRef,
+    content: String(articleId),
+    percentage: fontSizePercentage,
+  });
+
+  useEffect(() => {
+    if (previousFontSizePercentageRef.current === fontSizePercentage) return;
+
+    previousFontSizePercentageRef.current = fontSizePercentage;
+
+    hideToolbar();
+    const selection = window.getSelection();
+    if (
+      selection?.anchorNode &&
+      contentRef.current?.contains(selection.anchorNode)
+    ) {
+      selection.removeAllRanges();
+    }
+  }, [contentRef, fontSizePercentage, hideToolbar]);
 
   useEffect(() => {
     if (isHighlightLoaded) restoreHighlightAll(highlights);

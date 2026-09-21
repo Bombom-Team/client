@@ -10,6 +10,7 @@ import { queries } from '@/apis/queries';
 import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import type { Device } from '@/hooks/useDevice';
+import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const NATIVE_NEWSLETTER_SOURCE = 'MAEIL_MAIL' as const;
 
@@ -61,6 +62,14 @@ const SubscribedNewslettersSection = ({
   return (
     <>
       <Container>
+        <NoticeBox as="aside" aria-label="구독 뉴스레터 안내">
+          <NoticeIcon aria-hidden="true" />
+          <NoticeText>
+            첫 번째 뉴스레터(또는 웰컴 메일)가 수신되는 시점부터 구독 목록에
+            자동으로 반영됩니다.
+          </NoticeText>
+        </NoticeBox>
+
         {newsletters.length > 0 ? (
           <NewsletterGrid device={device}>
             {newsletters.map((newsletter) =>
@@ -109,6 +118,35 @@ const Container = styled.div`
   display: flex;
   gap: 16px;
   flex-direction: column;
+`;
+
+const NoticeBox = styled.div`
+  width: 100%;
+  padding: 12px 16px;
+  border-left: 4px solid ${({ theme }) => theme.colors.primaryBomBom};
+  border-radius: 8px;
+
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
+
+  box-sizing: border-box;
+`;
+
+const NoticeIcon = styled(InfoIcon)`
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+
+  fill: ${({ theme }) => theme.colors.primaryBomBom};
+`;
+
+const NoticeText = styled.p`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const NewsletterGrid = styled.div<{ device: Device }>`

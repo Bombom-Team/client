@@ -7,10 +7,12 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "test:dashboard": "vitest run --config vitest.config.ts",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix && stylelint './src/**/*.tsx' --fix",
     "format": "prettier --write . && stylelint './src/**/*.tsx' --fix",
     "type-check": "tsc --noEmit",
+    "generate-dashboard-types": "openapi-typescript ./openapi/dashboard.json -o ./src/types/dashboard.gen.ts && prettier --write ./src/types/dashboard.gen.ts",
     "generate-openapi-types": "dotenv -e .env -- bash -c 'openapi-typescript $VITE_OPEN_API_DOCS -o ./src/types/openapi.d.ts && prettier --write ./src/types/openapi.d.ts'"
   },
   "keywords": [],
@@ -19,6 +21,8 @@
   "description": "BomBom Admin Dashboard",
   "devDependencies": {
     "@tanstack/router-plugin": "^1.128.3",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
@@ -33,10 +37,12 @@
     "eslint-plugin-prettier": "^5.5.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "jsdom": "^26.1.0",
     "openapi-typescript": "^7.8.0",
     "typescript": "^5.8.3",
     "vite": "^6.0.11",
-    "vite-tsconfig-paths": "^6.0.3"
+    "vite-tsconfig-paths": "^6.0.3",
+    "vitest": "^3.2.7"
   },
   "dependencies": {
     "@bombom/shared": "workspace:*",
@@ -44,6 +50,7 @@
     "@codemirror/view": "^6.39.15",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@seed-design/css": "2.6.1",
     "@supabase/supabase-js": "^2.108.2",
     "@tanstack/react-query": "^5.82.0",
     "@tanstack/react-router": "^1.128.3",

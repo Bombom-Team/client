@@ -1,15 +1,18 @@
 import styled from '@emotion/styled';
 import ImageInfoCard from '@/components/ImageInfoCard/ImageInfoCard';
 import type { Newsletter } from '@/types/newsletter';
+import type { ReactNode } from 'react';
 
 interface NewsletterCardListProps {
   newsletters: Newsletter[];
   handleCardClick: (newsletter: Newsletter) => void;
+  trailing?: ReactNode;
 }
 
 const NewsletterCardList = ({
   newsletters,
   handleCardClick,
+  trailing,
 }: NewsletterCardListProps) => {
   return (
     <>
@@ -25,6 +28,7 @@ const NewsletterCardList = ({
           aria-label={`${newsletter.name} 뉴스레터 상세보기`}
         />
       ))}
+      {trailing}
     </>
   );
 };

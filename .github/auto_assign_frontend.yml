@@ -1,11 +1,9 @@
 addReviewers: true
 addAssignees: author
 reviewers:
-  - jaeyoung-kwon
   - JeLee-river
-  - Db0111
   - sanghee01
-numberOfReviewers: 4
+numberOfReviewers: 2
 numberOfAssignees: 1
 skipKeywords:
   - wip

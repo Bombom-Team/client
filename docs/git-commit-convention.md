@@ -47,4 +47,4 @@ chore: 빌드 설정 변경
 ## 참고
 
 - 출처: <https://sungwookoo.tistory.com/1>
-- PR 제목 형식은 별도이며 `[{issue_key}] {type}: {subject}` 형태를 사용한다. (`web/CLAUDE.md` 참고)
+- PR 제목 형식은 별도이며 `[{issue_key}] {type}: {subject}` 형태를 사용한다. (`AGENTS.md` 참고)

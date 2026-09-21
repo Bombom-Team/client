@@ -46,9 +46,10 @@ const NewsletterSubscribeGuide = () => {
           <StepItem isMobile={isMobile}>
             <StepNumber>4</StepNumber>
             <StepContent>
-              <StepTitle>구독 완료!</StepTitle>
+              <StepTitle>구독 확인</StepTitle>
               <StepDescription>
-                축하합니다! 이제 정기적으로 뉴스레터를 받아보세요.
+                발행처로부터 첫 번째 뉴스레터(또는 웰컴 메일)가 봄봄에 수신되는
+                시점부터 구독 목록에 자동으로 반영됩니다.
               </StepDescription>
             </StepContent>
           </StepItem>
