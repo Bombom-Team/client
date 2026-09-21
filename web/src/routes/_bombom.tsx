@@ -17,10 +17,7 @@ export const Route = createFileRoute('/_bombom')({
     const { queryClient } = context;
 
     try {
-      const user = await queryClient.fetchQuery(queries.userProfile());
-      if (user) {
-        window.gtag?.('set', { user_id: user.id });
-      }
+      await queryClient.fetchQuery(queries.userProfile());
     } catch {
       if (isFirstVisit && location.pathname !== '/')
         return redirect({ to: '/' });
