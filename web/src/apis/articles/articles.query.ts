@@ -10,13 +10,20 @@ import {
   type GetArticlesWithSearchParams,
 } from './articles.api';
 
-const STORAGE_ARTICLES_GC_TIME = 1000 * 60 * 5;
-
-const STORAGE_ARTICLES_QUERY_OPTIONS = {
+const STORAGE_LIST_QUERY_BEHAVIOR = {
   staleTime: Infinity,
-  gcTime: STORAGE_ARTICLES_GC_TIME,
   refetchOnWindowFocus: false,
   refetchOnReconnect: false,
+} as const;
+
+const PC_STORAGE_QUERY_OPTIONS = {
+  ...STORAGE_LIST_QUERY_BEHAVIOR,
+  gcTime: 5 * 60 * 1000, // 5분
+} as const;
+
+const MOBILE_STORAGE_INFINITE_QUERY_OPTIONS = {
+  ...STORAGE_LIST_QUERY_BEHAVIOR,
+  gcTime: Infinity,
 } as const;
 
 export const articlesQueries = {
@@ -42,7 +49,7 @@ export const articlesQueries = {
           sort: ['arrivedDateTime', 'DESC'],
         }),
       staleTime: 0,
-      gcTime: STORAGE_ARTICLES_GC_TIME,
+      gcTime: Infinity,
       refetchOnMount: 'always',
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
@@ -52,14 +59,14 @@ export const articlesQueries = {
     queryOptions({
       queryKey: ['articles', 'storage', { keyword: '', ...params }],
       queryFn: () => getArticles(params),
-      ...STORAGE_ARTICLES_QUERY_OPTIONS,
+      ...PC_STORAGE_QUERY_OPTIONS,
     }),
 
   storageArticlesWithSearch: (params: GetArticlesWithSearchParams) =>
     queryOptions({
       queryKey: ['articles', 'storage', 'search', params],
       queryFn: () => getArticlesWithSearch(params),
-      ...STORAGE_ARTICLES_QUERY_OPTIONS,
+      ...PC_STORAGE_QUERY_OPTIONS,
     }),
 
   infiniteArticles: (params: GetArticlesParams) =>
@@ -76,7 +83,7 @@ export const articlesQueries = {
         return (lastPage.number ?? 0) + 1;
       },
       initialPageParam: 0,
-      ...STORAGE_ARTICLES_QUERY_OPTIONS,
+      ...MOBILE_STORAGE_INFINITE_QUERY_OPTIONS,
     }),
 
   infiniteArticlesWithSearch: (params: GetArticlesWithSearchParams) =>
@@ -93,7 +100,7 @@ export const articlesQueries = {
         return (lastPage.number ?? 0) + 1;
       },
       initialPageParam: 0,
-      ...STORAGE_ARTICLES_QUERY_OPTIONS,
+      ...MOBILE_STORAGE_INFINITE_QUERY_OPTIONS,
     }),
 
   articleById: (params: GetArticleByIdParams) =>
