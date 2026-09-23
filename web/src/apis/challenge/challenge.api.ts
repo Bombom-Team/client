@@ -169,6 +169,7 @@ export type PostChallengeCommentParams =
   components['schemas']['ChallengeCommentRequest'];
 export type PostChallengeCommentResponse = {
   isFirstCompletion?: boolean;
+  isChallengeCompleted?: boolean;
 };
 
 export const postChallengeComment = async (

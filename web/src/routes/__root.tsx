@@ -10,7 +10,7 @@ import {
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import Toast from '@/components/Toast/Toast';
 import { AuthProvider } from '@/contexts/AuthContext';
-import usePageTracking from '@/libs/googleAnalytics/usePageTracking';
+import GoogleAnalyticsTracker from '@/libs/googleAnalytics/GoogleAnalyticsTracker';
 import { useReferrerTracking } from '@/libs/googleAnalytics/useReferrerTracking';
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
 import { useWebViewRouting } from '@/libs/webview/useWebViewRouting';
@@ -24,7 +24,6 @@ interface BomBomRouterContext {
 }
 
 const RootComponent = () => {
-  usePageTracking();
   useReferrerTracking();
   useWebViewAuth();
   useWebViewRouting();
@@ -36,6 +35,7 @@ const RootComponent = () => {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <AuthProvider>
+            <GoogleAnalyticsTracker />
             <Outlet />
             <Toast />
           </AuthProvider>
