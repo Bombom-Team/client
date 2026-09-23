@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared';
+import { ApiError } from '@bombom/shared/apis';
 import styled from '@emotion/styled';
 import { useRef, useState } from 'react';
 import { uploadInquiryImages } from '@/apis/inquiry/inquiry.api';
@@ -64,8 +65,12 @@ const InquiryMessageInput = ({
     try {
       const { imageUrls: uploadedUrls } = await uploadInquiryImages(files);
       setImageUrls((prev) => [...prev, ...uploadedUrls]);
-    } catch {
-      toast.error('이미지 업로드에 실패했습니다.');
+    } catch (error) {
+      const message =
+        error instanceof ApiError && error.message
+          ? error.message
+          : '이미지 업로드에 실패했습니다.';
+      toast.error(message);
     } finally {
       setIsUploading(false);
       e.target.value = '';

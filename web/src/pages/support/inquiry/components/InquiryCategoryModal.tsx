@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
+import Checkbox from '@/components/Checkbox/Checkbox';
 import Modal from '@/components/Modal/Modal';
 import type { Ref } from 'react';
 
@@ -36,22 +37,24 @@ const InquiryCategoryModal = ({
       isOpen={isOpen}
       modalRef={modalRef}
       closeModal={closeModal}
-      position="bottom"
+      position="center"
     >
       <Title>문의 카테고리를 선택해주세요</Title>
 
-      <CategoryList>
+      <CategoryList role="radiogroup" aria-label="문의 카테고리">
         {categories?.map((category) => (
-          <CategoryOption key={category.id}>
-            <input
-              type="radio"
-              name="inquiry-category"
-              value={category.id}
+          <CategoryItem
+            key={category.id}
+            selected={selectedCategoryId === category.id}
+          >
+            <Checkbox
+              id={`inquiry-category-${category.id}`}
               checked={selectedCategoryId === category.id}
               onChange={() => setSelectedCategoryId(category.id)}
-            />
-            {category.name}
-          </CategoryOption>
+            >
+              {category.name}
+            </Checkbox>
+          </CategoryItem>
         ))}
       </CategoryList>
 
@@ -72,19 +75,36 @@ const Title = styled.h2`
 `;
 
 const CategoryList = styled.div`
+  width: 100%;
+  min-width: 280px;
   margin: 16px 0;
 
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-direction: column;
+
+  @media (width >= 769px) {
+    width: 320px;
+  }
 `;
 
-const CategoryOption = styled.label`
-  display: flex;
-  gap: 8px;
-  align-items: center;
+const CategoryItem = styled.div<{ selected: boolean }>`
+  padding: 14px 16px;
+  border: 1px solid
+    ${({ theme, selected }) =>
+      selected ? theme.colors.primaryBomBom : theme.colors.stroke};
+  border-radius: 8px;
 
-  font: ${({ theme }) => theme.fonts.t6Regular};
+  background: ${({ theme, selected }) =>
+    selected ? theme.colors.primaryInfo : theme.colors.white};
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+
+  label {
+    width: 100%;
+  }
 `;
 
 const SubmitButton = styled(Button)`
