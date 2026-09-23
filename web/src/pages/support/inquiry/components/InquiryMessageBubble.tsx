@@ -1,11 +1,10 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
 import { formatTimeToKorean } from '@/utils/date';
 import type { InquiryMessage } from '@/types/inquiry';
+import CloseIcon from '#/assets/svg/close.svg';
 import DeleteIcon from '#/assets/svg/delete.svg';
 
 interface InquiryMessageBubbleProps {
@@ -22,12 +21,23 @@ const InquiryMessageBubble = ({
   onDelete,
 }: InquiryMessageBubbleProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const { modalRef, isOpen, openModal, closeModal } = useModal();
 
   const handleImageClick = (url: string) => {
     setPreviewUrl(url);
-    openModal();
   };
+
+  const closePreview = () => setPreviewUrl(null);
+
+  useEffect(() => {
+    if (!previewUrl) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closePreview();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [previewUrl]);
 
   return (
     <BubbleColumn isOwnMessage={isOwnMessage}>
@@ -66,8 +76,8 @@ const InquiryMessageBubble = ({
                   <ImageWithFallback
                     src={url}
                     alt="첨부 이미지"
-                    width={140}
-                    height={140}
+                    width={240}
+                    height={240}
                   />
                 </ImageThumbnailButton>
               ))}
@@ -80,16 +90,22 @@ const InquiryMessageBubble = ({
         {formatTimeToKorean(new Date(message.createdAt))}
       </DateText>
 
-      <Modal
-        isOpen={isOpen}
-        modalRef={modalRef}
-        closeModal={closeModal}
-        position="center"
-      >
-        {previewUrl && (
-          <PreviewImage src={previewUrl} alt="첨부 이미지 크게 보기" />
-        )}
-      </Modal>
+      {previewUrl && (
+        <PreviewOverlay role="dialog" aria-modal="true" onClick={closePreview}>
+          <PreviewCloseButton
+            type="button"
+            aria-label="이미지 미리보기 닫기"
+            onClick={closePreview}
+          >
+            <CloseIcon fill={theme.colors.white} width={20} height={20} />
+          </PreviewCloseButton>
+          <PreviewImage
+            src={previewUrl}
+            alt="첨부 이미지 크게 보기"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </PreviewOverlay>
+      )}
     </BubbleColumn>
   );
 };
@@ -141,11 +157,10 @@ const Content = styled.p`
 `;
 
 const ImageGrid = styled.div`
-  margin-top: 8px;
-
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  margin-top: 8px;
 `;
 
 const ImageThumbnailButton = styled.button`
@@ -154,6 +169,8 @@ const ImageThumbnailButton = styled.button`
   border-radius: 12px;
 
   display: block;
+  width: 240px;
+  height: 240px;
 
   transition: opacity 0.2s;
 
@@ -163,15 +180,41 @@ const ImageThumbnailButton = styled.button`
 
   img {
     display: block;
+    width: 100%;
+    height: 100%;
 
     object-fit: cover;
   }
 `;
 
+const PreviewOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: ${({ theme }) => theme.zIndex.overlay};
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgb(0 0 0 / 90%);
+`;
+
+const PreviewCloseButton = styled.button`
+  position: fixed;
+  top: 16px;
+  right: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const PreviewImage = styled.img`
-  max-width: 90vw;
-  max-height: 80vh;
-  border-radius: 12px;
+  max-width: 100vw;
+  max-height: 100vh;
 
   object-fit: contain;
 `;
