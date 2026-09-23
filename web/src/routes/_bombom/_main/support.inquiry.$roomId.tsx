@@ -44,6 +44,7 @@ function InquiryRoomDetailPage() {
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const hasScrolledToBottomRef = useRef(false);
+  const prevScrollHeightRef = useRef<number | null>(null);
 
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
   const room = roomsPage?.content.find((r) => r.id === roomId);
@@ -78,11 +79,20 @@ function InquiryRoomDetailPage() {
   );
 
   useEffect(() => {
-    if (hasScrolledToBottomRef.current) return;
     if (messages.length === 0) return;
 
-    window.scrollTo(0, document.body.scrollHeight);
-    hasScrolledToBottomRef.current = true;
+    if (!hasScrolledToBottomRef.current) {
+      window.scrollTo(0, document.body.scrollHeight);
+      hasScrolledToBottomRef.current = true;
+      return;
+    }
+
+    if (prevScrollHeightRef.current !== null) {
+      const scrollHeightDiff =
+        document.body.scrollHeight - prevScrollHeightRef.current;
+      window.scrollTo(0, window.scrollY + scrollHeightDiff);
+      prevScrollHeightRef.current = null;
+    }
   }, [messages]);
 
   const invalidateMessages = () => {
@@ -91,7 +101,7 @@ function InquiryRoomDetailPage() {
     });
   };
 
-  const { mutate: mutateSendMessage, isPending: isSending } = useMutation({
+  const { mutateAsync: mutateSendMessage, isPending: isSending } = useMutation({
     mutationFn: (body: { content?: string; imageUrls?: string[] }) =>
       sendInquiryMessage(roomId, body),
     onSuccess: invalidateMessages,
@@ -108,17 +118,23 @@ function InquiryRoomDetailPage() {
     },
   });
 
+  const handleLoadMore = () => {
+    prevScrollHeightRef.current = document.body.scrollHeight;
+    fetchNextPage();
+  };
+
   useIntersectionTrigger({
     targetRef: loadMoreRef,
     enabled:
       hasScrolledToBottomRef.current &&
       Boolean(hasNextPage) &&
       !isFetchingNextPage,
-    onIntersect: fetchNextPage,
+    onIntersect: handleLoadMore,
   });
 
   const isRoomsLoaded = roomsPage !== undefined;
-  const canSendMessage = room?.status !== undefined && room.status !== 'DONE';
+  const canSendMessage =
+    room?.status === 'UNCONFIRMED' || room?.status === 'IN_PROGRESS';
 
   return (
     <ChatCard>

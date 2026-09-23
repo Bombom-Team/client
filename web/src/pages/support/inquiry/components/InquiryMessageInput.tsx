@@ -31,7 +31,10 @@ const PhotoIcon = ({ color }: { color: string }) => (
 interface InquiryMessageInputProps {
   disabled?: boolean;
   isSubmitting?: boolean;
-  onSubmit: (body: { content?: string; imageUrls?: string[] }) => void;
+  onSubmit: (body: {
+    content?: string;
+    imageUrls?: string[];
+  }) => Promise<unknown>;
 }
 
 const MAX_CONTENT_LENGTH = 500;
@@ -73,13 +76,18 @@ const InquiryMessageInput = ({
     setImageUrls((prev) => prev.filter((imageUrl) => imageUrl !== url));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!content.trim() && imageUrls.length === 0) return;
 
-    onSubmit({
-      content: content.trim() || undefined,
-      imageUrls: imageUrls.length > 0 ? imageUrls : undefined,
-    });
+    try {
+      await onSubmit({
+        content: content.trim() || undefined,
+        imageUrls: imageUrls.length > 0 ? imageUrls : undefined,
+      });
+    } catch {
+      return;
+    }
+
     setContent('');
     setImageUrls([]);
   };

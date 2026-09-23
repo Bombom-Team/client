@@ -22,7 +22,8 @@ export const Route = createFileRoute('/_bombom')({
         window.gtag?.('set', { user_id: user.id });
       }
     } catch {
-      if (isFirstVisit && location.pathname !== '/')
+      const isGuestAccessible = location.pathname.startsWith('/support');
+      if (isFirstVisit && location.pathname !== '/' && !isGuestAccessible)
         return redirect({ to: '/' });
     } finally {
       isFirstVisit = false;
