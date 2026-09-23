@@ -51,3 +51,12 @@ export const getDatesDiff = (date1: Date, date2: Date) => {
   const daysDiff = Math.floor(timesDiff / (1000 * 60 * 60 * 24));
   return daysDiff;
 };
+
+export const formatTimeToKorean = (date: Date) => {
+  const hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const period = hours < 12 ? '오전' : '오후';
+  const hour12 = hours % 12 === 0 ? 12 : hours % 12;
+
+  return `${period} ${hour12}:${minutes}`;
+};
