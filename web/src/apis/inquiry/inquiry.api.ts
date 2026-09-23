@@ -19,9 +19,7 @@ export const getInquiryCategories = () =>
 
 export type GetInquiryRoomsParams = { page?: number; size?: number };
 
-// 상세 화면에서 room의 status를 조회하기 위해 목록도 조회하므로(단일 room 조회
-// API가 없음), 모든 room이 한 페이지에 들어오도록 넉넉한 size를 기본값으로 쓴다.
-export const INQUIRY_ROOMS_DEFAULT_SIZE = 100;
+export const INQUIRY_ROOMS_DEFAULT_SIZE = 20;
 
 export const getInquiryRooms = (params: GetInquiryRoomsParams = {}) =>
   fetcher.get<PageableResponse<InquiryRoom>>({
