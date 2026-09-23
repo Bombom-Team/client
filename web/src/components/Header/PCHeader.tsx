@@ -30,22 +30,26 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
           </NavWrapper>
 
           <UserInfoWrapper>
-            <Button
-              onClick={() => navigate({ to: '/support' })}
-              variant={'transparent'}
-            >
-              <HeadsetIcon width={22} height={24} />
-            </Button>
-            <Button
-              onClick={() => navigate({ to: '/notice' })}
-              variant={'transparent'}
-            >
-              <MegaphoneIcon width={22} height={24} />
-            </Button>
+            <IconButtonGroup>
+              <Button
+                onClick={() => navigate({ to: '/support' })}
+                variant={'transparent'}
+              >
+                <HeadsetIcon width={22} height={24} />
+              </Button>
+              <Button
+                onClick={() => navigate({ to: '/notice' })}
+                variant={'transparent'}
+              >
+                <MegaphoneIcon width={22} height={24} />
+              </Button>
+            </IconButtonGroup>
             {userProfile ? (
               <HeaderProfile userProfile={userProfile} device="pc" />
             ) : (
-              <HeaderLoginButton />
+              <LoginButtonWrapper>
+                <LoginButton />
+              </LoginButtonWrapper>
             )}
           </UserInfoWrapper>
         </HeaderInner>
@@ -110,6 +114,12 @@ const UserInfoWrapper = styled.div`
   justify-content: flex-end;
 `;
 
-const HeaderLoginButton = styled(LoginButton)`
-  margin-left: 12px;
+const IconButtonGroup = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
+const LoginButtonWrapper = styled.div`
+  margin-left: 8px;
 `;

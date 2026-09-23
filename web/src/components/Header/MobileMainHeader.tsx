@@ -17,22 +17,26 @@ const MobileMainHeader = () => {
       <MainRow>
         <HeaderLogo />
         <UserInfoWrapper>
-          <NavButton
-            onClick={() => navigate({ to: '/support' })}
-            variant="transparent"
-          >
-            <HeadsetIcon width={20} height={20} />
-          </NavButton>
-          <NavButton
-            onClick={() => navigate({ to: '/notice' })}
-            variant="transparent"
-          >
-            <MegaphoneIcon width={20} height={20} />
-          </NavButton>
+          <IconButtonGroup>
+            <NavButton
+              onClick={() => navigate({ to: '/support' })}
+              variant="transparent"
+            >
+              <HeadsetIcon width={20} height={20} />
+            </NavButton>
+            <NavButton
+              onClick={() => navigate({ to: '/notice' })}
+              variant="transparent"
+            >
+              <MegaphoneIcon width={20} height={20} />
+            </NavButton>
+          </IconButtonGroup>
           {userProfile ? (
             <HeaderProfile userProfile={userProfile} device="mobile" />
           ) : (
-            <HeaderLoginButton />
+            <LoginButtonWrapper>
+              <LoginButton />
+            </LoginButtonWrapper>
           )}
         </UserInfoWrapper>
       </MainRow>
@@ -74,6 +78,7 @@ const MainRow = styled.div`
 const UserInfoWrapper = styled.div`
   display: flex;
   gap: 4px;
+  align-items: center;
   justify-content: center;
 `;
 
@@ -89,6 +94,12 @@ const NavButton = styled(Button)`
   }
 `;
 
-const HeaderLoginButton = styled(LoginButton)`
-  margin-left: 8px;
+const IconButtonGroup = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
+const LoginButtonWrapper = styled.div`
+  margin-left: 4px;
 `;
