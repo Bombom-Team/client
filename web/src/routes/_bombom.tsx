@@ -19,7 +19,8 @@ export const Route = createFileRoute('/_bombom')({
     try {
       await queryClient.fetchQuery(queries.userProfile());
     } catch {
-      if (isFirstVisit && location.pathname !== '/')
+      const isGuestAccessible = location.pathname.startsWith('/support');
+      if (isFirstVisit && location.pathname !== '/' && !isGuestAccessible)
         return redirect({ to: '/' });
     } finally {
       isFirstVisit = false;
