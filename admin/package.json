@@ -63,6 +63,7 @@
     "@tiptap/react": "^3.22.0",
     "@tiptap/starter-kit": "^3.22.0",
     "@uiw/react-codemirror": "^4.25.4",
+    "dayjs": "^1.11.23",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-error-boundary": "^6.0.0",

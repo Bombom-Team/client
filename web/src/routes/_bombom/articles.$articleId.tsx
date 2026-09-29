@@ -53,6 +53,7 @@ function ArticleDetailPage() {
   );
   const { mutate: updateArticleAsRead } = useArticleAsReadMutation({
     articleId: articleIdNumber,
+    newsletterCategory: currentArticle?.newsletter.category,
   });
   const { isBookmarked, toggleBookmark } = useArticleBookmark({
     articleId: articleIdNumber,

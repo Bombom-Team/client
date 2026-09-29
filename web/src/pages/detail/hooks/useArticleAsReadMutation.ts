@@ -6,13 +6,16 @@ import {
 } from '@/apis/articles/articles.cache';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
+import { trackRetentionEvent } from '@/libs/googleAnalytics/retentionEvents';
 
 interface UseArticleAsReadMutationParams {
   articleId: number;
+  newsletterCategory?: string;
 }
 
 const useArticleAsReadMutation = ({
   articleId,
+  newsletterCategory,
 }: UseArticleAsReadMutationParams) => {
   const queryClient = useQueryClient();
 
@@ -22,6 +25,14 @@ const useArticleAsReadMutation = ({
       // 너무 빠른 읽기로 읽기 카운트가 적립되지 않은 경우 천천히 읽기를 안내한다.
       if (data?.readCountTokenConsumed === false) {
         toast.info('너무 빠르게 읽으면 읽기 활동에 반영되지 않아요');
+      }
+
+      if (data?.readCountTokenConsumed === true) {
+        trackRetentionEvent('article_read_completed', {
+          ...(newsletterCategory && {
+            newsletter_category: newsletterCategory,
+          }),
+        });
       }
 
       updateArticleReadStatus(queryClient, articleId);

@@ -12,7 +12,7 @@ import Toast from '@/components/Toast/Toast';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { useChannelTalk } from '@/hooks/useChannelTalk';
 import { useDevice } from '@/hooks/useDevice';
-import usePageTracking from '@/libs/googleAnalytics/usePageTracking';
+import GoogleAnalyticsTracker from '@/libs/googleAnalytics/GoogleAnalyticsTracker';
 import { useReferrerTracking } from '@/libs/googleAnalytics/useReferrerTracking';
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
 import { useWebViewRouting } from '@/libs/webview/useWebViewRouting';
@@ -32,7 +32,6 @@ const CHANNEL_TALK_TOAST_OFFSET = 96;
 const RootComponent = () => {
   const device = useDevice();
 
-  usePageTracking();
   useReferrerTracking();
   useWebViewAuth();
   useWebViewRouting();
@@ -46,6 +45,7 @@ const RootComponent = () => {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <AuthProvider>
+            <GoogleAnalyticsTracker />
             <Outlet />
             <Toast offset={toastOffset} />
           </AuthProvider>

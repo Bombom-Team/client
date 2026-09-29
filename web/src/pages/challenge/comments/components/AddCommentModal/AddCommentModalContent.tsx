@@ -10,6 +10,7 @@ import useAddChallengeCommentMutation from '../../hooks/useAddChallengeCommentMu
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import { useDevice } from '@/hooks/useDevice';
+import { useChallengeActivityStartTracking } from '@/pages/challenge/hooks/useChallengeActivityStartTracking';
 import type { CandidateArticles } from '../../types/comment';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
 
@@ -43,6 +44,22 @@ const AddCommentModalContent = ({
     from: '/_bombom/_main/challenge/$challengeId/comments',
   });
 
+  const { data: memberProgress } = useQuery(
+    queries.memberProgress(Number(challengeId)),
+  );
+
+  const isAttendanceEligible =
+    memberProgress?.todayTodos?.some(
+      (todo) =>
+        todo.challengeTodoType === 'COMMENT' &&
+        todo.challengeTodoStatus === 'INCOMPLETE',
+    ) ?? false;
+
+  const trackActivityStart = useChallengeActivityStartTracking({
+    challengeId: Number(challengeId),
+    isAttendanceEligible,
+  });
+
   const { data: highlights } = useQuery({
     ...queries.challengeArticleHighlights({
       articleId: selectedArticleId!,
@@ -71,6 +88,8 @@ const AddCommentModalContent = ({
   };
 
   const editComment = (value: string) => {
+    trackActivityStart(value);
+
     if (value.length >= COMMENT_VALIDATION.minLength) {
       setShowCommentError(false);
     }
