@@ -18,6 +18,23 @@ const APP_CONFIG = {
   icon: './app/assets/images/logo.png',
 };
 
+const SENTRY_RN_ORGANIZATION = process.env.SENTRY_RN_ORG;
+const SENTRY_RN_PROJECT = process.env.SENTRY_RN_PROJECT;
+const SENTRY_PLUGIN: NonNullable<ExpoConfig['plugins']>[number] | null =
+  SENTRY_RN_ORGANIZATION && SENTRY_RN_PROJECT
+    ? [
+        '@sentry/react-native/expo',
+        {
+          organization: SENTRY_RN_ORGANIZATION,
+          project: SENTRY_RN_PROJECT,
+          experimental_android: {
+            enableAndroidGradlePlugin: true,
+            includeNativeSources: false,
+          },
+        },
+      ]
+    : null;
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
@@ -133,6 +150,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ],
       '@react-native-firebase/app',
       '@react-native-firebase/messaging',
+      ...(SENTRY_PLUGIN ? [SENTRY_PLUGIN] : []),
       './plugins/withAndroidManifestFix',
     ],
 
