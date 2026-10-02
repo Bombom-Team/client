@@ -12,7 +12,7 @@ export const sendMessageToRN = (message: WebToRNMessage): void => {
 
     window.ReactNativeWebView?.postMessage(messageString);
 
-    logger.log('WebView 메시지 전송:', message);
+    logger.log('WebView 메시지 전송:', message.type);
   } catch (error) {
     logger.error('WebView 메시지 전송 실패:', error);
   }
@@ -29,7 +29,7 @@ export const addWebViewMessageListener = (
   const messageHandler = (event: MessageEvent) => {
     try {
       const message: RNToWebMessage = JSON.parse(event.data);
-      logger.log('WebView에서 메시지 수신:', message);
+      logger.log('WebView에서 메시지 수신:', message.type);
       callback(message);
     } catch (error) {
       logger.error('WebView 메시지 파싱 실패:', error);
