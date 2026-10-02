@@ -1,9 +1,11 @@
 import { logger } from '@bombom/shared/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
+import { captureNativeLoginError } from './nativeLoginError';
 import { addWebViewMessageListener, sendMessageToRN } from './webview.utils';
 import { postAppleLogin, postGoogleLogin } from '@/apis/auth/auth.api';
 import { isWebView } from '@/utils/device';
+import type { NativeLoginErrorStage } from './nativeLoginError';
 import type { RNToWebMessage } from '@bombom/shared/webview';
 
 export const useWebViewAuth = () => {
@@ -15,10 +17,13 @@ export const useWebViewAuth = () => {
     const cleanup = addWebViewMessageListener(
       async (message: RNToWebMessage) => {
         if (message.type === 'GOOGLE_LOGIN_TOKEN') {
-          if (!message.payload.identityToken)
-            throw new Error('Google 로그인 정보가 없습니다.');
+          let stage: NativeLoginErrorStage = 'credential_validation';
 
           try {
+            if (!message.payload.identityToken)
+              throw new Error('Google 로그인 정보가 없습니다.');
+
+            stage = 'token_exchange';
             const response = await postGoogleLogin({
               identityToken: message.payload.identityToken,
               authorizationCode: message.payload.authorizationCode ?? '',
@@ -49,7 +54,8 @@ export const useWebViewAuth = () => {
 
             window.location.reload();
           } catch (error) {
-            logger.error('Google 로그인 실패:', error);
+            logger.error('Google 로그인 실패');
+            captureNativeLoginError({ provider: 'google', error, stage });
             sendMessageToRN({
               type: 'LOGIN_FAILED',
               payload: {
@@ -59,10 +65,13 @@ export const useWebViewAuth = () => {
             });
           }
         } else if (message.type === 'APPLE_LOGIN_TOKEN') {
-          if (!message.payload.identityToken)
-            throw new Error('Apple 로그인 정보가 없습니다.');
+          let stage: NativeLoginErrorStage = 'credential_validation';
 
           try {
+            if (!message.payload.identityToken)
+              throw new Error('Apple 로그인 정보가 없습니다.');
+
+            stage = 'token_exchange';
             const response = await postAppleLogin({
               identityToken: message.payload.identityToken,
               authorizationCode: message.payload.authorizationCode,
@@ -93,7 +102,8 @@ export const useWebViewAuth = () => {
 
             window.location.reload();
           } catch (error) {
-            logger.error('Apple 로그인 실패:', error);
+            logger.error('Apple 로그인 실패');
+            captureNativeLoginError({ provider: 'apple', error, stage });
             sendMessageToRN({
               type: 'LOGIN_FAILED',
               payload: {
