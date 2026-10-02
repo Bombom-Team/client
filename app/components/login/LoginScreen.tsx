@@ -1,6 +1,7 @@
 import styled from '@emotion/native';
 
 import {
+  Alert,
   Dimensions,
   Image,
   KeyboardAvoidingView,
@@ -13,9 +14,31 @@ import { AppleIcon } from '@/components/icons/AppleIcon';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebView } from '@/contexts/WebViewContext';
-import { loginWithApple, loginWithGoogle } from '@/utils/auth';
+import { captureNativeLoginFailure } from '@/libs/sentry/sentryUtils';
+import {
+  getNativeLoginFailure,
+  loginWithApple,
+  loginWithGoogle,
+  type NativeLoginProvider,
+} from '@/utils/auth';
 
 const logo = require('@/app/assets/images/logo.png');
+
+const handleNativeLoginError = (
+  provider: NativeLoginProvider,
+  error: unknown,
+) => {
+  const failure = getNativeLoginFailure(provider, error);
+  if (!failure) return;
+
+  captureNativeLoginFailure({ provider, ...failure });
+
+  if (__DEV__) {
+    console.error(`${provider} 로그인 실패:`, failure.reason);
+  }
+
+  Alert.alert('로그인에 실패했어요. 다시 시도해주세요.');
+};
 
 export const LoginScreen = () => {
   const { showLogin } = useAuth();
@@ -25,8 +48,7 @@ export const LoginScreen = () => {
     try {
       await loginWithGoogle(
         ({ identityToken, authorizationCode, email, name }) => {
-          showLogin();
-          sendMessageToWeb({
+          const isDispatched = sendMessageToWeb({
             type: 'GOOGLE_LOGIN_TOKEN',
             payload: {
               identityToken,
@@ -35,10 +57,13 @@ export const LoginScreen = () => {
               name: name ?? '',
             },
           });
+
+          if (isDispatched) showLogin();
+          return isDispatched;
         },
       );
     } catch (error) {
-      console.error('Google 로그인 실패:', error);
+      handleNativeLoginError('google', error);
     }
   };
 
@@ -46,8 +71,7 @@ export const LoginScreen = () => {
     try {
       await loginWithApple(
         ({ identityToken, authorizationCode, email, name }) => {
-          showLogin();
-          sendMessageToWeb({
+          const isDispatched = sendMessageToWeb({
             type: 'APPLE_LOGIN_TOKEN',
             payload: {
               identityToken,
@@ -56,10 +80,13 @@ export const LoginScreen = () => {
               name: name ?? '',
             },
           });
+
+          if (isDispatched) showLogin();
+          return isDispatched;
         },
       );
     } catch (error) {
-      console.error('Apple 로그인 실패:', error);
+      handleNativeLoginError('apple', error);
     }
   };
 
