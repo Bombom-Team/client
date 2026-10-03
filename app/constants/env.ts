@@ -8,4 +8,8 @@ export const ENV = {
 
   // API URL
   baseUrl: process.env.EXPO_PUBLIC_API_BASE_URL ?? '',
+
+  // Sentry
+  sentryDsn: process.env.EXPO_PUBLIC_SENTRY_DSN ?? '',
+  sentryEnvironment: process.env.EXPO_PUBLIC_SENTRY_ENVIRONMENT ?? '',
 } as const;
