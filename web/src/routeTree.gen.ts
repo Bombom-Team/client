@@ -25,10 +25,12 @@ import { Route as MaeilMailLandingRouteImport } from './routes/maeil-mail/landin
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
 import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
 import { Route as ChallengeChallengeIdLandingRouteImport } from './routes/challenge/$challengeId/landing';
+import { Route as BombomNewsletterRequestsNewRouteImport } from './routes/_bombom/newsletter-requests_.new';
 import { Route as BombomArticlesArticleIdRouteImport } from './routes/_bombom/articles.$articleId';
 import { Route as BombomMainTodayRouteImport } from './routes/_bombom/_main/today';
 import { Route as BombomMainStorageRouteImport } from './routes/_bombom/_main/storage';
 import { Route as BombomMainNoticeRouteImport } from './routes/_bombom/_main/notice';
+import { Route as BombomMainNewsletterRequestsRouteImport } from './routes/_bombom/_main/newsletter-requests';
 import { Route as BombomMainMyRouteImport } from './routes/_bombom/_main/my';
 import { Route as BombomMainMemoRouteImport } from './routes/_bombom/_main/memo';
 import { Route as BombomMainGuideRouteImport } from './routes/_bombom/_main/guide';
@@ -132,6 +134,12 @@ const ChallengeChallengeIdLandingRoute =
     path: '/challenge/$challengeId/landing',
     getParentRoute: () => rootRouteImport,
   } as any);
+const BombomNewsletterRequestsNewRoute =
+  BombomNewsletterRequestsNewRouteImport.update({
+    id: '/newsletter-requests_/new',
+    path: '/newsletter-requests/new',
+    getParentRoute: () => BombomRoute,
+  } as any);
 const BombomArticlesArticleIdRoute = BombomArticlesArticleIdRouteImport.update({
   id: '/articles/$articleId',
   path: '/articles/$articleId',
@@ -152,6 +160,12 @@ const BombomMainNoticeRoute = BombomMainNoticeRouteImport.update({
   path: '/notice',
   getParentRoute: () => BombomMainRoute,
 } as any);
+const BombomMainNewsletterRequestsRoute =
+  BombomMainNewsletterRequestsRouteImport.update({
+    id: '/newsletter-requests',
+    path: '/newsletter-requests',
+    getParentRoute: () => BombomMainRoute,
+  } as any);
 const BombomMainMyRoute = BombomMainMyRouteImport.update({
   id: '/my',
   path: '/my',
@@ -298,10 +312,12 @@ export interface FileRoutesByFullPath {
   '/guide': typeof BombomMainGuideRoute;
   '/memo': typeof BombomMainMemoRoute;
   '/my': typeof BombomMainMyRouteWithChildren;
+  '/newsletter-requests': typeof BombomMainNewsletterRequestsRoute;
   '/notice': typeof BombomMainNoticeRoute;
   '/storage': typeof BombomMainStorageRoute;
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
+  '/newsletter-requests/new': typeof BombomNewsletterRequestsNewRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
   '/': typeof BombomMainIndexRoute;
   '/challenge/$challengeId': typeof BombomMainChallengeChallengeIdRouteWithChildren;
@@ -338,10 +354,12 @@ export interface FileRoutesByTo {
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/guide': typeof BombomMainGuideRoute;
   '/memo': typeof BombomMainMemoRoute;
+  '/newsletter-requests': typeof BombomMainNewsletterRequestsRoute;
   '/notice': typeof BombomMainNoticeRoute;
   '/storage': typeof BombomMainStorageRoute;
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
+  '/newsletter-requests/new': typeof BombomNewsletterRequestsNewRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
   '/': typeof BombomMainIndexRoute;
   '/my/challenges': typeof BombomMainMyChallengesRoute;
@@ -383,10 +401,12 @@ export interface FileRoutesById {
   '/_bombom/_main/guide': typeof BombomMainGuideRoute;
   '/_bombom/_main/memo': typeof BombomMainMemoRoute;
   '/_bombom/_main/my': typeof BombomMainMyRouteWithChildren;
+  '/_bombom/_main/newsletter-requests': typeof BombomMainNewsletterRequestsRoute;
   '/_bombom/_main/notice': typeof BombomMainNoticeRoute;
   '/_bombom/_main/storage': typeof BombomMainStorageRoute;
   '/_bombom/_main/today': typeof BombomMainTodayRoute;
   '/_bombom/articles/$articleId': typeof BombomArticlesArticleIdRoute;
+  '/_bombom/newsletter-requests_/new': typeof BombomNewsletterRequestsNewRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
   '/_bombom/_main/': typeof BombomMainIndexRoute;
   '/_bombom/_main/challenge/$challengeId': typeof BombomMainChallengeChallengeIdRouteWithChildren;
@@ -428,10 +448,12 @@ export interface FileRouteTypes {
     | '/guide'
     | '/memo'
     | '/my'
+    | '/newsletter-requests'
     | '/notice'
     | '/storage'
     | '/today'
     | '/articles/$articleId'
+    | '/newsletter-requests/new'
     | '/challenge/$challengeId/landing'
     | '/'
     | '/challenge/$challengeId'
@@ -468,10 +490,12 @@ export interface FileRouteTypes {
     | '/bookmark'
     | '/guide'
     | '/memo'
+    | '/newsletter-requests'
     | '/notice'
     | '/storage'
     | '/today'
     | '/articles/$articleId'
+    | '/newsletter-requests/new'
     | '/challenge/$challengeId/landing'
     | '/'
     | '/my/challenges'
@@ -512,10 +536,12 @@ export interface FileRouteTypes {
     | '/_bombom/_main/guide'
     | '/_bombom/_main/memo'
     | '/_bombom/_main/my'
+    | '/_bombom/_main/newsletter-requests'
     | '/_bombom/_main/notice'
     | '/_bombom/_main/storage'
     | '/_bombom/_main/today'
     | '/_bombom/articles/$articleId'
+    | '/_bombom/newsletter-requests_/new'
     | '/challenge/$challengeId/landing'
     | '/_bombom/_main/'
     | '/_bombom/_main/challenge/$challengeId'
@@ -668,6 +694,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChallengeChallengeIdLandingRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    '/_bombom/newsletter-requests_/new': {
+      id: '/_bombom/newsletter-requests_/new';
+      path: '/newsletter-requests/new';
+      fullPath: '/newsletter-requests/new';
+      preLoaderRoute: typeof BombomNewsletterRequestsNewRouteImport;
+      parentRoute: typeof BombomRoute;
+    };
     '/_bombom/articles/$articleId': {
       id: '/_bombom/articles/$articleId';
       path: '/articles/$articleId';
@@ -694,6 +727,13 @@ declare module '@tanstack/react-router' {
       path: '/notice';
       fullPath: '/notice';
       preLoaderRoute: typeof BombomMainNoticeRouteImport;
+      parentRoute: typeof BombomMainRoute;
+    };
+    '/_bombom/_main/newsletter-requests': {
+      id: '/_bombom/_main/newsletter-requests';
+      path: '/newsletter-requests';
+      fullPath: '/newsletter-requests';
+      preLoaderRoute: typeof BombomMainNewsletterRequestsRouteImport;
       parentRoute: typeof BombomMainRoute;
     };
     '/_bombom/_main/my': {
@@ -934,6 +974,7 @@ interface BombomMainRouteChildren {
   BombomMainGuideRoute: typeof BombomMainGuideRoute;
   BombomMainMemoRoute: typeof BombomMainMemoRoute;
   BombomMainMyRoute: typeof BombomMainMyRouteWithChildren;
+  BombomMainNewsletterRequestsRoute: typeof BombomMainNewsletterRequestsRoute;
   BombomMainNoticeRoute: typeof BombomMainNoticeRoute;
   BombomMainStorageRoute: typeof BombomMainStorageRoute;
   BombomMainTodayRoute: typeof BombomMainTodayRoute;
@@ -946,6 +987,7 @@ const BombomMainRouteChildren: BombomMainRouteChildren = {
   BombomMainGuideRoute: BombomMainGuideRoute,
   BombomMainMemoRoute: BombomMainMemoRoute,
   BombomMainMyRoute: BombomMainMyRouteWithChildren,
+  BombomMainNewsletterRequestsRoute: BombomMainNewsletterRequestsRoute,
   BombomMainNoticeRoute: BombomMainNoticeRoute,
   BombomMainStorageRoute: BombomMainStorageRoute,
   BombomMainTodayRoute: BombomMainTodayRoute,
@@ -959,6 +1001,7 @@ const BombomMainRouteWithChildren = BombomMainRoute._addFileChildren(
 interface BombomRouteChildren {
   BombomMainRoute: typeof BombomMainRouteWithChildren;
   BombomArticlesArticleIdRoute: typeof BombomArticlesArticleIdRoute;
+  BombomNewsletterRequestsNewRoute: typeof BombomNewsletterRequestsNewRoute;
   BombomArticlesGuideGuideIdRoute: typeof BombomArticlesGuideGuideIdRoute;
   BombomArticlesPreviousArticleIdRoute: typeof BombomArticlesPreviousArticleIdRoute;
 }
@@ -966,6 +1009,7 @@ interface BombomRouteChildren {
 const BombomRouteChildren: BombomRouteChildren = {
   BombomMainRoute: BombomMainRouteWithChildren,
   BombomArticlesArticleIdRoute: BombomArticlesArticleIdRoute,
+  BombomNewsletterRequestsNewRoute: BombomNewsletterRequestsNewRoute,
   BombomArticlesGuideGuideIdRoute: BombomArticlesGuideGuideIdRoute,
   BombomArticlesPreviousArticleIdRoute: BombomArticlesPreviousArticleIdRoute,
 };
