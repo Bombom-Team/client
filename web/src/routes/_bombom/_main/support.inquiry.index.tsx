@@ -5,7 +5,7 @@ import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import useModal from '@/components/Modal/useModal';
 import InquiryCategoryModal from '@/pages/support/inquiry/components/InquiryCategoryModal';
-import InquiryRoomListItem from '@/pages/support/inquiry/components/InquiryRoomListItem';
+import InquiryRoomList from '@/pages/support/inquiry/components/InquiryRoomList/InquiryRoomList';
 import { useInquiryRoomCreateMutation } from '@/pages/support/inquiry/hooks/useInquiryRoomCreateMutation';
 import PlusIcon from '#/assets/svg/plus.svg';
 
@@ -21,7 +21,6 @@ export const Route = createFileRoute('/_bombom/_main/support/inquiry/')({
 
 function InquiryRoomListPage() {
   const navigate = useNavigate();
-  const { data: roomsPage } = useQuery(queries.inquiryRooms());
   const { data: categories } = useQuery(queries.inquiryCategories());
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
@@ -35,8 +34,6 @@ function InquiryRoomListPage() {
     },
   });
 
-  const rooms = roomsPage?.content ?? [];
-
   return (
     <ContentWrapper>
       <Header>
@@ -45,22 +42,7 @@ function InquiryRoomListPage() {
         </NewInquiryButton>
       </Header>
 
-      {rooms.length === 0 ? (
-        <EmptyState>아직 문의 내역이 없어요</EmptyState>
-      ) : (
-        <RoomList>
-          {rooms.map((room) => (
-            <InquiryRoomListItem
-              key={room.id}
-              room={room}
-              categoryName={
-                categories?.find((category) => category.id === room.categoryId)
-                  ?.name
-              }
-            />
-          ))}
-        </RoomList>
-      )}
+      <InquiryRoomList categories={categories} />
 
       <InquiryCategoryModal
         isOpen={isOpen}
@@ -88,18 +70,4 @@ const Header = styled.div`
 const NewInquiryButton = styled(Button)`
   color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
-`;
-
-const RoomList = styled.div`
-  display: flex;
-  gap: 12px;
-  flex-direction: column;
-`;
-
-const EmptyState = styled.p`
-  padding: 48px 0;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  text-align: center;
 `;

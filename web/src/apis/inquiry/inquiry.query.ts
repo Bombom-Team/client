@@ -6,6 +6,8 @@ import {
   type GetInquiryRoomsParams,
 } from './inquiry.api';
 
+export const INQUIRY_ROOMS_QUERY_KEY = ['inquiries', 'room-list'] as const;
+
 export const inquiryQueries = {
   inquiryCategories: () =>
     queryOptions({
@@ -14,8 +16,18 @@ export const inquiryQueries = {
     }),
   inquiryRooms: (params?: GetInquiryRoomsParams) =>
     queryOptions({
-      queryKey: ['inquiries', 'rooms', params],
+      queryKey: [...INQUIRY_ROOMS_QUERY_KEY, params],
       queryFn: () => getInquiryRooms(params ?? {}),
+    }),
+  infiniteInquiryRooms: () =>
+    infiniteQueryOptions({
+      queryKey: [...INQUIRY_ROOMS_QUERY_KEY, 'infinite'],
+      queryFn: ({ pageParam = 0 }) => getInquiryRooms({ page: pageParam }),
+      getNextPageParam: (lastPage) => {
+        if (!lastPage || lastPage.last) return undefined;
+        return (lastPage.number ?? 0) + 1;
+      },
+      initialPageParam: 0,
     }),
   inquiryMessages: (roomId: number) =>
     infiniteQueryOptions({

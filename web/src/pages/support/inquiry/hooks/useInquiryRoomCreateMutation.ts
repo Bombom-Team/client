@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createInquiryRoom } from '@/apis/inquiry/inquiry.api';
-import { queries } from '@/apis/queries';
+import { INQUIRY_ROOMS_QUERY_KEY } from '@/apis/inquiry/inquiry.query';
 import { toast } from '@/components/Toast/utils/toastActions';
 import type { InquiryRoom } from '@/types/inquiry';
 
@@ -17,7 +17,7 @@ export const useInquiryRoomCreateMutation = ({
     mutationFn: createInquiryRoom,
     onSuccess: (room) => {
       queryClient.invalidateQueries({
-        queryKey: queries.inquiryRooms().queryKey,
+        queryKey: INQUIRY_ROOMS_QUERY_KEY,
       });
       onSuccess(room);
     },

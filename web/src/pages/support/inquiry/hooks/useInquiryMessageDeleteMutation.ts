@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteInquiryMessage } from '@/apis/inquiry/inquiry.api';
+import { INQUIRY_ROOMS_QUERY_KEY } from '@/apis/inquiry/inquiry.query';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 
@@ -20,7 +21,7 @@ export const useInquiryMessageDeleteMutation = ({
           queryKey: queries.inquiryMessages(roomId).queryKey,
         }),
         queryClient.invalidateQueries({
-          queryKey: queries.inquiryRooms().queryKey,
+          queryKey: INQUIRY_ROOMS_QUERY_KEY,
         }),
       ]),
     onError: () => {
