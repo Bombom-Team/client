@@ -11,6 +11,7 @@ interface InquiryMessageBubbleProps {
   message: InquiryMessage;
   isOwnMessage: boolean;
   isMobile: boolean;
+  isDeletePending: boolean;
   onDelete: (messageId: number) => void;
 }
 
@@ -18,6 +19,7 @@ const InquiryMessageBubble = ({
   message,
   isOwnMessage,
   isMobile,
+  isDeletePending,
   onDelete,
 }: InquiryMessageBubbleProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -47,6 +49,8 @@ const InquiryMessageBubble = ({
             <ActionButton
               type="button"
               aria-label="메시지 삭제"
+              disabled={isDeletePending}
+              aria-busy={isDeletePending}
               onClick={() => {
                 if (window.confirm('메시지를 삭제할까요?')) {
                   onDelete(message.id);
@@ -234,6 +238,11 @@ const ActionButton = styled.button`
   border-radius: 50%;
 
   transition: background-color 0.2s;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.dividers};

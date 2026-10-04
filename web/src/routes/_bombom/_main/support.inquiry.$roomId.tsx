@@ -1,25 +1,21 @@
 import styled from '@emotion/styled';
 import {
   useInfiniteQuery,
-  useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Fragment, useEffect, useMemo, useRef } from 'react';
-import {
-  deleteInquiryMessage,
-  sendInquiryMessage,
-} from '@/apis/inquiry/inquiry.api';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
 import ChevronIcon from '@/components/icons/ChevronIcon';
-import { toast } from '@/components/Toast/utils/toastActions';
 import { useDevice } from '@/hooks/useDevice';
 import { useIntersectionTrigger } from '@/hooks/useIntersectionTrigger';
 import InquiryMessageBubble from '@/pages/support/inquiry/components/InquiryMessageBubble';
 import InquiryMessageDateDivider from '@/pages/support/inquiry/components/InquiryMessageDateDivider';
 import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessageInput';
+import { useInquiryMessageDeleteMutation } from '@/pages/support/inquiry/hooks/useInquiryMessageDeleteMutation';
+import { useInquiryMessageSendMutation } from '@/pages/support/inquiry/hooks/useInquiryMessageSendMutation';
 import {
   INQUIRY_ROOM_STATUS_BADGE_VARIANTS,
   INQUIRY_ROOM_STATUS_LABELS,
@@ -95,28 +91,10 @@ function InquiryRoomDetailPage() {
     }
   }, [messages]);
 
-  const invalidateMessages = () => {
-    queryClient.invalidateQueries({
-      queryKey: queries.inquiryMessages(roomId).queryKey,
-    });
-  };
-
-  const { mutateAsync: mutateSendMessage, isPending: isSending } = useMutation({
-    mutationFn: (body: { content?: string; imageUrls?: string[] }) =>
-      sendInquiryMessage(roomId, body),
-    onSuccess: invalidateMessages,
-    onError: () => {
-      toast.error('메시지 전송에 실패했습니다.');
-    },
-  });
-
-  const { mutate: mutateDeleteMessage } = useMutation({
-    mutationFn: (messageId: number) => deleteInquiryMessage(roomId, messageId),
-    onSuccess: invalidateMessages,
-    onError: () => {
-      toast.error('메시지 삭제에 실패했습니다.');
-    },
-  });
+  const { mutateAsync: mutateSendMessage, isPending: isSending } =
+    useInquiryMessageSendMutation({ roomId });
+  const { mutate: mutateDeleteMessage, isPending: isDeleting } =
+    useInquiryMessageDeleteMutation({ roomId });
 
   const handleLoadMore = () => {
     prevScrollHeightRef.current = document.body.scrollHeight;
@@ -182,7 +160,8 @@ function InquiryRoomDetailPage() {
                 message={message}
                 isOwnMessage={message.senderType === 'USER'}
                 isMobile={isMobile}
-                onDelete={(messageId) => mutateDeleteMessage(messageId)}
+                isDeletePending={isDeleting}
+                onDelete={mutateDeleteMessage}
               />
             </Fragment>
           );

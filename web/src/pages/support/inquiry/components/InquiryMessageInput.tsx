@@ -1,10 +1,10 @@
 import { theme } from '@bombom/shared';
-import { ApiError } from '@bombom/shared/apis';
 import styled from '@emotion/styled';
 import { useRef, useState } from 'react';
-import { uploadInquiryImages } from '@/apis/inquiry/inquiry.api';
 import Button from '@/components/Button/Button';
 import { toast } from '@/components/Toast/utils/toastActions';
+import { useInquiryImagesUploadMutation } from '@/pages/support/inquiry/hooks/useInquiryImagesUploadMutation';
+import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
 import type { ChangeEvent } from 'react';
 
 const PhotoIcon = ({ color }: { color: string }) => (
@@ -32,10 +32,7 @@ const PhotoIcon = ({ color }: { color: string }) => (
 interface InquiryMessageInputProps {
   disabled?: boolean;
   isSubmitting?: boolean;
-  onSubmit: (body: {
-    content?: string;
-    imageUrls?: string[];
-  }) => Promise<unknown>;
+  onSubmit: (body: SendInquiryMessageBody) => Promise<unknown>;
 }
 
 const MAX_CONTENT_LENGTH = 500;
@@ -48,33 +45,25 @@ const InquiryMessageInput = ({
 }: InquiryMessageInputProps) => {
   const [content, setContent] = useState('');
   const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const { mutate: mutateUploadImages, isPending: isUploading } =
+    useInquiryImagesUploadMutation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
+    e.target.value = '';
     if (files.length === 0) return;
 
     if (imageUrls.length + files.length > MAX_IMAGE_COUNT) {
       toast.error(`이미지는 최대 ${MAX_IMAGE_COUNT}장까지 첨부할 수 있어요.`);
-      e.target.value = '';
       return;
     }
 
-    setIsUploading(true);
-    try {
-      const { imageUrls: uploadedUrls } = await uploadInquiryImages(files);
-      setImageUrls((prev) => [...prev, ...uploadedUrls]);
-    } catch (error) {
-      const message =
-        error instanceof ApiError && error.message
-          ? error.message
-          : '이미지 업로드에 실패했습니다.';
-      toast.error(message);
-    } finally {
-      setIsUploading(false);
-      e.target.value = '';
-    }
+    mutateUploadImages(files, {
+      onSuccess: ({ imageUrls: uploadedUrls }) => {
+        setImageUrls((prev) => [...prev, ...uploadedUrls]);
+      },
+    });
   };
 
   const handleRemoveImage = (url: string) => {

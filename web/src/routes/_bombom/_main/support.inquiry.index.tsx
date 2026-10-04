@@ -1,13 +1,12 @@
 import styled from '@emotion/styled';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { createInquiryRoom } from '@/apis/inquiry/inquiry.api';
 import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import useModal from '@/components/Modal/useModal';
-import { toast } from '@/components/Toast/utils/toastActions';
 import InquiryCategoryModal from '@/pages/support/inquiry/components/InquiryCategoryModal';
 import InquiryRoomListItem from '@/pages/support/inquiry/components/InquiryRoomListItem';
+import { useInquiryRoomCreateMutation } from '@/pages/support/inquiry/hooks/useInquiryRoomCreateMutation';
 import PlusIcon from '#/assets/svg/plus.svg';
 
 export const Route = createFileRoute('/_bombom/_main/support/inquiry/')({
@@ -22,25 +21,17 @@ export const Route = createFileRoute('/_bombom/_main/support/inquiry/')({
 
 function InquiryRoomListPage() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
   const { data: categories } = useQuery(queries.inquiryCategories());
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
-  const { mutate: mutateCreateRoom, isPending } = useMutation({
-    mutationFn: createInquiryRoom,
+  const { mutate: mutateCreateRoom, isPending } = useInquiryRoomCreateMutation({
     onSuccess: (room) => {
       closeModal();
-      queryClient.invalidateQueries({
-        queryKey: queries.inquiryRooms().queryKey,
-      });
       navigate({
         to: '/support/inquiry/$roomId',
         params: { roomId: String(room.id) },
       });
-    },
-    onError: () => {
-      toast.error('문의 생성에 실패했습니다. 다시 시도해주세요.');
     },
   });
 
