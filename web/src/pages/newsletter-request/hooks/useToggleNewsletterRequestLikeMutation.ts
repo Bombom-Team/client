@@ -1,39 +1,39 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  deleteNewsletterRequestSupporter,
-  postNewsletterRequestSupporter,
+  deleteNewsletterRequestLike,
+  putNewsletterRequestLike,
 } from '@/apis/newsletterRequests/newsletterRequests.api';
 import { queries } from '@/apis/queries';
 import { toast } from '@/components/Toast/utils/toastActions';
 
-type ToggleNewsletterRequestSupportVariables = {
+type ToggleNewsletterRequestLikeVariables = {
   newsletterRequestId: number;
-  supported: boolean;
+  liked: boolean;
 };
 
-type UseToggleNewsletterRequestSupportMutationOptions = {
+type UseToggleNewsletterRequestLikeMutationOptions = {
   onSuccess?: () => void;
 };
 
-const useToggleNewsletterRequestSupportMutation = (
-  options?: UseToggleNewsletterRequestSupportMutationOptions,
+const useToggleNewsletterRequestLikeMutation = (
+  options?: UseToggleNewsletterRequestLikeMutationOptions,
 ) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({
       newsletterRequestId,
-      supported,
-    }: ToggleNewsletterRequestSupportVariables) =>
-      supported
-        ? deleteNewsletterRequestSupporter({ newsletterRequestId })
-        : postNewsletterRequestSupporter({ newsletterRequestId }),
-    onSuccess: async (_, { supported }) => {
+      liked,
+    }: ToggleNewsletterRequestLikeVariables) =>
+      liked
+        ? deleteNewsletterRequestLike({ newsletterRequestId })
+        : putNewsletterRequestLike({ newsletterRequestId }),
+    onSuccess: async (_, { liked }) => {
       await queryClient.invalidateQueries({
         queryKey: queries.newsletterRequests().queryKey,
       });
       toast.success(
-        supported
+        liked
           ? '공감을 취소했어요.'
           : '공감을 남겼어요. 등록되면 알려드릴게요.',
       );
@@ -45,4 +45,4 @@ const useToggleNewsletterRequestSupportMutation = (
   });
 };
 
-export default useToggleNewsletterRequestSupportMutation;
+export default useToggleNewsletterRequestLikeMutation;

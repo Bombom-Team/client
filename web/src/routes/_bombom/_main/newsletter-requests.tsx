@@ -9,7 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@/hooks/useDevice';
 import LoginSheet from '@/pages/newsletter-request/components/LoginSheet';
 import NewsletterRequestItem from '@/pages/newsletter-request/components/NewsletterRequestItem';
-import useToggleNewsletterRequestSupportMutation from '@/pages/newsletter-request/hooks/useToggleNewsletterRequestSupportMutation';
+import useToggleNewsletterRequestLikeMutation from '@/pages/newsletter-request/hooks/useToggleNewsletterRequestLikeMutation';
 import type { NewsletterRequest } from '@/types/newsletterRequest';
 import ClockIcon from '#/assets/svg/clock.svg';
 
@@ -44,8 +44,8 @@ function NewsletterRequestBoardPage() {
     ...queries.myNewsletterRequests(),
     enabled: isLoggedIn && tab === 'mine',
   });
-  const { mutate: toggleSupport, isPending: isSupportPending } =
-    useToggleNewsletterRequestSupportMutation();
+  const { mutate: toggleLike, isPending: isLikePending } =
+    useToggleNewsletterRequestLikeMutation();
 
   const visibleRequests = tab === 'mine' ? myRequests : requests;
 
@@ -66,15 +66,15 @@ function NewsletterRequestBoardPage() {
     navigate({ to: FUNNEL_PATH });
   };
 
-  const handleSupportToggle = (request: NewsletterRequest) => {
+  const handleLikeToggle = (request: NewsletterRequest) => {
     if (!isLoggedIn) {
       setLoginRedirectPath(BOARD_PATH);
       openModal();
       return;
     }
-    toggleSupport({
+    toggleLike({
       newsletterRequestId: request.id,
-      supported: request.supported,
+      liked: request.liked,
     });
   };
 
@@ -114,8 +114,8 @@ function NewsletterRequestBoardPage() {
             <NewsletterRequestItem
               key={request.id}
               request={request}
-              onSupportToggle={handleSupportToggle}
-              isSupportPending={isSupportPending}
+              onLikeToggle={handleLikeToggle}
+              isLikePending={isLikePending}
             />
           ))}
         </RequestList>

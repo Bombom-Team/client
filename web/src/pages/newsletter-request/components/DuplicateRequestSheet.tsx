@@ -8,9 +8,9 @@ interface DuplicateRequestSheetProps {
   isOpen: boolean;
   closeModal: () => void;
   name: string;
-  supporterCount: number;
+  requestCount: number;
   isPending: boolean;
-  onSupport: () => void;
+  onLike: () => void;
 }
 
 const DuplicateRequestSheet = ({
@@ -18,9 +18,9 @@ const DuplicateRequestSheet = ({
   isOpen,
   closeModal,
   name,
-  supporterCount,
+  requestCount,
   isPending,
-  onSupport,
+  onLike,
 }: DuplicateRequestSheetProps) => {
   return (
     <Modal
@@ -32,14 +32,14 @@ const DuplicateRequestSheet = ({
     >
       <Container>
         <HeadWrapper>
-          <Title>이미 {supporterCount}명이 신청한 뉴스레터예요</Title>
+          <Title>이미 {requestCount}명이 신청한 뉴스레터예요</Title>
           <Description>
             공감을 누르면 같은 신청으로 합쳐지고, 등록되면 함께 알려드려요.
           </Description>
         </HeadWrapper>
         <FoundBox>{name}</FoundBox>
         <ButtonWrapper>
-          <PrimaryButton onClick={onSupport} disabled={isPending}>
+          <PrimaryButton onClick={onLike} disabled={isPending}>
             나도 원해요
           </PrimaryButton>
           <TextButton variant="transparent" onClick={closeModal}>

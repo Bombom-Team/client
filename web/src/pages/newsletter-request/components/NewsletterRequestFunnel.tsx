@@ -9,7 +9,7 @@ import FunnelLayout from './FunnelLayout';
 import FunnelTitle from './FunnelTitle';
 import NameSuggestionList from './NameSuggestionList';
 import useCreateNewsletterRequestMutation from '../hooks/useCreateNewsletterRequestMutation';
-import useToggleNewsletterRequestSupportMutation from '../hooks/useToggleNewsletterRequestSupportMutation';
+import useToggleNewsletterRequestLikeMutation from '../hooks/useToggleNewsletterRequestLikeMutation';
 import {
   isValidNewsletterUrl,
   toAbsoluteUrl,
@@ -22,6 +22,7 @@ import useModal from '@/components/Modal/useModal';
 import RequireLoginCard from '@/components/RequireLoginCard/RequireLoginCard';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { useAuth } from '@/contexts/AuthContext';
+import { getRequestCount } from '@/types/newsletterRequest';
 import type {
   NewsletterRequest,
   NewsletterSuggestion,
@@ -40,7 +41,7 @@ const BOARD_PATH = '/newsletter-requests';
 type DuplicateTarget = {
   id: number;
   name: string;
-  supporterCount: number;
+  requestCount: number;
 };
 
 const formatElapsed = (milliseconds: number) => {
@@ -58,7 +59,7 @@ const NewsletterRequestFunnel = () => {
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
   const [reason, setReason] = useState('');
-  const [notifyEnabled, setNotifyEnabled] = useState(true);
+  const [isNotificationEnabled, setIsNotificationEnabled] = useState(true);
   const [urlError, setUrlError] = useState<string | null>(null);
   const [isChecking, setIsChecking] = useState(false);
   const [elapsed, setElapsed] = useState<string | null>(null);
@@ -82,8 +83,8 @@ const NewsletterRequestFunnel = () => {
         toast.error('신청하지 못했어요. 잠시 후 다시 시도해 주세요.');
       },
     });
-  const { mutate: toggleSupport, isPending: isSupporting } =
-    useToggleNewsletterRequestSupportMutation({
+  const { mutate: toggleLike, isPending: isLiking } =
+    useToggleNewsletterRequestLikeMutation({
       onSuccess: () => navigate({ to: BOARD_PATH }),
     });
 
@@ -107,7 +108,7 @@ const NewsletterRequestFunnel = () => {
     openDuplicateSheet({
       id: request.id,
       name: request.name,
-      supporterCount: request.supporterCount,
+      requestCount: getRequestCount(request),
     });
   };
 
@@ -154,7 +155,7 @@ const NewsletterRequestFunnel = () => {
         openDuplicateSheet({
           id: check.newsletterRequestId,
           name: found?.name ?? name,
-          supporterCount: found?.supporterCount ?? 1,
+          requestCount: found ? getRequestCount(found) : 1,
         });
         return;
       }
@@ -171,15 +172,15 @@ const NewsletterRequestFunnel = () => {
       name: name.trim(),
       url: toAbsoluteUrl(url),
       reason: reason.trim() || undefined,
-      notifyEnabled,
+      isNotificationEnabled,
     });
   };
 
-  const handleSupport = () => {
+  const handleLike = () => {
     if (!duplicateTarget) return;
-    toggleSupport({
+    toggleLike({
       newsletterRequestId: duplicateTarget.id,
-      supported: false,
+      liked: false,
     });
   };
 
@@ -203,7 +204,7 @@ const NewsletterRequestFunnel = () => {
           <FunnelTitle
             title="신청을 받았어요"
             description={
-              notifyEnabled
+              isNotificationEnabled
                 ? `${name.trim()} 등록되면 알려드릴게요.`
                 : '진행 상황은 내 신청에서 확인할 수 있어요.'
             }
@@ -388,8 +389,10 @@ const NewsletterRequestFunnel = () => {
               <NotifyCheckbox
                 id="newsletter-notify"
                 type="checkbox"
-                checked={notifyEnabled}
-                onChange={(event) => setNotifyEnabled(event.target.checked)}
+                checked={isNotificationEnabled}
+                onChange={(event) =>
+                  setIsNotificationEnabled(event.target.checked)
+                }
               />
             </NotifyLabel>
           </>
@@ -402,9 +405,9 @@ const NewsletterRequestFunnel = () => {
           isOpen={duplicateModal.isOpen}
           closeModal={duplicateModal.closeModal}
           name={duplicateTarget.name}
-          supporterCount={duplicateTarget.supporterCount}
-          isPending={isSupporting}
-          onSupport={handleSupport}
+          requestCount={duplicateTarget.requestCount}
+          isPending={isLiking}
+          onLike={handleLike}
         />
       )}
     </>

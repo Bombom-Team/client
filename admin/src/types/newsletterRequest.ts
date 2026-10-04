@@ -18,7 +18,7 @@ export interface NewsletterRequestSummary {
   requestedName: string;
   requestedUrl: string;
   status: NewsletterRequestStatus;
-  supporterCount: number;
+  likeCount: number;
   collectStatus: DraftCollectStatus | null;
   draftName: string | null;
   imageUrl: string | null;
@@ -44,24 +44,18 @@ export interface NewsletterRequestDraft {
   missingFields: string[];
 }
 
-export interface NewsletterRequestReason {
-  memberId: number;
-  reason: string;
-  createdAt: string;
-}
-
 export interface NewsletterRequestDetail {
   id: number;
   requestedName: string;
   requestedUrl: string;
   requesterMemberId: number;
+  reason: string | null;
   status: NewsletterRequestStatus;
-  supporterCount: number;
+  likeCount: number;
   newsletterId: number | null;
   rejectReason: string | null;
   createdAt: string;
   draft: NewsletterRequestDraft;
-  reasons: NewsletterRequestReason[];
 }
 
 export type UpdateNewsletterRequestDraftRequest = {

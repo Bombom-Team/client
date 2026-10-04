@@ -1,5 +1,8 @@
 import styled from '@emotion/styled';
-import { NEWSLETTER_REQUEST_STATUS_LABELS } from '@/types/newsletterRequest';
+import {
+  getRequestCount,
+  NEWSLETTER_REQUEST_STATUS_LABELS,
+} from '@/types/newsletterRequest';
 import type {
   NewsletterRequest,
   NewsletterRequestStatus,
@@ -10,18 +13,18 @@ import HeartIcon from '#/assets/svg/heart.svg';
 
 interface NewsletterRequestItemProps {
   request: NewsletterRequest;
-  onSupportToggle: (request: NewsletterRequest) => void;
-  isSupportPending: boolean;
+  onLikeToggle: (request: NewsletterRequest) => void;
+  isLikePending: boolean;
 }
 
 const NewsletterRequestItem = ({
   request,
-  onSupportToggle,
-  isSupportPending,
+  onLikeToggle,
+  isLikePending,
 }: NewsletterRequestItemProps) => {
-  const canSupport =
+  const canLike =
     request.status === 'RECEIVED' || request.status === 'REVIEWING';
-  const showSupportButton = canSupport && !request.mine;
+  const showLikeButton = canLike && !request.mine;
 
   return (
     <Container>
@@ -36,24 +39,24 @@ const NewsletterRequestItem = ({
         <Name>{request.name}</Name>
         <Meta>
           {request.categoryName ?? '정보 수집 중'} · 신청{' '}
-          {request.supporterCount}명
+          {getRequestCount(request)}명
         </Meta>
       </InfoWrapper>
-      {showSupportButton ? (
-        <SupportButton
+      {showLikeButton ? (
+        <LikeButton
           type="button"
-          supported={request.supported}
-          aria-pressed={request.supported}
-          disabled={isSupportPending}
-          onClick={() => onSupportToggle(request)}
+          liked={request.liked}
+          aria-pressed={request.liked}
+          disabled={isLikePending}
+          onClick={() => onLikeToggle(request)}
         >
-          {request.supported ? (
+          {request.liked ? (
             <HeartFilledIcon width={12} height={12} />
           ) : (
             <HeartIcon width={12} height={12} />
           )}
           나도
-        </SupportButton>
+        </LikeButton>
       ) : (
         <StatusBadge status={request.status}>
           {NEWSLETTER_REQUEST_STATUS_LABELS[request.status]}
@@ -125,21 +128,21 @@ const Meta = styled.span`
   font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 
-const SupportButton = styled.button<{ supported: boolean }>`
+const LikeButton = styled.button<{ liked: boolean }>`
   padding: 4px 12px;
   border: 1px solid
-    ${({ theme, supported }) =>
-      supported ? theme.colors.primaryBomBom : theme.colors.stroke};
+    ${({ theme, liked }) =>
+      liked ? theme.colors.primaryBomBom : theme.colors.stroke};
   border-radius: 999px;
 
   display: flex;
   gap: 4px;
   align-items: center;
 
-  background-color: ${({ theme, supported }) =>
-    supported ? theme.colors.primaryInfo : theme.colors.white};
-  color: ${({ theme, supported }) =>
-    supported ? theme.colors.primaryBomBom : theme.colors.textSecondary};
+  background-color: ${({ theme, liked }) =>
+    liked ? theme.colors.primaryInfo : theme.colors.white};
+  color: ${({ theme, liked }) =>
+    liked ? theme.colors.primaryBomBom : theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t3Bold};
 
   &:disabled {

@@ -17,8 +17,8 @@ export interface NewsletterRequest {
   name: string;
   url: string;
   status: NewsletterRequestStatus;
-  supporterCount: number;
-  supported: boolean;
+  likeCount: number;
+  liked: boolean;
   mine: boolean;
   categoryName: string | null;
   imageUrl: string | null;
@@ -46,12 +46,21 @@ export type CreateNewsletterRequestBody = {
   name: string;
   url: string;
   reason?: string;
-  notifyEnabled: boolean;
+  isNotificationEnabled: boolean;
 };
+
+export interface NewsletterRequestLikeResponse {
+  likeCount: number;
+}
 
 export interface CreateNewsletterRequestResponse {
   newsletterRequestId: number;
 }
+
+// likeCount는 좋아요 수만 센다. 화면의 "신청 N명"은 신청자 1명을 더해서 보여준다.
+export const getRequestCount = (
+  request: Pick<NewsletterRequest, 'likeCount'>,
+) => request.likeCount + 1;
 
 export const NEWSLETTER_REQUEST_STATUS_LABELS: Record<
   NewsletterRequestStatus,

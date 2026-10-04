@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { getRequestCount } from '@/types/newsletterRequest';
 import type {
   NewsletterRequest,
   NewsletterSuggestion,
@@ -49,7 +50,7 @@ const NameSuggestionList = ({
           onClick={() => onRequestSelect(request)}
         >
           <SuggestionName>{request.name}</SuggestionName>
-          <SuggestionMeta>신청 {request.supporterCount}명</SuggestionMeta>
+          <SuggestionMeta>신청 {getRequestCount(request)}명</SuggestionMeta>
         </SuggestionButton>
       ))}
     </Container>

@@ -92,7 +92,7 @@ function NewsletterRequestListPage() {
                 <td>
                   <UrlText>{request.requestedUrl}</UrlText>
                 </td>
-                <td>{request.supporterCount}</td>
+                <td>{request.likeCount}</td>
                 <td>
                   {request.collectStatus
                     ? DRAFT_COLLECT_STATUS_LABELS[request.collectStatus]

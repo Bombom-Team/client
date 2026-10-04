@@ -4,6 +4,7 @@ import type {
   CreateNewsletterRequestResponse,
   NewsletterRequest,
   NewsletterRequestCheck,
+  NewsletterRequestLikeResponse,
   NewsletterRequestSuggestions,
 } from '@/types/newsletterRequest';
 
@@ -57,22 +58,22 @@ export const postNewsletterRequest = async (
   });
 };
 
-export type NewsletterRequestSupporterParams = {
+export type NewsletterRequestLikeParams = {
   newsletterRequestId: number;
 };
 
-export const postNewsletterRequestSupporter = async ({
+export const putNewsletterRequestLike = async ({
   newsletterRequestId,
-}: NewsletterRequestSupporterParams) => {
-  return fetcher.post({
-    path: `/newsletter-requests/${newsletterRequestId}/supporters`,
+}: NewsletterRequestLikeParams) => {
+  return fetcher.put<Record<string, never>, NewsletterRequestLikeResponse>({
+    path: `/newsletter-requests/${newsletterRequestId}/like`,
   });
 };
 
-export const deleteNewsletterRequestSupporter = async ({
+export const deleteNewsletterRequestLike = async ({
   newsletterRequestId,
-}: NewsletterRequestSupporterParams) => {
-  return fetcher.delete({
-    path: `/newsletter-requests/${newsletterRequestId}/supporters`,
+}: NewsletterRequestLikeParams) => {
+  return fetcher.delete<Record<string, never>, NewsletterRequestLikeResponse>({
+    path: `/newsletter-requests/${newsletterRequestId}/like`,
   });
 };

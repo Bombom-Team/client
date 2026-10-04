@@ -229,7 +229,7 @@ function NewsletterRequestReviewPage() {
             <dt>상태</dt>
             <dd>{NEWSLETTER_REQUEST_STATUS_LABELS[request.status]}</dd>
             <dt>공감</dt>
-            <dd>{request.supporterCount}명</dd>
+            <dd>{request.likeCount}명</dd>
             <dt>자동 수집</dt>
             <dd>
               {DRAFT_COLLECT_STATUS_LABELS[request.draft.collectStatus]} (시도{' '}
@@ -245,15 +245,7 @@ function NewsletterRequestReviewPage() {
               </>
             )}
           </InfoGrid>
-          {request.reasons.length > 0 && (
-            <ReasonList>
-              {request.reasons.map((reason) => (
-                <li key={`${reason.memberId}-${reason.createdAt}`}>
-                  “{reason.reason}”
-                </li>
-              ))}
-            </ReasonList>
-          )}
+          {request.reason && <ReasonBox>“{request.reason}”</ReasonBox>}
         </Section>
 
         <Divider />
@@ -381,14 +373,10 @@ const FailureText = styled.div`
   font-size: 13px;
 `;
 
-const ReasonList = styled.ul`
+const ReasonBox = styled.p`
   margin-top: 12px;
   padding: 12px 16px;
   border-radius: ${({ theme }) => theme.borderRadius.md};
-
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
 
   background-color: ${({ theme }) => theme.colors.gray50};
   color: ${({ theme }) => theme.colors.gray700};
