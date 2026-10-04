@@ -50,7 +50,7 @@ const InquiryCategoryModal = ({
             <Checkbox
               id={`inquiry-category-${category.id}`}
               checked={selectedCategoryId === category.id}
-              onChange={() => setSelectedCategoryId(category.id)}
+              onChange={() => setSelectedCategoryId(category.id ?? null)}
             >
               {category.name}
             </Checkbox>

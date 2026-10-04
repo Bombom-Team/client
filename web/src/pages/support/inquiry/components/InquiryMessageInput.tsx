@@ -61,7 +61,7 @@ const InquiryMessageInput = ({
 
     mutateUploadImages(files, {
       onSuccess: ({ imageUrls: uploadedUrls }) => {
-        setImageUrls((prev) => [...prev, ...uploadedUrls]);
+        setImageUrls((prev) => [...prev, ...(uploadedUrls ?? [])]);
       },
     });
   };

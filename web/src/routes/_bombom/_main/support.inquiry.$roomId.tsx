@@ -43,7 +43,7 @@ function InquiryRoomDetailPage() {
   const prevScrollHeightRef = useRef<number | null>(null);
 
   const { data: roomsPage } = useQuery(queries.inquiryRooms());
-  const room = roomsPage?.content.find((r) => r.id === roomId);
+  const room = roomsPage?.content?.find((r) => r.id === roomId);
   const { data: categories } = useQuery(queries.inquiryCategories());
   const categoryName = categories?.find(
     (category) => category.id === room?.categoryId,
@@ -124,7 +124,7 @@ function InquiryRoomDetailPage() {
 
         {room && (
           <CreatedAtText>
-            {formatDateToKorean(new Date(room.createdAt))}
+            {formatDateToKorean(new Date(room.createdAt ?? ''))}
           </CreatedAtText>
         )}
 
@@ -132,7 +132,7 @@ function InquiryRoomDetailPage() {
           <HeaderSpacer />
           {categoryName && <CategoryText>{categoryName}</CategoryText>}
           <HeaderSpacer>
-            {room && (
+            {room?.status && (
               <Badge
                 text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
                 variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
@@ -146,10 +146,11 @@ function InquiryRoomDetailPage() {
         <LoadMoreTrigger ref={loadMoreRef} />
         {messages.map((message, index) => {
           const prevMessage = messages[index - 1];
-          const messageDate = new Date(message.createdAt);
+          const messageDate = new Date(message.createdAt ?? '');
           const showDateDivider =
             !prevMessage ||
-            compareDates(new Date(prevMessage.createdAt), messageDate) !== 0;
+            compareDates(new Date(prevMessage.createdAt ?? ''), messageDate) !==
+              0;
 
           return (
             <Fragment key={message.id}>

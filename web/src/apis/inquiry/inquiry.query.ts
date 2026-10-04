@@ -22,10 +22,11 @@ export const inquiryQueries = {
       queryKey: ['inquiries', 'rooms', roomId, 'messages'],
       queryFn: ({ pageParam }: { pageParam?: number }) =>
         getInquiryMessages(roomId, { cursor: pageParam }),
-      getNextPageParam: (lastPage) =>
-        lastPage.hasNext
-          ? lastPage.messages[lastPage.messages.length - 1]?.id
-          : undefined,
+      getNextPageParam: (lastPage) => {
+        if (!lastPage.hasNext) return undefined;
+        const messages = lastPage.messages ?? [];
+        return messages[messages.length - 1]?.id;
+      },
       initialPageParam: undefined as number | undefined,
     }),
 };

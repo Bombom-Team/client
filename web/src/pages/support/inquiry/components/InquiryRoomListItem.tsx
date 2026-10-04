@@ -20,13 +20,15 @@ const InquiryRoomListItem = ({
   return (
     <Container to={`/support/inquiry/${room.id}`}>
       <BadgeGroup>
-        <Badge
-          text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
-          variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
-        />
+        {room.status && (
+          <Badge
+            text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
+            variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
+          />
+        )}
         {categoryName && <CategoryText>{categoryName}</CategoryText>}
       </BadgeGroup>
-      <CreatedAt>{formatDate(new Date(room.createdAt))}</CreatedAt>
+      <CreatedAt>{formatDate(new Date(room.createdAt ?? ''))}</CreatedAt>
     </Container>
   );
 };

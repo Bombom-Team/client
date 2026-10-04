@@ -24,6 +24,8 @@ const InquiryMessageBubble = ({
 }: InquiryMessageBubbleProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  const imageUrls = message.imageUrls ?? [];
+
   const handleImageClick = (url: string) => {
     setPreviewUrl(url);
   };
@@ -52,7 +54,7 @@ const InquiryMessageBubble = ({
               disabled={isDeletePending}
               aria-busy={isDeletePending}
               onClick={() => {
-                if (window.confirm('메시지를 삭제할까요?')) {
+                if (message.id != null && window.confirm('메시지를 삭제할까요?')) {
                   onDelete(message.id);
                 }
               }}
@@ -68,9 +70,9 @@ const InquiryMessageBubble = ({
 
         <Bubble isOwnMessage={isOwnMessage} isMobile={isMobile}>
           {message.content && <Content>{message.content}</Content>}
-          {message.imageUrls.length > 0 && (
+          {imageUrls.length > 0 && (
             <ImageGrid>
-              {message.imageUrls.map((url) => (
+              {imageUrls.map((url) => (
                 <ImageThumbnailButton
                   key={url}
                   type="button"
@@ -91,7 +93,7 @@ const InquiryMessageBubble = ({
       </BubbleRow>
 
       <DateText isOwnMessage={isOwnMessage}>
-        {formatTimeToKorean(new Date(message.createdAt))}
+        {formatTimeToKorean(new Date(message.createdAt ?? ''))}
       </DateText>
 
       {previewUrl && (

@@ -1,33 +1,18 @@
-export type InquiryRoomStatus =
-  | 'UNCONFIRMED'
-  | 'IN_PROGRESS'
-  | 'DONE'
-  | 'ON_HOLD';
+import type { components } from '@/types/openapi';
 
-export type InquirySenderType = 'USER' | 'ADMIN';
+export type InquiryRoomStatus = NonNullable<
+  components['schemas']['InquiryRoomResponse']['status']
+>;
 
-export interface InquiryCategory {
-  id: number;
-  name: string;
-}
+export type InquirySenderType = NonNullable<
+  components['schemas']['InquiryMessageResponse']['senderType']
+>;
 
-export interface InquiryRoom {
-  id: number;
-  categoryId: number;
-  status: InquiryRoomStatus;
-  createdAt: string;
-  closedAt: string | null;
-}
+export type InquiryCategory = components['schemas']['InquiryCategoryResponse'];
 
-export interface InquiryMessage {
-  id: number;
-  roomId: number;
-  senderType: InquirySenderType;
-  adminId: number | null;
-  content: string;
-  imageUrls: string[];
-  createdAt: string;
-}
+export type InquiryRoom = components['schemas']['InquiryRoomResponse'];
+
+export type InquiryMessage = components['schemas']['InquiryMessageResponse'];
 
 export const INQUIRY_ROOM_STATUS_LABELS: Record<InquiryRoomStatus, string> = {
   UNCONFIRMED: '접수됨',
