@@ -4,6 +4,7 @@ import { blogQueries } from './blog/blog.query';
 import { bookmarkQueries } from './bookmark/bookmark.query';
 import { challengeQueries } from './challenge/challenge.query';
 import { eventQueries } from './event/event.query';
+import { faqQueries } from './faq/faq.query';
 import { highlightQueries } from './highlight/highlight.query';
 import { maeilMailQueries } from './maeilMail/maeilMail.query';
 import { membersQueries } from './members/members.query';
@@ -56,6 +57,9 @@ export const queries = {
 
   // event
   ...eventQueries,
+
+  // faq
+  ...faqQueries,
 
   // subscriptions
   ...subscriptionsQueries,

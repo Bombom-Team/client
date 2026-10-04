@@ -8,6 +8,7 @@ export type GetMembersParams = {
   page?: number;
   size?: number;
   name?: string;
+  role?: 'ADMIN' | 'USER';
 };
 
 export const getMembers = async (params: GetMembersParams = {}) => {

@@ -2,7 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { useFloatingToolbarSelection } from './useFloatingToolbarSelection';
-import { getMaeilMailAnswerUrl } from '../../constants/maeilMail';
+import {
+  getMaeilMailAnswerUrl,
+  MAEIL_MAIL_ANSWER_CHECK_BUTTON_ID,
+} from '../../constants/maeilMail';
 import { useAddHighlightMutation } from '../../hooks/useAddHighlightMutation';
 import { useExternalLinkHandler } from '../../hooks/useExternalLinkHandler';
 import { useFloatingToolbarState } from '../../hooks/useFloatingToolbarState';
@@ -70,10 +73,17 @@ const ArticleBody = ({
     isOpen: isMaeilMailModalOpen,
   } = useModal();
 
-  const { data: content } = useQuery(queries.contentByArticleId({ articleId }));
-  const { data: submittedAnswer } = useQuery(
-    queries.answerByArticleId({ articleId }),
+  const isMaeilMailArticle = articleContent.includes(
+    MAEIL_MAIL_ANSWER_CHECK_BUTTON_ID,
   );
+  const { data: content } = useQuery({
+    ...queries.contentByArticleId({ articleId }),
+    enabled: isMaeilMailArticle,
+  });
+  const { data: submittedAnswer } = useQuery({
+    ...queries.answerByArticleId({ articleId }),
+    enabled: isMaeilMailArticle,
+  });
   const contentId = content?.contentId;
   const hasSubmittedAnswer = typeof submittedAnswer === 'string';
 

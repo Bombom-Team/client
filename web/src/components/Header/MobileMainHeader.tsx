@@ -5,6 +5,7 @@ import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
+import HeadsetIcon from '#/assets/svg/headset.svg';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 
 const MobileMainHeader = () => {
@@ -16,16 +17,26 @@ const MobileMainHeader = () => {
       <MainRow>
         <HeaderLogo />
         <UserInfoWrapper>
-          <NavButton
-            onClick={() => navigate({ to: '/notice' })}
-            variant="transparent"
-          >
-            <MegaphoneIcon width={20} height={20} />
-          </NavButton>
+          <IconButtonGroup>
+            <NavButton
+              onClick={() => navigate({ to: '/support' })}
+              variant="transparent"
+            >
+              <HeadsetIcon width={20} height={20} />
+            </NavButton>
+            <NavButton
+              onClick={() => navigate({ to: '/notice' })}
+              variant="transparent"
+            >
+              <MegaphoneIcon width={20} height={20} />
+            </NavButton>
+          </IconButtonGroup>
           {userProfile ? (
             <HeaderProfile userProfile={userProfile} device="mobile" />
           ) : (
-            <LoginButton />
+            <LoginButtonWrapper>
+              <LoginButton />
+            </LoginButtonWrapper>
           )}
         </UserInfoWrapper>
       </MainRow>
@@ -66,12 +77,13 @@ const MainRow = styled.div`
 
 const UserInfoWrapper = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 4px;
+  align-items: center;
   justify-content: center;
 `;
 
 const NavButton = styled(Button)`
-  padding: 0;
+  padding: 8px 12px;
 
   display: flex;
   gap: 0;
@@ -80,4 +92,14 @@ const NavButton = styled(Button)`
   :hover {
     background: none;
   }
+`;
+
+const IconButtonGroup = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
+const LoginButtonWrapper = styled.div`
+  margin-left: 4px;
 `;

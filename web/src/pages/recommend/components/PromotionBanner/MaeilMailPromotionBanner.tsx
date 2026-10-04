@@ -58,7 +58,8 @@ const Container = styled.a<{ device: Device }>`
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: ${({ device }) => (device === 'mobile' ? '8px 16px' : '24px 20px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '8px 16px' : 'clamp(8px, 2cqw, 24px) 20px'};
   border-radius: 24px;
 
   display: flex;
@@ -71,7 +72,8 @@ const Container = styled.a<{ device: Device }>`
 const Content = styled.div<{ device: Device }>`
   width: 100%;
   max-width: ${({ device }) => (device === 'mobile' ? '100%' : '560px')};
-  padding: ${({ device }) => (device === 'mobile' ? '0 24px' : '0 32px')};
+  padding: ${({ device }) =>
+    device === 'mobile' ? '0 24px' : '0 clamp(8px, 3cqw, 32px)'};
 
   display: flex;
   gap: 8px;
@@ -108,6 +110,9 @@ const HeadlineLine = styled.p<{ device: Device }>`
       : device === 'tablet'
         ? theme.fonts.t12Bold
         : theme.fonts.t13Bold};
+  ${({ device }) =>
+    device !== 'mobile' &&
+    'font-size: clamp(16px, 3.8cqw, 32px); line-height: 1.35;'}
 `;
 
 const BrandGreen = styled.span<{ primaryColor: string }>`

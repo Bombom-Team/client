@@ -31,7 +31,7 @@ const Container = styled(Link)`
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: 0 clamp(40px, 5vw, 56px);
+  padding: 0 clamp(24px, 5cqw, 56px);
   border-radius: 24px;
 
   display: flex;
@@ -52,7 +52,7 @@ const Container = styled(Link)`
 
 const Content = styled.div`
   width: 100%;
-  max-width: min(420px, 90%);
+  max-width: 420px;
 
   display: grid;
   gap: 12px;
@@ -63,9 +63,10 @@ const Content = styled.div`
 
 const TextWrapper = styled.div`
   width: 100%;
+  min-width: 0;
 
   display: flex;
-  gap: 12px;
+  gap: clamp(4px, 1.5cqw, 12px);
   flex-direction: column;
 `;
 
@@ -76,7 +77,7 @@ const TextGroup = styled.div`
 `;
 
 const Title = styled.p<{ device: Device }>`
-  width: calc(100% + clamp(80px, 20vw, 175px) + 12px);
+  width: calc(100% + clamp(64px, 21cqw, 175px) + 12px);
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) => {
@@ -88,6 +89,8 @@ const Title = styled.p<{ device: Device }>`
     }
     return theme.fonts.t12Bold;
   }};
+  font-size: clamp(16px, 3.8cqw, 28px);
+  line-height: 1.35;
 `;
 
 const Description = styled.p<{ device: Device }>`
@@ -101,6 +104,8 @@ const Description = styled.p<{ device: Device }>`
     }
     return theme.fonts.t7Regular;
   }};
+  font-size: clamp(12px, 2cqw, 16px);
+  line-height: 1.5;
 
   word-break: keep-all;
 `;
@@ -123,6 +128,6 @@ const ActionText = styled.span<{ device: Device }>`
 `;
 
 const CharacterImage = styled.img`
-  width: clamp(84px, 20vw, 175px);
+  width: clamp(64px, 21cqw, 175px);
   height: auto;
 `;

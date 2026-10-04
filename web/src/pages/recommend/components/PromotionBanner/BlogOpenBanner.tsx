@@ -8,7 +8,7 @@ const BlogOpenBanner = () => {
   const device = useDevice();
 
   return (
-    <Container device={device} to="/blog">
+    <Container to="/blog">
       <Content device={device}>
         <BannerImage
           device={device}
@@ -26,11 +26,11 @@ const BlogOpenBanner = () => {
 
 export default BlogOpenBanner;
 
-const Container = styled(Link)<{ device: Device }>`
+const Container = styled(Link)`
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: ${({ device }) => (device ? '32px 36px' : '24px 20px')};
+  padding: clamp(12px, 3cqw, 24px) clamp(24px, 4cqw, 36px);
   border-radius: 24px;
 
   display: flex;
@@ -44,10 +44,11 @@ const Content = styled.div<{ device: Device }>`
   position: relative;
   z-index: 1;
   width: 100%;
+  height: 100%;
   max-width: ${({ device }) => (device === 'pc' ? '600px' : '100%')};
 
   display: flex;
-  gap: 12px;
+  gap: clamp(4px, 1.5cqw, 12px);
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -56,22 +57,31 @@ const Content = styled.div<{ device: Device }>`
 const BannerImage = styled.img<{ device: Device }>`
   width: 100%;
   height: auto;
+  min-height: 0;
   max-width: ${({ device }) => (device === 'pc' ? '420px' : '300px')};
+
+  object-fit: contain;
 `;
 
 const Logo = styled.div<{ device: Device }>`
   display: flex;
   gap: ${({ device }) => (device === 'mobile' ? '8px' : '12px')};
+  flex-shrink: 0;
   align-items: center;
 `;
 
 const LogoImage = styled.img<{ device: Device }>`
-  width: ${({ device }) => (device === 'mobile' ? '40px' : '52px')};
-  height: ${({ device }) => (device === 'mobile' ? '40px' : '52px')};
+  width: ${({ device }) =>
+    device === 'mobile'
+      ? 'clamp(24px, 6cqw, 40px)'
+      : 'clamp(24px, 6cqw, 52px)'};
+  height: auto;
   border-radius: ${({ device }) => (device === 'mobile' ? '12px' : '18px')};
 `;
 
 const Title = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t13Bold};
+  font-size: clamp(20px, 4cqw, 32px);
+  line-height: 1.35;
 `;

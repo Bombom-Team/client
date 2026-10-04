@@ -8,6 +8,7 @@ import LoginButton from './LoginButton';
 import Button from '../Button/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
+import HeadsetIcon from '#/assets/svg/headset.svg';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 
 interface PCHeaderProps {
@@ -29,16 +30,26 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
           </NavWrapper>
 
           <UserInfoWrapper>
-            <Button
-              onClick={() => navigate({ to: '/notice' })}
-              variant={'transparent'}
-            >
-              <MegaphoneIcon width={22} height={24} />
-            </Button>
+            <IconButtonGroup>
+              <Button
+                onClick={() => navigate({ to: '/support' })}
+                variant={'transparent'}
+              >
+                <HeadsetIcon width={22} height={24} />
+              </Button>
+              <Button
+                onClick={() => navigate({ to: '/notice' })}
+                variant={'transparent'}
+              >
+                <MegaphoneIcon width={22} height={24} />
+              </Button>
+            </IconButtonGroup>
             {userProfile ? (
               <HeaderProfile userProfile={userProfile} device="pc" />
             ) : (
-              <LoginButton />
+              <LoginButtonWrapper>
+                <LoginButton />
+              </LoginButtonWrapper>
             )}
           </UserInfoWrapper>
         </HeaderInner>
@@ -98,7 +109,17 @@ const NavWrapper = styled.nav`
 
 const UserInfoWrapper = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
   justify-content: flex-end;
+`;
+
+const IconButtonGroup = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
+const LoginButtonWrapper = styled.div`
+  margin-left: 8px;
 `;

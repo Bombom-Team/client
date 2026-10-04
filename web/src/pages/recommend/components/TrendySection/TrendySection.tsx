@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import NewsletterList from './NewsletterList';
-import RequestNewsletterButton from './RequestNewsletterButton';
 import { queries } from '@/apis/queries';
 import Chip from '@/components/Chip/Chip';
 import ImageInfoCardSkeleton from '@/components/ImageInfoCard/ImageInfoCardSkeleton';
@@ -48,8 +47,6 @@ const TrendySection = () => {
         searchQuery === '' ||
         newsletter.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-
-  const isEmpty = !isLoading && (filteredNewsletters?.length ?? 0) === 0;
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (selectedCategory !== ALL_NEWSLETTERS)
@@ -160,11 +157,6 @@ const TrendySection = () => {
           />
         )}
       </TrendyGrid>
-      {!isEmpty && (
-        <SectionFooter>
-          <RequestNewsletterButton />
-        </SectionFooter>
-      )}
     </Container>
   );
 };
@@ -294,13 +286,6 @@ const CloseButton = styled.button`
   &:active {
     transform: scale(0.95);
   }
-`;
-
-const SectionFooter = styled.div`
-  padding-top: 12px;
-
-  display: flex;
-  justify-content: flex-end;
 `;
 
 const TagContainer = styled.div`

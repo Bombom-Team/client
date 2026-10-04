@@ -1,0 +1,72 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Admin dashboard response schemas",
+    "version" : "BOM-1218"
+  },
+  "paths" : { },
+  "components" : {
+    "schemas" : {
+      "DailyJoinedMembersResponse" : {
+        "type" : "object",
+        "properties" : {
+          "date" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "DashboardStatsResponse" : {
+        "type" : "object",
+        "properties" : {
+          "totalMembers" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalNotices" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "dailyJoinedMembers" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "weeklyJoinedMembers" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "monthlyJoinedMembers" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "yearlyJoinedMembers" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "withdrawnMembersThisMonth" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "todayActiveMembers" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "dailyJoinedTrend" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DailyJoinedMembersResponse"
+            }
+          },
+          "aggregatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      }
+    }
+  }
+}

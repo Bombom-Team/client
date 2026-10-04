@@ -53,6 +53,15 @@ export default function PCStorageContent({
 
   const haveNoContent = articleList.length === 0;
   const emptyKeyword = !baseQueryParams.keyword;
+  const totalPages = articles?.totalPages;
+
+  useEffect(() => {
+    if (totalPages === undefined) return;
+
+    const lastValidPage = Math.max(totalPages, 1);
+
+    if (page > lastValidPage) onPageChange(lastValidPage);
+  }, [onPageChange, page, totalPages]);
 
   const handleDeleteArticles = () => {
     deleteArticles(selectedIds);
