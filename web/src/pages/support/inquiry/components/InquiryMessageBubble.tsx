@@ -77,7 +77,11 @@ const InquiryMessageBubble = ({
           </ActionMenu>
         )}
 
-        <Bubble isOwnMessage={isOwnMessage} isMobile={isMobile}>
+        <Bubble
+          hasImages={imageUrls.length > 0}
+          isOwnMessage={isOwnMessage}
+          isMobile={isMobile}
+        >
           {message.content && <Content>{message.content}</Content>}
           {imageUrls.length > 0 && (
             <ImageGrid>
@@ -155,10 +159,11 @@ const BubbleRow = styled.div<{ isOwnMessage: boolean }>`
 `;
 
 const Bubble = styled.div<{
+  hasImages: boolean;
   isOwnMessage: boolean;
   isMobile: boolean;
 }>`
-  width: fit-content;
+  width: ${({ hasImages }) => (hasImages ? '272px' : 'fit-content')};
   max-width: ${({ isMobile }) => (isMobile ? 'calc(100% - 60px)' : '520px')};
   padding: 12px 16px;
   border-radius: 16px;
@@ -170,6 +175,8 @@ const Bubble = styled.div<{
   color: ${({ isOwnMessage, theme }) =>
     isOwnMessage ? theme.colors.white : theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t6Regular};
+
+  box-sizing: border-box;
 `;
 
 const Content = styled.p`
@@ -181,6 +188,7 @@ const Content = styled.p`
 `;
 
 const ImageGrid = styled.div`
+  width: 100%;
   margin-top: 8px;
 
   display: flex;
@@ -190,12 +198,14 @@ const ImageGrid = styled.div`
 
 const ImageThumbnailButton = styled.button`
   overflow: hidden;
-  width: 240px;
-  height: 240px;
+  width: 100%;
+  max-width: 240px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 12px;
 
   display: block;
+
+  aspect-ratio: 1;
 
   transition: opacity 0.2s;
 
