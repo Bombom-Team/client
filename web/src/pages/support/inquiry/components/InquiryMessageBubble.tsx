@@ -1,7 +1,9 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
+import InquiryMessageDeleteModal from './InquiryMessageDeleteModal';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
+import useModal from '@/components/Modal/useModal';
 import { formatTimeToKorean } from '@/utils/date';
 import type { InquiryMessage } from '@/types/inquiry';
 import CloseIcon from '#/assets/svg/close.svg';
@@ -23,8 +25,19 @@ const InquiryMessageBubble = ({
   onDelete,
 }: InquiryMessageBubbleProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const { modalRef, isOpen, openModal, closeModal } = useModal();
 
   const imageUrls = message.imageUrls ?? [];
+
+  const handleDeleteClick = () => {
+    openModal();
+  };
+
+  const handleConfirmDelete = () => {
+    if (message.id != null) {
+      onDelete(message.id);
+    }
+  };
 
   const handleImageClick = (url: string) => {
     setPreviewUrl(url);
@@ -53,11 +66,7 @@ const InquiryMessageBubble = ({
               aria-label="메시지 삭제"
               disabled={isDeletePending}
               aria-busy={isDeletePending}
-              onClick={() => {
-                if (message.id != null && window.confirm('메시지를 삭제할까요?')) {
-                  onDelete(message.id);
-                }
-              }}
+              onClick={handleDeleteClick}
             >
               <DeleteIcon
                 fill={theme.colors.textSecondary}
@@ -112,6 +121,13 @@ const InquiryMessageBubble = ({
           />
         </PreviewOverlay>
       )}
+
+      <InquiryMessageDeleteModal
+        modalRef={modalRef}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        onDelete={handleConfirmDelete}
+      />
     </BubbleColumn>
   );
 };
@@ -142,11 +158,12 @@ const Bubble = styled.div<{
   isOwnMessage: boolean;
   isMobile: boolean;
 }>`
-  flex-shrink: 0;
   width: fit-content;
   max-width: ${({ isMobile }) => (isMobile ? 'calc(100% - 60px)' : '520px')};
   padding: 12px 16px;
   border-radius: 16px;
+
+  flex-shrink: 0;
 
   background: ${({ isOwnMessage, theme }) =>
     isOwnMessage ? theme.colors.primaryBomBom : theme.colors.dividers};
@@ -159,24 +176,26 @@ const Content = styled.p`
   margin: 0;
 
   white-space: pre-wrap;
+
   word-break: break-all;
 `;
 
 const ImageGrid = styled.div`
+  margin-top: 8px;
+
   display: flex;
   gap: 8px;
   flex-direction: column;
-  margin-top: 8px;
 `;
 
 const ImageThumbnailButton = styled.button`
   overflow: hidden;
+  width: 240px;
+  height: 240px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 12px;
 
   display: block;
-  width: 240px;
-  height: 240px;
 
   transition: opacity 0.2s;
 
@@ -185,9 +204,10 @@ const ImageThumbnailButton = styled.button`
   }
 
   img {
-    display: block;
     width: 100%;
     height: 100%;
+
+    display: block;
 
     object-fit: cover;
   }
@@ -226,18 +246,18 @@ const PreviewImage = styled.img`
 `;
 
 const ActionMenu = styled.div`
-  flex-shrink: 0;
-
   display: flex;
   gap: 4px;
+  flex-shrink: 0;
 `;
 
 const ActionButton = styled.button`
+  padding: 4px;
+  border-radius: 50%;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
-  border-radius: 50%;
 
   transition: background-color 0.2s;
 
