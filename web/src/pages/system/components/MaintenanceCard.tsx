@@ -27,13 +27,13 @@ const MaintenanceCard = () => {
       </DescriptionWrapper>
 
       <ContactWrapper>
-        <Contact isMobile={isMobile} href="https://e0pq0.channel.io/">
-          💬 채널톡 바로가기
+        <Contact isMobile={isMobile} href="mailto:attractionmanager@gmail.com">
+          ✉️ 이메일로 문의하기
         </Contact>
         <ContactDescription>
           긴급한 문의사항이 있으시면
           <br />
-          채널톡으로 연락해 주세요.
+          이메일로 연락해 주세요.
         </ContactDescription>
       </ContactWrapper>
     </Container>
