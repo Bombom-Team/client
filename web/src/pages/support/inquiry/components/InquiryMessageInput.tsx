@@ -190,7 +190,6 @@ const HiddenFileInput = styled.input`
 
 const TextareaWrapper = styled.div`
   position: relative;
-
   flex: 1;
 `;
 

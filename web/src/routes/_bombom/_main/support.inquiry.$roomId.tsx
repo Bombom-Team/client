@@ -42,8 +42,7 @@ function InquiryRoomDetailPage() {
   const hasScrolledToBottomRef = useRef(false);
   const prevScrollHeightRef = useRef<number | null>(null);
 
-  const { data: roomsPage } = useQuery(queries.inquiryRooms());
-  const room = roomsPage?.content?.find((r) => r.id === roomId);
+  const { data: room } = useQuery(queries.inquiryRoom(roomId));
   const { data: categories } = useQuery(queries.inquiryCategories());
   const categoryName = categories?.find(
     (category) => category.id === room?.categoryId,
@@ -62,7 +61,13 @@ function InquiryRoomDetailPage() {
     if (!isMessagesLoaded) return;
 
     queryClient.invalidateQueries({
+      queryKey: queries.inquiryUnreadStatus().queryKey,
+    });
+    queryClient.invalidateQueries({
       queryKey: queries.inquiryRooms().queryKey,
+    });
+    queryClient.invalidateQueries({
+      queryKey: queries.inquiryRoom(roomId).queryKey,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMessagesLoaded]);
@@ -110,7 +115,7 @@ function InquiryRoomDetailPage() {
     onIntersect: handleLoadMore,
   });
 
-  const isRoomsLoaded = roomsPage !== undefined;
+  const isRoomLoaded = room !== undefined;
   const canSendMessage =
     room?.status === 'UNCONFIRMED' || room?.status === 'IN_PROGRESS';
 
@@ -169,11 +174,11 @@ function InquiryRoomDetailPage() {
         })}
       </MessageList>
 
-      {isRoomsLoaded && !canSendMessage ? (
+      {isRoomLoaded && !canSendMessage ? (
         <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
       ) : (
         <InquiryMessageInput
-          disabled={!isRoomsLoaded}
+          disabled={!isRoomLoaded}
           isSubmitting={isSending}
           onSubmit={mutateSendMessage}
         />

@@ -2,7 +2,9 @@ import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import {
   getInquiryCategories,
   getInquiryMessages,
+  getInquiryRoom,
   getInquiryRooms,
+  getInquiryUnreadStatus,
   type GetInquiryRoomsParams,
 } from './inquiry.api';
 
@@ -28,6 +30,16 @@ export const inquiryQueries = {
         return (lastPage.number ?? 0) + 1;
       },
       initialPageParam: 0,
+    }),
+  inquiryRoom: (roomId: number) =>
+    queryOptions({
+      queryKey: ['inquiries', 'rooms', roomId],
+      queryFn: () => getInquiryRoom(roomId),
+    }),
+  inquiryUnreadStatus: () =>
+    queryOptions({
+      queryKey: ['inquiries', 'unread-status'],
+      queryFn: getInquiryUnreadStatus,
     }),
   inquiryMessages: (roomId: number) =>
     infiniteQueryOptions({

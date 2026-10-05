@@ -18,7 +18,10 @@ const InquiryRoomListItem = ({
   categoryName,
 }: InquiryRoomListItemProps) => {
   return (
-    <Container to={`/support/inquiry/${room.id}`}>
+    <Container
+      to={`/support/inquiry/${room.id}`}
+      hasUnread={Boolean(room.hasUnreadMessage)}
+    >
       <BadgeGroup>
         {room.status && (
           <Badge
@@ -26,18 +29,26 @@ const InquiryRoomListItem = ({
             variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
           />
         )}
-        {categoryName && <CategoryText>{categoryName}</CategoryText>}
+        {categoryName && (
+          <CategoryText hasUnread={Boolean(room.hasUnreadMessage)}>
+            {categoryName}
+          </CategoryText>
+        )}
       </BadgeGroup>
-      <CreatedAt>{formatDate(new Date(room.createdAt ?? ''))}</CreatedAt>
+      <CreatedAt hasUnread={Boolean(room.hasUnreadMessage)}>
+        {formatDate(new Date(room.createdAt ?? ''))}
+      </CreatedAt>
     </Container>
   );
 };
 
 export default InquiryRoomListItem;
 
-const Container = styled(Link)`
+const Container = styled(Link)<{ hasUnread: boolean }>`
   padding: 16px;
-  border: 1px solid ${({ theme }) => theme.colors.stroke};
+  border: 1px solid
+    ${({ theme, hasUnread }) =>
+      hasUnread ? theme.colors.primaryBomBom : theme.colors.stroke};
   border-radius: 12px;
 
   display: flex;
@@ -53,12 +64,14 @@ const BadgeGroup = styled.div`
   align-items: center;
 `;
 
-const CategoryText = styled.span`
+const CategoryText = styled.span<{ hasUnread: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
+  font: ${({ theme, hasUnread }) =>
+    hasUnread ? theme.fonts.t5Bold : theme.fonts.t5Regular};
 `;
 
-const CreatedAt = styled.span`
+const CreatedAt = styled.span<{ hasUnread: boolean }>`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
+  font: ${({ theme, hasUnread }) =>
+    hasUnread ? theme.fonts.t5Bold : theme.fonts.t5Regular};
 `;
