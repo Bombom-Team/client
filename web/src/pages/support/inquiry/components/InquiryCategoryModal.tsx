@@ -5,6 +5,8 @@ import { queries } from '@/apis/queries';
 import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import Modal from '@/components/Modal/Modal';
+import { useDevice } from '@/hooks/useDevice';
+import type { Device } from '@/hooks/useDevice';
 import type { Ref } from 'react';
 
 interface InquiryCategoryModalProps {
@@ -26,6 +28,7 @@ const InquiryCategoryModal = ({
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null,
   );
+  const device = useDevice();
 
   const handleSubmit = () => {
     if (selectedCategoryId === null) return;
@@ -41,7 +44,11 @@ const InquiryCategoryModal = ({
     >
       <Title>문의 카테고리를 선택해주세요</Title>
 
-      <CategoryList role="radiogroup" aria-label="문의 카테고리">
+      <CategoryList
+        device={device}
+        role="radiogroup"
+        aria-label="문의 카테고리"
+      >
         {categories?.map((category) => (
           <CategoryItem
             key={category.id}
@@ -74,18 +81,14 @@ const Title = styled.h2`
   font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
-const CategoryList = styled.div`
-  width: 100%;
+const CategoryList = styled.div<{ device: Device }>`
+  width: ${({ device }) => (device === 'mobile' ? '100%' : '320px')};
   min-width: 280px;
   margin: 16px 0;
 
   display: flex;
   gap: 8px;
   flex-direction: column;
-
-  @media (width >= 769px) {
-    width: 320px;
-  }
 `;
 
 const CategoryItem = styled.div<{ selected: boolean }>`
