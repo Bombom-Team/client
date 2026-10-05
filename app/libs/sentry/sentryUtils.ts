@@ -4,9 +4,9 @@ import type {
 } from '@/utils/auth';
 import * as Sentry from '@sentry/react-native';
 
-interface CaptureNativeLoginFailureParams extends NativeLoginFailure {
+type CaptureNativeLoginFailureParams = NativeLoginFailure & {
   provider: NativeLoginProvider;
-}
+};
 
 export const captureNativeLoginFailure = ({
   provider,

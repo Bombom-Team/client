@@ -7,17 +7,26 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 
 export type NativeLoginProvider = 'google' | 'apple';
 
-export interface NativeLoginFailure {
-  stage: 'provider_request' | 'credential_validation' | 'webview_dispatch';
-  reason:
-    | 'provider_configuration'
-    | 'play_services_unavailable'
-    | 'provider_unavailable'
-    | 'provider_request_failed'
-    | 'missing_identity_token'
-    | 'missing_provider_credential'
-    | 'webview_dispatch_failed';
-}
+export type NativeLoginFailure =
+  | {
+      stage: 'provider_request'; // 구글/애플 네이티브 SDK 호출 과정
+      reason:
+        | 'provider_configuration' // SDK 초기화 설정 누락/오류
+        | 'play_services_unavailable' // Google Play 서비스 미지원/구버전
+        | 'provider_unavailable' // Apple 로그인 미지원 기기/환경
+        | 'provider_request_failed'; // SDK 요청 실패(알 수 없는 네이티브 예외)
+    }
+  | {
+      stage: 'credential_validation'; // 네이티브 인증은 성공했으나 필수 토큰이 비어있는 상태
+      reason:
+        | 'missing_identity_token' // Google idToken 누락
+        | 'missing_provider_credential'; // Apple identityToken 또는 authorizationCode 누락
+    }
+  | {
+      stage: 'webview_dispatch'; // 네이티브에서 WebView로 토큰을 postMessage하는 단계
+      reason: 'webview_dispatch_failed'; // WebView 인스턴스 부재 또는 postMessage 실패
+    };
+
 
 interface NativeLoginCallback {
   identityToken: string;
