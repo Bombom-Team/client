@@ -123,6 +123,8 @@ export const getNotificationUrl = (data: Record<string, unknown>) => {
       return `/articles/${data.articleId}`;
     case 'EVENT':
       return '/event';
+    case 'INQUIRY_MESSAGE_ARRIVAL':
+      return `/support/inquiry/${data.roomId}`;
     default:
       return null;
   }
