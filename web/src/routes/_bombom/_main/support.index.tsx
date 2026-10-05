@@ -9,17 +9,29 @@ import FaqCategoryFilter from '@/pages/support/components/FaqCategoryFilter';
 import type { FaqCategoryType } from '@/types/faq';
 
 export const Route = createFileRoute('/_bombom/_main/support/')({
-  head: () => ({
-    meta: [
-      {
-        title: '봄봄 | 고객센터',
-      },
-      {
-        name: 'robots',
-        content: 'noindex, nofollow',
-      },
-    ],
-  }),
+  loader: async ({ context }) => {
+    const faqs = await context.queryClient.ensureInfiniteQueryData(
+      queries.infiniteFaqs({ faqCategory: undefined }),
+    );
+    return { faqs };
+  },
+  head: ({ loaderData }) => {
+    const firstPage = loaderData?.faqs?.pages[0];
+    const questions = firstPage?.content?.map((faq) => faq.question) ?? [];
+    const description =
+      questions.length > 0
+        ? `${questions.slice(0, 3).join(', ')} 등 봄봄 자주 묻는 질문을 확인해보세요.`
+        : '봄봄 서비스 이용 중 궁금한 점을 자주 묻는 질문에서 확인해보세요.';
+
+    return {
+      meta: [
+        { title: '봄봄 | 고객센터' },
+        { name: 'description', content: description },
+        { name: 'robots', content: 'index, follow' },
+      ],
+      links: [{ rel: 'canonical', href: 'https://www.bombom.news/support' }],
+    };
+  },
   component: FaqPage,
 });
 
