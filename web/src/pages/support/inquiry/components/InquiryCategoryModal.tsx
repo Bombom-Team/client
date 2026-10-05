@@ -40,7 +40,7 @@ const InquiryCategoryModal = ({
       isOpen={isOpen}
       modalRef={modalRef}
       closeModal={closeModal}
-      position="center"
+      position={device === 'mobile' ? 'bottom' : 'center'}
     >
       <Title>문의 카테고리를 선택해주세요</Title>
 
