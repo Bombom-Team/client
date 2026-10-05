@@ -1,8 +1,9 @@
 import { theme } from '@bombom/shared';
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import InquiryMessageDeleteModal from './InquiryMessageDeleteModal';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
+import Modal from '@/components/Modal/Modal';
 import useModal from '@/components/Modal/useModal';
 import { formatTimeToKorean } from '@/utils/date';
 import type { InquiryMessage } from '@/types/inquiry';
@@ -26,6 +27,15 @@ const InquiryMessageBubble = ({
 }: InquiryMessageBubbleProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { modalRef, isOpen, openModal, closeModal } = useModal();
+  const {
+    modalRef: previewModalRef,
+    isOpen: isPreviewOpen,
+    openModal: openPreviewModal,
+    closeModal: closePreviewModal,
+  } = useModal({
+    scrollLock: previewUrl !== null,
+    onClose: () => setPreviewUrl(null),
+  });
 
   const imageUrls = message.imageUrls ?? [];
 
@@ -41,20 +51,8 @@ const InquiryMessageBubble = ({
 
   const handleImageClick = (url: string) => {
     setPreviewUrl(url);
+    openPreviewModal();
   };
-
-  const closePreview = () => setPreviewUrl(null);
-
-  useEffect(() => {
-    if (!previewUrl) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closePreview();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [previewUrl]);
 
   return (
     <BubbleColumn isOwnMessage={isOwnMessage}>
@@ -109,22 +107,27 @@ const InquiryMessageBubble = ({
         {formatTimeToKorean(new Date(message.createdAt ?? ''))}
       </DateText>
 
-      {previewUrl && (
-        <PreviewOverlay role="dialog" aria-modal="true" onClick={closePreview}>
-          <PreviewCloseButton
-            type="button"
-            aria-label="이미지 미리보기 닫기"
-            onClick={closePreview}
-          >
-            <CloseIcon fill={theme.colors.white} width={20} height={20} />
-          </PreviewCloseButton>
-          <PreviewImage
-            src={previewUrl}
-            alt="첨부 이미지 크게 보기"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </PreviewOverlay>
-      )}
+      <Modal
+        isOpen={isPreviewOpen}
+        modalRef={previewModalRef}
+        closeModal={closePreviewModal}
+        position="fullscreen"
+        showBackdrop={false}
+        showCloseButton={false}
+      >
+        {previewUrl && (
+          <PreviewBackdrop>
+            <PreviewCloseButton
+              type="button"
+              aria-label="이미지 미리보기 닫기"
+              onClick={closePreviewModal}
+            >
+              <CloseIcon fill={theme.colors.white} width={24} height={24} />
+            </PreviewCloseButton>
+            <PreviewImage src={previewUrl} alt="첨부 이미지 크게 보기" />
+          </PreviewBackdrop>
+        )}
+      </Modal>
 
       <InquiryMessageDeleteModal
         modalRef={modalRef}
@@ -223,13 +226,13 @@ const ImageThumbnailButton = styled.button`
   }
 `;
 
-const PreviewOverlay = styled.div`
+const PreviewBackdrop = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: ${({ theme }) => theme.zIndex.overlay};
   width: 100%;
   height: 100%;
+  padding: 24px;
 
   display: flex;
   align-items: center;
@@ -239,7 +242,7 @@ const PreviewOverlay = styled.div`
 `;
 
 const PreviewCloseButton = styled.button`
-  position: fixed;
+  position: absolute;
   top: 16px;
   right: 16px;
 
@@ -249,8 +252,8 @@ const PreviewCloseButton = styled.button`
 `;
 
 const PreviewImage = styled.img`
-  max-width: 100vw;
-  max-height: 100vh;
+  max-width: 100%;
+  max-height: 100%;
 
   object-fit: contain;
 `;
