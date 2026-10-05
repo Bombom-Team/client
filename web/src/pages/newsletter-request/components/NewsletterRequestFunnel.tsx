@@ -37,6 +37,7 @@ const QUESTION_STEPS: FunnelStep[] = ['name', 'link', 'reason', 'confirm'];
 const NAME_MAX_LENGTH = 50;
 const REASON_MAX_LENGTH = 200;
 const BOARD_PATH = '/newsletter-requests';
+const DUPLICATED_DATA_ERROR_CODE = 'M009';
 
 type DuplicateTarget = {
   id: number;
@@ -76,7 +77,10 @@ const NewsletterRequestFunnel = () => {
         setStep('done');
       },
       onError: (error) => {
-        if (error instanceof ApiError && error.status === 400) {
+        if (
+          error instanceof ApiError &&
+          error.rawBody?.code === DUPLICATED_DATA_ERROR_CODE
+        ) {
           handleLinkNext();
           return;
         }
