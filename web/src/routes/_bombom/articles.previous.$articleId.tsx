@@ -21,7 +21,7 @@ import { throwNotFoundForApiError } from '@/utils/routeError';
 export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
   loader: async ({ context, params }) => {
     try {
-      const article = await context.queryClient.ensureQueryData(
+      const article = await context.queryClient.fetchQuery(
         queries.previousArticleDetail({ id: Number(params.articleId) }),
       );
 

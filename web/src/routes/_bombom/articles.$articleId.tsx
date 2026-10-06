@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useRef } from 'react';
 import { queries } from '@/apis/queries';
@@ -29,7 +30,7 @@ const ARTICLE_MAX_WIDTH = 700;
 export const Route = createFileRoute('/_bombom/articles/$articleId')({
   loader: async ({ context, params }) => {
     try {
-      const currentArticle = await context.queryClient.ensureQueryData(
+      const currentArticle = await context.queryClient.fetchQuery(
         queries.articleById({ id: Number(params.articleId) }),
       );
 
@@ -54,11 +55,16 @@ export const Route = createFileRoute('/_bombom/articles/$articleId')({
 
 function ArticleDetailPage() {
   const { articleId } = Route.useParams();
-  const { currentArticle } = Route.useLoaderData();
+  const { currentArticle: loadedArticle } = Route.useLoaderData();
   const articleIdNumber = Number(articleId);
   const contentRef = useRef<HTMLDivElement>(null);
   const device = useDevice();
   const { percentage, selectFontSize } = useArticleFontSize();
+  const { data: currentArticle } = useQuery({
+    ...queries.articleById({ id: articleIdNumber }),
+    initialData: loadedArticle,
+    refetchOnMount: false,
+  });
 
   const { mutate: updateArticleAsRead } = useArticleAsReadMutation({
     articleId: articleIdNumber,
