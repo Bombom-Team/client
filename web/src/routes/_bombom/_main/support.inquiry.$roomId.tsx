@@ -42,7 +42,9 @@ function InquiryRoomDetailPage() {
   const hasScrolledToBottomRef = useRef(false);
   const prevScrollHeightRef = useRef<number | null>(null);
 
-  const { data: room } = useQuery(queries.inquiryRoom(roomId));
+  const { data: room, isError: isRoomError } = useQuery(
+    queries.inquiryRoom(roomId),
+  );
   const { data: categories } = useQuery(queries.inquiryCategories());
   const categoryName = categories?.find(
     (category) => category.id === room?.categoryId,
@@ -174,7 +176,9 @@ function InquiryRoomDetailPage() {
         })}
       </MessageList>
 
-      {isRoomLoaded && !canSendMessage ? (
+      {isRoomError ? (
+        <ClosedNotice>문의를 찾을 수 없습니다.</ClosedNotice>
+      ) : isRoomLoaded && !canSendMessage ? (
         <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
       ) : (
         <InquiryMessageInput
