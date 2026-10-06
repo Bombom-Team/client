@@ -33,7 +33,7 @@ export const inquiryQueries = {
     }),
   inquiryRoom: (roomId: number) =>
     queryOptions({
-      queryKey: ['inquiries', 'rooms', roomId],
+      queryKey: ['inquiries', 'rooms', roomId, 'detail'],
       queryFn: () => getInquiryRoom(roomId),
     }),
   inquiryUnreadStatus: () =>
