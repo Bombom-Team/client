@@ -44,7 +44,9 @@ const InquiryRoomListItem = ({
 
 export default InquiryRoomListItem;
 
-const Container = styled(Link)<{ hasUnread: boolean }>`
+const Container = styled(Link, {
+  shouldForwardProp: (prop) => prop !== 'hasUnread',
+})<{ hasUnread: boolean }>`
   padding: 16px;
   border: 1px solid
     ${({ theme, hasUnread }) =>
