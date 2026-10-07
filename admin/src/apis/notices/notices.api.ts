@@ -17,7 +17,6 @@ export type GetNoticesParams = {
 
 export type GetNoticesResponse = PageableResponse<Notice>;
 
-// 공지 저장 페이로드 — 생성/수정 공용
 // content는 Tiptap JSON 문자열 (레거시 평문도 허용), visibility로 공개 여부 표현
 export type NoticePayload = {
   title: string;
@@ -28,7 +27,7 @@ export type NoticePayload = {
   isRepresentative?: boolean;
 };
 
-export type CreateNoticeResponse = { id: number };
+export type CreateNoticeResponse = { noticeId: number };
 
 export type UploadNoticeImageResponse = {
   imageId: number;
@@ -42,14 +41,12 @@ export const getNotices = async (params: GetNoticesParams = {}) => {
   });
 };
 
-// 생성 — 기본 비공개(PRIVATE)로 공지 생성 후 id 반환
-// 이미지 업로드/저장에 쓸 id를 먼저 확보 (빈 값으로 생성 가능)
-export const createNotice = async (
-  payload: Partial<NoticePayload> = {},
-): Promise<CreateNoticeResponse> => {
-  return fetcher.post<Partial<NoticePayload>, CreateNoticeResponse>({
+// 초안 생성 — 빈 비공개(PRIVATE) 공지를 만들고 noticeId 반환
+// 이미지 업로드·본문 저장에 쓸 id를 먼저 확보. 실제 내용은 updateNotice(PATCH)로 채운다
+// 서버가 요청 본문을 받지 않으므로 body 없이 호출
+export const createNotice = async (): Promise<CreateNoticeResponse> => {
+  return fetcher.post<never, CreateNoticeResponse>({
     path: '/notices',
-    body: payload,
   });
 };
 

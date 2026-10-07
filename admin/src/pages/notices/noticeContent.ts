@@ -19,6 +19,20 @@ export const parseTiptapDoc = (
   }
 };
 
+export const extractImageIds = (node: unknown): number[] => {
+  if (!node || typeof node !== 'object') return [];
+  const n = node as Record<string, unknown>;
+  const ids: number[] = [];
+  if (n.type === 'image' && n.attrs && typeof n.attrs === 'object') {
+    const imageId = (n.attrs as Record<string, unknown>).imageId;
+    if (typeof imageId === 'number') ids.push(imageId);
+  }
+  if (Array.isArray(n.content)) {
+    n.content.forEach((child) => ids.push(...extractImageIds(child)));
+  }
+  return ids;
+};
+
 const escapeHtml = (text: string): string =>
   text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 

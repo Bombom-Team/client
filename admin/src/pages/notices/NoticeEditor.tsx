@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { Node, mergeAttributes } from '@tiptap/core';
 import HighlightExtension from '@tiptap/extension-highlight';
@@ -9,7 +10,17 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKitExtension from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
 import { NoticeSettingsPanel } from './components/NoticeSettingsPanel';
-import { parseTiptapDoc, plainTextToTiptapHtml } from './noticeContent';
+import {
+  extractImageIds,
+  parseTiptapDoc,
+  plainTextToTiptapHtml,
+} from './noticeContent';
+import {
+  createNotice,
+  updateNotice,
+  uploadNoticeImage,
+} from '@/apis/notices/notices.api';
+import { noticesQueries } from '@/apis/notices/notices.query';
 import { Sidebar } from '@/components/Sidebar';
 // EditorToolbar는 blog/notice 공용 — 추후 src/components/editor로 이동 예정
 import { EditorToolbar } from '@/pages/blog/components/EditorToolbar';
@@ -44,6 +55,7 @@ export const NoticeEditor = ({
   initialVisibility = 'PRIVATE',
 }: NoticeEditorProps = {}) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const isEdit = noticeId != null;
 
   const [title, setTitle] = useState(initialTitle);
@@ -56,10 +68,47 @@ export const NoticeEditor = ({
   const isDirtyRef = useRef(isDirty);
   const handleImageUploadRef = useRef<(file: File) => void>(() => {});
 
+  // 신규 작성은 먼저 비공개 초안을 만들어 id를 확보해야 이미지 업로드·저장이 가능.
+  const noticeIdRef = useRef<number | undefined>(noticeId);
+  const draftPromiseRef = useRef<Promise<number> | null>(null);
+
+  const ensureNoticeId = (): Promise<number> => {
+    if (noticeIdRef.current != null) {
+      return Promise.resolve(noticeIdRef.current);
+    }
+    if (!draftPromiseRef.current) {
+      draftPromiseRef.current = createNotice().then(({ noticeId: newId }) => {
+        noticeIdRef.current = newId;
+        return newId;
+      });
+    }
+    return draftPromiseRef.current;
+  };
+
+  const saveMutation = useMutation({
+    mutationFn: updateNotice,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: noticesQueries.all });
+    },
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: ({ id, file }: { id: number; file: File }) =>
+      uploadNoticeImage(id, file),
+  });
+
   const editor = useEditor({
     extensions: [
       StarterKitExtension,
-      ImageExtension.configure({
+      ImageExtension.extend({
+        // 업로드한 이미지의 서버 id를 노드에 보관 → 저장 시 referencedImageIds로 수집
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            imageId: { default: null },
+          };
+        },
+      }).configure({
         resize: {
           enabled: true,
           directions: ['bottom-right', 'bottom-left', 'top-right', 'top-left'],
@@ -87,7 +136,7 @@ export const NoticeEditor = ({
           );
           if (imageFile) {
             event.preventDefault();
-            handleImageUploadRef.current(imageFile);
+            void handleImageUploadRef.current(imageFile);
             return true;
           }
         }
@@ -116,16 +165,27 @@ export const NoticeEditor = ({
     },
   });
 
-  // 본문 이미지 삽입 — API 미연동, 로컬 objectURL로 미리보기
-  // TODO: 백엔드 연동 시 uploadImage 호출 후 imageUrl/imageId로 교체
-  const handleImageUpload = (file: File) => {
-    const url = URL.createObjectURL(file);
-    editor
-      ?.chain()
-      .focus()
-      .insertContent({ type: 'image', attrs: { src: url, alt: file.name } })
-      .run();
-    setIsDirty(true);
+  // 본문 이미지 업로드 — 초안 id 확보 후 서버 업로드, 반환된 imageUrl/imageId를 노드에 삽입
+  const handleImageUpload = async (file: File) => {
+    try {
+      const id = await ensureNoticeId();
+      const { imageId, imageUrl } = await uploadMutation.mutateAsync({
+        id,
+        file,
+      });
+      editor
+        ?.chain()
+        .focus()
+        .insertContent({
+          type: 'image',
+          attrs: { src: imageUrl, alt: file.name, imageId },
+        })
+        .run();
+      setIsDirty(true);
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   // ref 동기화
@@ -169,28 +229,52 @@ export const NoticeEditor = ({
 
   const isPublic = visibility === 'PUBLIC';
 
-  // 저장 = PUT /notices/{id} (visibility 포함). 발행 개념은 visibility로 표현
-  // TODO: 백엔드 연동 시 JSON.stringify(editor.getJSON())로 content 직렬화 후 저장
-  const save = (nextVisibility: NoticeVisibility) => {
+  // 저장 — content(JSON)·카테고리·본문 이미지 참조를 PATCH로 반영.
+  // nextVisibility가 있을 때만 공개 상태를 바꾸고, 없으면(임시저장/저장) 서버 상태 유지
+  const persist = async (
+    nextVisibility?: NoticeVisibility,
+  ): Promise<boolean> => {
     if (!title.trim()) {
       alert('제목을 입력해주세요.');
-      return;
+      return false;
     }
-    setVisibility(nextVisibility);
-    setIsDirty(false);
-    alert(
-      `저장 API 미연동 (UI 미리보기)\n공개 상태: ${
-        nextVisibility === 'PUBLIC' ? '공개' : '비공개'
-      }`,
-    );
+    try {
+      const id = await ensureNoticeId();
+      const json = editor?.getJSON();
+      await saveMutation.mutateAsync({
+        noticeId: id,
+        payload: {
+          title,
+          content: JSON.stringify(json ?? {}),
+          noticeCategory: category,
+          visibility: nextVisibility,
+          referencedImageIds: extractImageIds(json),
+        },
+      });
+      if (nextVisibility) setVisibility(nextVisibility);
+      setIsDirty(false);
+      return true;
+    } catch (error) {
+      console.error('공지 저장 실패:', error);
+      alert('저장에 실패했습니다. 다시 시도해주세요.');
+      return false;
+    }
   };
 
-  // 임시저장/저장 — 현재 공개 상태 유지한 채 저장
-  const handleSave = () => save(visibility);
+  const isSaving = saveMutation.isPending;
+
+  // 임시저장/저장 — 공개 상태는 그대로 두고 내용만 저장
+  const handleSave = async () => {
+    if (await persist()) goBack();
+  };
   // 공개하기 — 비공개→공개 전환하며 저장
-  const handlePublish = () => save('PUBLIC');
+  const handlePublish = async () => {
+    if (await persist('PUBLIC')) goBack();
+  };
   // 비공개 전환 — 공개→비공개 되돌리며 저장
-  const handleUnpublish = () => save('PRIVATE');
+  const handleUnpublish = async () => {
+    if (await persist('PRIVATE')) goBack();
+  };
 
   return (
     <PageLayout>
@@ -204,15 +288,23 @@ export const NoticeEditor = ({
             <StatusBadge $isPublic={isPublic}>
               {isPublic ? '공개' : '비공개'}
             </StatusBadge>
-            <SaveButton onClick={handleSave} type="button">
+            <SaveButton onClick={handleSave} type="button" disabled={isSaving}>
               {isPublic ? '저장' : '임시저장'}
             </SaveButton>
             {isPublic ? (
-              <SaveButton onClick={handleUnpublish} type="button">
+              <SaveButton
+                onClick={handleUnpublish}
+                type="button"
+                disabled={isSaving}
+              >
                 비공개 전환
               </SaveButton>
             ) : (
-              <PublishButton onClick={handlePublish} type="button">
+              <PublishButton
+                onClick={handlePublish}
+                type="button"
+                disabled={isSaving}
+              >
                 공개하기
               </PublishButton>
             )}
