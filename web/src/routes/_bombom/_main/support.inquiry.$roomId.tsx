@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Fragment, useEffect, useMemo, useRef } from 'react';
+import { INQUIRY_ROOMS_QUERY_KEY } from '@/apis/inquiry/inquiry.query';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
 import ChevronIcon from '@/components/icons/ChevronIcon';
@@ -66,7 +67,7 @@ function InquiryRoomDetailPage() {
       queryKey: queries.inquiryUnreadStatus().queryKey,
     });
     queryClient.invalidateQueries({
-      queryKey: queries.inquiryRooms().queryKey,
+      queryKey: INQUIRY_ROOMS_QUERY_KEY,
     });
     queryClient.invalidateQueries({
       queryKey: queries.inquiryRoom(roomId).queryKey,
