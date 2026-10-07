@@ -2,7 +2,7 @@ import { ApiError } from '@bombom/shared/apis';
 /* eslint-disable import/named */
 import { captureException } from '@sentry/react';
 /* eslint-enable import/named */
-import { isNetworkNoiseError } from '../sentry/beforeSend';
+import { isNetworkNoiseError } from '../sentry/errorFilters';
 import type { OAuthProvider } from '@bombom/shared/types';
 
 export type NativeLoginErrorStage = 'credential_validation' | 'token_exchange';

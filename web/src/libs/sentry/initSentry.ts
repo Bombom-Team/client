@@ -5,11 +5,8 @@ import {
   replayIntegration,
 } from '@sentry/react';
 /* eslint-enable import/named */
-import {
-  beforeBreadcrumb,
-  beforeSend,
-  NETWORK_NOISE_ERROR_PATTERNS,
-} from './beforeSend';
+import { beforeBreadcrumb, beforeSend } from './beforeSend';
+import { NETWORK_NOISE_ERROR_PATTERNS } from './errorFilters';
 import { ENV } from '@/apis/env';
 
 type InitSentryParams = {

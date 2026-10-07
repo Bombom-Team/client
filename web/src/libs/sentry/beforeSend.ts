@@ -9,12 +9,6 @@ import {
 
 const RENDER_CRASH_MECHANISM = 'auto.function.react.error_boundary';
 
-export const NETWORK_NOISE_ERROR_PATTERNS = [
-  /^(?:TypeError:\s*)?Failed to fetch(?: \([^)]+\))?$/i,
-  /^(?:TypeError:\s*)?Load failed(?: \([^)]+\))?$/i,
-  /^(?:TypeError:\s*)?NetworkError when attempting to fetch resource\.?(?: \([^)]+\))?$/i,
-];
-
 interface Classification {
   tags: Record<string, string | number>;
   level: SeverityLevel;
@@ -32,20 +26,6 @@ const isP1Status = (status: number) => status >= 500 || status === 401;
 
 const isNotFound = (event: ErrorEvent) =>
   event.tags?.error_type === 'NOT_FOUND';
-
-export const isNetworkNoiseError = (error: unknown) => {
-  const message =
-    error instanceof Error
-      ? error.message
-      : typeof error === 'string'
-        ? error
-        : null;
-
-  return (
-    message !== null &&
-    NETWORK_NOISE_ERROR_PATTERNS.some((pattern) => pattern.test(message))
-  );
-};
 
 export const beforeBreadcrumb = (
   breadcrumb: Breadcrumb,

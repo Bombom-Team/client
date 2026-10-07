@@ -21,22 +21,15 @@ export type NativeLoginFailure =
       reason:
         | 'missing_identity_token' // Google idToken 누락
         | 'missing_provider_credential'; // Apple identityToken 또는 authorizationCode 누락
-    }
-  | {
-      stage: 'webview_dispatch'; // 네이티브에서 WebView로 토큰을 postMessage하는 단계
-      reason: 'webview_dispatch_failed'; // WebView 인스턴스 부재 또는 postMessage 실패
     };
 
-
-interface NativeLoginCallback {
+export interface NativeLoginCredential {
   identityToken: string;
   authorizationCode: string;
   name: string | null;
   email: string;
   provider: NativeLoginProvider;
 }
-
-type LoginCallback = (credential: NativeLoginCallback) => boolean;
 
 class NativeLoginError extends Error {
   readonly failure: NativeLoginFailure;
@@ -58,8 +51,19 @@ const getErrorCode = (error: unknown) => {
 const getGoogleLoginFailure = (error: unknown): NativeLoginFailure | null => {
   const code = getErrorCode(error);
 
-  if (code === statusCodes.SIGN_IN_CANCELLED || code === statusCodes.IN_PROGRESS) {
+  if (
+    code === statusCodes.SIGN_IN_CANCELLED ||
+    code === statusCodes.IN_PROGRESS
+  ) {
     return null;
+  }
+
+  // Android DEVELOPER_ERROR와 iOS 네이티브 configure 실패 코드.
+  if (code === '10' || code === 'configure') {
+    return {
+      stage: 'provider_request',
+      reason: 'provider_configuration',
+    };
   }
 
   if (code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
@@ -93,117 +97,94 @@ export const getNativeLoginFailure = (
   return provider === 'google'
     ? getGoogleLoginFailure(error)
     : getAppleLoginFailure(error);
-}
-
-export const loginWithGoogle = async (
-  callbackWhenSuccess: LoginCallback,
-): Promise<void> => {
-  try {
-    GoogleSignin.configure({
-      webClientId: ENV.webClientId,
-      iosClientId: ENV.iosClientId,
-    });
-  } catch {
-    throw new NativeLoginError({
-      stage: 'provider_request',
-      reason: 'provider_configuration',
-    });
-  }
-
-  let hasPlayServices: boolean;
-  try {
-    hasPlayServices = await GoogleSignin.hasPlayServices();
-  } catch (error) {
-    const failure = getGoogleLoginFailure(error);
-    if (!failure) return;
-    throw new NativeLoginError(failure);
-  }
-
-  if (!hasPlayServices) {
-    throw new NativeLoginError({
-      stage: 'provider_request',
-      reason: 'play_services_unavailable',
-    });
-  }
-
-  let response;
-  try {
-    response = await GoogleSignin.signIn();
-  } catch (error) {
-    const failure = getGoogleLoginFailure(error);
-    if (!failure) return;
-    throw new NativeLoginError(failure);
-  }
-
-  if (response.type === 'cancelled') return;
-
-  if (!response.data.idToken) {
-    throw new NativeLoginError({
-      stage: 'credential_validation',
-      reason: 'missing_identity_token',
-    });
-  }
-
-  const isDispatched = callbackWhenSuccess({
-    identityToken: response.data.idToken,
-    authorizationCode: response.data.serverAuthCode ?? '',
-    name: response.data.user.name,
-    email: response.data.user.email,
-    provider: 'google',
-  });
-
-  if (!isDispatched) {
-    throw new NativeLoginError({
-      stage: 'webview_dispatch',
-      reason: 'webview_dispatch_failed',
-    });
-  }
 };
 
-export const loginWithApple = async (
-  callbackWhenSuccess: LoginCallback,
-): Promise<void> => {
-  const isAvailable = await AppleAuthentication.isAvailableAsync();
-  if (!isAvailable) {
-    throw new NativeLoginError({
-      stage: 'provider_request',
-      reason: 'provider_unavailable',
-    });
-  }
+export const loginWithGoogle =
+  async (): Promise<NativeLoginCredential | null> => {
+    try {
+      GoogleSignin.configure({
+        webClientId: ENV.webClientId,
+        iosClientId: ENV.iosClientId,
+      });
+    } catch {
+      throw new NativeLoginError({
+        stage: 'provider_request',
+        reason: 'provider_configuration',
+      });
+    }
 
-  let credential;
-  try {
-    credential = await AppleAuthentication.signInAsync({
-      requestedScopes: [
-        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-        AppleAuthentication.AppleAuthenticationScope.EMAIL,
-      ],
-    });
-  } catch (error) {
-    const failure = getAppleLoginFailure(error);
-    if (!failure) return;
-    throw new NativeLoginError(failure);
-  }
+    try {
+      const hasPlayServices = await GoogleSignin.hasPlayServices();
+      if (!hasPlayServices) {
+        throw new NativeLoginError({
+          stage: 'provider_request',
+          reason: 'play_services_unavailable',
+        });
+      }
 
-  if (!credential.identityToken || !credential.authorizationCode) {
-    throw new NativeLoginError({
-      stage: 'credential_validation',
-      reason: 'missing_provider_credential',
-    });
-  }
+      const response = await GoogleSignin.signIn();
+      if (response.type === 'cancelled') return null;
 
-  const isDispatched = callbackWhenSuccess({
-    identityToken: credential.identityToken,
-    authorizationCode: credential.authorizationCode,
-    name: `${credential.fullName?.familyName ?? ''}${credential.fullName?.givenName ?? ''}`,
-    email: credential.email ?? '',
-    provider: 'apple',
-  });
+      if (!response.data.idToken) {
+        throw new NativeLoginError({
+          stage: 'credential_validation',
+          reason: 'missing_identity_token',
+        });
+      }
 
-  if (!isDispatched) {
-    throw new NativeLoginError({
-      stage: 'webview_dispatch',
-      reason: 'webview_dispatch_failed',
-    });
-  }
-};
+      return {
+        identityToken: response.data.idToken,
+        authorizationCode: response.data.serverAuthCode ?? '',
+        name: response.data.user.name,
+        email: response.data.user.email,
+        provider: 'google',
+      };
+    } catch (error) {
+      if (error instanceof NativeLoginError) throw error;
+
+      const failure = getGoogleLoginFailure(error);
+      if (!failure) return null;
+      throw new NativeLoginError(failure);
+    }
+  };
+
+export const loginWithApple =
+  async (): Promise<NativeLoginCredential | null> => {
+    try {
+      const isAvailable = await AppleAuthentication.isAvailableAsync();
+      if (!isAvailable) {
+        throw new NativeLoginError({
+          stage: 'provider_request',
+          reason: 'provider_unavailable',
+        });
+      }
+
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      if (!credential.identityToken || !credential.authorizationCode) {
+        throw new NativeLoginError({
+          stage: 'credential_validation',
+          reason: 'missing_provider_credential',
+        });
+      }
+
+      return {
+        identityToken: credential.identityToken,
+        authorizationCode: credential.authorizationCode,
+        name: `${credential.fullName?.familyName ?? ''}${credential.fullName?.givenName ?? ''}`,
+        email: credential.email ?? '',
+        provider: 'apple',
+      };
+    } catch (error) {
+      if (error instanceof NativeLoginError) throw error;
+
+      const failure = getAppleLoginFailure(error);
+      if (!failure) return null;
+      throw new NativeLoginError(failure);
+    }
+  };

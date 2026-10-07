@@ -12,6 +12,7 @@ import { RNToWebMessage } from '@bombom/shared/webview';
 
 export interface WebViewContextType {
   webViewRef: RefObject<WebView | null>;
+  /** postMessage 호출 성공 여부이며, 웹의 수신·처리 완료를 보장하지 않는다. */
   sendMessageToWeb: (message: RNToWebMessage) => boolean;
 }
 
