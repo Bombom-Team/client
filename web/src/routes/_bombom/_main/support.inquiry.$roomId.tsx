@@ -36,6 +36,7 @@ export const Route = createFileRoute('/_bombom/_main/support/inquiry/$roomId')({
 function InquiryRoomDetailPage() {
   const { roomId: roomIdParam } = Route.useParams();
   const roomId = Number(roomIdParam);
+  const isValidRoomId = !Number.isNaN(roomId);
   const device = useDevice();
   const isMobile = device !== 'pc';
   const queryClient = useQueryClient();
@@ -43,9 +44,10 @@ function InquiryRoomDetailPage() {
   const hasScrolledToBottomRef = useRef(false);
   const prevScrollHeightRef = useRef<number | null>(null);
 
-  const { data: room, isError: isRoomError } = useQuery(
-    queries.inquiryRoom(roomId),
-  );
+  const { data: room, isError: isRoomError } = useQuery({
+    ...queries.inquiryRoom(roomId),
+    enabled: isValidRoomId,
+  });
   const { data: categories } = useQuery(queries.inquiryCategories());
   const categoryName = categories?.find(
     (category) => category.id === room?.categoryId,
@@ -56,7 +58,10 @@ function InquiryRoomDetailPage() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery(queries.inquiryMessages(roomId));
+  } = useInfiniteQuery({
+    ...queries.inquiryMessages(roomId),
+    enabled: isValidRoomId,
+  });
 
   const isMessagesLoaded = messagePages !== undefined;
 
@@ -177,7 +182,7 @@ function InquiryRoomDetailPage() {
         })}
       </MessageList>
 
-      {isRoomError ? (
+      {!isValidRoomId || isRoomError ? (
         <ClosedNotice>문의를 찾을 수 없습니다.</ClosedNotice>
       ) : isRoomLoaded && !canSendMessage ? (
         <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
