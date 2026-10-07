@@ -684,6 +684,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/notices/representative': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 대표 공지 조회
+     * @description 대표로 지정된 공개 공지 1건을 조회합니다. 대표 공지가 없으면 204를 반환합니다.
+     */
+    get: operations['getRepresentativeNotice'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/newsletters': {
     parameters: {
       query?: never;
@@ -1107,6 +1127,26 @@ export interface paths {
      * @description 아티클 id로 매일메일 컨텐츠 정보를 조회합니다.
      */
     get: operations['getInformationByArticle'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/inquiries/rooms/{roomId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 채팅방 단건 조회
+     * @description roomId로 문의 채팅방 상세 정보를 조회합니다. 본인이 소유한 채팅방만 조회할 수 있습니다.
+     */
+    get: operations['getRoom'];
     put?: never;
     post?: never;
     delete?: never;
@@ -2066,9 +2106,9 @@ export interface components {
       /** Format: int64 */
       offset?: number;
       sort?: components['schemas']['SortObject'];
-      paged?: boolean;
       /** Format: int32 */
       pageSize?: number;
+      paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
       unpaged?: boolean;
@@ -5195,6 +5235,35 @@ export interface operations {
       };
     };
   };
+  getRepresentativeNotice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 대표 공지 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NoticeResponse'];
+        };
+      };
+      /** @description 대표로 지정된 공개 공지가 없음 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NoticeResponse'];
+        };
+      };
+    };
+  };
   getNewsletters: {
     parameters: {
       query?: {
@@ -5877,6 +5946,56 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getRoom: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 채팅방 단건 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+      /** @description 본인이 소유한 채팅방이 아님 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+      /** @description 존재하지 않는 채팅방 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
       };
     };
   };
