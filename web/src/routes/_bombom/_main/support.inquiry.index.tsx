@@ -1,0 +1,73 @@
+import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { queries } from '@/apis/queries';
+import Button from '@/components/Button/Button';
+import useModal from '@/components/Modal/useModal';
+import InquiryCategoryModal from '@/pages/support/inquiry/components/InquiryCategoryModal';
+import InquiryRoomList from '@/pages/support/inquiry/components/InquiryRoomList/InquiryRoomList';
+import { useInquiryRoomCreateMutation } from '@/pages/support/inquiry/hooks/useInquiryRoomCreateMutation';
+import PlusIcon from '#/assets/svg/plus.svg';
+
+export const Route = createFileRoute('/_bombom/_main/support/inquiry/')({
+  head: () => ({
+    meta: [
+      { title: '봄봄 | 1:1 문의하기' },
+      { name: 'robots', content: 'noindex, nofollow' },
+    ],
+  }),
+  component: InquiryRoomListPage,
+});
+
+function InquiryRoomListPage() {
+  const navigate = useNavigate();
+  const { data: categories } = useQuery(queries.inquiryCategories());
+  const { modalRef, isOpen, openModal, closeModal } = useModal();
+
+  const { mutate: mutateCreateRoom, isPending } = useInquiryRoomCreateMutation({
+    onSuccess: (room) => {
+      closeModal();
+      navigate({
+        to: '/support/inquiry/$roomId',
+        params: { roomId: String(room.id) },
+      });
+    },
+  });
+
+  return (
+    <ContentWrapper>
+      <Header>
+        <NewInquiryButton variant="transparent" onClick={openModal}>
+          <PlusIcon width={16} height={16} />새 문의
+        </NewInquiryButton>
+      </Header>
+
+      <InquiryRoomList categories={categories} />
+
+      <InquiryCategoryModal
+        isOpen={isOpen}
+        modalRef={modalRef}
+        closeModal={closeModal}
+        isSubmitting={isPending}
+        onSelectCategory={mutateCreateRoom}
+      />
+    </ContentWrapper>
+  );
+}
+
+const ContentWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+`;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+const NewInquiryButton = styled(Button)`
+  color: ${({ theme }) => theme.colors.primaryBomBom};
+  font: ${({ theme }) => theme.fonts.t5Regular};
+`;

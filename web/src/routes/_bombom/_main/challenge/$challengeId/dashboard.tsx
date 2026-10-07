@@ -114,7 +114,7 @@ function ChallengeDashboardRoute() {
         <NoticeMessage>
           {' '}
           공휴일이나 뉴스레터의 임시 휴재 등으로 인해 챌린지 인증 상태에 대한
-          문의가 필요하신 경우 채널톡으로 문의 부탁드립니다.
+          문의가 필요하신 경우 고객센터로 문의 부탁드립니다.
         </NoticeMessage>
       </NoticeMessageWrapper>
     </Container>

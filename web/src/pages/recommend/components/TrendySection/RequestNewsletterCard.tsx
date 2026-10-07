@@ -31,9 +31,11 @@ const RequestNewsletterCard = () => {
       </IconSlot>
       <InfoBox>
         <Title>뉴스레터 등록 요청</Title>
-        <Description>
-          찾는 뉴스레터가 없다면 등록을 요청할 수 있어요.
-        </Description>
+        {device !== 'tablet' && (
+          <Description>
+            찾는 뉴스레터가 없다면 등록을 요청할 수 있어요.
+          </Description>
+        )}
       </InfoBox>
     </Container>
   );
@@ -97,7 +99,6 @@ const InfoBox = styled.div`
 const Title = styled.span`
   color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t6Bold};
-  line-height: 1;
 `;
 
 const Description = styled.span`
