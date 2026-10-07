@@ -1,3 +1,4 @@
+import { ApiError } from '@bombom/shared/apis';
 import styled from '@emotion/styled';
 import {
   useInfiniteQuery,
@@ -44,10 +45,14 @@ function InquiryRoomDetailPage() {
   const hasScrolledToBottomRef = useRef(false);
   const prevScrollHeightRef = useRef<number | null>(null);
 
-  const { data: room, isError: isRoomError } = useQuery({
+  const { data: room, error: roomError } = useQuery({
     ...queries.inquiryRoom(roomId),
     enabled: isValidRoomId,
   });
+  const isRoomNotFound =
+    !isValidRoomId ||
+    (roomError instanceof ApiError && roomError.status === 404);
+  const isRoomFetchError = roomError != null && !isRoomNotFound;
   const { data: categories } = useQuery(queries.inquiryCategories());
   const categoryName = categories?.find(
     (category) => category.id === room?.categoryId,
@@ -182,8 +187,12 @@ function InquiryRoomDetailPage() {
         })}
       </MessageList>
 
-      {!isValidRoomId || isRoomError ? (
+      {isRoomNotFound ? (
         <ClosedNotice>문의를 찾을 수 없습니다.</ClosedNotice>
+      ) : isRoomFetchError ? (
+        <ClosedNotice>
+          문의를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+        </ClosedNotice>
       ) : isRoomLoaded && !canSendMessage ? (
         <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
       ) : (
