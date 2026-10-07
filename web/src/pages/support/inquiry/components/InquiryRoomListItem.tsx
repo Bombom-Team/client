@@ -17,10 +17,17 @@ const InquiryRoomListItem = ({
   room,
   categoryName,
 }: InquiryRoomListItemProps) => {
+  const hasUnread = Boolean(room.hasUnreadMessage);
+
   return (
     <Container
       to={`/support/inquiry/${room.id}`}
-      hasUnread={Boolean(room.hasUnreadMessage)}
+      hasUnread={hasUnread}
+      aria-label={
+        hasUnread
+          ? `${categoryName ?? '문의'} (읽지 않은 메시지 있음)`
+          : categoryName
+      }
     >
       <BadgeGroup>
         {room.status && (
@@ -30,12 +37,10 @@ const InquiryRoomListItem = ({
           />
         )}
         {categoryName && (
-          <CategoryText hasUnread={Boolean(room.hasUnreadMessage)}>
-            {categoryName}
-          </CategoryText>
+          <CategoryText hasUnread={hasUnread}>{categoryName}</CategoryText>
         )}
       </BadgeGroup>
-      <CreatedAt hasUnread={Boolean(room.hasUnreadMessage)}>
+      <CreatedAt hasUnread={hasUnread}>
         {formatDate(new Date(room.createdAt ?? ''))}
       </CreatedAt>
     </Container>

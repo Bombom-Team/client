@@ -38,6 +38,11 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
               <Button
                 onClick={() => navigate({ to: '/support' })}
                 variant={'transparent'}
+                aria-label={
+                  unreadStatus?.hasUnread
+                    ? '1:1 문의 (읽지 않은 문의 있음)'
+                    : '1:1 문의'
+                }
               >
                 <HeadsetIconWrapper>
                   <HeadsetIcon width={22} height={24} />
