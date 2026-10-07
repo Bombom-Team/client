@@ -16,6 +16,7 @@ import { warningVisible } from '@/pages/storage/constants/announceMessage';
 import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticlesMutation';
 import { useStorageArticleFreshness } from '@/pages/storage/hooks/useStorageArticleFreshness';
 import { useStorageFilters } from '@/pages/storage/hooks/useStorageFilters';
+import { useStorageStatistics } from '@/pages/storage/hooks/useStorageStatistics';
 import useWarningVisibleMutation from '@/pages/storage/hooks/useWarningVisibleMutation';
 import { isValidKeyword } from '@/pages/storage/utils/isValidKeyword';
 import type { GetArticlesStatisticsNewslettersResponse } from '@/apis/articles/articles.api';
@@ -75,9 +76,8 @@ function Storage() {
   const keywordIsValid = isValidKeyword(searchParam);
   const emptyKeyword = !searchParam;
   const keyword = keywordIsValid ? searchParam : undefined;
-  const { data: newsletterFilters } = useQuery(
-    queries.articlesStatisticsNewsletters({ keyword }),
-  );
+  const { newsletterFilters, totalStorageCount } =
+    useStorageStatistics(keyword);
   const emptyFilters = {
     totalCount: 0,
     newsletters: [],
@@ -169,7 +169,7 @@ function Storage() {
               onPageChange={handlePageChange}
               page={page}
               resetPage={resetPage}
-              totalStorageCount={newsletterFilters?.totalCount ?? 0}
+              totalStorageCount={totalStorageCount}
             />
           ) : (
             <MobileStorageContent
@@ -179,7 +179,7 @@ function Storage() {
               disableEditMode={disableEditMode}
               deleteArticles={(articleIds) => deleteArticles(articleIds)}
               resetPage={resetPage}
-              totalStorageCount={newsletterFilters?.totalCount ?? 0}
+              totalStorageCount={totalStorageCount}
             />
           )}
         </MainContentSection>
