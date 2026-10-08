@@ -1,18 +1,18 @@
 import styled from '@emotion/styled';
-import { parseTiptapDoc } from '@/utils/tiptap/parseTiptapDoc';
 import { renderTiptapJson } from '@/utils/tiptap/renderTiptapJson';
+import { validateTiptapDoc } from '@/utils/tiptap/validateTiptapDoc';
 
 interface NoticeContentProps {
   content?: string;
 }
 
 // 블로그와 동일한 Tiptap JSON 렌더러 재사용 (@tiptap 런타임 불필요)
-// 기존 평문 공지는 parseTiptapDoc이 throw → 평문으로 폴백(줄바꿈 보존)
+// 기존 평문 공지는 validateTiptapDoc이 throw → 평문으로 폴백(줄바꿈 보존)
 const NoticeContent = ({ content }: NoticeContentProps) => {
   if (!content) return null;
 
   try {
-    const rendered = renderTiptapJson(parseTiptapDoc(content));
+    const rendered = renderTiptapJson(validateTiptapDoc(content));
     return <Content>{rendered}</Content>;
   } catch {
     return <PlainText>{content}</PlainText>;

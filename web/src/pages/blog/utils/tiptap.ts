@@ -1,4 +1,4 @@
-import { parseTiptapDoc } from '@/utils/tiptap/parseTiptapDoc';
+import { validateTiptapDoc } from '@/utils/tiptap/validateTiptapDoc';
 import type { TiptapNode } from '@/utils/tiptap/types';
 
 const CHARACTER_PER_MINUTE = 500;
@@ -17,7 +17,7 @@ const countNodeTextLength = (node: TiptapNode): number => {
 };
 
 export const getReadingTimeMinutes = (content: string) => {
-  const doc = parseTiptapDoc(content);
+  const doc = validateTiptapDoc(content);
   const textLength = doc.content.reduce(
     (total, node) => total + countNodeTextLength(node),
     0,
