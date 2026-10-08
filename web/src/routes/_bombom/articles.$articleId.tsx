@@ -20,6 +20,7 @@ import TodayUnreadArticlesSection from '@/pages/detail/components/TodayUnreadArt
 import useArticleAsReadMutation from '@/pages/detail/hooks/useArticleAsReadMutation';
 import { useArticleBookmark } from '@/pages/detail/hooks/useArticleBookmark';
 import { useArticleFontSize } from '@/pages/detail/hooks/useArticleFontSize';
+import { throwNotFoundForApiError } from '@/utils/routeError';
 import type { Device } from '@/hooks/useDevice';
 import BookmarkActiveIcon from '#/assets/svg/bookmark-active.svg';
 import BookmarkInactiveIcon from '#/assets/svg/bookmark-inactive.svg';
@@ -27,6 +28,17 @@ import BookmarkInactiveIcon from '#/assets/svg/bookmark-inactive.svg';
 const ARTICLE_MAX_WIDTH = 700;
 
 export const Route = createFileRoute('/_bombom/articles/$articleId')({
+  loader: async ({ context, params }) => {
+    try {
+      const currentArticle = await context.queryClient.fetchQuery(
+        queries.articleById({ id: Number(params.articleId) }),
+      );
+
+      return { currentArticle };
+    } catch (error) {
+      return throwNotFoundForApiError(error, [403, 404]);
+    }
+  },
   head: () => ({
     meta: [
       {
@@ -43,14 +55,17 @@ export const Route = createFileRoute('/_bombom/articles/$articleId')({
 
 function ArticleDetailPage() {
   const { articleId } = Route.useParams();
+  const { currentArticle: loadedArticle } = Route.useLoaderData();
   const articleIdNumber = Number(articleId);
   const contentRef = useRef<HTMLDivElement>(null);
   const device = useDevice();
   const { percentage, selectFontSize } = useArticleFontSize();
+  const { data: currentArticle } = useQuery({
+    ...queries.articleById({ id: articleIdNumber }),
+    initialData: loadedArticle,
+    refetchOnMount: false,
+  });
 
-  const { data: currentArticle } = useQuery(
-    queries.articleById({ id: articleIdNumber }),
-  );
   const { mutate: updateArticleAsRead } = useArticleAsReadMutation({
     articleId: articleIdNumber,
     newsletterCategory: currentArticle?.newsletter.category,
@@ -70,8 +85,6 @@ function ArticleDetailPage() {
   });
 
   useScrollRestoration({ pathname: articleId, enabled: !!currentArticle });
-
-  if (!currentArticle) return null;
 
   return (
     <>
