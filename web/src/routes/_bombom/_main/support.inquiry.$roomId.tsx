@@ -126,8 +126,9 @@ function InquiryRoomDetailPage() {
     isSendingRef.current = true;
     try {
       await mutateSendMessage(body);
-    } catch {
+    } catch (error) {
       isSendingRef.current = false;
+      throw error;
     }
   };
 
