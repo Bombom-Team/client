@@ -151,7 +151,7 @@ function InquiryRoomDetailPage() {
 
   return (
     <ChatCard>
-      <Header>
+      <Header isMobile={isMobile}>
         <BackLink to="/support/inquiry">
           <ChevronIcon direction="left" width={20} height={20} />
           목록으로
@@ -236,13 +236,22 @@ const ChatCard = styled.div`
   flex-direction: column;
 `;
 
-const Header = styled.div`
+const Header = styled.div<{ isMobile: boolean }>`
+  position: sticky;
+  top: ${({ isMobile, theme }) =>
+    isMobile
+      ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`
+      : `calc(${theme.heights.headerPC} + 40px)`};
+  z-index: ${({ theme }) => theme.zIndex.panel};
+
   padding: 0 0 12px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.stroke};
 
   display: flex;
   gap: 2px;
   flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const BackLink = styled(Link)`
