@@ -5,15 +5,10 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ENV } from './env';
-import {
-  DEV_GOOGLE_ANALYTICS_ID,
-  GOOGLE_ANALYTICS_ID,
-} from './libs/googleAnalytics/constants';
+import { GOOGLE_ANALYTICS_ID } from './libs/googleAnalytics/constants';
 import { initGA } from './libs/googleAnalytics/initGA';
 import { routeTree } from './routeTree.gen';
 import reset from './styles/reset';
-
-if (import.meta.env.DEV) initGA(DEV_GOOGLE_ANALYTICS_ID);
 
 if (import.meta.env.PROD) initGA(GOOGLE_ANALYTICS_ID);
 
