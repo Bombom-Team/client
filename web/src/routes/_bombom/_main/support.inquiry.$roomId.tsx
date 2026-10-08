@@ -23,6 +23,7 @@ import {
   INQUIRY_ROOM_STATUS_LABELS,
 } from '@/types/inquiry';
 import { compareDates, formatDateToKorean } from '@/utils/date';
+import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
 
 export const Route = createFileRoute('/_bombom/_main/support/inquiry/$roomId')({
   head: () => ({
@@ -44,6 +45,7 @@ function InquiryRoomDetailPage() {
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const hasScrolledToBottomRef = useRef(false);
   const prevScrollHeightRef = useRef<number | null>(null);
+  const isSendingRef = useRef(false);
 
   const { data: room, error: roomError } = useQuery({
     ...queries.inquiryRoom(roomId),
@@ -101,6 +103,12 @@ function InquiryRoomDetailPage() {
       return;
     }
 
+    if (isSendingRef.current) {
+      window.scrollTo(0, document.body.scrollHeight);
+      isSendingRef.current = false;
+      return;
+    }
+
     if (prevScrollHeightRef.current !== null) {
       const scrollHeightDiff =
         document.body.scrollHeight - prevScrollHeightRef.current;
@@ -113,6 +121,15 @@ function InquiryRoomDetailPage() {
     useInquiryMessageSendMutation({ roomId });
   const { mutate: mutateDeleteMessage, isPending: isDeleting } =
     useInquiryMessageDeleteMutation({ roomId });
+
+  const handleSendMessage = async (body: SendInquiryMessageBody) => {
+    isSendingRef.current = true;
+    try {
+      await mutateSendMessage(body);
+    } catch {
+      isSendingRef.current = false;
+    }
+  };
 
   const handleLoadMore = () => {
     prevScrollHeightRef.current = document.body.scrollHeight;
@@ -158,6 +175,10 @@ function InquiryRoomDetailPage() {
             )}
           </HeaderSpacer>
         </HeaderRow>
+
+        <ResponseTimeNotice>
+          문의 답변에는 평일 기준 평균 2시간이 소요됩니다.
+        </ResponseTimeNotice>
       </Header>
 
       <MessageList>
@@ -199,7 +220,7 @@ function InquiryRoomDetailPage() {
         <InquiryMessageInput
           disabled={!isRoomLoaded}
           isSubmitting={isSending}
-          onSubmit={mutateSendMessage}
+          onSubmit={handleSendMessage}
         />
       )}
     </ChatCard>
@@ -258,6 +279,14 @@ const HeaderSpacer = styled.div`
 const CategoryText = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t5Bold};
+  text-align: center;
+`;
+
+const ResponseTimeNotice = styled.p`
+  margin-top: 4px;
+
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.t3Regular};
   text-align: center;
 `;
 
