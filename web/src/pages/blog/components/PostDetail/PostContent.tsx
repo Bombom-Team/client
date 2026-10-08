@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
-import { parseTiptapDoc } from '@/utils/tiptap/parseTiptapDoc';
 import { renderTiptapJson } from '@/utils/tiptap/renderTiptapJson';
+import { validateTiptapDoc } from '@/utils/tiptap/validateTiptapDoc';
 interface PostContentProps {
   content: string;
 }
 
 const PostContent = ({ content }: PostContentProps) => {
-  const renderedContent = renderTiptapJson(parseTiptapDoc(content));
+  const renderedContent = renderTiptapJson(validateTiptapDoc(content));
 
   return (
     <Container>

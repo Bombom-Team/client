@@ -1,6 +1,6 @@
 import type { TiptapDoc } from './types';
 
-export const parseTiptapDoc = (content: string): TiptapDoc => {
+export const validateTiptapDoc = (content: string): TiptapDoc => {
   const parsedContent = JSON.parse(content) as unknown;
 
   if (
