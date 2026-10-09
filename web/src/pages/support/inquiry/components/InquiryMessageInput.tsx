@@ -141,33 +141,34 @@ const InquiryMessageInput = ({
       />
 
       <ActionBar>
-        <ActionBarLeft>
-          <AttachButton
-            type="button"
-            aria-label="이미지 첨부"
-            disabled={
-              disabled || isUploading || imageUrls.length >= MAX_IMAGE_COUNT
-            }
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <PhotoIcon color={theme.colors.textSecondary} />
-          </AttachButton>
+        <AttachButton
+          type="button"
+          aria-label="이미지 첨부"
+          disabled={
+            disabled || isUploading || imageUrls.length >= MAX_IMAGE_COUNT
+          }
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <PhotoIcon color={theme.colors.textSecondary} />
+        </AttachButton>
+
+        <ActionBarRight>
           <CharCount>
             {content.length} / {MAX_CONTENT_LENGTH}
           </CharCount>
-        </ActionBarLeft>
 
-        <Button
-          onClick={handleSubmit}
-          disabled={
-            disabled ||
-            isSubmitting ||
-            isUploading ||
-            (!content.trim() && imageUrls.length === 0)
-          }
-        >
-          전송
-        </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={
+              disabled ||
+              isSubmitting ||
+              isUploading ||
+              (!content.trim() && imageUrls.length === 0)
+            }
+          >
+            전송
+          </Button>
+        </ActionBarRight>
       </ActionBar>
     </Container>
   );
@@ -211,9 +212,9 @@ const ActionBar = styled.div`
   justify-content: space-between;
 `;
 
-const ActionBarLeft = styled.div`
+const ActionBarRight = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 12px;
   align-items: center;
 `;
 
