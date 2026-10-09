@@ -55,7 +55,7 @@ function InquiryRoomDetailPage() {
     refetchInterval: (query) => {
       const status = query.state.data?.status;
       const isAwaiting = status === 'UNCONFIRMED' || status === 'IN_PROGRESS';
-      return isAwaiting ? 10000 : false;
+      return isAwaiting ? 30000 : false;
     },
   });
   const isRoomNotFound =
@@ -82,26 +82,6 @@ function InquiryRoomDetailPage() {
     refetchInterval: isAwaitingMoreMessages ? 10000 : false,
   });
 
-  useEffect(() => {
-    if (!isFetchedAfterMount || !isMessagesFetchSuccess) return;
-
-    queryClient.invalidateQueries({
-      queryKey: queries.inquiryUnreadStatus().queryKey,
-    });
-    queryClient.invalidateQueries({
-      queryKey: INQUIRY_ROOMS_QUERY_KEY,
-    });
-    queryClient.invalidateQueries({
-      queryKey: queries.inquiryRoom(roomId).queryKey,
-    });
-  }, [
-    isFetchedAfterMount,
-    isMessagesFetchSuccess,
-    messagePages,
-    queryClient,
-    roomId,
-  ]);
-
   const messages = useMemo(
     () =>
       messagePages?.pages.flatMap((page) => page?.messages ?? []).reverse() ??
@@ -110,11 +90,30 @@ function InquiryRoomDetailPage() {
   );
 
   useEffect(() => {
+    if (!isFetchedAfterMount || !isMessagesFetchSuccess) return;
     if (messages.length === 0) return;
 
     const latestMessageId = messages[messages.length - 1]?.id ?? null;
     const previousMessageId = lastMessageIdRef.current;
+    const isFirstVisit = previousMessageId === null;
     lastMessageIdRef.current = latestMessageId;
+
+    const hasNewMessage =
+      !isFirstVisit &&
+      latestMessageId !== null &&
+      latestMessageId !== previousMessageId;
+
+    if (isFirstVisit || hasNewMessage) {
+      queryClient.invalidateQueries({
+        queryKey: queries.inquiryUnreadStatus().queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: INQUIRY_ROOMS_QUERY_KEY,
+      });
+      queryClient.invalidateQueries({
+        queryKey: queries.inquiryRoom(roomId).queryKey,
+      });
+    }
 
     if (!hasScrolledToBottomRef.current) {
       window.scrollTo(0, document.body.scrollHeight);
@@ -136,11 +135,6 @@ function InquiryRoomDetailPage() {
       return;
     }
 
-    const hasNewMessage =
-      previousMessageId !== null &&
-      latestMessageId !== null &&
-      latestMessageId !== previousMessageId;
-
     if (hasNewMessage) {
       const distanceFromBottom =
         document.body.scrollHeight - (window.scrollY + window.innerHeight);
@@ -152,7 +146,13 @@ function InquiryRoomDetailPage() {
         setHasNewMessageArrived(true);
       }
     }
-  }, [messages]);
+  }, [
+    isFetchedAfterMount,
+    isMessagesFetchSuccess,
+    messages,
+    queryClient,
+    roomId,
+  ]);
 
   const handleScrollToBottom = () => {
     window.scrollTo(0, document.body.scrollHeight);
