@@ -49,6 +49,14 @@ function InquiryRoomDetailPage() {
   const lastMessageIdRef = useRef<number | null>(null);
   const [hasNewMessageArrived, setHasNewMessageArrived] = useState(false);
 
+  useEffect(() => {
+    hasScrolledToBottomRef.current = false;
+    prevScrollHeightRef.current = null;
+    isSendingRef.current = false;
+    lastMessageIdRef.current = null;
+    setHasNewMessageArrived(false);
+  }, [roomId]);
+
   const { data: room, error: roomError } = useQuery({
     ...queries.inquiryRoom(roomId),
     enabled: isValidRoomId,
