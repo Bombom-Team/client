@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import Button from '@/components/Button/Button';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { useInquiryImagesUploadMutation } from '@/pages/support/inquiry/hooks/useInquiryImagesUploadMutation';
+import { isWebView } from '@/utils/device';
 import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 
@@ -32,7 +33,6 @@ const PhotoIcon = ({ color }: { color: string }) => (
 interface InquiryMessageInputProps {
   disabled?: boolean;
   isSubmitting?: boolean;
-  isMobile?: boolean;
   onSubmit: (body: SendInquiryMessageBody) => Promise<unknown>;
 }
 
@@ -42,7 +42,6 @@ const MAX_IMAGE_COUNT = 4;
 const InquiryMessageInput = ({
   disabled = false,
   isSubmitting = false,
-  isMobile = false,
   onSubmit,
 }: InquiryMessageInputProps) => {
   const [content, setContent] = useState('');
@@ -90,7 +89,7 @@ const InquiryMessageInput = ({
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (
-      isMobile ||
+      isWebView() ||
       e.key !== 'Enter' ||
       e.shiftKey ||
       e.nativeEvent.isComposing ||
