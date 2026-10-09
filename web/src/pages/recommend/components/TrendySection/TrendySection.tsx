@@ -10,7 +10,7 @@ import SearchInput from '@/components/SearchInput/SearchInput';
 import { NEWSLETTER_COUNT } from '@/constants/newsletter';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { createSlug } from '@/pages/blog/utils/url';
+import { createSlug } from '@/utils/url';
 import type { Device } from '@/hooks/useDevice';
 import type { Newsletter } from '@/types/newsletter';
 import type { ChangeEvent } from 'react';

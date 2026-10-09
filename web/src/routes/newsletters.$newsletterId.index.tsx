@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
-import { createSlug } from '@/pages/blog/utils/url';
+import { createSlug } from '@/utils/url';
 import type { NewsletterTab } from '@/pages/newsletter-detail/types';
 import type { SearchSchemaInput } from '@tanstack/react-router';
 

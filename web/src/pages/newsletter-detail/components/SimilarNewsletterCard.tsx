@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { createSlug } from '@/pages/blog/utils/url';
+import { createSlug } from '@/utils/url';
 import type { Newsletter } from '@/types/newsletter';
 
 interface SimilarNewsletterCardProps {

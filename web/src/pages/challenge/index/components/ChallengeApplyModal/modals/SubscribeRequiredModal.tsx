@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import { ModalDescription, ModalTitle } from '../ChallengeApplyModal';
 import { useDevice } from '@/hooks/useDevice';
-import { createSlug } from '@/pages/blog/utils/url';
+import { createSlug } from '@/utils/url';
 import type { Challenge } from '@/apis/challenge/challenge.api';
 import ArrowRightIcon from '#/assets/svg/arrow-right.svg';
 

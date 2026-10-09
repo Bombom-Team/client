@@ -3,11 +3,11 @@ import { Suspense } from 'react';
 import { queries } from '@/apis/queries';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
 import { useDevice } from '@/hooks/useDevice';
-import { createSlug } from '@/pages/blog/utils/url';
 import NewsletterDetailDesktop from '@/pages/newsletter-detail/NewsletterDetailDesktop';
 import NewsletterDetailDesktopSkeleton from '@/pages/newsletter-detail/NewsletterDetailDesktopSkeleton';
 import NewsletterDetailMobile from '@/pages/newsletter-detail/NewsletterDetailMobile';
 import NewsletterDetailMobileSkeleton from '@/pages/newsletter-detail/NewsletterDetailMobileSkeleton';
+import { createSlug } from '@/utils/url';
 import type { NewsletterTab } from '@/pages/newsletter-detail/types';
 import type { SearchSchemaInput } from '@tanstack/react-router';
 
