@@ -120,25 +120,26 @@ const InquiryMessageInput = ({
         </PreviewRow>
       )}
 
-      <InputRow>
-        <HiddenFileInput
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleFileChange}
-        />
+      <HiddenFileInput
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleFileChange}
+      />
 
-        <TextareaWrapper>
-          <Textarea
-            value={content}
-            onChange={(e) =>
-              setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
-            }
-            onKeyDown={handleKeyDown}
-            placeholder="문의 내용을 입력해주세요"
-            disabled={disabled}
-          />
+      <Textarea
+        value={content}
+        onChange={(e) =>
+          setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
+        }
+        onKeyDown={handleKeyDown}
+        placeholder="문의 내용을 입력해주세요"
+        disabled={disabled}
+      />
+
+      <ActionBar>
+        <ActionBarLeft>
           <AttachButton
             type="button"
             aria-label="이미지 첨부"
@@ -152,7 +153,7 @@ const InquiryMessageInput = ({
           <CharCount>
             {content.length} / {MAX_CONTENT_LENGTH}
           </CharCount>
-        </TextareaWrapper>
+        </ActionBarLeft>
 
         <Button
           onClick={handleSubmit}
@@ -165,7 +166,7 @@ const InquiryMessageInput = ({
         >
           전송
         </Button>
-      </InputRow>
+      </ActionBar>
     </Container>
   );
 };
@@ -180,43 +181,17 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const InputRow = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: flex-end;
-`;
-
-const AttachButton = styled.button`
-  position: absolute;
-  right: 12px;
-  bottom: 10px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-`;
-
 const HiddenFileInput = styled.input`
   display: none;
-`;
-
-const TextareaWrapper = styled.div`
-  position: relative;
-  flex: 1;
 `;
 
 const Textarea = styled.textarea`
   width: 100%;
   min-height: 44px;
   max-height: 120px;
-  padding: 12px 44px 20px 16px;
+  padding: 12px 16px;
   border: none;
-  border-radius: 22px;
+  border-radius: 16px;
 
   background: ${({ theme }) => theme.colors.dividers};
   font: ${({ theme }) => theme.fonts.t6Regular};
@@ -228,15 +203,32 @@ const Textarea = styled.textarea`
   }
 `;
 
-const CharCount = styled.span`
-  position: absolute;
-  bottom: 8px;
-  left: 16px;
+const ActionBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
 
+const ActionBarLeft = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+const AttachButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
+const CharCount = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t2Regular};
-
-  pointer-events: none;
 `;
 
 const PreviewRow = styled.div`
