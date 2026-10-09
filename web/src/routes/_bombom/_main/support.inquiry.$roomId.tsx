@@ -67,16 +67,16 @@ function InquiryRoomDetailPage() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isFetchedAfterMount,
+    isSuccess: isMessagesFetchSuccess,
   } = useInfiniteQuery({
     ...queries.inquiryMessages(roomId),
     enabled: isValidRoomId,
     refetchInterval: isAwaitingMoreMessages ? 10000 : false,
   });
 
-  const isMessagesLoaded = messagePages !== undefined;
-
   useEffect(() => {
-    if (!isMessagesLoaded) return;
+    if (!isFetchedAfterMount || !isMessagesFetchSuccess) return;
 
     queryClient.invalidateQueries({
       queryKey: queries.inquiryUnreadStatus().queryKey,
@@ -87,8 +87,13 @@ function InquiryRoomDetailPage() {
     queryClient.invalidateQueries({
       queryKey: queries.inquiryRoom(roomId).queryKey,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMessagesLoaded]);
+  }, [
+    isFetchedAfterMount,
+    isMessagesFetchSuccess,
+    messagePages,
+    queryClient,
+    roomId,
+  ]);
 
   const messages = useMemo(
     () =>
