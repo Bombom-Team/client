@@ -1,30 +1,34 @@
 import styled from '@emotion/styled';
 import { renderTiptapJson } from '@/utils/tiptap/renderTiptapJson';
 import { validateTiptapDoc } from '@/utils/tiptap/validateTiptapDoc';
-interface PostContentProps {
-  content: string;
+
+interface NoticeContentProps {
+  content?: string;
 }
 
-const PostContent = ({ content }: PostContentProps) => {
-  const renderedContent = renderTiptapJson(validateTiptapDoc(content));
+// 블로그와 동일한 Tiptap JSON 렌더러 재사용 (@tiptap 런타임 불필요)
+// 기존 평문 공지는 validateTiptapDoc이 throw → 평문으로 폴백(줄바꿈 보존)
+const NoticeContent = ({ content }: NoticeContentProps) => {
+  if (!content) return null;
 
-  return (
-    <Container>
-      <Content>{renderedContent}</Content>
-    </Container>
-  );
+  try {
+    const rendered = renderTiptapJson(validateTiptapDoc(content));
+    return <Content>{rendered}</Content>;
+  } catch {
+    return <PlainText>{content}</PlainText>;
+  }
 };
 
-export default PostContent;
+export default NoticeContent;
 
-const Container = styled.section`
+const PlainText = styled.p`
   width: 100%;
-  margin: 0 auto;
-
-  color: ${({ theme }) => theme.colors.textPrimary};
+  white-space: pre-wrap;
 `;
 
 const Content = styled.div`
+  width: 100%;
+
   font: ${({ theme }) => theme.fonts.t7Regular};
   line-height: 1.7;
 
