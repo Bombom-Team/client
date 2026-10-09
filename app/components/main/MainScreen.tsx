@@ -126,7 +126,13 @@ export const MainScreen = () => {
 
         case 'OPEN_BROWSER':
           if (message.payload?.url) {
-            console.log('외부 브라우저 열기:', message.payload.url);
+            try {
+              console.log('외부 브라우저 열기:', {
+                hostname: new URL(message.payload.url).hostname,
+              });
+            } catch {
+              console.log('외부 브라우저 열기: URL 형식 확인 필요');
+            }
             WebBrowser.openBrowserAsync(message.payload.url, {
               presentationStyle: WebBrowser.WebBrowserPresentationStyle.POPOVER,
               dismissButtonStyle: 'close',
