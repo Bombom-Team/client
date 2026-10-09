@@ -93,7 +93,9 @@ const InquiryMessageInput = ({
       isMobile ||
       e.key !== 'Enter' ||
       e.shiftKey ||
-      e.nativeEvent.isComposing
+      e.nativeEvent.isComposing ||
+      isSubmitting ||
+      isUploading
     ) {
       return;
     }
