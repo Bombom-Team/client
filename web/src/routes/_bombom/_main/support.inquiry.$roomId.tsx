@@ -46,7 +46,7 @@ function InquiryRoomDetailPage() {
   const hasScrolledToBottomRef = useRef(false);
   const prevScrollHeightRef = useRef<number | null>(null);
   const isSendingRef = useRef(false);
-  const lastMessageScrollHeightRef = useRef<number | null>(null);
+  const lastMessageIdRef = useRef<number | null>(null);
   const [hasNewMessageArrived, setHasNewMessageArrived] = useState(false);
 
   const { data: room, error: roomError } = useQuery({
@@ -112,17 +112,19 @@ function InquiryRoomDetailPage() {
   useEffect(() => {
     if (messages.length === 0) return;
 
+    const latestMessageId = messages[messages.length - 1]?.id ?? null;
+    const previousMessageId = lastMessageIdRef.current;
+    lastMessageIdRef.current = latestMessageId;
+
     if (!hasScrolledToBottomRef.current) {
       window.scrollTo(0, document.body.scrollHeight);
       hasScrolledToBottomRef.current = true;
-      lastMessageScrollHeightRef.current = document.body.scrollHeight;
       return;
     }
 
     if (isSendingRef.current) {
       window.scrollTo(0, document.body.scrollHeight);
       isSendingRef.current = false;
-      lastMessageScrollHeightRef.current = document.body.scrollHeight;
       return;
     }
 
@@ -131,24 +133,21 @@ function InquiryRoomDetailPage() {
         document.body.scrollHeight - prevScrollHeightRef.current;
       window.scrollTo(0, window.scrollY + scrollHeightDiff);
       prevScrollHeightRef.current = null;
-      lastMessageScrollHeightRef.current = document.body.scrollHeight;
       return;
     }
 
-    const previousScrollHeight = lastMessageScrollHeightRef.current;
-    const currentScrollHeight = document.body.scrollHeight;
-    lastMessageScrollHeightRef.current = currentScrollHeight;
+    const hasNewMessage =
+      previousMessageId !== null &&
+      latestMessageId !== null &&
+      latestMessageId !== previousMessageId;
 
-    if (
-      previousScrollHeight !== null &&
-      currentScrollHeight > previousScrollHeight
-    ) {
+    if (hasNewMessage) {
       const distanceFromBottom =
-        previousScrollHeight - (window.scrollY + window.innerHeight);
+        document.body.scrollHeight - (window.scrollY + window.innerHeight);
       const wasNearBottom = distanceFromBottom <= window.innerHeight * 0.5;
 
       if (wasNearBottom) {
-        window.scrollTo(0, currentScrollHeight);
+        window.scrollTo(0, document.body.scrollHeight);
       } else {
         setHasNewMessageArrived(true);
       }
