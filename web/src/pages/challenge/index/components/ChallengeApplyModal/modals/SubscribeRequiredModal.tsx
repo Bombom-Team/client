@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import { ModalDescription, ModalTitle } from '../ChallengeApplyModal';
 import { useDevice } from '@/hooks/useDevice';
+import { createSlug } from '@/pages/blog/utils/url';
 import type { Challenge } from '@/apis/challenge/challenge.api';
 import ArrowRightIcon from '#/assets/svg/arrow-right.svg';
 
@@ -18,10 +19,13 @@ const SubscribeRequiredModal = ({
   const isMobile = device === 'mobile';
   const navigate = useNavigate();
 
-  const handleNewsletterClick = (newsletterId: number) => {
+  const handleNewsletterClick = (newsletterId: number, name: string) => {
     navigate({
-      to: '/newsletters/$newsletterId',
-      params: { newsletterId: String(newsletterId) },
+      to: '/newsletters/$newsletterId/$name',
+      params: {
+        newsletterId: String(newsletterId),
+        name: createSlug(name),
+      },
     });
     closeModal();
   };
@@ -38,7 +42,9 @@ const SubscribeRequiredModal = ({
         {newsletters.map((newsletter) => (
           <NewsletterCard
             key={newsletter.id}
-            onClick={() => handleNewsletterClick(newsletter.id)}
+            onClick={() =>
+              handleNewsletterClick(newsletter.id, newsletter.name)
+            }
           >
             <NewsletterImage src={newsletter.imageUrl} alt={newsletter.name} />
             <NewsletterInfo>

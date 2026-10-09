@@ -10,6 +10,7 @@ import SearchInput from '@/components/SearchInput/SearchInput';
 import { NEWSLETTER_COUNT } from '@/constants/newsletter';
 import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { createSlug } from '@/pages/blog/utils/url';
 import type { Device } from '@/hooks/useDevice';
 import type { Newsletter } from '@/types/newsletter';
 import type { ChangeEvent } from 'react';
@@ -66,8 +67,11 @@ const TrendySection = () => {
       label: newsletter.name ?? 'Unknown Newsletter',
     });
     navigate({
-      to: '/newsletters/$newsletterId',
-      params: { newsletterId: String(newsletter.newsletterId) },
+      to: '/newsletters/$newsletterId/$name',
+      params: {
+        newsletterId: String(newsletter.newsletterId),
+        name: createSlug(newsletter.name),
+      },
     });
   };
 

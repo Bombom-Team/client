@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { createSlug } from '@/pages/blog/utils/url';
 import type { Newsletter } from '@/types/newsletter';
 
 interface SimilarNewsletterCardProps {
@@ -18,8 +19,11 @@ const SimilarNewsletterCard = ({ newsletter }: SimilarNewsletterCardProps) => {
       label: newsletter.name,
     });
     navigate({
-      to: '/newsletters/$newsletterId',
-      params: { newsletterId: String(newsletter.newsletterId) },
+      to: '/newsletters/$newsletterId/$name',
+      params: {
+        newsletterId: String(newsletter.newsletterId),
+        name: createSlug(newsletter.name),
+      },
     });
   };
 

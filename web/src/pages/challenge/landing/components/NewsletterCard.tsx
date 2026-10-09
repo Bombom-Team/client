@@ -6,6 +6,7 @@ import Badge from '@/components/Badge/Badge';
 import Button from '@/components/Button/Button';
 import Flex from '@/components/Flex';
 import { useDevice, type Device } from '@/hooks/useDevice';
+import { createSlug } from '@/pages/blog/utils/url';
 import type { components } from '@/types/openapi';
 import CloseIcon from '#/assets/svg/close.svg';
 
@@ -40,8 +41,11 @@ const NewsletterCard = ({
   const handleNavigateDetail = (e: MouseEvent) => {
     e.stopPropagation();
     navigate({
-      to: '/newsletters/$newsletterId',
-      params: { newsletterId: String(newsletter.newsletterId) },
+      to: '/newsletters/$newsletterId/$name',
+      params: {
+        newsletterId: String(newsletter.newsletterId),
+        name: createSlug(newsletter.name),
+      },
     });
   };
 

@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { queries } from '@/apis/queries';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
 import { useDevice } from '@/hooks/useDevice';
+import { createSlug } from '@/pages/blog/utils/url';
 import NewsletterDetailDesktop from '@/pages/newsletter-detail/NewsletterDetailDesktop';
 import NewsletterDetailDesktopSkeleton from '@/pages/newsletter-detail/NewsletterDetailDesktopSkeleton';
 import NewsletterDetailMobile from '@/pages/newsletter-detail/NewsletterDetailMobile';
@@ -14,7 +15,7 @@ interface NewsletterDetailSearch {
   tab?: NewsletterTab;
 }
 
-export const Route = createFileRoute('/newsletters/$newsletterId')({
+export const Route = createFileRoute('/newsletters/$newsletterId/$name')({
   loader: async ({ context, params }) => {
     const id = Number(params.newsletterId);
     const newsletter = await context.queryClient.ensureQueryData(
@@ -33,7 +34,7 @@ export const Route = createFileRoute('/newsletters/$newsletterId')({
 
     const description = (newsletter.description ?? '').slice(0, 160);
     const title = `${newsletter.name} | 봄봄`;
-    const url = `https://www.bombom.news/newsletters/${params.newsletterId}`;
+    const url = `https://www.bombom.news/newsletters/${params.newsletterId}/${createSlug(newsletter.name)}`;
     const image = newsletter.imageUrl ?? '';
 
     return {
