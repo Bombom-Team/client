@@ -6,7 +6,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Fragment, useEffect, useMemo, useRef } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { INQUIRY_ROOMS_QUERY_KEY } from '@/apis/inquiry/inquiry.query';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
@@ -46,10 +46,17 @@ function InquiryRoomDetailPage() {
   const hasScrolledToBottomRef = useRef(false);
   const prevScrollHeightRef = useRef<number | null>(null);
   const isSendingRef = useRef(false);
+  const lastMessageScrollHeightRef = useRef<number | null>(null);
+  const [hasNewMessageArrived, setHasNewMessageArrived] = useState(false);
 
   const { data: room, error: roomError } = useQuery({
     ...queries.inquiryRoom(roomId),
     enabled: isValidRoomId,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      const isAwaiting = status === 'UNCONFIRMED' || status === 'IN_PROGRESS';
+      return isAwaiting ? 10000 : false;
+    },
   });
   const isRoomNotFound =
     !isValidRoomId ||
@@ -108,12 +115,14 @@ function InquiryRoomDetailPage() {
     if (!hasScrolledToBottomRef.current) {
       window.scrollTo(0, document.body.scrollHeight);
       hasScrolledToBottomRef.current = true;
+      lastMessageScrollHeightRef.current = document.body.scrollHeight;
       return;
     }
 
     if (isSendingRef.current) {
       window.scrollTo(0, document.body.scrollHeight);
       isSendingRef.current = false;
+      lastMessageScrollHeightRef.current = document.body.scrollHeight;
       return;
     }
 
@@ -122,8 +131,34 @@ function InquiryRoomDetailPage() {
         document.body.scrollHeight - prevScrollHeightRef.current;
       window.scrollTo(0, window.scrollY + scrollHeightDiff);
       prevScrollHeightRef.current = null;
+      lastMessageScrollHeightRef.current = document.body.scrollHeight;
+      return;
+    }
+
+    const previousScrollHeight = lastMessageScrollHeightRef.current;
+    const currentScrollHeight = document.body.scrollHeight;
+    lastMessageScrollHeightRef.current = currentScrollHeight;
+
+    if (
+      previousScrollHeight !== null &&
+      currentScrollHeight > previousScrollHeight
+    ) {
+      const distanceFromBottom =
+        previousScrollHeight - (window.scrollY + window.innerHeight);
+      const wasNearBottom = distanceFromBottom <= window.innerHeight * 0.5;
+
+      if (wasNearBottom) {
+        window.scrollTo(0, currentScrollHeight);
+      } else {
+        setHasNewMessageArrived(true);
+      }
     }
   }, [messages]);
+
+  const handleScrollToBottom = () => {
+    window.scrollTo(0, document.body.scrollHeight);
+    setHasNewMessageArrived(false);
+  };
 
   const { mutateAsync: mutateSendMessage, isPending: isSending } =
     useInquiryMessageSendMutation({ roomId });
@@ -215,6 +250,12 @@ function InquiryRoomDetailPage() {
           );
         })}
       </MessageList>
+
+      {hasNewMessageArrived && (
+        <NewMessageButton type="button" onClick={handleScrollToBottom}>
+          새 메시지가 도착했어요
+        </NewMessageButton>
+      )}
 
       {isRoomNotFound ? (
         <ClosedNotice>문의를 찾을 수 없습니다.</ClosedNotice>
@@ -326,4 +367,22 @@ const ClosedNotice = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
+`;
+
+const NewMessageButton = styled.button`
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  z-index: ${({ theme }) => theme.zIndex.floating};
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ theme }) => theme.fonts.t4Bold};
+
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  cursor: pointer;
 `;
