@@ -228,6 +228,7 @@ function InquiryRoomDetailPage() {
         <InquiryMessageInput
           disabled={!isRoomLoaded}
           isSubmitting={isSending}
+          isMobile={isMobile}
           onSubmit={handleSendMessage}
         />
       )}

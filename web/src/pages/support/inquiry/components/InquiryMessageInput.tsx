@@ -5,7 +5,7 @@ import Button from '@/components/Button/Button';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { useInquiryImagesUploadMutation } from '@/pages/support/inquiry/hooks/useInquiryImagesUploadMutation';
 import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 
 const PhotoIcon = ({ color }: { color: string }) => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -32,6 +32,7 @@ const PhotoIcon = ({ color }: { color: string }) => (
 interface InquiryMessageInputProps {
   disabled?: boolean;
   isSubmitting?: boolean;
+  isMobile?: boolean;
   onSubmit: (body: SendInquiryMessageBody) => Promise<unknown>;
 }
 
@@ -41,6 +42,7 @@ const MAX_IMAGE_COUNT = 4;
 const InquiryMessageInput = ({
   disabled = false,
   isSubmitting = false,
+  isMobile = false,
   onSubmit,
 }: InquiryMessageInputProps) => {
   const [content, setContent] = useState('');
@@ -86,6 +88,20 @@ const InquiryMessageInput = ({
     setImageUrls([]);
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (
+      isMobile ||
+      e.key !== 'Enter' ||
+      e.shiftKey ||
+      e.nativeEvent.isComposing
+    ) {
+      return;
+    }
+
+    e.preventDefault();
+    handleSubmit();
+  };
+
   return (
     <Container>
       {imageUrls.length > 0 && (
@@ -119,6 +135,7 @@ const InquiryMessageInput = ({
             onChange={(e) =>
               setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
             }
+            onKeyDown={handleKeyDown}
             placeholder="문의 내용을 입력해주세요"
             disabled={disabled}
           />
