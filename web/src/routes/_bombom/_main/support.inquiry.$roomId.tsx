@@ -55,6 +55,8 @@ function InquiryRoomDetailPage() {
     !isValidRoomId ||
     (roomError instanceof ApiError && roomError.status === 404);
   const isRoomFetchError = roomError != null && !isRoomNotFound;
+  const isAwaitingMoreMessages =
+    room?.status === 'UNCONFIRMED' || room?.status === 'IN_PROGRESS';
   const { data: categories } = useQuery(queries.inquiryCategories());
   const categoryName = categories?.find(
     (category) => category.id === room?.categoryId,
@@ -68,6 +70,7 @@ function InquiryRoomDetailPage() {
   } = useInfiniteQuery({
     ...queries.inquiryMessages(roomId),
     enabled: isValidRoomId,
+    refetchInterval: isAwaitingMoreMessages ? 10000 : false,
   });
 
   const isMessagesLoaded = messagePages !== undefined;
@@ -147,8 +150,7 @@ function InquiryRoomDetailPage() {
   });
 
   const isRoomLoaded = room !== undefined;
-  const canSendMessage =
-    room?.status === 'UNCONFIRMED' || room?.status === 'IN_PROGRESS';
+  const canSendMessage = isAwaitingMoreMessages;
 
   return (
     <ChatCard>
