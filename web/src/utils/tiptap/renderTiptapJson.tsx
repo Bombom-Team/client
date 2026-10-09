@@ -1,6 +1,6 @@
 import { createElement } from 'react';
-import { validateUrl } from './url';
-import type { TiptapDoc, TiptapMark, TiptapNode } from '../types/post';
+import { validateUrl } from '../url';
+import type { TiptapDoc, TiptapMark, TiptapNode } from './types';
 import type { ReactNode } from 'react';
 
 const renderChildren = (node: TiptapNode, key: string) => {

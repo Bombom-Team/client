@@ -1,11 +1,15 @@
 export type NoticeCategoryType = 'NOTICE' | 'UPDATE' | 'EVENT' | 'CHECK';
 
+export type NoticeVisibility = 'PUBLIC' | 'PRIVATE';
+
 export interface Notice {
   id: number;
   title: string;
   content?: string;
   createdAt: string;
   noticeCategory: NoticeCategoryType;
+  visibility?: NoticeVisibility;
+  isRepresentative?: boolean;
 }
 
 export const NOTICE_CATEGORY_LABELS: Record<NoticeCategoryType, string> = {
