@@ -36,6 +36,14 @@ const LoginFailureModal = () => {
     const error = url.searchParams.get('error');
     if (error === null) return;
 
+    // 처리한 실패 상태만 제거하고, 로그인 후 돌아갈 경로는 보존한다.
+    url.searchParams.delete('error');
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${url.pathname}${url.search}${url.hash}`,
+    );
+
     const reason = getOAuthLoginFailureReason(error);
     if (reason) {
       captureMessage('Web OAuth login failed', {
