@@ -1,12 +1,13 @@
 import styled from '@emotion/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
 
 import { Modal } from 'react-native';
 
 import { theme } from '@bombom/shared/theme';
-import { LoginScreen } from './LoginScreen';
+import { LoginScreen, type LoginScreenProps } from './LoginScreen';
 
-interface LoginScreenOverlayProps {
+interface LoginScreenOverlayProps extends LoginScreenProps {
   visible: boolean;
   onClose: () => void;
 }
@@ -14,13 +15,22 @@ interface LoginScreenOverlayProps {
 export const LoginScreenOverlay = ({
   visible,
   onClose,
+  webLoginFailure,
+  onWebLoginFailureHandled,
 }: LoginScreenOverlayProps) => {
+  const [isPresented, setIsPresented] = useState(false);
+
+  useEffect(() => {
+    if (!visible) setIsPresented(false);
+  }, [visible]);
+
   return (
     <Modal
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
       onRequestClose={onClose}
+      onShow={() => setIsPresented(true)}
     >
       <Container>
         <CloseButton
@@ -30,7 +40,11 @@ export const LoginScreenOverlay = ({
           <Ionicons name="close" size={24} color={theme.colors.icons} />
         </CloseButton>
 
-        <LoginScreen />
+        <LoginScreen
+          // 로그인 시트를 다시 여는 경우에도 표시가 끝난 뒤 Alert를 띄운다.
+          webLoginFailure={visible && isPresented ? webLoginFailure : null}
+          onWebLoginFailureHandled={onWebLoginFailureHandled}
+        />
       </Container>
     </Modal>
   );

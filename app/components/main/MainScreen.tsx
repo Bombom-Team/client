@@ -8,7 +8,10 @@ import type { SuppressMenuItem } from 'react-native-webview/lib/WebViewTypes';
 import { useAuth } from '../../contexts/AuthContext';
 import { useWebView } from '../../contexts/WebViewContext';
 import useAndroidNavigationState from '../../hooks/useAndroidNavigationState';
-import { WebToRNMessage } from '@bombom/shared/webview';
+import type {
+  WebToRNMessage,
+  WebViewLoginFailure,
+} from '@bombom/shared/webview';
 import { LoginScreenOverlay } from '../login/LoginScreenOverlay';
 
 import * as WebBrowser from 'expo-web-browser';
@@ -20,7 +23,7 @@ import { ENV } from '@/constants/env';
 import { WEBVIEW_USER_AGENT } from '@/constants/webview';
 import { goToSystemPermission, updateMemberId } from '@/utils/notification';
 import useNotification from '@/hooks/useNotification';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeviceInfo } from '@/hooks/useDeviceInfo';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import ForceUpdateScreen from './ForceUpdateScreen';
@@ -79,6 +82,11 @@ export const MainScreen = () => {
   const { webViewRef } = useWebView();
   const { sendDeviceInfoToWeb } = useDeviceInfo();
   const webViewLoadEndCleanupRef = useRef<() => void>(null);
+  const [webLoginFailure, setWebLoginFailure] =
+    useState<WebViewLoginFailure | null>(null);
+  const handleWebLoginFailureHandled = useCallback(() => {
+    setWebLoginFailure(null);
+  }, []);
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
   const { onNotification, registerFCMToken } = useNotification();
@@ -121,7 +129,9 @@ export const MainScreen = () => {
 
         case 'LOGIN_FAILED':
           console.log('웹뷰에서 로그인 실패 알림 수신');
-          hideLogin();
+          // 실패 후에도 로그인 화면을 유지해 재시도나 다른 로그인 방법을 선택할 수 있게 한다.
+          showLogin();
+          setWebLoginFailure(message.payload ?? {});
           break;
 
         case 'OPEN_BROWSER':
@@ -243,7 +253,12 @@ export const MainScreen = () => {
         />
       </WebViewContainer>
 
-      <LoginScreenOverlay visible={showWebViewLogin} onClose={hideLogin} />
+      <LoginScreenOverlay
+        visible={showWebViewLogin}
+        onClose={hideLogin}
+        webLoginFailure={webLoginFailure}
+        onWebLoginFailureHandled={handleWebLoginFailureHandled}
+      />
     </Container>
   );
 };

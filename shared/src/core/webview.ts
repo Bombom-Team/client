@@ -1,5 +1,20 @@
 import type { OAuthProvider } from './types/auth';
 
+export type WebViewLoginFailureReason =
+  | 'network_error'
+  | 'reauthentication_required'
+  | 'credential_validation_failed'
+  | 'token_exchange_rejected'
+  | 'server_unavailable'
+  | 'too_many_requests'
+  | 'token_exchange_failed';
+
+export interface WebViewLoginFailure {
+  error?: string;
+  provider?: OAuthProvider;
+  reason?: WebViewLoginFailureReason;
+}
+
 export interface WindowWithWebkit extends Window {
   webkit?: {
     messageHandlers?: {
@@ -18,7 +33,7 @@ export type WebToRNMessage =
     }
   | {
       type: 'LOGIN_FAILED';
-      payload?: { error?: string; provider?: OAuthProvider };
+      payload?: WebViewLoginFailure;
     }
   | { type: 'OPEN_BROWSER'; payload: { url: string } }
   | { type: 'REQUEST_DEVICE_UUID' }
