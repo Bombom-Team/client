@@ -1,4 +1,7 @@
 import styled from '@emotion/styled';
+/* eslint-disable import/named */
+import { captureMessage } from '@sentry/react';
+/* eslint-enable import/named */
 import { useEffect } from 'react';
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
@@ -7,6 +10,22 @@ import { useDevice } from '@/hooks/useDevice';
 
 const SUPPORT_URL = 'https://e0pq0.channel.io/';
 
+type OAuthLoginFailureReason =
+  | 'server_error'
+  | 'temporarily_unavailable'
+  | 'unknown_oauth_error';
+
+export const getOAuthLoginFailureReason = (
+  error: string,
+): OAuthLoginFailureReason | null => {
+  if (error === 'access_denied') return null;
+  if (error === 'server_error' || error === 'temporarily_unavailable') {
+    return error;
+  }
+
+  return 'unknown_oauth_error';
+};
+
 const LoginFailureModal = () => {
   const device = useDevice();
   const isMobile = device !== 'pc';
@@ -14,15 +33,21 @@ const LoginFailureModal = () => {
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (!url.searchParams.has('error')) return;
+    const error = url.searchParams.get('error');
+    if (error === null) return;
 
-    // OAuth 오류 값은 원문을 표시하지 않고, 로그인 후 돌아갈 경로는 보존한다.
-    url.searchParams.delete('error');
-    window.history.replaceState(
-      window.history.state,
-      '',
-      `${url.pathname}${url.search}${url.hash}`,
-    );
+    const reason = getOAuthLoginFailureReason(error);
+    if (reason) {
+      captureMessage('Web OAuth login failed', {
+        level: 'warning',
+        tags: {
+          flow: 'auth_login',
+          stage: 'oauth_redirect',
+          reason,
+        },
+      });
+    }
+
     openModal();
   }, [openModal]);
 
