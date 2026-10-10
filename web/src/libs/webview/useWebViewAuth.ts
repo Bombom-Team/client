@@ -1,7 +1,10 @@
 import { logger } from '@bombom/shared/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { captureNativeLoginError } from './nativeLoginError';
+import {
+  captureNativeLoginError,
+  getWebViewLoginFailureReason,
+} from './nativeLoginError';
 import { addWebViewMessageListener, sendMessageToRN } from './webview.utils';
 import { postAppleLogin, postGoogleLogin } from '@/apis/auth/auth.api';
 import { isWebView } from '@/utils/device';
@@ -69,6 +72,7 @@ export const useWebViewAuth = () => {
             payload: {
               error: `${providerLabel} 로그인 처리 중 오류가 발생했습니다.`,
               provider,
+              reason: getWebViewLoginFailureReason(error, stage),
             },
           });
         }

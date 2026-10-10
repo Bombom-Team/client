@@ -1,7 +1,7 @@
 import styled from '@emotion/native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
-  Alert,
   Dimensions,
   Image,
   KeyboardAvoidingView,
@@ -9,6 +9,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import type { WebViewLoginFailure } from '@bombom/shared/webview';
+import { showLoginFailureAlert } from './loginFailureAlert';
 
 import { AppleIcon } from '@/components/icons/AppleIcon';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
@@ -28,55 +30,95 @@ import {
 
 const logo = require('@/app/assets/images/logo.png');
 
-const handleNativeLoginFailure = (failure: NativeLoginFailureReport) => {
-  captureNativeLoginFailure(failure);
+export interface LoginScreenProps {
+  webLoginFailure?: WebViewLoginFailure | null;
+  onWebLoginFailureHandled?: () => void;
+}
 
-  if (__DEV__) {
-    console.error(`${failure.provider} 로그인 실패:`, failure.reason);
-  }
-
-  Alert.alert('로그인에 실패했어요. 다시 시도해주세요.');
-};
-
-export const LoginScreen = () => {
+export const LoginScreen = ({
+  webLoginFailure,
+  onWebLoginFailureHandled,
+}: LoginScreenProps) => {
   const { showLogin } = useAuth();
   const { sendMessageToWeb } = useWebView();
+  const loginInProgressRef = useRef(false);
+  const handledWebLoginFailureRef = useRef<WebViewLoginFailure | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const handleLogin = async (provider: NativeLoginProvider) => {
-    let credential: NativeLoginCredential | null;
-    try {
-      credential = await (provider === 'google'
-        ? loginWithGoogle()
-        : loginWithApple());
-    } catch (error) {
-      const failure = getNativeLoginFailure(provider, error);
-      if (failure) handleNativeLoginFailure({ provider, ...failure });
+  const handleLogin = useCallback(
+    async (provider: NativeLoginProvider): Promise<void> => {
+      if (loginInProgressRef.current) return;
+      loginInProgressRef.current = true;
+      setIsLoggingIn(true);
+
+      const handleNativeLoginFailure = (failure: NativeLoginFailureReport) => {
+        captureNativeLoginFailure(failure);
+        if (__DEV__) {
+          console.error(`${failure.provider} 로그인 실패:`, failure.reason);
+        }
+        showLoginFailureAlert({
+          reason: failure.reason,
+          onRetry: () => void handleLogin(provider),
+        });
+      };
+
+      try {
+        let credential: NativeLoginCredential | null;
+        try {
+          credential = await (provider === 'google'
+            ? loginWithGoogle()
+            : loginWithApple());
+        } catch (error) {
+          const failure = getNativeLoginFailure(provider, error);
+          if (failure) handleNativeLoginFailure({ provider, ...failure });
+          return;
+        }
+
+        if (!credential) return;
+
+        const isDispatched = sendMessageToWeb({
+          type:
+            provider === 'google' ? 'GOOGLE_LOGIN_TOKEN' : 'APPLE_LOGIN_TOKEN',
+          payload: {
+            identityToken: credential.identityToken,
+            authorizationCode: credential.authorizationCode,
+            email: credential.email,
+            name: credential.name ?? '',
+          },
+        });
+
+        if (!isDispatched) {
+          handleNativeLoginFailure({
+            provider,
+            stage: 'webview_dispatch',
+            reason: 'webview_dispatch_failed',
+          });
+          return;
+        }
+
+        showLogin();
+      } finally {
+        loginInProgressRef.current = false;
+        setIsLoggingIn(false);
+      }
+    },
+    [sendMessageToWeb, showLogin],
+  );
+
+  useEffect(() => {
+    if (
+      !webLoginFailure ||
+      handledWebLoginFailureRef.current === webLoginFailure
+    )
       return;
-    }
-
-    if (!credential) return;
-
-    const isDispatched = sendMessageToWeb({
-      type: provider === 'google' ? 'GOOGLE_LOGIN_TOKEN' : 'APPLE_LOGIN_TOKEN',
-      payload: {
-        identityToken: credential.identityToken,
-        authorizationCode: credential.authorizationCode,
-        email: credential.email,
-        name: credential.name ?? '',
-      },
+    handledWebLoginFailureRef.current = webLoginFailure;
+    onWebLoginFailureHandled?.();
+    const { provider } = webLoginFailure;
+    showLoginFailureAlert({
+      reason: webLoginFailure.reason ?? 'token_exchange_failed',
+      onRetry: provider ? () => void handleLogin(provider) : undefined,
     });
-
-    if (!isDispatched) {
-      handleNativeLoginFailure({
-        provider,
-        stage: 'webview_dispatch',
-        reason: 'webview_dispatch_failed',
-      });
-      return;
-    }
-
-    showLogin();
-  };
+  }, [webLoginFailure, onWebLoginFailureHandled, handleLogin]);
 
   const handleGoogleLogin = () => handleLogin('google');
   const handleAppleLogin = () => handleLogin('apple');
@@ -103,13 +145,26 @@ export const LoginScreen = () => {
 
             <Divider />
 
-            <LoginButton onPress={handleGoogleLogin}>
+            <LoginButton
+              onPress={handleGoogleLogin}
+              disabled={isLoggingIn}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: isLoggingIn, busy: isLoggingIn }}
+            >
               <GoogleIcon width={24} height={24} />
               <LoginButtonText>Google로 시작하기</LoginButtonText>
             </LoginButton>
 
             {Platform.OS === 'ios' && (
-              <LoginButton onPress={handleAppleLogin}>
+              <LoginButton
+                onPress={handleAppleLogin}
+                disabled={isLoggingIn}
+                accessibilityRole="button"
+                accessibilityState={{
+                  disabled: isLoggingIn,
+                  busy: isLoggingIn,
+                }}
+              >
                 <AppleIcon width={24} height={24} />
                 <LoginButtonText>Apple로 시작하기</LoginButtonText>
               </LoginButton>

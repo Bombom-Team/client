@@ -4,6 +4,7 @@ import { captureException, dedupeIntegration } from '@sentry/react';
 /* eslint-enable import/named */
 import {
   captureNativeLoginError,
+  getWebViewLoginFailureReason,
   normalizeNativeLoginError,
 } from './nativeLoginError';
 import type { ErrorEvent } from '@sentry/react';
@@ -30,6 +31,36 @@ jest.mock('@sentry/react', () => ({
   ...jest.requireActual('@sentry/react'),
   captureException: jest.fn(),
 }));
+
+describe('getWebViewLoginFailureReason', () => {
+  it.each([
+    [new TypeError('Failed to fetch'), 'network_error'],
+    [new ApiError(408, 'private response'), 'network_error'],
+    [new ApiError(401, 'private response'), 'reauthentication_required'],
+    [new ApiError(400, 'private response'), 'token_exchange_rejected'],
+    [new ApiError(403, 'private response'), 'token_exchange_rejected'],
+    [new ApiError(429, 'private response'), 'too_many_requests'],
+    [new ApiError(500, 'private response'), 'server_unavailable'],
+    [new ApiError(503, 'private response'), 'server_unavailable'],
+    [new Error('private error'), 'token_exchange_failed'],
+  ])(
+    '토큰 교환 실패를 사용자 안내에 필요한 원인으로 구분한다.',
+    (error, reason) => {
+      expect(getWebViewLoginFailureReason(error, 'token_exchange')).toBe(
+        reason,
+      );
+    },
+  );
+
+  it('인증 정보 검증 실패에는 서버 오류 원문 대신 분류 값만 반환한다.', () => {
+    expect(
+      getWebViewLoginFailureReason(
+        new Error('private credential'),
+        'credential_validation',
+      ),
+    ).toBe('credential_validation_failed');
+  });
+});
 
 describe('normalizeNativeLoginError', () => {
   it.each([

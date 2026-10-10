@@ -4,6 +4,7 @@ import { captureException } from '@sentry/react';
 /* eslint-enable import/named */
 import { isNetworkNoiseError } from '../sentry/errorFilters';
 import type { OAuthProvider } from '@bombom/shared/types';
+import type { WebViewLoginFailureReason } from '@bombom/shared/webview';
 
 export type NativeLoginErrorStage = 'credential_validation' | 'token_exchange';
 
@@ -17,6 +18,25 @@ interface CaptureNativeLoginErrorParams {
   error: unknown;
   stage: NativeLoginErrorStage;
 }
+
+// 원본 서버 메시지 대신 안전한 분류 값만 RN에 전달한다.
+export const getWebViewLoginFailureReason = (
+  error: unknown,
+  stage: NativeLoginErrorStage,
+): WebViewLoginFailureReason => {
+  if (stage === 'credential_validation') return 'credential_validation_failed';
+  if (isNetworkNoiseError(error)) return 'network_error';
+
+  if (error instanceof ApiError) {
+    if (error.status === 401) return 'reauthentication_required';
+    if (error.status === 429) return 'too_many_requests';
+    if (error.status === 408) return 'network_error';
+    if (error.status >= 500) return 'server_unavailable';
+    if (error.status >= 400) return 'token_exchange_rejected';
+  }
+
+  return 'token_exchange_failed';
+};
 
 export const normalizeNativeLoginError = (
   error: unknown,
