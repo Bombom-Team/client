@@ -1,11 +1,14 @@
 import { ServiceSwitcher } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
 import HeaderNavButtons from './HeaderNavButtons';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Button from '../Button/Button';
+import UnreadDot from '../UnreadDot/UnreadDot';
+import { queries } from '@/apis/queries';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Nav } from '@/types/nav';
 import HeadsetIcon from '#/assets/svg/headset.svg';
@@ -18,6 +21,7 @@ interface PCHeaderProps {
 const PCHeader = ({ activeNav }: PCHeaderProps) => {
   const navigate = useNavigate();
   const { userProfile } = useAuth();
+  const { data: unreadStatus } = useQuery(queries.inquiryUnreadStatus());
 
   return (
     <HeaderContainer>
@@ -34,8 +38,16 @@ const PCHeader = ({ activeNav }: PCHeaderProps) => {
               <Button
                 onClick={() => navigate({ to: '/support' })}
                 variant={'transparent'}
+                aria-label={
+                  unreadStatus?.hasUnread
+                    ? '1:1 문의 (읽지 않은 문의 있음)'
+                    : '1:1 문의'
+                }
               >
-                <HeadsetIcon width={22} height={24} />
+                <HeadsetIconWrapper>
+                  <HeadsetIcon width={22} height={24} />
+                  {unreadStatus?.hasUnread && <UnreadDot />}
+                </HeadsetIconWrapper>
               </Button>
               <Button
                 onClick={() => navigate({ to: '/notice' })}
@@ -122,4 +134,12 @@ const IconButtonGroup = styled.div`
 
 const LoginButtonWrapper = styled.div`
   margin-left: 8px;
+`;
+
+const HeadsetIconWrapper = styled.span`
+  position: relative;
+
+  display: inline-flex;
+
+  line-height: 0;
 `;

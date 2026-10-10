@@ -1,3 +1,4 @@
+import { ApiError } from '@bombom/shared/apis';
 import styled from '@emotion/styled';
 import {
   useInfiniteQuery,
@@ -5,7 +6,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Fragment, useEffect, useMemo, useRef } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { INQUIRY_ROOMS_QUERY_KEY } from '@/apis/inquiry/inquiry.query';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
 import ChevronIcon from '@/components/icons/ChevronIcon';
@@ -21,6 +23,7 @@ import {
   INQUIRY_ROOM_STATUS_LABELS,
 } from '@/types/inquiry';
 import { compareDates, formatDateToKorean } from '@/utils/date';
+import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
 
 export const Route = createFileRoute('/_bombom/_main/support/inquiry/$roomId')({
   head: () => ({
@@ -35,15 +38,40 @@ export const Route = createFileRoute('/_bombom/_main/support/inquiry/$roomId')({
 function InquiryRoomDetailPage() {
   const { roomId: roomIdParam } = Route.useParams();
   const roomId = Number(roomIdParam);
+  const isValidRoomId = !Number.isNaN(roomId);
   const device = useDevice();
   const isMobile = device !== 'pc';
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const hasScrolledToBottomRef = useRef(false);
   const prevScrollHeightRef = useRef<number | null>(null);
+  const isSendingRef = useRef(false);
+  const lastMessageIdRef = useRef<number | null>(null);
+  const [hasNewMessageArrived, setHasNewMessageArrived] = useState(false);
 
-  const { data: roomsPage } = useQuery(queries.inquiryRooms());
-  const room = roomsPage?.content?.find((r) => r.id === roomId);
+  useEffect(() => {
+    hasScrolledToBottomRef.current = false;
+    prevScrollHeightRef.current = null;
+    isSendingRef.current = false;
+    lastMessageIdRef.current = null;
+    setHasNewMessageArrived(false);
+  }, [roomId]);
+
+  const { data: room, error: roomError } = useQuery({
+    ...queries.inquiryRoom(roomId),
+    enabled: isValidRoomId,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      const isAwaiting = status === 'UNCONFIRMED' || status === 'IN_PROGRESS';
+      return isAwaiting ? 30000 : false;
+    },
+  });
+  const isRoomNotFound =
+    !isValidRoomId ||
+    (roomError instanceof ApiError && roomError.status === 404);
+  const isRoomFetchError = roomError != null && !isRoomNotFound;
+  const isAwaitingMoreMessages =
+    room?.status === 'UNCONFIRMED' || room?.status === 'IN_PROGRESS';
   const { data: categories } = useQuery(queries.inquiryCategories());
   const categoryName = categories?.find(
     (category) => category.id === room?.categoryId,
@@ -54,18 +82,13 @@ function InquiryRoomDetailPage() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery(queries.inquiryMessages(roomId));
-
-  const isMessagesLoaded = messagePages !== undefined;
-
-  useEffect(() => {
-    if (!isMessagesLoaded) return;
-
-    queryClient.invalidateQueries({
-      queryKey: queries.inquiryRooms().queryKey,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMessagesLoaded]);
+    isFetchedAfterMount,
+    isSuccess: isMessagesFetchSuccess,
+  } = useInfiniteQuery({
+    ...queries.inquiryMessages(roomId),
+    enabled: isValidRoomId,
+    refetchInterval: isAwaitingMoreMessages ? 10000 : false,
+  });
 
   const messages = useMemo(
     () =>
@@ -75,11 +98,40 @@ function InquiryRoomDetailPage() {
   );
 
   useEffect(() => {
+    if (!isFetchedAfterMount || !isMessagesFetchSuccess) return;
     if (messages.length === 0) return;
+
+    const latestMessageId = messages[messages.length - 1]?.id ?? null;
+    const previousMessageId = lastMessageIdRef.current;
+    const isFirstVisit = previousMessageId === null;
+    lastMessageIdRef.current = latestMessageId;
+
+    const hasNewMessage =
+      !isFirstVisit &&
+      latestMessageId !== null &&
+      latestMessageId !== previousMessageId;
+
+    if (isFirstVisit || hasNewMessage) {
+      queryClient.invalidateQueries({
+        queryKey: queries.inquiryUnreadStatus().queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: INQUIRY_ROOMS_QUERY_KEY,
+      });
+      queryClient.invalidateQueries({
+        queryKey: queries.inquiryRoom(roomId).queryKey,
+      });
+    }
 
     if (!hasScrolledToBottomRef.current) {
       window.scrollTo(0, document.body.scrollHeight);
       hasScrolledToBottomRef.current = true;
+      return;
+    }
+
+    if (isSendingRef.current) {
+      window.scrollTo(0, document.body.scrollHeight);
+      isSendingRef.current = false;
       return;
     }
 
@@ -88,13 +140,47 @@ function InquiryRoomDetailPage() {
         document.body.scrollHeight - prevScrollHeightRef.current;
       window.scrollTo(0, window.scrollY + scrollHeightDiff);
       prevScrollHeightRef.current = null;
+      return;
     }
-  }, [messages]);
+
+    if (hasNewMessage) {
+      const distanceFromBottom =
+        document.body.scrollHeight - (window.scrollY + window.innerHeight);
+      const wasNearBottom = distanceFromBottom <= window.innerHeight * 0.5;
+
+      if (wasNearBottom) {
+        window.scrollTo(0, document.body.scrollHeight);
+      } else {
+        setHasNewMessageArrived(true);
+      }
+    }
+  }, [
+    isFetchedAfterMount,
+    isMessagesFetchSuccess,
+    messages,
+    queryClient,
+    roomId,
+  ]);
+
+  const handleScrollToBottom = () => {
+    window.scrollTo(0, document.body.scrollHeight);
+    setHasNewMessageArrived(false);
+  };
 
   const { mutateAsync: mutateSendMessage, isPending: isSending } =
     useInquiryMessageSendMutation({ roomId });
   const { mutate: mutateDeleteMessage, isPending: isDeleting } =
     useInquiryMessageDeleteMutation({ roomId });
+
+  const handleSendMessage = async (body: SendInquiryMessageBody) => {
+    isSendingRef.current = true;
+    try {
+      await mutateSendMessage(body);
+    } catch (error) {
+      isSendingRef.current = false;
+      throw error;
+    }
+  };
 
   const handleLoadMore = () => {
     prevScrollHeightRef.current = document.body.scrollHeight;
@@ -110,13 +196,12 @@ function InquiryRoomDetailPage() {
     onIntersect: handleLoadMore,
   });
 
-  const isRoomsLoaded = roomsPage !== undefined;
-  const canSendMessage =
-    room?.status === 'UNCONFIRMED' || room?.status === 'IN_PROGRESS';
+  const isRoomLoaded = room !== undefined;
+  const canSendMessage = isAwaitingMoreMessages;
 
   return (
     <ChatCard>
-      <Header>
+      <Header isMobile={isMobile}>
         <BackLink to="/support/inquiry">
           <ChevronIcon direction="left" width={20} height={20} />
           목록으로
@@ -140,6 +225,10 @@ function InquiryRoomDetailPage() {
             )}
           </HeaderSpacer>
         </HeaderRow>
+
+        <ResponseTimeNotice>
+          문의 답변에는 평일 기준 평균 2시간이 소요됩니다.
+        </ResponseTimeNotice>
       </Header>
 
       <MessageList>
@@ -169,13 +258,25 @@ function InquiryRoomDetailPage() {
         })}
       </MessageList>
 
-      {isRoomsLoaded && !canSendMessage ? (
+      {hasNewMessageArrived && (
+        <NewMessageButton type="button" onClick={handleScrollToBottom}>
+          새 메시지가 도착했어요
+        </NewMessageButton>
+      )}
+
+      {isRoomNotFound ? (
+        <ClosedNotice>문의를 찾을 수 없습니다.</ClosedNotice>
+      ) : isRoomFetchError ? (
+        <ClosedNotice>
+          문의를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+        </ClosedNotice>
+      ) : isRoomLoaded && !canSendMessage ? (
         <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
       ) : (
         <InquiryMessageInput
-          disabled={!isRoomsLoaded}
+          disabled={!isRoomLoaded}
           isSubmitting={isSending}
-          onSubmit={mutateSendMessage}
+          onSubmit={handleSendMessage}
         />
       )}
     </ChatCard>
@@ -191,13 +292,22 @@ const ChatCard = styled.div`
   flex-direction: column;
 `;
 
-const Header = styled.div`
+const Header = styled.div<{ isMobile: boolean }>`
+  position: sticky;
+  top: ${({ isMobile, theme }) =>
+    isMobile
+      ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`
+      : `calc(${theme.heights.headerPC} + 40px)`};
+  z-index: ${({ theme }) => theme.zIndex.panel};
+
   padding: 0 0 12px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.stroke};
 
   display: flex;
   gap: 2px;
   flex-direction: column;
+
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const BackLink = styled(Link)`
@@ -237,6 +347,14 @@ const CategoryText = styled.span`
   text-align: center;
 `;
 
+const ResponseTimeNotice = styled.p`
+  margin-top: 4px;
+
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.t3Regular};
+  text-align: center;
+`;
+
 const MessageList = styled.div`
   padding: 4px 0;
 
@@ -256,4 +374,22 @@ const ClosedNotice = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
+`;
+
+const NewMessageButton = styled.button`
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  z-index: ${({ theme }) => theme.zIndex.floating};
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
+  color: ${({ theme }) => theme.colors.white};
+  font: ${({ theme }) => theme.fonts.t4Bold};
+
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  cursor: pointer;
 `;

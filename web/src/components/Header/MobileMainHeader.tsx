@@ -1,9 +1,12 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Button from '../Button/Button';
+import UnreadDot from '../UnreadDot/UnreadDot';
+import { queries } from '@/apis/queries';
 import { useAuth } from '@/contexts/AuthContext';
 import HeadsetIcon from '#/assets/svg/headset.svg';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
@@ -11,6 +14,7 @@ import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 const MobileMainHeader = () => {
   const navigate = useNavigate();
   const { userProfile } = useAuth();
+  const { data: unreadStatus } = useQuery(queries.inquiryUnreadStatus());
 
   return (
     <Container>
@@ -21,8 +25,16 @@ const MobileMainHeader = () => {
             <NavButton
               onClick={() => navigate({ to: '/support' })}
               variant="transparent"
+              aria-label={
+                unreadStatus?.hasUnread
+                  ? '1:1 문의 (읽지 않은 문의 있음)'
+                  : '1:1 문의'
+              }
             >
-              <HeadsetIcon width={20} height={20} />
+              <HeadsetIconWrapper>
+                <HeadsetIcon width={20} height={20} />
+                {unreadStatus?.hasUnread && <UnreadDot />}
+              </HeadsetIconWrapper>
             </NavButton>
             <NavButton
               onClick={() => navigate({ to: '/notice' })}
@@ -102,4 +114,12 @@ const IconButtonGroup = styled.div`
 
 const LoginButtonWrapper = styled.div`
   margin-left: 4px;
+`;
+
+const HeadsetIconWrapper = styled.span`
+  position: relative;
+
+  display: inline-flex;
+
+  line-height: 0;
 `;
