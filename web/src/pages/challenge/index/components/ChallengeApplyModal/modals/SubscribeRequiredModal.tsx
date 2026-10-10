@@ -24,7 +24,7 @@ const SubscribeRequiredModal = ({
       to: '/newsletters/$newsletterId/$name',
       params: {
         newsletterId: String(newsletterId),
-        name: createSlug(name),
+        name: createSlug(name, String(newsletterId)),
       },
     });
     closeModal();

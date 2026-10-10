@@ -44,7 +44,7 @@ const NewsletterCard = ({
       to: '/newsletters/$newsletterId/$name',
       params: {
         newsletterId: String(newsletter.newsletterId),
-        name: createSlug(newsletter.name),
+        name: createSlug(newsletter.name, String(newsletter.newsletterId)),
       },
     });
   };

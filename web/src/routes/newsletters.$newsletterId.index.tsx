@@ -23,7 +23,7 @@ export const Route = createFileRoute('/newsletters/$newsletterId/')({
       to: '/newsletters/$newsletterId/$name',
       params: {
         newsletterId: params.newsletterId,
-        name: createSlug(newsletter.name),
+        name: createSlug(newsletter.name, params.newsletterId),
       },
       search: { tab: deps.tab },
       replace: true,

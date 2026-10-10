@@ -34,7 +34,7 @@ export const Route = createFileRoute('/newsletters/$newsletterId/$name')({
 
     const description = (newsletter.description ?? '').slice(0, 160);
     const title = `${newsletter.name} | 봄봄`;
-    const url = `https://www.bombom.news/newsletters/${params.newsletterId}/${createSlug(newsletter.name)}`;
+    const url = `https://www.bombom.news/newsletters/${params.newsletterId}/${createSlug(newsletter.name, params.newsletterId)}`;
     const image = newsletter.imageUrl ?? '';
 
     return {
