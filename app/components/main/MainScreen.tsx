@@ -107,7 +107,7 @@ export const MainScreen = () => {
   const handleWebViewMessage = (event: WebViewMessageEvent) => {
     try {
       const message: WebToRNMessage = JSON.parse(event.nativeEvent.data);
-      console.log('WebView에서 메시지 수신:', message);
+      console.log('WebView에서 메시지 수신:', message.type);
 
       switch (message.type) {
         case 'SHOW_LOGIN_SCREEN':
@@ -115,18 +115,24 @@ export const MainScreen = () => {
           break;
 
         case 'LOGIN_SUCCESS':
-          console.log('웹뷰에서 로그인 성공 알림 수신:', message.payload);
+          console.log('웹뷰에서 로그인 성공 알림 수신');
           hideLogin();
           break;
 
         case 'LOGIN_FAILED':
-          console.log('웹뷰에서 로그인 실패 알림 수신:', message.payload);
+          console.log('웹뷰에서 로그인 실패 알림 수신');
           hideLogin();
           break;
 
         case 'OPEN_BROWSER':
           if (message.payload?.url) {
-            console.log('외부 브라우저 열기:', message.payload.url);
+            try {
+              console.log('외부 브라우저 열기:', {
+                hostname: new URL(message.payload.url).hostname,
+              });
+            } catch {
+              console.log('외부 브라우저 열기: URL 형식 확인 필요');
+            }
             WebBrowser.openBrowserAsync(message.payload.url, {
               presentationStyle: WebBrowser.WebBrowserPresentationStyle.POPOVER,
               dismissButtonStyle: 'close',
@@ -162,11 +168,11 @@ export const MainScreen = () => {
           break;
 
         default:
-          console.log('알수 없는 메시지 수신:', message);
+          console.log('알수 없는 메시지 수신');
           break;
       }
-    } catch (error) {
-      console.error('WebView 메시지 파싱 실패:', error);
+    } catch {
+      console.error('WebView 메시지 파싱 실패');
     }
   };
 
@@ -223,18 +229,16 @@ export const MainScreen = () => {
           onMessage={handleWebViewMessage}
           onNavigationStateChange={handleNavigationStateChange}
           onLoadEnd={handleWebViewLoadEnd}
-          onContentProcessDidTerminate={(syntheticEvent) => {
-            const { nativeEvent } = syntheticEvent;
-            console.warn('WebView Content Process Did Terminate:', nativeEvent);
+          onContentProcessDidTerminate={() => {
+            console.warn('WebView Content Process Did Terminate');
             webViewRef.current?.reload();
           }}
-          onError={(syntheticEvent) => {
-            const { nativeEvent } = syntheticEvent;
-            console.error('WebView Error:', nativeEvent);
+          onError={() => {
+            console.error('WebView Error');
           }}
           onHttpError={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent;
-            console.error('WebView HTTP Error:', nativeEvent);
+            console.error('WebView HTTP Error:', nativeEvent.statusCode);
           }}
         />
       </WebViewContainer>
