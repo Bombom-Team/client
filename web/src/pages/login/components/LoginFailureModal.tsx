@@ -36,7 +36,7 @@ const LoginFailureModal = () => {
       <Container isMobile={isMobile}>
         <Title>로그인을 완료하지 못했어요</Title>
         <Description>
-          다시 로그인해주세요. 문제가 계속되면 문의하기로 알려주세요.
+          잠시 후 다시 시도해주세요. 같은 문제가 계속되면 문의하기로 알려주세요.
         </Description>
         <ButtonGroup>
           <SupportLink

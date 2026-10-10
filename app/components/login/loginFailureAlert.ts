@@ -19,13 +19,13 @@ const SUPPORT_EMAIL = 'bombom.news7@gmail.com';
 
 const RETRY_GUIDE: LoginFailureGuide = {
   title: '로그인을 완료하지 못했어요',
-  message: '다시 로그인해주세요. 문제가 계속되면 문의하기로 알려주세요.',
+  message: '잠시 후 다시 시도해주세요. 같은 문제가 계속되면 문의하기로 알려주세요.',
   action: 'retry',
 };
 
 const CREDENTIAL_GUIDE: LoginFailureGuide = {
   title: '로그인을 완료하지 못했어요',
-  message: '봄봄에서 확인이 필요한 문제가 발생했어요. 문의하기로 알려주세요.',
+  message: '로그인 정보를 확인하는 중 문제가 생겼어요. 문의하기로 알려주세요.',
   action: 'support',
 };
 
@@ -40,7 +40,7 @@ const LOGIN_FAILURE_GUIDES: Record<LoginFailureReason, LoginFailureGuide> = {
   provider_unavailable: {
     title: 'Apple 로그인을 사용할 수 없어요',
     message:
-      '이 기기에서는 Apple 로그인을 사용할 수 없어요. Apple 로그인이 가능한 기기에서 다시 시도해주세요.',
+      '이 기기에서는 Apple 로그인을 지원하지 않아요. Apple 로그인 지원 기기에서 다시 시도해주세요.',
     action: 'confirm',
   },
   provider_request_failed: RETRY_GUIDE,
@@ -49,31 +49,29 @@ const LOGIN_FAILURE_GUIDES: Record<LoginFailureReason, LoginFailureGuide> = {
   webview_dispatch_failed: {
     title: '로그인을 완료하지 못했어요',
     message:
-      '앱을 완전히 종료한 뒤 다시 열어주세요. 문제가 계속되면 문의하기로 알려주세요.',
+      '앱을 종료한 뒤 다시 열어주세요. 같은 문제가 계속되면 문의하기로 알려주세요.',
     action: 'support',
   },
   network_error: {
     title: '인터넷 연결을 확인해주세요',
-    message:
-      'Wi-Fi나 모바일 데이터가 연결되어 있는지 확인한 뒤 다시 로그인해주세요.',
+    message: 'Wi-Fi 또는 모바일 데이터에 연결한 뒤 다시 시도해주세요.',
     action: 'retry',
   },
   credential_validation_failed: CREDENTIAL_GUIDE,
   token_exchange_rejected: CREDENTIAL_GUIDE,
   reauthentication_required: {
     title: '다시 로그인이 필요해요',
-    message: '‘다시 로그인’을 눌러 계정 인증을 다시 진행해주세요.',
+    message: '계정 확인을 위해 다시 로그인해주세요.',
     action: 'retry',
   },
   server_unavailable: {
     title: '지금은 로그인할 수 없어요',
-    message: '일시적인 서비스 문제가 발생했어요. 잠시 후 다시 시도해주세요.',
+    message: '서비스에 일시적인 문제가 있어요. 잠시 후 다시 시도해주세요.',
     action: 'confirm',
   },
   too_many_requests: {
-    title: '잠시 후 다시 로그인해주세요',
-    message:
-      '로그인이 일시적으로 제한됐어요. 잠시 기다렸다가 다시 시도해주세요.',
+    title: '잠시 후 다시 시도해주세요',
+    message: '로그인 시도가 잠시 제한됐어요. 잠시 후 다시 시도해주세요.',
     action: 'confirm',
   },
   token_exchange_failed: RETRY_GUIDE,
@@ -84,8 +82,8 @@ const openLoginSupport = async () => {
     await WebBrowser.openBrowserAsync(SUPPORT_URL);
   } catch {
     Alert.alert(
-      '문의 페이지를 열지 못했어요',
-      `${SUPPORT_EMAIL}으로 로그인 방법과 문제가 발생한 상황을 알려주세요. 비밀번호나 인증 토큰은 보내지 마세요.`,
+      '문의 페이지를 열 수 없어요',
+      `고객센터(${SUPPORT_EMAIL})로 로그인 방법과 문제가 발생한 상황을 알려주세요.`,
       [{ text: '확인' }],
     );
   }
