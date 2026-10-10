@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
-import { createSlug } from '../utils/url';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import Text from '@/components/Text';
 import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
+import { createSlug } from '@/utils/url';
 import type { Device } from '@/hooks/useDevice';
 import type { PostListItem } from '@/pages/blog/types/post';
 

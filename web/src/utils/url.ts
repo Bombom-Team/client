@@ -9,3 +9,14 @@ export const validateUrl = (url: string): string => {
   }
   return '#';
 };
+
+export const createSlug = (text: string, fallback = '') => {
+  const slug = text
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9가-힣]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return slug || fallback;
+};

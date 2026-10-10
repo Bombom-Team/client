@@ -19,10 +19,11 @@ import { Route as EventRouteImport } from './routes/event';
 import { Route as BlogRouteImport } from './routes/blog';
 import { Route as BombomRouteImport } from './routes/_bombom';
 import { Route as BlogIndexRouteImport } from './routes/blog/index';
-import { Route as NewslettersNewsletterIdRouteImport } from './routes/newsletters.$newsletterId';
 import { Route as MaeilMailLandingRouteImport } from './routes/maeil-mail/landing';
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
+import { Route as NewslettersNewsletterIdIndexRouteImport } from './routes/newsletters.$newsletterId.index';
 import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
+import { Route as NewslettersNewsletterIdNameRouteImport } from './routes/newsletters.$newsletterId.$name';
 import { Route as ChallengeChallengeIdLandingRouteImport } from './routes/challenge/$challengeId/landing';
 import { Route as BombomArticlesArticleIdRouteImport } from './routes/_bombom/articles.$articleId';
 import { Route as BombomMainTodayRouteImport } from './routes/_bombom/_main/today';
@@ -106,11 +107,6 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/',
   getParentRoute: () => BlogRoute,
 } as any);
-const NewslettersNewsletterIdRoute = NewslettersNewsletterIdRouteImport.update({
-  id: '/newsletters/$newsletterId',
-  path: '/newsletters/$newsletterId',
-  getParentRoute: () => rootRouteImport,
-} as any);
 const MaeilMailLandingRoute = MaeilMailLandingRouteImport.update({
   id: '/maeil-mail/landing',
   path: '/maeil-mail/landing',
@@ -120,11 +116,23 @@ const BombomMainRoute = BombomMainRouteImport.update({
   id: '/_main',
   getParentRoute: () => BombomRoute,
 } as any);
+const NewslettersNewsletterIdIndexRoute =
+  NewslettersNewsletterIdIndexRouteImport.update({
+    id: '/newsletters/$newsletterId/',
+    path: '/newsletters/$newsletterId/',
+    getParentRoute: () => rootRouteImport,
+  } as any);
 const BombomMainIndexRoute = BombomMainIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => BombomMainRoute,
 } as any);
+const NewslettersNewsletterIdNameRoute =
+  NewslettersNewsletterIdNameRouteImport.update({
+    id: '/newsletters/$newsletterId/$name',
+    path: '/newsletters/$newsletterId/$name',
+    getParentRoute: () => rootRouteImport,
+  } as any);
 const ChallengeChallengeIdLandingRoute =
   ChallengeChallengeIdLandingRouteImport.update({
     id: '/challenge/$challengeId/landing',
@@ -317,7 +325,6 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
-  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog/': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/challenge': typeof BombomMainChallengeRouteWithChildren;
@@ -330,7 +337,9 @@ export interface FileRoutesByFullPath {
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
+  '/newsletters/$newsletterId/$name': typeof NewslettersNewsletterIdNameRoute;
   '/': typeof BombomMainIndexRoute;
+  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdIndexRoute;
   '/challenge/$challengeId': typeof BombomMainChallengeChallengeIdRouteWithChildren;
   '/my/challenges': typeof BombomMainMyChallengesRoute;
   '/my/newsletters': typeof BombomMainMyNewslettersRoute;
@@ -363,7 +372,6 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
-  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/guide': typeof BombomMainGuideRoute;
@@ -373,7 +381,9 @@ export interface FileRoutesByTo {
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
+  '/newsletters/$newsletterId/$name': typeof NewslettersNewsletterIdNameRoute;
   '/': typeof BombomMainIndexRoute;
+  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdIndexRoute;
   '/my/challenges': typeof BombomMainMyChallengesRoute;
   '/my/newsletters': typeof BombomMainMyNewslettersRoute;
   '/my/notification': typeof BombomMainMyNotificationRoute;
@@ -408,7 +418,6 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
-  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog/': typeof BlogIndexRoute;
   '/_bombom/_main/bookmark': typeof BombomMainBookmarkRoute;
   '/_bombom/_main/challenge': typeof BombomMainChallengeRouteWithChildren;
@@ -421,7 +430,9 @@ export interface FileRoutesById {
   '/_bombom/_main/today': typeof BombomMainTodayRoute;
   '/_bombom/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
+  '/newsletters/$newsletterId/$name': typeof NewslettersNewsletterIdNameRoute;
   '/_bombom/_main/': typeof BombomMainIndexRoute;
+  '/newsletters/$newsletterId/': typeof NewslettersNewsletterIdIndexRoute;
   '/_bombom/_main/challenge/$challengeId': typeof BombomMainChallengeChallengeIdRouteWithChildren;
   '/_bombom/_main/my/challenges': typeof BombomMainMyChallengesRoute;
   '/_bombom/_main/my/newsletters': typeof BombomMainMyNewslettersRoute;
@@ -457,7 +468,6 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/signup'
     | '/maeil-mail/landing'
-    | '/newsletters/$newsletterId'
     | '/blog/'
     | '/bookmark'
     | '/challenge'
@@ -470,7 +480,9 @@ export interface FileRouteTypes {
     | '/today'
     | '/articles/$articleId'
     | '/challenge/$challengeId/landing'
+    | '/newsletters/$newsletterId/$name'
     | '/'
+    | '/newsletters/$newsletterId'
     | '/challenge/$challengeId'
     | '/my/challenges'
     | '/my/newsletters'
@@ -503,7 +515,6 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/signup'
     | '/maeil-mail/landing'
-    | '/newsletters/$newsletterId'
     | '/blog'
     | '/bookmark'
     | '/guide'
@@ -513,7 +524,9 @@ export interface FileRouteTypes {
     | '/today'
     | '/articles/$articleId'
     | '/challenge/$challengeId/landing'
+    | '/newsletters/$newsletterId/$name'
     | '/'
+    | '/newsletters/$newsletterId'
     | '/my/challenges'
     | '/my/newsletters'
     | '/my/notification'
@@ -547,7 +560,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_bombom/_main'
     | '/maeil-mail/landing'
-    | '/newsletters/$newsletterId'
     | '/blog/'
     | '/_bombom/_main/bookmark'
     | '/_bombom/_main/challenge'
@@ -560,7 +572,9 @@ export interface FileRouteTypes {
     | '/_bombom/_main/today'
     | '/_bombom/articles/$articleId'
     | '/challenge/$challengeId/landing'
+    | '/newsletters/$newsletterId/$name'
     | '/_bombom/_main/'
+    | '/newsletters/$newsletterId/'
     | '/_bombom/_main/challenge/$challengeId'
     | '/_bombom/_main/my/challenges'
     | '/_bombom/_main/my/newsletters'
@@ -596,8 +610,9 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute;
   SignupRoute: typeof SignupRoute;
   MaeilMailLandingRoute: typeof MaeilMailLandingRoute;
-  NewslettersNewsletterIdRoute: typeof NewslettersNewsletterIdRoute;
   ChallengeChallengeIdLandingRoute: typeof ChallengeChallengeIdLandingRoute;
+  NewslettersNewsletterIdNameRoute: typeof NewslettersNewsletterIdNameRoute;
+  NewslettersNewsletterIdIndexRoute: typeof NewslettersNewsletterIdIndexRoute;
 }
 
 declare module '@tanstack/react-router' {
@@ -672,13 +687,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport;
       parentRoute: typeof BlogRoute;
     };
-    '/newsletters/$newsletterId': {
-      id: '/newsletters/$newsletterId';
-      path: '/newsletters/$newsletterId';
-      fullPath: '/newsletters/$newsletterId';
-      preLoaderRoute: typeof NewslettersNewsletterIdRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
     '/maeil-mail/landing': {
       id: '/maeil-mail/landing';
       path: '/maeil-mail/landing';
@@ -693,12 +701,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BombomMainRouteImport;
       parentRoute: typeof BombomRoute;
     };
+    '/newsletters/$newsletterId/': {
+      id: '/newsletters/$newsletterId/';
+      path: '/newsletters/$newsletterId';
+      fullPath: '/newsletters/$newsletterId';
+      preLoaderRoute: typeof NewslettersNewsletterIdIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/_bombom/_main/': {
       id: '/_bombom/_main/';
       path: '/';
       fullPath: '/';
       preLoaderRoute: typeof BombomMainIndexRouteImport;
       parentRoute: typeof BombomMainRoute;
+    };
+    '/newsletters/$newsletterId/$name': {
+      id: '/newsletters/$newsletterId/$name';
+      path: '/newsletters/$newsletterId/$name';
+      fullPath: '/newsletters/$newsletterId/$name';
+      preLoaderRoute: typeof NewslettersNewsletterIdNameRouteImport;
+      parentRoute: typeof rootRouteImport;
     };
     '/challenge/$challengeId/landing': {
       id: '/challenge/$challengeId/landing';
@@ -1101,8 +1123,9 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SignupRoute: SignupRoute,
   MaeilMailLandingRoute: MaeilMailLandingRoute,
-  NewslettersNewsletterIdRoute: NewslettersNewsletterIdRoute,
   ChallengeChallengeIdLandingRoute: ChallengeChallengeIdLandingRoute,
+  NewslettersNewsletterIdNameRoute: NewslettersNewsletterIdNameRoute,
+  NewslettersNewsletterIdIndexRoute: NewslettersNewsletterIdIndexRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
