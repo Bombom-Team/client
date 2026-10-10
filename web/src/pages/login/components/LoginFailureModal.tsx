@@ -45,16 +45,16 @@ const LoginFailureModal = () => {
     );
 
     const reason = getOAuthLoginFailureReason(error);
-    if (reason) {
-      captureMessage('Web OAuth login failed', {
-        level: 'warning',
-        tags: {
-          flow: 'auth_login',
-          stage: 'oauth_redirect',
-          reason,
-        },
-      });
-    }
+    if (!reason) return;
+
+    captureMessage('Web OAuth login failed', {
+      level: 'warning',
+      tags: {
+        flow: 'auth_login',
+        stage: 'oauth_redirect',
+        reason,
+      },
+    });
 
     openModal();
   }, [openModal]);
