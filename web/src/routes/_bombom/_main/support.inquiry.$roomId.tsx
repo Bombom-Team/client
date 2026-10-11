@@ -167,6 +167,21 @@ function InquiryRoomDetailPage() {
     setHasNewMessageArrived(false);
   };
 
+  useEffect(() => {
+    if (!hasNewMessageArrived) return;
+
+    const handleScroll = () => {
+      const distanceFromBottom =
+        document.body.scrollHeight - (window.scrollY + window.innerHeight);
+      if (distanceFromBottom <= window.innerHeight * 0.1) {
+        setHasNewMessageArrived(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasNewMessageArrived]);
+
   const { mutateAsync: mutateSendMessage, isPending: isSending } =
     useInquiryMessageSendMutation({ roomId });
   const { mutate: mutateDeleteMessage, isPending: isDeleting } =
