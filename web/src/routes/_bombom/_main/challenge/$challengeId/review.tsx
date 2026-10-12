@@ -56,7 +56,7 @@ function ChallengeReview() {
         {!isMyReviewLoading && (
           <MyReviewSection
             challengeId={challengeIdNumber}
-            myReview={myReview}
+            myReview={myReview ?? undefined}
           />
         )}
         {isMobile ? (
