@@ -102,9 +102,11 @@ function InquiryRoomDetailPage() {
     [messagePages],
   );
 
+  const isMessagesReady = isFetchedAfterMount && isMessagesFetchSuccess;
+
   // 메시지 변화를 감지해 "최초 방문"/"새 메시지 도착" 여부를 ref에 기록한다.
   useEffect(() => {
-    if (!isFetchedAfterMount || !isMessagesFetchSuccess) return;
+    if (!isMessagesReady) return;
     if (messages.length === 0) return;
 
     const latestMessageId = messages[messages.length - 1]?.id ?? null;
@@ -118,11 +120,11 @@ function InquiryRoomDetailPage() {
       latestMessageId !== previousMessageId;
 
     messageArrivalRef.current = { isFirstVisit, hasNewMessage };
-  }, [isFetchedAfterMount, isMessagesFetchSuccess, messages]);
+  }, [isMessagesReady, messages]);
 
   // 최초 방문이거나 새 메시지가 도착했을 때만 안읽음/목록/방상세 캐시를 갱신한다.
   useEffect(() => {
-    if (!isFetchedAfterMount || !isMessagesFetchSuccess) return;
+    if (!isMessagesReady) return;
 
     const messageArrival = messageArrivalRef.current;
     if (!messageArrival) return;
@@ -137,17 +139,11 @@ function InquiryRoomDetailPage() {
     queryClient.invalidateQueries({
       queryKey: queries.inquiryRoom(roomId).queryKey,
     });
-  }, [
-    isFetchedAfterMount,
-    isMessagesFetchSuccess,
-    messages,
-    queryClient,
-    roomId,
-  ]);
+  }, [isMessagesReady, messages, queryClient, roomId]);
 
   // 메시지 변화에 따른 스크롤 위치를 처리한다.
   useEffect(() => {
-    if (!isFetchedAfterMount || !isMessagesFetchSuccess) return;
+    if (!isMessagesReady) return;
 
     const messageArrival = messageArrivalRef.current;
     if (!messageArrival) return;
@@ -183,7 +179,7 @@ function InquiryRoomDetailPage() {
         setHasNewMessageArrived(true);
       }
     }
-  }, [isFetchedAfterMount, isMessagesFetchSuccess, messages]);
+  }, [isMessagesReady, messages]);
 
   const handleScrollToBottom = () => {
     window.scrollTo(0, document.body.scrollHeight);
