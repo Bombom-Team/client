@@ -81,3 +81,14 @@ Commit message를 준비하거나 검토할 때만 docs/git-commit-convention.md
 - Branch 형식: {type}/{issue_key} (예: feat/BOM-5)
 - PR title: [{issue_key}] {type}: {subject}
 - develop에는 Squash & Merge, main에는 Create a Commit으로 merge합니다.
+
+## Cursor Cloud specific instructions
+
+Cloud Agent는 저장소 루트에서 `.nvmrc`의 Node 22.17.0과 `packageManager`의 pnpm 10.12.1로 의존성을 설치합니다. Node는 `/usr/local/bin`에 두고, install과 start는 이 경로를 `PATH` 앞에 둡니다.
+
+- 웹 개발 서버는 부팅 시 MSW와 함께 3000번 포트에서 실행됩니다. 백엔드 자격 증명은 필요하지 않습니다. 명령은 `pnpm --filter web exec webpack serve --mode development --env ENABLE_MSW=true --host 0.0.0.0 --port 3000 --no-open --no-watch-options-stdin`입니다.
+- webpack은 `web/public/robots.${SERVER_TYPE}.txt`를 복사하므로 `SERVER_TYPE=dev`가 필요합니다. 이 값이 없으면 개발 서버 기동이 실패합니다.
+- 모킹 API 주소는 브라우저 origin과 같게 `http://localhost:3000/api/v1`을 사용합니다. `127.0.0.1`로 두면 모킹되지 않은 요청이 CORS로 실패합니다.
+- `admin` 개발 서버의 기본 포트도 3000입니다. 웹 서버가 떠 있는 동안에는 동시에 실행하지 않습니다. maeil-mail은 Vite 기본 포트 5173을 사용합니다.
+- 프로덕션 `web` 빌드는 Sentry, ChannelTalk, API 관련 환경 변수가 있어야 합니다. MSW 개발 서버와는 별개입니다.
+- webpack dev server는 stdin이 닫히면 watch가 끝날 수 있습니다. 부팅 스크립트에는 `--no-watch-options-stdin`을 유지합니다.
