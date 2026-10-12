@@ -5,3 +5,6 @@ packages:
   - 'shared'
   - 'shared/oas-gen'
   - 'maeil-mail'
+
+onlyBuiltDependencies:
+  - '@sentry/cli'

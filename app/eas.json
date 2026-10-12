@@ -6,13 +6,22 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "environment": "development"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "environment": "preview",
+      "env": {
+        "SENTRY_RN_REQUIRE_PLUGIN_CONFIG": "true"
+      }
     },
     "production": {
       "autoIncrement": true,
+      "environment": "production",
+      "env": {
+        "SENTRY_RN_REQUIRE_PLUGIN_CONFIG": "true"
+      },
       "ios": {
         "simulator": false
       }

@@ -10,8 +10,6 @@ import {
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import Toast from '@/components/Toast/Toast';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { useChannelTalk } from '@/hooks/useChannelTalk';
-import { useDevice } from '@/hooks/useDevice';
 import GoogleAnalyticsTracker from '@/libs/googleAnalytics/GoogleAnalyticsTracker';
 import { useReferrerTracking } from '@/libs/googleAnalytics/useReferrerTracking';
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
@@ -25,19 +23,11 @@ interface BomBomRouterContext {
   queryClient: QueryClient;
 }
 
-// 우하단 채널톡 런처 버튼(약 60px + 하단 여백)과 겹치지 않도록 토스트를 그 위로 띄운다.
-// 채널톡 버튼은 PC에서만 노출되므로 PC에서만 간격을 띄운다.
-const CHANNEL_TALK_TOAST_OFFSET = 96;
-
 const RootComponent = () => {
-  const device = useDevice();
-
   useReferrerTracking();
   useWebViewAuth();
   useWebViewRouting();
-  useChannelTalk();
 
-  const toastOffset = device === 'pc' ? CHANNEL_TALK_TOAST_OFFSET : undefined;
   const showDevtools = isLocal || isDevelopment;
 
   return (
@@ -47,7 +37,7 @@ const RootComponent = () => {
           <AuthProvider>
             <GoogleAnalyticsTracker />
             <Outlet />
-            <Toast offset={toastOffset} />
+            <Toast />
           </AuthProvider>
         </ThemeProvider>
         {showDevtools && (

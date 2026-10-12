@@ -180,6 +180,74 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/inquiries/rooms': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 채팅방 목록 조회
+     * @description 생성일 최신순으로 문의 채팅방 목록을 조회합니다. 종료된 채팅방도 포함됩니다.
+     */
+    get: operations['getRooms'];
+    put?: never;
+    /**
+     * 문의 채팅방 생성
+     * @description 카테고리를 지정해 새 문의 채팅방을 생성합니다. 비회원은 X-Guest-Id 헤더가 필요합니다.
+     */
+    post: operations['createRoom'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/inquiries/rooms/{roomId}/messages': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 메시지 조회
+     * @description 채팅방의 메시지를 커서 기반으로 조회합니다. cursor가 없으면 최신 메시지부터 조회합니다.
+     */
+    get: operations['getMessages'];
+    put?: never;
+    /**
+     * 문의 메시지 전송
+     * @description 채팅방에 메시지를 전송합니다. 이미지는 최대 4장까지 첨부할 수 있습니다.
+     */
+    post: operations['sendMessage'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/inquiries/images': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 문의 이미지 업로드
+     * @description 메시지에 첨부할 이미지를 S3에 업로드합니다. 최대 4장까지 한 번에 업로드할 수 있습니다.
+     */
+    post: operations['uploadImages'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/highlights': {
     parameters: {
       query?: never;
@@ -1047,6 +1115,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/inquiries/rooms/unread-status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 미확인 상태 조회
+     * @description 내 문의 채팅방 중 아직 읽지 않은 어드민 응답이 하나라도 있는지 여부를 조회합니다.
+     */
+    get: operations['getUnreadStatus'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/inquiries/categories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 카테고리 목록 조회
+     * @description 문의 채팅방 생성 시 선택 가능한 카테고리 목록을 조회합니다.
+     */
+    get: operations['getCategories'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/highlights/statistics/newsletters': {
     parameters: {
       query?: never;
@@ -1059,6 +1167,26 @@ export interface paths {
      * @description 뉴스레터별 하이라이트 개수 정보를 조회합니다.
      */
     get: operations['getHighlightNewsletterStatistics'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/faqs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * FAQ 목록 조회
+     * @description FAQ 목록을 조회합니다. (카테고리 필터링 지원)
+     */
+    get: operations['getFaqs'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1683,6 +1811,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/inquiries/rooms/{roomId}/messages/{messageId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * 문의 메시지 삭제
+     * @description 본인이 작성한 메시지를 삭제합니다.
+     */
+    delete: operations['deleteMessage'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1705,6 +1853,44 @@ export interface components {
     MaeilMailSubmitAnswerRequest: {
       /** @description 사용자가 제출한 매일메일 답변 */
       answer: string;
+    };
+    CreateInquiryRoomRequest: {
+      /** Format: int64 */
+      categoryId: number;
+    };
+    InquiryRoomResponse: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int64 */
+      categoryId?: number;
+      /** @enum {string} */
+      status?: 'UNCONFIRMED' | 'IN_PROGRESS' | 'DONE' | 'ON_HOLD';
+      hasUnreadMessage?: boolean;
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      closedAt?: string;
+    };
+    SendInquiryMessageRequest: {
+      content?: string;
+      imageUrls?: string[];
+    };
+    InquiryMessageResponse: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int64 */
+      roomId?: number;
+      /** @enum {string} */
+      senderType?: 'USER' | 'ADMIN';
+      /** Format: int64 */
+      adminId?: number;
+      content?: string;
+      imageUrls?: string[];
+      /** Format: date-time */
+      createdAt?: string;
+    };
+    InquiryImageUploadResponse: {
+      imageUrls?: string[];
     };
     HighlightCreateRequest: {
       location: components['schemas']['HighlightLocationRequest'];
@@ -1759,6 +1945,7 @@ export interface components {
     };
     CreateCommentResponse: {
       isFirstCompletion?: boolean;
+      isChallengeCompleted?: boolean;
     };
     ChallengeCommentRequest: {
       /** Format: int64 */
@@ -1862,14 +2049,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['NoticeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1879,9 +2066,9 @@ export interface components {
       /** Format: int64 */
       offset?: number;
       sort?: components['schemas']['SortObject'];
+      paged?: boolean;
       /** Format: int32 */
       pageSize?: number;
-      paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
       unpaged?: boolean;
@@ -2388,14 +2575,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['CompletedChallengeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2426,6 +2613,36 @@ export interface components {
     MaeilMailSubmittedAnswerResponse: {
       answer: string;
     };
+    PageInquiryRoomResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['InquiryRoomResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    InquiryMessagePageResponse: {
+      messages?: components['schemas']['InquiryMessageResponse'][];
+      hasNext?: boolean;
+    };
+    InquiryUnreadStatusResponse: {
+      hasUnread?: boolean;
+    };
+    InquiryCategoryResponse: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
+    };
     HighlightResponse: {
       /** Format: int64 */
       id: number;
@@ -2446,14 +2663,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2482,6 +2699,31 @@ export interface components {
       totalCount: number;
       /** @description 뉴스레터 별 하이라이트 개수 통계 */
       newsletters: components['schemas']['HighlightCountPerNewsletterResponse'][];
+    };
+    FaqResponse: {
+      /** Format: int64 */
+      faqId: number;
+      categoryName: string;
+      question: string;
+      answer: string;
+    };
+    PageFaqResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['FaqResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
     };
     CouponIssueSummaryResponse: {
       couponName: string;
@@ -2692,14 +2934,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeReviewResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2742,14 +2984,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['DailyGuideCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2801,14 +3043,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2830,14 +3072,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['CommentReplyResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2854,14 +3096,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentHighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2901,14 +3143,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2945,14 +3187,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BlogPostResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -3004,14 +3246,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -3573,6 +3815,206 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getRooms: {
+    parameters: {
+      query?: {
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 채팅방 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageInquiryRoomResponse'];
+        };
+      };
+      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageInquiryRoomResponse'];
+        };
+      };
+    };
+  };
+  createRoom: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateInquiryRoomRequest'];
+      };
+    };
+    responses: {
+      /** @description 채팅방 생성 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+    };
+  };
+  getMessages: {
+    parameters: {
+      query?: {
+        /** @description 커서 (마지막으로 받은 메시지 ID) */
+        cursor?: number;
+        /** @description 조회 개수 */
+        size?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 메시지 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessagePageResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 (size는 1 이상 50 이하의 값이어야 함) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessagePageResponse'];
+        };
+      };
+      /** @description 본인 소유 채팅방이 아님 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessagePageResponse'];
+        };
+      };
+      /** @description 존재하지 않는 채팅방 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessagePageResponse'];
+        };
+      };
+    };
+  };
+  sendMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SendInquiryMessageRequest'];
+      };
+    };
+    responses: {
+      /** @description 메시지 전송 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessageResponse'];
+        };
+      };
+      /** @description 본인 소유 채팅방이 아님 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessageResponse'];
+        };
+      };
+      /** @description 존재하지 않는 채팅방 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessageResponse'];
+        };
+      };
+    };
+  };
+  uploadImages: {
+    parameters: {
+      query: {
+        images: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 이미지 업로드 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryImageUploadResponse'];
+        };
+      };
+      /** @description 이미지 개수가 4장을 초과하거나, 이미지 형식이 아니거나, 요청자를 식별할 수 없음 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryImageUploadResponse'];
+        };
       };
     };
   };
@@ -5438,6 +5880,55 @@ export interface operations {
       };
     };
   };
+  getUnreadStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 미확인 상태 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryUnreadStatusResponse'];
+        };
+      };
+      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryUnreadStatusResponse'];
+        };
+      };
+    };
+  };
+  getCategories: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 카테고리 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryCategoryResponse'][];
+        };
+      };
+    };
+  };
   getHighlightNewsletterStatistics: {
     parameters: {
       query?: never;
@@ -5462,6 +5953,39 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getFaqs: {
+    parameters: {
+      query?: {
+        faqCategory?:
+          | 'INTRODUCTION'
+          | 'FEATURE'
+          | 'ACCOUNT'
+          | 'NEWSLETTER'
+          | 'ETC';
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description FAQ 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageFaqResponse'];
+        };
       };
     };
   };
@@ -6504,6 +7028,43 @@ export interface operations {
         content: {
           '*/*': components['schemas']['SessionStatisticsResponse'];
         };
+      };
+    };
+  };
+  deleteMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+        /** @description 메시지 ID */
+        messageId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 메시지 삭제 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 본인이 작성한 메시지가 아니거나 본인 소유 채팅방이 아님 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 채팅방 또는 메시지 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };

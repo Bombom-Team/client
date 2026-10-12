@@ -7,10 +7,11 @@ const DEFAULT_ERROR_MESSAGES: Record<number, string> = {
   401: '로그인이 필요합니다.',
   403: '접근 권한이 없습니다.',
   404: '요청한 리소스를 찾을 수 없습니다.',
+  413: '파일 용량이 너무 큽니다. 더 작은 파일로 시도해주세요.',
   500: '서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
 };
 
-type JsonBody = Record<string, unknown> | unknown[];
+type JsonBody = Record<string, unknown> | unknown[] | FormData;
 type Query = Record<string, string | number | boolean | undefined | string[]>;
 
 type FetcherOptions<TRequest extends JsonBody> = {
@@ -18,7 +19,7 @@ type FetcherOptions<TRequest extends JsonBody> = {
   baseUrl?: string;
   query?: Query;
   body?: TRequest;
-  headers?: HeadersInit;
+  headers?: Record<string, string>;
 };
 
 type GetFetcherOptions = FetcherOptions<never> & {
@@ -26,8 +27,21 @@ type GetFetcherOptions = FetcherOptions<never> & {
 };
 
 export const fetcher = {
-  get: async <TResponse>({ path, baseUrl, query, credentials }: GetFetcherOptions) =>
-    request<never, TResponse>({ path, baseUrl, query, credentials, method: 'GET', }),
+  get: async <TResponse>({
+    path,
+    baseUrl,
+    query,
+    credentials,
+    headers,
+  }: GetFetcherOptions) =>
+    request<never, TResponse>({
+      path,
+      baseUrl,
+      query,
+      credentials,
+      headers,
+      method: 'GET',
+    }),
   post: async <TRequest extends JsonBody, TResponse>({
     path,
     baseUrl,
@@ -46,6 +60,7 @@ export const fetcher = {
     baseUrl,
     query,
     body,
+    headers,
   }: FetcherOptions<TRequest>) =>
     request<TRequest, TResponse>({
       path,
@@ -53,19 +68,34 @@ export const fetcher = {
       query,
       body,
       method: 'PATCH',
+      headers,
     }),
   put: async <TRequest extends JsonBody, TResponse>({
     path,
     baseUrl,
     body,
+    headers,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, baseUrl, body, method: 'PUT' }),
+    request<TRequest, TResponse>({
+      path,
+      baseUrl,
+      body,
+      method: 'PUT',
+      headers,
+    }),
   delete: async <TRequest extends JsonBody, TResponse>({
     path,
     baseUrl,
     body,
+    headers,
   }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({ path, baseUrl, body, method: 'DELETE' }),
+    request<TRequest, TResponse>({
+      path,
+      baseUrl,
+      body,
+      method: 'DELETE',
+      headers,
+    }),
 };
 
 type FetchMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
@@ -76,7 +106,7 @@ type RequestOptions<TRequest> = {
   method: FetchMethod;
   query?: Query;
   body?: TRequest;
-  headers?: HeadersInit;
+  headers?: Record<string, string>;
   credentials?: RequestCredentials;
 };
 
@@ -98,17 +128,19 @@ const request = async <TRequest, TResponse>({
     );
     url.search = new URLSearchParams(stringifiedQuery).toString();
 
+    const isFormData = body instanceof FormData;
+
     const config: RequestInit = {
       method,
       credentials,
       headers: {
-        'Content-Type': 'application/json',
+        ...(!isFormData && { 'Content-Type': 'application/json' }),
         ...headers,
       },
     };
 
     if (body && (method === 'POST' || method === 'PATCH' || method === 'PUT')) {
-      config.body = JSON.stringify(body);
+      config.body = isFormData ? body : JSON.stringify(body);
     }
 
     const response = await fetch(url, config);

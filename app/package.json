@@ -30,6 +30,7 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "@sentry/react-native": "^7.2.0",
     "expo": "~54.0.11",
     "expo-apple-authentication": "~8.0.7",
     "expo-application": "^7.0.8",
@@ -70,6 +71,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@expo/config-plugins": "^54.0.2",
+    "@sentry/cli": "2.58.5",
     "@types/react": "~19.1.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",

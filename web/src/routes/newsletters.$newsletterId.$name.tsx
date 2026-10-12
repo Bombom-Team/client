@@ -7,6 +7,7 @@ import NewsletterDetailDesktop from '@/pages/newsletter-detail/NewsletterDetailD
 import NewsletterDetailDesktopSkeleton from '@/pages/newsletter-detail/NewsletterDetailDesktopSkeleton';
 import NewsletterDetailMobile from '@/pages/newsletter-detail/NewsletterDetailMobile';
 import NewsletterDetailMobileSkeleton from '@/pages/newsletter-detail/NewsletterDetailMobileSkeleton';
+import { createSlug } from '@/utils/url';
 import type { NewsletterTab } from '@/pages/newsletter-detail/types';
 import type { SearchSchemaInput } from '@tanstack/react-router';
 
@@ -14,7 +15,7 @@ interface NewsletterDetailSearch {
   tab?: NewsletterTab;
 }
 
-export const Route = createFileRoute('/newsletters/$newsletterId')({
+export const Route = createFileRoute('/newsletters/$newsletterId/$name')({
   loader: async ({ context, params }) => {
     const id = Number(params.newsletterId);
     const newsletter = await context.queryClient.ensureQueryData(
@@ -33,7 +34,7 @@ export const Route = createFileRoute('/newsletters/$newsletterId')({
 
     const description = (newsletter.description ?? '').slice(0, 160);
     const title = `${newsletter.name} | 봄봄`;
-    const url = `https://www.bombom.news/newsletters/${params.newsletterId}`;
+    const url = `https://www.bombom.news/newsletters/${params.newsletterId}/${createSlug(newsletter.name, params.newsletterId)}`;
     const image = newsletter.imageUrl ?? '';
 
     return {

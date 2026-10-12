@@ -1,6 +1,7 @@
 import styled from '@emotion/native';
 
 import {
+  Alert,
   Dimensions,
   Image,
   KeyboardAvoidingView,
@@ -13,55 +14,72 @@ import { AppleIcon } from '@/components/icons/AppleIcon';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebView } from '@/contexts/WebViewContext';
-import { loginWithApple, loginWithGoogle } from '@/utils/auth';
+import {
+  captureNativeLoginFailure,
+  type NativeLoginFailureReport,
+} from '@/libs/sentry/nativeLoginReporting';
+import {
+  getNativeLoginFailure,
+  loginWithApple,
+  loginWithGoogle,
+  type NativeLoginCredential,
+  type NativeLoginProvider,
+} from '@/utils/auth';
 
 const logo = require('@/app/assets/images/logo.png');
+
+const handleNativeLoginFailure = (failure: NativeLoginFailureReport) => {
+  captureNativeLoginFailure(failure);
+
+  if (__DEV__) {
+    console.error(`${failure.provider} 로그인 실패:`, failure.reason);
+  }
+
+  Alert.alert('로그인에 실패했어요. 다시 시도해주세요.');
+};
 
 export const LoginScreen = () => {
   const { showLogin } = useAuth();
   const { sendMessageToWeb } = useWebView();
 
-  const handleGoogleLogin = async () => {
+  const handleLogin = async (provider: NativeLoginProvider) => {
+    let credential: NativeLoginCredential | null;
     try {
-      await loginWithGoogle(
-        ({ identityToken, authorizationCode, email, name }) => {
-          showLogin();
-          sendMessageToWeb({
-            type: 'GOOGLE_LOGIN_TOKEN',
-            payload: {
-              identityToken,
-              authorizationCode,
-              email,
-              name: name ?? '',
-            },
-          });
-        },
-      );
+      credential = await (provider === 'google'
+        ? loginWithGoogle()
+        : loginWithApple());
     } catch (error) {
-      console.error('Google 로그인 실패:', error);
+      const failure = getNativeLoginFailure(provider, error);
+      if (failure) handleNativeLoginFailure({ provider, ...failure });
+      return;
     }
+
+    if (!credential) return;
+
+    const isDispatched = sendMessageToWeb({
+      type: provider === 'google' ? 'GOOGLE_LOGIN_TOKEN' : 'APPLE_LOGIN_TOKEN',
+      payload: {
+        identityToken: credential.identityToken,
+        authorizationCode: credential.authorizationCode,
+        email: credential.email,
+        name: credential.name ?? '',
+      },
+    });
+
+    if (!isDispatched) {
+      handleNativeLoginFailure({
+        provider,
+        stage: 'webview_dispatch',
+        reason: 'webview_dispatch_failed',
+      });
+      return;
+    }
+
+    showLogin();
   };
 
-  const handleAppleLogin = async () => {
-    try {
-      await loginWithApple(
-        ({ identityToken, authorizationCode, email, name }) => {
-          showLogin();
-          sendMessageToWeb({
-            type: 'APPLE_LOGIN_TOKEN',
-            payload: {
-              identityToken,
-              authorizationCode,
-              email,
-              name: name ?? '',
-            },
-          });
-        },
-      );
-    } catch (error) {
-      console.error('Apple 로그인 실패:', error);
-    }
-  };
+  const handleGoogleLogin = () => handleLogin('google');
+  const handleAppleLogin = () => handleLogin('apple');
 
   return (
     <Container>

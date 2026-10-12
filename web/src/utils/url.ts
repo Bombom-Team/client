@@ -1,12 +1,3 @@
-export const createSlug = (text: string) => {
-  return text
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9가-힣]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '');
-};
-
 const ALLOWED_PROTOCOL = ['https:', 'http:', 'mailto:'];
 
 export const validateUrl = (url: string): string => {
@@ -17,4 +8,15 @@ export const validateUrl = (url: string): string => {
     if (url.startsWith('/') || url.startsWith('#')) return url;
   }
   return '#';
+};
+
+export const createSlug = (text: string, fallback = '') => {
+  const slug = text
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9가-힣]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return slug || fallback;
 };
