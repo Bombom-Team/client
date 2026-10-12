@@ -122,6 +122,8 @@ function InquiryRoomDetailPage() {
 
   // 최초 방문이거나 새 메시지가 도착했을 때만 안읽음/목록/방상세 캐시를 갱신한다.
   useEffect(() => {
+    if (!isFetchedAfterMount || !isMessagesFetchSuccess) return;
+
     const messageArrival = messageArrivalRef.current;
     if (!messageArrival) return;
     if (!messageArrival.isFirstVisit && !messageArrival.hasNewMessage) return;
@@ -135,10 +137,18 @@ function InquiryRoomDetailPage() {
     queryClient.invalidateQueries({
       queryKey: queries.inquiryRoom(roomId).queryKey,
     });
-  }, [messages, queryClient, roomId]);
+  }, [
+    isFetchedAfterMount,
+    isMessagesFetchSuccess,
+    messages,
+    queryClient,
+    roomId,
+  ]);
 
   // 메시지 변화에 따른 스크롤 위치를 처리한다.
   useEffect(() => {
+    if (!isFetchedAfterMount || !isMessagesFetchSuccess) return;
+
     const messageArrival = messageArrivalRef.current;
     if (!messageArrival) return;
 
@@ -173,7 +183,7 @@ function InquiryRoomDetailPage() {
         setHasNewMessageArrived(true);
       }
     }
-  }, [messages]);
+  }, [isFetchedAfterMount, isMessagesFetchSuccess, messages]);
 
   const handleScrollToBottom = () => {
     window.scrollTo(0, document.body.scrollHeight);
@@ -328,7 +338,7 @@ const Header = styled.div<{ isMobile: boolean }>`
       : `calc(${theme.heights.headerPC} + 40px)`};
   z-index: ${({ theme }) => theme.zIndex.panel};
 
-  padding: 0 0 12px;
+  padding: 16px 0 12px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.stroke};
 
   display: flex;
