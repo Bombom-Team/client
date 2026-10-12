@@ -47,19 +47,19 @@ function InquiryRoomDetailPage() {
   const prevScrollHeightRef = useRef<number | null>(null);
   const isSendingRef = useRef(false);
   const lastMessageIdRef = useRef<number | null>(null);
-  const [hasNewMessageArrived, setHasNewMessageArrived] = useState(false);
-  const [messageArrival, setMessageArrival] = useState<{
+  const messageArrivalRef = useRef<{
     isFirstVisit: boolean;
     hasNewMessage: boolean;
   } | null>(null);
+  const [hasNewMessageArrived, setHasNewMessageArrived] = useState(false);
 
   useEffect(() => {
     hasScrolledToBottomRef.current = false;
     prevScrollHeightRef.current = null;
     isSendingRef.current = false;
     lastMessageIdRef.current = null;
+    messageArrivalRef.current = null;
     setHasNewMessageArrived(false);
-    setMessageArrival(null);
   }, [roomId]);
 
   const { data: room, error: roomError } = useQuery({
@@ -102,7 +102,7 @@ function InquiryRoomDetailPage() {
     [messagePages],
   );
 
-  // 메시지 변화를 감지해 "최초 방문"/"새 메시지 도착" 여부를 판정하고 기록한다.
+  // 메시지 변화를 감지해 "최초 방문"/"새 메시지 도착" 여부를 ref에 기록한다.
   useEffect(() => {
     if (!isFetchedAfterMount || !isMessagesFetchSuccess) return;
     if (messages.length === 0) return;
@@ -117,11 +117,12 @@ function InquiryRoomDetailPage() {
       latestMessageId !== null &&
       latestMessageId !== previousMessageId;
 
-    setMessageArrival({ isFirstVisit, hasNewMessage });
+    messageArrivalRef.current = { isFirstVisit, hasNewMessage };
   }, [isFetchedAfterMount, isMessagesFetchSuccess, messages]);
 
   // 최초 방문이거나 새 메시지가 도착했을 때만 안읽음/목록/방상세 캐시를 갱신한다.
   useEffect(() => {
+    const messageArrival = messageArrivalRef.current;
     if (!messageArrival) return;
     if (!messageArrival.isFirstVisit && !messageArrival.hasNewMessage) return;
 
@@ -134,10 +135,11 @@ function InquiryRoomDetailPage() {
     queryClient.invalidateQueries({
       queryKey: queries.inquiryRoom(roomId).queryKey,
     });
-  }, [messageArrival, queryClient, roomId]);
+  }, [messages, queryClient, roomId]);
 
   // 메시지 변화에 따른 스크롤 위치를 처리한다.
   useEffect(() => {
+    const messageArrival = messageArrivalRef.current;
     if (!messageArrival) return;
 
     if (!hasScrolledToBottomRef.current) {
@@ -171,7 +173,7 @@ function InquiryRoomDetailPage() {
         setHasNewMessageArrived(true);
       }
     }
-  }, [messageArrival]);
+  }, [messages]);
 
   const handleScrollToBottom = () => {
     window.scrollTo(0, document.body.scrollHeight);
