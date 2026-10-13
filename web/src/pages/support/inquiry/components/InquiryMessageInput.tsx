@@ -4,8 +4,9 @@ import { useRef, useState } from 'react';
 import Button from '@/components/Button/Button';
 import { toast } from '@/components/Toast/utils/toastActions';
 import { useInquiryImagesUploadMutation } from '@/pages/support/inquiry/hooks/useInquiryImagesUploadMutation';
+import { isWebView } from '@/utils/device';
 import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 
 const PhotoIcon = ({ color }: { color: string }) => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -86,6 +87,22 @@ const InquiryMessageInput = ({
     setImageUrls([]);
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (
+      isWebView() ||
+      e.key !== 'Enter' ||
+      e.shiftKey ||
+      e.nativeEvent.isComposing ||
+      isSubmitting ||
+      isUploading
+    ) {
+      return;
+    }
+
+    e.preventDefault();
+    handleSubmit();
+  };
+
   return (
     <Container>
       {imageUrls.length > 0 && (
@@ -104,51 +121,54 @@ const InquiryMessageInput = ({
         </PreviewRow>
       )}
 
-      <InputRow>
-        <HiddenFileInput
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleFileChange}
-        />
+      <HiddenFileInput
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleFileChange}
+      />
 
-        <TextareaWrapper>
-          <Textarea
-            value={content}
-            onChange={(e) =>
-              setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
-            }
-            placeholder="문의 내용을 입력해주세요"
-            disabled={disabled}
-          />
-          <AttachButton
-            type="button"
-            aria-label="이미지 첨부"
-            disabled={
-              disabled || isUploading || imageUrls.length >= MAX_IMAGE_COUNT
-            }
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <PhotoIcon color={theme.colors.textSecondary} />
-          </AttachButton>
+      <Textarea
+        value={content}
+        onChange={(e) =>
+          setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
+        }
+        onKeyDown={handleKeyDown}
+        placeholder="문의 내용을 입력해주세요"
+        disabled={disabled}
+      />
+
+      <ActionBar>
+        <AttachButton
+          type="button"
+          aria-label="이미지 첨부"
+          disabled={
+            disabled || isUploading || imageUrls.length >= MAX_IMAGE_COUNT
+          }
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <PhotoIcon color={theme.colors.textSecondary} />
+        </AttachButton>
+
+        <ActionBarRight>
           <CharCount>
             {content.length} / {MAX_CONTENT_LENGTH}
           </CharCount>
-        </TextareaWrapper>
 
-        <Button
-          onClick={handleSubmit}
-          disabled={
-            disabled ||
-            isSubmitting ||
-            isUploading ||
-            (!content.trim() && imageUrls.length === 0)
-          }
-        >
-          전송
-        </Button>
-      </InputRow>
+          <Button
+            onClick={handleSubmit}
+            disabled={
+              disabled ||
+              isSubmitting ||
+              isUploading ||
+              (!content.trim() && imageUrls.length === 0)
+            }
+          >
+            전송
+          </Button>
+        </ActionBarRight>
+      </ActionBar>
     </Container>
   );
 };
@@ -163,44 +183,17 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const InputRow = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: flex-end;
-`;
-
-const AttachButton = styled.button`
-  position: absolute;
-  right: 12px;
-  bottom: 10px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-`;
-
 const HiddenFileInput = styled.input`
   display: none;
-`;
-
-const TextareaWrapper = styled.div`
-  position: relative;
-
-  flex: 1;
 `;
 
 const Textarea = styled.textarea`
   width: 100%;
   min-height: 44px;
   max-height: 120px;
-  padding: 12px 44px 20px 16px;
+  padding: 12px 16px;
   border: none;
-  border-radius: 22px;
+  border-radius: 16px;
 
   background: ${({ theme }) => theme.colors.dividers};
   font: ${({ theme }) => theme.fonts.t6Regular};
@@ -212,15 +205,32 @@ const Textarea = styled.textarea`
   }
 `;
 
-const CharCount = styled.span`
-  position: absolute;
-  bottom: 8px;
-  left: 16px;
+const ActionBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
 
+const ActionBarRight = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+`;
+
+const AttachButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
+const CharCount = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t2Regular};
-
-  pointer-events: none;
 `;
 
 const PreviewRow = styled.div`

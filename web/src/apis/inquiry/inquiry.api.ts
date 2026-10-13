@@ -35,6 +35,21 @@ export const createInquiryRoom = (categoryId: number) =>
     headers: guestHeaders(),
   });
 
+export const getInquiryRoom = (roomId: number) =>
+  fetcher.get<InquiryRoom>({
+    path: `/inquiries/rooms/${roomId}`,
+    headers: guestHeaders(),
+  });
+
+export type InquiryUnreadStatus =
+  components['schemas']['InquiryUnreadStatusResponse'];
+
+export const getInquiryUnreadStatus = () =>
+  fetcher.get<InquiryUnreadStatus>({
+    path: '/inquiries/rooms/unread-status',
+    headers: guestHeaders(),
+  });
+
 export type GetInquiryMessagesParams = { cursor?: number; size?: number };
 
 export type InquiryMessagePage =
