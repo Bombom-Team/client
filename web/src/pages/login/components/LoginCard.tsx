@@ -6,9 +6,9 @@ import { useDevice } from '@/hooks/useDevice';
 import { getRedirectPathFromSearch, navigateToOAuthLogin } from '@/utils/auth';
 import { isIOS, isWebView } from '@/utils/device';
 import { isInAppBrowser } from '@/utils/inAppBrowser';
+import logo from '#/assets/avif/logo.avif';
 import AppleIcon from '#/assets/svg/apple.svg';
 import GoogleIcon from '#/assets/svg/google.svg';
-import SparklesIcon from '#/assets/svg/sparkles.svg';
 
 const LoginCard = () => {
   const device = useDevice();
@@ -27,19 +27,11 @@ const LoginCard = () => {
 
   return (
     <Container isMobile={isMobile}>
-      <GreetingWrapper isMobile={isMobile}>
-        <IconWrapper>
-          <SparklesIcon
-            width={24}
-            height={24}
-            fill={theme.colors.white}
-            color={theme.colors.white}
-          />
-        </IconWrapper>
+      <GreetingWrapper>
+        <LogoImage src={logo} alt="봄봄 로고" />
         <GreetingTitle>봄봄에 오신 걸 환영해요</GreetingTitle>
-        <GreetingMessage isMobile={isMobile}>
-          당신의 하루에 찾아오는 작은 설렘{'\n'}뉴스레터를 한 곳에서 쉽게
-          관리하세요
+        <GreetingMessage>
+          당신의 하루에 찾아오는 작은 설렘 뉴스레터를 한 곳에서 쉽게 관리하세요
         </GreetingMessage>
       </GreetingWrapper>
       <Divider />
@@ -59,7 +51,7 @@ const LoginCard = () => {
         </LoginButton>
       )}
       <Terms>
-        로그인하시면 봄봄의 <Highlight>서비스 약관</Highlight>과
+        로그인하시면 봄봄의 <Highlight>서비스 약관</Highlight>과{' '}
         <Highlight>개인정보 처리방침</Highlight>에{'\n'}
         동의하는 것으로 간주됩니다.
       </Terms>
@@ -70,8 +62,9 @@ const LoginCard = () => {
 export default LoginCard;
 
 const Container = styled.section<{ isMobile: boolean }>`
-  width: min(100%, 420px);
-  padding: 28px;
+  width: 100%;
+  max-width: ${({ isMobile }) => (isMobile ? '420px' : '460px')};
+  padding: ${({ isMobile }) => (isMobile ? '28px' : '48px 40px')};
 
   display: flex;
   gap: 16px;
@@ -83,56 +76,50 @@ const Container = styled.section<{ isMobile: boolean }>`
     !isMobile &&
     `
     border-radius: 20px;
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
     background-color: ${theme.colors.white};
   
   `}
 `;
 
-const GreetingWrapper = styled.div<{ isMobile: boolean }>`
+const GreetingWrapper = styled.div`
   display: flex;
-  gap: ${({ isMobile }) => (isMobile ? '16px' : '20px')};
+  gap: 16px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
-const IconWrapper = styled.div`
-  padding: 18px;
-  border-radius: 50%;
-  box-shadow:
-    0 20px 25px -5px ${({ theme }) => `${theme.colors.primaryLight}40`},
-    0 10px 10px -5px ${({ theme }) => `${theme.colors.primaryLight}20`};
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: ${({ theme }) => theme.colors.primaryBomBom};
+const LogoImage = styled.img`
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
 `;
 
 const GreetingTitle = styled.h2`
-  background: linear-gradient(107deg, #181818 0%, #f96 100%);
-  background-clip: text;
+  color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t11Bold};
   text-align: center;
-
-  -webkit-text-fill-color: transparent;
 `;
 
-const GreetingMessage = styled.p<{ isMobile: boolean }>`
-  margin: ${({ isMobile }) => (isMobile ? '24px' : '34px')};
+const GreetingMessage = styled.p`
+  width: 100%;
+  max-width: 380px;
+  margin: 0;
 
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t7Bold};
-  font-weight: 400;
+  font: ${({ theme }) => theme.fonts.t7Regular};
   text-align: center;
+  white-space: normal;
+
+  text-wrap: balance;
+
+  word-break: keep-all;
 `;
 
 const Divider = styled.div`
   width: 100%;
   height: 2px;
-  margin-bottom: 34px;
+  margin: 16px 0;
 
   background: linear-gradient(
     90deg,

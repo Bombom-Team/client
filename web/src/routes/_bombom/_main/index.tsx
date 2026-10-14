@@ -25,14 +25,15 @@ export const Route = createFileRoute('/_bombom/_main/')({
 
 function Index() {
   const device = useDevice();
-  const { data: notices } = useQuery(queries.notices());
-
-  const recentNotice = notices?.content || [];
-  const firstNotice = recentNotice[0];
+  const { data: representativeNotice } = useQuery(
+    queries.representativeNotice(),
+  );
 
   return (
     <Container device={device}>
-      {firstNotice && <NoticeAnnounceBar notice={firstNotice} />}
+      {representativeNotice && (
+        <NoticeAnnounceBar notice={representativeNotice} />
+      )}
 
       <MainContent device={device}>
         <MainSection device={device}>
@@ -63,6 +64,7 @@ const Container = styled.div<{ device: Device }>`
 `;
 
 const MainContent = styled.div<{ device: Device }>`
+  width: 100%;
   max-width: 100%;
 
   display: flex;

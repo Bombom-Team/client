@@ -9,10 +9,10 @@ import InvalidSearchCard from '../InvalidSearchCard/InvalidSearchCard';
 import useInfiniteArticles from '@/pages/storage/hooks/useInfiniteArticles';
 import ArticleCardListSkeleton from '@/pages/today/components/ArticleCardList/ArticleCardListSkeleton';
 import EmptyLetterCard from '@/pages/today/components/EmptyLetterCard/EmptyLetterCard';
-import type { GetArticlesWithSearchParams } from '@/apis/articles/articles.api';
+import type { GetStorageArticlesParams } from '@/apis/articles/articles.api';
 
 interface MobileStorageContentProps {
-  baseQueryParams: GetArticlesWithSearchParams;
+  baseQueryParams: GetStorageArticlesParams;
   editMode: boolean;
   enableEditMode: () => void;
   disableEditMode: () => void;
@@ -36,6 +36,7 @@ export default function MobileStorageContent({
     data: infiniteArticles,
     fetchNextPage,
     hasNextPage,
+    isFetching,
     isFetchingNextPage,
     isLoading: isInfiniteLoading,
   } = useInfiniteArticles(baseQueryParams);
@@ -67,7 +68,7 @@ export default function MobileStorageContent({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetching) {
           fetchNextPage();
         }
       },
@@ -77,14 +78,20 @@ export default function MobileStorageContent({
     observer.observe(loadMoreRef.current);
 
     return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [hasNextPage, isFetching, fetchNextPage]);
 
+  const isFirstFilterEffect = useRef(true);
   useEffect(() => {
-    resetPage();
     clearSelection();
+    if (isFirstFilterEffect.current) {
+      isFirstFilterEffect.current = false;
+      return;
+    }
+    resetPage();
   }, [
     baseQueryParams.keyword,
     baseQueryParams.newsletterId,
+    baseQueryParams.unreadOnly,
     baseQueryParams.sort,
     clearSelection,
     resetPage,

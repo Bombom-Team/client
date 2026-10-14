@@ -1,7 +1,13 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
+import MobileMainHeader from '@/components/Header/MobileMainHeader';
+import { useDevice } from '@/hooks/useDevice';
+import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/privacy-policy')({
+  validateSearch: (search: { from?: string }) => ({
+    from: search.from === 'signup' ? 'signup' : undefined,
+  }),
   head: () => ({
     meta: [
       {
@@ -13,8 +19,14 @@ export const Route = createFileRoute('/privacy-policy')({
 });
 
 function PrivacyPolicyPage() {
+  const device = useDevice();
+  const { from } = Route.useSearch();
+  const isMobile = device === 'mobile';
+  const shouldShowHeader = isMobile && from !== 'signup';
+
   return (
-    <Container>
+    <Container device={device} shouldShowHeader={shouldShowHeader}>
+      {shouldShowHeader && <MobileMainHeader />}
       <ContentWrapper>
         <Title>개인정보 처리방침</Title>
         <Intro>
@@ -157,10 +169,20 @@ function PrivacyPolicyPage() {
   );
 }
 
-const Container = styled.main`
+const Container = styled.main<{ device: Device; shouldShowHeader: boolean }>`
   width: 100%;
   min-height: 100dvh;
-  padding: 80px 20px;
+  padding: ${({ device, shouldShowHeader, theme }) => {
+    if (device === 'mobile') {
+      const topPadding = shouldShowHeader
+        ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 24px)`
+        : `calc(${theme.safeArea.top} + 24px)`;
+
+      return `${topPadding} 20px 80px`;
+    }
+
+    return '80px 20px';
+  }};
 
   background-color: ${({ theme }) => theme.colors.white};
 `;

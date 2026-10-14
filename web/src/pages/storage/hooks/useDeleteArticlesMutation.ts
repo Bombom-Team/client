@@ -1,5 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteArticle } from '@/apis/articles/articles.api';
+import {
+  isStorageNormalArticleListQueryKey,
+  syncDeletedArticleCaches,
+} from '@/apis/articles/articles.cache';
 import { queries } from '@/apis/queries';
 import { formatDate } from '@/utils/date';
 
@@ -11,7 +15,9 @@ export const useDeleteArticlesMutation = (
   return useMutation({
     mutationFn: (articleIds: number[]) =>
       deleteArticle({ articleIds: articleIds }),
-    onSuccess: () => {
+    onSuccess: (_, articleIds) => {
+      syncDeletedArticleCaches(queryClient, articleIds);
+
       if (deleteType === 'today') {
         queryClient.invalidateQueries({
           queryKey: queries.articles({ date: formatDate(new Date(), '-') })
@@ -19,11 +25,9 @@ export const useDeleteArticlesMutation = (
         });
       } else if (deleteType === 'article') {
         queryClient.invalidateQueries({
-          queryKey: ['articles'],
-        });
-      } else {
-        queryClient.invalidateQueries({
-          queryKey: ['bookmarks'],
+          predicate: (query) =>
+            isStorageNormalArticleListQueryKey(query.queryKey),
+          refetchType: 'active',
         });
       }
     },

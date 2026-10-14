@@ -4,11 +4,9 @@ import { Link } from '@tanstack/react-router';
 import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
 import { toast } from '../Toast/utils/toastActions';
 import { postLogout } from '@/apis/auth/auth.api';
-import { showMessenger } from '@/libs/channelTalk/channelTalk.utils';
 import { copyToClipboard } from '@/utils/copy';
 import { isWebView } from '@/utils/device';
 import type { UserProfile } from '@/types/me';
-import ChatIcon from '#/assets/svg/chat.svg';
 import CopyIcon from '#/assets/svg/copy.svg';
 import LogoutIcon from '#/assets/svg/logout.svg';
 import MailIcon from '#/assets/svg/mail.svg';
@@ -71,29 +69,22 @@ const ProfileDetail = ({ userProfile, onClose }: ProfileDetailProps) => {
 
       <Divider />
 
-      <MyPageButton to="/my?tab=profile" onClick={onClose}>
+      <MyPageButton to="/my/profile" onClick={onClose}>
         내 정보
       </MyPageButton>
 
-      <MyPageButton to="/my?tab=newsletters" onClick={onClose}>
+      <MyPageButton to="/my/newsletters" onClick={onClose}>
         구독 뉴스레터
       </MyPageButton>
 
-      <MyPageButton to="/my?tab=rewards" onClick={onClose}>
+      <MyPageButton to="/my/rewards" onClick={onClose}>
         선물함
       </MyPageButton>
 
       {isWebView() && (
-        <MyPageButton to="/my?tab=notification" onClick={onClose}>
+        <MyPageButton to="/my/notification" onClick={onClose}>
           알림 설정
         </MyPageButton>
-      )}
-
-      {isWebView() && (
-        <ChannelTalkButton type="button" onClick={showMessenger}>
-          <ChatIcon width={16} height={16} />
-          문의하기
-        </ChannelTalkButton>
       )}
 
       <LogoutButton type="button" onClick={handleLogoutClick}>
@@ -182,20 +173,6 @@ const ProfileEmail = styled.button`
 const EmailText = styled.div`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t5Regular};
-`;
-
-const ChannelTalkButton = styled.button`
-  display: flex;
-  gap: 4px;
-  align-items: center;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-
-  &:hover {
-    text-decoration: underline;
-    transition: all 0.2s ease-in-out;
-  }
 `;
 
 const MyPageButton = styled(Link)`

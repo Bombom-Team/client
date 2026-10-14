@@ -1,9 +1,6 @@
 import styled from '@emotion/styled';
 import HeaderLogo from '@/components/Header/HeaderLogo';
-import LoginButton from '@/components/Header/LoginButton';
 import { ServiceSwitcher } from '@bombom/shared/ui-web';
-import Skeleton from '@/components/Skeleton/Skeleton';
-import { useAuth } from '@/contexts/AuthContext';
 import { useDevice } from '@bombom/shared/ui-web';
 import type { Device } from '@bombom/shared/ui-web';
 
@@ -11,22 +8,17 @@ const BOMBOM_SERVICE_URL = 'https://bombom.news';
 
 const LandingHeader = () => {
   const device = useDevice();
-  const { isLoggedIn, isLoading } = useAuth();
 
   return (
     <Container device={device}>
-      <ServiceSwitcher activeService="maeil-mail" />
+      {device === 'pc' && <ServiceSwitcher activeService="maeil-mail" />}
       <HeaderRow device={device}>
         <HeaderWrapper>
           <HeaderLogo />
-          {isLoading ? (
-            <Skeleton width="100px" height="40px" borderRadius={12} />
-          ) : isLoggedIn ? (
+          {device !== 'pc' && (
             <GoToService device={device} href={BOMBOM_SERVICE_URL}>
-              서비스 이동
+              봄봄으로 이동
             </GoToService>
-          ) : (
-            <LoginButton />
           )}
         </HeaderWrapper>
       </HeaderRow>
@@ -42,7 +34,11 @@ const Container = styled.header<{ device: Device }>`
   z-index: ${({ theme }) => theme.zIndex.header};
   width: 100%;
   height: ${({ theme, device }) =>
-    `calc(${device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile} + 40px)`};
+    device === 'pc'
+      ? `calc(${theme.heights.headerPC} + 40px)`
+      : `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`};
+  padding-top: ${({ theme, device }) =>
+    device === 'pc' ? 0 : theme.safeArea.top};
 
   display: flex;
   flex-direction: column;
@@ -82,7 +78,7 @@ const GoToService = styled.a<{ device: Device }>`
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme }) => theme.colors.primaryMaeilMail};
+  background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t5Regular};
 

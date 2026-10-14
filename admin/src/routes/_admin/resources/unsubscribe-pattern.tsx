@@ -78,7 +78,11 @@ const PATTERN_KEY_GUIDES: Record<
 const PATTERN_KEY_DELIMITER_OVERRIDES: Partial<
   Record<keyof typeof PATTERN_KEY_GUIDES, '|' | '?' | ','>
 > = {
+  'unsubscribe-pattern': '|',
+  'success-pattern': '|',
   'already-unsubscribed-pattern': '|',
+  'error-pattern': '|',
+  'ad-domains': ',',
 };
 
 function UnsubscribePatternPage() {

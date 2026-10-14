@@ -64,7 +64,10 @@ const PATTERN_KEY_GUIDES: Record<
 
 const PATTERN_KEY_DELIMITER_OVERRIDES: Partial<
   Record<keyof typeof PATTERN_KEY_GUIDES, '|' | '?' | ','>
-> = {};
+> = {
+  'parse.url-keywords': '|',
+  'parse.text-keywords': '|',
+};
 
 const isParsePattern = (patternKey: string) => patternKey.startsWith('parse.');
 

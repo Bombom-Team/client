@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useClickOutsideRef } from '@/hooks/useClickOutsideRef';
 import type { ReactNode } from 'react';
 
@@ -22,11 +23,12 @@ const FloatingActionButton = ({
     setIsOpen(false);
   });
 
-  return (
+  return createPortal(
     <div ref={floatingRef}>
       <FloatingButton onClick={toggleMenu}>{icon}</FloatingButton>
       {isOpen && <FloatingMenu>{children}</FloatingMenu>}
-    </div>
+    </div>,
+    document.body,
   );
 };
 

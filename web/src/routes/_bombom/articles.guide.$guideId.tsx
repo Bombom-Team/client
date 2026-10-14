@@ -1,12 +1,15 @@
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
+import FloatingActionPanel from '@/components/FloatingActionPanel/FloatingActionPanel';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import Spacing from '@/components/Spacing/Spacing';
 import { useDevice } from '@/hooks/useDevice';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
 import { useScrollThreshold } from '@/hooks/useScrollThreshold';
+import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';
 import ArticleHeader from '@/pages/detail/components/ArticleHeader/ArticleHeader';
 import TodayUnreadArticlesSection from '@/pages/detail/components/TodayUnreadArticlesSection/TodayUnreadArticlesSection';
+import { useArticleFontSize } from '@/pages/detail/hooks/useArticleFontSize';
 import GuideArticleBody from '@/pages/guide-detail/components/GuideArticleBody';
 import {
   GUIDE_MAIL_STORAGE_KEY,
@@ -33,6 +36,7 @@ export const Route = createFileRoute('/_bombom/articles/guide/$guideId')({
 
 function GuideMailPage() {
   const device = useDevice();
+  const { percentage, selectFontSize } = useArticleFontSize();
   const { guideId } = Route.useParams();
   const guideIdNumber = Number(guideId);
   const [guideArticles, setGuideArticles] =
@@ -78,7 +82,16 @@ function GuideMailPage() {
 
   return (
     <Container>
-      {device !== 'pc' && <MobileDetailHeader />}
+      {device !== 'pc' && (
+        <MobileDetailHeader
+          right={
+            <ArticleFontSizeControl
+              percentage={percentage}
+              onSelect={selectFontSize}
+            />
+          }
+        />
+      )}
 
       <ArticleHeader
         title={guideArticle.title}
@@ -89,7 +102,10 @@ function GuideMailPage() {
       />
       <Divider />
 
-      <GuideArticleBody articleId={guideIdNumber} />
+      <GuideArticleBody
+        articleId={guideIdNumber}
+        fontSizePercentage={percentage}
+      />
 
       <Spacing size={24} />
       <Divider />
@@ -100,6 +116,25 @@ function GuideMailPage() {
       </ContentDescription>
 
       <TodayUnreadArticlesSection articleId={guideIdNumber} />
+
+      {device === 'pc' && (
+        <FloatingActionPanel
+          top="80vh"
+          left="calc(50% - (350px + 90px))"
+          actions={[
+            {
+              icon: null,
+              content: (
+                <ArticleFontSizeControl
+                  percentage={percentage}
+                  onSelect={selectFontSize}
+                />
+              ),
+              ariaLabel: '글자 크기 조절',
+            },
+          ]}
+        />
+      )}
     </Container>
   );
 }

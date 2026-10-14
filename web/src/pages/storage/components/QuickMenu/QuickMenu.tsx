@@ -21,7 +21,9 @@ const QuickMenu = () => {
   if (device !== 'pc') {
     return (
       <FloatingActionButton
-        icon={<MenuIcon width={24} height={30} fill={theme.colors.white} />}
+        icon={
+          <FloatingMenuIcon viewBox="0 0 28 28" fill={theme.colors.white} />
+        }
       >
         <Tabs direction="vertical">
           {MENU_ITEMS.map(({ key, label, path, Icon }) => {
@@ -50,7 +52,7 @@ const QuickMenu = () => {
     <Container>
       <TitleWrapper>
         <QuickMenuIconWrapper>
-          <StyledMenuIcon />
+          <StyledMenuIcon viewBox="0 0 28 28" />
         </QuickMenuIconWrapper>
         <Title>바로 가기</Title>
       </TitleWrapper>
@@ -98,8 +100,9 @@ const TitleWrapper = styled.div`
 `;
 
 const QuickMenuIconWrapper = styled.div`
-  padding: 8px;
-  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
 
   display: flex;
   align-items: center;
@@ -112,7 +115,16 @@ const StyledMenuIcon = styled(MenuIcon)`
   width: 16px;
   height: 16px;
 
+  display: block;
+
   color: ${({ theme }) => theme.colors.white};
+`;
+
+const FloatingMenuIcon = styled(MenuIcon)`
+  width: 24px;
+  height: 24px;
+
+  display: block;
 `;
 
 const Title = styled.h3`

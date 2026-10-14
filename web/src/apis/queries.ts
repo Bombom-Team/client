@@ -4,12 +4,15 @@ import { blogQueries } from './blog/blog.query';
 import { bookmarkQueries } from './bookmark/bookmark.query';
 import { challengeQueries } from './challenge/challenge.query';
 import { eventQueries } from './event/event.query';
+import { faqQueries } from './faq/faq.query';
 import { highlightQueries } from './highlight/highlight.query';
+import { inquiryQueries } from './inquiry/inquiry.query';
 import { maeilMailQueries } from './maeilMail/maeilMail.query';
 import { membersQueries } from './members/members.query';
 import { newslettersQueries } from './newsletters/newsletters.query';
 import { noticeQueries } from './notice/notice.query';
 import { notificationQueries } from './notification/notification.query';
+import { petQueries } from './pet/pet.query';
 import { previousArticlesQueries } from './previousArticles/previousArticles.query';
 import { subscriptionsQueries } from './subscriptions/subscriptions.query';
 
@@ -29,6 +32,9 @@ export const queries = {
   // highlights
   ...highlightQueries,
 
+  // inquiry
+  ...inquiryQueries,
+
   // maeil-mail
   ...maeilMailQueries,
 
@@ -44,6 +50,9 @@ export const queries = {
   // notification
   ...notificationQueries,
 
+  // pet
+  ...petQueries,
+
   // previous articles
   ...previousArticlesQueries,
 
@@ -52,6 +61,9 @@ export const queries = {
 
   // event
   ...eventQueries,
+
+  // faq
+  ...faqQueries,
 
   // subscriptions
   ...subscriptionsQueries,

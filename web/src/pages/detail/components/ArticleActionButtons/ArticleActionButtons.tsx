@@ -2,6 +2,8 @@ import { theme } from '@bombom/shared/theme';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import FloatingActionPanel from '@/components/FloatingActionPanel/FloatingActionPanel';
 import ChevronIcon from '@/components/icons/ChevronIcon';
+import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';
+import type { ArticleFontSizePercentage } from '../../constants/articleFontSize';
 import BookmarkActiveIcon from '#/assets/svg/bookmark-active.svg';
 import BookmarkInactiveIcon from '#/assets/svg/bookmark-inactive.svg';
 
@@ -10,13 +12,17 @@ const ARTICLE_MAX_WIDTH = 700;
 interface ArticleActionButtonsProps {
   isRead: boolean;
   bookmarked: boolean;
+  percentage: ArticleFontSizePercentage;
   onBookmarkClick: () => void;
+  onFontSizeSelect: (percentage: ArticleFontSizePercentage) => void;
 }
 
 const ArticleActionButtons = ({
   isRead,
   bookmarked,
+  percentage,
   onBookmarkClick,
+  onFontSizeSelect,
 }: ArticleActionButtonsProps) => {
   return (
     <FloatingActionPanel
@@ -38,6 +44,16 @@ const ArticleActionButtons = ({
               },
             ]
           : []),
+        {
+          icon: null,
+          content: (
+            <ArticleFontSizeControl
+              percentage={percentage}
+              onSelect={onFontSizeSelect}
+            />
+          ),
+          ariaLabel: '글자 크기 조절',
+        },
         {
           icon: bookmarked ? (
             <BookmarkActiveIcon width={28} height={28} />

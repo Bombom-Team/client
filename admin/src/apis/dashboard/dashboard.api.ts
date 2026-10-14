@@ -1,5 +1,5 @@
 import { fetcher } from '@bombom/shared/apis';
-import type { components } from '@/types/openapi';
+import type { components } from '@/types/dashboard.gen';
 
 export type DashboardStatsResponse =
   components['schemas']['DashboardStatsResponse'];

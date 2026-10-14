@@ -1,31 +1,54 @@
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import HeaderLogo from './HeaderLogo';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
 import Button from '../Button/Button';
+import UnreadDot from '../UnreadDot/UnreadDot';
+import { queries } from '@/apis/queries';
 import { useAuth } from '@/contexts/AuthContext';
+import HeadsetIcon from '#/assets/svg/headset.svg';
 import MegaphoneIcon from '#/assets/svg/megaphone.svg';
 
 const MobileMainHeader = () => {
   const navigate = useNavigate();
   const { userProfile } = useAuth();
+  const { data: unreadStatus } = useQuery(queries.inquiryUnreadStatus());
 
   return (
     <Container>
       <MainRow>
         <HeaderLogo />
         <UserInfoWrapper>
-          <NavButton
-            onClick={() => navigate({ to: '/notice' })}
-            variant="transparent"
-          >
-            <MegaphoneIcon width={20} height={20} />
-          </NavButton>
+          <IconButtonGroup>
+            <NavButton
+              onClick={() => navigate({ to: '/support' })}
+              variant="transparent"
+              aria-label={
+                unreadStatus?.hasUnread
+                  ? '1:1 문의 (읽지 않은 문의 있음)'
+                  : '1:1 문의'
+              }
+            >
+              <HeadsetIconWrapper>
+                <HeadsetIcon width={20} height={20} />
+                {unreadStatus?.hasUnread && <UnreadDot />}
+              </HeadsetIconWrapper>
+            </NavButton>
+            <NavButton
+              onClick={() => navigate({ to: '/notice' })}
+              variant="transparent"
+            >
+              <MegaphoneIcon width={20} height={20} />
+            </NavButton>
+          </IconButtonGroup>
           {userProfile ? (
             <HeaderProfile userProfile={userProfile} device="mobile" />
           ) : (
-            <LoginButton />
+            <LoginButtonWrapper>
+              <LoginButton />
+            </LoginButtonWrapper>
           )}
         </UserInfoWrapper>
       </MainRow>
@@ -66,12 +89,13 @@ const MainRow = styled.div`
 
 const UserInfoWrapper = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 4px;
+  align-items: center;
   justify-content: center;
 `;
 
 const NavButton = styled(Button)`
-  padding: 0;
+  padding: 8px 12px;
 
   display: flex;
   gap: 0;
@@ -80,4 +104,22 @@ const NavButton = styled(Button)`
   :hover {
     background: none;
   }
+`;
+
+const IconButtonGroup = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
+const LoginButtonWrapper = styled.div`
+  margin-left: 4px;
+`;
+
+const HeadsetIconWrapper = styled.span`
+  position: relative;
+
+  display: inline-flex;
+
+  line-height: 0;
 `;

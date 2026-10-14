@@ -1,5 +1,5 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 type SearchParamValue = string | number | boolean | null;
 
@@ -36,11 +36,14 @@ export function useSearchParamState<T extends SearchParamValue = string>(
     return raw as T | null;
   }, [search, key, defaultValue]);
 
+  const valueRef = useRef(value);
+  valueRef.current = value;
+
   const setValue = useCallback(
     (newValue: (T | null) | ((prev: T | null) => T | null)) => {
       const resolved =
         typeof newValue === 'function'
-          ? (newValue as (prev: T | null) => T | null)(value)
+          ? (newValue as (prev: T | null) => T | null)(valueRef.current)
           : newValue;
 
       navigate({
@@ -59,7 +62,7 @@ export function useSearchParamState<T extends SearchParamValue = string>(
         resetScroll: false,
       });
     },
-    [key, navigate, replace, value],
+    [key, navigate, replace],
   );
 
   return [value, setValue] as const;

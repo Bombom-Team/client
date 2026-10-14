@@ -11,7 +11,7 @@ import PostDetail from '@/pages/blog/components/PostDetail/PostDetail';
 import PostDetailSkeleton from '@/pages/blog/components/PostDetail/PostDetailSkeleton';
 import ShareButton from '@/pages/blog/components/PostDetail/ShareButton';
 import { createBlogPostingSchema } from '@/pages/blog/utils/seo';
-import { createSlug } from '@/pages/blog/utils/url';
+import { createSlug } from '@/utils/url';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/blog/post/$postId/$title')({
@@ -146,7 +146,9 @@ const ContentWrapper = styled.div<{ device: Device }>`
 const PostProgressBar = styled(ProgressBar)<{ device: Device }>`
   position: sticky;
   top: ${({ device, theme }) =>
-    device === 'pc' ? theme.heights.headerPC : theme.heights.headerMobile};
+    device === 'pc'
+      ? `calc(${theme.heights.headerPC} + 40px)`
+      : `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`};
   z-index: ${({ theme }) => theme.zIndex.floating};
   width: 100vw;
   height: 4px;

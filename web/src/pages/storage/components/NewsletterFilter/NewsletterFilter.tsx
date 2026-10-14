@@ -63,7 +63,11 @@ function NewsLetterFilter({ filters }: NewsLetterFilterProps) {
   };
 
   return (
-    <Container aria-label="뉴스레터" isPc={device === 'pc'}>
+    <Container
+      aria-label="뉴스레터"
+      isPc={device === 'pc'}
+      isMobile={device === 'mobile'}
+    >
       {device === 'pc' && (
         <TitleWrapper>
           <IconWrapper>
@@ -72,7 +76,10 @@ function NewsLetterFilter({ filters }: NewsLetterFilterProps) {
           <Title>뉴스레터</Title>
         </TitleWrapper>
       )}
-      <StyledTabs direction={device === 'pc' ? 'vertical' : 'horizontal'}>
+      <StyledTabs
+        direction={device === 'pc' ? 'vertical' : 'horizontal'}
+        isMobile={device === 'mobile'}
+      >
         {newsletterFiltersWithAll.map(
           ({ name, articleCount, imageUrl, id }) => (
             <Tab
@@ -96,9 +103,12 @@ function NewsLetterFilter({ filters }: NewsLetterFilterProps) {
 
 export default NewsLetterFilter;
 
-export const Container = styled.nav<{ isPc: boolean }>`
+export const Container = styled.nav<{ isPc: boolean; isMobile: boolean }>`
   width: 100%;
-  padding: ${({ isPc }) => (isPc ? '16px' : '0')};
+  padding: ${({ isPc, isMobile }) => {
+    if (isPc) return '16px';
+    return isMobile ? '0 0 8px' : 0;
+  }};
   border: ${({ isPc, theme }) =>
     isPc ? `1px solid ${theme.colors.stroke}` : 'none'};
   border-radius: 20px;
@@ -140,8 +150,8 @@ export const NewsLetterImage = styled.img`
   object-fit: cover;
 `;
 
-export const StyledTabs = styled(Tabs)`
-  padding-bottom: 8px;
+export const StyledTabs = styled(Tabs)<{ isMobile: boolean }>`
+  padding-bottom: ${({ isMobile }) => (isMobile ? 0 : '8px')};
   overflow-x: auto;
 
   &::-webkit-scrollbar {

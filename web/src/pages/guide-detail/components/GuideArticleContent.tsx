@@ -37,7 +37,7 @@ const Container = styled.div`
   align-items: flex-start;
 
   -webkit-tap-highlight-color: rgb(0 0 0 / 10%);
-  -webkit-touch-callout: default;
+  -webkit-touch-callout: none;
   user-select: text;
 
   word-break: break-all;

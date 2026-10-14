@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { applyChallengeApplication } from '@/apis/challenge/challenge.api';
 import { challengeQueries } from '@/apis/challenge/challenge.query';
 import { toast } from '@/components/Toast/utils/toastActions';
+import { trackRetentionEvent } from '@/libs/googleAnalytics/retentionEvents';
 
 interface UseChallengeApplyMutationProps {
   challengeId: number;
@@ -15,6 +16,10 @@ const useChallengeApplyMutation = ({
   return useMutation({
     mutationFn: () => applyChallengeApplication(challengeId),
     onSuccess: () => {
+      trackRetentionEvent('challenge_application_completed', {
+        challenge_id: String(challengeId),
+      });
+
       queryClient.invalidateQueries({
         queryKey: challengeQueries.challenges().queryKey,
       });

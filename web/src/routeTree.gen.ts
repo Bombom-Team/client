@@ -19,13 +19,15 @@ import { Route as EventRouteImport } from './routes/event';
 import { Route as BlogRouteImport } from './routes/blog';
 import { Route as BombomRouteImport } from './routes/_bombom';
 import { Route as BlogIndexRouteImport } from './routes/blog/index';
-import { Route as NewslettersNewsletterIdRouteImport } from './routes/newsletters.$newsletterId';
 import { Route as MaeilMailLandingRouteImport } from './routes/maeil-mail/landing';
 import { Route as BombomMainRouteImport } from './routes/_bombom/_main';
+import { Route as NewslettersNewsletterIdIndexRouteImport } from './routes/newsletters.$newsletterId.index';
 import { Route as BombomMainIndexRouteImport } from './routes/_bombom/_main/index';
+import { Route as NewslettersNewsletterIdNameRouteImport } from './routes/newsletters.$newsletterId.$name';
 import { Route as ChallengeChallengeIdLandingRouteImport } from './routes/challenge/$challengeId/landing';
 import { Route as BombomArticlesArticleIdRouteImport } from './routes/_bombom/articles.$articleId';
 import { Route as BombomMainTodayRouteImport } from './routes/_bombom/_main/today';
+import { Route as BombomMainSupportRouteImport } from './routes/_bombom/_main/support';
 import { Route as BombomMainStorageRouteImport } from './routes/_bombom/_main/storage';
 import { Route as BombomMainNoticeRouteImport } from './routes/_bombom/_main/notice';
 import { Route as BombomMainMyRouteImport } from './routes/_bombom/_main/my';
@@ -33,12 +35,23 @@ import { Route as BombomMainMemoRouteImport } from './routes/_bombom/_main/memo'
 import { Route as BombomMainGuideRouteImport } from './routes/_bombom/_main/guide';
 import { Route as BombomMainChallengeRouteImport } from './routes/_bombom/_main/challenge';
 import { Route as BombomMainBookmarkRouteImport } from './routes/_bombom/_main/bookmark';
+import { Route as BombomMainSupportIndexRouteImport } from './routes/_bombom/_main/support.index';
+import { Route as BombomMainMyIndexRouteImport } from './routes/_bombom/_main/my/index';
 import { Route as BombomMainChallengeIndexRouteImport } from './routes/_bombom/_main/challenge/index';
 import { Route as BlogPostPostIdTitleRouteImport } from './routes/blog/post/$postId.$title';
 import { Route as BombomArticlesPreviousArticleIdRouteImport } from './routes/_bombom/articles.previous.$articleId';
 import { Route as BombomArticlesGuideGuideIdRouteImport } from './routes/_bombom/articles.guide.$guideId';
+import { Route as BombomMainSupportInquiryRouteImport } from './routes/_bombom/_main/support.inquiry';
+import { Route as BombomMainMyRewardsRouteImport } from './routes/_bombom/_main/my/rewards';
+import { Route as BombomMainMyReadingActivityRouteImport } from './routes/_bombom/_main/my/reading-activity';
+import { Route as BombomMainMyProfileRouteImport } from './routes/_bombom/_main/my/profile';
+import { Route as BombomMainMyNotificationRouteImport } from './routes/_bombom/_main/my/notification';
+import { Route as BombomMainMyNewslettersRouteImport } from './routes/_bombom/_main/my/newsletters';
+import { Route as BombomMainMyChallengesRouteImport } from './routes/_bombom/_main/my/challenges';
 import { Route as BombomMainChallengeChallengeIdRouteImport } from './routes/_bombom/_main/challenge/$challengeId';
+import { Route as BombomMainSupportInquiryIndexRouteImport } from './routes/_bombom/_main/support.inquiry.index';
 import { Route as BombomMainChallengeChallengeIdIndexRouteImport } from './routes/_bombom/_main/challenge/$challengeId/index';
+import { Route as BombomMainSupportInquiryRoomIdRouteImport } from './routes/_bombom/_main/support.inquiry.$roomId';
 import { Route as BombomMainChallengeChallengeIdReviewRouteImport } from './routes/_bombom/_main/challenge/$challengeId/review';
 import { Route as BombomMainChallengeChallengeIdDashboardRouteImport } from './routes/_bombom/_main/challenge/$challengeId/dashboard';
 import { Route as BombomMainChallengeChallengeIdDailyRouteImport } from './routes/_bombom/_main/challenge/$challengeId/daily';
@@ -94,11 +107,6 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/',
   getParentRoute: () => BlogRoute,
 } as any);
-const NewslettersNewsletterIdRoute = NewslettersNewsletterIdRouteImport.update({
-  id: '/newsletters/$newsletterId',
-  path: '/newsletters/$newsletterId',
-  getParentRoute: () => rootRouteImport,
-} as any);
 const MaeilMailLandingRoute = MaeilMailLandingRouteImport.update({
   id: '/maeil-mail/landing',
   path: '/maeil-mail/landing',
@@ -108,11 +116,23 @@ const BombomMainRoute = BombomMainRouteImport.update({
   id: '/_main',
   getParentRoute: () => BombomRoute,
 } as any);
+const NewslettersNewsletterIdIndexRoute =
+  NewslettersNewsletterIdIndexRouteImport.update({
+    id: '/newsletters/$newsletterId/',
+    path: '/newsletters/$newsletterId/',
+    getParentRoute: () => rootRouteImport,
+  } as any);
 const BombomMainIndexRoute = BombomMainIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => BombomMainRoute,
 } as any);
+const NewslettersNewsletterIdNameRoute =
+  NewslettersNewsletterIdNameRouteImport.update({
+    id: '/newsletters/$newsletterId/$name',
+    path: '/newsletters/$newsletterId/$name',
+    getParentRoute: () => rootRouteImport,
+  } as any);
 const ChallengeChallengeIdLandingRoute =
   ChallengeChallengeIdLandingRouteImport.update({
     id: '/challenge/$challengeId/landing',
@@ -127,6 +147,11 @@ const BombomArticlesArticleIdRoute = BombomArticlesArticleIdRouteImport.update({
 const BombomMainTodayRoute = BombomMainTodayRouteImport.update({
   id: '/today',
   path: '/today',
+  getParentRoute: () => BombomMainRoute,
+} as any);
+const BombomMainSupportRoute = BombomMainSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => BombomMainRoute,
 } as any);
 const BombomMainStorageRoute = BombomMainStorageRouteImport.update({
@@ -164,6 +189,16 @@ const BombomMainBookmarkRoute = BombomMainBookmarkRouteImport.update({
   path: '/bookmark',
   getParentRoute: () => BombomMainRoute,
 } as any);
+const BombomMainSupportIndexRoute = BombomMainSupportIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BombomMainSupportRoute,
+} as any);
+const BombomMainMyIndexRoute = BombomMainMyIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BombomMainMyRoute,
+} as any);
 const BombomMainChallengeIndexRoute =
   BombomMainChallengeIndexRouteImport.update({
     id: '/',
@@ -187,17 +222,67 @@ const BombomArticlesGuideGuideIdRoute =
     path: '/articles/guide/$guideId',
     getParentRoute: () => BombomRoute,
   } as any);
+const BombomMainSupportInquiryRoute =
+  BombomMainSupportInquiryRouteImport.update({
+    id: '/inquiry',
+    path: '/inquiry',
+    getParentRoute: () => BombomMainSupportRoute,
+  } as any);
+const BombomMainMyRewardsRoute = BombomMainMyRewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
+  getParentRoute: () => BombomMainMyRoute,
+} as any);
+const BombomMainMyReadingActivityRoute =
+  BombomMainMyReadingActivityRouteImport.update({
+    id: '/reading-activity',
+    path: '/reading-activity',
+    getParentRoute: () => BombomMainMyRoute,
+  } as any);
+const BombomMainMyProfileRoute = BombomMainMyProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => BombomMainMyRoute,
+} as any);
+const BombomMainMyNotificationRoute =
+  BombomMainMyNotificationRouteImport.update({
+    id: '/notification',
+    path: '/notification',
+    getParentRoute: () => BombomMainMyRoute,
+  } as any);
+const BombomMainMyNewslettersRoute = BombomMainMyNewslettersRouteImport.update({
+  id: '/newsletters',
+  path: '/newsletters',
+  getParentRoute: () => BombomMainMyRoute,
+} as any);
+const BombomMainMyChallengesRoute = BombomMainMyChallengesRouteImport.update({
+  id: '/challenges',
+  path: '/challenges',
+  getParentRoute: () => BombomMainMyRoute,
+} as any);
 const BombomMainChallengeChallengeIdRoute =
   BombomMainChallengeChallengeIdRouteImport.update({
     id: '/$challengeId',
     path: '/$challengeId',
     getParentRoute: () => BombomMainChallengeRoute,
   } as any);
+const BombomMainSupportInquiryIndexRoute =
+  BombomMainSupportInquiryIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => BombomMainSupportInquiryRoute,
+  } as any);
 const BombomMainChallengeChallengeIdIndexRoute =
   BombomMainChallengeChallengeIdIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => BombomMainChallengeChallengeIdRoute,
+  } as any);
+const BombomMainSupportInquiryRoomIdRoute =
+  BombomMainSupportInquiryRoomIdRouteImport.update({
+    id: '/$roomId',
+    path: '/$roomId',
+    getParentRoute: () => BombomMainSupportInquiryRoute,
   } as any);
 const BombomMainChallengeChallengeIdReviewRoute =
   BombomMainChallengeChallengeIdReviewRouteImport.update({
@@ -240,30 +325,43 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
-  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog/': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/challenge': typeof BombomMainChallengeRouteWithChildren;
   '/guide': typeof BombomMainGuideRoute;
   '/memo': typeof BombomMainMemoRoute;
-  '/my': typeof BombomMainMyRoute;
+  '/my': typeof BombomMainMyRouteWithChildren;
   '/notice': typeof BombomMainNoticeRoute;
   '/storage': typeof BombomMainStorageRoute;
+  '/support': typeof BombomMainSupportRouteWithChildren;
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
+  '/newsletters/$newsletterId/$name': typeof NewslettersNewsletterIdNameRoute;
   '/': typeof BombomMainIndexRoute;
+  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdIndexRoute;
   '/challenge/$challengeId': typeof BombomMainChallengeChallengeIdRouteWithChildren;
+  '/my/challenges': typeof BombomMainMyChallengesRoute;
+  '/my/newsletters': typeof BombomMainMyNewslettersRoute;
+  '/my/notification': typeof BombomMainMyNotificationRoute;
+  '/my/profile': typeof BombomMainMyProfileRoute;
+  '/my/reading-activity': typeof BombomMainMyReadingActivityRoute;
+  '/my/rewards': typeof BombomMainMyRewardsRoute;
+  '/support/inquiry': typeof BombomMainSupportInquiryRouteWithChildren;
   '/articles/guide/$guideId': typeof BombomArticlesGuideGuideIdRoute;
   '/articles/previous/$articleId': typeof BombomArticlesPreviousArticleIdRoute;
   '/blog/post/$postId/$title': typeof BlogPostPostIdTitleRoute;
   '/challenge/': typeof BombomMainChallengeIndexRoute;
+  '/my/': typeof BombomMainMyIndexRoute;
+  '/support/': typeof BombomMainSupportIndexRoute;
   '/challenge/$challengeId/certification': typeof BombomMainChallengeChallengeIdCertificationRoute;
   '/challenge/$challengeId/comments': typeof BombomMainChallengeChallengeIdCommentsRoute;
   '/challenge/$challengeId/daily': typeof BombomMainChallengeChallengeIdDailyRoute;
   '/challenge/$challengeId/dashboard': typeof BombomMainChallengeChallengeIdDashboardRoute;
   '/challenge/$challengeId/review': typeof BombomMainChallengeChallengeIdReviewRoute;
+  '/support/inquiry/$roomId': typeof BombomMainSupportInquiryRoomIdRoute;
   '/challenge/$challengeId/': typeof BombomMainChallengeChallengeIdIndexRoute;
+  '/support/inquiry/': typeof BombomMainSupportInquiryIndexRoute;
 }
 export interface FileRoutesByTo {
   '/event': typeof EventRoute;
@@ -274,28 +372,38 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute;
   '/signup': typeof SignupRoute;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
-  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog': typeof BlogIndexRoute;
   '/bookmark': typeof BombomMainBookmarkRoute;
   '/guide': typeof BombomMainGuideRoute;
   '/memo': typeof BombomMainMemoRoute;
-  '/my': typeof BombomMainMyRoute;
   '/notice': typeof BombomMainNoticeRoute;
   '/storage': typeof BombomMainStorageRoute;
   '/today': typeof BombomMainTodayRoute;
   '/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
+  '/newsletters/$newsletterId/$name': typeof NewslettersNewsletterIdNameRoute;
   '/': typeof BombomMainIndexRoute;
+  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdIndexRoute;
+  '/my/challenges': typeof BombomMainMyChallengesRoute;
+  '/my/newsletters': typeof BombomMainMyNewslettersRoute;
+  '/my/notification': typeof BombomMainMyNotificationRoute;
+  '/my/profile': typeof BombomMainMyProfileRoute;
+  '/my/reading-activity': typeof BombomMainMyReadingActivityRoute;
+  '/my/rewards': typeof BombomMainMyRewardsRoute;
   '/articles/guide/$guideId': typeof BombomArticlesGuideGuideIdRoute;
   '/articles/previous/$articleId': typeof BombomArticlesPreviousArticleIdRoute;
   '/blog/post/$postId/$title': typeof BlogPostPostIdTitleRoute;
   '/challenge': typeof BombomMainChallengeIndexRoute;
+  '/my': typeof BombomMainMyIndexRoute;
+  '/support': typeof BombomMainSupportIndexRoute;
   '/challenge/$challengeId/certification': typeof BombomMainChallengeChallengeIdCertificationRoute;
   '/challenge/$challengeId/comments': typeof BombomMainChallengeChallengeIdCommentsRoute;
   '/challenge/$challengeId/daily': typeof BombomMainChallengeChallengeIdDailyRoute;
   '/challenge/$challengeId/dashboard': typeof BombomMainChallengeChallengeIdDashboardRoute;
   '/challenge/$challengeId/review': typeof BombomMainChallengeChallengeIdReviewRoute;
+  '/support/inquiry/$roomId': typeof BombomMainSupportInquiryRoomIdRoute;
   '/challenge/$challengeId': typeof BombomMainChallengeChallengeIdIndexRoute;
+  '/support/inquiry': typeof BombomMainSupportInquiryIndexRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
@@ -310,30 +418,43 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute;
   '/_bombom/_main': typeof BombomMainRouteWithChildren;
   '/maeil-mail/landing': typeof MaeilMailLandingRoute;
-  '/newsletters/$newsletterId': typeof NewslettersNewsletterIdRoute;
   '/blog/': typeof BlogIndexRoute;
   '/_bombom/_main/bookmark': typeof BombomMainBookmarkRoute;
   '/_bombom/_main/challenge': typeof BombomMainChallengeRouteWithChildren;
   '/_bombom/_main/guide': typeof BombomMainGuideRoute;
   '/_bombom/_main/memo': typeof BombomMainMemoRoute;
-  '/_bombom/_main/my': typeof BombomMainMyRoute;
+  '/_bombom/_main/my': typeof BombomMainMyRouteWithChildren;
   '/_bombom/_main/notice': typeof BombomMainNoticeRoute;
   '/_bombom/_main/storage': typeof BombomMainStorageRoute;
+  '/_bombom/_main/support': typeof BombomMainSupportRouteWithChildren;
   '/_bombom/_main/today': typeof BombomMainTodayRoute;
   '/_bombom/articles/$articleId': typeof BombomArticlesArticleIdRoute;
   '/challenge/$challengeId/landing': typeof ChallengeChallengeIdLandingRoute;
+  '/newsletters/$newsletterId/$name': typeof NewslettersNewsletterIdNameRoute;
   '/_bombom/_main/': typeof BombomMainIndexRoute;
+  '/newsletters/$newsletterId/': typeof NewslettersNewsletterIdIndexRoute;
   '/_bombom/_main/challenge/$challengeId': typeof BombomMainChallengeChallengeIdRouteWithChildren;
+  '/_bombom/_main/my/challenges': typeof BombomMainMyChallengesRoute;
+  '/_bombom/_main/my/newsletters': typeof BombomMainMyNewslettersRoute;
+  '/_bombom/_main/my/notification': typeof BombomMainMyNotificationRoute;
+  '/_bombom/_main/my/profile': typeof BombomMainMyProfileRoute;
+  '/_bombom/_main/my/reading-activity': typeof BombomMainMyReadingActivityRoute;
+  '/_bombom/_main/my/rewards': typeof BombomMainMyRewardsRoute;
+  '/_bombom/_main/support/inquiry': typeof BombomMainSupportInquiryRouteWithChildren;
   '/_bombom/articles/guide/$guideId': typeof BombomArticlesGuideGuideIdRoute;
   '/_bombom/articles/previous/$articleId': typeof BombomArticlesPreviousArticleIdRoute;
   '/blog/post/$postId/$title': typeof BlogPostPostIdTitleRoute;
   '/_bombom/_main/challenge/': typeof BombomMainChallengeIndexRoute;
+  '/_bombom/_main/my/': typeof BombomMainMyIndexRoute;
+  '/_bombom/_main/support/': typeof BombomMainSupportIndexRoute;
   '/_bombom/_main/challenge/$challengeId/certification': typeof BombomMainChallengeChallengeIdCertificationRoute;
   '/_bombom/_main/challenge/$challengeId/comments': typeof BombomMainChallengeChallengeIdCommentsRoute;
   '/_bombom/_main/challenge/$challengeId/daily': typeof BombomMainChallengeChallengeIdDailyRoute;
   '/_bombom/_main/challenge/$challengeId/dashboard': typeof BombomMainChallengeChallengeIdDashboardRoute;
   '/_bombom/_main/challenge/$challengeId/review': typeof BombomMainChallengeChallengeIdReviewRoute;
+  '/_bombom/_main/support/inquiry/$roomId': typeof BombomMainSupportInquiryRoomIdRoute;
   '/_bombom/_main/challenge/$challengeId/': typeof BombomMainChallengeChallengeIdIndexRoute;
+  '/_bombom/_main/support/inquiry/': typeof BombomMainSupportInquiryIndexRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
@@ -347,7 +468,6 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/signup'
     | '/maeil-mail/landing'
-    | '/newsletters/$newsletterId'
     | '/blog/'
     | '/bookmark'
     | '/challenge'
@@ -356,21 +476,35 @@ export interface FileRouteTypes {
     | '/my'
     | '/notice'
     | '/storage'
+    | '/support'
     | '/today'
     | '/articles/$articleId'
     | '/challenge/$challengeId/landing'
+    | '/newsletters/$newsletterId/$name'
     | '/'
+    | '/newsletters/$newsletterId'
     | '/challenge/$challengeId'
+    | '/my/challenges'
+    | '/my/newsletters'
+    | '/my/notification'
+    | '/my/profile'
+    | '/my/reading-activity'
+    | '/my/rewards'
+    | '/support/inquiry'
     | '/articles/guide/$guideId'
     | '/articles/previous/$articleId'
     | '/blog/post/$postId/$title'
     | '/challenge/'
+    | '/my/'
+    | '/support/'
     | '/challenge/$challengeId/certification'
     | '/challenge/$challengeId/comments'
     | '/challenge/$challengeId/daily'
     | '/challenge/$challengeId/dashboard'
     | '/challenge/$challengeId/review'
-    | '/challenge/$challengeId/';
+    | '/support/inquiry/$roomId'
+    | '/challenge/$challengeId/'
+    | '/support/inquiry/';
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/event'
@@ -381,28 +515,38 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/signup'
     | '/maeil-mail/landing'
-    | '/newsletters/$newsletterId'
     | '/blog'
     | '/bookmark'
     | '/guide'
     | '/memo'
-    | '/my'
     | '/notice'
     | '/storage'
     | '/today'
     | '/articles/$articleId'
     | '/challenge/$challengeId/landing'
+    | '/newsletters/$newsletterId/$name'
     | '/'
+    | '/newsletters/$newsletterId'
+    | '/my/challenges'
+    | '/my/newsletters'
+    | '/my/notification'
+    | '/my/profile'
+    | '/my/reading-activity'
+    | '/my/rewards'
     | '/articles/guide/$guideId'
     | '/articles/previous/$articleId'
     | '/blog/post/$postId/$title'
     | '/challenge'
+    | '/my'
+    | '/support'
     | '/challenge/$challengeId/certification'
     | '/challenge/$challengeId/comments'
     | '/challenge/$challengeId/daily'
     | '/challenge/$challengeId/dashboard'
     | '/challenge/$challengeId/review'
-    | '/challenge/$challengeId';
+    | '/support/inquiry/$roomId'
+    | '/challenge/$challengeId'
+    | '/support/inquiry';
   id:
     | '__root__'
     | '/_bombom'
@@ -416,7 +560,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_bombom/_main'
     | '/maeil-mail/landing'
-    | '/newsletters/$newsletterId'
     | '/blog/'
     | '/_bombom/_main/bookmark'
     | '/_bombom/_main/challenge'
@@ -425,21 +568,35 @@ export interface FileRouteTypes {
     | '/_bombom/_main/my'
     | '/_bombom/_main/notice'
     | '/_bombom/_main/storage'
+    | '/_bombom/_main/support'
     | '/_bombom/_main/today'
     | '/_bombom/articles/$articleId'
     | '/challenge/$challengeId/landing'
+    | '/newsletters/$newsletterId/$name'
     | '/_bombom/_main/'
+    | '/newsletters/$newsletterId/'
     | '/_bombom/_main/challenge/$challengeId'
+    | '/_bombom/_main/my/challenges'
+    | '/_bombom/_main/my/newsletters'
+    | '/_bombom/_main/my/notification'
+    | '/_bombom/_main/my/profile'
+    | '/_bombom/_main/my/reading-activity'
+    | '/_bombom/_main/my/rewards'
+    | '/_bombom/_main/support/inquiry'
     | '/_bombom/articles/guide/$guideId'
     | '/_bombom/articles/previous/$articleId'
     | '/blog/post/$postId/$title'
     | '/_bombom/_main/challenge/'
+    | '/_bombom/_main/my/'
+    | '/_bombom/_main/support/'
     | '/_bombom/_main/challenge/$challengeId/certification'
     | '/_bombom/_main/challenge/$challengeId/comments'
     | '/_bombom/_main/challenge/$challengeId/daily'
     | '/_bombom/_main/challenge/$challengeId/dashboard'
     | '/_bombom/_main/challenge/$challengeId/review'
-    | '/_bombom/_main/challenge/$challengeId/';
+    | '/_bombom/_main/support/inquiry/$roomId'
+    | '/_bombom/_main/challenge/$challengeId/'
+    | '/_bombom/_main/support/inquiry/';
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
@@ -453,8 +610,9 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute;
   SignupRoute: typeof SignupRoute;
   MaeilMailLandingRoute: typeof MaeilMailLandingRoute;
-  NewslettersNewsletterIdRoute: typeof NewslettersNewsletterIdRoute;
   ChallengeChallengeIdLandingRoute: typeof ChallengeChallengeIdLandingRoute;
+  NewslettersNewsletterIdNameRoute: typeof NewslettersNewsletterIdNameRoute;
+  NewslettersNewsletterIdIndexRoute: typeof NewslettersNewsletterIdIndexRoute;
 }
 
 declare module '@tanstack/react-router' {
@@ -529,13 +687,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport;
       parentRoute: typeof BlogRoute;
     };
-    '/newsletters/$newsletterId': {
-      id: '/newsletters/$newsletterId';
-      path: '/newsletters/$newsletterId';
-      fullPath: '/newsletters/$newsletterId';
-      preLoaderRoute: typeof NewslettersNewsletterIdRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
     '/maeil-mail/landing': {
       id: '/maeil-mail/landing';
       path: '/maeil-mail/landing';
@@ -550,12 +701,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BombomMainRouteImport;
       parentRoute: typeof BombomRoute;
     };
+    '/newsletters/$newsletterId/': {
+      id: '/newsletters/$newsletterId/';
+      path: '/newsletters/$newsletterId';
+      fullPath: '/newsletters/$newsletterId';
+      preLoaderRoute: typeof NewslettersNewsletterIdIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/_bombom/_main/': {
       id: '/_bombom/_main/';
       path: '/';
       fullPath: '/';
       preLoaderRoute: typeof BombomMainIndexRouteImport;
       parentRoute: typeof BombomMainRoute;
+    };
+    '/newsletters/$newsletterId/$name': {
+      id: '/newsletters/$newsletterId/$name';
+      path: '/newsletters/$newsletterId/$name';
+      fullPath: '/newsletters/$newsletterId/$name';
+      preLoaderRoute: typeof NewslettersNewsletterIdNameRouteImport;
+      parentRoute: typeof rootRouteImport;
     };
     '/challenge/$challengeId/landing': {
       id: '/challenge/$challengeId/landing';
@@ -576,6 +741,13 @@ declare module '@tanstack/react-router' {
       path: '/today';
       fullPath: '/today';
       preLoaderRoute: typeof BombomMainTodayRouteImport;
+      parentRoute: typeof BombomMainRoute;
+    };
+    '/_bombom/_main/support': {
+      id: '/_bombom/_main/support';
+      path: '/support';
+      fullPath: '/support';
+      preLoaderRoute: typeof BombomMainSupportRouteImport;
       parentRoute: typeof BombomMainRoute;
     };
     '/_bombom/_main/storage': {
@@ -627,6 +799,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BombomMainBookmarkRouteImport;
       parentRoute: typeof BombomMainRoute;
     };
+    '/_bombom/_main/support/': {
+      id: '/_bombom/_main/support/';
+      path: '/';
+      fullPath: '/support/';
+      preLoaderRoute: typeof BombomMainSupportIndexRouteImport;
+      parentRoute: typeof BombomMainSupportRoute;
+    };
+    '/_bombom/_main/my/': {
+      id: '/_bombom/_main/my/';
+      path: '/';
+      fullPath: '/my/';
+      preLoaderRoute: typeof BombomMainMyIndexRouteImport;
+      parentRoute: typeof BombomMainMyRoute;
+    };
     '/_bombom/_main/challenge/': {
       id: '/_bombom/_main/challenge/';
       path: '/';
@@ -655,6 +841,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BombomArticlesGuideGuideIdRouteImport;
       parentRoute: typeof BombomRoute;
     };
+    '/_bombom/_main/support/inquiry': {
+      id: '/_bombom/_main/support/inquiry';
+      path: '/inquiry';
+      fullPath: '/support/inquiry';
+      preLoaderRoute: typeof BombomMainSupportInquiryRouteImport;
+      parentRoute: typeof BombomMainSupportRoute;
+    };
+    '/_bombom/_main/my/rewards': {
+      id: '/_bombom/_main/my/rewards';
+      path: '/rewards';
+      fullPath: '/my/rewards';
+      preLoaderRoute: typeof BombomMainMyRewardsRouteImport;
+      parentRoute: typeof BombomMainMyRoute;
+    };
+    '/_bombom/_main/my/reading-activity': {
+      id: '/_bombom/_main/my/reading-activity';
+      path: '/reading-activity';
+      fullPath: '/my/reading-activity';
+      preLoaderRoute: typeof BombomMainMyReadingActivityRouteImport;
+      parentRoute: typeof BombomMainMyRoute;
+    };
+    '/_bombom/_main/my/profile': {
+      id: '/_bombom/_main/my/profile';
+      path: '/profile';
+      fullPath: '/my/profile';
+      preLoaderRoute: typeof BombomMainMyProfileRouteImport;
+      parentRoute: typeof BombomMainMyRoute;
+    };
+    '/_bombom/_main/my/notification': {
+      id: '/_bombom/_main/my/notification';
+      path: '/notification';
+      fullPath: '/my/notification';
+      preLoaderRoute: typeof BombomMainMyNotificationRouteImport;
+      parentRoute: typeof BombomMainMyRoute;
+    };
+    '/_bombom/_main/my/newsletters': {
+      id: '/_bombom/_main/my/newsletters';
+      path: '/newsletters';
+      fullPath: '/my/newsletters';
+      preLoaderRoute: typeof BombomMainMyNewslettersRouteImport;
+      parentRoute: typeof BombomMainMyRoute;
+    };
+    '/_bombom/_main/my/challenges': {
+      id: '/_bombom/_main/my/challenges';
+      path: '/challenges';
+      fullPath: '/my/challenges';
+      preLoaderRoute: typeof BombomMainMyChallengesRouteImport;
+      parentRoute: typeof BombomMainMyRoute;
+    };
     '/_bombom/_main/challenge/$challengeId': {
       id: '/_bombom/_main/challenge/$challengeId';
       path: '/$challengeId';
@@ -662,12 +897,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BombomMainChallengeChallengeIdRouteImport;
       parentRoute: typeof BombomMainChallengeRoute;
     };
+    '/_bombom/_main/support/inquiry/': {
+      id: '/_bombom/_main/support/inquiry/';
+      path: '/';
+      fullPath: '/support/inquiry/';
+      preLoaderRoute: typeof BombomMainSupportInquiryIndexRouteImport;
+      parentRoute: typeof BombomMainSupportInquiryRoute;
+    };
     '/_bombom/_main/challenge/$challengeId/': {
       id: '/_bombom/_main/challenge/$challengeId/';
       path: '/';
       fullPath: '/challenge/$challengeId/';
       preLoaderRoute: typeof BombomMainChallengeChallengeIdIndexRouteImport;
       parentRoute: typeof BombomMainChallengeChallengeIdRoute;
+    };
+    '/_bombom/_main/support/inquiry/$roomId': {
+      id: '/_bombom/_main/support/inquiry/$roomId';
+      path: '/$roomId';
+      fullPath: '/support/inquiry/$roomId';
+      preLoaderRoute: typeof BombomMainSupportInquiryRoomIdRouteImport;
+      parentRoute: typeof BombomMainSupportInquiryRoute;
     };
     '/_bombom/_main/challenge/$challengeId/review': {
       id: '/_bombom/_main/challenge/$challengeId/review';
@@ -751,14 +1000,68 @@ const BombomMainChallengeRouteChildren: BombomMainChallengeRouteChildren = {
 const BombomMainChallengeRouteWithChildren =
   BombomMainChallengeRoute._addFileChildren(BombomMainChallengeRouteChildren);
 
+interface BombomMainMyRouteChildren {
+  BombomMainMyChallengesRoute: typeof BombomMainMyChallengesRoute;
+  BombomMainMyNewslettersRoute: typeof BombomMainMyNewslettersRoute;
+  BombomMainMyNotificationRoute: typeof BombomMainMyNotificationRoute;
+  BombomMainMyProfileRoute: typeof BombomMainMyProfileRoute;
+  BombomMainMyReadingActivityRoute: typeof BombomMainMyReadingActivityRoute;
+  BombomMainMyRewardsRoute: typeof BombomMainMyRewardsRoute;
+  BombomMainMyIndexRoute: typeof BombomMainMyIndexRoute;
+}
+
+const BombomMainMyRouteChildren: BombomMainMyRouteChildren = {
+  BombomMainMyChallengesRoute: BombomMainMyChallengesRoute,
+  BombomMainMyNewslettersRoute: BombomMainMyNewslettersRoute,
+  BombomMainMyNotificationRoute: BombomMainMyNotificationRoute,
+  BombomMainMyProfileRoute: BombomMainMyProfileRoute,
+  BombomMainMyReadingActivityRoute: BombomMainMyReadingActivityRoute,
+  BombomMainMyRewardsRoute: BombomMainMyRewardsRoute,
+  BombomMainMyIndexRoute: BombomMainMyIndexRoute,
+};
+
+const BombomMainMyRouteWithChildren = BombomMainMyRoute._addFileChildren(
+  BombomMainMyRouteChildren,
+);
+
+interface BombomMainSupportInquiryRouteChildren {
+  BombomMainSupportInquiryRoomIdRoute: typeof BombomMainSupportInquiryRoomIdRoute;
+  BombomMainSupportInquiryIndexRoute: typeof BombomMainSupportInquiryIndexRoute;
+}
+
+const BombomMainSupportInquiryRouteChildren: BombomMainSupportInquiryRouteChildren =
+  {
+    BombomMainSupportInquiryRoomIdRoute: BombomMainSupportInquiryRoomIdRoute,
+    BombomMainSupportInquiryIndexRoute: BombomMainSupportInquiryIndexRoute,
+  };
+
+const BombomMainSupportInquiryRouteWithChildren =
+  BombomMainSupportInquiryRoute._addFileChildren(
+    BombomMainSupportInquiryRouteChildren,
+  );
+
+interface BombomMainSupportRouteChildren {
+  BombomMainSupportInquiryRoute: typeof BombomMainSupportInquiryRouteWithChildren;
+  BombomMainSupportIndexRoute: typeof BombomMainSupportIndexRoute;
+}
+
+const BombomMainSupportRouteChildren: BombomMainSupportRouteChildren = {
+  BombomMainSupportInquiryRoute: BombomMainSupportInquiryRouteWithChildren,
+  BombomMainSupportIndexRoute: BombomMainSupportIndexRoute,
+};
+
+const BombomMainSupportRouteWithChildren =
+  BombomMainSupportRoute._addFileChildren(BombomMainSupportRouteChildren);
+
 interface BombomMainRouteChildren {
   BombomMainBookmarkRoute: typeof BombomMainBookmarkRoute;
   BombomMainChallengeRoute: typeof BombomMainChallengeRouteWithChildren;
   BombomMainGuideRoute: typeof BombomMainGuideRoute;
   BombomMainMemoRoute: typeof BombomMainMemoRoute;
-  BombomMainMyRoute: typeof BombomMainMyRoute;
+  BombomMainMyRoute: typeof BombomMainMyRouteWithChildren;
   BombomMainNoticeRoute: typeof BombomMainNoticeRoute;
   BombomMainStorageRoute: typeof BombomMainStorageRoute;
+  BombomMainSupportRoute: typeof BombomMainSupportRouteWithChildren;
   BombomMainTodayRoute: typeof BombomMainTodayRoute;
   BombomMainIndexRoute: typeof BombomMainIndexRoute;
 }
@@ -768,9 +1071,10 @@ const BombomMainRouteChildren: BombomMainRouteChildren = {
   BombomMainChallengeRoute: BombomMainChallengeRouteWithChildren,
   BombomMainGuideRoute: BombomMainGuideRoute,
   BombomMainMemoRoute: BombomMainMemoRoute,
-  BombomMainMyRoute: BombomMainMyRoute,
+  BombomMainMyRoute: BombomMainMyRouteWithChildren,
   BombomMainNoticeRoute: BombomMainNoticeRoute,
   BombomMainStorageRoute: BombomMainStorageRoute,
+  BombomMainSupportRoute: BombomMainSupportRouteWithChildren,
   BombomMainTodayRoute: BombomMainTodayRoute,
   BombomMainIndexRoute: BombomMainIndexRoute,
 };
@@ -819,8 +1123,9 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SignupRoute: SignupRoute,
   MaeilMailLandingRoute: MaeilMailLandingRoute,
-  NewslettersNewsletterIdRoute: NewslettersNewsletterIdRoute,
   ChallengeChallengeIdLandingRoute: ChallengeChallengeIdLandingRoute,
+  NewslettersNewsletterIdNameRoute: NewslettersNewsletterIdNameRoute,
+  NewslettersNewsletterIdIndexRoute: NewslettersNewsletterIdIndexRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import Badge from '@/components/Badge/Badge';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
+import { useDevice } from '@/hooks/useDevice';
 import type { components } from '@/types/openapi';
 import ClockIcon from '#/assets/svg/clock.svg';
 
@@ -10,6 +11,7 @@ interface NewsletterItemCardProps {
 }
 
 export default function NewsletterItemCard({ data }: NewsletterItemCardProps) {
+  const device = useDevice();
   const {
     articleId,
     title,
@@ -21,11 +23,17 @@ export default function NewsletterItemCard({ data }: NewsletterItemCardProps) {
 
   return (
     <Container to={`/articles/${articleId}`}>
-      <NewsletterImage
-        src={thumbnailUrl ?? newsletter?.imageUrl ?? ''}
-        alt={title ?? ''}
-        height={180}
-      />
+      <ImageWrapper>
+        <NewsletterImage
+          src={thumbnailUrl ?? newsletter?.imageUrl ?? ''}
+          alt={title ?? ''}
+        />
+        {device === 'mobile' && (
+          <CategoryBadgeBox>
+            <Badge text={newsletter?.category ?? ''} />
+          </CategoryBadgeBox>
+        )}
+      </ImageWrapper>
 
       <ContentWrapper>
         <TextContent>
@@ -34,9 +42,9 @@ export default function NewsletterItemCard({ data }: NewsletterItemCardProps) {
         </TextContent>
 
         <MetaContent>
-          <Badge text={newsletter?.category ?? ''} />
+          {device !== 'mobile' && <Badge text={newsletter?.category ?? ''} />}
           <MetaInfo>
-            <SourceText>from {newsletter?.name ?? ''}</SourceText>
+            <NewsletterName>from {newsletter?.name ?? ''}</NewsletterName>
             <ReadTimeBox>
               <ClockIcon width={16} height={16} />
               <SourceText>{`${expectedReadTime}분`}</SourceText>
@@ -65,11 +73,23 @@ const Container = styled(Link)`
   transition: all 0.2s ease;
 `;
 
+const ImageWrapper = styled.div`
+  position: relative;
+`;
+
 const NewsletterImage = styled(ImageWithFallback)`
   width: 100%;
 
+  aspect-ratio: 16 / 9;
+
   object-fit: cover;
   object-position: center;
+`;
+
+const CategoryBadgeBox = styled.div`
+  position: absolute;
+  top: 8px;
+  left: 8px;
 `;
 
 const ContentWrapper = styled.div`
@@ -92,7 +112,7 @@ const Title = styled.h3`
   display: -webkit-box;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t7Bold};
+  font: ${({ theme }) => theme.fonts.t6Bold};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -113,20 +133,35 @@ const Description = styled.p`
 `;
 
 const MetaContent = styled.div`
+  min-width: 0;
+
   display: flex;
   gap: 8px;
   align-items: center;
 `;
 
 const MetaInfo = styled.div`
+  min-width: 0;
+
   display: flex;
   gap: 8px;
   align-items: center;
 `;
 
+const NewsletterName = styled.span`
+  overflow: hidden;
+
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.t3Regular};
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+`;
+
 const SourceText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t3Regular};
+  white-space: nowrap;
 `;
 
 const ReadTimeBox = styled.div`

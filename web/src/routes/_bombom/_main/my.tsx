@@ -1,34 +1,35 @@
 import { theme } from '@bombom/shared/theme';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
 import {
   createFileRoute,
+  Outlet,
+  useMatchRoute,
   useNavigate,
-  useSearch,
 } from '@tanstack/react-router';
-import { useRef } from 'react';
-import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
 import { useDevice } from '@/hooks/useDevice';
-import NotificationSettingsSection from '@/pages/my-page/components/NotificationSettingsSection/NotificationSettingsSection';
-import ProfileSection from '@/pages/my-page/components/ProfileSection';
-import RewardsSection from '@/pages/my-page/components/RewardsSection';
-import SubscribedNewslettersSection from '@/pages/my-page/components/SubscribedNewslettersSection';
+import ReadingCompanionCard from '@/pages/my-page/components/ReadingCompanionCard';
 import { isWebView } from '@/utils/device';
 import type { Device } from '@/hooks/useDevice';
 import type { CSSObject, Theme } from '@emotion/react';
 import AvatarIcon from '#/assets/svg/avatar.svg';
 
-type MyPageTab = 'profile' | 'newsletters' | 'notification' | 'rewards';
-
 const DEFAULT_TABS = [
-  { id: 'profile', label: '내 정보' },
-  { id: 'newsletters', label: '구독 뉴스레터' },
-  { id: 'rewards', label: '선물함' },
+  { id: 'profile', label: '내 정보', to: '/my/profile' },
+  { id: 'reading-activity', label: '읽기 활동', to: '/my/reading-activity' },
+  { id: 'challenges', label: '나의 챌린지', to: '/my/challenges' },
+  { id: 'newsletters', label: '구독 뉴스레터', to: '/my/newsletters' },
+  { id: 'rewards', label: '선물함', to: '/my/rewards' },
 ] as const;
 
-const WEBVIEW_TABS = [{ id: 'notification', label: '알림 설정' }] as const;
+const WEBVIEW_TABS = [
+  { id: 'notification', label: '알림 설정', to: '/my/notification' },
+] as const;
+
+type MyPageTabTo =
+  | (typeof DEFAULT_TABS)[number]['to']
+  | (typeof WEBVIEW_TABS)[number]['to'];
 
 export const Route = createFileRoute('/_bombom/_main/my')({
   head: () => ({
@@ -42,60 +43,23 @@ export const Route = createFileRoute('/_bombom/_main/my')({
       },
     ],
   }),
-  validateSearch: (search: { tab?: MyPageTab }) => {
-    return { tab: search.tab ?? 'profile' };
-  },
   component: MyPage,
 });
 
 function MyPage() {
   const device = useDevice();
+  const matchRoute = useMatchRoute();
   const navigate = useNavigate();
-  const countRef = useRef(0);
-  const { tab: activeTabParam } = useSearch({ from: '/_bombom/_main/my' });
-
-  const { data: userInfo } = useQuery(queries.me());
-  const { data: mySubscriptions } = useQuery({
-    ...queries.mySubscriptions(),
-    refetchInterval: () => {
-      if (countRef.current >= 60) return false;
-      countRef.current += 1;
-      return 5 * 1000;
-    },
-  });
 
   const tabs = isWebView()
     ? [...DEFAULT_TABS, ...WEBVIEW_TABS]
     : [...DEFAULT_TABS];
 
-  if (!userInfo) return null;
+  const activeTabId =
+    tabs.find((tab) => matchRoute({ to: tab.to }))?.id ?? 'profile';
 
-  const handleTabSelect = (tabId: MyPageTab) => {
-    navigate({
-      to: '/my',
-      search: { tab: tabId },
-      replace: true,
-    });
-  };
-
-  const renderTabContent = () => {
-    switch (activeTabParam) {
-      case 'profile':
-        return <ProfileSection userInfo={userInfo} />;
-      case 'newsletters':
-        return (
-          <SubscribedNewslettersSection
-            newsletters={mySubscriptions ?? []}
-            device={device}
-          />
-        );
-      case 'rewards':
-        return <RewardsSection />;
-      case 'notification':
-        return <NotificationSettingsSection />;
-      default:
-        return null;
-    }
+  const handleTabSelect = (to: MyPageTabTo) => {
+    navigate({ to, replace: true });
   };
 
   return (
@@ -108,28 +72,31 @@ function MyPage() {
       </TitleWrapper>
 
       <ContentWrapper device={device}>
-        <TabsWrapper device={device}>
-          <Tabs direction={device === 'mobile' ? 'horizontal' : 'vertical'}>
-            {tabs.map((tab) => (
-              <Tab
-                key={tab.id}
-                value={tab.id}
-                label={tab.label}
-                onTabSelect={() => handleTabSelect(tab.id)}
-                selected={activeTabParam === tab.id}
-                aria-controls={`panel-${tab.id}`}
-                textAlign="start"
-              />
-            ))}
-          </Tabs>
-        </TabsWrapper>
+        <SideColumn device={device}>
+          <TabsWrapper device={device}>
+            <Tabs direction={device === 'mobile' ? 'horizontal' : 'vertical'}>
+              {tabs.map((tab) => (
+                <Tab
+                  key={tab.id}
+                  value={tab.id}
+                  label={tab.label}
+                  onTabSelect={() => handleTabSelect(tab.to)}
+                  selected={activeTabId === tab.id}
+                  aria-controls={`panel-${tab.id}`}
+                  textAlign="start"
+                />
+              ))}
+            </Tabs>
+          </TabsWrapper>
+          {device !== 'mobile' && <ReadingCompanionCard />}
+        </SideColumn>
 
         <TabPanel
-          id={`panel-${activeTabParam}`}
+          id={`panel-${activeTabId}`}
           role="tabpanel"
-          aria-labelledby={`tab-${activeTabParam}`}
+          aria-labelledby={`tab-${activeTabId}`}
         >
-          {renderTabContent()}
+          <Outlet />
         </TabPanel>
       </ContentWrapper>
     </Container>
@@ -183,28 +150,37 @@ const ContentWrapper = styled.div<{ device: Device }>`
   align-self: stretch;
 `;
 
-const TabsWrapper = styled.div<{ device: Device }>`
+const SideColumn = styled.div<{ device: Device }>`
   width: ${({ device }) => (device === 'mobile' ? '100%' : '280px')};
+
+  display: flex;
+  gap: ${({ device }) => (device === 'mobile' ? '0' : '20px')};
+  flex-direction: column;
+  flex-shrink: 0;
+
+  box-sizing: border-box;
+
+  order: 0;
+`;
+
+const TabsWrapper = styled.div<{ device: Device }>`
+  width: 100%;
 
   display: flex;
   flex-direction: column;
 
   box-sizing: border-box;
 
-  order: 0;
-
   ${({ device, theme }) => tabsWrapperStyles[device](theme)}
 `;
 
 const tabsWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
   pc: (theme) => ({
-    flexShrink: 0,
     border: `1px solid ${theme.colors.stroke}`,
     borderRadius: '12px',
     padding: '16px',
   }),
   tablet: (theme) => ({
-    flexShrink: 0,
     border: `1px solid ${theme.colors.stroke}`,
     borderRadius: '12px',
     padding: '16px',

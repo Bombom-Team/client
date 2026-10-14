@@ -15,16 +15,23 @@ import { Route as AdminIndexRouteImport } from './routes/_admin/index';
 import { Route as AdminResourcesRouteImport } from './routes/_admin/resources';
 import { Route as AdminNoticesRouteImport } from './routes/_admin/notices';
 import { Route as AdminMembersRouteImport } from './routes/_admin/members';
+import { Route as AdminInquiriesRouteImport } from './routes/_admin/inquiries';
 import { Route as AdminFlywayRouteImport } from './routes/_admin/flyway';
+import { Route as AdminFaqsRouteImport } from './routes/_admin/faqs';
 import { Route as AdminEventsRouteImport } from './routes/_admin/events';
+import { Route as AdminErdRouteImport } from './routes/_admin/erd';
 import { Route as AdminChallengesRouteImport } from './routes/_admin/challenges';
 import { Route as AdminBlogRouteImport } from './routes/_admin/blog';
+import { Route as AdminReviewersIndexRouteImport } from './routes/_admin/reviewers/index';
 import { Route as AdminResourcesIndexRouteImport } from './routes/_admin/resources/index';
 import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/index';
 import { Route as AdminNewslettersIndexRouteImport } from './routes/_admin/newsletters/index';
+import { Route as AdminInquiriesIndexRouteImport } from './routes/_admin/inquiries/index';
+import { Route as AdminFaqsIndexRouteImport } from './routes/_admin/faqs/index';
 import { Route as AdminEventsIndexRouteImport } from './routes/_admin/events/index';
 import { Route as AdminChallengesIndexRouteImport } from './routes/_admin/challenges/index';
 import { Route as AdminBlogIndexRouteImport } from './routes/_admin/blog/index';
+import { Route as AdminReviewersStatsRouteImport } from './routes/_admin/reviewers/stats';
 import { Route as AdminResourcesUnsubscribePatternRouteImport } from './routes/_admin/resources/unsubscribe-pattern';
 import { Route as AdminResourcesUnsubscribeParsePatternRouteImport } from './routes/_admin/resources/unsubscribe-parse-pattern';
 import { Route as AdminResourcesUnsubscribeLambdaRouteImport } from './routes/_admin/resources/unsubscribe-lambda';
@@ -33,6 +40,9 @@ import { Route as AdminNoticesNoticeIdRouteImport } from './routes/_admin/notice
 import { Route as AdminNewslettersNewRouteImport } from './routes/_admin/newsletters/new';
 import { Route as AdminNewslettersCategoriesRouteImport } from './routes/_admin/newsletters/categories';
 import { Route as AdminNewslettersNewsletterIdRouteImport } from './routes/_admin/newsletters/$newsletterId';
+import { Route as AdminInquiriesRoomsRouteImport } from './routes/_admin/inquiries/rooms';
+import { Route as AdminFaqsNewRouteImport } from './routes/_admin/faqs/new';
+import { Route as AdminFaqsFaqIdRouteImport } from './routes/_admin/faqs/$faqId';
 import { Route as AdminEventsEventIdRouteImport } from './routes/_admin/events/$eventId';
 import { Route as AdminChallengesDailyGuidesRouteImport } from './routes/_admin/challenges/daily-guides';
 import { Route as AdminChallengesChallengeIdRouteImport } from './routes/_admin/challenges/$challengeId';
@@ -40,11 +50,13 @@ import { Route as AdminBlogPostIdRouteImport } from './routes/_admin/blog/$postI
 import { Route as AdminResourcesUnsubscribeLambdaIndexRouteImport } from './routes/_admin/resources/unsubscribe-lambda/index';
 import { Route as AdminNoticesNoticeIdIndexRouteImport } from './routes/_admin/notices/$noticeId/index';
 import { Route as AdminNewslettersNewsletterIdIndexRouteImport } from './routes/_admin/newsletters/$newsletterId/index';
+import { Route as AdminFaqsFaqIdIndexRouteImport } from './routes/_admin/faqs/$faqId/index';
 import { Route as AdminChallengesChallengeIdIndexRouteImport } from './routes/_admin/challenges/$challengeId/index';
 import { Route as AdminResourcesUnsubscribeLambdaEditorRouteImport } from './routes/_admin/resources/unsubscribe-lambda/editor';
 import { Route as AdminNoticesNoticeIdEditRouteImport } from './routes/_admin/notices/$noticeId/edit';
 import { Route as AdminNewslettersNewsletterIdPreviousRouteImport } from './routes/_admin/newsletters/$newsletterId/previous';
 import { Route as AdminNewslettersNewsletterIdEditRouteImport } from './routes/_admin/newsletters/$newsletterId/edit';
+import { Route as AdminFaqsFaqIdEditRouteImport } from './routes/_admin/faqs/$faqId/edit';
 import { Route as AdminChallengesChallengeIdTeamsRouteImport } from './routes/_admin/challenges/$challengeId/teams';
 import { Route as AdminNewslettersNewsletterIdPreviousIndexRouteImport } from './routes/_admin/newsletters/$newsletterId/previous/index';
 import { Route as AdminNewslettersNewsletterIdPreviousArticleIdRouteImport } from './routes/_admin/newsletters/$newsletterId/previous.$articleId';
@@ -78,14 +90,29 @@ const AdminMembersRoute = AdminMembersRouteImport.update({
   path: '/members',
   getParentRoute: () => AdminRoute,
 } as any);
+const AdminInquiriesRoute = AdminInquiriesRouteImport.update({
+  id: '/inquiries',
+  path: '/inquiries',
+  getParentRoute: () => AdminRoute,
+} as any);
 const AdminFlywayRoute = AdminFlywayRouteImport.update({
   id: '/flyway',
   path: '/flyway',
   getParentRoute: () => AdminRoute,
 } as any);
+const AdminFaqsRoute = AdminFaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
+  getParentRoute: () => AdminRoute,
+} as any);
 const AdminEventsRoute = AdminEventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any);
+const AdminErdRoute = AdminErdRouteImport.update({
+  id: '/erd',
+  path: '/erd',
   getParentRoute: () => AdminRoute,
 } as any);
 const AdminChallengesRoute = AdminChallengesRouteImport.update({
@@ -96,6 +123,11 @@ const AdminChallengesRoute = AdminChallengesRouteImport.update({
 const AdminBlogRoute = AdminBlogRouteImport.update({
   id: '/blog',
   path: '/blog',
+  getParentRoute: () => AdminRoute,
+} as any);
+const AdminReviewersIndexRoute = AdminReviewersIndexRouteImport.update({
+  id: '/reviewers/',
+  path: '/reviewers/',
   getParentRoute: () => AdminRoute,
 } as any);
 const AdminResourcesIndexRoute = AdminResourcesIndexRouteImport.update({
@@ -113,6 +145,16 @@ const AdminNewslettersIndexRoute = AdminNewslettersIndexRouteImport.update({
   path: '/newsletters/',
   getParentRoute: () => AdminRoute,
 } as any);
+const AdminInquiriesIndexRoute = AdminInquiriesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminInquiriesRoute,
+} as any);
+const AdminFaqsIndexRoute = AdminFaqsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminFaqsRoute,
+} as any);
 const AdminEventsIndexRoute = AdminEventsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -127,6 +169,11 @@ const AdminBlogIndexRoute = AdminBlogIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminBlogRoute,
+} as any);
+const AdminReviewersStatsRoute = AdminReviewersStatsRouteImport.update({
+  id: '/reviewers/stats',
+  path: '/reviewers/stats',
+  getParentRoute: () => AdminRoute,
 } as any);
 const AdminResourcesUnsubscribePatternRoute =
   AdminResourcesUnsubscribePatternRouteImport.update({
@@ -173,6 +220,21 @@ const AdminNewslettersNewsletterIdRoute =
     path: '/newsletters/$newsletterId',
     getParentRoute: () => AdminRoute,
   } as any);
+const AdminInquiriesRoomsRoute = AdminInquiriesRoomsRouteImport.update({
+  id: '/rooms',
+  path: '/rooms',
+  getParentRoute: () => AdminInquiriesRoute,
+} as any);
+const AdminFaqsNewRoute = AdminFaqsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminFaqsRoute,
+} as any);
+const AdminFaqsFaqIdRoute = AdminFaqsFaqIdRouteImport.update({
+  id: '/$faqId',
+  path: '/$faqId',
+  getParentRoute: () => AdminFaqsRoute,
+} as any);
 const AdminEventsEventIdRoute = AdminEventsEventIdRouteImport.update({
   id: '/$eventId',
   path: '/$eventId',
@@ -213,6 +275,11 @@ const AdminNewslettersNewsletterIdIndexRoute =
     path: '/',
     getParentRoute: () => AdminNewslettersNewsletterIdRoute,
   } as any);
+const AdminFaqsFaqIdIndexRoute = AdminFaqsFaqIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminFaqsFaqIdRoute,
+} as any);
 const AdminChallengesChallengeIdIndexRoute =
   AdminChallengesChallengeIdIndexRouteImport.update({
     id: '/',
@@ -243,6 +310,11 @@ const AdminNewslettersNewsletterIdEditRoute =
     path: '/edit',
     getParentRoute: () => AdminNewslettersNewsletterIdRoute,
   } as any);
+const AdminFaqsFaqIdEditRoute = AdminFaqsFaqIdEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => AdminFaqsFaqIdRoute,
+} as any);
 const AdminChallengesChallengeIdTeamsRoute =
   AdminChallengesChallengeIdTeamsRouteImport.update({
     id: '/teams',
@@ -266,8 +338,11 @@ export interface FileRoutesByFullPath {
   '/403': typeof R403Route;
   '/blog': typeof AdminBlogRouteWithChildren;
   '/challenges': typeof AdminChallengesRouteWithChildren;
+  '/erd': typeof AdminErdRoute;
   '/events': typeof AdminEventsRouteWithChildren;
+  '/faqs': typeof AdminFaqsRouteWithChildren;
   '/flyway': typeof AdminFlywayRoute;
+  '/inquiries': typeof AdminInquiriesRouteWithChildren;
   '/members': typeof AdminMembersRoute;
   '/notices': typeof AdminNoticesRouteWithChildren;
   '/resources': typeof AdminResourcesRouteWithChildren;
@@ -276,6 +351,9 @@ export interface FileRoutesByFullPath {
   '/challenges/$challengeId': typeof AdminChallengesChallengeIdRouteWithChildren;
   '/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute;
   '/events/$eventId': typeof AdminEventsEventIdRoute;
+  '/faqs/$faqId': typeof AdminFaqsFaqIdRouteWithChildren;
+  '/faqs/new': typeof AdminFaqsNewRoute;
+  '/inquiries/rooms': typeof AdminInquiriesRoomsRoute;
   '/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRouteWithChildren;
   '/newsletters/categories': typeof AdminNewslettersCategoriesRoute;
   '/newsletters/new': typeof AdminNewslettersNewRoute;
@@ -284,18 +362,24 @@ export interface FileRoutesByFullPath {
   '/resources/unsubscribe-lambda': typeof AdminResourcesUnsubscribeLambdaRouteWithChildren;
   '/resources/unsubscribe-parse-pattern': typeof AdminResourcesUnsubscribeParsePatternRoute;
   '/resources/unsubscribe-pattern': typeof AdminResourcesUnsubscribePatternRoute;
+  '/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/blog/': typeof AdminBlogIndexRoute;
   '/challenges/': typeof AdminChallengesIndexRoute;
   '/events/': typeof AdminEventsIndexRoute;
+  '/faqs/': typeof AdminFaqsIndexRoute;
+  '/inquiries/': typeof AdminInquiriesIndexRoute;
   '/newsletters': typeof AdminNewslettersIndexRoute;
   '/notices/': typeof AdminNoticesIndexRoute;
   '/resources/': typeof AdminResourcesIndexRoute;
+  '/reviewers': typeof AdminReviewersIndexRoute;
   '/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute;
+  '/faqs/$faqId/edit': typeof AdminFaqsFaqIdEditRoute;
   '/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute;
   '/newsletters/$newsletterId/previous': typeof AdminNewslettersNewsletterIdPreviousRouteWithChildren;
   '/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute;
   '/resources/unsubscribe-lambda/editor': typeof AdminResourcesUnsubscribeLambdaEditorRoute;
   '/challenges/$challengeId/': typeof AdminChallengesChallengeIdIndexRoute;
+  '/faqs/$faqId/': typeof AdminFaqsFaqIdIndexRoute;
   '/newsletters/$newsletterId/': typeof AdminNewslettersNewsletterIdIndexRoute;
   '/notices/$noticeId/': typeof AdminNoticesNoticeIdIndexRoute;
   '/resources/unsubscribe-lambda/': typeof AdminResourcesUnsubscribeLambdaIndexRoute;
@@ -304,28 +388,37 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/403': typeof R403Route;
+  '/erd': typeof AdminErdRoute;
   '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
   '/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute;
   '/events/$eventId': typeof AdminEventsEventIdRoute;
+  '/faqs/new': typeof AdminFaqsNewRoute;
+  '/inquiries/rooms': typeof AdminInquiriesRoomsRoute;
   '/newsletters/categories': typeof AdminNewslettersCategoriesRoute;
   '/newsletters/new': typeof AdminNewslettersNewRoute;
   '/notices/new': typeof AdminNoticesNewRoute;
   '/resources/unsubscribe-parse-pattern': typeof AdminResourcesUnsubscribeParsePatternRoute;
   '/resources/unsubscribe-pattern': typeof AdminResourcesUnsubscribePatternRoute;
+  '/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/blog': typeof AdminBlogIndexRoute;
   '/challenges': typeof AdminChallengesIndexRoute;
   '/events': typeof AdminEventsIndexRoute;
+  '/faqs': typeof AdminFaqsIndexRoute;
+  '/inquiries': typeof AdminInquiriesIndexRoute;
   '/newsletters': typeof AdminNewslettersIndexRoute;
   '/notices': typeof AdminNoticesIndexRoute;
   '/resources': typeof AdminResourcesIndexRoute;
+  '/reviewers': typeof AdminReviewersIndexRoute;
   '/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute;
+  '/faqs/$faqId/edit': typeof AdminFaqsFaqIdEditRoute;
   '/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute;
   '/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute;
   '/resources/unsubscribe-lambda/editor': typeof AdminResourcesUnsubscribeLambdaEditorRoute;
   '/challenges/$challengeId': typeof AdminChallengesChallengeIdIndexRoute;
+  '/faqs/$faqId': typeof AdminFaqsFaqIdIndexRoute;
   '/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdIndexRoute;
   '/notices/$noticeId': typeof AdminNoticesNoticeIdIndexRoute;
   '/resources/unsubscribe-lambda': typeof AdminResourcesUnsubscribeLambdaIndexRoute;
@@ -338,8 +431,11 @@ export interface FileRoutesById {
   '/_admin': typeof AdminRouteWithChildren;
   '/_admin/blog': typeof AdminBlogRouteWithChildren;
   '/_admin/challenges': typeof AdminChallengesRouteWithChildren;
+  '/_admin/erd': typeof AdminErdRoute;
   '/_admin/events': typeof AdminEventsRouteWithChildren;
+  '/_admin/faqs': typeof AdminFaqsRouteWithChildren;
   '/_admin/flyway': typeof AdminFlywayRoute;
+  '/_admin/inquiries': typeof AdminInquiriesRouteWithChildren;
   '/_admin/members': typeof AdminMembersRoute;
   '/_admin/notices': typeof AdminNoticesRouteWithChildren;
   '/_admin/resources': typeof AdminResourcesRouteWithChildren;
@@ -348,6 +444,9 @@ export interface FileRoutesById {
   '/_admin/challenges/$challengeId': typeof AdminChallengesChallengeIdRouteWithChildren;
   '/_admin/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute;
   '/_admin/events/$eventId': typeof AdminEventsEventIdRoute;
+  '/_admin/faqs/$faqId': typeof AdminFaqsFaqIdRouteWithChildren;
+  '/_admin/faqs/new': typeof AdminFaqsNewRoute;
+  '/_admin/inquiries/rooms': typeof AdminInquiriesRoomsRoute;
   '/_admin/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRouteWithChildren;
   '/_admin/newsletters/categories': typeof AdminNewslettersCategoriesRoute;
   '/_admin/newsletters/new': typeof AdminNewslettersNewRoute;
@@ -356,18 +455,24 @@ export interface FileRoutesById {
   '/_admin/resources/unsubscribe-lambda': typeof AdminResourcesUnsubscribeLambdaRouteWithChildren;
   '/_admin/resources/unsubscribe-parse-pattern': typeof AdminResourcesUnsubscribeParsePatternRoute;
   '/_admin/resources/unsubscribe-pattern': typeof AdminResourcesUnsubscribePatternRoute;
+  '/_admin/reviewers/stats': typeof AdminReviewersStatsRoute;
   '/_admin/blog/': typeof AdminBlogIndexRoute;
   '/_admin/challenges/': typeof AdminChallengesIndexRoute;
   '/_admin/events/': typeof AdminEventsIndexRoute;
+  '/_admin/faqs/': typeof AdminFaqsIndexRoute;
+  '/_admin/inquiries/': typeof AdminInquiriesIndexRoute;
   '/_admin/newsletters/': typeof AdminNewslettersIndexRoute;
   '/_admin/notices/': typeof AdminNoticesIndexRoute;
   '/_admin/resources/': typeof AdminResourcesIndexRoute;
+  '/_admin/reviewers/': typeof AdminReviewersIndexRoute;
   '/_admin/challenges/$challengeId/teams': typeof AdminChallengesChallengeIdTeamsRoute;
+  '/_admin/faqs/$faqId/edit': typeof AdminFaqsFaqIdEditRoute;
   '/_admin/newsletters/$newsletterId/edit': typeof AdminNewslettersNewsletterIdEditRoute;
   '/_admin/newsletters/$newsletterId/previous': typeof AdminNewslettersNewsletterIdPreviousRouteWithChildren;
   '/_admin/notices/$noticeId/edit': typeof AdminNoticesNoticeIdEditRoute;
   '/_admin/resources/unsubscribe-lambda/editor': typeof AdminResourcesUnsubscribeLambdaEditorRoute;
   '/_admin/challenges/$challengeId/': typeof AdminChallengesChallengeIdIndexRoute;
+  '/_admin/faqs/$faqId/': typeof AdminFaqsFaqIdIndexRoute;
   '/_admin/newsletters/$newsletterId/': typeof AdminNewslettersNewsletterIdIndexRoute;
   '/_admin/notices/$noticeId/': typeof AdminNoticesNoticeIdIndexRoute;
   '/_admin/resources/unsubscribe-lambda/': typeof AdminResourcesUnsubscribeLambdaIndexRoute;
@@ -380,8 +485,11 @@ export interface FileRouteTypes {
     | '/403'
     | '/blog'
     | '/challenges'
+    | '/erd'
     | '/events'
+    | '/faqs'
     | '/flyway'
+    | '/inquiries'
     | '/members'
     | '/notices'
     | '/resources'
@@ -390,6 +498,9 @@ export interface FileRouteTypes {
     | '/challenges/$challengeId'
     | '/challenges/daily-guides'
     | '/events/$eventId'
+    | '/faqs/$faqId'
+    | '/faqs/new'
+    | '/inquiries/rooms'
     | '/newsletters/$newsletterId'
     | '/newsletters/categories'
     | '/newsletters/new'
@@ -398,18 +509,24 @@ export interface FileRouteTypes {
     | '/resources/unsubscribe-lambda'
     | '/resources/unsubscribe-parse-pattern'
     | '/resources/unsubscribe-pattern'
+    | '/reviewers/stats'
     | '/blog/'
     | '/challenges/'
     | '/events/'
+    | '/faqs/'
+    | '/inquiries/'
     | '/newsletters'
     | '/notices/'
     | '/resources/'
+    | '/reviewers'
     | '/challenges/$challengeId/teams'
+    | '/faqs/$faqId/edit'
     | '/newsletters/$newsletterId/edit'
     | '/newsletters/$newsletterId/previous'
     | '/notices/$noticeId/edit'
     | '/resources/unsubscribe-lambda/editor'
     | '/challenges/$challengeId/'
+    | '/faqs/$faqId/'
     | '/newsletters/$newsletterId/'
     | '/notices/$noticeId/'
     | '/resources/unsubscribe-lambda/'
@@ -418,28 +535,37 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/403'
+    | '/erd'
     | '/flyway'
     | '/members'
     | '/'
     | '/blog/$postId'
     | '/challenges/daily-guides'
     | '/events/$eventId'
+    | '/faqs/new'
+    | '/inquiries/rooms'
     | '/newsletters/categories'
     | '/newsletters/new'
     | '/notices/new'
     | '/resources/unsubscribe-parse-pattern'
     | '/resources/unsubscribe-pattern'
+    | '/reviewers/stats'
     | '/blog'
     | '/challenges'
     | '/events'
+    | '/faqs'
+    | '/inquiries'
     | '/newsletters'
     | '/notices'
     | '/resources'
+    | '/reviewers'
     | '/challenges/$challengeId/teams'
+    | '/faqs/$faqId/edit'
     | '/newsletters/$newsletterId/edit'
     | '/notices/$noticeId/edit'
     | '/resources/unsubscribe-lambda/editor'
     | '/challenges/$challengeId'
+    | '/faqs/$faqId'
     | '/newsletters/$newsletterId'
     | '/notices/$noticeId'
     | '/resources/unsubscribe-lambda'
@@ -451,8 +577,11 @@ export interface FileRouteTypes {
     | '/_admin'
     | '/_admin/blog'
     | '/_admin/challenges'
+    | '/_admin/erd'
     | '/_admin/events'
+    | '/_admin/faqs'
     | '/_admin/flyway'
+    | '/_admin/inquiries'
     | '/_admin/members'
     | '/_admin/notices'
     | '/_admin/resources'
@@ -461,6 +590,9 @@ export interface FileRouteTypes {
     | '/_admin/challenges/$challengeId'
     | '/_admin/challenges/daily-guides'
     | '/_admin/events/$eventId'
+    | '/_admin/faqs/$faqId'
+    | '/_admin/faqs/new'
+    | '/_admin/inquiries/rooms'
     | '/_admin/newsletters/$newsletterId'
     | '/_admin/newsletters/categories'
     | '/_admin/newsletters/new'
@@ -469,18 +601,24 @@ export interface FileRouteTypes {
     | '/_admin/resources/unsubscribe-lambda'
     | '/_admin/resources/unsubscribe-parse-pattern'
     | '/_admin/resources/unsubscribe-pattern'
+    | '/_admin/reviewers/stats'
     | '/_admin/blog/'
     | '/_admin/challenges/'
     | '/_admin/events/'
+    | '/_admin/faqs/'
+    | '/_admin/inquiries/'
     | '/_admin/newsletters/'
     | '/_admin/notices/'
     | '/_admin/resources/'
+    | '/_admin/reviewers/'
     | '/_admin/challenges/$challengeId/teams'
+    | '/_admin/faqs/$faqId/edit'
     | '/_admin/newsletters/$newsletterId/edit'
     | '/_admin/newsletters/$newsletterId/previous'
     | '/_admin/notices/$noticeId/edit'
     | '/_admin/resources/unsubscribe-lambda/editor'
     | '/_admin/challenges/$challengeId/'
+    | '/_admin/faqs/$faqId/'
     | '/_admin/newsletters/$newsletterId/'
     | '/_admin/notices/$noticeId/'
     | '/_admin/resources/unsubscribe-lambda/'
@@ -537,6 +675,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMembersRouteImport;
       parentRoute: typeof AdminRoute;
     };
+    '/_admin/inquiries': {
+      id: '/_admin/inquiries';
+      path: '/inquiries';
+      fullPath: '/inquiries';
+      preLoaderRoute: typeof AdminInquiriesRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
     '/_admin/flyway': {
       id: '/_admin/flyway';
       path: '/flyway';
@@ -544,11 +689,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFlywayRouteImport;
       parentRoute: typeof AdminRoute;
     };
+    '/_admin/faqs': {
+      id: '/_admin/faqs';
+      path: '/faqs';
+      fullPath: '/faqs';
+      preLoaderRoute: typeof AdminFaqsRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
     '/_admin/events': {
       id: '/_admin/events';
       path: '/events';
       fullPath: '/events';
       preLoaderRoute: typeof AdminEventsRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
+    '/_admin/erd': {
+      id: '/_admin/erd';
+      path: '/erd';
+      fullPath: '/erd';
+      preLoaderRoute: typeof AdminErdRouteImport;
       parentRoute: typeof AdminRoute;
     };
     '/_admin/challenges': {
@@ -563,6 +722,13 @@ declare module '@tanstack/react-router' {
       path: '/blog';
       fullPath: '/blog';
       preLoaderRoute: typeof AdminBlogRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
+    '/_admin/reviewers/': {
+      id: '/_admin/reviewers/';
+      path: '/reviewers';
+      fullPath: '/reviewers';
+      preLoaderRoute: typeof AdminReviewersIndexRouteImport;
       parentRoute: typeof AdminRoute;
     };
     '/_admin/resources/': {
@@ -586,6 +752,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewslettersIndexRouteImport;
       parentRoute: typeof AdminRoute;
     };
+    '/_admin/inquiries/': {
+      id: '/_admin/inquiries/';
+      path: '/';
+      fullPath: '/inquiries/';
+      preLoaderRoute: typeof AdminInquiriesIndexRouteImport;
+      parentRoute: typeof AdminInquiriesRoute;
+    };
+    '/_admin/faqs/': {
+      id: '/_admin/faqs/';
+      path: '/';
+      fullPath: '/faqs/';
+      preLoaderRoute: typeof AdminFaqsIndexRouteImport;
+      parentRoute: typeof AdminFaqsRoute;
+    };
     '/_admin/events/': {
       id: '/_admin/events/';
       path: '/';
@@ -606,6 +786,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/';
       preLoaderRoute: typeof AdminBlogIndexRouteImport;
       parentRoute: typeof AdminBlogRoute;
+    };
+    '/_admin/reviewers/stats': {
+      id: '/_admin/reviewers/stats';
+      path: '/reviewers/stats';
+      fullPath: '/reviewers/stats';
+      preLoaderRoute: typeof AdminReviewersStatsRouteImport;
+      parentRoute: typeof AdminRoute;
     };
     '/_admin/resources/unsubscribe-pattern': {
       id: '/_admin/resources/unsubscribe-pattern';
@@ -663,6 +850,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewslettersNewsletterIdRouteImport;
       parentRoute: typeof AdminRoute;
     };
+    '/_admin/inquiries/rooms': {
+      id: '/_admin/inquiries/rooms';
+      path: '/rooms';
+      fullPath: '/inquiries/rooms';
+      preLoaderRoute: typeof AdminInquiriesRoomsRouteImport;
+      parentRoute: typeof AdminInquiriesRoute;
+    };
+    '/_admin/faqs/new': {
+      id: '/_admin/faqs/new';
+      path: '/new';
+      fullPath: '/faqs/new';
+      preLoaderRoute: typeof AdminFaqsNewRouteImport;
+      parentRoute: typeof AdminFaqsRoute;
+    };
+    '/_admin/faqs/$faqId': {
+      id: '/_admin/faqs/$faqId';
+      path: '/$faqId';
+      fullPath: '/faqs/$faqId';
+      preLoaderRoute: typeof AdminFaqsFaqIdRouteImport;
+      parentRoute: typeof AdminFaqsRoute;
+    };
     '/_admin/events/$eventId': {
       id: '/_admin/events/$eventId';
       path: '/$eventId';
@@ -712,6 +920,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewslettersNewsletterIdIndexRouteImport;
       parentRoute: typeof AdminNewslettersNewsletterIdRoute;
     };
+    '/_admin/faqs/$faqId/': {
+      id: '/_admin/faqs/$faqId/';
+      path: '/';
+      fullPath: '/faqs/$faqId/';
+      preLoaderRoute: typeof AdminFaqsFaqIdIndexRouteImport;
+      parentRoute: typeof AdminFaqsFaqIdRoute;
+    };
     '/_admin/challenges/$challengeId/': {
       id: '/_admin/challenges/$challengeId/';
       path: '/';
@@ -746,6 +961,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/newsletters/$newsletterId/edit';
       preLoaderRoute: typeof AdminNewslettersNewsletterIdEditRouteImport;
       parentRoute: typeof AdminNewslettersNewsletterIdRoute;
+    };
+    '/_admin/faqs/$faqId/edit': {
+      id: '/_admin/faqs/$faqId/edit';
+      path: '/edit';
+      fullPath: '/faqs/$faqId/edit';
+      preLoaderRoute: typeof AdminFaqsFaqIdEditRouteImport;
+      parentRoute: typeof AdminFaqsFaqIdRoute;
     };
     '/_admin/challenges/$challengeId/teams': {
       id: '/_admin/challenges/$challengeId/teams';
@@ -829,6 +1051,50 @@ const AdminEventsRouteChildren: AdminEventsRouteChildren = {
 
 const AdminEventsRouteWithChildren = AdminEventsRoute._addFileChildren(
   AdminEventsRouteChildren,
+);
+
+interface AdminFaqsFaqIdRouteChildren {
+  AdminFaqsFaqIdEditRoute: typeof AdminFaqsFaqIdEditRoute;
+  AdminFaqsFaqIdIndexRoute: typeof AdminFaqsFaqIdIndexRoute;
+}
+
+const AdminFaqsFaqIdRouteChildren: AdminFaqsFaqIdRouteChildren = {
+  AdminFaqsFaqIdEditRoute: AdminFaqsFaqIdEditRoute,
+  AdminFaqsFaqIdIndexRoute: AdminFaqsFaqIdIndexRoute,
+};
+
+const AdminFaqsFaqIdRouteWithChildren = AdminFaqsFaqIdRoute._addFileChildren(
+  AdminFaqsFaqIdRouteChildren,
+);
+
+interface AdminFaqsRouteChildren {
+  AdminFaqsFaqIdRoute: typeof AdminFaqsFaqIdRouteWithChildren;
+  AdminFaqsNewRoute: typeof AdminFaqsNewRoute;
+  AdminFaqsIndexRoute: typeof AdminFaqsIndexRoute;
+}
+
+const AdminFaqsRouteChildren: AdminFaqsRouteChildren = {
+  AdminFaqsFaqIdRoute: AdminFaqsFaqIdRouteWithChildren,
+  AdminFaqsNewRoute: AdminFaqsNewRoute,
+  AdminFaqsIndexRoute: AdminFaqsIndexRoute,
+};
+
+const AdminFaqsRouteWithChildren = AdminFaqsRoute._addFileChildren(
+  AdminFaqsRouteChildren,
+);
+
+interface AdminInquiriesRouteChildren {
+  AdminInquiriesRoomsRoute: typeof AdminInquiriesRoomsRoute;
+  AdminInquiriesIndexRoute: typeof AdminInquiriesIndexRoute;
+}
+
+const AdminInquiriesRouteChildren: AdminInquiriesRouteChildren = {
+  AdminInquiriesRoomsRoute: AdminInquiriesRoomsRoute,
+  AdminInquiriesIndexRoute: AdminInquiriesIndexRoute,
+};
+
+const AdminInquiriesRouteWithChildren = AdminInquiriesRoute._addFileChildren(
+  AdminInquiriesRouteChildren,
 );
 
 interface AdminNoticesNoticeIdRouteChildren {
@@ -940,8 +1206,11 @@ const AdminNewslettersNewsletterIdRouteWithChildren =
 interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRouteWithChildren;
   AdminChallengesRoute: typeof AdminChallengesRouteWithChildren;
+  AdminErdRoute: typeof AdminErdRoute;
   AdminEventsRoute: typeof AdminEventsRouteWithChildren;
+  AdminFaqsRoute: typeof AdminFaqsRouteWithChildren;
   AdminFlywayRoute: typeof AdminFlywayRoute;
+  AdminInquiriesRoute: typeof AdminInquiriesRouteWithChildren;
   AdminMembersRoute: typeof AdminMembersRoute;
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren;
   AdminResourcesRoute: typeof AdminResourcesRouteWithChildren;
@@ -949,14 +1218,19 @@ interface AdminRouteChildren {
   AdminNewslettersNewsletterIdRoute: typeof AdminNewslettersNewsletterIdRouteWithChildren;
   AdminNewslettersCategoriesRoute: typeof AdminNewslettersCategoriesRoute;
   AdminNewslettersNewRoute: typeof AdminNewslettersNewRoute;
+  AdminReviewersStatsRoute: typeof AdminReviewersStatsRoute;
   AdminNewslettersIndexRoute: typeof AdminNewslettersIndexRoute;
+  AdminReviewersIndexRoute: typeof AdminReviewersIndexRoute;
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRouteWithChildren,
   AdminChallengesRoute: AdminChallengesRouteWithChildren,
+  AdminErdRoute: AdminErdRoute,
   AdminEventsRoute: AdminEventsRouteWithChildren,
+  AdminFaqsRoute: AdminFaqsRouteWithChildren,
   AdminFlywayRoute: AdminFlywayRoute,
+  AdminInquiriesRoute: AdminInquiriesRouteWithChildren,
   AdminMembersRoute: AdminMembersRoute,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminResourcesRoute: AdminResourcesRouteWithChildren,
@@ -965,7 +1239,9 @@ const AdminRouteChildren: AdminRouteChildren = {
     AdminNewslettersNewsletterIdRouteWithChildren,
   AdminNewslettersCategoriesRoute: AdminNewslettersCategoriesRoute,
   AdminNewslettersNewRoute: AdminNewslettersNewRoute,
+  AdminReviewersStatsRoute: AdminReviewersStatsRoute,
   AdminNewslettersIndexRoute: AdminNewslettersIndexRoute,
+  AdminReviewersIndexRoute: AdminReviewersIndexRoute,
 };
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren);

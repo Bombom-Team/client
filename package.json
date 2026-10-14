@@ -8,15 +8,14 @@
     "web:build": "pnpm --filter web build",
     "web:lint": "pnpm --filter web lint",
     "web:lint:fix": "pnpm --filter web lint:fix",
-    "web:stylelint:fix": "pnpm --filter web stylelint:fix",
     "web:type-check": "pnpm --filter web type-check",
     "web:test": "pnpm --filter web test",
+    "web:generate-openapi-types": "pnpm --filter web generate-openapi-types",
     "web:gen:api": "pnpm --filter web gen:api",
     "admin:start": "pnpm --filter admin start",
     "admin:build": "pnpm --filter admin build",
     "admin:lint": "pnpm --filter admin lint",
     "admin:lint:fix": "pnpm --filter admin lint:fix",
-    "admin:stylelint:fix": "pnpm --filter admin stylelint:fix",
     "admin:type-check": "pnpm --filter admin type-check",
     "admin:generate-openapi-types": "pnpm --filter admin generate-openapi-types",
     "app:start": "pnpm --filter app start",
@@ -27,7 +26,6 @@
     "maeil-mail:build": "pnpm --filter @bombom/maeil-mail build",
     "maeil-mail:lint": "pnpm --filter @bombom/maeil-mail lint",
     "maeil-mail:lint:fix": "pnpm --filter @bombom/maeil-mail lint:fix",
-    "maeil-mail:stylelint:fix": "pnpm --filter @bombom/maeil-mail stylelint:fix",
     "maeil-mail:format": "pnpm --filter @bombom/maeil-mail format",
     "maeil-mail:type-check": "pnpm --filter @bombom/maeil-mail type-check",
     "type-check": "pnpm -r type-check",
@@ -42,5 +40,13 @@
     "stylelint-order": "^6.0.4",
     "stylelint-prettier": "^5.0.3"
   },
-  "packageManager": "pnpm@10.12.1"
+  "packageManager": "pnpm@10.12.1",
+  "pnpm": {
+    "overrides": {
+      "@tiptap/pm": "3.22.5"
+    },
+    "patchedDependencies": {
+      "react-native-webview@13.15.0": "patches/react-native-webview@13.15.0.patch"
+    }
+  }
 }

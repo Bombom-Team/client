@@ -18,6 +18,9 @@ export type GetArticlesWithSearchParams =
   components['schemas']['ArticleSearchOptionsRequest'] &
     components['schemas']['Pageable'];
 
+export type GetStorageArticlesParams = GetArticlesParams &
+  Pick<components['schemas']['ArticleSearchOptionsRequest'], 'keyword'>;
+
 export const getArticlesWithSearch = async (
   params: GetArticlesWithSearchParams,
 ) => {
@@ -51,8 +54,11 @@ export const getArticleById = async ({ id }: GetArticleByIdParams) => {
 export type PatchArticleReadParams =
   operations['updateIsRead']['parameters']['path'];
 
+export type PatchArticleReadResponse =
+  components['schemas']['MarkAsReadResponse'];
+
 export const patchArticleRead = async ({ id }: PatchArticleReadParams) => {
-  return await fetcher.patch({
+  return await fetcher.patch<never, PatchArticleReadResponse>({
     path: `/articles/${id}/read`,
   });
 };

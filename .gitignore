@@ -57,3 +57,10 @@ app-example
 # build files
 *.apk
 *.aab
+
+# AI PR review artifacts (ephemeral, published via publisher — must not be committed)
+codex-review-output.json
+codex-review-normalized.json
+codex-review-body.md
+codex-review-comments.jsonl
+codex-review-payload*.json

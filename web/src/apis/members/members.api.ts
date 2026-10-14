@@ -95,6 +95,31 @@ export const getMyStreakReadingRank = async () => {
   });
 };
 
+export type GetRankSummaryResponse =
+  components['schemas']['RankSummaryResponse'];
+export type GetRankSummaryParams = NonNullable<
+  operations['getRankSummary']['parameters']['query']
+>;
+
+export const getRankSummary = async (params: GetRankSummaryParams = {}) => {
+  return await fetcher.get<GetRankSummaryResponse>({
+    path: '/members/me/rank',
+    query: params,
+  });
+};
+
+export type CategoryStatsResponse =
+  components['schemas']['CategoryStatsResponse'];
+export type GetCategoryStatsParams =
+  operations['getCategoryStats']['parameters']['query'];
+
+export const getCategoryStats = async (params: GetCategoryStatsParams) => {
+  return await fetcher.get<CategoryStatsResponse>({
+    path: '/members/me/category-stats',
+    query: params,
+  });
+};
+
 export type PatchMembersInfoParams =
   components['schemas']['MemberInfoUpdateRequest'];
 
@@ -144,5 +169,43 @@ export const postWarningVisible = async ({
   return await fetcher.post({
     path: `/members/me/warning/near-capacity`,
     body: { isVisible },
+  });
+};
+
+export type GetMyChallengeSummaryResponse =
+  components['schemas']['MyChallengeSummaryResponse'];
+
+export const getMyChallengeSummary = async () => {
+  return await fetcher.get<GetMyChallengeSummaryResponse>({
+    path: '/members/me/challenges/summary',
+  });
+};
+
+export type MyOngoingChallenge =
+  components['schemas']['MyOngoingChallengeResponse'];
+
+export type GetMyOngoingChallengesResponse =
+  components['schemas']['MyOngoingChallengesResponse'];
+
+export const getMyOngoingChallenges = async () => {
+  return await fetcher.get<GetMyOngoingChallengesResponse>({
+    path: '/members/me/challenges/ongoing',
+  });
+};
+
+export type MyCompletedChallenge =
+  components['schemas']['CompletedChallengeResponse'];
+
+export type GetMyCompletedChallengesParams = components['schemas']['Pageable'];
+
+export type GetMyCompletedChallengesResponse =
+  components['schemas']['PageCompletedChallengeResponse'];
+
+export const getMyCompletedChallenges = async (
+  params?: GetMyCompletedChallengesParams,
+) => {
+  return await fetcher.get<GetMyCompletedChallengesResponse>({
+    path: '/members/me/challenges/completed',
+    query: params,
   });
 };

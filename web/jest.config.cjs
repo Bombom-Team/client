@@ -6,6 +6,9 @@
 /** @type {import('jest').Config} */
 const config = {
   clearMocks: true,
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
   testEnvironment: 'jsdom',
 };
 

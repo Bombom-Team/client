@@ -18,6 +18,30 @@ const APP_CONFIG = {
   icon: './app/assets/images/logo.png',
 };
 
+const SENTRY_RN_ORGANIZATION = process.env.SENTRY_RN_ORG;
+const SENTRY_RN_PROJECT = process.env.SENTRY_RN_PROJECT;
+const SENTRY_RN_REQUIRE_PLUGIN_CONFIG =
+  process.env.SENTRY_RN_REQUIRE_PLUGIN_CONFIG === 'true';
+const IS_RUNTIME_SENTRY_ENABLED = Boolean(
+  process.env.EXPO_PUBLIC_SENTRY_DSN &&
+    process.env.EXPO_PUBLIC_SENTRY_ENVIRONMENT,
+);
+
+if (
+  SENTRY_RN_REQUIRE_PLUGIN_CONFIG &&
+  IS_RUNTIME_SENTRY_ENABLED &&
+  (!SENTRY_RN_ORGANIZATION || !SENTRY_RN_PROJECT)
+) {
+  const missingVariables = [
+    !SENTRY_RN_ORGANIZATION && 'SENTRY_RN_ORG',
+    !SENTRY_RN_PROJECT && 'SENTRY_RN_PROJECT',
+  ].filter(Boolean);
+
+  throw new Error(
+    `Runtime Sentry is enabled but requires ${missingVariables.join(', ')}`,
+  );
+}
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
@@ -89,7 +113,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         'expo-apple-authentication',
         {
-          appleTeamId: 'F6XK836QA8',
+          appleTeamId: '95A4G29D26',
         },
       ],
       'expo-secure-store',
@@ -105,6 +129,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         {
           android: {
             usesCleartextTraffic: true,
+            enableMinifyInReleaseBuilds: true,
+            enableShrinkResourcesInReleaseBuilds: true,
           },
           ios: {
             useFrameworks: 'static',
@@ -126,11 +152,26 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           savePhotosPermission:
             '다운로드한 이미지를 사진 앱에 저장하기 위해 접근 권한이 필요합니다.',
           isAccessMediaLocationEnabled: false,
-          granularPermissions: ['photo'],
+          granularPermissions: [],
         },
       ],
       '@react-native-firebase/app',
       '@react-native-firebase/messaging',
+      ...(SENTRY_RN_ORGANIZATION && SENTRY_RN_PROJECT
+        ? [
+            [
+              '@sentry/react-native/expo',
+              {
+                organization: SENTRY_RN_ORGANIZATION,
+                project: SENTRY_RN_PROJECT,
+                experimental_android: {
+                  enableAndroidGradlePlugin: true,
+                  includeNativeSources: false,
+                },
+              },
+            ] as NonNullable<ExpoConfig['plugins']>[number],
+          ]
+        : []),
       './plugins/withAndroidManifestFix',
     ],
 

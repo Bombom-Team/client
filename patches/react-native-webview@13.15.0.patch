@@ -1,0 +1,32 @@
+diff --git a/apple/RNCWebViewImpl.m b/apple/RNCWebViewImpl.m
+index 7f5c24d6..76d2cf49 100644
+--- a/apple/RNCWebViewImpl.m
++++ b/apple/RNCWebViewImpl.m
+@@ -95,9 +95,13 @@ - (BOOL)canPerformAction:(SEL)action
+ }
+ - (void)buildMenuWithBuilder:(id<UIMenuBuilder>)builder API_AVAILABLE(ios(13.0))  {
+     if (@available(iOS 16.0, *)) {
+-      if(self.menuItems){
++      if(self.menuItems || self.suppressMenuItems){
+         [builder removeMenuForIdentifier:UIMenuLookup];
+       }
++      if (self.suppressMenuItems) {
++        [builder removeMenuForIdentifier:UIMenuStandardEdit];
++        [builder removeMenuForIdentifier:UIMenuShare];
++      }
+     }
+     [super buildMenuWithBuilder:builder];
+ }
+@@ -456,6 +460,12 @@ - (WKWebViewConfiguration *)setUpWkWebViewConfig
+     }
+   }
+ #endif
++#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 180000 /* iOS 18 */
++  if (@available(iOS 18.0, *)) {
++    wkWebViewConfig.writingToolsBehavior = UIWritingToolsBehaviorNone;
++  }
++#endif
++
+   if (_prefsUsed) {
+     wkWebViewConfig.preferences = prefs;
+   }

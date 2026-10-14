@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 import { createFileRoute, Outlet } from '@tanstack/react-router';
+import MobileMainHeader from '@/components/Header/MobileMainHeader';
+import PCHeader from '@/components/Header/PCHeader';
 import { useDevice } from '@/hooks/useDevice';
 import BlogFooter from '@/pages/blog/components/BlogFooter';
-import BlogHeader from '@/pages/blog/components/BlogHeader';
 import type { Device } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/blog')({
@@ -14,7 +15,7 @@ function BlogLayout() {
 
   return (
     <>
-      <BlogHeader />
+      {device === 'pc' ? <PCHeader activeNav="blog" /> : <MobileMainHeader />}
       <Main device={device}>
         <Outlet />
       </Main>
@@ -31,8 +32,17 @@ const Main = styled.main<{ device: Device }>`
     return device === 'tablet' ? '760px' : '1280px';
   }};
   margin: 0 auto;
-  padding: ${({ device }) =>
-    device === 'mobile' ? '32px 20px 0 20px' : '48px 60px 0 60px'};
+  padding: ${({ device, theme }) => {
+    if (device === 'mobile') {
+      return `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 32px) 20px 0`;
+    }
+
+    if (device === 'tablet') {
+      return `calc(${theme.heights.headerMobile} + ${theme.safeArea.top} + 48px) 60px 0`;
+    }
+
+    return `calc(${theme.heights.headerPC} + 40px + 48px) 60px 0`;
+  }};
 
   display: flex;
   flex-direction: column;

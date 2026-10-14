@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Link } from '@tanstack/react-router';
 import { useState, type ChangeEvent } from 'react';
 import { postWithdraw } from '@/apis/auth/auth.api';
 import { patchMemberInfo } from '@/apis/members/members.api';
@@ -7,6 +8,7 @@ import Button from '@/components/Button/Button';
 import Divider from '@/components/Divider/Divider';
 import InputField from '@/components/InputField/InputField';
 import { toast } from '@/components/Toast/utils/toastActions';
+import { useDevice } from '@/hooks/useDevice';
 import { useUserInfoValidation } from '@/hooks/useUserInfoValidation';
 import type { Gender } from '@/pages/signup/components/SignupCard.types';
 import type { UserInfo } from '@/types/me';
@@ -18,6 +20,8 @@ interface ProfileSectionProps {
 
 const ProfileSection = ({ userInfo }: ProfileSectionProps) => {
   const queryClient = useQueryClient();
+  const device = useDevice();
+  const isMobile = device === 'mobile';
 
   const [nickname, setNickname] = useState(userInfo.nickname || '');
   const [birthDate, setBirthDate] = useState(userInfo.birthDate || '');
@@ -232,9 +236,16 @@ const ProfileSection = ({ userInfo }: ProfileSectionProps) => {
 
       <Divider />
 
-      <WithdrawButton type="button" onClick={handleWithdrawClick}>
-        회원 탈퇴
-      </WithdrawButton>
+      <AccountActionWrapper>
+        <WithdrawButton type="button" onClick={handleWithdrawClick}>
+          회원 탈퇴
+        </WithdrawButton>
+        {isMobile && (
+          <PrivacyPolicyLink to="/privacy-policy">
+            개인정보 처리방침
+          </PrivacyPolicyLink>
+        )}
+      </AccountActionWrapper>
     </Container>
   );
 };
@@ -338,6 +349,23 @@ const WithdrawButton = styled.button`
 
   display: flex;
   align-items: center;
+
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.t3Regular};
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const AccountActionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const PrivacyPolicyLink = styled(Link)`
+  width: fit-content;
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t3Regular};

@@ -7,8 +7,11 @@ import {
   FiDatabase,
   FiEdit,
   FiFlag,
+  FiGitPullRequest,
+  FiHelpCircle,
   FiHome,
   FiMail,
+  FiMessageSquare,
   FiUsers,
 } from 'react-icons/fi';
 
@@ -41,9 +44,24 @@ export const Sidebar = () => {
           <FiBell />
           <span>공지사항</span>
         </NavItem>
+        <NavItem to="/faqs" $isActive={currentPath.startsWith('/faqs')}>
+          <FiHelpCircle />
+          <span>FAQ</span>
+        </NavItem>
+        <NavItem
+          to="/inquiries/rooms"
+          $isActive={currentPath.startsWith('/inquiries')}
+        >
+          <FiMessageSquare />
+          <span>문의 관리</span>
+        </NavItem>
         <NavItem to="/flyway" $isActive={currentPath.startsWith('/flyway')}>
           <FiDatabase />
           <span>Flyway 형상</span>
+        </NavItem>
+        <NavItem to="/erd" $isActive={currentPath.startsWith('/erd')}>
+          <FiDatabase />
+          <span>ERD</span>
         </NavItem>
         <NavItem
           to="/newsletters"
@@ -66,6 +84,13 @@ export const Sidebar = () => {
         >
           <FiCode />
           <span>리소스 관리</span>
+        </NavItem>
+        <NavItem
+          to="/reviewers"
+          $isActive={currentPath.startsWith('/reviewers')}
+        >
+          <FiGitPullRequest />
+          <span>리뷰어 관리</span>
         </NavItem>
       </Nav>
       <Footer>© 2025 BomBom. All rights reserved.</Footer>

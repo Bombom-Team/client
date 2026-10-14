@@ -1,15 +1,15 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { isValidKeyword } from '../utils/isValidKeyword';
 import { queries } from '@/apis/queries';
-import type { GetArticlesWithSearchParams } from '@/apis/articles/articles.api';
+import type { GetStorageArticlesParams } from '@/apis/articles/articles.api';
 
-const useInfiniteArticles = (params: GetArticlesWithSearchParams) => {
-  const { keyword, ...paramsWithoutKeyword } = params;
+const useInfiniteArticles = (params: GetStorageArticlesParams) => {
+  const { keyword, unreadOnly, date, ...commonParams } = params;
 
   return useInfiniteQuery(
     isValidKeyword(keyword)
-      ? queries.infiniteArticlesWithSearch(params)
-      : queries.infiniteArticles(paramsWithoutKeyword),
+      ? queries.infiniteArticlesWithSearch({ keyword, ...commonParams })
+      : queries.infiniteArticles({ unreadOnly, date, ...commonParams }),
   );
 };
 

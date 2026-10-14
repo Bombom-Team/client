@@ -3,7 +3,6 @@ import { queries } from '@/apis/queries';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
-import { LANDING_VISITED_KEY } from '@/pages/landing/constants/localStorage';
 
 let isFirstVisit = true;
 
@@ -13,22 +12,15 @@ export const Route = createFileRoute('/_bombom')({
     context,
     location,
   }): Promise<void | ReturnType<typeof redirect>> => {
-    const hasVisitedLanding = localStorage.getItem(LANDING_VISITED_KEY);
-    if (!hasVisitedLanding) {
-      return redirect({ to: '/landing' });
-    }
-
     if (!isFirstVisit) return;
 
     const { queryClient } = context;
 
     try {
-      const user = await queryClient.fetchQuery(queries.userProfile());
-      if (user) {
-        window.gtag?.('set', { user_id: user.id });
-      }
+      await queryClient.fetchQuery(queries.userProfile());
     } catch {
-      if (isFirstVisit && location.pathname !== '/')
+      const isGuestAccessible = location.pathname.startsWith('/support');
+      if (isFirstVisit && location.pathname !== '/' && !isGuestAccessible)
         return redirect({ to: '/' });
     } finally {
       isFirstVisit = false;

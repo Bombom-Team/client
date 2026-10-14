@@ -67,4 +67,38 @@ export const ARTICLES: Article[] = [
       imageUrl: 'https://example.com/newsletter-image.jpg',
     },
   },
+  {
+    articleId: 6,
+    title: '일하는 방식을 바꾸는 생성형 AI 활용법',
+    contentsSummary:
+      '반복 업무를 줄이고 중요한 의사결정에 집중할 수 있는 생성형 AI 활용 사례를 소개합니다.',
+    arrivedDateTime: '2026.07.19T09:00:00',
+    thumbnailUrl:
+      'https://img.freepik.com/free-vector/artificial-intelligence-concept-illustration_114360-7000.jpg',
+    expectedReadTime: 6,
+    isRead: false,
+    isBookmarked: false,
+    newsletter: {
+      category: '커리어',
+      name: '폴인레터',
+      imageUrl: 'https://example.com/newsletter-image.jpg',
+    },
+  },
+  {
+    articleId: 7,
+    title: '이번 주 꼭 알아야 할 경제 이슈 다섯 가지',
+    contentsSummary:
+      '한 주의 주요 경제 소식과 일상에 미치는 영향을 쉽고 빠르게 정리해드립니다.',
+    arrivedDateTime: '2026.07.19T08:00:00',
+    thumbnailUrl:
+      'https://img.freepik.com/free-vector/business-analytics-concept-illustration_114360-878.jpg',
+    expectedReadTime: 5,
+    isRead: false,
+    isBookmarked: false,
+    newsletter: {
+      category: '경제',
+      name: '어피티',
+      imageUrl: 'https://example.com/newsletter-image.jpg',
+    },
+  },
 ];

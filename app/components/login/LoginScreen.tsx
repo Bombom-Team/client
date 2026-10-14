@@ -1,8 +1,9 @@
 import styled from '@emotion/native';
-import { Ionicons } from '@expo/vector-icons';
 
 import {
+  Alert,
   Dimensions,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -13,54 +14,72 @@ import { AppleIcon } from '@/components/icons/AppleIcon';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebView } from '@/contexts/WebViewContext';
-import { loginWithApple, loginWithGoogle } from '@/utils/auth';
-import { theme } from '@bombom/shared/theme';
+import {
+  captureNativeLoginFailure,
+  type NativeLoginFailureReport,
+} from '@/libs/sentry/nativeLoginReporting';
+import {
+  getNativeLoginFailure,
+  loginWithApple,
+  loginWithGoogle,
+  type NativeLoginCredential,
+  type NativeLoginProvider,
+} from '@/utils/auth';
+
+const logo = require('@/app/assets/images/logo.png');
+
+const handleNativeLoginFailure = (failure: NativeLoginFailureReport) => {
+  captureNativeLoginFailure(failure);
+
+  if (__DEV__) {
+    console.error(`${failure.provider} 로그인 실패:`, failure.reason);
+  }
+
+  Alert.alert('로그인에 실패했어요. 다시 시도해주세요.');
+};
 
 export const LoginScreen = () => {
   const { showLogin } = useAuth();
   const { sendMessageToWeb } = useWebView();
 
-  const handleGoogleLogin = async () => {
+  const handleLogin = async (provider: NativeLoginProvider) => {
+    let credential: NativeLoginCredential | null;
     try {
-      await loginWithGoogle(
-        ({ identityToken, authorizationCode, email, name }) => {
-          showLogin();
-          sendMessageToWeb({
-            type: 'GOOGLE_LOGIN_TOKEN',
-            payload: {
-              identityToken,
-              authorizationCode,
-              email,
-              name: name ?? '',
-            },
-          });
-        },
-      );
+      credential = await (provider === 'google'
+        ? loginWithGoogle()
+        : loginWithApple());
     } catch (error) {
-      console.error('Google 로그인 실패:', error);
+      const failure = getNativeLoginFailure(provider, error);
+      if (failure) handleNativeLoginFailure({ provider, ...failure });
+      return;
     }
+
+    if (!credential) return;
+
+    const isDispatched = sendMessageToWeb({
+      type: provider === 'google' ? 'GOOGLE_LOGIN_TOKEN' : 'APPLE_LOGIN_TOKEN',
+      payload: {
+        identityToken: credential.identityToken,
+        authorizationCode: credential.authorizationCode,
+        email: credential.email,
+        name: credential.name ?? '',
+      },
+    });
+
+    if (!isDispatched) {
+      handleNativeLoginFailure({
+        provider,
+        stage: 'webview_dispatch',
+        reason: 'webview_dispatch_failed',
+      });
+      return;
+    }
+
+    showLogin();
   };
 
-  const handleAppleLogin = async () => {
-    try {
-      await loginWithApple(
-        ({ identityToken, authorizationCode, email, name }) => {
-          showLogin();
-          sendMessageToWeb({
-            type: 'APPLE_LOGIN_TOKEN',
-            payload: {
-              identityToken,
-              authorizationCode,
-              email,
-              name: name ?? '',
-            },
-          });
-        },
-      );
-    } catch (error) {
-      console.error('Apple 로그인 실패:', error);
-    }
-  };
+  const handleGoogleLogin = () => handleLogin('google');
+  const handleAppleLogin = () => handleLogin('apple');
 
   return (
     <Container>
@@ -74,17 +93,11 @@ export const LoginScreen = () => {
         >
           <MainCard>
             <GreetingWrapper>
-              <IconContainer>
-                <Ionicons
-                  name="sparkles"
-                  size={24}
-                  color={theme.colors.white}
-                />
-              </IconContainer>
+              <LogoImage source={logo} accessibilityLabel="봄봄 로고" />
               <Title>봄봄에 오신 걸 환영해요</Title>
               <Subtitle>
-                당신의 하루에 찾아오는 작은 설렘{'\n'}뉴스레터를 한 곳에서 쉽게
-                관리하세요
+                당신의 하루에 찾아오는 작은 설렘{'\n'}
+                뉴스레터를 한 곳에서 쉽게 관리하세요
               </Subtitle>
             </GreetingWrapper>
 
@@ -148,41 +161,41 @@ const MainCard = styled.View`
 
 const GreetingWrapper = styled.View`
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
 
-const IconContainer = styled.View`
-  padding: 18px;
-  border-radius: 50px;
-  justify-content: center;
-  align-items: center;
-  background-color: ${(props) => props.theme.colors.primaryBomBom};
+const LogoImage = styled(Image)`
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
 `;
 
 const Title = styled.Text`
   font-size: 28px;
   font-weight: 700;
+  line-height: 38px;
   text-align: center;
   color: ${(props) => props.theme.colors.textPrimary};
   background-color: transparent;
 `;
 
 const Subtitle = styled.Text`
-  margin: 34px 0;
+  width: 100%;
+  max-width: 380px;
   color: ${(props) => props.theme.colors.textSecondary};
   font-size: 18px;
   font-weight: 400;
   text-align: center;
-  line-height: 28px;
+  line-height: 24px;
 `;
 
 const Divider = styled.View`
   width: 100%;
   height: 2px;
-  margin-bottom: 34px;
+  margin: 16px 0;
   background-color: ${(props) => props.theme.colors.dividers};
   opacity: 0.3;
 `;

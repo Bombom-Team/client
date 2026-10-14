@@ -4,6 +4,34 @@
  */
 
 export interface paths {
+  '/api/v1/subscriptions/native/maeil-mail': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 봄봄 자체 뉴스레터 구독 여부 조회
+     * @description 매일메일 구독 여부와 구독 중인 트랙 목록을 반환합니다.
+     */
+    get: operations['getSubscription'];
+    /**
+     * 봄봄 자체 뉴스레터 구독 생성/수정
+     * @description 요청한 트랙 목록으로 구독 상태를 치환합니다. 미구독 상태에서 트랙을 보내면 신규 구독, 구독 중에 다른 트랙을 보내면 수정합니다.
+     */
+    put: operations['putSubscription'];
+    post: operations['postSubscription'];
+    /**
+     * 봄봄 자체 뉴스레터 구독 해지
+     * @description 매일메일 구독을 해지하고 구독 트랙을 삭제합니다.
+     */
+    delete: operations['deleteSubscription'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/challenges/{challengeId}/reviews/{reviewId}': {
     parameters: {
       query?: never;
@@ -58,30 +86,6 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations['handleAppleFormPost'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/subscriptions/native/maeil-mail': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * 봄봄 자체 뉴스레터 구독 여부 조회
-     * @description 매일메일 구독 여부와 구독 중인 트랙 목록을 반환합니다.
-     */
-    get: operations['getSubscription'];
-    put?: never;
-    /**
-     * 봄봄 자체 뉴스레터 구독
-     * @description 봄봄 자체 뉴스레터(매일메일)를 구독합니다.
-     */
-    post: operations['subscribe'];
     delete?: never;
     options?: never;
     head?: never;
@@ -176,6 +180,74 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/inquiries/rooms': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 채팅방 목록 조회
+     * @description 생성일 최신순으로 문의 채팅방 목록을 조회합니다. 종료된 채팅방도 포함됩니다.
+     */
+    get: operations['getRooms'];
+    put?: never;
+    /**
+     * 문의 채팅방 생성
+     * @description 카테고리를 지정해 새 문의 채팅방을 생성합니다. 비회원은 X-Guest-Id 헤더가 필요합니다.
+     */
+    post: operations['createRoom'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/inquiries/rooms/{roomId}/messages': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 메시지 조회
+     * @description 채팅방의 메시지를 커서 기반으로 조회합니다. cursor가 없으면 최신 메시지부터 조회합니다.
+     */
+    get: operations['getMessages'];
+    put?: never;
+    /**
+     * 문의 메시지 전송
+     * @description 채팅방에 메시지를 전송합니다. 이미지는 최대 4장까지 첨부할 수 있습니다.
+     */
+    post: operations['sendMessage'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/inquiries/images': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 문의 이미지 업로드
+     * @description 메시지에 첨부할 이미지를 S3에 업로드합니다. 최대 4장까지 한 번에 업로드할 수 있습니다.
+     */
+    post: operations['uploadImages'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/highlights': {
     parameters: {
       query?: never;
@@ -233,7 +305,7 @@ export interface paths {
     };
     /**
      * 열람 가능한 리뷰 목록 조회
-     * @description 로그인한 사용자가 직접 작성한 리뷰(비공개 포함)와 다른 사용자가 작성한 공개 리뷰 목록을 함께 조회합니다. 정렬은 항상 최신순으로 적용되며, `sort` 파라미터는 무시됩니다. 각 항목의 `isMyReview` 필드로 로그인 회원 본인 작성 여부를 분기 처리할 수 있습니다.
+     * @description 다른 사용자가 작성한 공개 리뷰 목록을 조회합니다. 로그인 회원 본인이 작성한 리뷰는 목록에서 제외되며, 본인 리뷰는 `/me` API 로 조회합니다. 정렬은 항상 최신순으로 적용되며, `sort` 파라미터는 무시됩니다.
      */
     get: operations['getReviews'];
     put?: never;
@@ -612,6 +684,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/notices/representative': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 대표 공지 조회
+     * @description 대표로 지정된 공개 공지 1건을 조회합니다. 대표 공지가 없으면 204를 반환합니다.
+     */
+    get: operations['getRepresentativeNotice'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/newsletters': {
     parameters: {
       query?: never;
@@ -728,7 +820,7 @@ export interface paths {
     };
     /**
      * 나의 스트릭 순위 조회
-     * @description 실시간 연속 읽기 일수 기준 나의 순위를 반환합니다. day_count가 0이면 월간 순위와 같이 최하위 구간의 공동 순위로 포함됩니다. continue_reading_snapshot 행이 없으면 404입니다.
+     * @description 실시간 연속 읽기 일수 기준 나의 순위와 연속 읽기 보호막 현황을 반환합니다. day_count가 0이면 월간 순위와 같이 최하위 구간의 공동 순위로 포함됩니다. continue_reading_snapshot 행이 없으면 404입니다.
      */
     get: operations['getMemberContinueReadingRank'];
     put?: never;
@@ -799,6 +891,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/members/me/reading/dashboard': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 월간 읽기 대시보드 조회
+     * @description 로그인한 회원의 해당 연·월 읽기 통계를 조회합니다. 읽은 아티클 수(지난 달 대비 증감 포함), 북마크 수, 자주 읽은 뉴스레터를 반환합니다.
+     */
+    get: operations['getReadingDashboard'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/reading/calendar': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 월간 읽기 캘린더 조회
+     * @description 로그인한 회원의 해당 연·월 일자별 읽기 현황을 조회합니다.
+     */
+    get: operations['getReadingCalendar'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/rank': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 마이페이지 랭킹 요약 조회
+     * @description         로그인한 회원의 마이페이지 랭킹 요약 정보를 조회합니다.
+     *             - type 미입력: 연속 읽기 랭킹과 읽은 글 수 랭킹을 모두 반환합니다.
+     *             - type=streak: 연속 읽기 랭킹만 반환합니다.
+     *             - type=reading: 읽은 글 수 랭킹만 반환합니다.
+     *
+     */
+    get: operations['getRankSummary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/members/me/profile': {
     parameters: {
       query?: never;
@@ -831,6 +987,106 @@ export interface paths {
      * @description 현재 로그인한 사용자의 펫 정보를 조회합니다.
      */
     get: operations['getPet'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/join-days': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 회원 가입일 기준 경과일 조회
+     * @description 로그인한 회원의 가입일과 가입일 이래로 지난 일수를 조회합니다.
+     */
+    get: operations['getMemberJoinDays'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/challenges/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 나의 챌린지 요약 정보 조회
+     * @description 마이페이지 챌린지 탭에 노출할 나의 챌린지 요약 정보를 조회합니다. 종료된 챌린지만 집계 대상이며, 수료한 챌린지 수와 수료율·출석률의 상대 순위(상위 %), 메달 비율을 반환합니다. 참여한 종료 챌린지가 없으면 모든 값은 0입니다.
+     */
+    get: operations['getChallengeSummary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/challenges/ongoing': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 참여 중 챌린지 목록 조회
+     * @description 로그인한 회원이 현재 참여 중(진행 중)인 챌린지 목록을 팀 순위, 출석률 비교 정보와 함께 조회합니다. 진행 중 챌린지가 없으면 빈 배열을 반환합니다.
+     */
+    get: operations['getOngoingChallenges'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/challenges/completed': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 완료한(종료된) 챌린지 목록 조회
+     * @description 로그인한 회원이 참여한 종료된 챌린지 목록을 출석률, 수료 등급과 함께 조회합니다. 수료 실패(grade=FAIL)한 챌린지도 포함하며, 정렬은 종료일 내림차순으로 sort 파라미터는 무시됩니다.
+     */
+    get: operations['getCompletedChallenges'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/category-stats': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 마이페이지 월별 카테고리 통계 조회
+     * @description 로그인한 회원이 지정한 월에 읽은 뉴스의 카테고리별 통계를 조회합니다.
+     */
+    get: operations['getCategoryStats'];
     put?: never;
     post?: never;
     delete?: never;
@@ -879,6 +1135,66 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/inquiries/rooms/{roomId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 채팅방 단건 조회
+     * @description roomId로 문의 채팅방 상세 정보를 조회합니다. 본인이 소유한 채팅방만 조회할 수 있습니다.
+     */
+    get: operations['getRoom'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/inquiries/rooms/unread-status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 미확인 상태 조회
+     * @description 내 문의 채팅방 중 아직 읽지 않은 어드민 응답이 하나라도 있는지 여부를 조회합니다.
+     */
+    get: operations['getUnreadStatus'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/inquiries/categories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 카테고리 목록 조회
+     * @description 문의 채팅방 생성 시 선택 가능한 카테고리 목록을 조회합니다.
+     */
+    get: operations['getCategories'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/highlights/statistics/newsletters': {
     parameters: {
       query?: never;
@@ -891,6 +1207,46 @@ export interface paths {
      * @description 뉴스레터별 하이라이트 개수 정보를 조회합니다.
      */
     get: operations['getHighlightNewsletterStatistics'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/faqs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * FAQ 목록 조회
+     * @description FAQ 목록을 조회합니다. (카테고리 필터링 지원)
+     */
+    get: operations['getFaqs'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/coupons/issues/me': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 내가 받은 쿠폰 목록 조회
+     * @description 로그인한 사용자가 발급받은 쿠폰 목록을 조회합니다.
+     */
+    get: operations['getIssuedCoupons'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1495,10 +1851,33 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/inquiries/rooms/{roomId}/messages/{messageId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * 문의 메시지 삭제
+     * @description 본인이 작성한 메시지를 삭제합니다.
+     */
+    delete: operations['deleteMessage'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    MaeilMailUpdateSubscriptionRequest: {
+      tracks: ('BE' | 'FE')[];
+    };
     UpdateChallengeReviewRequest: {
       comment: string;
       isPrivate?: boolean;
@@ -1507,9 +1886,6 @@ export interface components {
       /** Format: int32 */
       likeCount?: number;
     };
-    MaeilMailSubscribeRequest: {
-      tracks: ('BE' | 'FE')[];
-    };
     /** @description 경고 설정 변경 요청 */
     UpdateWarningSettingRequest: {
       isVisible?: boolean;
@@ -1517,6 +1893,44 @@ export interface components {
     MaeilMailSubmitAnswerRequest: {
       /** @description 사용자가 제출한 매일메일 답변 */
       answer: string;
+    };
+    CreateInquiryRoomRequest: {
+      /** Format: int64 */
+      categoryId: number;
+    };
+    InquiryRoomResponse: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int64 */
+      categoryId?: number;
+      /** @enum {string} */
+      status?: 'UNCONFIRMED' | 'IN_PROGRESS' | 'DONE' | 'ON_HOLD';
+      hasUnreadMessage?: boolean;
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      closedAt?: string;
+    };
+    SendInquiryMessageRequest: {
+      content?: string;
+      imageUrls?: string[];
+    };
+    InquiryMessageResponse: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int64 */
+      roomId?: number;
+      /** @enum {string} */
+      senderType?: 'USER' | 'ADMIN';
+      /** Format: int64 */
+      adminId?: number;
+      content?: string;
+      imageUrls?: string[];
+      /** Format: date-time */
+      createdAt?: string;
+    };
+    InquiryImageUploadResponse: {
+      imageUrls?: string[];
     };
     HighlightCreateRequest: {
       location: components['schemas']['HighlightLocationRequest'];
@@ -1571,6 +1985,7 @@ export interface components {
     };
     CreateCommentResponse: {
       isFirstCompletion?: boolean;
+      isChallengeCompleted?: boolean;
     };
     ChallengeCommentRequest: {
       /** Format: int64 */
@@ -1647,6 +2062,9 @@ export interface components {
     UpdateChallengeCommentRequest: {
       comment: string;
     };
+    MarkAsReadResponse: {
+      readCountTokenConsumed?: boolean;
+    };
     MaeilMailSubscriptionResponse: {
       tracks: ('BE' | 'FE')[];
     };
@@ -1671,14 +2089,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['NoticeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1697,8 +2115,8 @@ export interface components {
     };
     SortObject: {
       empty?: boolean;
-      unsorted?: boolean;
       sorted?: boolean;
+      unsorted?: boolean;
     };
     CategoryResponse: {
       /** Format: int64 */
@@ -1752,12 +2170,13 @@ export interface components {
       name: string;
       imageUrl?: string;
       description: string;
-      category: string;
       unsubscribeUrl?: string;
       /** @enum {string} */
       status: 'SUBSCRIBED' | 'UNSUBSCRIBING' | 'UNSUBSCRIBE_FAILED';
       /** @enum {string} */
       newsletterPublicationStatus: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
+      /** @enum {string} */
+      newsletterSource: 'EXTERNAL' | 'MAEIL_MAIL';
     };
     ReadingInformationResponse: {
       /** Format: int32 */
@@ -1834,6 +2253,15 @@ export interface components {
       /** Format: int32 */
       dayCount: number;
       badges?: components['schemas']['BadgesResponse'];
+      streakShield: components['schemas']['StreakShieldResponse'];
+    };
+    StreakShieldResponse: {
+      /** @enum {string} */
+      status?: 'AVAILABLE' | 'USED';
+      /** Format: int32 */
+      remainingCount: number;
+      /** Format: int32 */
+      monthlyLimit: number;
     };
     MemberMonthlyReadingCountResponse: {
       /** Format: int32 */
@@ -1866,6 +2294,77 @@ export interface components {
       nextRankDifference: number;
       badges?: components['schemas']['BadgesResponse'];
     };
+    FrequentReadNewsletterResponse: {
+      /**
+       * Format: int32
+       * @description 순위 (1-base)
+       */
+      rank: number;
+      /**
+       * Format: int64
+       * @description 뉴스레터 ID
+       */
+      newsletterId: number;
+      /** @description 뉴스레터명 */
+      name: string;
+      /**
+       * Format: int64
+       * @description 이번 달 읽은 아티클 수
+       */
+      readCount: number;
+    };
+    ReadingDashboardResponse: {
+      /**
+       * Format: int64
+       * @description 이번 달 읽은 아티클 수
+       */
+      readArticleCount: number;
+      /**
+       * Format: double
+       * @description 지난 달 대비 읽은 아티클 수 증감률 (%)
+       */
+      readArticleChangeRate: number;
+      /** @enum {string} */
+      readArticleChangeDirection?: 'UP' | 'DOWN' | 'SAME';
+      /**
+       * Format: int64
+       * @description 북마크 개수
+       */
+      bookmarkCount: number;
+      /** @description 자주 읽은 뉴스레터 TOP */
+      frequentReadNewsletters: components['schemas']['FrequentReadNewsletterResponse'][];
+    };
+    ReadingCalendarDayResponse: {
+      /**
+       * Format: date
+       * @description 날짜 (yyyy-MM-dd)
+       */
+      date: string;
+      /** @description 해당 날짜에 아티클을 읽었는지 여부 */
+      read: boolean;
+      /**
+       * Format: int64
+       * @description 해당 날짜에 읽은 아티클 수
+       */
+      readCount: number;
+    };
+    RankCardResponse: {
+      type: string;
+      /** Format: int64 */
+      currentRank?: number;
+      rankHistory: components['schemas']['RankHistoryResponse'][];
+      /** Format: int32 */
+      value: number;
+    };
+    RankHistoryResponse: {
+      month: string;
+      label: string;
+      /** Format: int64 */
+      rank: number;
+    };
+    RankSummaryResponse: {
+      cards: components['schemas']['RankCardResponse'][];
+    };
     MemberProfileResponse: {
       /** Format: int64 */
       id: number;
@@ -1892,6 +2391,257 @@ export interface components {
       /** @description 출석 여부 */
       isAttended: boolean;
     };
+    MemberJoinDaysResponse: {
+      /**
+       * Format: int32
+       * @description 가입일 이래로 지난 일수
+       */
+      daysSinceJoined: number;
+      /**
+       * Format: date
+       * @description 가입일 (yyyy-MM-dd)
+       */
+      joinedAt: string;
+    };
+    /** @description 챌린지 출석률 순위 정보 (다른 회원 대비 상대 순위) */
+    AttendanceRank: {
+      /**
+       * Format: double
+       * @description 상위 몇 % 인지 (소수 첫째자리)
+       * @example 7
+       */
+      topPercent?: number;
+      /**
+       * Format: int32
+       * @description 나의 평균 챌린지 출석률 (%)
+       * @example 87
+       */
+      averageAttendanceRate?: number;
+    };
+    /** @description 수료율 순위 정보 (다른 회원 대비 상대 순위) */
+    CompletionRank: {
+      /**
+       * Format: double
+       * @description 상위 몇 % 인지 (소수 첫째자리)
+       * @example 18
+       */
+      topPercent?: number;
+      /**
+       * Format: int32
+       * @description 나의 수료율 (%)
+       * @example 80
+       */
+      completionRate?: number;
+    };
+    /** @description 메달 획득 비율 (%) - 소수점 버림이라 합은 100 이하 가능, 수료 0건이면 0/0/0 */
+    MedalRatioResponse: {
+      /**
+       * Format: int32
+       * @description 금메달 획득 비율 (%)
+       * @example 40
+       */
+      gold?: number;
+      /**
+       * Format: int32
+       * @description 은메달 획득 비율 (%)
+       * @example 35
+       */
+      silver?: number;
+      /**
+       * Format: int32
+       * @description 동메달 획득 비율 (%)
+       * @example 25
+       */
+      bronze?: number;
+    };
+    MyChallengeSummaryResponse: {
+      /**
+       * Format: int32
+       * @description 완료한 챌린지 수
+       * @example 5
+       */
+      completedChallengeCount?: number;
+      /** @description 수료율 순위 정보 */
+      completionRank: components['schemas']['CompletionRank'];
+      /** @description 출석률 순위 정보 */
+      attendanceRank: components['schemas']['AttendanceRank'];
+      /** @description 메달 획득 비율 */
+      medalRatio: components['schemas']['MedalRatioResponse'];
+    };
+    /** @description 내 출석률 비교 정보 */
+    MyAttendanceComparison: {
+      /**
+       * Format: int32
+       * @description 현재 나의 출석률 (%)
+       * @example 72
+       */
+      attendanceRate?: number;
+      /**
+       * Format: int32
+       * @description 전체 참여자 평균 출석률 대비 차이 (%p, 부호 있음)
+       * @example 6
+       */
+      differencePoint?: number;
+    };
+    MyOngoingChallengeResponse: {
+      /**
+       * Format: int64
+       * @description 챌린지 식별자
+       * @example 101
+       */
+      challengeId?: number;
+      /**
+       * @description 챌린지 이름
+       * @example 한 달 뉴스레터 읽기 챌린지
+       */
+      title?: string;
+      /**
+       * Format: date
+       * @description 챌린지 시작일
+       */
+      startDate?: string;
+      /**
+       * Format: date
+       * @description 챌린지 종료일
+       */
+      endDate?: string;
+      /**
+       * Format: int32
+       * @description 종료까지 남은 일수 (D-N)
+       * @example 14
+       */
+      remainingDays?: number;
+      /**
+       * Format: int32
+       * @description 진행률 (= 출석률, %)
+       * @example 72
+       */
+      progressRate?: number;
+      /** @description 팀 내 나의 순위 정보 */
+      myTeamRank: components['schemas']['MyTeamRank'];
+      /** @description 우리 팀 순위 정보 */
+      teamRank: components['schemas']['TeamRank'];
+      /** @description 내 출석률 비교 정보 */
+      myAttendanceComparison: components['schemas']['MyAttendanceComparison'];
+      /** @description 팀 출석률 비교 정보 */
+      teamAttendanceComparison: components['schemas']['TeamAttendanceComparison'];
+    };
+    MyOngoingChallengesResponse: {
+      /** @description 참여 중 챌린지 목록 (없으면 빈 배열) */
+      challenges: components['schemas']['MyOngoingChallengeResponse'][];
+    };
+    /** @description 팀 내 나의 순위 정보 */
+    MyTeamRank: {
+      /**
+       * Format: int32
+       * @description 팀 내 나의 출석률 순위
+       * @example 3
+       */
+      rank?: number;
+      /**
+       * Format: int32
+       * @description 우리 팀 인원 수
+       * @example 12
+       */
+      totalMembers?: number;
+    };
+    /** @description 팀 출석률 비교 정보 */
+    TeamAttendanceComparison: {
+      /**
+       * Format: int32
+       * @description 우리 팀 평균 출석률 (%)
+       * @example 68
+       */
+      teamAttendanceRate?: number;
+      /**
+       * Format: int32
+       * @description 전체 팀 평균 출석률 대비 차이 (%p, 부호 있음)
+       * @example 4
+       */
+      differencePoint?: number;
+    };
+    /** @description 우리 팀 순위 정보 (팀 평균 출석률 기준) */
+    TeamRank: {
+      /**
+       * Format: int32
+       * @description 팀 평균 출석률 기준 우리 팀 순위
+       * @example 2
+       */
+      rank?: number;
+      /**
+       * Format: int32
+       * @description 해당 챌린지의 팀 개수
+       * @example 6
+       */
+      totalTeams?: number;
+    };
+    CompletedChallengeResponse: {
+      /**
+       * Format: int64
+       * @description 챌린지 식별자
+       * @example 201
+       */
+      challengeId?: number;
+      /**
+       * @description 챌린지 이름
+       * @example 30일 독서 챌린지
+       */
+      title?: string;
+      /**
+       * Format: date
+       * @description 챌린지 시작일
+       */
+      startDate?: string;
+      /**
+       * Format: date
+       * @description 챌린지 종료일
+       */
+      endDate?: string;
+      /**
+       * Format: int32
+       * @description 출석률 (%)
+       * @example 92
+       */
+      attendanceRate?: number;
+      /**
+       * @description 수료 결과 등급
+       * @example GOLD
+       * @enum {string}
+       */
+      grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
+    };
+    PageCompletedChallengeResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['CompletedChallengeResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    CategoryStatsItemResponse: {
+      /** Format: int64 */
+      id: number;
+      name: string;
+      /** Format: int64 */
+      count: number;
+      /** Format: int32 */
+      percent: number;
+    };
+    CategoryStatsResponse: {
+      /** Format: int64 */
+      total: number;
+      categories: components['schemas']['CategoryStatsItemResponse'][];
+    };
     MaeilMailIdealAnswerResponse: {
       title: string;
       answer: string;
@@ -1902,6 +2652,36 @@ export interface components {
     };
     MaeilMailSubmittedAnswerResponse: {
       answer: string;
+    };
+    PageInquiryRoomResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['InquiryRoomResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    InquiryMessagePageResponse: {
+      messages?: components['schemas']['InquiryMessageResponse'][];
+      hasNext?: boolean;
+    };
+    InquiryUnreadStatusResponse: {
+      hasUnread?: boolean;
+    };
+    InquiryCategoryResponse: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
     };
     HighlightResponse: {
       /** Format: int64 */
@@ -1923,14 +2703,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -1959,6 +2739,37 @@ export interface components {
       totalCount: number;
       /** @description 뉴스레터 별 하이라이트 개수 통계 */
       newsletters: components['schemas']['HighlightCountPerNewsletterResponse'][];
+    };
+    FaqResponse: {
+      /** Format: int64 */
+      faqId: number;
+      categoryName: string;
+      question: string;
+      answer: string;
+    };
+    PageFaqResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['FaqResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      empty?: boolean;
+    };
+    CouponIssueSummaryResponse: {
+      couponName: string;
+      imageUrl: string;
+      /** Format: date-time */
+      issuedAt: string;
     };
     ChallengeDetailResponse: {
       /** @description 참여 여부 */
@@ -2157,30 +2968,20 @@ export interface components {
        * @example 좋았어요
        */
       comment: string;
-      /**
-       * @description 비밀글 여부 (자신이 쓴 글이 비공개인지 표시할 때 사용)
-       * @example false
-       */
-      isPrivate: boolean;
-      /**
-       * @description 로그인 회원 본인이 작성한 리뷰인지 여부 (클라이언트 분기용)
-       * @example true
-       */
-      isMyReview: boolean;
     };
     PageChallengeReviewResponse: {
       /** Format: int64 */
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeReviewResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2223,14 +3024,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['DailyGuideCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2282,14 +3083,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2311,14 +3112,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['CommentReplyResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2335,14 +3136,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentHighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2382,14 +3183,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2426,14 +3227,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BlogPostResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2463,6 +3264,7 @@ export interface components {
       date?: string;
       /** Format: int64 */
       newsletterId?: number;
+      unreadOnly?: boolean;
     };
     ArticleResponse: {
       /** Format: int64 */
@@ -2484,14 +3286,14 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components['schemas']['PageableObject'];
@@ -2581,6 +3383,118 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  getSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
+        };
+      };
+    };
+  };
+  putSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MaeilMailUpdateSubscriptionRequest'];
+      };
+    };
+    responses: {
+      /** @description 처리 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 (빈 트랙, 중복 트랙) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  postSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MaeilMailUpdateSubscriptionRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 해지 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   updateReview: {
     parameters: {
       query?: never;
@@ -2746,71 +3660,6 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getSubscription: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 조회 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
-        };
-      };
-      /** @description 인증 실패 */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['MaeilMailSubscriptionResponse'];
-        };
-      };
-    };
-  };
-  subscribe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['MaeilMailSubscribeRequest'];
-      };
-    };
-    responses: {
-      /** @description 구독 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description 잘못된 요청 (외부 뉴스레터, 중복 구독) */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description 인증 실패 */
-      401: {
         headers: {
           [name: string]: unknown;
         };
@@ -3006,6 +3855,206 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getRooms: {
+    parameters: {
+      query?: {
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 채팅방 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageInquiryRoomResponse'];
+        };
+      };
+      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageInquiryRoomResponse'];
+        };
+      };
+    };
+  };
+  createRoom: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateInquiryRoomRequest'];
+      };
+    };
+    responses: {
+      /** @description 채팅방 생성 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+    };
+  };
+  getMessages: {
+    parameters: {
+      query?: {
+        /** @description 커서 (마지막으로 받은 메시지 ID) */
+        cursor?: number;
+        /** @description 조회 개수 */
+        size?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 메시지 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessagePageResponse'];
+        };
+      };
+      /** @description 잘못된 요청 값 (size는 1 이상 50 이하의 값이어야 함) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessagePageResponse'];
+        };
+      };
+      /** @description 본인 소유 채팅방이 아님 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessagePageResponse'];
+        };
+      };
+      /** @description 존재하지 않는 채팅방 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessagePageResponse'];
+        };
+      };
+    };
+  };
+  sendMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SendInquiryMessageRequest'];
+      };
+    };
+    responses: {
+      /** @description 메시지 전송 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessageResponse'];
+        };
+      };
+      /** @description 본인 소유 채팅방이 아님 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessageResponse'];
+        };
+      };
+      /** @description 존재하지 않는 채팅방 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessageResponse'];
+        };
+      };
+    };
+  };
+  uploadImages: {
+    parameters: {
+      query: {
+        images: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 이미지 업로드 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryImageUploadResponse'];
+        };
+      };
+      /** @description 이미지 개수가 4장을 초과하거나, 이미지 형식이 아니거나, 요청자를 식별할 수 없음 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryImageUploadResponse'];
+        };
       };
     };
   };
@@ -4140,11 +5189,13 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description 읽음 처리 성공 */
-      204: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          '*/*': components['schemas']['MarkAsReadResponse'];
+        };
       };
       /** @description 아티클에 대한 접근 권한 없음 */
       403: {
@@ -4180,6 +5231,35 @@ export interface operations {
         };
         content: {
           '*/*': components['schemas']['PageNoticeResponse'];
+        };
+      };
+    };
+  };
+  getRepresentativeNotice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 대표 공지 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NoticeResponse'];
+        };
+      };
+      /** @description 대표로 지정된 공개 공지가 없음 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NoticeResponse'];
         };
       };
     };
@@ -4471,6 +5551,131 @@ export interface operations {
       };
     };
   };
+  getReadingDashboard: {
+    parameters: {
+      query: {
+        /** @description 조회할 연도 */
+        year: number;
+        /** @description 조회할 월 (1-12) */
+        month: number;
+        /** @description 자주 읽은 뉴스레터 조회 개수 */
+        limit: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 읽기 대시보드 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReadingDashboardResponse'];
+        };
+      };
+      /** @description 잘못된 연·월 파라미터 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ReadingDashboardResponse'];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ReadingDashboardResponse'];
+        };
+      };
+    };
+  };
+  getReadingCalendar: {
+    parameters: {
+      query: {
+        /** @description 조회할 연도 */
+        year: number;
+        /** @description 조회할 월 (1-12) */
+        month: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 읽기 캘린더 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReadingCalendarDayResponse'][];
+        };
+      };
+      /** @description 잘못된 연·월 파라미터 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ReadingCalendarDayResponse'][];
+        };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['ReadingCalendarDayResponse'][];
+        };
+      };
+    };
+  };
+  getRankSummary: {
+    parameters: {
+      query?: {
+        /** @description 랭킹 타입 (미입력 시 전체) */
+        type?: 'streak' | 'reading';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 마이페이지 랭킹 요약 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['RankSummaryResponse'];
+        };
+      };
+      /** @description 잘못된 랭킹 타입 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   getMemberProfile: {
     parameters: {
       query?: never;
@@ -4524,6 +5729,156 @@ export interface operations {
         content: {
           '*/*': components['schemas']['PetResponse'];
         };
+      };
+    };
+  };
+  getMemberJoinDays: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 회원 가입일 기준 경과일 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MemberJoinDaysResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getChallengeSummary: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 나의 챌린지 요약 정보 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MyChallengeSummaryResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getOngoingChallenges: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 참여 중 챌린지 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MyOngoingChallengesResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getCompletedChallenges: {
+    parameters: {
+      query: {
+        /** @description 페이징 요청 (예: ?page=0&size=20). 정렬은 항상 종료일 내림차순으로 서버 강제이며 sort 파라미터는 무시됩니다. */
+        pageable: components['schemas']['Pageable'];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 완료한 챌린지 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageCompletedChallengeResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getCategoryStats: {
+    parameters: {
+      query: {
+        /** @description 조회할 연도 */
+        year: number;
+        /** @description 조회할 월 (1-12) */
+        month: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 마이페이지 월별 카테고리 통계 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CategoryStatsResponse'];
+        };
+      };
+      /** @description 잘못된 연·월 파라미터 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -4594,6 +5949,105 @@ export interface operations {
       };
     };
   };
+  getRoom: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 채팅방 단건 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+      /** @description 본인이 소유한 채팅방이 아님 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+      /** @description 존재하지 않는 채팅방 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+    };
+  };
+  getUnreadStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 미확인 상태 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryUnreadStatusResponse'];
+        };
+      };
+      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가 등) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryUnreadStatusResponse'];
+        };
+      };
+    };
+  };
+  getCategories: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 카테고리 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryCategoryResponse'][];
+        };
+      };
+    };
+  };
   getHighlightNewsletterStatistics: {
     parameters: {
       query?: never;
@@ -4618,6 +6072,68 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getFaqs: {
+    parameters: {
+      query?: {
+        faqCategory?:
+          | 'INTRODUCTION'
+          | 'FEATURE'
+          | 'ACCOUNT'
+          | 'NEWSLETTER'
+          | 'ETC';
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description FAQ 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageFaqResponse'];
+        };
+      };
+    };
+  };
+  getIssuedCoupons: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 쿠폰 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CouponIssueSummaryResponse'][];
+        };
+      };
+      /** @description 인증이 필요합니다. */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CouponIssueSummaryResponse'][];
+        };
       };
     };
   };
@@ -5631,6 +7147,43 @@ export interface operations {
         content: {
           '*/*': components['schemas']['SessionStatisticsResponse'];
         };
+      };
+    };
+  };
+  deleteMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+        /** @description 메시지 ID */
+        messageId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 메시지 삭제 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 본인이 작성한 메시지가 아니거나 본인 소유 채팅방이 아님 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 채팅방 또는 메시지 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };

@@ -5,6 +5,7 @@ export interface Action {
   icon: ReactNode;
   onClick?: () => void;
   ariaLabel: string;
+  content?: ReactNode;
 }
 
 interface FloatingActionPanelProps {
@@ -21,7 +22,11 @@ const FloatingActionPanel = ({
   return (
     <Container top={top} left={left}>
       {actions.map((action, index) =>
-        action.onClick ? (
+        action.content ? (
+          <ActionItem key={`${action.ariaLabel}-${index}`}>
+            {action.content}
+          </ActionItem>
+        ) : action.onClick ? (
           <ActionButton
             key={`${action.ariaLabel}-${index}`}
             type="button"

@@ -1,0 +1,130 @@
+import { theme } from '@bombom/shared/theme';
+import { ThemeProvider } from '@emotion/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import MobileDateFilter from './MobileDateFilter';
+
+jest.mock('@/hooks/useDevice', () => ({
+  useDevice: () => 'mobile',
+}));
+
+const renderMobileDateFilter = ({
+  today,
+  dates,
+  selectedDate,
+  onDateSelect = jest.fn(),
+}: {
+  today: string;
+  dates: string[];
+  selectedDate: string;
+  onDateSelect?: (date: string) => void;
+}) =>
+  render(
+    <ThemeProvider theme={theme}>
+      <MobileDateFilter
+        today={today}
+        dates={dates}
+        selectedDate={selectedDate}
+        onDateSelect={onDateSelect}
+      />
+    </ThemeProvider>,
+  );
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
+describe('MobileDateFilter', () => {
+  it('선택된 날짜가 변경되면 활성 탭이 보이도록 스크롤한다', () => {
+    const scrollIntoView = jest.fn();
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+      configurable: true,
+      value: scrollIntoView,
+    });
+    const { rerender } = renderMobileDateFilter({
+      today: '2026-07-10',
+      dates: ['2026-07-07', '2026-07-08', '2026-07-09', '2026-07-10'],
+      selectedDate: '2026-07-09',
+    });
+
+    scrollIntoView.mockClear();
+    rerender(
+      <ThemeProvider theme={theme}>
+        <MobileDateFilter
+          today="2026-07-10"
+          dates={['2026-07-07', '2026-07-08', '2026-07-09', '2026-07-10']}
+          selectedDate="2026-07-07"
+          onDateSelect={jest.fn()}
+        />
+      </ThemeProvider>,
+    );
+
+    expect(scrollIntoView).toHaveBeenCalledWith({ inline: 'nearest' });
+  });
+
+  it('날짜 탭을 누르면 해당 날짜의 코멘트로 이동할 수 있도록 선택한 날짜를 전달한다', () => {
+    const onDateSelect = jest.fn();
+    renderMobileDateFilter({
+      today: '2026-07-10',
+      dates: ['2026-07-07', '2026-07-08', '2026-07-09', '2026-07-10'],
+      selectedDate: '2026-07-10',
+      onDateSelect,
+    });
+
+    fireEvent.click(screen.getByText('7/8'));
+
+    expect(onDateSelect).toHaveBeenCalledWith('2026-07-08');
+  });
+
+  it('처음 렌더링하면 누적 날짜 영역을 가장 우측으로 스크롤한다', () => {
+    jest
+      .spyOn(HTMLElement.prototype, 'scrollWidth', 'get')
+      .mockReturnValue(300);
+    jest
+      .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+      .mockReturnValue(100);
+
+    renderMobileDateFilter({
+      today: '2026-07-10',
+      dates: ['2026-07-07', '2026-07-08', '2026-07-09', '2026-07-10'],
+      selectedDate: '2026-07-10',
+    });
+
+    const scrollContainer = screen.getByRole('tablist').parentElement;
+
+    expect(scrollContainer?.scrollLeft).toBe(200);
+  });
+
+  it('오늘이 유효한 챌린지 날짜이면 오늘 탭을 표시한다', () => {
+    renderMobileDateFilter({
+      today: '2026-07-10',
+      dates: ['2026-07-07', '2026-07-08', '2026-07-09', '2026-07-10'],
+      selectedDate: '2026-07-10',
+    });
+
+    expect(screen.getByText('오늘')).toBeTruthy();
+  });
+
+  it('오늘이 주말이면 오늘 탭과 구분 영역을 표시하지 않는다', () => {
+    renderMobileDateFilter({
+      today: '2026-07-12',
+      dates: ['2026-07-07', '2026-07-08', '2026-07-09', '2026-07-10'],
+      selectedDate: '2026-07-10',
+    });
+
+    expect(screen.queryByText('오늘')).toBeNull();
+    expect(screen.getAllByRole('tablist')).toHaveLength(1);
+    expect(screen.getByText('7/10')).toBeTruthy();
+  });
+
+  it('챌린지 종료 후에는 마지막 챌린지 날짜까지만 표시한다', () => {
+    renderMobileDateFilter({
+      today: '2026-07-20',
+      dates: ['2026-07-16', '2026-07-17'],
+      selectedDate: '2026-07-17',
+    });
+
+    expect(screen.queryByText('오늘')).toBeNull();
+    expect(screen.getAllByRole('tablist')).toHaveLength(1);
+    expect(screen.getByText('7/17')).toBeTruthy();
+  });
+});

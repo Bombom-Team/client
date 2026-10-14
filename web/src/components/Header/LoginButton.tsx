@@ -4,7 +4,11 @@ import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { isWebView } from '@/utils/device';
 
-const LoginButton = () => {
+interface LoginButtonProps {
+  className?: string;
+}
+
+const LoginButton = ({ className }: LoginButtonProps) => {
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -27,7 +31,11 @@ const LoginButton = () => {
     });
   };
 
-  return <Button onClick={handleLoginClick}>로그인</Button>;
+  return (
+    <Button className={className} onClick={handleLoginClick}>
+      로그인
+    </Button>
+  );
 };
 
 export default LoginButton;

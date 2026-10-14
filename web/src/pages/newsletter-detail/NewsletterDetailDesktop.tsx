@@ -121,10 +121,17 @@ const NewsletterDetailDesktop = ({
 export default NewsletterDetailDesktop;
 
 export const Layout = styled.div`
-  position: relative;
   width: 100%;
   max-width: ${NEWSLETTER_DETAIL_MAIN_WIDTH}px;
   margin: 0 auto;
+
+  @media (width > 1400px) {
+    display: grid;
+    gap: ${NEWSLETTER_DETAIL_SIDE_GAP}px;
+    align-items: start;
+
+    grid-template-columns: ${NEWSLETTER_DETAIL_MAIN_WIDTH}px ${NEWSLETTER_DETAIL_SIDE_WIDTH}px;
+  }
 `;
 
 export const Main = styled.div`
@@ -139,9 +146,6 @@ export const Main = styled.div`
 `;
 
 const Aside = styled.aside`
-  position: absolute;
-  top: 0;
-  left: calc(100% + ${NEWSLETTER_DETAIL_SIDE_GAP}px);
   width: ${NEWSLETTER_DETAIL_SIDE_WIDTH}px;
 
   display: flex;

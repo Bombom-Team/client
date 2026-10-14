@@ -14,7 +14,9 @@ import PCStorageContent from '@/pages/storage/components/PCStorageContent/PCStor
 import QuickMenu from '@/pages/storage/components/QuickMenu/QuickMenu';
 import { warningVisible } from '@/pages/storage/constants/announceMessage';
 import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticlesMutation';
+import { useStorageArticleFreshness } from '@/pages/storage/hooks/useStorageArticleFreshness';
 import { useStorageFilters } from '@/pages/storage/hooks/useStorageFilters';
+import { useStorageStatistics } from '@/pages/storage/hooks/useStorageStatistics';
 import useWarningVisibleMutation from '@/pages/storage/hooks/useWarningVisibleMutation';
 import { isValidKeyword } from '@/pages/storage/utils/isValidKeyword';
 import type { GetArticlesStatisticsNewslettersResponse } from '@/apis/articles/articles.api';
@@ -44,11 +46,15 @@ export const Route = createFileRoute('/_bombom/_main/storage')({
     search?: string;
     sort?: Sort;
     newsletterId?: number;
+    page?: number;
+    unreadOnly?: boolean;
   }) => {
     return {
       search: search.search,
       sort: search.sort,
       newsletterId: search.newsletterId,
+      page: search.page,
+      unreadOnly: search.unreadOnly,
     };
   },
 });
@@ -57,6 +63,7 @@ function Storage() {
   const device = useDevice();
   const isPC = device === 'pc';
   const isMobile = device === 'mobile';
+  useStorageArticleFreshness();
   const [editMode, setEditMode] = useState(false);
   const { data: warningVisibleStatus } = useQuery(
     queries.warningVisibleStatus(),
@@ -69,9 +76,8 @@ function Storage() {
   const keywordIsValid = isValidKeyword(searchParam);
   const emptyKeyword = !searchParam;
   const keyword = keywordIsValid ? searchParam : undefined;
-  const { data: newsletterFilters } = useQuery(
-    queries.articlesStatisticsNewsletters({ keyword }),
-  );
+  const { newsletterFilters, totalStorageCount } =
+    useStorageStatistics(keyword);
   const emptyFilters = {
     totalCount: 0,
     newsletters: [],
@@ -144,12 +150,13 @@ function Storage() {
         )}
 
         <SidebarSection isPC={isPC}>
+          {isPC && <QuickMenu />}
           {!newsletterFilters ? (
             <NewsletterFilterSkeleton />
           ) : (
             <NewsLetterFilter filters={filters} />
           )}
-          <QuickMenu />
+          {!isPC && <QuickMenu />}
         </SidebarSection>
         <MainContentSection isPC={isPC}>
           {isPC ? (
@@ -162,7 +169,7 @@ function Storage() {
               onPageChange={handlePageChange}
               page={page}
               resetPage={resetPage}
-              totalStorageCount={newsletterFilters?.totalCount ?? 0}
+              totalStorageCount={totalStorageCount}
             />
           ) : (
             <MobileStorageContent
@@ -172,7 +179,7 @@ function Storage() {
               disableEditMode={disableEditMode}
               deleteArticles={(articleIds) => deleteArticles(articleIds)}
               resetPage={resetPage}
-              totalStorageCount={newsletterFilters?.totalCount ?? 0}
+              totalStorageCount={totalStorageCount}
             />
           )}
         </MainContentSection>

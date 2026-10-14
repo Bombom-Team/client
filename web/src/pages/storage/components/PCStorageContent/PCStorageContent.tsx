@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import useArticles from '../../hooks/useArticles';
 import { useSelectedDeleteIds } from '../../hooks/useSelectedDeleteIds';
 import { isValidKeyword } from '../../utils/isValidKeyword';
@@ -9,10 +9,10 @@ import InvalidSearchCard from '../InvalidSearchCard/InvalidSearchCard';
 import Pagination from '@/components/Pagination/Pagination';
 import ArticleCardListSkeleton from '@/pages/today/components/ArticleCardList/ArticleCardListSkeleton';
 import EmptyLetterCard from '@/pages/today/components/EmptyLetterCard/EmptyLetterCard';
-import type { GetArticlesWithSearchParams } from '@/apis/articles/articles.api';
+import type { GetStorageArticlesParams } from '@/apis/articles/articles.api';
 
 interface PCStorageContentProps {
-  baseQueryParams: GetArticlesWithSearchParams;
+  baseQueryParams: GetStorageArticlesParams;
   editMode: boolean;
   enableEditMode: () => void;
   disableEditMode: () => void;
@@ -53,17 +53,32 @@ export default function PCStorageContent({
 
   const haveNoContent = articleList.length === 0;
   const emptyKeyword = !baseQueryParams.keyword;
+  const totalPages = articles?.totalPages;
+
+  useEffect(() => {
+    if (totalPages === undefined) return;
+
+    const lastValidPage = Math.max(totalPages, 1);
+
+    if (page > lastValidPage) onPageChange(lastValidPage);
+  }, [onPageChange, page, totalPages]);
 
   const handleDeleteArticles = () => {
     deleteArticles(selectedIds);
     clearSelection();
   };
 
+  const isFirstFilterEffect = useRef(true);
   useEffect(() => {
+    if (isFirstFilterEffect.current) {
+      isFirstFilterEffect.current = false;
+      return;
+    }
     resetPage();
   }, [
     baseQueryParams.newsletterId,
     baseQueryParams.keyword,
+    baseQueryParams.unreadOnly,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(baseQueryParams.sort),
     resetPage,
@@ -74,6 +89,7 @@ export default function PCStorageContent({
   }, [
     baseQueryParams.newsletterId,
     baseQueryParams.keyword,
+    baseQueryParams.unreadOnly,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(baseQueryParams.sort),
     baseQueryParams.page,

@@ -21,6 +21,7 @@ interface TooltipProps {
 }
 
 const OFFSET_PX = 8;
+const VIEWPORT_PADDING_PX = 8;
 
 const getTooltipPosition = (
   rect: DOMRect,
@@ -65,7 +66,16 @@ const getTooltipPosition = (
       top = rect.bottom + OFFSET_PX;
   }
 
-  return { left, top };
+  return {
+    left: Math.min(
+      Math.max(left, VIEWPORT_PADDING_PX),
+      window.innerWidth - tooltipRect.width - VIEWPORT_PADDING_PX,
+    ),
+    top: Math.min(
+      Math.max(top, VIEWPORT_PADDING_PX),
+      window.innerHeight - tooltipRect.height - VIEWPORT_PADDING_PX,
+    ),
+  };
 };
 
 const Tooltip = ({
@@ -116,10 +126,12 @@ export default Tooltip;
 
 const Container = styled.div<{ opened: boolean }>`
   visibility: hidden;
+  overflow: auto;
   position: fixed;
   z-index: ${({ theme }) => theme.zIndex.elevated};
   width: max-content;
-  max-width: 280px;
+  max-width: min(304px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
   padding: 10px 12px;
   border-radius: 10px;
   box-shadow: 0 10px 20px -12px rgb(0 0 0 / 35%);
@@ -127,6 +139,8 @@ const Container = styled.div<{ opened: boolean }>`
   background: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t3Regular};
+
+  box-sizing: border-box;
 
   opacity: 0;
   transition:

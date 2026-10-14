@@ -46,10 +46,7 @@ const Container = styled.main<{ device: Device }>`
   align-items: center;
   justify-content: center;
 
-  background: ${({ device, theme }) =>
-    device === 'mobile'
-      ? theme.colors.white
-      : `linear-gradient(135deg, ${theme.colors.primaryBomBom} 0%, #f74 25%, ${theme.colors.primaryLight} 100%)`};
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const ContentWrapper = styled.div<{ device: Device }>`

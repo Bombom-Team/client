@@ -1,4 +1,97 @@
+const buildTimelineComment = ({
+  commentId,
+  date,
+  hour,
+  nickname,
+  articleTitle,
+  comment,
+}: {
+  commentId: number;
+  date: string;
+  hour: number;
+  nickname: string;
+  articleTitle: string;
+  comment: string;
+}) => ({
+  commentId,
+  nickname,
+  profileImageUrl: `https://i.pravatar.cc/150?img=${commentId % 70}`,
+  newsletterName: '타임라인 뉴스',
+  isSubscribed: true,
+  articleTitle,
+  createdAt: `${date}T${String(hour).padStart(2, '0')}:00:00.000Z`,
+  comment,
+  isMyComment: false,
+  likeCount: commentId % 12,
+  isLiked: commentId % 3 === 0,
+  replyCount: commentId % 4,
+});
+
+const TIMELINE_COMMENTS = [
+  ...Array.from({ length: 8 }, (_, index) =>
+    buildTimelineComment({
+      commentId: 100 + index,
+      date: '2026-03-03',
+      hour: 18 - index,
+      nickname: `타임라인유저${index + 1}`,
+      articleTitle: `3월 3일 뉴스레터 ${index + 1}`,
+      comment: `3월 3일 ${index + 1}번째 코멘트입니다. 한 날짜에서 여러 페이지가 이어지는지 확인합니다.`,
+    }),
+  ),
+  ...Array.from({ length: 3 }, (_, index) =>
+    buildTimelineComment({
+      commentId: 300 + index,
+      date: '2026-03-02',
+      hour: 14 - index,
+      nickname: `월요일독자${index + 1}`,
+      articleTitle: `3월 2일 뉴스레터 ${index + 1}`,
+      comment: `3월 2일 ${index + 1}번째 코멘트입니다.`,
+    }),
+  ),
+  ...Array.from({ length: 4 }, (_, index) =>
+    buildTimelineComment({
+      commentId: 200 + index,
+      date: '2026-02-27',
+      hour: 16 - index,
+      nickname: `금요일독자${index + 1}`,
+      articleTitle: `2월 27일 뉴스레터 ${index + 1}`,
+      comment: `2월 27일 ${index + 1}번째 코멘트입니다. 날짜가 넘어간 뒤에도 목록이 이어지는지 확인합니다.`,
+    }),
+  ),
+  ...Array.from({ length: 5 }, (_, index) =>
+    buildTimelineComment({
+      commentId: 400 + index,
+      date: '2026-02-24',
+      hour: 10 - index,
+      nickname: `화요일독자${index + 1}`,
+      articleTitle: `2월 24일 뉴스레터 ${index + 1}`,
+      comment: `2월 24일 ${index + 1}번째 코멘트입니다.`,
+    }),
+  ),
+  ...Array.from({ length: 2 }, (_, index) =>
+    buildTimelineComment({
+      commentId: 500 + index,
+      date: '2026-02-17',
+      hour: 9 - index,
+      nickname: `수요일독자${index + 1}`,
+      articleTitle: `2월 17일 뉴스레터 ${index + 1}`,
+      comment: `2월 17일 ${index + 1}번째 코멘트입니다.`,
+    }),
+  ),
+  ...Array.from({ length: 6 }, (_, index) =>
+    buildTimelineComment({
+      commentId: 600 + index,
+      date: '2026-02-10',
+      hour: 15 - index,
+      nickname: `목요일독자${index + 1}`,
+      articleTitle: `2월 10일 뉴스레터 ${index + 1}`,
+      comment: `2월 10일 ${index + 1}번째 코멘트입니다.`,
+    }),
+  ),
+];
+
 export const CHALLENGE_COMMENTS = [
+  ...TIMELINE_COMMENTS,
   {
     commentId: 1,
     nickname: '김철수',

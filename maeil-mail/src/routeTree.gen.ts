@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root';
+import { Route as SignupRouteImport } from './routes/signup';
 import { Route as IndexRouteImport } from './routes/index';
 import { Route as ContentsContentIdAnswerRouteImport } from './routes/contents/$contentId/answer';
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any);
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -25,32 +31,43 @@ const ContentsContentIdAnswerRoute = ContentsContentIdAnswerRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
+  '/signup': typeof SignupRoute;
   '/contents/$contentId/answer': typeof ContentsContentIdAnswerRoute;
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
+  '/signup': typeof SignupRoute;
   '/contents/$contentId/answer': typeof ContentsContentIdAnswerRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   '/': typeof IndexRoute;
+  '/signup': typeof SignupRoute;
   '/contents/$contentId/answer': typeof ContentsContentIdAnswerRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/contents/$contentId/answer';
+  fullPaths: '/' | '/signup' | '/contents/$contentId/answer';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/contents/$contentId/answer';
-  id: '__root__' | '/' | '/contents/$contentId/answer';
+  to: '/' | '/signup' | '/contents/$contentId/answer';
+  id: '__root__' | '/' | '/signup' | '/contents/$contentId/answer';
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  SignupRoute: typeof SignupRoute;
   ContentsContentIdAnswerRoute: typeof ContentsContentIdAnswerRoute;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup';
+      path: '/signup';
+      fullPath: '/signup';
+      preLoaderRoute: typeof SignupRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/': {
       id: '/';
       path: '/';
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SignupRoute: SignupRoute,
   ContentsContentIdAnswerRoute: ContentsContentIdAnswerRoute,
 };
 export const routeTree = rootRouteImport
