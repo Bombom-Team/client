@@ -3,9 +3,10 @@ import {
   getFlywayOverview,
   getMigrationScript,
   createWipIssue,
+  refreshFlywayCache,
 } from './flyway.api';
 
-const OVERVIEW_STALE_TIME = 1000 * 30; // 30s
+const OVERVIEW_STALE_TIME = 1000 * 60 * 60; // 1h (서버 캐시 TTL과 동일)
 const SCRIPT_STALE_TIME = 1000 * 60 * 10; // 10m
 
 export const flywayQueries = {
@@ -29,6 +30,9 @@ export const flywayQueries = {
   mutation: {
     createWip: () => ({
       mutationFn: createWipIssue,
+    }),
+    refreshCache: () => ({
+      mutationFn: refreshFlywayCache,
     }),
   },
 };
