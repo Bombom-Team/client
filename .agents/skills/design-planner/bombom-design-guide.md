@@ -1,7 +1,7 @@
 # 봄봄(BomBom) 디자인 가이드 & 토큰
 
 > design-planner 에이전트가 신규 기능을 설계할 때 **반드시 참조하는 단일 소스**.
-> 코드베이스 분석(`shared/src/theme.ts`, `web/src/components/*`, `web/src/routes/_bombom/*`, `docs/frontend-coding-standards.md`, `web/CLAUDE.md`) 기반.
+> 코드베이스 분석(`shared/src/core/theme.ts`, `web/src/components/*`, `web/src/routes/_bombom/*`, `docs/frontend-coding-standards.md`, `web/AGENTS.md`) 기반.
 > 값이 불확실하거나 가이드에 없는 경우는 에이전트가 `[TODO: 확인 필요]`로 남깁니다.
 
 ---
@@ -15,7 +15,7 @@
 
 ---
 
-## 2. 색상 토큰 (`shared/src/theme.ts`)
+## 2. 색상 토큰 (`shared/src/core/theme.ts`)
 
 ### Primary
 | 토큰 | 값 | 용도 |
@@ -240,13 +240,13 @@
 
 ---
 
-## 11. 구현 관례 (`docs/frontend-coding-standards.md`, `web/CLAUDE.md`)
+## 11. 구현 관례 (`docs/frontend-coding-standards.md`)
 
 - 스타일링: **Emotion styled-components + 중앙 `theme`**
 - 컴포넌트 파일 구조: 컴포넌트 함수 → default export → styled components (아래에 선언)
-- Styled 이름: 최상위 `Container`, 중간 `~Wrapper`, 작은 것 `~Box`
+- Styled 이름: 최상위 `Container`, 하위는 역할을 나타내는 이름
 - 컴포넌트: PascalCase, props camelCase
-- 모든 공용 컴포넌트는 Storybook 스토리 파일 함께
+- Storybook story는 디자인 시스템 공통 컴포넌트(`shared/src/ui-web`)에만 작성
 - 서버 상태는 TanStack Query, UI 상태는 로컬
 - 반응형은 `useDevice()` 훅 분기
 
