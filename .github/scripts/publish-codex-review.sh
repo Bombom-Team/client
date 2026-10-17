@@ -6,6 +6,8 @@ REPOSITORY="${REPOSITORY:?REPOSITORY is required}"
 PR_NUMBER="${PR_NUMBER:?PR_NUMBER is required}"
 HEAD_SHA="${HEAD_SHA:?HEAD_SHA is required}"
 OUTPUT_DIR="${OUTPUT_DIR:-/tmp}"
+# 자동 리뷰(cloud routine 등)에서는 ALLOW_APPROVE=false로 호출해 APPROVE 없이 항상 COMMENT로 게시한다.
+ALLOW_APPROVE="${ALLOW_APPROVE:-true}"
 
 REVIEWER="${REVIEWER:-codex}"
 if [ -z "${REVIEWER_LABEL:-}" ]; then
@@ -206,7 +208,7 @@ jq -c --arg commit "$HEAD_SHA" --arg reviewer_label "$REVIEWER_LABEL" '
 
 COMMENTS_JSON="$(jq -s '.' "$COMMENTS_PATH")"
 
-if [ "$CRITICAL_COUNT" = "0" ] && [ "$MAJOR_COUNT" = "0" ] && [ "$MINOR_COUNT" = "0" ] && [ "$OVERALL" = "patch is correct" ]; then
+if [ "$ALLOW_APPROVE" = "true" ] && [ "$CRITICAL_COUNT" = "0" ] && [ "$MAJOR_COUNT" = "0" ] && [ "$MINOR_COUNT" = "0" ] && [ "$OVERALL" = "patch is correct" ]; then
   EVENT="APPROVE"
 else
   EVENT="COMMENT"

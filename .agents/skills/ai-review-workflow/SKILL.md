@@ -119,6 +119,9 @@ publisher가 review event를 자동 결정한다 (publisher 단일 진실원):
   (이중 가드: finding 카운트만 보면 LLM이 "incorrect" 판정인데 minor도 없는
   경우를 잘못 approve할 수 있어 overall 판정도 같이 체크)
 - 그 외 모든 경우 ← `COMMENT`
+- `ALLOW_APPROVE=false`로 호출하면 위 조건과 관계없이 항상 `COMMENT`.
+  PR 이벤트로 도는 자동 리뷰(cloud routine)는 이 값으로 호출한다. 자동 리뷰가
+  routine 소유자 계정의 승인으로 집계되지 않게 하기 위함이다.
 
 **Fallback chain** (post 실패 시):
 
