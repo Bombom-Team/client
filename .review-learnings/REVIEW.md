@@ -53,7 +53,7 @@ CodeRabbit과 `ai-review-workflow` skill이 이 문서를 읽습니다.
 
 ### 프로젝트 규칙 위반
 
-- 생성 파일(`*.gen.ts`, `openapi.d.ts`, `**/generated/**`)을 수동으로 수정한 diff
+- [리뷰 제외 파일](#리뷰-제외-파일) 중 생성 파일을 수동으로 수정한 diff
   ([Generated files](../AGENTS.md#generated-files))
 - [Frontend coding standards](../AGENTS.md#frontend-coding-standards) 규칙 중 lint로
   검사되지 않는 규칙의 위반. 동작에 영향이 없으면 Minor로 분류합니다.
@@ -75,10 +75,24 @@ CodeRabbit과 `ai-review-workflow` skill이 이 문서를 읽습니다.
   위반으로 지적할 수 있습니다.
 - 상수화 제안 (매직 넘버 제외)
 - "~를 고려해보세요", "~는 어떨까요?" 식의 약한 제안이나 질문형 제안
-- 자동 생성 파일과 lock 파일의 내용 (`*.gen.ts`, `openapi.d.ts`,
-  `**/generated/**/*.d.ts`, `pnpm-lock.yaml`)
+- [리뷰 제외 파일](#리뷰-제외-파일)의 내용
 - 이번 PR 이전부터 존재하던 기존 이슈 (pre-existing)
 - [false-positives.md](false-positives.md)의 조건에 해당하는 지적
+
+---
+
+## 리뷰 제외 파일
+
+자동 생성 파일과 lock 파일은 내용을 리뷰하지 않습니다. 이 목록이 리뷰 제외 대상의 원본입니다.
+
+- `*.gen.ts`
+- `*.generated.*`
+- `**/openapi.d.ts`
+- `**/generated/**`
+- `pnpm-lock.yaml`, `*.lock`
+
+`.coderabbit.yaml`의 `path_filters`는 설정 파일이라 이 문서를 참조할 수 없으므로, 목록을 바꿀 때
+함께 수정합니다.
 
 ---
 
@@ -108,18 +122,3 @@ CodeRabbit과 `ai-review-workflow` skill이 이 문서를 읽습니다.
 
 findings가 0개여도 괜찮습니다. 진짜 이슈가 없으면 억지로 만들지 마세요.
 "high signal only" 원칙을 따르며, 확신이 낮은 항목은 코멘트하지 않습니다.
-
----
-
-## 주의할 점 (배경 지식)
-
-**이 섹션은 프로젝트별 배경 지식입니다. 리뷰 체크리스트가 아닙니다.**
-각 항목은 **관련 코드가 PR에 실제로 포함되었을 때만** 참고하세요. PR과 무관한 항목을
-끌어와 "확인 ✓" 식으로 나열하지 마세요. **관련 없으면 언급 안 하는 게 정답**입니다.
-
-- **client는 pnpm 모노레포** — 워크스페이스: `app` / `web` / `admin` / `shared` /
-  `maeil-mail`. `app`·`web`·`admin`·`maeil-mail` 은 독립 배포 단위, `shared` 는 공유
-  패키지.
-- **서버 상태는 TanStack Query, 로컬 상태는 UI 전용** — 입력값/토글/모달 같은 UI
-  상태만 로컬 state.
-- **스타일은 emotion `styled`** — vanilla-extract(`*.css.ts`) 아님.

@@ -3,17 +3,12 @@
 PR 리뷰 전에 읽는 코드베이스 지도다. 목표는 "아무 React/React Native 레포에나
 성립하는 리뷰"가 아니라 **봄봄의 실제 계약과 워크스페이스 경계를 근거로 한 리뷰**를
 가능하게 하는 것이다. 이 문서와 코드가 어긋나면 코드가 진실이다. 발견 시 문서 갱신을
-제안한다. 코딩 규칙은 `CONVENTIONS.md`와 그 문서가 가리키는 `docs/` 문서가 담당한다.
+제안한다. 코딩 규칙은 루트 `AGENTS.md`가 담당한다.
 
 ## 저장소 구성
 
-| 워크스페이스 | 역할 | 주요 기술 |
-| --- | --- | --- |
-| `web` | 뉴스레터·아티클·챌린지·이벤트 사용자 웹 | React 19, Webpack, TanStack Router/Query, Emotion |
-| `app` | `web` WebView와 소셜 로그인·푸시·기기 기능을 제공하는 앱 | Expo 54, React Native 0.81, Firebase |
-| `admin` | 회원·콘텐츠·챌린지·이벤트 운영 웹 | React 19, Vite, TanStack Router/Query, Supabase 일부 사용 |
-| `maeil-mail` | 매일메일 구독·콘텐츠용 별도 웹 | React 19, Vite, TanStack Router/Query |
-| `shared` | theme·웹 UI·fetcher·생성 API·WebView 메시지 타입 | TypeScript package |
+워크스페이스 목록과 역할은 루트 `AGENTS.md`의 Repository overview, 기술 스택과 버전은 각
+workspace의 `package.json`을 직접 읽는다.
 
 `web`·`app`·`admin`·`maeil-mail`은 독립 배포 단위다. 같은 이름의 컴포넌트·훅·API가
 각 워크스페이스에 따로 있을 수 있으므로 한 곳의 패턴을 다른 곳에 무조건 적용하지 않는다.
@@ -34,15 +29,16 @@ PR 리뷰 전에 읽는 코드베이스 지도다. 목표는 "아무 React/React
 
 ## 서버 상태와 오류 처리
 
-- 서버 상태는 TanStack Query가 담당한다. query factory를 사용하고 mutation은 커스텀
-  훅으로 분리한다. mutation 후 관련 목록·상세·사용자 queryKey를 모두 무효화해야 한다.
-- `web`은 일반 네트워크/서버 오류를 최대 3회 재시도하지만 401은 재시도하지 않는다.
-  mutation은 중복 실행을 막기 위해 재시도하지 않는다.
+- 서버 상태 코드 규칙은 루트 `AGENTS.md`의 TanStack Query 사용 규칙을 따른다. 리뷰에서는
+  mutation 후 관련 목록·상세·사용자 queryKey가 모두 무효화됐는지 확인한다.
+- 재시도 횟수와 401 처리 같은 QueryClient 정책 값은 이 문서에 옮겨 적지 않는다. `web/src/main.tsx`,
+  `admin/src/index.tsx`, `maeil-mail/src/main.tsx`의 QueryClient 설정을 직접 읽는다.
+- `web`은 401을 재시도하지 않고, mutation은 중복 실행을 막기 위해 재시도하지 않는다.
 - `web`은 일부 비로그인 정상 쿼리의 401을 무시한다. 그 외 쿼리에서 로그인 profile
   cache가 있는데 401이 나면 reload한다. queryKey나 profile cache 변경 시 새로고침 루프와
   오류 수집 누락을 함께 확인한다.
-- `admin`은 query 재시도 1회와 `refetchOnWindowFocus: false`, `maeil-mail`은 401 무재시도와
-  일반 오류 최대 3회 정책이다. 캐시·재시도 정책은 워크스페이스별로 다르다.
+- 캐시·재시도 정책은 워크스페이스별로 다르다. 한 workspace의 정책을 다른 workspace에
+  전제하지 않는다.
 
 ## web 라우팅·인증
 

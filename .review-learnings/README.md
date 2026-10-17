@@ -12,8 +12,7 @@ AI 리뷰는 보조 도구입니다. 헛짚는 지적도, 놓치는 버그도 �
 
 | 하고 싶은 것 | 방법 |
 | --- | --- |
-| 자동 리뷰 받기 | `dev` 대상 PR을 열면 CodeRabbit이 리뷰합니다. draft PR은 제외됩니다 |
-| 자동 리뷰 건너뛰기 | PR 제목에 `WIP` 또는 `[skip review]`를 넣습니다 |
+| 자동 리뷰 받기·건너뛰기 | CodeRabbit이 PR을 자동 리뷰합니다. 대상 branch, 제외 조건(draft, 제목 키워드)은 `.coderabbit.yaml`의 `auto_review`를 확인합니다 |
 | Claude 리뷰 받기 | Claude Code에서 `ai-review-workflow` skill로 PR 리뷰를 요청합니다. GitHub 게시는 명시적으로 요청할 때만 합니다 |
 | 리뷰 정확도 높이기 | PR 본문 `👀 Review Point`에 확인할 지점을 구체적으로 적습니다 |
 | 봇 지적이 틀렸을 때 | 해당 코멘트에 근거와 함께 답글을 답니다. 같은 오탐이 반복되면 발생 조건과 반례를 `false-positives.md`에 추가합니다 |
@@ -24,7 +23,7 @@ AI 리뷰는 보조 도구입니다. 헛짚는 지적도, 놓치는 버그도 �
 
 | 경로 | 트리거 | 게시 |
 | --- | --- | --- |
-| CodeRabbit | `dev` 대상 PR 자동 리뷰(`.coderabbit.yaml`). push마다 incremental 리뷰 | `coderabbitai[bot]` 리뷰. REQUEST_CHANGES 없음 |
+| CodeRabbit | PR 자동 리뷰. 조건은 `.coderabbit.yaml` | `coderabbitai[bot]` 리뷰 |
 | Claude (`ai-review-workflow` skill) | 채팅 요청. PR 이벤트로 도는 cloud routine(저장소 밖 설정) | 기본은 채팅 결과만. 게시 요청 시 `.github/scripts/publish-codex-review.sh`가 게시 |
 
 Claude 리뷰의 게시 정책(COMMENT, 조건부 APPROVE, `ALLOW_APPROVE`)은 skill의
@@ -47,7 +46,7 @@ Claude 리뷰의 게시 정책(COMMENT, 조건부 APPROVE, `ALLOW_APPROVE`)은 s
 | 파일 | 역할 | 읽는 곳 |
 | --- | --- | --- |
 | `REVIEW.md` | 무엇을 어떤 근거로 지적할지, 심각도 기준 | CodeRabbit, Claude skill |
-| `false-positives.md` | 알려진 오탐과 적용 조건 | CodeRabbit(web·admin·maeil-mail), Claude skill |
+| `false-positives.md` | 알려진 오탐과 적용 조건 | CodeRabbit, Claude skill |
 
 구현 규칙은 이 폴더에 두지 않습니다. 규칙을 바꾸려면
 [AGENTS.md의 Frontend coding standards](../AGENTS.md#frontend-coding-standards)를 수정합니다.

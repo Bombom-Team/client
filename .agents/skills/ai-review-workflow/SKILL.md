@@ -27,21 +27,11 @@ GitHub 게시가 명시적으로 요청된 경우에만 comment/approve review�
 
 ## Reviewer Identity
 
-The publisher (`publish-codex-review.sh`) accepts a `REVIEWER` env
-(default `codex`). 현재 invocation 경로상 실질적으로는 항상 `REVIEWER=claude`로
-호출된다 (스킬이 유일한 진입점이고 Claude가 수동 리뷰어). `codex` default는
-publish-only workflow가 reviewer input 없이 dispatch되는 경우 + 미래 Codex
-재활성화 대비로 보존된다.
+publisher(`.github/scripts/publish-codex-review.sh`)는 `REVIEWER` env로 게시 라벨을 정한다.
+이 skill로 게시할 때는 `REVIEWER=claude`로 호출한다. `REVIEWER`가 바꾸는 문구와 기본값은
+publisher의 `REVIEWER` 처리 부분을 직접 읽는다.
 
-`REVIEWER`는 다음을 reviewer-aware로 치환한다:
-
-- Review body header / no-output fallback
-- `📋 검증 과정` wording
-- Inline comment `**<Reviewer> 검증**:` prefix
-- Footer (`<sub>🤖 {REVIEWER_LABEL} PR Review</sub>`)
-- `<!-- REVIEW_META -->`의 `source` 필드와 finding id prefix
-
-These conventions stay identical regardless of reviewer (do **not** change them):
+reviewer와 관계없이 바꾸지 않는 계약:
 
 - `<!-- CODEX_REVIEW_COMMENT -->` inline marker — 이전 리뷰 이슈 추적 키
 - 파일명 / 스키마 / 호출 계약 (`REVIEW_JSON`, `REPOSITORY`, `PR_NUMBER`, `HEAD_SHA`)
@@ -52,9 +42,8 @@ These conventions stay identical regardless of reviewer (do **not** change them)
 Before editing, read:
 
 1. `AGENTS.md` (AI behavior rules, Frontend coding standards 포함)
-2. `CONVENTIONS.md`
-3. `docs/architecture.md` — 워크스페이스 경계·인증·API·WebView·알림 동작 지도
-4. `docs/git-commit-convention.md` before committing
+2. `docs/architecture.md` — 워크스페이스 경계·인증·API·WebView·알림 동작 지도
+3. `docs/git-commit-convention.md` before committing
 
 Keep scope tight. Do not touch frontend code while working on review workflow
 formatting unless the user explicitly asks.
@@ -92,11 +81,11 @@ formatting unless the user explicitly asks.
   반환한다. 과거 대화에서의 게시 요청이나 기본 스킬 동작으로 게시 권한을 추론하지
   않는다.
 - Never publish `REQUEST_CHANGES`.
-- `APPROVE`는 **조건부**로만 허용된다 (아래 "Review Event Decision" 참조).
-  그 외엔 항상 `COMMENT`.
+- `APPROVE`는 직접 지정하지 않는다. event는 publisher가 결정한다 (아래 "Review Event
+  Decision" 참조).
 - Only `critical` and `major` findings should become inline comments.
 - `minor` findings should appear in the review summary `### 참고` section.
-- Generated OpenAPI type declarations and lock files should not be reviewed.
+- `.review-learnings/REVIEW.md`의 "리뷰 제외 파일"은 리뷰하지 않는다.
 - Keep `<!-- CODEX_REVIEW_COMMENT -->` in inline comments — 이전 리뷰 thread를
   식별하는 키. reviewer가 Codex/Claude 어느 쪽이어도 동일.
 - Preserve `<!-- REVIEW_META ... -->` because follow-up workflows and future
@@ -114,107 +103,22 @@ formatting unless the user explicitly asks.
 
 ## Review Event Decision
 
-publisher가 review event를 자동 결정한다 (publisher 단일 진실원):
+review event(`COMMENT`·`APPROVE`)와 게시 실패 시 fallback은 publisher가 결정한다. 조건은 이
+문서에 옮겨 적지 않으므로 publisher의 `EVENT` 결정 블록과 게시 retry 블록을 직접 읽는다.
+정책을 바꿀 때도 publisher의 해당 블록만 수정한다.
 
-- `APPROVE` ← `findings.length == 0` **AND** `overall_correctness == "patch is correct"`
-  (이중 가드: finding 카운트만 보면 LLM이 "incorrect" 판정인데 minor도 없는
-  경우를 잘못 approve할 수 있어 overall 판정도 같이 체크)
-- 그 외 모든 경우 ← `COMMENT`
-- `ALLOW_APPROVE=false`로 호출하면 위 조건과 관계없이 항상 `COMMENT`.
-  PR 이벤트로 도는 자동 리뷰(cloud routine)는 이 값으로 호출한다. 자동 리뷰가
+호출하는 쪽이 지켜야 할 것:
+
+- PR 이벤트로 도는 자동 리뷰(cloud routine)는 `ALLOW_APPROVE=false`로 호출한다. 자동 리뷰가
   routine 소유자 계정의 승인으로 집계되지 않게 하기 위함이다.
+- `REQUEST_CHANGES`는 게시하지 않는다.
 
-**Fallback chain** (post 실패 시):
+## Review Output Format
 
-1. inline + event → 실패 → body-only + event 재시도
-2. body-only도 실패 + event=APPROVE → body-only + `COMMENT`로 한 번 더 재시도
-   (GitHub Actions에서 APPROVE 권한 거절되는 경우 대비)
-3. 그래도 실패 → exit 1
-
-이 정책으로 사람 reviewer가 없어도 클린한 PR은 자동 통과시킬 수 있되,
-모델이 조금이라도 의심하면 자동 approve를 회피한다. 정책 변경 시
-publisher 스크립트의 `EVENT` 결정 로직 한 곳만 수정.
-
-## Preferred Review Body Format
-
-`{REVIEWER_LABEL}`은 `REVIEWER` env에 따라 publisher가 자동 치환한다 (Codex/Claude).
-
-```md
-## 🤖 PR Review
-
-> 📌 Force-push 후 재리뷰: 이전 리뷰의 미해결 이슈를 추적합니다.
-
-> ⚠️ 수정이 필요한 리뷰 코멘트가 있습니다.
-
-> Overall explanation from {REVIEWER_LABEL}.
-
-🚨 **0** Critical · ⚠️ **1** Major · 📝 **2** Minor
-
-### 이전 리뷰 이슈 추적
-
-| ID  | 상태      | 심각도 | 파일               | 이슈        |
-| --- | --------- | ------ | ------------------ | ----------- |
-| f1  | ✅ 해결   | major  | path/to/file.ts:10 | issue title |
-| f2  | ❌ 미해결 | minor  | path/to/file.ts:20 | issue title |
-
-### 수정 필요
-
-- **path/to/file.ts:10** — Major issue title (인라인 코멘트 참조).
-
-### 참고
-
-- **path/to/file.ts:20** — Minor issue title
-  Minor explanation.
-
-<details><summary>📋 검증 과정</summary>
-
-- {REVIEWER_LABEL} structured review 결과 중 확신도가 있는 항목만 정리했습니다.
-- Critical/Major는 inline comment로 게시하고, Minor는 참고 항목으로 summary에 포함합니다.
-- 자동 생성된 OpenAPI 타입 선언 파일과 lock 파일은 리뷰 대상에서 제외합니다.
-
-</details>
-
-<!-- REVIEW_META
-...
--->
-
----
-
-<sub>🤖 {REVIEWER_LABEL} PR Review</sub>
-```
-
-Omit `### 이전 리뷰 이슈 추적` when no previous issue data exists. The publisher
-tolerates `.previous_issues` being absent by using `(.previous_issues // [])`.
-
-GitHub 게시 모드에서 findings가 비어 있으면(no critical/major/minor), publisher는
-`> ✅ 확실하게 수정이 필요한 항목을 찾지 못했습니다.` summary를 게시한다. 채팅
-검토 모드에서는 이 summary를 채팅 결과로만 전달하고 publisher를 실행하지 않는다.
-
-## Preferred Inline Comment Format
-
-Use direct, readable inline comments rather than long agent prompts.
-`{REVIEWER_LABEL}` 토큰은 publisher가 `REVIEWER` env에 따라 치환한다.
-
-```md
-⚠️ **[Major] Title**
-
-Finding body.
-
-**{REVIEWER_LABEL} 검증**: 변경 diff의 `path/to/file.ts:10-12` 기준으로 확인했습니다.
-실제 코드와 다르면 이 코멘트는 무시해 주세요. (confidence 0.92).
-
-**수정 제안:**
-이 finding이 여전히 유효한지 먼저 확인한 뒤, 관련 코드만 최소 범위로
-수정하고 필요한 검증을 실행해 주세요.
-
-<!-- CODEX_REVIEW_COMMENT -->
-```
-
-Severity labels:
-
-- `critical` -> `🚨 **[Critical]`
-- `major` -> `⚠️ **[Major]`
-- `minor` -> `📝 **[Minor]` (normally summary only)
+review body, inline comment, 심각도 라벨, `### 이전 리뷰 이슈 추적`, findings 0개일 때의
+summary, `<!-- REVIEW_META -->` 형식은 publisher가 생성한다. 형식은 이 문서에 옮겨 적지 않으며,
+publisher를 직접 읽거나 아래 "Mock Format Testing"으로 생성 결과를 확인한다. 리뷰어는
+`.github/codex-review-output-schema.json`에 맞는 JSON만 작성한다.
 
 ## PR Review Procedure
 
@@ -252,16 +156,12 @@ Procedure:
    gh pr view <number-or-url> --repo Bombom-Team/client --json number,title,body,baseRefName,headRefName,baseRefOid,headRefOid,isDraft,url
    ```
 
-3. Inspect only the PR-introduced diff. Exclude generated and lock files
-   per the same pathspecs documented in "Generated File Exclusions" below:
+3. Inspect only the PR-introduced diff. `.review-learnings/REVIEW.md`의 "리뷰 제외 파일" 목록을
+   `:(glob,exclude)<pattern>` pathspec으로 바꿔 제외한다:
 
    ```bash
    git diff --find-renames --diff-filter=ACMRTUXB <base>...<head> -- \
-     ':(exclude)pnpm-lock.yaml' \
-     ':(exclude)*.gen.ts' \
-     ':(exclude)*.generated.*' \
-     ':(glob,exclude)**/openapi.d.ts' \
-     ':(glob,exclude)**/generated/**/*.d.ts'
+     ':(glob,exclude)<REVIEW.md의 각 패턴>'
    ```
 
 4. **컨텍스트 수집 — diff만 보고 리뷰하지 않는다.** finding을 확정하기 전에 head 기준
@@ -313,9 +213,8 @@ Procedure:
 
 7. **GitHub 게시 모드에서만** review result를 scratch `$REVIEW_JSON` (step 0,
    레포 밖)에 쓴다. `.github/codex-review-output-schema.json`을 사용한다.
-   **레포 루트에 쓰지 않는다.** The shared publisher owns the Preferred Review
-   Body Format, Preferred Inline Comment Format, `<!-- CODEX_REVIEW_COMMENT -->`,
-   and `<!-- REVIEW_META ... -->`.
+   **레포 루트에 쓰지 않는다.** 본문·inline 형식과 marker는 publisher가 만든다
+   ("Review Output Format").
 
 8. **GitHub 게시 모드에서만 publisher를 실행해 PR 코멘트를 게시한다.** 권장 경로는
    `REVIEWER=claude`로 로컬 publisher를 직접 실행하는 것이다 (`REVIEW_JSON`은 step
@@ -377,18 +276,8 @@ unless the user explicitly asks.
 
 ## Generated File Exclusions
 
-Keep both prompt diff exclusions and review policy aligned:
-
-```bash
-':(exclude)pnpm-lock.yaml'
-':(exclude)*.gen.ts'
-':(exclude)*.generated.*'
-':(glob,exclude)**/openapi.d.ts'
-':(glob,exclude)**/generated/**/*.d.ts'
-```
-
-Also mention generated OpenAPI type declarations in `.review-learnings/REVIEW.md`
-under files that should not be reviewed.
+리뷰 제외 대상의 원본은 `.review-learnings/REVIEW.md`의 "리뷰 제외 파일"이다. 목록을 바꾸면
+설정 파일이라 참조가 불가능한 `.coderabbit.yaml`의 `path_filters`도 함께 수정한다.
 
 ## Mock Format Testing
 

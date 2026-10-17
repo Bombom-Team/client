@@ -1,6 +1,6 @@
 # shared workspace agent guide
 
-이 문서는 shared/ package의 실제 경로와 package script만 정리합니다. 저장소
+이 문서는 shared/ package의 경로만 정리합니다. 저장소
 공통 규칙은 [root AGENTS.md](../AGENTS.md)와
 [AI behavior rules](../AGENTS.md#ai-behavior-rules)에서 확인합니다.
 
@@ -15,9 +15,5 @@
 
 ## Commands
 
-| 목적 | Command |
-| --- | --- |
-| TypeScript 검사 | pnpm --filter shared type-check |
-| 파일 format 적용 | pnpm --filter shared format |
-
-format은 source file을 수정합니다.
+실행 가능한 script와 그 내용은 `shared/package.json`의 `scripts`를 직접 읽습니다. 이 문서에
+script 목록을 옮겨 적지 않습니다.

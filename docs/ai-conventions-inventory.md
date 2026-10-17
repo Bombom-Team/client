@@ -6,6 +6,7 @@
 - 이 문서는 정비 이력이다. 새 작업의 필수 지침으로 읽지 않는다.
 - 이후 `docs/ai-rules.md`와 `docs/frontend-coding-standards.md`는 루트 `AGENTS.md`의
   "AI behavior rules", "Frontend coding standards" 절로 통합했다. 아래의 두 파일 언급은 통합 전 기준이다.
+  `CONVENTIONS.md`도 `AGENTS.md`의 Start here와 중복이라 삭제했다.
 
 ## 1. 현재 리뷰 실행 지도
 

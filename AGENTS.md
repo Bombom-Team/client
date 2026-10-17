@@ -20,8 +20,7 @@
 
 1. 이 문서 전체. 아래 [AI behavior rules](#ai-behavior-rules)와
    [Frontend coding standards](#frontend-coding-standards)를 포함합니다.
-2. [Conventions index](CONVENTIONS.md)
-3. 작업에 해당하는 문서
+2. 작업에 해당하는 문서
    - `app/` React Native UI 코드: app/AGENTS.md와 작업 대상의 인접 구현
    - Commit message: [git commit convention](docs/git-commit-convention.md)
    - Pull request review: [review policy](.review-learnings/REVIEW.md),
@@ -29,7 +28,7 @@
      Claude Code의 PR review 실행과 review workflow 유지·수정·장애 확인은
      `ai-review-workflow` skill을 사용합니다.
    - Workspace 작업: 아래 표에서 대상 workspace를 찾고 해당 AGENTS.md 확인
-4. 아래 '작업 범위 파악' 순서로 관련 code, configuration, test를 확인
+3. 아래 '작업 범위 파악' 순서로 관련 code, configuration, test를 확인
 
 작업에 필요한 문서만 읽고 적용합니다. Workspace별 AGENTS.md는 해당 package의
 경로·명령·생성 규칙을 안내하며, 공통 AI 행동 정책은 이 문서의 AI behavior rules를 따릅니다.
@@ -79,7 +78,7 @@ BomBom은 pnpm monorepo입니다.
 - app/ — React Native mobile client
 - admin/ — Admin dashboard web client
 - maeil-mail/ — Daily Mail web client
-- shared/ — web/과 app/이 사용하는 theme, UI component, utility
+- shared/ — 여러 workspace가 사용하는 theme, 웹 UI component, fetcher, generated API, utility
 - shared/oas-gen/ — 공유 generated API file을 위한 OpenAPI module generator
 
 ## Git workflow
@@ -135,10 +134,82 @@ AI agent가 이 저장소에서 안전하고 효율적으로 작업하는 방법
 - 필요한 검증을 실행할 수 없으면 실행하지 못한 이유와 대신 확인한 근거를 알립니다.
 - 변경과 무관한 기존 failure는 별도로 알리고, 이를 고치기 위해 관련 없는 변경을 추가하지 않습니다.
 
+### AI가 읽는 문서 작성
+
+- AI가 읽는 문서(AGENTS.md, skill, agent, 리뷰 정책 등)의 정보는 원본을 하나만 둡니다.
+- 다른 파일에 원본이 있는 내용(`package.json` script, 설정값, theme 토큰 값, 컴포넌트 props,
+  route 목록, 코드 예시 등)은 복사하지 않고 원본 경로를 안내합니다.
+- 문서에는 원본에서 알 수 없는 정책, 의도, 판단 기준만 적습니다.
+- 설정 파일처럼 다른 파일을 참조할 수 없어 복사가 불가피하면, 원본 문서에 함께 수정할 위치를
+  적습니다.
+
 ### Language
 
 팀이 읽는 설명과 report는 한국어로 작성합니다. Command, path, code, 기존
 technical identifier는 자연스러운 영어 표기를 유지합니다.
+
+---
+
+## 모든 workspace 공통 작업 원칙
+
+### 공통 컴포넌트 우선 사용
+
+UI를 새로 만들기 전에 해당 workspace의 공통 컴포넌트에서 쓸 수 있는 것을 먼저 찾습니다.
+비슷한 컴포넌트를 복제하지 않고, 기존 컴포넌트로 표현할 수 없을 때만 새로 만듭니다.
+새로 만들 때는 [파일·폴더 배치 규칙](#파일폴더-배치-규칙)에 따라 재사용 범위에 맞게 둡니다.
+
+| workspace | 공통 컴포넌트 위치 | 사용 방식 |
+| --- | --- | --- |
+| `web/` | `web/src/components/` | `shared/src/ui-web`을 재-export하는 컴포넌트도 `@/components/{Name}/{Name}` 경로로 import합니다 |
+| `maeil-mail/` | `@bombom/shared/ui-web`, `maeil-mail/src/components/` | shared 컴포넌트를 직접 import합니다 |
+| `admin/` | `admin/src/components/` | `@bombom/shared/ui-web`을 사용하지 않는 별도 구성입니다 |
+| `app/` | `app/components/` | `@bombom/shared/ui-web`은 웹 전용이라 lint가 import를 막습니다 |
+
+여러 웹 workspace에서 함께 쓰는 UI는 `shared/src/ui-web`에 둡니다. shared 컴포넌트를
+바꾸면 이를 import하는 모든 workspace를 함께 확인합니다.
+
+### 디자인 토큰 사용
+
+theme에 토큰이 정의된 값은 직접 쓰지 않고 토큰을 사용합니다. 어떤 토큰이 있는지는 아래 theme
+원본을 직접 읽습니다.
+
+| workspace | theme 원본 |
+| --- | --- |
+| `web/`, `app/` | `shared/src/core/theme.ts` (`@bombom/shared/theme`) |
+| `maeil-mail/` | `maeil-mail/src/styles/theme.ts` (shared theme에 매일메일 색상을 확장) |
+| `admin/` | `admin/src/styles/theme.ts` (별도 theme) |
+
+- 토큰이 없는 값(예: `box-shadow` 색상, `1px` 선 두께)만 직접 값을 사용합니다. 기존 토큰과
+  같거나 거의 같은 값을 새로 하드코딩하지 않습니다.
+- workspace 전용 색상이 필요하면 하드코딩하지 않고 해당 workspace theme에 추가합니다.
+  `shared/src/core/theme.ts`를 바꾸면 web·app·maeil-mail 모두에 영향을 줍니다.
+- 웹 styled component에서의 접근 방식은 [Theme 사용 규칙](#theme-사용-규칙)을 따릅니다.
+
+### app 네이티브 설정과 prebuild
+
+`app/`은 Expo 기반의 WebView 앱입니다. 웹 화면과 대부분의 사용자 기능은 WebView로
+제공하고, React Native code는 WebView와 OS 기능을 연결하는 최소한의 역할만 맡습니다.
+
+`app/ios/`와 `app/android/`는 커밋하지 않는 생성물입니다(`.gitignore`). `app/package.json`의
+script 중 `expo prebuild --clean`이나 `eas build`를 포함하는 명령, 그리고 native 폴더가 없을 때의
+`expo run:*`이 `app.config.ts`와 config plugin을 기준으로 두 폴더를 다시 생성합니다. 두 폴더를
+직접 수정한 내용은 이때 사라집니다.
+
+따라서 native 설정은 다음 순서로 변경합니다.
+
+1. `app/app.config.ts`로 표현합니다. 같은 종류의 설정이 이미 있는 위치를 먼저 찾고, 라이브러리의
+   native 설정은 해당 Expo config plugin의 옵션으로 지정합니다.
+2. `app.config.ts`로 표현할 수 없으면 `app/plugins/`에 config plugin을 작성하고
+   `app.config.ts`의 `plugins` 배열에 등록합니다. `app/plugins/`에 파일이 있어도 `plugins`
+   배열에 없으면 적용되지 않으므로, 기존 plugin의 적용 여부는 `plugins` 배열로 확인합니다.
+3. 이 두 방법으로 해결할 수 없는 OS 연동만 React Native 또는 native code를 추가로
+   수정합니다. 이 경우에도 재생성 후 보존할 방법을 함께 확인합니다.
+
+`app.config.ts`, config plugin, native module 의존성을 바꾸면 JS reload로는 반영되지 않습니다.
+prebuild와 native build(development client 포함)를 다시 해야 합니다. plugin이 적용된 config는
+`pnpm --filter app exec expo config --type prebuild`로 확인할 수 있습니다. 이 명령은 native
+파일을 생성하지 않으므로, 실제 생성 결과는 prebuild 후 `ios/`·`android/`에서 확인합니다.
+React Native JS code(`app/app/`, `app/components/` 등)는 prebuild의 영향을 받지 않습니다.
 
 ---
 
@@ -333,16 +404,9 @@ src/apis/{domain}/
 - 요청·응답 타입은 같은 `*.api.ts`에서 `{Fn}Params`, `{Fn}Response`로 export하고,
   `fetcher` 호출에 응답 타입을 generic으로 명시합니다.
 
-```ts
-export type GetChallengeEligibilityResponse =
-  components['schemas']['ChallengeEligibilityResponse'];
-
-export const getChallengeEligibility = async (challengeId: number) => {
-  return await fetcher.get<GetChallengeEligibilityResponse>({
-    path: `/challenges/${challengeId}/eligibility`,
-  });
-};
-```
+- 참고 구현: `web/src/apis/challenge/challenge.api.ts`, `challenge.query.ts`,
+  `web/src/pages/challenge/review/hooks/useAddReviewMutation.ts`. 예시 코드를 문서에 복사하지 않고
+  참고 구현을 직접 읽습니다.
 
 ---
 
@@ -440,12 +504,12 @@ type FetchChallengeParams = {};
 ### 코드 스타일 & 품질 기준
 
 - ESLint / Stylelint 기준을 만족하는 상태를 유지합니다.
-  - `lint`와 PR CI는 ESLint만 실행합니다. Stylelint는 `lint:fix`·`format`에서만
-    실행되므로 스타일을 변경했다면 Stylelint 결과도 확인합니다.
+  - `lint` script와 PR CI가 Stylelint를 실행하는지는 workspace `package.json`의 `scripts`와
+    `.github/workflows/`를 읽어 확인합니다. Stylelint가 포함되지 않았다면 스타일 변경 시
+    Stylelint 결과를 따로 확인합니다.
 - 코드 스타일은 개인 취향이 아닌 공통 규칙을 따릅니다.
-- import 순서는 `web/`의 ESLint `import/order`가 강제합니다. builtin → external →
-  `@/`·상대경로 → 나머지 순이며, 그룹 안은 알파벳 순입니다. 직접 정렬하지 않고
-  lint 결과를 따릅니다.
+- import 순서는 workspace ESLint 설정(`web/.eslintrc.cjs` 등)의 `import/order`를 따릅니다.
+  순서를 직접 판단하지 않고 lint 결과를 따릅니다.
 
 ---
 

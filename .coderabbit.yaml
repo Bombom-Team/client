@@ -12,8 +12,6 @@ knowledge_base:
     filePatterns:
       - files: 'AGENTS.md'
         applyTo: '**/*'
-      - files: 'CONVENTIONS.md'
-        applyTo: '**/*'
       - files: 'docs/architecture.md'
         applyTo: '{web,app,admin,maeil-mail,shared}/**/*'
       - files: '.review-learnings/REVIEW.md'

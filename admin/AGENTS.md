@@ -1,6 +1,6 @@
 # admin workspace agent guide
 
-이 문서는 admin/ dashboard workspace의 실제 경로와 package script만 정리합니다.
+이 문서는 admin/ dashboard workspace의 경로와 생성 규칙만 정리합니다.
 저장소 공통 규칙은 [root AGENTS.md](../AGENTS.md)와
 [AI behavior rules](../AGENTS.md#ai-behavior-rules)에서 확인합니다.
 
@@ -17,24 +17,14 @@ React UI code를 변경할 때는 [Frontend coding standards](../AGENTS.md#front
 
 ## Commands
 
-| 목적 | Command |
-| --- | --- |
-| Development server 실행 | pnpm --filter admin start |
-| Production build 생성 | pnpm --filter admin build |
-| Production build 미리보기 | pnpm --filter admin preview |
-| lint 실행 | pnpm --filter admin lint |
-| lint와 Stylelint 자동 수정 | pnpm --filter admin lint:fix |
-| 파일 format 적용 | pnpm --filter admin format |
-| TypeScript 검사 | pnpm --filter admin type-check |
-| OpenAPI type 생성 | pnpm --filter admin generate-openapi-types |
-
-`lint:fix`와 `format`은 source file을 수정합니다.
+실행 가능한 script와 그 내용은 `admin/package.json`의 `scripts`를 직접 읽습니다. 이 문서에
+script 목록을 옮겨 적지 않습니다.
 
 ## Generated outputs
 
-| Output | 생성 주체·조건 | 실행 Command | 직접 수정 |
-| --- | --- | --- | --- |
-| `admin/src/types/openapi.d.ts` | environment variable의 OpenAPI document | `pnpm --filter admin generate-openapi-types` | 금지 |
-| `admin/src/routeTree.gen.ts` | `admin/vite.config.ts`의 TanStack Router plugin | route 또는 router configuration 변경 후 해당 build 또는 development Command | 금지 |
+| Output | 생성 주체 |
+| --- | --- |
+| `admin/src/types/openapi.d.ts` | `admin/package.json`의 OpenAPI type 생성 script |
+| `admin/src/routeTree.gen.ts` | `admin/vite.config.ts`의 TanStack Router plugin |
 
-Generated output이 바뀌면 diff를 검토합니다.
+직접 수정하지 않고 생성 주체로만 갱신합니다. Generated output이 바뀌면 diff를 검토합니다.
