@@ -9,7 +9,7 @@
 | `web/`, `admin/`, `maeil-mail/` React UI code 변경 | [docs/frontend-coding-standards.md](docs/frontend-coding-standards.md) | React frontend conventions |
 | `app/` React Native UI code 변경 | app/AGENTS.md와 작업 대상의 인접 구현 | 별도 coding standards 없음 |
 | Commit message 작성·검토 | [docs/git-commit-convention.md](docs/git-commit-convention.md) | Git convention |
-| Pull request review | `ai-review-workflow` skill; cross-boundary review면 [docs/architecture.md](docs/architecture.md) 추가 | Review workflow |
+| Pull request review | [.review-learnings/REVIEW.md](.review-learnings/REVIEW.md) + 변경 영역의 규칙 문서; 실행은 `ai-review-workflow` skill; cross-boundary review면 [docs/architecture.md](docs/architecture.md) 추가 | Review policy |
 | Workspace별 작업 | 해당 workspace의 AGENTS.md가 있으면 함께 확인 | Workspace owner |
 
 ## 사용 방법

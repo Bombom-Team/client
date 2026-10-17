@@ -15,8 +15,9 @@ Claude Code, Cursor 등 도구와 관계없이 적용합니다.
      [frontend coding standards](docs/frontend-coding-standards.md)
    - `app/` React Native UI 코드: app/AGENTS.md와 작업 대상의 인접 구현
    - Commit message: [git commit convention](docs/git-commit-convention.md)
-   - Pull request review: [architecture map](docs/architecture.md)과 관련 workspace 규칙을
-     읽습니다. Claude Code PR review workflow의 유지·수정·장애 확인은
+   - Pull request review: [review policy](.review-learnings/REVIEW.md),
+     [architecture map](docs/architecture.md), 변경 workspace의 규칙을 읽습니다.
+     Claude Code의 PR review 실행과 review workflow 유지·수정·장애 확인은
      `ai-review-workflow` skill을 사용합니다.
    - Workspace 작업: 아래 표에서 대상 workspace를 찾고 해당 AGENTS.md 확인
 5. 아래 '작업 범위 파악' 순서로 관련 code, configuration, test를 확인
@@ -80,4 +81,4 @@ Commit message를 준비하거나 검토할 때만 docs/git-commit-convention.md
 - dev에서 branch를 만들고 PR target은 dev입니다.
 - Branch 형식: {type}/{issue_key} (예: feat/BOM-5)
 - PR title: [{issue_key}] {type}: {subject}
-- develop에는 Squash & Merge, main에는 Create a Commit으로 merge합니다.
+- dev에는 Squash & Merge, main에는 Create a Commit으로 merge합니다.

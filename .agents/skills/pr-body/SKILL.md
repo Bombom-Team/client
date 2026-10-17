@@ -122,7 +122,7 @@ diff가 너무 크면 `--stat`으로 개요만 본 뒤, 중요해 보이는 파�
 
 ### 6. PR 제목 생성
 
-프로젝트 컨벤션(`AGENTS.md` §12 Git Workflow)에 따라 제목은 다음 형식:
+프로젝트 컨벤션(`AGENTS.md`의 Git workflow 절)에 따라 제목은 다음 형식:
 
 ```
 [{issue_key}] {type}: {subject}

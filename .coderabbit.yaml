@@ -20,8 +20,6 @@ knowledge_base:
         applyTo: '{web,admin,maeil-mail}/**/*'
       - files: '.review-learnings/REVIEW.md'
         applyTo: '**/*'
-      - files: '.review-learnings/additional-rules.md'
-        applyTo: 'web/**/*'
       - files: '.review-learnings/false-positives.md'
         applyTo: '{web,admin,maeil-mail}/**/*'
 

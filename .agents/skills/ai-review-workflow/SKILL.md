@@ -1,6 +1,6 @@
 ---
 name: ai-review-workflow
-description: Manage the Bombom client PR review workflow used by AI reviewers (Codex 자동·Claude 수동 모두 포괄). This skill is the ONLY way to invoke a PR review — manual triggers like `/codex-review` slash command and workflow_dispatch have been removed. Use this skill whenever the user asks to review a PR with the team's standard format, post review comments, change review behavior, review comment format, inline review style, generated-file exclusions, approve/request-changes behavior, mock-test review output, resolve/unresolved tracking, or to diagnose review Action failures in this repository.
+description: Manage the Bombom client Claude PR review workflow (채팅 요청과 PR 이벤트 cloud routine 모두 포괄). This skill is the ONLY way to invoke a Claude PR review — the old `/codex-review` slash command and Codex review workflow have been removed. CodeRabbit auto-review is configured separately in `.coderabbit.yaml`. Use this skill whenever the user asks to review a PR with the team's standard format, post review comments, change review behavior, review comment format, inline review style, generated-file exclusions, approve/request-changes behavior, mock-test review output, resolve/unresolved tracking, or to diagnose review Action failures in this repository.
 ---
 
 # PR Review Workflow (skill-only)
@@ -14,10 +14,11 @@ description: Manage the Bombom client PR review workflow used by AI reviewers (C
 Use this skill for changes around:
 
 - `.github/workflows/codex-review-publish.yml` (스킬이 호출하는 publish-only workflow)
-- `.github/workflows/codex-resolve.yml` (resolve 워크플로우, 마커 의존)
 - `.github/codex-review-output-schema.json` (review JSON 스키마)
 - `.github/scripts/publish-codex-review.sh` (공용 publisher)
-- `.review-learnings/REVIEW.md` (리뷰 학습 메모, 선택적 참조)
+- `.review-learnings/REVIEW.md` (리뷰 정책 원본, 리뷰 시 필수)
+- `.review-learnings/false-positives.md` (알려진 오탐)
+- `.coderabbit.yaml` (CodeRabbit이 같은 리뷰 정책을 읽는 경로)
 
 The goal is to keep the PR review bot high signal, readable, and safe.
 GitHub 게시가 명시적으로 요청된 경우에만 comment/approve review를 게시한다.
@@ -42,9 +43,9 @@ publish-only workflow가 reviewer input 없이 dispatch되는 경우 + 미래 Co
 
 These conventions stay identical regardless of reviewer (do **not** change them):
 
-- `<!-- CODEX_REVIEW_COMMENT -->` inline marker — `codex-resolve.yml`가 의존
+- `<!-- CODEX_REVIEW_COMMENT -->` inline marker — 이전 리뷰 이슈 추적 키
 - 파일명 / 스키마 / 호출 계약 (`REVIEW_JSON`, `REPOSITORY`, `PR_NUMBER`, `HEAD_SHA`)
-- review event는 항상 `COMMENT`
+- review event 결정 로직 — publisher가 소유 (아래 "Review Event Decision")
 
 ## Required Repo Rules
 
@@ -96,8 +97,8 @@ formatting unless the user explicitly asks.
 - Only `critical` and `major` findings should become inline comments.
 - `minor` findings should appear in the review summary `### 참고` section.
 - Generated OpenAPI type declarations and lock files should not be reviewed.
-- Keep `<!-- CODEX_REVIEW_COMMENT -->` in inline comments — `codex-resolve.yml`
-  이 마커로 review thread를 식별. reviewer가 Codex/Claude 어느 쪽이어도 동일.
+- Keep `<!-- CODEX_REVIEW_COMMENT -->` in inline comments — 이전 리뷰 thread를
+  식별하는 키. reviewer가 Codex/Claude 어느 쪽이어도 동일.
 - Preserve `<!-- REVIEW_META ... -->` because follow-up workflows and future
   learning loops may parse it. `source` 필드는 `REVIEWER` env 값을 그대로 반영한다.
 - **리뷰 산출물(`codex-review-output.json` 등)은 ephemeral이다. 절대 커밋하거나
@@ -265,7 +266,11 @@ Procedure:
 
 4. **컨텍스트 수집 — diff만 보고 리뷰하지 않는다.** finding을 확정하기 전에 head 기준
    실제 코드를 읽는다:
-   - `docs/architecture.md`를 먼저 읽고 관련 워크스페이스의 동작 계약을 파악한다.
+   - 리뷰 정책 `.review-learnings/REVIEW.md`와 오탐 목록 `.review-learnings/false-positives.md`를
+     읽는다. 무엇을 지적하고 무엇을 지적하지 않을지는 REVIEW.md가 원본이다.
+   - `web/`·`admin/`·`maeil-mail/` 변경이면 `docs/frontend-coding-standards.md`에서 변경 유형에
+     해당하는 절을 읽는다. 구현 AI와 같은 규칙 원본이다. 규칙 위반은 절 제목 링크로 인용한다.
+   - `docs/architecture.md`를 읽고 관련 워크스페이스의 동작 계약을 파악한다.
    - PR body의 의도와 `👀 Review Point`를 확인한다.
    - 변경 파일은 hunk뿐 아니라 파일 전체를 읽는다: `git show <head>:<path>`.
    - 변경된 export·hook·API·공용 type의 호출처를 추적한다:
@@ -353,14 +358,16 @@ Procedure:
    커밋·브랜치·PR을 만들지 않는다 — 클라우드 라우틴에서 auto-PR로 쓸려 들어가는
    것을 막기 위함이다.
 
-Never publish mock findings as a real PR review. Never publish `APPROVE` or
-`REQUEST_CHANGES`. Avoid posting a duplicate review for the same head commit
+Never publish mock findings as a real PR review. Never publish `REQUEST_CHANGES`.
+`APPROVE`는 직접 지정하지 않고 publisher의 조건부 결정에만 맡긴다. Avoid posting a duplicate review for the same head commit
 unless the user explicitly asks.
 
 ## Architecture Learning Loop
 
-1. finding이 사람 답글로 반박·정정되거나 다른 리뷰어가 놓친 실제 이슈를 찾으면,
-   재현 근거가 있는 항목만 `.review-learnings/REVIEW.md`에 다음 리뷰 규칙으로 적립한다.
+1. finding이 사람 답글로 반박·정정되면 발생 조건과 반례를 `.review-learnings/false-positives.md`에
+   남긴다. 다른 리뷰어가 놓친 실제 이슈는 구현 규칙이면 `docs/frontend-coding-standards.md`,
+   리뷰 기준이면 `.review-learnings/REVIEW.md`에 재현 근거와 함께 반영한다. 반복 회귀는
+   테스트로 옮기는 것을 우선한다.
 2. 실제 회귀가 확인된 영역만 repository-specific high-signal 목록에 추가한다. 일반론으로
    목록을 희석하지 않는다.
 3. 리뷰 중 `docs/architecture.md`와 코드가 어긋나면 코드를 기준으로 리뷰하고 사용자에게
@@ -441,10 +448,9 @@ publisher / publish-only workflow / SKILL 수정 시 최소 검증:
 ```bash
 bash -n .github/scripts/publish-codex-review.sh
 ruby -e 'require "yaml"; YAML.load_file(".github/workflows/codex-review-publish.yml"); puts "yaml ok"'
-ruby -e 'require "yaml"; YAML.load_file(".github/workflows/codex-resolve.yml"); puts "yaml ok"'
 git diff --check
 rg -n "REQUEST_CHANGES" .github/scripts/publish-codex-review.sh \
-  .github/workflows/codex-review-publish.yml .github/workflows/codex-resolve.yml
+  .github/workflows/codex-review-publish.yml
 ```
 
 `REQUEST_CHANGES`는 절대 등장하면 안 된다. `APPROVE`는 publisher의 조건부 로직과
