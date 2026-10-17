@@ -4,6 +4,8 @@
 - 조사 기준: `BOM-1257-프론트엔드-컨벤션-정리`, HEAD `06d9bc65`
 - 계획: [ai-conventions-review-plan.md](ai-conventions-review-plan.md) 1·2단계 산출물
 - 이 문서는 정비 이력이다. 새 작업의 필수 지침으로 읽지 않는다.
+- 이후 `docs/ai-rules.md`와 `docs/frontend-coding-standards.md`는 루트 `AGENTS.md`의
+  "AI behavior rules", "Frontend coding standards" 절로 통합했다. 아래의 두 파일 언급은 통합 전 기준이다.
 
 ## 1. 현재 리뷰 실행 지도
 
@@ -77,7 +79,7 @@ README가 기본 리뷰라고 적은 Codex 내장 리뷰는 최근 40개 PR에�
 | --- | --- |
 | APPROVE 정책 3중 상충 | publisher를 원본으로 둔다. 조건부 APPROVE, `ALLOW_APPROVE=false`면 항상 COMMENT, REQUEST_CHANGES 금지 |
 | 구현 AI와 리뷰 AI의 원본 불일치 | 스킬 리뷰 절차에 REVIEW·frontend-coding-standards 로딩 추가 |
-| 리뷰 문서에만 있는 구현 규칙 | web 코드 실측 결과로 컨벤션 등록 또는 폐기([frontend-coding-standards.md](frontend-coding-standards.md)) |
+| 리뷰 문서에만 있는 구현 규칙 | web 코드 실측 결과로 컨벤션 등록 또는 폐기([Frontend coding standards](../AGENTS.md#frontend-coding-standards)) |
 | 지적 기준 상충(질문형 제안 vs 약한 제안 금지) | REVIEW 기준으로 통일: 근거 있는 규칙 위반·동작 버그만 지적 |
 | § 번호 복사 | 절 번호 대신 절 제목 링크로 인용 |
 | `isPC` props 금지(patterns) vs §15 | §15 유지. patterns 항목 폐기 |

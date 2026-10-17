@@ -2,7 +2,7 @@
 
 이 문서는 shared/oas-gen/ OpenAPI module generator의 실제 경로와 package script만
 정리합니다. 저장소 공통 규칙은 [root AGENTS.md](../../AGENTS.md)와
-[AI behavior rules](../../docs/ai-rules.md)에서 확인합니다.
+[AI behavior rules](../../AGENTS.md#ai-behavior-rules)에서 확인합니다.
 
 ## Workspace
 
@@ -25,5 +25,5 @@
 | --- | --- | --- | --- |
 | `shared/src/core/apis/generated/` | `shared/oas-gen`; `web`의 API type 생성이 호출 | `pnpm --filter web gen:api` | 금지 |
 
-Generated output을 바꿔야 하면 root policy와 `docs/ai-rules.md`의 Generated files
+Generated output을 바꿔야 하면 root AGENTS.md의 Generated files
 규칙을 먼저 적용하고, 생성 diff를 검토합니다.

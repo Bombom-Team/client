@@ -6,8 +6,8 @@ AI 에이전트가 `web/` 워크스페이스에서 작업할 때 확인할 문�
 
 - [Repository agent rules](../AGENTS.md)
 - [Conventions index](../CONVENTIONS.md)
-- [AI behavior rules](../docs/ai-rules.md)
-- [Frontend coding standards](../docs/frontend-coding-standards.md): 프론트엔드 코드를 변경할 때
+- [AI behavior rules](../AGENTS.md#ai-behavior-rules)
+- [Frontend coding standards](../AGENTS.md#frontend-coding-standards): 프론트엔드 코드를 변경할 때
 - [Git commit convention](../docs/git-commit-convention.md): 커밋을 준비할 때만
 
 ## Workspace

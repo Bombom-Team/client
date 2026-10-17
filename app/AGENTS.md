@@ -2,7 +2,7 @@
 
 이 문서는 app/ React Native workspace의 실제 경로와 package script만 정리합니다.
 저장소 공통 규칙은 [root AGENTS.md](../AGENTS.md)와
-[AI behavior rules](../docs/ai-rules.md)에서 확인합니다.
+[AI behavior rules](../AGENTS.md#ai-behavior-rules)에서 확인합니다.
 
 ## App code conventions
 

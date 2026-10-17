@@ -1,7 +1,7 @@
 # 봄봄(BomBom) 디자인 가이드 & 토큰
 
 > design-planner 에이전트가 신규 기능을 설계할 때 **반드시 참조하는 단일 소스**.
-> 코드베이스 분석(`shared/src/core/theme.ts`, `web/src/components/*`, `web/src/routes/_bombom/*`, `docs/frontend-coding-standards.md`, `web/AGENTS.md`) 기반.
+> 코드베이스 분석(`shared/src/core/theme.ts`, `web/src/components/*`, `web/src/routes/_bombom/*`, `AGENTS.md`의 Frontend coding standards, `web/AGENTS.md`) 기반.
 > 값이 불확실하거나 가이드에 없는 경우는 에이전트가 `[TODO: 확인 필요]`로 남깁니다.
 
 ---
@@ -240,7 +240,7 @@
 
 ---
 
-## 11. 구현 관례 (`docs/frontend-coding-standards.md`)
+## 11. 구현 관례 (`AGENTS.md`의 Frontend coding standards)
 
 - 스타일링: **Emotion styled-components + 중앙 `theme`**
 - 컴포넌트 파일 구조: 컴포넌트 함수 → default export → styled components (아래에 선언)

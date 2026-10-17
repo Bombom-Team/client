@@ -10,14 +10,12 @@ knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - files: 'CONVENTIONS.md'
+      - files: 'AGENTS.md'
         applyTo: '**/*'
-      - files: 'docs/ai-rules.md'
+      - files: 'CONVENTIONS.md'
         applyTo: '**/*'
       - files: 'docs/architecture.md'
         applyTo: '{web,app,admin,maeil-mail,shared}/**/*'
-      - files: 'docs/frontend-coding-standards.md'
-        applyTo: '{web,admin,maeil-mail}/**/*'
       - files: '.review-learnings/REVIEW.md'
         applyTo: '**/*'
       - files: '.review-learnings/false-positives.md'

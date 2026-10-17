@@ -5,8 +5,8 @@
 
 | 상황 | 읽을 문서 | 소유자 |
 | --- | --- | --- |
-| AI-assisted repository work | [AGENTS.md](AGENTS.md) → [docs/ai-rules.md](docs/ai-rules.md) | Repository agent policy |
-| `web/`, `admin/`, `maeil-mail/` React UI code 변경 | [docs/frontend-coding-standards.md](docs/frontend-coding-standards.md) | React frontend conventions |
+| AI-assisted repository work | [AGENTS.md](AGENTS.md#ai-behavior-rules) | Repository agent policy |
+| `web/`, `admin/`, `maeil-mail/` React UI code 변경 | [AGENTS.md](AGENTS.md#frontend-coding-standards) | React frontend conventions |
 | `app/` React Native UI code 변경 | app/AGENTS.md와 작업 대상의 인접 구현 | 별도 coding standards 없음 |
 | Commit message 작성·검토 | [docs/git-commit-convention.md](docs/git-commit-convention.md) | Git convention |
 | Pull request review | [.review-learnings/REVIEW.md](.review-learnings/REVIEW.md) + 변경 영역의 규칙 문서; 실행은 `ai-review-workflow` skill; cross-boundary review면 [docs/architecture.md](docs/architecture.md) 추가 | Review policy |

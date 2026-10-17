@@ -2,9 +2,9 @@
 
 이 문서는 maeil-mail/ web client workspace의 실제 경로와 package script만
 정리합니다. 저장소 공통 규칙은 [root AGENTS.md](../AGENTS.md)와
-[AI behavior rules](../docs/ai-rules.md)에서 확인합니다.
+[AI behavior rules](../AGENTS.md#ai-behavior-rules)에서 확인합니다.
 
-React UI code를 변경할 때는 [Frontend Coding Standards](../docs/frontend-coding-standards.md)를
+React UI code를 변경할 때는 [Frontend coding standards](../AGENTS.md#frontend-coding-standards)를
 함께 적용합니다.
 
 ## Workspace

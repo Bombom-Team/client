@@ -8,8 +8,8 @@ CodeRabbit과 `ai-review-workflow` skill이 이 문서를 읽습니다.
 
 | 규칙 | 원본 |
 | --- | --- |
-| React UI code 규칙(`web/`, `admin/`, `maeil-mail/`) | [frontend-coding-standards.md](../docs/frontend-coding-standards.md) |
-| 생성 파일·검증 정책 | [ai-rules.md](../docs/ai-rules.md) |
+| React UI code 규칙(`web/`, `admin/`, `maeil-mail/`) | [AGENTS.md의 Frontend coding standards](../AGENTS.md#frontend-coding-standards) |
+| 생성 파일·검증 정책 | [AGENTS.md의 AI behavior rules](../AGENTS.md#ai-behavior-rules) |
 | workspace 경계·인증·API·WebView 계약 | [architecture.md](../docs/architecture.md) |
 | 알려진 오탐과 적용 조건 | [false-positives.md](false-positives.md) |
 
@@ -54,8 +54,8 @@ CodeRabbit과 `ai-review-workflow` skill이 이 문서를 읽습니다.
 ### 프로젝트 규칙 위반
 
 - 생성 파일(`*.gen.ts`, `openapi.d.ts`, `**/generated/**`)을 수동으로 수정한 diff
-  ([ai-rules.md](../docs/ai-rules.md#generated-files))
-- [frontend-coding-standards.md](../docs/frontend-coding-standards.md) 규칙 중 lint로
+  ([Generated files](../AGENTS.md#generated-files))
+- [Frontend coding standards](../AGENTS.md#frontend-coding-standards) 규칙 중 lint로
   검사되지 않는 규칙의 위반. 동작에 영향이 없으면 Minor로 분류합니다.
 
 ### 타입 안전성
@@ -71,7 +71,7 @@ CodeRabbit과 `ai-review-workflow` skill이 이 문서를 읽습니다.
   포맷, `web/`의 jsx-a11y 규칙
 - 원본 규칙에 근거하지 않은 스타일·네이밍 취향
 - 컴포넌트 내부의 `useCallback`/`useMemo` 최적화 제안. 커스텀 훅이 반환하는 값의
-  메모화 누락은 [Effect와 참조 안정성](../docs/frontend-coding-standards.md#effect와-참조-안정성)
+  메모화 누락은 [Effect와 참조 안정성](../AGENTS.md#effect와-참조-안정성)
   위반으로 지적할 수 있습니다.
 - 상수화 제안 (매직 넘버 제외)
 - "~를 고려해보세요", "~는 어떨까요?" 식의 약한 제안이나 질문형 제안
