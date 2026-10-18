@@ -29,15 +29,16 @@ const isInStartModalPeriod = (startDate: string, now: Date) => {
   );
 };
 
-/** 참가 중이면서 시작일부터 노출 기간 안에 있는 챌린지 */
+/** 참가 중이지만 아직 활동하지 않았고, 시작일부터 노출 기간 안에 있는 챌린지 */
 export const findStartModalChallenge = (
   challenges: Challenge[],
   now: Date,
 ): Challenge | null =>
   challenges.find(
-    (challenge) =>
-      challenge.participationInfo?.isJoined &&
-      isInStartModalPeriod(challenge.startDate, now),
+    ({ participationInfo, startDate }) =>
+      participationInfo?.isJoined &&
+      participationInfo.progress === 0 &&
+      isInStartModalPeriod(startDate, now),
   ) ?? null;
 
 export const createChallengeStartModalDismissStorage = (

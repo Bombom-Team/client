@@ -105,4 +105,17 @@ describe('findStartModalChallenge', () => {
       ),
     ).toBeNull();
   });
+
+  it('노출 기간이어도 이미 활동해 진행률(progress)이 0보다 크면 null을 반환한다.', () => {
+    expect(
+      findStartModalChallenge(
+        [
+          createChallenge({
+            participationInfo: { isJoined: true, progress: 3 },
+          }),
+        ],
+        new Date('2026-10-19T12:00:00+09:00'),
+      ),
+    ).toBeNull();
+  });
 });
