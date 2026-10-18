@@ -136,6 +136,21 @@ AI agent가 이 저장소에서 안전하고 효율적으로 작업하는 방법
 - Generated file은 generator command로만 갱신합니다.
 - Generated file을 수동으로 수정하는 것은 금지합니다.
 
+### API 작업
+
+API를 새로 호출하거나 요청·응답 타입을 바꾸는 작업은 타입을 정하기 전에 OpenAPI 타입부터
+최신으로 갱신합니다.
+
+1. 대상 workspace 문서의 Generated outputs 표에서 OpenAPI 타입 생성 script를 찾아 저장소
+   루트에서 실행합니다.
+2. 갱신된 타입에 필요한 endpoint와 schema가 있는지 확인합니다.
+3. 있으면 생성 타입을 쓰고, 없으면 [CONVENTIONS.md의 API 호출 및 데이터 처리](CONVENTIONS.md#api-호출-및-데이터-처리)에
+   따라 타입을 직접 선언합니다.
+
+- 생성 script가 실패하면(`.env` 누락, network 오류 등) 직접 선언으로 넘어가지 않습니다. 실패
+  이유를 알리고 어떻게 할지 확인합니다.
+- 갱신으로 이번 작업과 관계없는 타입이 바뀌어도 생성 결과를 그대로 두고, 보고에 함께 적습니다.
+
 ### 검증 및 완료
 
 변경한 workspace에 해당 command가 있을 때는 그 workspace의 command를 사용합니다.
