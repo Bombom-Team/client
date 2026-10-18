@@ -24,7 +24,7 @@ UI를 새로 만들기 전에 해당 workspace의 공통 컴포넌트에서 쓸 
 
 | workspace | 공통 컴포넌트 위치 | 사용 방식 |
 | --- | --- | --- |
-| `web/` | `web/src/components/` | `shared/src/ui-web`을 재-export하는 컴포넌트도 `@/components/{Name}/{Name}` 경로로 import합니다 |
+| `web/` | `web/src/components/` | `shared/src/ui-web`을 재-export하는 컴포넌트·훅·유틸도 web의 재-export 경로(`@/components/...`, `@/hooks/...`, `@/utils/...`)로 import합니다 |
 | `maeil-mail/` | `@bombom/shared/ui-web`, `maeil-mail/src/components/` | shared 컴포넌트를 직접 import합니다 |
 | `admin/` | `admin/src/components/` | `@bombom/shared/ui-web`을 사용하지 않는 별도 구성입니다 |
 | `app/` | `app/components/` | `@bombom/shared/ui-web`은 웹 전용이라 lint가 import를 막습니다 |
@@ -141,7 +141,10 @@ function MemoPage() {
 파일 이름:
 
 - 컴포넌트 파일은 PascalCase이며, 파일 이름과 `export default` 이름을 같게 합니다.
-- `hooks/` 폴더의 파일은 `use*.ts`이며 JSX를 포함하지 않습니다.
+- `hooks/` 폴더의 파일은 `use*.ts`이며 JSX를 포함하지 않습니다. 파일 하나에 훅 하나만 두고,
+  파일 이름과 훅 이름을 같게 합니다.
+- 폴더 이름은 `components/` 아래는 PascalCase, `pages/` 아래는 kebab-case, `apis/{domain}`은
+  camelCase입니다. `utils/`·`constants/`·`types/` 아래 파일 이름은 camelCase입니다.
 - Skeleton 컴포넌트는 `{X}Skeleton.tsx`로 원본 컴포넌트 `X`와 같은 폴더에 둡니다.
 - `index.ts` barrel 파일을 만들지 않습니다.
 
@@ -190,6 +193,9 @@ const Container = styled.div``;
 - 기본 원칙은 1파일 1컴포넌트입니다.
 - 단, 항상 함께 사용되는 조합(composition) 컴포넌트는 예외로 허용합니다.
 - props는 함수 시그니처에서 구조분해합니다.
+- props interface는 컴포넌트 선언 위에 두고 export하지 않습니다.
+- children을 받는 컴포넌트는 `PropsWithChildren<{Component}Props>`로 타입을 지정합니다.
+- 한쪽만 렌더링하는 조건은 `cond && <X />`로 씁니다. `cond ? <X /> : null`은 쓰지 않습니다.
 - 컴포넌트와 훅은 각각 하나의 역할만 담당합니다. 데이터 조회·상태 관리용 훅이
   화면 표시용 문자열 가공이나 UI 분기까지 맡지 않게 합니다. 표시 포맷 전용 훅처럼
   그 역할을 위해 만든 훅은 예외입니다.
@@ -241,7 +247,8 @@ const Container = styled.div<{ isPC: boolean }>`
 
 - 색상은 `theme.colors`를 사용합니다. 토큰이 없는 `box-shadow` 색상은 예외입니다.
 - 글꼴은 `font: ${({ theme }) => theme.fonts.*}`로 지정하고 `font-size`를 직접 쓰지
-  않습니다.
+  않습니다. 같은 선언 블록에서 `font-weight`·`line-height`를 다시 지정하지 않고, 필요한 굵기는
+  theme의 굵기별 토큰으로 고릅니다.
 - z-index는 `theme.zIndex`를 사용합니다.
 - styled template 안에서는 `${({ theme }) => ...}`로 theme에 접근합니다. import한
   `theme` 객체는 JSX prop에 값을 넘길 때만 사용합니다.
@@ -267,6 +274,8 @@ src/apis/{domain}/
 - API 함수 이름의 접두사는 HTTP method(`get`, `post`, `put`, `patch`, `delete`)입니다.
 - 요청·응답 타입은 같은 `*.api.ts`에서 `{Fn}Params`, `{Fn}Response`로 export하고,
   `fetcher` 호출에 응답 타입을 generic으로 명시합니다.
+- `apis/` 밖에서는 `@/types/openapi`를 직접 import하지 않고 `*.api.ts`가 export한 타입을
+  사용합니다. 스키마 단위 타입이 필요하면 해당 페이지의 `types/`에 alias를 둡니다.
 
 - 참고 구현: `web/src/apis/challenge/challenge.api.ts`, `challenge.query.ts`,
   `web/src/pages/challenge/review/hooks/useAddReviewMutation.ts`. 예시 코드를 문서에 복사하지 않고
@@ -293,6 +302,8 @@ src/apis/{domain}/
 - `useQuery`는 query factory를 통해서만 사용합니다. `queries.*`가 기본이며,
   shared generated API의 `*Queries`도 factory로 봅니다.
 - 컴포넌트 내부에서 `queryKey`·`queryFn`을 inline으로 선언하지 않습니다.
+- 조회는 `useQuery`(`useInfiniteQuery`)가 기본입니다. `useSuspenseQuery` 계열은 상위에
+  `Suspense` 경계(fallback으로 Skeleton 등)를 둘 때만 사용합니다.
 
 #### Query factory
 
@@ -301,6 +312,7 @@ src/apis/{domain}/
 - 각 항목은 `name: (args) => queryOptions({ queryKey, queryFn })` 형식이며, 무한
   스크롤은 `infiniteQueryOptions`를 사용합니다. 항목 이름은 `get` 없는 명사형입니다.
 - factory 인자는 모두 `queryKey`에 포함합니다.
+- `queryKey`의 첫 요소는 해당 API path의 첫 segment입니다. 예: `/challenges/...` → `'challenges'`.
 - 하위 key를 한 번에 무효화해야 하면 `all: (id) => [...] as const`를 두고 하위 항목이
   이를 확장합니다.
 - `invalidateQueries`, `setQueryData` 등에 넘기는 key는 factory에서 얻습니다
@@ -311,6 +323,10 @@ src/apis/{domain}/
 - `useMutation`은 반드시 커스텀 훅으로 분리하고, 훅은 `hooks/`에 둡니다.
 - 훅 이름은 `use{...}Mutation` 형식입니다.
 - 훅은 `return useMutation({ mutationFn, onSuccess, onError })`를 그대로 반환합니다.
+- mutation은 `mutate`로 실행합니다. `mutateAsync`를 try/catch로 감싸지 않고 결과 처리는
+  `onSuccess`·`onError`에 둡니다.
+- mutation 성공 후 캐시 갱신(`invalidateQueries`, `setQueryData` 등)은 mutation 훅의 콜백이나
+  `apis/{domain}/{domain}.cache.ts` helper에서 합니다. 컴포넌트에서 직접 하지 않습니다.
 
 ---
 
@@ -318,6 +334,7 @@ src/apis/{domain}/
 
 - `useEffect`·`useMemo`·`useCallback`의 의존성 배열에는 내부에서 사용하는 값과 함수를
   모두 포함합니다(`react-hooks/exhaustive-deps`).
+- effect에서 event listener, timer, observer를 만들면 정리하는 cleanup 함수를 반환합니다.
 - 커스텀 훅이 반환하는 함수는 `useCallback`으로, 반환하는 객체·배열·계산값은 `useMemo`로
   감쌉니다. 훅을 쓰는 쪽의 의존성 배열과 메모이제이션이 깨지지 않게 하기 위함입니다.
   컴포넌트 내부의 메모이제이션은 필요할 때만 사용합니다.
@@ -333,22 +350,62 @@ src/apis/{domain}/
 - 컴포넌트 내부 이벤트 핸들러: `handle-`
   - `handleClick`, `handleModalClose`
 
+#### 변수와 함수
+
+- 컴포넌트·훅이 아닌 함수는 동사로 시작합니다. 예: `getX`, `formatX`, `createX`, `isX`.
+- boolean 지역 변수와 boolean을 반환하는 판별 함수는 `is`·`has`·`can`·`should`로 시작합니다.
+- `useRef` 변수 이름은 `xxxRef`입니다.
+- 배열 변수 이름은 복수형이거나 `List` suffix를 붙입니다.
+
 #### 타입
 
-- 컴포넌트 props는 TypeScript interface로 선언하고, 이름에 `Props` suffix를 사용합니다.
-- 함수 / 훅 파라미터 타입: `Params` suffix
+- 직접 작성하는 객체 타입은 `interface`로 선언합니다. OpenAPI 생성 타입에서 파생하거나
+  union·intersection처럼 `interface`로 표현할 수 없을 때만 `type`을 씁니다.
+- 컴포넌트 props 타입 이름은 `{Component}Props`입니다.
+- 함수 / 훅 파라미터 타입: `Params` suffix. 훅 파라미터 타입은 `Use{Hook}Params`이고, 그 안의
+  콜백 이름은 `on*`입니다.
+- 타입 이름에 `Type` suffix를 붙이지 않습니다.
 
 ```ts
 interface ChallengeCardProps {}
-type FetchChallengeParams = {};
+interface UseChallengeListParams {}
+type GetChallengesParams = operations['getChallenges']['parameters']['query'];
 ```
 
 #### 상수와 훅 반환값
 
-- 모듈 최상위 원시값 상수와 `constants/` 폴더의 export는 UPPER_SNAKE_CASE를 사용합니다.
+- 모듈 최상위 상수(원시값·객체·배열)와 `constants/` 폴더의 export는 UPPER_SNAKE_CASE를
+  사용합니다. styled component에 넘기는 device·variant별 style map은 예외입니다.
 - `enum` 대신 union literal 타입을 사용합니다.
 - 여러 값을 반환하는 훅은 객체를 반환합니다. `useState`를 대체하는 훅만 튜플을
   반환합니다.
+
+#### 분석 이벤트
+
+- `trackEvent`의 `category`는 PascalCase 영문 도메인 이름(`'Newsletter'`, `'Memo'`),
+  `action`은 한국어 동작 설명(`'구독하기 버튼 클릭'`)입니다.
+
+---
+
+### Route 규칙
+
+- 화면을 렌더링하는 route는 자신 또는 상위 layout route의 `head`에서
+  `title: '봄봄 | {화면명}'`을 지정합니다.
+- 로그인이 필요한 화면은 `head`에 robots `noindex` meta를 둡니다.
+
+---
+
+### 공통 유틸 사용
+
+- localStorage·sessionStorage는 `@/utils/localStorage`의 `createStorage`,
+  `@/utils/sessionStorage`의 `createSessionStorage`, 또는 `useLocalStorageState`·
+  `useSessionStorageState`로만 접근합니다.
+- 날짜를 표시 문자열로 바꿀 때는 `@/utils/date`의 함수를 사용합니다. 날짜 라이브러리를
+  새로 도입하지 않습니다.
+- 코드에서 외부 URL을 열 때는 `openExternalLink`를 사용하고 `window.open`을 직접 호출하지
+  않습니다.
+- Promise는 `async`/`await`로 처리하고 `.then` 체인을 쓰지 않습니다.
+- 문자열을 숫자로 바꿀 때는 `Number()`를 사용합니다. CSS 값 파싱은 예외입니다.
 
 ---
 
@@ -408,6 +465,8 @@ type FetchChallengeParams = {};
   `;
   ```
 
+- device 분기가 필요한 컴포넌트는 `useDevice()`를 직접 호출합니다. `device`나 파생 boolean을
+  React 컴포넌트의 props로 내려보내지 않습니다. styled component prop으로 넘기는 것은 허용합니다.
 - `device !== 'pc'`(mobile + tablet)는 `isMobile`, `device === 'pc'`는 `isPC`로
   이름을 정합니다. `isCompact`처럼 다른 의미로 해석될 수 있는 이름은 사용하지
   않습니다.

@@ -207,3 +207,65 @@ README가 기본 리뷰라고 적은 Codex 내장 리뷰는 최근 40개 PR에�
   `components/PetCard/PetCard.tsx`, `pages/my-page/components/ProfileSection.tsx`.
 - 한 page가 다른 page 내부 모듈을 import하는 경우 41건. 대부분
   `pages/challenge/landing` → `pages/landing/hooks/useScrollVisible.ts`(9건).
+
+## 7. 2차 실측 결과 (70% 기준)
+
+2026-10-18 같은 날, 기준을 "전체 70% 이상이고 2026-04-18 이후 추가된 파일에서도 70% 이상"으로 낮춰
+네이밍과 코드 패턴을 다시 측정했다. 모집단은 6절과 같은 web 616개 파일(신규 155개)이다.
+
+### 등록한 규칙
+
+| 규칙 | 전체 | 신규 |
+| --- | --- | --- |
+| 훅 파일 하나에 훅 하나, 파일 이름 = 훅 이름 | 108/110 | 27/27 |
+| 컴포넌트·훅이 아닌 함수는 동사로 시작 | 144/149 | 60/62 |
+| boolean 지역 변수·판별 함수는 `is/has/can/should` | 114/135, 32/37 | 36/39, 13/15 |
+| `useRef` 변수는 `xxxRef` | 67/75 | 24/26 |
+| 타입 이름에 `Type` suffix 없음 | 123/132 | 32/35 |
+| props 타입 이름 `{Component}Props` | 168/188 | 42/47 |
+| 훅 파라미터 `Use{Hook}Params`, 콜백 `on*` | 42/52, 21/21 | 14/16, 8/8 |
+| 폴더·보조 파일 casing | 90/91, 25/25, 18/18, 78/79 | 100% |
+| queryKey 첫 요소 = API path 첫 segment | 64/67 | 9/10 |
+| 배열 변수는 복수형·`List` | 73/93 | 25/31 |
+| `trackEvent` category PascalCase 영문, action 한국어 | 36/37, 32/37 | 6/7 |
+| 객체 타입은 `interface` (기존 예시 `type ... = {}`를 수정) | 273/306 | 80/88 |
+| 객체·배열 상수도 UPPER_SNAKE_CASE (style map 제외, 팀 결정으로 등록) | 54/60 | 25/25 |
+| `font` 토큰 블록에서 `font-weight`·`line-height` 덮어쓰기 금지 (팀 결정으로 등록) | 517/599 | 142/154 |
+| `apis/` 밖에서 `@/types/openapi` 직접 import 금지 | 70/77 | 21/21 |
+| 화면 route의 `head` title `'봄봄 \| …'` (상위 layout 상속 포함) | 36/36 | 12/12 |
+| 로그인 필요 화면 `noindex` (팀 결정으로 등록. 챌린지 화면 5개 누락은 그대로 둠) | 약 17/22 | 8/9 |
+| 조회는 `useQuery` 기본, `useSuspense*`는 Suspense 경계 아래에서만 | 79/90 | 84% |
+| mutation은 `mutate`로 실행 | 36/39 | 89% |
+| mutation 후 캐시 갱신은 훅 콜백·`*.cache.ts` | 53/62 | 89% |
+| shared 훅·유틸도 web 재-export 경로로 import | 249/251 | 98% |
+| `useDevice()` 직접 호출, device를 컴포넌트 props로 내리지 않음 | 151/161 | 86% |
+| Web Storage는 storage util·훅으로만 접근 | 14/14 | 3/3 |
+| 날짜 표시는 `utils/date`, 날짜 라이브러리 미도입 | 30/32 | 5/5 |
+| JSX 조건 렌더링 `cond && <X />` | 189/189 | 100% |
+| effect의 listener·timer·observer cleanup | 31/31 | 100% |
+| Props interface는 컴포넌트 위, export 안 함 | 157/157, 173/175 | 100% |
+| 외부 URL은 `openExternalLink` | 12/12 | 4/4 |
+| Promise는 async/await | 20/22 | 86% |
+| 문자열 → 숫자는 `Number()` | 39/43 | 86% |
+| children은 `PropsWithChildren<Props>` | 14/17 | 2/2 |
+
+`font` 토큰 블록의 `font-weight` 덮어쓰기는 같은 크기의 굵기 토큰(`t{N}Regular`·`t{N}SemiBold`·`t{N}Bold`)으로
+바꿨다. 600 토큰(`t{N}SemiBold`)을 이때 새로 추가했다. 결과가 같은 54건만 바꿨고, 대응 토큰이 없는 굵기(500·800·900, 조건부 값)
+7건과 `line-height` 덮어쓰기 8건은 남겼다.
+
+### 등록하지 않은 후보
+
+- 신규에서 하락: `return await fetcher`(42%), test `describe` 이름(65%), toast 실패 문구 형식(67%),
+  디바이스 변형 이름 `PC{X}`/`Mobile{X}`(60%).
+- 전체 70% 미만: boolean state·props `is*`(57%), 로딩 UI `Skeleton`(57%), 모든 API의 MSW mock(57%).
+- 표본이 작음: route loader의 `queryClient` 사용, `validateSearch`, `useParams({ from })`(6~13건).
+- 자명함: `[x, setX]`, 타입 PascalCase.
+
+### 함께 발견한 사항
+
+- `pages/newsletter-detail/` 바로 아래에 파일 7개(배치 규칙 위반).
+- `web/src/components/ExternalLink/ExternalLink.tsx`는 named export이고 사용처가 없다.
+- 훅 파일 이름 오타: `web/src/pages/detail/hooks/useRemoveHighlighMutation.ts`.
+- `web/src/styles/reset.ts`가 불러오는 Google Fonts의 family 이름은 `'Nanum Gothic'`인데 theme과
+  reset은 `NanumGothic`을 지정한다. 해당 웹폰트는 400·700·800 굵기만 제공한다.
+  이름을 맞추면 사이트 전체 글꼴이 바뀌므로 수정을 보류했다(2026-10-18 결정).
