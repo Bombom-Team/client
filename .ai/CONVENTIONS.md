@@ -7,10 +7,10 @@ BomBom 저장소에서 AI와 사람이 코드를 작성·리뷰할 때 따르는
 | --- | --- |
 | Claude Code | [CLAUDE.md](../CLAUDE.md)가 `@.ai/CONVENTIONS.md`로 import |
 | Gemini CLI | [GEMINI.md](../GEMINI.md)가 `@.ai/CONVENTIONS.md`로 import |
-| Codex | [AGENTS.md](AGENTS.md)의 Start here 지시에 따라 직접 읽음 |
+| Codex | [RULES.md](RULES.md)의 Start here 지시에 따라 직접 읽음 |
 | CodeRabbit | `.coderabbit.yaml`의 `knowledge_base` |
 
-AI 행동 규칙(작업 범위, 검증, 생성 파일)은 [AGENTS.md](AGENTS.md)에 있습니다.
+AI 행동 규칙(작업 범위, 검증, 생성 파일)은 [RULES.md](RULES.md)에 있습니다.
 
 ---
 
@@ -86,7 +86,7 @@ React Native JS code(`app/app/`, `app/components/` 등)는 prebuild의 영향을
 
 이 절은 `web/`, `admin/`, `maeil-mail/`의 React·Emotion UI code 규칙입니다.
 `app/`의 React Native code에는 자동으로 적용하지 않습니다. `app/` 작업은
-app/AGENTS.md와 가장 가까운 기존 code pattern을 먼저 따릅니다.
+[`.ai/workspaces/app.md`](workspaces/app.md)와 가장 가까운 기존 code pattern을 먼저 따릅니다.
 
 규칙은 `web/` 코드의 실제 준수율을 기준으로 정리했습니다(2026-10-18 측정). `admin/`·`maeil-mail/`에서
 같은 영역의 인접 code가 이 절과 다르면, 다른 점을 확인한 뒤 인접 code를 따릅니다.

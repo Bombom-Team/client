@@ -16,8 +16,8 @@ Use this skill for changes around:
 - `.github/workflows/codex-review-publish.yml` (스킬이 호출하는 publish-only workflow)
 - `.github/codex-review-output-schema.json` (review JSON 스키마)
 - `.github/scripts/publish-codex-review.sh` (공용 publisher)
-- `.review-learnings/REVIEW.md` (리뷰 정책 원본, 리뷰 시 필수)
-- `.review-learnings/false-positives.md` (알려진 오탐)
+- `.ai/review/REVIEW.md` (리뷰 정책 원본, 리뷰 시 필수)
+- `.ai/review/false-positives.md` (알려진 오탐)
 - `.coderabbit.yaml` (CodeRabbit이 같은 리뷰 정책을 읽는 경로)
 
 The goal is to keep the PR review bot high signal, readable, and safe.
@@ -41,7 +41,7 @@ reviewer와 관계없이 바꾸지 않는 계약:
 
 Before editing, read:
 
-1. `.ai/AGENTS.md` (AI behavior rules)
+1. `.ai/RULES.md` (AI behavior rules)
 2. `.ai/CONVENTIONS.md` (코드 컨벤션 전체)
 3. `docs/architecture.md` — 워크스페이스 경계·인증·API·WebView·알림 동작 지도
 4. `docs/git-commit-convention.md` before committing
@@ -86,7 +86,7 @@ formatting unless the user explicitly asks.
   Decision" 참조).
 - Only `critical` and `major` findings should become inline comments.
 - `minor` findings should appear in the review summary `### 참고` section.
-- `.review-learnings/REVIEW.md`의 "리뷰 제외 파일"은 리뷰하지 않는다.
+- `.ai/review/REVIEW.md`의 "리뷰 제외 파일"은 리뷰하지 않는다.
 - Keep `<!-- CODEX_REVIEW_COMMENT -->` in inline comments — 이전 리뷰 thread를
   식별하는 키. reviewer가 Codex/Claude 어느 쪽이어도 동일.
 - Preserve `<!-- REVIEW_META ... -->` because follow-up workflows and future
@@ -157,7 +157,7 @@ Procedure:
    gh pr view <number-or-url> --repo Bombom-Team/client --json number,title,body,baseRefName,headRefName,baseRefOid,headRefOid,isDraft,url
    ```
 
-3. Inspect only the PR-introduced diff. `.review-learnings/REVIEW.md`의 "리뷰 제외 파일" 목록을
+3. Inspect only the PR-introduced diff. `.ai/review/REVIEW.md`의 "리뷰 제외 파일" 목록을
    `:(glob,exclude)<pattern>` pathspec으로 바꿔 제외한다:
 
    ```bash
@@ -167,7 +167,7 @@ Procedure:
 
 4. **컨텍스트 수집 — diff만 보고 리뷰하지 않는다.** finding을 확정하기 전에 head 기준
    실제 코드를 읽는다:
-   - 리뷰 정책 `.review-learnings/REVIEW.md`와 오탐 목록 `.review-learnings/false-positives.md`를
+   - 리뷰 정책 `.ai/review/REVIEW.md`와 오탐 목록 `.ai/review/false-positives.md`를
      읽는다. 무엇을 지적하고 무엇을 지적하지 않을지는 REVIEW.md가 원본이다.
    - `web/`·`admin/`·`maeil-mail/` 변경이면 `.ai/CONVENTIONS.md`의 Frontend coding standards에서 변경 유형에
      해당하는 절을 읽는다. 구현 AI와 같은 규칙 원본이다. 규칙 위반은 절 제목 링크로 인용한다.
@@ -264,9 +264,9 @@ unless the user explicitly asks.
 
 ## Architecture Learning Loop
 
-1. finding이 사람 답글로 반박·정정되면 발생 조건과 반례를 `.review-learnings/false-positives.md`에
+1. finding이 사람 답글로 반박·정정되면 발생 조건과 반례를 `.ai/review/false-positives.md`에
    남긴다. 다른 리뷰어가 놓친 실제 이슈는 구현 규칙이면 `.ai/CONVENTIONS.md`의 Frontend coding standards,
-   리뷰 기준이면 `.review-learnings/REVIEW.md`에 재현 근거와 함께 반영한다. 반복 회귀는
+   리뷰 기준이면 `.ai/review/REVIEW.md`에 재현 근거와 함께 반영한다. 반복 회귀는
    테스트로 옮기는 것을 우선한다.
 2. 실제 회귀가 확인된 영역만 repository-specific high-signal 목록에 추가한다. 일반론으로
    목록을 희석하지 않는다.
@@ -277,7 +277,7 @@ unless the user explicitly asks.
 
 ## Generated File Exclusions
 
-리뷰 제외 대상의 원본은 `.review-learnings/REVIEW.md`의 "리뷰 제외 파일"이다. 목록을 바꾸면
+리뷰 제외 대상의 원본은 `.ai/review/REVIEW.md`의 "리뷰 제외 파일"이다. 목록을 바꾸면
 설정 파일이라 참조가 불가능한 `.coderabbit.yaml`의 `path_filters`도 함께 수정한다.
 
 ## Mock Format Testing

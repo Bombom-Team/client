@@ -7,7 +7,7 @@ PR 리뷰 전에 읽는 코드베이스 지도다. 목표는 "아무 React/React
 
 ## 저장소 구성
 
-워크스페이스 목록과 역할은 `.ai/AGENTS.md`의 Repository overview, 기술 스택과 버전은 각
+워크스페이스 목록과 역할은 `.ai/RULES.md`의 Repository overview, 기술 스택과 버전은 각
 workspace의 `package.json`을 직접 읽는다.
 
 `web`·`app`·`admin`·`maeil-mail`은 독립 배포 단위다. 같은 이름의 컴포넌트·훅·API가

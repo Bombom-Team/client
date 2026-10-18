@@ -13,7 +13,7 @@ description: PR 본문(description/body)을 프로젝트 템플릿에 맞춰 작
 2. **간결함**: 리뷰어가 30초 안에 파악할 수 있게 bullet로 핵심만.
 3. **What ≠ How**: What은 "무엇을 해결했나(결과/변화)", How는 "어떻게 했나(기술적 접근)". 섞지 않는다.
 4. **프로젝트 관례 존중**: 한국어, bullet point(`-`), 템플릿의 `<!-- 주석 -->`은 최종 본문에서 제거.
-5. **PR target branch**: `AGENTS.md`의 Git workflow 절에 정한 target branch를 `gh pr create --base`에 명시한다.
+5. **PR target branch**: `.ai/RULES.md`의 Git workflow 절에 정한 target branch를 `gh pr create --base`에 명시한다.
 
 ## 작업 흐름
 
@@ -122,7 +122,7 @@ diff가 너무 크면 `--stat`으로 개요만 본 뒤, 중요해 보이는 파�
 
 ### 6. PR 제목 생성
 
-제목 형식은 `AGENTS.md`의 Git workflow 절(PR title)을 직접 읽어 따른다.
+제목 형식은 `.ai/RULES.md`의 Git workflow 절(PR title)을 직접 읽어 따른다.
 
 - `issue_key`: 브랜치명·커밋 메시지에서 추출한 `BOM-\d+` (없으면 `[{issue_key}]` prefix 자체를 생략)
 - `type`: 커밋의 주된 type. 사용 가능한 type은 `docs/git-commit-convention.md`의 type 표를 읽는다

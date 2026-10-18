@@ -1,7 +1,7 @@
 # 🤖 AI PR 리뷰 — 팀 가이드
 
 이 저장소의 PR은 두 경로로 AI 리뷰를 받습니다. 두 경로 모두 이 폴더의 리뷰 정책과
-[CONVENTIONS.md의 Frontend coding standards](../.ai/CONVENTIONS.md#frontend-coding-standards)를 기준으로 리뷰합니다.
+[CONVENTIONS.md의 Frontend coding standards](../CONVENTIONS.md#frontend-coding-standards)를 기준으로 리뷰합니다.
 
 AI 리뷰는 보조 도구입니다. 헛짚는 지적도, 놓치는 버그도 있습니다. 사람 리뷰를 대체하지
 않습니다.
@@ -37,7 +37,7 @@ Claude 리뷰의 게시 정책(COMMENT, 조건부 APPROVE, `ALLOW_APPROVE`)은 s
 - 지적이 틀렸다 → 근거와 함께 답글로 반박합니다. 반복되는 오탐만 `false-positives.md`에
   추가합니다. 답글이 없다는 이유만으로 지적을 수용된 규칙으로 보지 않습니다.
 - 같은 문제가 반복된다 → 리뷰 규칙을 늘리기보다 테스트나
-  [CONVENTIONS.md의 Frontend coding standards](../.ai/CONVENTIONS.md#frontend-coding-standards) 규칙으로 옮깁니다.
+  [CONVENTIONS.md의 Frontend coding standards](../CONVENTIONS.md#frontend-coding-standards) 규칙으로 옮깁니다.
 
 ---
 
@@ -49,7 +49,7 @@ Claude 리뷰의 게시 정책(COMMENT, 조건부 APPROVE, `ALLOW_APPROVE`)은 s
 | `false-positives.md` | 알려진 오탐과 적용 조건 | CodeRabbit, Claude skill |
 
 구현 규칙은 이 폴더에 두지 않습니다. 규칙을 바꾸려면
-[CONVENTIONS.md의 Frontend coding standards](../.ai/CONVENTIONS.md#frontend-coding-standards)를 수정합니다.
+[CONVENTIONS.md의 Frontend coding standards](../CONVENTIONS.md#frontend-coding-standards)를 수정합니다.
 
 초기 리뷰 규칙과 오탐 목록은 `woowacourse-teams/2025-bom-bom` PR 코멘트 2,100여 개를
 분석해 작성했습니다.

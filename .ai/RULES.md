@@ -1,19 +1,39 @@
-# AGENTS.md
+# RULES.md
 
 이 문서는 BomBom 저장소에서 작업하는 모든 AI agent의 진입점이자 **AI 행동 규칙의 원본(SSOT)**입니다.
 코드 컨벤션의 원본은 [CONVENTIONS.md](CONVENTIONS.md)입니다. 도구와 관계없이 적용합니다.
 
 | 도구 | 이 문서를 읽는 방식 |
 | --- | --- |
-| Codex | 루트 `AGENTS.md` 링크를 따라 이 문서를 자동으로 읽음. `CONVENTIONS.md`는 아래 Start here에 따라 직접 읽음 |
-| Claude Code | [CLAUDE.md](../CLAUDE.md)가 `@.ai/AGENTS.md`, `@.ai/CONVENTIONS.md`로 import |
-| Gemini CLI | [GEMINI.md](../GEMINI.md)가 `@.ai/AGENTS.md`, `@.ai/CONVENTIONS.md`로 import |
+| Codex | 루트 `AGENTS.md`(이 파일로의 symlink)를 자동으로 읽음. `CONVENTIONS.md`는 아래 Start here에 따라 직접 읽음 |
+| Claude Code | [CLAUDE.md](../CLAUDE.md)가 `@.ai/RULES.md`, `@.ai/CONVENTIONS.md`로 import |
+| Gemini CLI | [GEMINI.md](../GEMINI.md)가 `@.ai/RULES.md`, `@.ai/CONVENTIONS.md`로 import |
 
-이 문서의 실제 위치는 `.ai/AGENTS.md`이고, 루트 `AGENTS.md`는 이 파일을 가리키는 링크입니다.
-AI가 읽는 문서의 원본(이 문서, `CONVENTIONS.md`, skill, sub-agent 정의)은 모두 `.ai/`에 두고,
-도구별 위치(`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`, `.agents/skills`, `.claude/skills`,
-`.claude/agents`)에는 `.ai/`로 이어지는 링크나 import만 둡니다. 이 문서에 적힌 코드 경로는
-저장소 루트 기준입니다.
+### `.ai/` 구조
+
+AI가 읽는 문서의 원본은 모두 `.ai/`에 둡니다. 이 문서에 적힌 경로는 저장소 루트 기준입니다.
+
+| 경로 | 원본 내용 |
+| --- | --- |
+| `.ai/RULES.md` | 진입점, workspace 선택, AI 행동 규칙(이 문서) |
+| `.ai/CONVENTIONS.md` | 코드 컨벤션 |
+| `.ai/workspaces/{workspace}.md` | workspace별 경로·명령·생성 규칙 |
+| `.ai/review/` | PR 리뷰 정책(`REVIEW.md`), 알려진 오탐(`false-positives.md`), 팀 안내(`README.md`) |
+| `.ai/skills/` | skill |
+| `.ai/subagents/` | sub-agent 정의 |
+
+도구가 자동으로 읽는 위치에는 `.ai/`로 이어지는 연결만 둡니다. 연결 파일에는 내용을 쓰지 않습니다.
+
+| 연결 위치 | 연결 방식 | 가리키는 원본 |
+| --- | --- | --- |
+| 루트 `AGENTS.md` | symlink | `.ai/RULES.md` |
+| 루트 `CLAUDE.md`, `GEMINI.md` | `@` import | `.ai/RULES.md`, `.ai/CONVENTIONS.md` |
+| workspace의 `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` | symlink | `.ai/workspaces/{workspace}.md` |
+| `.agents/skills`, `.claude/skills` | symlink | `.ai/skills/` |
+| `.claude/agents` | symlink | `.ai/subagents/` |
+
+workspace 연결 파일은 각 도구가 해당 workspace에서 작업할 때 workspace 원본을 자동으로 읽게
+합니다. 자동으로 읽히지 않는 경우에도 아래 Start here와 Workspace 선택 표에 따라 직접 읽습니다.
 
 규칙을 다른 파일에 복제하지 말고 원본 문서의 절 제목으로 링크합니다. Codex는 instruction 파일을
 합계 32KiB까지만 읽으므로 이 파일을 그보다 작게 유지합니다.
@@ -26,16 +46,16 @@ AI가 읽는 문서의 원본(이 문서, `CONVENTIONS.md`, skill, sub-agent 정
 2. **코드를 변경하거나 리뷰하는 모든 작업에서 [`.ai/CONVENTIONS.md`](CONVENTIONS.md) 전체.** 도구가
    자동으로 불러오지 않았다면 직접 읽습니다.
 3. 작업에 해당하는 문서
-   - `app/` React Native UI 코드: app/AGENTS.md와 작업 대상의 인접 구현
+   - `app/` React Native UI 코드: [`.ai/workspaces/app.md`](workspaces/app.md)와 작업 대상의 인접 구현
    - Commit message: [git commit convention](../docs/git-commit-convention.md)
-   - Pull request review: [review policy](../.review-learnings/REVIEW.md),
+   - Pull request review: [review policy](review/REVIEW.md),
      [architecture map](../docs/architecture.md), 변경 workspace의 규칙을 읽습니다.
      Claude Code의 PR review 실행과 review workflow 유지·수정·장애 확인은
      `ai-review-workflow` skill을 사용합니다.
-   - Workspace 작업: 아래 표에서 대상 workspace를 찾고 해당 AGENTS.md 확인
+   - Workspace 작업: 아래 표에서 대상 workspace를 찾고 해당 workspace 문서 확인
 4. 아래 '작업 범위 파악' 순서로 관련 code, configuration, test를 확인
 
-작업에 필요한 문서만 읽고 적용합니다. Workspace별 AGENTS.md는 해당 package의
+작업에 필요한 문서만 읽고 적용합니다. Workspace 문서(`.ai/workspaces/`)는 해당 package의
 경로·명령·생성 규칙을 안내하며, 공통 AI 행동 정책은 이 문서의 AI behavior rules를 따릅니다.
 
 ## Workspace 선택
@@ -45,15 +65,15 @@ AI가 읽는 문서의 원본(이 문서, `CONVENTIONS.md`, skill, sub-agent 정
 
 | 작업 단서 | 먼저 읽을 문서 | 탐색 시작 경로 |
 | --- | --- | --- |
-| 웹 화면, 웹 client, web/의 기능·버그 | web/AGENTS.md | web/src/ |
-| 모바일, Expo, React Native, app/의 기능·버그 | app/AGENTS.md | app/app/, app/components/, app/apis/ |
-| 어드민, dashboard, admin/의 기능·버그 | admin/AGENTS.md | admin/src/ |
-| 매일메일, maeil-mail/의 기능·버그 | maeil-mail/AGENTS.md | maeil-mail/src/ |
-| 공유 UI, theme, utility, web과 app의 공통 코드 | shared/AGENTS.md | shared/src/ |
-| web/admin/maeil-mail의 OpenAPI type output | 해당 workspace의 AGENTS.md | 각 workspace의 src/types/openapi.d.ts |
-| shared generated API 또는 oas-gen generator 코드 | shared/oas-gen/AGENTS.md와 web/AGENTS.md | shared/src/core/apis/generated/, shared/oas-gen/src/ |
-| routeTree.gen.ts 등 workspace별 generated output | 해당 workspace의 AGENTS.md | 변경된 output, webpack/vite router configuration |
-| 둘 이상의 workspace에 걸친 기능 | 관련된 모든 workspace AGENTS.md와 docs/architecture.md | 요청에서 직접 언급된 workspace부터 |
+| 웹 화면, 웹 client, web/의 기능·버그 | .ai/workspaces/web.md | web/src/ |
+| 모바일, Expo, React Native, app/의 기능·버그 | .ai/workspaces/app.md | app/app/, app/components/, app/apis/ |
+| 어드민, dashboard, admin/의 기능·버그 | .ai/workspaces/admin.md | admin/src/ |
+| 매일메일, maeil-mail/의 기능·버그 | .ai/workspaces/maeil-mail.md | maeil-mail/src/ |
+| 공유 UI, theme, utility, web과 app의 공통 코드 | .ai/workspaces/shared.md | shared/src/ |
+| web/admin/maeil-mail의 OpenAPI type output | 해당 workspace 문서 | 각 workspace의 src/types/openapi.d.ts |
+| shared generated API 또는 oas-gen generator 코드 | .ai/workspaces/shared-oas-gen.md와 .ai/workspaces/web.md | shared/src/core/apis/generated/, shared/oas-gen/src/ |
+| routeTree.gen.ts 등 workspace별 generated output | 해당 workspace 문서 | 변경된 output, webpack/vite router configuration |
+| 둘 이상의 workspace에 걸친 기능 | 관련된 모든 workspace 문서와 docs/architecture.md | 요청에서 직접 언급된 workspace부터 |
 
 어느 workspace인지 분명하지 않으면 먼저 feature 이름, route, component, API endpoint를
 검색해 후보를 좁힙니다. 후보가 둘 이상이고 선택에 따라 사용자 동작이나 data contract가
@@ -64,7 +84,7 @@ AI가 읽는 문서의 원본(이 문서, `CONVENTIONS.md`, skill, sub-agent 정
 넓은 directory 전체를 먼저 읽지 않습니다. 다음 순서로 필요한 파일만 좁혀 갑니다.
 
 1. 사용자가 지정한 file, error, screen, feature 이름, issue의 대상을 찾습니다.
-2. 대상 workspace의 AGENTS.md와 package.json에서 실행 명령과 생성 규칙을 확인합니다.
+2. 대상 workspace 문서와 package.json에서 실행 명령과 생성 규칙을 확인합니다.
 3. 대상의 entry point와 가장 가까운 구현을 봅니다.
    - 화면·route 작업: route 또는 page와 그 component
    - 기능·bug 작업: 해당 symbol의 호출부와 직접 의존성
@@ -79,7 +99,7 @@ AI가 읽는 문서의 원본(이 문서, `CONVENTIONS.md`, skill, sub-agent 정
 
 BomBom은 pnpm monorepo입니다.
 
-- web/ — React/TypeScript web client; web/AGENTS.md 참고
+- web/ — React/TypeScript web client; .ai/workspaces/web.md 참고
 - app/ — React Native mobile client
 - admin/ — Admin dashboard web client
 - maeil-mail/ — Daily Mail web client
@@ -141,7 +161,12 @@ AI agent가 이 저장소에서 안전하고 효율적으로 작업하는 방법
 
 ### AI가 읽는 문서 작성
 
-- AI가 읽는 문서(AGENTS.md, skill, agent, 리뷰 정책 등)의 정보는 원본을 하나만 둡니다.
+- AI가 읽는 문서(이 문서, workspace 문서, skill, sub-agent, 리뷰 정책 등)의 정보는 원본을 하나만 둡니다.
+- 새 원본은 [`.ai/` 구조](#ai-구조)의 해당 위치에 만들고, 도구가 자동으로 읽어야 하면 연결 파일만 추가합니다.
+- 연결 파일(`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.claude/`·`.agents/`의 symlink)에는 내용을 쓰지
+  않습니다. 도구나 plugin(예: `claude-md-management`의 `/revise-claude-md`, `claude-md-improver`)이
+  연결 파일에 내용을 추가하라고 제안하면, 그 내용을 해당 `.ai/` 원본에 반영합니다. 이런 도구가 매긴
+  점수 중 연결 파일이 짧다는 이유의 감점은 무시합니다.
 - 다른 파일에 원본이 있는 내용(`package.json` script, 설정값, theme 토큰 값, 컴포넌트 props,
   route 목록, 코드 예시 등)은 복사하지 않고 원본 경로를 안내합니다.
 - 문서에는 원본에서 알 수 없는 정책, 의도, 판단 기준만 적습니다.

@@ -1,1 +1,1 @@
-.ai/AGENTS.md
+.ai/RULES.md
