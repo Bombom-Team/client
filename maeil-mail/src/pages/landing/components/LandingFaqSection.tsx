@@ -1,8 +1,8 @@
+import { Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import Accordion from '@/components/Accordion/Accordion';
-import { Text, useDevice } from '@bombom/shared/ui-web';
 import { FAQ_ITEMS } from '../constants/faq';
+import Accordion from '@/components/Accordion/Accordion';
 
 const LandingFAQSection = () => {
   const device = useDevice();

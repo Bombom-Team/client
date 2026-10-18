@@ -1,3 +1,4 @@
+import { Toast } from '@bombom/shared/ui-web';
 import { ThemeProvider } from '@emotion/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import {
@@ -6,11 +7,10 @@ import {
   createRootRouteWithContext,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import { Toast } from '@bombom/shared/ui-web';
 import { queryClient } from '../main';
 import { AuthProvider } from '@/contexts/AuthContext';
-import type { QueryClient } from '@tanstack/react-query';
 import { theme } from '@/styles/theme';
+import type { QueryClient } from '@tanstack/react-query';
 
 interface MaeilMailRouterContext {
   queryClient: QueryClient;
