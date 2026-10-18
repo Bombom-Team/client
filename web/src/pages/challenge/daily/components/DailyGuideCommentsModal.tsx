@@ -164,8 +164,7 @@ const CommentMeta = styled.div`
 
 const Nickname = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t6SemiBold};
 `;
 
 const Timestamp = styled.time`

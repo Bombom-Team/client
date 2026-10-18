@@ -1,0 +1,1 @@
+../.ai/workspaces/admin.md

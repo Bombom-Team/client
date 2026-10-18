@@ -181,8 +181,7 @@ const GenerationBadge = styled.div<{ device: Device }>`
   );
   color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Regular};
-  font-weight: 700;
+    device === 'mobile' ? theme.fonts.t5Bold : theme.fonts.t6Bold};
 
   animation: ${floatAnimation} 6s ease-in-out infinite;
 
@@ -262,8 +261,7 @@ const FreePrice = styled.span`
 const DiscountLabel = styled.span<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primaryDark};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Regular};
-  font-weight: 600;
+    device === 'mobile' ? theme.fonts.t5SemiBold : theme.fonts.t6SemiBold};
 `;
 
 const ApplicantButton = styled(Button)<{ device: Device }>`

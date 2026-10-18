@@ -106,8 +106,7 @@ const Title = styled.h2<{ device: Device }>`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t3Regular : theme.fonts.t7Bold};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.t3Regular : theme.fonts.t7Regular};
 `;
 
 const ButtonGroup = styled.div<{ device: Device }>`

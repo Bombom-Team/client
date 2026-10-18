@@ -94,8 +94,7 @@ const DayBadge = styled.div`
 
   background-color: ${({ theme }) => theme.colors.primaryLight};
   color: ${({ theme }) => theme.colors.primaryBomBom};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t5SemiBold};
 `;
 
 const NoticeBox = styled.div`

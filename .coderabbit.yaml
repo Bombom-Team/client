@@ -10,19 +10,15 @@ knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - files: 'CONVENTIONS.md'
+      - files: '.ai/RULES.md'
         applyTo: '**/*'
-      - files: 'docs/ai-rules.md'
+      - files: '.ai/CONVENTIONS.md'
         applyTo: '**/*'
       - files: 'docs/architecture.md'
         applyTo: '{web,app,admin,maeil-mail,shared}/**/*'
-      - files: 'docs/frontend-coding-standards.md'
-        applyTo: '{web,admin,maeil-mail}/**/*'
-      - files: '.review-learnings/REVIEW.md'
+      - files: '.ai/review/REVIEW.md'
         applyTo: '**/*'
-      - files: '.review-learnings/additional-rules.md'
-        applyTo: 'web/**/*'
-      - files: '.review-learnings/false-positives.md'
+      - files: '.ai/review/false-positives.md'
         applyTo: '{web,admin,maeil-mail}/**/*'
 
 reviews:

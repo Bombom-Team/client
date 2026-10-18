@@ -114,7 +114,6 @@ const StreakCount = styled.span`
 
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t7Bold};
-  font-weight: 700;
   line-height: 1;
 
   transform: translate(-50%, -50%);
@@ -180,8 +179,7 @@ const DayCheckBox = styled.div<{
         ? theme.colors.primaryBomBom
         : theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t3Bold};
   line-height: 1;
 `;
 
@@ -216,8 +214,7 @@ const FreezeCheckMark = styled.span`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t3Bold};
   line-height: 1;
 
   transform: translate(-50%, -50%);

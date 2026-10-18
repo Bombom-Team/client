@@ -149,6 +149,5 @@ const SubscribeAction = styled.div`
 `;
 
 const SubscribeText = styled.span`
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t3SemiBold};
 `;

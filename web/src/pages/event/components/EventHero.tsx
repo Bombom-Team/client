@@ -172,8 +172,7 @@ const HeroBadge = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
-  font-weight: 700;
+    device === 'mobile' ? theme.fonts.t6Bold : theme.fonts.t7Bold};
   text-align: center;
 
   transform: rotate(-2deg);
@@ -229,8 +228,7 @@ const InfoCardBadge = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Bold};
-  font-weight: 700;
+    device === 'mobile' ? theme.fonts.t5Bold : theme.fonts.t6Bold};
   text-align: center;
   white-space: nowrap;
 
@@ -267,8 +265,7 @@ const InfoValue = styled.p<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.black};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
-  font-weight: 700;
+    device === 'mobile' ? theme.fonts.t6Bold : theme.fonts.t7Bold};
   text-align: left;
 `;
 

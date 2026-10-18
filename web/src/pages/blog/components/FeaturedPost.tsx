@@ -114,8 +114,7 @@ const NoThumbnailPlaceholder = styled.div`
 
   background-color: ${({ theme }) => theme.colors.dividers};
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t5SemiBold};
 `;
 
 export const ContentWrapper = styled.div<{ device: Device }>`
@@ -141,7 +140,6 @@ const Title = styled.h2<{ device: Device }>`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t7Regular : theme.fonts.t10Bold};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.t7Regular : theme.fonts.t10Regular};
   line-height: ${({ device }) => (device === 'mobile' ? '1.7' : 'inherit')};
 `;

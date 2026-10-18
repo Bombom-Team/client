@@ -18,8 +18,7 @@ export const Tag = styled.span`
 
   background-color: ${({ theme }) => `${theme.colors.primaryLight}40`};
   color: ${({ theme }) => theme.colors.primaryBomBom};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t3SemiBold};
 `;
 
 export const Applicant = (props: ComponentProps<typeof Text>) => (
@@ -57,8 +56,7 @@ export const CardDetailButton = styled.button`
 
   background-color: transparent;
   color: ${({ theme }) => theme.colors.primaryBomBom};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t5SemiBold};
 
   &:hover {
     text-decoration: underline;

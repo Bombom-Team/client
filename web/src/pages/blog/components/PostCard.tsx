@@ -110,8 +110,7 @@ const NoThumbnailPlaceholder = styled.div`
 
   background-color: ${({ theme }) => theme.colors.dividers};
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t5SemiBold};
 `;
 
 const Title = styled.h3<{ device: Device }>`

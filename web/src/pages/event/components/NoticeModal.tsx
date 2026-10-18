@@ -70,8 +70,7 @@ const Title = styled.h3`
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t7Bold};
-  font-weight: 400;
+  font: ${({ theme }) => theme.fonts.t7Regular};
   text-align: center;
 `;
 
