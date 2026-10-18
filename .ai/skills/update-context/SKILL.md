@@ -1,6 +1,6 @@
 ---
 name: update-context
-description: 봄봄 서비스 컨텍스트 문서(`.claude/skills/product-planner/context.md`)의 "핵심 기능 맵"과 "주요 화면 구조" 섹션을 갱신합니다. 사용자가 "이 기능 출시됐어 context 업데이트해줘", "새 페이지 추가됐으니 문서 갱신", "context.md 업데이트", "핵심 기능 추가", "서비스 컨텍스트 반영" 같은 요청을 하면 반드시 이 스킬을 사용하세요. product-planner 에이전트가 PRD 마지막에 "📌 Context 갱신 제안"을 남기면, 실제 출시 후 이 스킬로 반영합니다.
+description: 봄봄 서비스 컨텍스트 문서(`.ai/skills/product-planner/context.md`)의 "핵심 기능 맵"과 "주요 화면 구조" 섹션을 갱신합니다. 사용자가 "이 기능 출시됐어 context 업데이트해줘", "새 페이지 추가됐으니 문서 갱신", "context.md 업데이트", "핵심 기능 추가", "서비스 컨텍스트 반영" 같은 요청을 하면 반드시 이 스킬을 사용하세요. product-planner 에이전트가 PRD 마지막에 "📌 Context 갱신 제안"을 남기면, 실제 출시 후 이 스킬로 반영합니다.
 ---
 
 # Update Context
@@ -9,7 +9,7 @@ description: 봄봄 서비스 컨텍스트 문서(`.claude/skills/product-planne
 
 ## 대상 파일
 
-`.claude/skills/product-planner/context.md`
+`.ai/skills/product-planner/context.md`
 
 이 파일에서 **변경 잦은 두 섹션**만 갱신합니다:
 - **핵심 기능 맵** (기능 표)

@@ -1,8 +1,8 @@
 # shared workspace agent guide
 
 이 문서는 shared/ package의 경로만 정리합니다. 저장소
-공통 규칙은 [root AGENTS.md](../AGENTS.md)와
-[AI behavior rules](../AGENTS.md#ai-behavior-rules)에서 확인합니다.
+공통 규칙은 [.ai/AGENTS.md](../.ai/AGENTS.md)와
+[AI behavior rules](../.ai/AGENTS.md#ai-behavior-rules)에서 확인합니다.
 
 ## Workspace
 

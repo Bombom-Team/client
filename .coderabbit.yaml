@@ -10,7 +10,9 @@ knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - files: 'AGENTS.md'
+      - files: '.ai/AGENTS.md'
+        applyTo: '**/*'
+      - files: '.ai/CONVENTIONS.md'
         applyTo: '**/*'
       - files: 'docs/architecture.md'
         applyTo: '{web,app,admin,maeil-mail,shared}/**/*'

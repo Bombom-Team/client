@@ -4,9 +4,9 @@ AI 에이전트가 `web/` 워크스페이스에서 작업할 때 확인할 문�
 
 ## Read first
 
-- [Repository agent rules](../AGENTS.md)
-- [AI behavior rules](../AGENTS.md#ai-behavior-rules)
-- [Frontend coding standards](../AGENTS.md#frontend-coding-standards): 프론트엔드 코드를 변경할 때
+- [Repository agent rules](../.ai/AGENTS.md)
+- [AI behavior rules](../.ai/AGENTS.md#ai-behavior-rules)
+- [Code conventions](../.ai/CONVENTIONS.md): 코드를 변경하거나 리뷰할 때 전체를 읽음
 - [Git commit convention](../docs/git-commit-convention.md): 커밋을 준비할 때만
 
 ## Workspace

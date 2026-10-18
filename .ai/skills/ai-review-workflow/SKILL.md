@@ -41,9 +41,10 @@ reviewer와 관계없이 바꾸지 않는 계약:
 
 Before editing, read:
 
-1. `AGENTS.md` (AI behavior rules, Frontend coding standards 포함)
-2. `docs/architecture.md` — 워크스페이스 경계·인증·API·WebView·알림 동작 지도
-3. `docs/git-commit-convention.md` before committing
+1. `.ai/AGENTS.md` (AI behavior rules)
+2. `.ai/CONVENTIONS.md` (코드 컨벤션 전체)
+3. `docs/architecture.md` — 워크스페이스 경계·인증·API·WebView·알림 동작 지도
+4. `docs/git-commit-convention.md` before committing
 
 Keep scope tight. Do not touch frontend code while working on review workflow
 formatting unless the user explicitly asks.
@@ -168,7 +169,7 @@ Procedure:
    실제 코드를 읽는다:
    - 리뷰 정책 `.review-learnings/REVIEW.md`와 오탐 목록 `.review-learnings/false-positives.md`를
      읽는다. 무엇을 지적하고 무엇을 지적하지 않을지는 REVIEW.md가 원본이다.
-   - `web/`·`admin/`·`maeil-mail/` 변경이면 `AGENTS.md`의 Frontend coding standards에서 변경 유형에
+   - `web/`·`admin/`·`maeil-mail/` 변경이면 `.ai/CONVENTIONS.md`의 Frontend coding standards에서 변경 유형에
      해당하는 절을 읽는다. 구현 AI와 같은 규칙 원본이다. 규칙 위반은 절 제목 링크로 인용한다.
    - `docs/architecture.md`를 읽고 관련 워크스페이스의 동작 계약을 파악한다.
    - PR body의 의도와 `👀 Review Point`를 확인한다.
@@ -264,7 +265,7 @@ unless the user explicitly asks.
 ## Architecture Learning Loop
 
 1. finding이 사람 답글로 반박·정정되면 발생 조건과 반례를 `.review-learnings/false-positives.md`에
-   남긴다. 다른 리뷰어가 놓친 실제 이슈는 구현 규칙이면 `AGENTS.md`의 Frontend coding standards,
+   남긴다. 다른 리뷰어가 놓친 실제 이슈는 구현 규칙이면 `.ai/CONVENTIONS.md`의 Frontend coding standards,
    리뷰 기준이면 `.review-learnings/REVIEW.md`에 재현 근거와 함께 반영한다. 반복 회귀는
    테스트로 옮기는 것을 우선한다.
 2. 실제 회귀가 확인된 영역만 repository-specific high-signal 목록에 추가한다. 일반론으로

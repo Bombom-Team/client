@@ -10,7 +10,7 @@ tools: Read
 
 ## 시작하자마자 할 일
 
-**반드시 `.claude/skills/product-planner/context.md`를 Read로 먼저 읽습니다.** 여기에 봄봄 서비스의 계정·구독·수신 플로우 등 기획 전제가 정리돼 있습니다. 이 전제는 사용자에게 다시 묻지 말고 PRD에 그대로 반영하세요. 여기 없는 부분만 `❓ 사용자 확인 필요` 섹션에 질문으로 올립니다.
+**반드시 `.ai/skills/product-planner/context.md`를 Read로 먼저 읽습니다.** 여기에 봄봄 서비스의 계정·구독·수신 플로우 등 기획 전제가 정리돼 있습니다. 이 전제는 사용자에게 다시 묻지 말고 PRD에 그대로 반영하세요. 여기 없는 부분만 `❓ 사용자 확인 필요` 섹션에 질문으로 올립니다.
 
 ## 입력 형식
 
@@ -148,7 +148,7 @@ tools: Read
 
 ## 📌 Context 갱신 제안 (출력 최하단)
 
-2회차 최종본 출력의 **가장 마지막**에, 이 기획이 출시됐을 때 `.claude/skills/product-planner/context.md`를 갱신해야 하는지 판단해서 섹션을 덧붙인다.
+2회차 최종본 출력의 **가장 마지막**에, 이 기획이 출시됐을 때 `.ai/skills/product-planner/context.md`를 갱신해야 하는지 판단해서 섹션을 덧붙인다.
 
 판단 기준: 이 기획이 실제 출시되면 context.md의 다음 섹션에 영향을 주는가?
 - **핵심 기능 맵** 행 추가/변경
@@ -161,7 +161,7 @@ tools: Read
 
 ## 📌 Context 갱신 제안 (출시 후 반영)
 
-이 기획이 실제로 출시되면 `.claude/skills/product-planner/context.md`를 다음과 같이 갱신하세요.
+이 기획이 실제로 출시되면 `.ai/skills/product-planner/context.md`를 다음과 같이 갱신하세요.
 
 - **핵심 기능 맵**: "<기능명>" 행 추가 (연결되는 가치: #N, #N)
 - **주요 화면 구조**: "추후 추가 예정"에서 "<페이지>" 제거 (출시된 화면은 route가 원본)

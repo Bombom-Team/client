@@ -3,11 +3,11 @@
 PR 리뷰 전에 읽는 코드베이스 지도다. 목표는 "아무 React/React Native 레포에나
 성립하는 리뷰"가 아니라 **봄봄의 실제 계약과 워크스페이스 경계를 근거로 한 리뷰**를
 가능하게 하는 것이다. 이 문서와 코드가 어긋나면 코드가 진실이다. 발견 시 문서 갱신을
-제안한다. 코딩 규칙은 루트 `AGENTS.md`가 담당한다.
+제안한다. 코딩 규칙은 `.ai/CONVENTIONS.md`가 담당한다.
 
 ## 저장소 구성
 
-워크스페이스 목록과 역할은 루트 `AGENTS.md`의 Repository overview, 기술 스택과 버전은 각
+워크스페이스 목록과 역할은 `.ai/AGENTS.md`의 Repository overview, 기술 스택과 버전은 각
 workspace의 `package.json`을 직접 읽는다.
 
 `web`·`app`·`admin`·`maeil-mail`은 독립 배포 단위다. 같은 이름의 컴포넌트·훅·API가
@@ -29,7 +29,7 @@ workspace의 `package.json`을 직접 읽는다.
 
 ## 서버 상태와 오류 처리
 
-- 서버 상태 코드 규칙은 루트 `AGENTS.md`의 TanStack Query 사용 규칙을 따른다. 리뷰에서는
+- 서버 상태 코드 규칙은 `.ai/CONVENTIONS.md`의 TanStack Query 사용 규칙을 따른다. 리뷰에서는
   mutation 후 관련 목록·상세·사용자 queryKey가 모두 무효화됐는지 확인한다.
 - 재시도 횟수와 401 처리 같은 QueryClient 정책 값은 이 문서에 옮겨 적지 않는다. `web/src/main.tsx`,
   `admin/src/index.tsx`, `maeil-mail/src/main.tsx`의 QueryClient 설정을 직접 읽는다.

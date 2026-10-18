@@ -26,7 +26,7 @@
 | 메인 레이아웃(헤더·하단 네비) | `web/src/routes/_bombom/_main.tsx`, `web/src/routes/_bombom.tsx` |
 | 투컬럼 페이지 | `web/src/routes/_bombom/_main/index.tsx`, `today.tsx` |
 | 상세 페이지 | `web/src/routes/_bombom/articles.$articleId.tsx` |
-| 구현 규칙 | 루트 `AGENTS.md`의 "모든 workspace 공통 작업 원칙", "Frontend coding standards" |
+| 구현 규칙 | `.ai/CONVENTIONS.md` |
 
 ---
 
@@ -44,7 +44,7 @@
 
 ## 5. 간격·모양 원칙
 
-- 간격은 4px 그리드를 따릅니다 (루트 `AGENTS.md`의 Theme 사용 규칙).
+- 간격은 4px 그리드를 따릅니다 (`.ai/CONVENTIONS.md`의 Theme 사용 규칙).
 - radius·shadow는 같은 종류의 기존 컴포넌트 값을 따릅니다. 새 값을 정의하지 않습니다.
 
 ---

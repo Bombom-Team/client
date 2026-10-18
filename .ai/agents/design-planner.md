@@ -10,7 +10,7 @@ tools: Read
 
 ## 시작하자마자 할 일
 
-**반드시 `.claude/skills/design-planner/bombom-design-guide.md`를 Read로 먼저 읽습니다.** 가이드는 디자인 원칙만 담고, 토큰·컴포넌트·레이아웃은 가이드의 "원본 위치" 표에 있는 파일을 Read로 직접 확인합니다. 원본에 없는 토큰·컴포넌트·레이아웃은 지어내지 말고 `[TODO: 확인 필요]`로 남기세요.
+**반드시 `.ai/skills/design-planner/bombom-design-guide.md`를 Read로 먼저 읽습니다.** 가이드는 디자인 원칙만 담고, 토큰·컴포넌트·레이아웃은 가이드의 "원본 위치" 표에 있는 파일을 Read로 직접 확인합니다. 원본에 없는 토큰·컴포넌트·레이아웃은 지어내지 말고 `[TODO: 확인 필요]`로 남기세요.
 
 ## 입력 형식
 
