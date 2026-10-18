@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
+import ChallengeStartModal from '@/components/ChallengeStartModal/ChallengeStartModal';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 
@@ -34,6 +35,7 @@ function RouteComponent() {
   return (
     <BomBomPageLayout>
       <Outlet />
+      <ChallengeStartModal />
       <AppInstallPromptModal />
     </BomBomPageLayout>
   );
