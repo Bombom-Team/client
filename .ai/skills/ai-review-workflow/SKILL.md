@@ -8,12 +8,10 @@ description: Manage the Bombom client Claude PR review workflow (채팅 요청�
 이 스킬은 Bombom client PR 리뷰의 **유일한 invocation 경로**다. `/codex-review`
 슬래시 커맨드와 `workflow_dispatch` 같은 수동 트리거는 제거되었다
 (`codex-review.yml` 파일도 삭제). PR 리뷰는 Claude(수동)가 이 스킬을 통해
-직접 진행하며, 게시는 `publish-codex-review.sh`를 로컬에서 실행하거나
-`codex-review-publish.yml`(publish-only workflow)을 dispatch하는 두 경로 중 하나로 한다.
+직접 진행하며, 게시는 `publish-codex-review.sh`를 로컬에서 실행해서 한다.
 
 Use this skill for changes around:
 
-- `.github/workflows/codex-review-publish.yml` (스킬이 호출하는 publish-only workflow)
 - `.github/codex-review-output-schema.json` (review JSON 스키마)
 - `.github/scripts/publish-codex-review.sh` (공용 publisher)
 - `.ai/review/REVIEW.md` (리뷰 정책 원본, 리뷰 시 필수)
@@ -65,12 +63,7 @@ formatting unless the user explicitly asks.
 - `.github/scripts/publish-codex-review.sh`가 그 JSON을 GitHub review body와
   inline comment로 변환해 게시한다. `REVIEWER=claude`로 호출하면 Claude 라벨로
   표시된다.
-- 게시 경로는 두 가지:
-  1. **로컬 publisher 직접 실행** (권장): Claude가 로컬에서 publisher를 실행하고
-     publisher가 `gh api`로 직접 게시.
-  2. **publish-only workflow dispatch**: `.github/workflows/codex-review-publish.yml`이
-     로컬에서 만든 JSON을 GitHub Actions 환경에서 publisher로 실행해 게시.
-     OpenAI 호출 없음.
+- 게시는 Claude가 로컬에서 publisher를 실행하고, publisher가 `gh api`로 직접 한다.
 - `.github/workflows/codex-review.yml`(Codex 자동 리뷰 워크플로우)은 **삭제됨**.
   과거에는 `/codex-review` 코멘트나 workflow_dispatch로 OpenAI Codex를 호출해
   리뷰를 생성했으나, 현재는 스킬 단일 진입점으로 통합되었다.
@@ -217,9 +210,8 @@ Procedure:
    **레포 루트에 쓰지 않는다.** 본문·inline 형식과 marker는 publisher가 만든다
    ("Review Output Format").
 
-8. **GitHub 게시 모드에서만 publisher를 실행해 PR 코멘트를 게시한다.** 권장 경로는
-   `REVIEWER=claude`로 로컬 publisher를 직접 실행하는 것이다 (`REVIEW_JSON`은 step
-   0의 scratch 경로):
+8. **GitHub 게시 모드에서만 publisher를 실행해 PR 코멘트를 게시한다.**
+   `REVIEWER=claude`로 로컬 publisher를 실행한다 (`REVIEW_JSON`은 step 0의 scratch 경로):
 
    ```bash
    REVIEW_JSON="$REVIEW_JSON" \
@@ -229,24 +221,6 @@ Procedure:
    REVIEWER=claude \
    bash .github/scripts/publish-codex-review.sh
    ```
-
-   GitHub Actions가 게시까지 맡게 하고 싶다면 publish-only 워크플로우를
-   dispatch한다 (현재 `reviewer` input이 없어 default `codex` 라벨로 게시됨):
-
-   ```bash
-   REVIEW_JSON_BASE64="$(base64 < "$REVIEW_JSON" | tr -d '\n')"
-   gh workflow run codex-review-publish.yml \
-     --repo Bombom-Team/client \
-     --ref <default-branch> \
-     -f pr_number=<pr-number> \
-     -f head_sha=<head-sha> \
-     -f review_json_base64="$REVIEW_JSON_BASE64" \
-     -f source_workspace="$PWD"
-   ```
-
-   The publish-only workflow must not call OpenAI, must not use
-   `OPENAI_API_KEY`, and must only decode the local structured review result
-   and run `.github/scripts/publish-codex-review.sh`.
 
 9. If inline publishing fails because of invalid positions or paths, retry once
    with `comments: []` so the summary is still posted. The shared publisher
@@ -327,20 +301,15 @@ Common failures:
 - Inline review failed then body-only fallback: likely invalid `path`, line, or
   range. Ensure `absolute_file_path` is normalized to repo-relative path before
   publishing. The publisher performs this normalization automatically.
-- publish-only workflow가 reviewer 라벨을 codex로 표시: 의도된 동작.
-  현재 `codex-review-publish.yml`은 `reviewer` input이 없어 default `codex`로 게시된다.
-  Claude 라벨로 게시하려면 로컬 publisher (`REVIEWER=claude`) 경로를 사용한다.
 
 ## Verification
 
-publisher / publish-only workflow / SKILL 수정 시 최소 검증:
+publisher / SKILL 수정 시 최소 검증:
 
 ```bash
 bash -n .github/scripts/publish-codex-review.sh
-ruby -e 'require "yaml"; YAML.load_file(".github/workflows/codex-review-publish.yml"); puts "yaml ok"'
 git diff --check
-rg -n "REQUEST_CHANGES" .github/scripts/publish-codex-review.sh \
-  .github/workflows/codex-review-publish.yml
+rg -n "REQUEST_CHANGES" .github/scripts/publish-codex-review.sh
 ```
 
 `REQUEST_CHANGES`는 절대 등장하면 안 된다. `APPROVE`는 publisher의 조건부 로직과
