@@ -428,7 +428,7 @@ type GetChallengesParams = operations['getChallenges']['parameters']['query'];
     `.github/workflows/`를 읽어 확인합니다. Stylelint가 포함되지 않았다면 스타일 변경 시
     Stylelint 결과를 따로 확인합니다.
 - 코드 스타일은 개인 취향이 아닌 공통 규칙을 따릅니다.
-- import 순서는 workspace ESLint 설정(`web/.eslintrc.cjs` 등)의 `import/order`를 따릅니다.
+- import 순서는 workspace ESLint 설정(`web/.eslintrc.cjs` 등)의 `import/order`(maeil-mail은 `import-x/order`)를 따릅니다.
   순서를 직접 판단하지 않고 lint 결과를 따릅니다.
 
 ---
