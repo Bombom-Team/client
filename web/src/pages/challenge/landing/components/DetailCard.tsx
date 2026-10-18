@@ -106,8 +106,7 @@ const FeatureTitle = styled.h3`
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t7Bold};
-  font-weight: 400;
+  font: ${({ theme }) => theme.fonts.t7Regular};
   line-height: 2;
 `;
 

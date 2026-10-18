@@ -134,6 +134,5 @@ const ApplyButton = styled(Button)`
   padding: 10px 16px;
   border-radius: 10px;
 
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t5SemiBold};
 `;

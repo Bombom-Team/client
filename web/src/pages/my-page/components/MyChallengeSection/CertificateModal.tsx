@@ -85,7 +85,6 @@ const DownloadButton = styled(Button)`
   border: none;
   border-radius: 8px;
 
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t3SemiBold};
   white-space: nowrap;
 `;

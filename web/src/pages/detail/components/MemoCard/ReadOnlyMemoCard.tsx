@@ -121,8 +121,7 @@ const ArticleTitle = styled.h3<{ disabled: boolean }>`
 
   color: ${({ theme, disabled }) =>
     disabled ? theme.colors.disabledText : theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t6SemiBold};
 `;
 
 const DeleteText = styled.span`

@@ -75,9 +75,7 @@ const StreakModalContent = ({
         )}
       </WeekWrapper>
       <Description>챌린지 기록이 꾸준히 쌓이고 있어요.</Description>
-      <EncouragementText isMobile={isMobile}>
-        {encouragementMessage}
-      </EncouragementText>
+      <EncouragementText>{encouragementMessage}</EncouragementText>
       <ButtonWrapper>
         <ConfirmButton onClick={onClose}>
           뉴스레터 마저 읽으러 가기
@@ -144,7 +142,6 @@ const Title = styled.h2`
 const Subtitle = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t7Bold};
-  font-weight: 700;
 `;
 
 const FlameWrapper = styled.div<{ isMobile: boolean }>`
@@ -193,8 +190,7 @@ const DayColumn = styled.div`
 const DayLabel = styled.span<{ isHighlighted: boolean }>`
   color: ${({ theme, isHighlighted }) =>
     isHighlighted ? theme.colors.primaryBomBom : theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t3Bold};
 `;
 
 const DayCheckBox = styled.div<{
@@ -274,11 +270,9 @@ const Description = styled.p`
   line-height: 1.6;
 `;
 
-const EncouragementText = styled.p<{ isMobile: boolean }>`
+const EncouragementText = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.t6Regular : theme.fonts.t6Bold};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t6SemiBold};
 `;
 
 const ButtonWrapper = styled.div`

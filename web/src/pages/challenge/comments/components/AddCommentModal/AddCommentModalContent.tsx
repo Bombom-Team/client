@@ -233,8 +233,7 @@ const TipTitleWrapper = styled.div`
 
 const TipTitle = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t5SemiBold};
 `;
 
 const TipList = styled.ul`

@@ -154,8 +154,7 @@ const NewsletterName = styled.h3`
   overflow: hidden;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t6SemiBold};
   white-space: nowrap;
 
   text-overflow: ellipsis;

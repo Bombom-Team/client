@@ -65,8 +65,7 @@ const FooterHeader = styled.div`
 
 const Title = styled.p`
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const NoticeList = styled.ul`

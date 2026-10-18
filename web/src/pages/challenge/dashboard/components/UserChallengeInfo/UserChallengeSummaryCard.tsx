@@ -157,8 +157,7 @@ const StreakCount = styled.div<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.white};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.t6Regular : theme.fonts.t7Bold};
-  font-weight: 700;
+    isMobile ? theme.fonts.t6Bold : theme.fonts.t7Bold};
   line-height: 1;
 
   transform: translate(-50%, -50%);

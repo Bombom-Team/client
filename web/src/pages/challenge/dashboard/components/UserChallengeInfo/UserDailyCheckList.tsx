@@ -108,8 +108,7 @@ const CountBadge = styled.div`
 
   background: ${({ theme }) => theme.colors.primaryInfo};
   color: ${({ theme }) => theme.colors.primaryBomBom};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t3SemiBold};
 `;
 
 const List = styled.div`
