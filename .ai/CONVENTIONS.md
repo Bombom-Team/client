@@ -88,8 +88,7 @@ React Native JS code(`app/app/`, `app/components/` 등)는 prebuild의 영향을
 `app/`의 React Native code에는 자동으로 적용하지 않습니다. `app/` 작업은
 app/AGENTS.md와 가장 가까운 기존 code pattern을 먼저 따릅니다.
 
-규칙은 `web/` 코드의 실제 준수율을 기준으로 정리했습니다(2026-10-18 측정,
-[처리표](../docs/ai-conventions-inventory.md#6-컨벤션-실측-결과)). `admin/`·`maeil-mail/`에서
+규칙은 `web/` 코드의 실제 준수율을 기준으로 정리했습니다(2026-10-18 측정). `admin/`·`maeil-mail/`에서
 같은 영역의 인접 code가 이 절과 다르면, 다른 점을 확인한 뒤 인접 code를 따릅니다.
 
 다른 문서에서 이 규칙을 인용할 때는 절 번호 대신 절 제목 링크를 사용합니다.

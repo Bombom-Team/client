@@ -52,7 +52,7 @@ Claude 리뷰의 게시 정책(COMMENT, 조건부 APPROVE, `ALLOW_APPROVE`)은 s
 [CONVENTIONS.md의 Frontend coding standards](../.ai/CONVENTIONS.md#frontend-coding-standards)를 수정합니다.
 
 초기 리뷰 규칙과 오탐 목록은 `woowacourse-teams/2025-bom-bom` PR 코멘트 2,100여 개를
-분석해 작성했습니다. 정비 이력은 [처리표](../docs/ai-conventions-inventory.md)에 있습니다.
+분석해 작성했습니다.
 
 ## 4. 알아두면 좋은 점
 
