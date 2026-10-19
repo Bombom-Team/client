@@ -130,6 +130,18 @@ AI agent가 이 저장소에서 안전하고 효율적으로 작업하는 방법
 - 제품 동작, API·data contract, authorization·security, 또는 작업 범위를 실질적으로
   바꾸는 판단이 필요할 때만 방향을 확인합니다.
 
+### 의존성과 도구 설정
+
+- 새 library·dependency는 사용자와 설계를 상의하면서 직접 정한 것만 설치합니다. 그 밖에는
+  설치하지 않고 이미 설치된 dependency와 저장소의 기존 구현으로 해결합니다.
+- dependency 추가·삭제·버전 변경과 ESLint·Prettier·Stylelint·TypeScript·build 설정 변경은
+  사용자가 직접 지시한 경우에만 합니다. 오류가 나거나 작업에 방해된다는 이유로 바꾸지 않습니다.
+  - 규칙을 끄는 주석(`eslint-disable`, `stylelint-disable`, `@ts-ignore`, `@ts-expect-error`)으로
+    오류를 피하는 것도 같은 기준을 적용합니다.
+  - 의존성이나 설정 때문에 막히면 작업을 멈추고 원인과 선택지를 알린 뒤 지시를 받습니다.
+- `node_modules` 안의 파일(설치된 외부 library code)은 어떤 경우에도 수정하지 않습니다.
+  `pnpm patch`, `patch-package` 등으로 외부 library code를 고치는 것도 금지합니다.
+
 ### Generated files
 
 - `.gen.ts` 파일은 직접 수정하지 않습니다.
@@ -162,6 +174,7 @@ API를 새로 호출하거나 요청·응답 타입을 바꾸는 작업은 타�
 | 기존 test가 있는 기능 변경 | 변경한 workspace의 `lint`와 `type-check`, 해당 기능의 focused test를 실행합니다. |
 | UI 또는 사용자 흐름 변경 | 변경한 workspace의 `lint`와 `type-check`를 실행하고, 대상 흐름의 E2E test가 있으면 실행합니다. E2E test가 없으면 해당 흐름을 직접 확인합니다. |
 | API, TanStack Query, authorization, routing 변경 | 변경한 workspace의 `lint`와 `type-check`, 관련 focused test를 실행하고 request·response type과 소비 code를 확인합니다. |
+| Dependency 또는 lint·TypeScript·build 설정 변경 | 변경한 workspace의 `lint`와 `type-check`를 실행합니다. 이어서 새 git worktree에 변경을 옮기고(`git diff HEAD \| git -C <worktree> apply`), 해당 workspace CI workflow(`.github/workflows/`)의 install 단계를 그대로 실행한 뒤 `lint`와 `type-check`를 다시 실행합니다. 끝나면 worktree를 삭제합니다. CI가 workspace 의존성만 설치하면 로컬 전체 설치에서 보이던 package가 없을 수 있기 때문입니다. |
 | Configuration, script, CI 변경 | configuration syntax를 확인하고, 변경한 command 또는 build를 안전한 범위에서 실행합니다. |
 | Generated output 변경 | generator command를 실행하고 생성된 diff를 검토합니다. |
 | 여러 workspace 변경 | 변경한 각 workspace에 적용되는 위 검증을 실행합니다. |
