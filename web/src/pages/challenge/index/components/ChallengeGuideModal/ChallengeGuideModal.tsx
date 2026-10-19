@@ -1,6 +1,5 @@
-import { Button, Modal, useDevice } from '@bombom/shared/ui-web';
+import { Button, Modal, useDevice, Checkbox } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Checkbox from '@/components/Checkbox/Checkbox';
 import { useChallengeGuideModal } from '@/pages/challenge/index/hooks/useChallengeGuideModal';
 
 interface ChallengeGuideModalProps {

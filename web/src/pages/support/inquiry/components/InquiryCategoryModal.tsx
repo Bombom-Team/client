@@ -1,9 +1,8 @@
-import { Button, Modal, useDevice } from '@bombom/shared/ui-web';
+import { Button, Modal, useDevice, Checkbox } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { queries } from '@/apis/queries';
-import Checkbox from '@/components/Checkbox/Checkbox';
 import type { Device } from '@bombom/shared/ui-web';
 import type { Ref } from 'react';
 

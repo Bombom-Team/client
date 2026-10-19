@@ -1,9 +1,9 @@
+import { Accordion } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo, useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
-import Accordion from '@/components/Accordion/Accordion';
 import { useIntersectionTrigger } from '@/hooks/useIntersectionTrigger';
 import FaqCategoryFilter from '@/pages/support/components/FaqCategoryFilter';
 import type { FaqCategoryType } from '@/types/faq';

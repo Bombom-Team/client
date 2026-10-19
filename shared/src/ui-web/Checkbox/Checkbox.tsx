@@ -1,16 +1,21 @@
 import styled from '@emotion/styled';
+import type { AppTheme } from '../../core/theme';
 import type { ChangeEvent, PropsWithChildren } from 'react';
+
+type ColorKey = keyof AppTheme['colors'];
 
 interface CheckboxProps {
   id: string;
   checked: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  color?: ColorKey;
 }
 
 const Checkbox = ({
   id,
   checked,
   onChange,
+  color = 'primaryBomBom',
   children,
 }: PropsWithChildren<CheckboxProps>) => {
   return (
@@ -20,9 +25,10 @@ const Checkbox = ({
         type="checkbox"
         checked={checked}
         onChange={onChange}
+        color={color}
       />
       <CheckboxLabel htmlFor={id} checked={checked}>
-        <CheckboxSquare checked={checked}>
+        <CheckboxSquare checked={checked} color={color}>
           {checked && <CheckMark>✓</CheckMark>}
         </CheckboxSquare>
         {children}
@@ -38,7 +44,7 @@ const CheckboxWrapper = styled.div`
   align-items: center;
 `;
 
-const HiddenCheckbox = styled.input`
+const HiddenCheckbox = styled.input<{ color: ColorKey }>`
   position: absolute;
   width: 1px;
   height: 1px;
@@ -51,7 +57,7 @@ const HiddenCheckbox = styled.input`
   pointer-events: none;
 
   &:focus-visible + label {
-    outline: 2px solid ${({ theme }) => theme.colors.primaryMaeilMail};
+    outline: 2px solid ${({ theme, color }) => theme.colors[color]};
     outline-offset: 2px;
   }
 `;
@@ -65,20 +71,20 @@ const CheckboxLabel = styled.label<{ checked: boolean }>`
   user-select: none;
 `;
 
-const CheckboxSquare = styled.div<{ checked: boolean }>`
+const CheckboxSquare = styled.div<{ checked: boolean; color: ColorKey }>`
   width: 20px;
   height: 20px;
   border: 2px solid
-    ${({ theme, checked }) =>
-      checked ? theme.colors.primaryMaeilMail : theme.colors.stroke};
+    ${({ theme, checked, color }) =>
+      checked ? theme.colors[color] : theme.colors.stroke};
   border-radius: 4px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ theme, checked }) =>
-    checked ? theme.colors.primaryMaeilMail : theme.colors.white};
+  background-color: ${({ theme, checked, color }) =>
+    checked ? theme.colors[color] : theme.colors.white};
 
   transition: all 0.2s ease;
 `;

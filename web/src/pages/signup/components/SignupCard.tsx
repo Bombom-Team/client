@@ -1,9 +1,8 @@
-import { useDevice } from '@bombom/shared/ui-web';
+import { useDevice, Checkbox } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useSearch } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { useSignupMutation } from '../hooks/useSignupMutation';
-import Checkbox from '@/components/Checkbox/Checkbox';
 import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
 import InputField from '@/components/InputField/InputField';
 import Tooltip from '@/components/Tooltip/Tooltip';

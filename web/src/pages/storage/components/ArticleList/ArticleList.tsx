@@ -1,8 +1,7 @@
-import { useModal, useDevice } from '@bombom/shared/ui-web';
+import { useModal, useDevice, Checkbox } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import ArticleDeleteModal from '../ArticleDeleteModal/ArticleDeleteModal';
-import Checkbox from '@/components/Checkbox/Checkbox';
 import ArticleCard from '@/pages/today/components/ArticleCard/ArticleCard';
 import type { Article } from '@/types/articles';
 import type { Device } from '@bombom/shared/ui-web';

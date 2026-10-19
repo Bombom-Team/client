@@ -1,7 +1,6 @@
-import { Text, Button } from '@bombom/shared/ui-web';
+import { Text, Button, Checkbox } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import Checkbox from '@/components/Checkbox/Checkbox';
 import type { Track } from '../../types/subscribeNewsletters';
 
 const TRACKS: { value: Track; label: string }[] = [
