@@ -1,7 +1,7 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
-import { useDevice } from '@/hooks/useDevice';
 import { getDisplayDays } from '@/pages/challenge/utils/streak';
 
 const STREAK_FREEZE_IMAGE_SRC = '/assets/png/streak-freeze.png';

@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { Toast } from '@bombom/shared/ui-web';
 import { ThemeProvider } from '@emotion/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -8,7 +9,6 @@ import {
   Outlet,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import Toast from '@/components/Toast/Toast';
 import { AuthProvider } from '@/contexts/AuthContext';
 import GoogleAnalyticsTracker from '@/libs/googleAnalytics/GoogleAnalyticsTracker';
 import { useReferrerTracking } from '@/libs/googleAnalytics/useReferrerTracking';

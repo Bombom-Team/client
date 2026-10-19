@@ -1,10 +1,7 @@
 import { theme } from '@bombom/shared';
+import { Flex, useModal, Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import Flex from '@/components/Flex';
-import useModal from '@/components/Modal/useModal';
-import Text from '@/components/Text';
-import { useDevice } from '@/hooks/useDevice';
 import QRCodeModal from '@/pages/recommend/components/QRCodeModal/QRCodeModal';
 import { downloadApp } from '@/utils/downloadApp';
 import type { StoreType } from '@/pages/recommend/components/PromotionBanner/PromotionBanner.types';

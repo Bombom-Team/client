@@ -1,4 +1,4 @@
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 export const getResponsiveValue = (
   device: Device,

@@ -1,7 +1,6 @@
+import { addWebViewMessageListener, isWebView } from '@bombom/shared/ui-web';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { addWebViewMessageListener } from './webview.utils';
-import { isWebView } from '@/utils/device';
 import type { RNToWebMessage } from '@bombom/shared';
 
 export const useWebViewRouting = () => {

@@ -1,9 +1,8 @@
+import { Button, useModal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import useModal from '@/components/Modal/useModal';
 import InquiryCategoryModal from '@/pages/support/inquiry/components/InquiryCategoryModal';
 import InquiryRoomList from '@/pages/support/inquiry/components/InquiryRoomList/InquiryRoomList';
 import { useInquiryRoomCreateMutation } from '@/pages/support/inquiry/hooks/useInquiryRoomCreateMutation';

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
-import type { Device } from '@/hooks/useDevice';
 import type { Nav } from '@/types/nav';
+import type { Device } from '@bombom/shared/ui-web';
 import CompassIcon from '#/assets/svg/compass.svg';
 import MailIcon from '#/assets/svg/mail.svg';
 import PenIcon from '#/assets/svg/pen.svg';

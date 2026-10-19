@@ -1,12 +1,9 @@
+import { Button, Modal, useModal, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 /* eslint-disable import/named */
 import { captureMessage } from '@sentry/react';
 /* eslint-enable import/named */
 import { useEffect } from 'react';
-import Button from '@/components/Button/Button';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 
 const SUPPORT_URL = 'https://e0pq0.channel.io/';
 

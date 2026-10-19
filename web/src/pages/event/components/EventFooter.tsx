@@ -1,6 +1,7 @@
 import { theme } from '@bombom/shared';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useDevice, type Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const NOTICE = [

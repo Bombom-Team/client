@@ -1,4 +1,5 @@
 import { ApiError } from '@bombom/shared/apis';
+import { ChevronIcon, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import {
   useInfiniteQuery,
@@ -10,8 +11,6 @@ import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { INQUIRY_ROOMS_QUERY_KEY } from '@/apis/inquiry/inquiry.query';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
-import ChevronIcon from '@/components/icons/ChevronIcon';
-import { useDevice } from '@/hooks/useDevice';
 import { useIntersectionTrigger } from '@/hooks/useIntersectionTrigger';
 import InquiryMessageBubble from '@/pages/support/inquiry/components/InquiryMessageBubble';
 import InquiryMessageDateDivider from '@/pages/support/inquiry/components/InquiryMessageDateDivider';

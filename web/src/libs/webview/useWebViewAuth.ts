@@ -1,3 +1,8 @@
+import {
+  addWebViewMessageListener,
+  sendMessageToRN,
+  isWebView,
+} from '@bombom/shared/ui-web';
 import { logger } from '@bombom/shared/utils';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
@@ -5,9 +10,7 @@ import {
   captureNativeLoginError,
   getWebViewLoginFailureReason,
 } from './nativeLoginError';
-import { addWebViewMessageListener, sendMessageToRN } from './webview.utils';
 import { postAppleLogin, postGoogleLogin } from '@/apis/auth/auth.api';
-import { isWebView } from '@/utils/device';
 import type { NativeLoginErrorStage } from './nativeLoginError';
 import type { RNToWebMessage } from '@bombom/shared/webview';
 

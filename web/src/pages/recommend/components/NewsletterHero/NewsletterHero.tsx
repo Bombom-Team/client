@@ -1,11 +1,9 @@
+import { useDevice, sendMessageToRN, isWebView } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import SlideCardList from '../SlideCardList/SlideCardList';
 import { useAuth } from '@/contexts/AuthContext';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
 import logo from '#/assets/avif/logo.avif';
 
 const NewsletterHero = () => {

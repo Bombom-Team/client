@@ -1,10 +1,10 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import MobileMainHeader from '@/components/Header/MobileMainHeader';
 import PCHeader from '@/components/Header/PCHeader';
-import { useDevice } from '@/hooks/useDevice';
 import BlogFooter from '@/pages/blog/components/BlogFooter';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 export const Route = createFileRoute('/blog')({
   component: BlogLayout,

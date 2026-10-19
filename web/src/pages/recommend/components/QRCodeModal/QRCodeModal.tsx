@@ -1,6 +1,5 @@
+import { Flex, Modal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
-import Modal from '@/components/Modal/Modal';
 import type { StoreType } from '../PromotionBanner/PromotionBanner.types';
 import appStoreQRCodeIcon from '#/assets/avif/app_store_qr_code.avif';
 import playStoreQRCodeIcon from '#/assets/avif/play_store_qr_code.avif';

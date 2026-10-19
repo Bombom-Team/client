@@ -1,7 +1,7 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Container } from '../ChallengeApplyModal';
-import { useDevice } from '@/hooks/useDevice';
 
 const LoadingModal = () => {
   const device = useDevice();

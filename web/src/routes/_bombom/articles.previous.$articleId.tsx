@@ -1,13 +1,11 @@
 import { theme } from '@bombom/shared';
+import { Button, ChevronIcon, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute, useRouterState } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
-import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useAuth } from '@/contexts/AuthContext';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
 import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';

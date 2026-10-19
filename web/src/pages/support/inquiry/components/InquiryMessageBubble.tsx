@@ -1,10 +1,9 @@
 import { theme } from '@bombom/shared';
+import { Modal, useModal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import InquiryMessageDeleteModal from './InquiryMessageDeleteModal';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
 import { formatTimeToKorean } from '@/utils/date';
 import type { InquiryMessage } from '@/types/inquiry';
 import CloseIcon from '#/assets/svg/close.svg';

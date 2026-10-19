@@ -1,6 +1,6 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import ReviewCard from './ReviewCard';
-import { useDevice } from '@/hooks/useDevice';
 import type { Review } from '../types/review';
 import type { PropsWithChildren } from 'react';
 

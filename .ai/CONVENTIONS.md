@@ -24,7 +24,7 @@ UI를 새로 만들기 전에 해당 workspace의 공통 컴포넌트에서 쓸 
 
 | workspace | 공통 컴포넌트 위치 | 사용 방식 |
 | --- | --- | --- |
-| `web/` | `web/src/components/` | `shared/src/ui-web`을 재-export하는 컴포넌트·훅·유틸도 web의 재-export 경로(`@/components/...`, `@/hooks/...`, `@/utils/...`)로 import합니다 |
+| `web/` | `@bombom/shared/ui-web`, `web/src/components/` | shared 컴포넌트·훅·유틸을 직접 import합니다. web에 재-export 파일을 만들지 않습니다 |
 | `maeil-mail/` | `@bombom/shared/ui-web`, `maeil-mail/src/components/` | shared 컴포넌트를 직접 import합니다 |
 | `admin/` | `admin/src/components/` | `@bombom/shared/ui-web`을 사용하지 않는 별도 구성입니다 |
 | `app/` | `app/components/` | `@bombom/shared/ui-web`은 웹 전용이라 lint가 import를 막습니다 |
@@ -199,7 +199,7 @@ const Container = styled.div``;
   화면 표시용 문자열 가공이나 UI 분기까지 맡지 않게 합니다. 표시 포맷 전용 훅처럼
   그 역할을 위해 만든 훅은 예외입니다.
 - Modal은 부모가 `useModal()`로 `modalRef`, `isOpen`, `openModal`, `closeModal`을
-  만들고 `@/components/Modal/Modal`에 전달합니다. `XxxModal` 래퍼는 이 값을 props로
+  만들고 `Modal`에 전달합니다. `XxxModal` 래퍼는 이 값을 props로
   받습니다.
 
 ```tsx

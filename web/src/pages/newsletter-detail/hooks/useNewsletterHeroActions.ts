@@ -1,9 +1,8 @@
+import { sendMessageToRN, isWebView } from '@bombom/shared/ui-web';
 import { useNavigate } from '@tanstack/react-router';
 import { openSubscribeLink } from '../utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
 import { openExternalLink } from '@/utils/externalLink';
 import type { GetNewsletterWithDetailResponse } from '@/apis/newsletters/newsletters.api';
 

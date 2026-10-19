@@ -1,6 +1,6 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import { CardList, Container, LettersWrapper } from './ArticleCardList';
 import ArticleCardSkeleton from '../ArticleCard/ArticleCardSkeleton';
-import { useDevice } from '@/hooks/useDevice';
 import { ARTICLE_SIZE } from '@/pages/storage/constants/article';
 
 const ArticleCardListSkeleton = () => {

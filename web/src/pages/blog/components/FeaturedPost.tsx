@@ -1,12 +1,10 @@
+import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
-import Flex from '@/components/Flex';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import Text from '@/components/Text';
-import { useDevice } from '@/hooks/useDevice';
 import { createSlug } from '@/utils/url';
-import type { Device } from '@/hooks/useDevice';
 import type { PostListItem } from '@/pages/blog/types/post';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface FeaturedPostProps {
   post: PostListItem;

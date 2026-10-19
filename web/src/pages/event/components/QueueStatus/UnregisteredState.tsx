@@ -1,7 +1,5 @@
+import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
-import Text from '@/components/Text';
-import { useDevice } from '@/hooks/useDevice';
 
 const UnregisteredState = () => {
   const device = useDevice();

@@ -1,3 +1,4 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import {
   Container,
   ModalButton,
@@ -5,7 +6,6 @@ import {
   ModalDescription,
   ModalTitle,
 } from '../ChallengeApplyModal';
-import { useDevice } from '@/hooks/useDevice';
 
 interface AlreadyStartedModalProps {
   closeModal: () => void;

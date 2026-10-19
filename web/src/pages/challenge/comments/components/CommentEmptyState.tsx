@@ -1,5 +1,5 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useDevice } from '@/hooks/useDevice';
 import type { PropsWithChildren } from 'react';
 
 const CommentEmptyState = ({ children }: PropsWithChildren) => {

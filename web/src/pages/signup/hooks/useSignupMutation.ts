@@ -1,9 +1,9 @@
+import { sendMessageToRN } from '@bombom/shared/ui-web';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { postSignup } from '@/apis/auth/auth.api';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { markSignUpPending } from '@/libs/googleAnalytics/retentionEvents';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { GUIDE_MAIL_STORAGE_KEY } from '@/pages/guide-detail/constants/guideMail';
 import { formatDate } from '@/utils/date';
 import { createStorage } from '@/utils/localStorage';

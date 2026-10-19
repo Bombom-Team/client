@@ -1,10 +1,9 @@
+import { Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { Suspense } from 'react';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
-import { useDevice } from '@/hooks/useDevice';
 import useScrollProgress from '@/hooks/useScrollProgress';
 import FloatingPostPanel from '@/pages/blog/components/PostDetail/FloatingPostPanel';
 import PostDetail from '@/pages/blog/components/PostDetail/PostDetail';
@@ -12,7 +11,7 @@ import PostDetailSkeleton from '@/pages/blog/components/PostDetail/PostDetailSke
 import ShareButton from '@/pages/blog/components/PostDetail/ShareButton';
 import { createBlogPostingSchema } from '@/pages/blog/utils/seo';
 import { createSlug } from '@/utils/url';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 export const Route = createFileRoute('/blog/post/$postId/$title')({
   loader: async ({ context, params }) => {

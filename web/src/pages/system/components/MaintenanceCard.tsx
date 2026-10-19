@@ -1,6 +1,6 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import { useDevice } from '@/hooks/useDevice';
 import maintenanceBom from '#/assets/avif/maintenance-bom.avif';
 
 const MaintenanceCard = () => {

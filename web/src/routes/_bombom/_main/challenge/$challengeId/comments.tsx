@@ -1,12 +1,9 @@
+import { Button, Modal, useModal, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 import AddCommentModalContent from '@/pages/challenge/comments/components/AddCommentModal/AddCommentModalContent';
 import CommentTimeline from '@/pages/challenge/comments/components/CommentTimeline';
 import MobileDateFilter from '@/pages/challenge/comments/components/DateFilter/MobileDateFilter';

@@ -1,3 +1,4 @@
+import { Button, Flex, Modal, useModal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import { Suspense } from 'react';
@@ -7,10 +8,6 @@ import CardContainer from '../CardContainer';
 import { Applicant, CardDetailButton, DDay, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
-import Button from '@/components/Button/Button';
-import Flex from '@/components/Flex';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import useChallengeApplyMutation from '@/pages/challenge/index/hooks/useChallengeApplyMutation';

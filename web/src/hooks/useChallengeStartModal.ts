@@ -1,8 +1,8 @@
+import { useModal } from '@bombom/shared/ui-web';
 import { useQuery } from '@tanstack/react-query';
 import { useMatch, useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
-import useModal from '@/components/Modal/useModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import {

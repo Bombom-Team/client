@@ -1,12 +1,11 @@
+import { useModal, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import ArticleDeleteModal from '../ArticleDeleteModal/ArticleDeleteModal';
 import Checkbox from '@/components/Checkbox/Checkbox';
-import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 import ArticleCard from '@/pages/today/components/ArticleCard/ArticleCard';
-import type { Device } from '@/hooks/useDevice';
 import type { Article } from '@/types/articles';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface ArticleListProps {
   articles: Article[];

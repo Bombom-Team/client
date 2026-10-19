@@ -1,10 +1,9 @@
+import { Flex, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Certificate } from '../types/certificate';
-import Flex from '@/components/Flex';
-import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
 import type { CertificateMedal } from '../types/certificate';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import certificateFrameBronze from '#/assets/avif/certificate-frame-bronze.avif';
 import certificateFrameGold from '#/assets/avif/certificate-frame-gold.avif';
 import certificateFrameSilver from '#/assets/avif/certificate-frame-silver.avif';

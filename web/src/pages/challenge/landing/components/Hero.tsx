@@ -1,12 +1,15 @@
 import { theme } from '@bombom/shared';
+import {
+  Button,
+  Flex,
+  useDevice,
+  useScrollVisible,
+} from '@bombom/shared/ui-web';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import Button from '@/components/Button/Button';
-import Flex from '@/components/Flex';
 import ArrowIcon from '@/components/icons/ArrowIcon';
-import { useDevice, type Device } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
+import type { Device } from '@bombom/shared/ui-web';
 import type { MouseEvent } from 'react';
 
 interface HeroProps {

@@ -1,8 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useAnnounceBar } from '../../hooks/useAnnounceBar';
 import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
-import { useDevice } from '@/hooks/useDevice';
 
 interface NoticeAnnounceBarProps {
   noticeId: number;

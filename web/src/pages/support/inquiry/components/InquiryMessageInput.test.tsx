@@ -1,5 +1,6 @@
 import { ApiError } from '@bombom/shared/apis';
 import { theme } from '@bombom/shared/theme';
+import { toast } from '@bombom/shared/ui-web';
 import { ThemeProvider } from '@emotion/react';
 import {
   MutationCache,
@@ -9,7 +10,6 @@ import {
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import InquiryMessageInput from './InquiryMessageInput';
 import { uploadInquiryImages } from '@/apis/inquiry/inquiry.api';
-import { toast } from '@/components/Toast/utils/toastActions';
 
 jest.mock('@bombom/shared/env', () => ({
   ENV: { baseUrl: 'https://api.example.com' },
@@ -19,13 +19,10 @@ jest.mock('@/apis/inquiry/inquiry.api', () => ({
   uploadInquiryImages: jest.fn(),
 }));
 
-jest.mock('@/components/Toast/utils/toastActions', () => ({
+jest.mock('@bombom/shared/ui-web', () => ({
+  ...jest.requireActual('@bombom/shared/ui-web'),
   toast: { error: jest.fn() },
 }));
-
-jest.mock('@/components/Button/Button', () =>
-  jest.requireActual('../../../../../../shared/src/ui-web/Button/Button'),
-);
 
 const renderInput = () => {
   const onMutationError = jest.fn();

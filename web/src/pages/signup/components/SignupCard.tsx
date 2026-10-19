@@ -1,3 +1,4 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useSearch } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
@@ -6,11 +7,10 @@ import Checkbox from '@/components/Checkbox/Checkbox';
 import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
 import InputField from '@/components/InputField/InputField';
 import Tooltip from '@/components/Tooltip/Tooltip';
-import { useDevice } from '@/hooks/useDevice';
 import { useSessionStorageState } from '@/hooks/useSessionStorageState';
 import { useUserInfoValidation } from '@/hooks/useUserInfoValidation';
 import type { Gender } from './SignupCard.types';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import type { ChangeEvent, FormEvent } from 'react';
 import HelpIcon from '#/assets/svg/help.svg';
 

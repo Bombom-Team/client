@@ -1,3 +1,4 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import NewsletterSubscribeGuide from './components/NewsletterSubscribeGuide';
@@ -7,7 +8,6 @@ import SimilarNewslettersSection from './components/SimilarNewslettersSection';
 import { useNewsletterHeroActions } from './hooks/useNewsletterHeroActions';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
-import Button from '@/components/Button/Button';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { useSearchParamState } from '@/hooks/useSearchParamState';

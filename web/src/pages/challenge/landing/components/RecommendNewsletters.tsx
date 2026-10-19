@@ -1,11 +1,11 @@
+import { useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import NewsletterCard from './NewsletterCard';
 import { newslettersQueries } from '@/apis/newsletters/newsletters.query';
-import { useDevice, type Device } from '@/hooks/useDevice';
-import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
+import type { Device } from '@bombom/shared/ui-web';
 
 const NEWSLETTER_RECOMMENDATIONS = [
   '뉴닉',

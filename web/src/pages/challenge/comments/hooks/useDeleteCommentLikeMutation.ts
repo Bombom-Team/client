@@ -1,7 +1,7 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteChallengeCommentLike } from '@/apis/challenge/challenge.api';
 import { queries } from '@/apis/queries';
-import { toast } from '@/components/Toast/utils/toastActions';
 
 interface UseDeleteCommentLikeMutationParams {
   challengeId: number;

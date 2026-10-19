@@ -1,9 +1,11 @@
+import {
+  Button,
+  useDevice,
+  sendMessageToRN,
+  isWebView,
+} from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import Button from '../Button/Button';
-import { useDevice } from '@/hooks/useDevice';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
 import LockIcon from '#/assets/svg/lock.svg';
 
 const RequireLoginCard = () => {

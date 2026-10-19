@@ -1,8 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import Badge from '@/components/Badge/Badge';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
 import type { components } from '@/types/openapi';
 import type { ComponentProps } from 'react';

@@ -1,9 +1,8 @@
+import { Button, useDevice } from '@bombom/shared/ui-web';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import { useDevice } from '@/hooks/useDevice';
 import { getDisplayDays } from '@/pages/challenge/utils/streak';
 
 const STREAK_IMAGE_SRC = '/assets/png/streak.png';

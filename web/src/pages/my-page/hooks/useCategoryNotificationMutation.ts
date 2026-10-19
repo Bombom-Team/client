@@ -1,7 +1,7 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchNotificationSetting } from '@/apis/notification/notification.api';
 import { queries } from '@/apis/queries';
-import { toast } from '@/components/Toast/utils/toastActions';
 
 interface UseCategoryNotificationMutationParams {
   memberId: number;

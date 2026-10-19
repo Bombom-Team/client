@@ -1,9 +1,7 @@
 import { theme } from '@bombom/shared';
+import { Flex, Text, useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
-import Text from '@/components/Text';
-import { useDevice, type Device } from '@/hooks/useDevice';
-import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
+import type { Device } from '@bombom/shared/ui-web';
 import type { RefObject } from 'react';
 import CalendarIcon from '#/assets/svg/calendar.svg';
 import CheckIcon from '#/assets/svg/check-circle.svg';

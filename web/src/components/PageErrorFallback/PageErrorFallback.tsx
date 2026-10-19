@@ -1,6 +1,5 @@
+import { Button, Text } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '../Button/Button';
-import Text from '../Text/Text';
 
 const PageErrorFallback = () => {
   const handleRefresh = () => {

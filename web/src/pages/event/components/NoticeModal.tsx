@@ -1,6 +1,6 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { EVENT_STATUS_TYPE } from '../constants/constants';
-import Button from '@/components/Button/Button';
 import type { EventErrorStatus } from '../types/event';
 
 interface NoticeModalProps {

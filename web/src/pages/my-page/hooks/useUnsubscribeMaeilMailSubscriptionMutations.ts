@@ -1,7 +1,7 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
 import { deleteNativeMaeilMailSubscription } from '@/apis/subscriptions/subscriptions.api';
-import { toast } from '@/components/Toast/utils/toastActions';
 
 export const useUnsubscribeMaeilMailSubscriptionMutations = () => {
   const queryClient = useQueryClient();

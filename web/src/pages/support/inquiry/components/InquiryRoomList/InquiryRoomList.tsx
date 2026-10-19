@@ -1,6 +1,6 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import MobileInquiryRoomList from './MobileInquiryRoomList';
 import PCInquiryRoomList from './PCInquiryRoomList';
-import { useDevice } from '@/hooks/useDevice';
 import type { InquiryCategory } from '@/types/inquiry';
 
 interface InquiryRoomListProps {

@@ -1,5 +1,5 @@
 import { APP_STORE_LINK, PLAY_STORE_LINK } from '@bombom/shared';
-import { getDeviceInWebApp } from './device';
+import { getDeviceInWebApp } from '@bombom/shared/ui-web';
 
 export const downloadApp = () => {
   const device = getDeviceInWebApp();

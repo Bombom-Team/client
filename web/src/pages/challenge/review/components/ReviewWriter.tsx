@@ -1,12 +1,10 @@
+import { Button, Flex, Text } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { REVIEW_VALIDATION } from '../constants/review';
 import useAddReviewMutation from '../hooks/useAddReviewMutation';
 import useUpdateReviewMutation from '../hooks/useUpdateReviewMutation';
-import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
-import Flex from '@/components/Flex/Flex';
-import Text from '@/components/Text/Text';
 import type { ChangeEvent } from 'react';
 
 type ReviewWriterProps = {

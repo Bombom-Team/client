@@ -1,3 +1,4 @@
+import { Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
@@ -8,8 +9,6 @@ import QuotationSelector from './QuotationSelector';
 import { COMMENT_VALIDATION } from '../../constants/comment';
 import useAddChallengeCommentMutation from '../../hooks/useAddChallengeCommentMutation';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import { useDevice } from '@/hooks/useDevice';
 import { useChallengeActivityStartTracking } from '@/pages/challenge/hooks/useChallengeActivityStartTracking';
 import type { CandidateArticles } from '../../types/comment';
 import SparklesIcon from '#/assets/svg/sparkles.svg';

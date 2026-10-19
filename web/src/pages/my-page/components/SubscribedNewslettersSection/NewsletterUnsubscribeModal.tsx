@@ -1,6 +1,5 @@
+import { Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '@/components/Button/Button';
-import { useDevice } from '@/hooks/useDevice';
 
 const MODAL_CONTENT = {
   UNSUBSCRIBE: {

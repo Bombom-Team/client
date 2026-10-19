@@ -1,6 +1,6 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import CommentCardSkeleton from './CommentCardSkeleton';
-import { useDevice } from '@/hooks/useDevice';
 
 interface CommentSkeletonListProps {
   count: number;
