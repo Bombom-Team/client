@@ -259,7 +259,12 @@ const Container = styled.div<{ isPC: boolean }>`
 ### API 호출 및 데이터 처리
 
 - API 호출은 공용 fetcher를 사용합니다.
-- 요청 / 응답 타입은 OpenAPI로 생성된 타입을 기준으로 합니다.
+- 요청 / 응답 타입은 OpenAPI로 생성된 타입을 사용합니다. web·admin·maeil-mail 모두 같습니다.
+- 백엔드 API가 아직 머지되지 않았거나 만들어지지 않아 생성 타입이 없을 때만, 백엔드와 맞춘
+  스펙으로 타입을 직접 선언합니다.
+  - 해당 `*.api.ts`에 `{Fn}Params`, `{Fn}Response`로 선언하고, 바로 위에
+    `// TODO({issue_key}): 백엔드 배포 후 OpenAPI 타입으로 교체` 주석을 남깁니다.
+  - 백엔드가 배포되어 생성 타입이 생기면 직접 선언한 타입을 지우고 생성 타입으로 바꿉니다.
 - 예외: OpenAPI spec 밖의 외부 계약(admin의 GitHub API·Lambda·Supabase adapter 등)은
   해당 adapter를 사용합니다([architecture.md](../docs/architecture.md#adminmaeil-mail-경계)).
 - API 파일은 도메인 단위로 관리합니다.
@@ -428,7 +433,7 @@ type GetChallengesParams = operations['getChallenges']['parameters']['query'];
     `.github/workflows/`를 읽어 확인합니다. Stylelint가 포함되지 않았다면 스타일 변경 시
     Stylelint 결과를 따로 확인합니다.
 - 코드 스타일은 개인 취향이 아닌 공통 규칙을 따릅니다.
-- import 순서는 workspace ESLint 설정(`web/.eslintrc.cjs` 등)의 `import/order`를 따릅니다.
+- import 순서는 workspace ESLint 설정(`web/.eslintrc.cjs` 등)의 `import/order`(maeil-mail은 `import-x/order`)를 따릅니다.
   순서를 직접 판단하지 않고 lint 결과를 따릅니다.
 
 ---

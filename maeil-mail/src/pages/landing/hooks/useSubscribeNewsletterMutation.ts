@@ -1,7 +1,7 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
 import { postNativeMaeilMailSubscription } from '@/apis/subscriptions/subscriptions.api';
-import { toast } from '@bombom/shared/ui-web';
 import type { SubscribeTrack } from '../types/subscribe';
 
 interface UseSubscribeNewsletterMutationParams {

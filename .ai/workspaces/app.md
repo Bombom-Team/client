@@ -10,7 +10,7 @@
 ## App code conventions
 
 현재 `app/`에는 별도 coding standards 문서가 없습니다. React Native code에는
-`web/`용 Frontend Coding Standards를 적용하지 않으며, 저장소 공통 정책과 작업 대상에
+[Frontend coding standards](../CONVENTIONS.md#frontend-coding-standards)를 적용하지 않으며, 저장소 공통 정책과 작업 대상에
 직접 관련된 기존 구현을 참고합니다.
 
 ## Expo / WebView 작업 원칙
@@ -25,7 +25,7 @@ WebView 앱의 역할, native 설정 변경 순서, prebuild 재생성 주의사
 - 패키지 매니저: pnpm
 - 명령 실행 위치: 저장소 루트
 - 명령 형식: pnpm --filter app <script>
-- 주요 source directory: app/, components/, apis/, contexts/, hooks/, constants/, utils/
+- 주요 source directory: app/app/, app/components/, app/apis/, app/contexts/, app/hooks/, app/constants/, app/utils/
 
 ## Commands
 
