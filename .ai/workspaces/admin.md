@@ -31,3 +31,8 @@ script 목록을 옮겨 적지 않습니다.
 | `admin/src/routeTree.gen.ts` | `admin/vite.config.ts`의 TanStack Router plugin |
 
 직접 수정하지 않고 생성 주체로만 갱신합니다. Generated output이 바뀌면 diff를 검토합니다.
+
+## Tests
+
+admin은 Vitest를 쓰며 `admin/vitest.config.ts`의 `include`에 맞는 파일만 실행합니다. 테스트 파일은
+대상 파일 옆이 아니라 `admin/tests/`에 둡니다.
