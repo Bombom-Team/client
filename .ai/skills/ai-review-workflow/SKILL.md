@@ -211,10 +211,11 @@ Procedure:
    ("Review Output Format").
 
 8. **GitHub 게시 모드에서만 publisher를 실행해 PR 코멘트를 게시한다.**
-   `REVIEWER=claude`로 로컬 publisher를 실행한다 (`REVIEW_JSON`은 step 0의 scratch 경로):
+   `REVIEWER=claude`로 로컬 publisher를 실행한다. 셸 변수는 다음 명령으로 이어지지 않을 수
+   있으므로 `REVIEW_JSON`에 step 0과 같은 경로를 직접 지정한다:
 
    ```bash
-   REVIEW_JSON="$REVIEW_JSON" \
+   REVIEW_JSON="${TMPDIR:-/tmp}/codex-review-output.json" \
    REPOSITORY=Bombom-Team/client \
    PR_NUMBER=<pr-number> \
    HEAD_SHA=<head-sha> \
