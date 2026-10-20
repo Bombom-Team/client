@@ -1,10 +1,10 @@
 import { theme } from '@bombom/shared/theme';
+import { Accordion } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { queries } from '@/apis/queries';
-import Accordion from '@/components/Accordion/Accordion';
 import Badge from '@/components/Badge/Badge';
 import EmptyNoticeCard from '@/pages/notice/components/EmptyNoticeCard';
 import NoticeContent from '@/pages/notice/components/NoticeContent';

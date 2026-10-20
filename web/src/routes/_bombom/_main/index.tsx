@@ -1,16 +1,15 @@
+import { useDevice, isWebView } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import ReadingKingLeaderboard from '../../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
 import { queries } from '@/apis/queries';
-import { useDevice } from '@/hooks/useDevice';
 import AppInstallSection from '@/pages/recommend/components/AppInstallSection/AppInstallSection';
 import ChallengeSection from '@/pages/recommend/components/ChallengeSection/ChallengeSection';
 import NoticeAnnounceBar from '@/pages/recommend/components/NoticeAnnounceBar/NoticeAnnounceBar';
 import SlideCardList from '@/pages/recommend/components/SlideCardList/SlideCardList';
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
-import { isWebView } from '@/utils/device';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 export const Route = createFileRoute('/_bombom/_main/')({
   head: () => ({

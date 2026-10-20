@@ -1,14 +1,16 @@
+import {
+  Flex,
+  useDevice,
+  sendMessageToRN,
+  isWebView,
+} from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import EventNotificationButton from './EventNotificationButton';
 import { formatEventDateTime } from '../utils/date';
-import Flex from '@/components/Flex';
 import { useAuth } from '@/contexts/AuthContext';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface EventHeroProps {
   onApply: () => void;

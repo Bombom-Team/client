@@ -1,7 +1,7 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { useDevice } from '@/hooks/useDevice';
 import LandingAppDownload from '@/pages/landing/components/LandingAppDownload';
 import LandingFeatures from '@/pages/landing/components/LandingFeatures';
 import LandingGetStartedCTA from '@/pages/landing/components/LandingGetStartedCTA';
@@ -10,7 +10,7 @@ import LandingHero from '@/pages/landing/components/LandingHero';
 import LandingPopularNewsletters from '@/pages/landing/components/LandingPopularNewsletters';
 import PainPoint from '@/pages/landing/components/PainPoint';
 import { landingVisitedStorage } from '@/pages/landing/constants/localStorage';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 export const Route = createFileRoute('/landing')({
   head: () => ({

@@ -1,3 +1,4 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import AlreadyAppliedModal from './modals/AlreadyAppliedModal';
@@ -7,7 +8,6 @@ import ErrorModal from './modals/ErrorModal';
 import LoginRequiredModal from './modals/LoginRequiredModal';
 import SubscribeRequiredModal from './modals/SubscribeRequiredModal';
 import { challengeQueries } from '@/apis/challenge/challenge.query';
-import Button from '@/components/Button/Button';
 import type { Challenge } from '@/apis/challenge/challenge.api';
 
 interface ChallengeApplyModalProps {

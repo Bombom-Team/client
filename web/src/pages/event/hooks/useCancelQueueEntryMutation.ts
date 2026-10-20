@@ -1,7 +1,7 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteMyQueueEntry } from '@/apis/event/event.api';
 import { queries } from '@/apis/queries';
-import { toast } from '@/components/Toast/utils/toastActions';
 import type { CouponName } from '@/apis/event/event.api';
 
 interface UseCancelQueueEntryMutationParams {

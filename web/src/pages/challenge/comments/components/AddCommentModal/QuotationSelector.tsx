@@ -1,7 +1,6 @@
+import { Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { MAX_QUOTATION_LINE } from '../../constants/comment';
-import Button from '@/components/Button/Button';
-import { useDevice } from '@/hooks/useDevice';
 
 interface Quotation {
   highlightId: number;

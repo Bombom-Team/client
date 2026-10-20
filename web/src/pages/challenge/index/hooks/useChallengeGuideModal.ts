@@ -1,5 +1,5 @@
+import { useModal } from '@bombom/shared/ui-web';
 import { useEffect, useState } from 'react';
-import useModal from '@/components/Modal/useModal';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
 import { openExternalLink } from '@/utils/externalLink';
 

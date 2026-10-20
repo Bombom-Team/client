@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import {
   Container,
@@ -8,7 +9,6 @@ import {
 } from './ReadingStatusCard';
 import ProgressWithLabelSkeleton from '@/components/ProgressWithLabel/ProgressWithLabelSkeleton';
 import Skeleton from '@/components/Skeleton/Skeleton';
-import { useDevice } from '@/hooks/useDevice';
 import StatusIcon from '#/assets/svg/reading-status.svg';
 
 const ReadingStatusCardSkeleton = () => {

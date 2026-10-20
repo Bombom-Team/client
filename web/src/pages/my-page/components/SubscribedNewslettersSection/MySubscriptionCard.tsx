@@ -1,6 +1,6 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { openExternalLink } from '@/utils/externalLink';
 import type { SubscribedNewsletterResponse } from '@/apis/members/members.api';

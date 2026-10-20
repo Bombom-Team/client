@@ -1,8 +1,7 @@
 import { theme } from '@bombom/shared';
+import { Flex, Text } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { getDday } from '../../utils/date';
-import Flex from '@/components/Flex/Flex';
-import Text from '@/components/Text';
 import type { ComponentProps } from 'react';
 import PersonIcon from '#/assets/svg/person.svg';
 

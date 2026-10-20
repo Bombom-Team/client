@@ -1,5 +1,5 @@
+import { Flex } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
 import LinkIcon from '#/assets/svg/link.svg';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
 

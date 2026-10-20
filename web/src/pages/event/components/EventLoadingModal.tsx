@@ -1,5 +1,5 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '@/components/Button/Button';
 
 interface EventLoadingModalProps {
   closeModal: () => void;

@@ -1,10 +1,8 @@
 import { theme } from '@bombom/shared';
+import { Button, toast, isWebView } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useRef, useState } from 'react';
-import Button from '@/components/Button/Button';
-import { toast } from '@/components/Toast/utils/toastActions';
 import { useInquiryImagesUploadMutation } from '@/pages/support/inquiry/hooks/useInquiryImagesUploadMutation';
-import { isWebView } from '@/utils/device';
 import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 

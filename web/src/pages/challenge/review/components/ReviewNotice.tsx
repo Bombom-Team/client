@@ -1,7 +1,5 @@
+import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex/Flex';
-import Text from '@/components/Text/Text';
-import { useDevice } from '@/hooks/useDevice';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const ReviewNotice = () => {

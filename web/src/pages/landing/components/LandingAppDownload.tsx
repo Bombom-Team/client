@@ -1,13 +1,11 @@
 import { theme } from '@bombom/shared';
+import { Button, useModal, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import Button from '@/components/Button/Button';
-import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 import QRCodeModal from '@/pages/recommend/components/QRCodeModal/QRCodeModal';
 import { downloadApp } from '@/utils/downloadApp';
-import type { Device } from '@/hooks/useDevice';
 import type { StoreType } from '@/pages/recommend/components/PromotionBanner/PromotionBanner.types';
+import type { Device } from '@bombom/shared/ui-web';
 import playStoreIcon from '#/assets/avif/play_store.avif';
 import AppStoreIcon from '#/assets/svg/apple.svg';
 

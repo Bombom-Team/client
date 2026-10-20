@@ -1,3 +1,4 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchArticleRead } from '@/apis/articles/articles.api';
 import {
@@ -5,7 +6,6 @@ import {
   updateArticleReadStatus,
 } from '@/apis/articles/articles.cache';
 import { queries } from '@/apis/queries';
-import { toast } from '@/components/Toast/utils/toastActions';
 import { trackRetentionEvent } from '@/libs/googleAnalytics/retentionEvents';
 
 interface UseArticleAsReadMutationParams {

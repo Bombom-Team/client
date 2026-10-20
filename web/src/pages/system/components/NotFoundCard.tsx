@@ -1,7 +1,6 @@
+import { Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import Button from '@/components/Button/Button';
-import { useDevice } from '@/hooks/useDevice';
 
 const NotFoundCard = () => {
   const navigate = useNavigate();

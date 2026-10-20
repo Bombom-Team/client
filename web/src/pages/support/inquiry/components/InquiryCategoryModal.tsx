@@ -1,12 +1,9 @@
+import { Button, Modal, useDevice, Checkbox } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import Checkbox from '@/components/Checkbox/Checkbox';
-import Modal from '@/components/Modal/Modal';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import type { Ref } from 'react';
 
 interface InquiryCategoryModalProps {

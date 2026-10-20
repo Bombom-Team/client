@@ -1,11 +1,11 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import BannerNavigation from './BannerNavigation';
 import LandingIntroBanner from '../LandingIntroBanner/LandingIntroBanner';
 import BlogOpenBanner from '../PromotionBanner/BlogOpenBanner';
 import { Carousel } from '@/components/Carousel/Carousel';
 import CarouselNavButtons from '@/components/Carousel/CarouselNavButtons';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 const SlideCardList = () => {
   const device = useDevice();

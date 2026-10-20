@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
+import { Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Text from '@/components/Text';
-import { useDevice, type Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import AppleIcon from '#/assets/svg/apple.svg';
 import GoogleIcon from '#/assets/svg/google.svg';
 import PointerIcon from '#/assets/svg/pointer.svg';

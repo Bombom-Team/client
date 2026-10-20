@@ -1,3 +1,4 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import { useNavigate } from '@tanstack/react-router';
 import {
   Container,
@@ -6,7 +7,6 @@ import {
   ModalDescription,
   ModalTitle,
 } from '../ChallengeApplyModal';
-import { useDevice } from '@/hooks/useDevice';
 
 interface LoginRequiredModalProps {
   closeModal: () => void;

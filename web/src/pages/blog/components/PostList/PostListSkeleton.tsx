@@ -1,6 +1,6 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import PostCardSkeleton from './PostCardSkeleton';
 import { CardWrapper } from './PostList';
-import { useDevice } from '@/hooks/useDevice';
 
 const BLOG_POST_SKELETON_COUNT = 6;
 

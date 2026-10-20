@@ -1,8 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import UserChallengeOverview from './UserChallengeOverview';
 import UserChallengeSummaryCard from './UserChallengeSummaryCard';
 import UserDailyCheckList from './UserDailyCheckList';
-import { useDevice } from '@/hooks/useDevice';
 import { compareDates } from '@/utils/date';
 import type {
   GetChallengeInfoResponse,

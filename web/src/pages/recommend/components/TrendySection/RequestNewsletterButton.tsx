@@ -1,7 +1,6 @@
-import { Flex, Button } from '@bombom/shared/ui-web';
+import { Flex, Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { NEWSLETTER_REQUEST_FORM_URL } from '../../constants/newsletter';
-import { useDevice } from '@/hooks/useDevice';
 import { openExternalLink } from '@/utils/externalLink';
 import MailIcon from '#/assets/svg/mail.svg';
 import PlusIcon from '#/assets/svg/plus.svg';

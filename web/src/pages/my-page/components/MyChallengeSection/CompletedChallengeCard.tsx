@@ -1,9 +1,8 @@
+import { Button, useModal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import CertificateModal from './CertificateModal';
 import { MEDAL_COLORS } from '../../constants/challenge';
-import Button from '@/components/Button/Button';
-import useModal from '@/components/Modal/useModal';
 import type { MyCompletedChallenge } from '@/apis/members/members.api';
 import type { KeyboardEvent, MouseEvent } from 'react';
 import MedalBronzeIcon from '#/assets/svg/medal-bronze.svg';

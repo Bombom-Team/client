@@ -1,8 +1,8 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { sendInquiryMessage } from '@/apis/inquiry/inquiry.api';
 import { INQUIRY_ROOMS_QUERY_KEY } from '@/apis/inquiry/inquiry.query';
 import { queries } from '@/apis/queries';
-import { toast } from '@/components/Toast/utils/toastActions';
 import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
 
 interface UseInquiryMessageSendMutationParams {

@@ -1,6 +1,6 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation } from '@tanstack/react-query';
 import { postCaptcha } from '@/apis/event/event.api';
-import { toast } from '@/components/Toast/utils/toastActions';
 
 export const useValidateCaptchaMutation = () => {
   return useMutation({

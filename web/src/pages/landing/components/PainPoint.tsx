@@ -1,9 +1,8 @@
+import { useScrollVisible, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useScrollVisible } from '../hooks/useScrollVisible';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import { useDevice } from '@/hooks/useDevice';
 import type { AlignType } from '../types/position';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import type { Theme } from '@emotion/react';
 import mails from '#/assets/avif/mails.avif';
 

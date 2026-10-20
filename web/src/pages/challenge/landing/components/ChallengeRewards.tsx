@@ -1,8 +1,6 @@
+import { Flex, Text, useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
-import Text from '@/components/Text';
-import { useDevice, type Device } from '@/hooks/useDevice';
-import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
+import type { Device } from '@bombom/shared/ui-web';
 import certificationImage from '#/assets/avif/certification.avif';
 import bronzeBadge from '#/assets/avif/challenge-bronze-medal.avif';
 import goldBadge from '#/assets/avif/challenge-gold-medal.avif';

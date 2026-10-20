@@ -1,3 +1,4 @@
+import { Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import {
@@ -6,8 +7,6 @@ import {
 } from '../../constants/comment';
 import CommentEditor from '../AddCommentModal/CommentEditor';
 import Badge from '@/components/Badge/Badge';
-import Button from '@/components/Button/Button';
-import { useDevice } from '@/hooks/useDevice';
 
 interface EditCommentModalContentProps {
   closeModal: () => void;

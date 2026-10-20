@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import {
   attendanceButtonStyles,
@@ -10,8 +11,7 @@ import {
 } from './PetCard';
 import ProgressBarSkeleton from '../ProgressBar/ProgressBarSkeleton';
 import Skeleton from '../Skeleton/Skeleton';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import PetIcon from '#/assets/svg/pet.svg';
 
 const PetCardSkeleton = () => {

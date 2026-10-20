@@ -1,7 +1,7 @@
+import { useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { type ReactNode } from 'react';
-import { useDevice, type Device } from '@/hooks/useDevice';
-import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
+import type { Device } from '@bombom/shared/ui-web';
 
 export type ImagePosition = 'left' | 'right';
 export interface DetailCardProps {

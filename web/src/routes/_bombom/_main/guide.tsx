@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared/theme';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
-import { useDevice } from '@/hooks/useDevice';
 import {
   GUIDE_MAIL_STORAGE_KEY,
   GUIDE_MAILS,
@@ -9,8 +9,8 @@ import {
 import QuickMenu from '@/pages/storage/components/QuickMenu/QuickMenu';
 import ArticleCard from '@/pages/today/components/ArticleCard/ArticleCard';
 import { createStorage } from '@/utils/localStorage';
-import type { Device } from '@/hooks/useDevice';
 import type { LocalGuideMail } from '@/types/guide';
+import type { Device } from '@bombom/shared/ui-web';
 import HelpIcon from '#/assets/svg/help.svg';
 
 export const Route = createFileRoute('/_bombom/_main/guide')({

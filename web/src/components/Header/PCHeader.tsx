@@ -1,4 +1,4 @@
-import { ServiceSwitcher } from '@bombom/shared/ui-web';
+import { ServiceSwitcher, Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
@@ -6,7 +6,6 @@ import HeaderLogo from './HeaderLogo';
 import HeaderNavButtons from './HeaderNavButtons';
 import HeaderProfile from './HeaderProfile';
 import LoginButton from './LoginButton';
-import Button from '../Button/Button';
 import UnreadDot from '../UnreadDot/UnreadDot';
 import { queries } from '@/apis/queries';
 import { useAuth } from '@/contexts/AuthContext';

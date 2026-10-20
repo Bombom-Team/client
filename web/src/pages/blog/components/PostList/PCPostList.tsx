@@ -1,3 +1,4 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { usePostsPagination } from '../../hooks/usePostsPagination';
@@ -6,7 +7,6 @@ import PostCard from '../PostCard';
 import { CardWrapper } from './PostList';
 import { queries } from '@/apis/queries';
 import Pagination from '@/components/Pagination/Pagination';
-import { useDevice } from '@/hooks/useDevice';
 
 const PCPostList = () => {
   const device = useDevice();

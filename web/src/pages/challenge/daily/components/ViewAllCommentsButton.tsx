@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useRef, useState } from 'react';
-import Button from '@/components/Button/Button';
 import Tooltip from '@/components/Tooltip/Tooltip';
 import LockIcon from '#/assets/svg/lock.svg';
 

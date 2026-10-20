@@ -1,6 +1,6 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import ChallengeCard from './ChallengeCard/ChallengeCard';
-import { useDevice } from '@/hooks/useDevice';
 import type { Challenge } from '@/apis/challenge/challenge.api';
 
 interface ChallengeSectionProps {

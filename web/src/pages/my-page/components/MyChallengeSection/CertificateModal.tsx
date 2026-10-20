@@ -1,10 +1,8 @@
-import { useDevice } from '@bombom/shared/ui-web';
+import { useDevice, Button, Modal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createPortal } from 'react-dom';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import Modal from '@/components/Modal/Modal';
 import Certificate from '@/pages/challenge/certification/components/Certificate';
 import { useCertificateDownload } from '@/pages/challenge/certification/hooks/useCertificateDownload';
 import type { Ref } from 'react';

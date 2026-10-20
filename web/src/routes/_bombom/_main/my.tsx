@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { useDevice, isWebView } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import {
   createFileRoute,
@@ -8,10 +9,8 @@ import {
 } from '@tanstack/react-router';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
-import { useDevice } from '@/hooks/useDevice';
 import ReadingCompanionCard from '@/pages/my-page/components/ReadingCompanionCard';
-import { isWebView } from '@/utils/device';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import type { CSSObject, Theme } from '@emotion/react';
 import AvatarIcon from '#/assets/svg/avatar.svg';
 

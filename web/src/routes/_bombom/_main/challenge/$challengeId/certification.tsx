@@ -1,9 +1,8 @@
+import { Button, Flex } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import Flex from '@/components/Flex';
 import Certificate from '@/pages/challenge/certification/components/Certificate';
 import { useCertificateDownload } from '@/pages/challenge/certification/hooks/useCertificateDownload';
 

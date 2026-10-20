@@ -1,7 +1,7 @@
 import { monthlyReportQueries } from '@bombom/shared/apis/monthlyreport';
+import { Text } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import Text from '@/components/Text';
 import KidStarIcon from '#/assets/svg/kid-star.svg';
 import MenuBookIcon from '#/assets/svg/menu-book.svg';
 

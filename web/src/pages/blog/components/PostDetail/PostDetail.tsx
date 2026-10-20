@@ -1,11 +1,11 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import PostContent from './PostContent';
 import PostMetadata from './PostMetadata';
 import { getReadingTimeMinutes } from '../../utils/tiptap';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
 import type { PostDetail } from '@/pages/blog/types/post';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface PostDetailProps {
   post: PostDetail;

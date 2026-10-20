@@ -1,10 +1,10 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import LoginCard from '../pages/login/components/LoginCard';
 import LoginFailureModal from '../pages/login/components/LoginFailureModal';
-import { useDevice } from '@/hooks/useDevice';
 import { getResponsiveValue } from '@/utils/responsive';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 export const Route = createFileRoute('/login')({
   validateSearch: (search: Record<string, unknown>): { redirect?: string } => ({

@@ -1,6 +1,9 @@
+import {
+  addWebViewMessageListener,
+  sendMessageToRN,
+  isWebView,
+} from '@bombom/shared/ui-web';
 import { useEffect, useState } from 'react';
-import { addWebViewMessageListener, sendMessageToRN } from './webview.utils';
-import { isWebView } from '@/utils/device';
 import type { RNToWebMessage } from '@bombom/shared/webview';
 
 export const useWebViewNotificationPermission = () => {

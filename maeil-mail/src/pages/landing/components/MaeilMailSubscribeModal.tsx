@@ -1,9 +1,8 @@
-import { Flex, Modal, Text, useDevice } from '@bombom/shared/ui-web';
+import { Flex, Modal, Text, useDevice, Checkbox } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { TRACKS } from '../constants/subscribe';
 import { useSubscribeNewsletterMutation } from '../hooks/useSubscribeNewsletterMutation';
-import Checkbox from '@/components/Checkbox/Checkbox';
 import type { SubscribeTrack } from '../types/subscribe';
 import type { Device } from '@bombom/shared/ui-web';
 import type { Ref } from 'react';
@@ -79,6 +78,7 @@ const MaeilMailSubscribeModal = ({
                 id={`track-${value}`}
                 checked={selectedTracks.includes(value)}
                 onChange={() => toggleTrack(value)}
+                color="primaryMaeilMail"
               >
                 {label}
               </Checkbox>

@@ -1,14 +1,12 @@
+import { Button, toast, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { useState, type ChangeEvent } from 'react';
 import { postWithdraw } from '@/apis/auth/auth.api';
 import { patchMemberInfo } from '@/apis/members/members.api';
-import Button from '@/components/Button/Button';
 import Divider from '@/components/Divider/Divider';
 import InputField from '@/components/InputField/InputField';
-import { toast } from '@/components/Toast/utils/toastActions';
-import { useDevice } from '@/hooks/useDevice';
 import { useUserInfoValidation } from '@/hooks/useUserInfoValidation';
 import type { Gender } from '@/pages/signup/components/SignupCard.types';
 import type { UserInfo } from '@/types/me';

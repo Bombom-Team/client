@@ -1,7 +1,6 @@
+import { Flex, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import InstagramIcon from '#/assets/svg/instagram.svg';
 import YoutubeIcon from '#/assets/svg/youtube.svg';
 

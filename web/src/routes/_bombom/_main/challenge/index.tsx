@@ -1,9 +1,9 @@
 import { theme } from '@bombom/shared';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
-import { useDevice } from '@/hooks/useDevice';
 import ChallengeListSection from '@/pages/challenge/index/components/ChallengeListSection';
 import TrophyIcon from '#/assets/svg/trophy.svg';
 
