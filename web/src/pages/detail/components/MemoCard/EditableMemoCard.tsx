@@ -21,7 +21,8 @@ const EditableMemoCard = ({
   onRemoveButtonClick,
   onMemoChange,
 }: EditableMemoCardProps) => {
-  const isMobile = useDevice() !== 'pc';
+  const device = useDevice();
+  const isMobile = device !== 'pc';
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [localMemo, setLocalMemo] = useState(memo);
   const debouncedMemo = useDebouncedValue(localMemo, 500);
@@ -179,8 +180,7 @@ const NoteMemo = styled.textarea<{ isMobile: boolean }>`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme, isMobile }) =>
-    isMobile ? theme.fonts.t6Regular : theme.fonts.t5Regular};
-  ${({ isMobile }) => isMobile && 'font-size: max(16px, 1rem);'}
+    isMobile ? theme.fonts.t8Regular : theme.fonts.t5Regular};
 
   resize: none;
   transition: all 0.2s ease-in-out;

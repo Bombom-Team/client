@@ -2,7 +2,7 @@ import { theme } from '@bombom/shared/theme';
 import { ChevronIcon, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useId } from 'react';
-import { useMemoPanelViewport } from './useMemoPanelViewport';
+import { useMemoPanelViewport } from '../../hooks/useMemoPanelViewport';
 import EditableMemoCard from '../MemoCard/EditableMemoCard';
 import type { Highlight } from '../../types/highlight';
 import CloseIcon from '#/assets/svg/close.svg';
@@ -25,7 +25,8 @@ const MemoPanel = ({
   onCloseButtonClick,
   onToggleButtonClick,
 }: MemoPanelProps) => {
-  const isPC = useDevice() === 'pc';
+  const device = useDevice();
+  const isPC = device === 'pc';
   const notesId = useId();
   const viewportStyle = useMemoPanelViewport();
 

@@ -1,14 +1,14 @@
 import { act, renderHook } from '@testing-library/react';
 import { useMemoPanelViewport } from './useMemoPanelViewport';
 
-const originalViewport = Object.getOwnPropertyDescriptor(
+const ORIGINAL_VIEWPORT = Object.getOwnPropertyDescriptor(
   window,
   'visualViewport',
 );
 
 afterEach(() => {
-  if (originalViewport) {
-    Object.defineProperty(window, 'visualViewport', originalViewport);
+  if (ORIGINAL_VIEWPORT) {
+    Object.defineProperty(window, 'visualViewport', ORIGINAL_VIEWPORT);
   } else {
     Reflect.deleteProperty(window, 'visualViewport');
   }
