@@ -1,5 +1,6 @@
 import { Button, sendMessageToRN, isWebView } from '@bombom/shared/ui-web';
 import { useNavigate } from '@tanstack/react-router';
+import { useAuth } from '@/contexts/AuthContext';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 
 interface LoginButtonProps {
@@ -8,6 +9,7 @@ interface LoginButtonProps {
 
 const LoginButton = ({ className }: LoginButtonProps) => {
   const navigate = useNavigate();
+  const { isLoading } = useAuth();
 
   const handleLoginClick = () => {
     if (isWebView())
@@ -28,6 +30,8 @@ const LoginButton = ({ className }: LoginButtonProps) => {
       label: 'Header Login Button',
     });
   };
+
+  if (isLoading) return null;
 
   return (
     <Button className={className} onClick={handleLoginClick}>
