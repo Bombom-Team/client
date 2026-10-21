@@ -1,6 +1,8 @@
 import { theme } from '@bombom/shared/theme';
-import { ChevronIcon } from '@bombom/shared/ui-web';
+import { ChevronIcon, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
+import { useId } from 'react';
+import { useMemoPanelViewport } from './useMemoPanelViewport';
 import EditableMemoCard from '../MemoCard/EditableMemoCard';
 import type { Highlight } from '../../types/highlight';
 import CloseIcon from '#/assets/svg/close.svg';
@@ -23,9 +25,20 @@ const MemoPanel = ({
   onCloseButtonClick,
   onToggleButtonClick,
 }: MemoPanelProps) => {
+  const isPC = useDevice() === 'pc';
+  const notesId = useId();
+  const viewportStyle = useMemoPanelViewport();
+
   return (
-    <Container opened={opened}>
-      <ToggleButton opened={opened} onClick={onToggleButtonClick}>
+    <Container opened={opened} isPC={isPC} style={viewportStyle}>
+      <ToggleButton
+        opened={opened}
+        isPC={isPC}
+        onClick={onToggleButtonClick}
+        aria-label={opened ? '읽기 노트 접기' : '읽기 노트 펼치기'}
+        aria-expanded={opened}
+        aria-controls={notesId}
+      >
         <ChevronIcon
           direction={opened ? 'right' : 'left'}
           width={24}
@@ -34,7 +47,7 @@ const MemoPanel = ({
         />
       </ToggleButton>
 
-      <Header>
+      <Header inert={!opened} aria-hidden={!opened}>
         <HeaderLeft>
           <IconWrapper>
             <MemoIcon
@@ -49,12 +62,12 @@ const MemoPanel = ({
           </HeaderTitleBox>
         </HeaderLeft>
 
-        <CloseButton onClick={onCloseButtonClick}>
+        <CloseButton onClick={onCloseButtonClick} aria-label="읽기 노트 닫기">
           <CloseIcon fill={theme.colors.black} />
         </CloseButton>
       </Header>
 
-      <NotesList>
+      <NotesList id={notesId} inert={!opened} aria-hidden={!opened}>
         {memos.length === 0 ? (
           <EmptyWrapper>
             <EmptyIconWrapper>
@@ -88,14 +101,24 @@ const MemoPanel = ({
 
 export default MemoPanel;
 
-const Container = styled.aside<{ opened: boolean }>`
+const Container = styled.aside<{ opened: boolean; isPC: boolean }>`
+  --memo-header-height: ${({ isPC, theme }) =>
+    isPC
+      ? `calc(${theme.heights.headerPC} + 40px)`
+      : `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`};
+
   position: fixed;
-  top: 0;
+  top: max(var(--memo-header-height), var(--memo-viewport-top, 0px));
   right: 0;
   z-index: ${({ theme }) => theme.zIndex.panel};
-  width: 342px;
-  height: 100%;
-  padding-top: 72px;
+  width: min(342px, 100vw);
+  height: max(
+    0px,
+    calc(
+      var(--memo-viewport-height, 100dvh) + var(--memo-viewport-top, 0px) -
+        max(var(--memo-header-height), var(--memo-viewport-top, 0px))
+    )
+  );
   border-left: 1px solid ${({ theme }) => theme.colors.stroke};
 
   display: flex;
@@ -108,14 +131,16 @@ const Container = styled.aside<{ opened: boolean }>`
   transition: transform 0.3s;
 `;
 
-const ToggleButton = styled.button<{ opened: boolean }>`
+const ToggleButton = styled.button<{ opened: boolean; isPC: boolean }>`
   position: absolute;
-  top: 80vh;
+  top: clamp(40px, 80%, calc(100% - 40px));
   left: -40px;
   width: 40px;
   height: 80px;
   border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 8px 0 0 8px;
+
+  display: ${({ opened, isPC }) => (opened && !isPC ? 'none' : 'block')};
 
   background-color: ${({ theme }) => theme.colors.white};
 
@@ -127,6 +152,7 @@ const Header = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.dividers};
 
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
 `;
@@ -157,11 +183,18 @@ const IconWrapper = styled.div`
 `;
 
 const CloseButton = styled.button`
+  width: 44px;
+  height: 44px;
   padding: 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const NotesList = styled.div`
-  padding: 24px;
+  min-height: 0;
+  padding: 24px 24px calc(24px + ${({ theme }) => theme.safeArea.bottom});
 
   display: flex;
   gap: 16px;
@@ -169,6 +202,7 @@ const NotesList = styled.div`
   flex-direction: column;
 
   overflow-y: auto;
+  overscroll-behavior-y: contain;
 `;
 
 const EmptyWrapper = styled.div`
