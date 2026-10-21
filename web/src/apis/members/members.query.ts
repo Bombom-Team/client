@@ -1,3 +1,4 @@
+import { ApiError } from '@bombom/shared/apis';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import {
   getCategoryStats,
@@ -41,6 +42,13 @@ export const membersQueries = {
     queryOptions({
       queryKey: ['members', 'me', 'profile'],
       queryFn: getUserProfile,
+      retry: (failureCount, error) => {
+        if (error instanceof ApiError && [401, 403, 404].includes(error.status))
+          return false;
+        return failureCount < 1;
+      },
+      retryDelay: 300,
+      retryOnMount: false,
       staleTime: 5 * 60 * 1000, // 5분
       refetchOnWindowFocus: false, // 탭 이동해도 안 튀게
     }),
