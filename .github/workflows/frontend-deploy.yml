@@ -9,6 +9,7 @@ on:
       - 'web/**'
       - 'shared/**'
       - '.github/workflows/frontend-*.yml'
+      - '.nvmrc'
       - 'pnpm-lock.yaml'
       - 'package.json'
   workflow_dispatch:
