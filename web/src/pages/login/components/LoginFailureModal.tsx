@@ -93,9 +93,8 @@ const Container = styled.div<{ isMobile: boolean }>`
   flex-direction: column;
 
   text-align: center;
-
-  overflow-wrap: break-word;
   word-break: keep-all;
+  overflow-wrap: break-word;
 `;
 
 const Title = styled.h2`
@@ -130,7 +129,6 @@ const SupportLink = styled.a`
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t5Regular};
-
   text-decoration: none;
 `;
 

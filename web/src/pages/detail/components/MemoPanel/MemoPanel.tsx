@@ -110,9 +110,11 @@ const Container = styled.aside<{ opened: boolean; isPC: boolean }>`
 
   position: fixed;
   top: max(var(--memo-header-height), var(--memo-viewport-top, 0px));
-  right: 0;
+  right: calc(
+    100% - var(--memo-viewport-width, 100vw) - var(--memo-viewport-left, 0px)
+  );
   z-index: ${({ theme }) => theme.zIndex.panel};
-  width: min(342px, 100vw);
+  width: min(342px, var(--memo-viewport-width, 100vw));
   height: max(
     0px,
     calc(

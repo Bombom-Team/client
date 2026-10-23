@@ -332,6 +332,7 @@ const Header = styled.div<{ isMobile: boolean }>`
       ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`
       : `calc(${theme.heights.headerPC} + 40px)`};
   z-index: ${({ theme }) => theme.zIndex.panel};
+
   padding: 16px 0 12px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.stroke};
 
@@ -416,13 +417,12 @@ const NewMessageButton = styled.button`
   padding: 8px 16px;
   border: none;
   border-radius: 999px;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
 
   background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t4Bold};
 
-  cursor: pointer;
-
   transform: translate(-50%, -50%);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  cursor: pointer;
 `;

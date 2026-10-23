@@ -4,11 +4,15 @@ import type { CSSProperties } from 'react';
 interface MemoPanelViewportStyle extends CSSProperties {
   '--memo-viewport-height'?: string;
   '--memo-viewport-top'?: string;
+  '--memo-viewport-width'?: string;
+  '--memo-viewport-left'?: string;
 }
 
 interface MemoPanelViewport {
   height: number;
   offsetTop: number;
+  width: number;
+  offsetLeft: number;
 }
 
 export const useMemoPanelViewport = () => {
@@ -22,6 +26,8 @@ export const useMemoPanelViewport = () => {
       setViewport({
         height: visualViewport.height,
         offsetTop: visualViewport.offsetTop,
+        width: visualViewport.width,
+        offsetLeft: visualViewport.offsetLeft,
       });
     };
 
@@ -41,6 +47,8 @@ export const useMemoPanelViewport = () => {
         ? {
             '--memo-viewport-height': `${viewport.height}px`,
             '--memo-viewport-top': `${viewport.offsetTop}px`,
+            '--memo-viewport-width': `${viewport.width}px`,
+            '--memo-viewport-left': `${viewport.offsetLeft}px`,
           }
         : {},
     [viewport],
