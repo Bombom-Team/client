@@ -202,13 +202,14 @@ Procedure:
    - **채팅 검토 모드**에서는 여기서 멈추고 findings와 근거를 채팅에 반환한다.
      JSON을 쓰거나 PR 코멘트를 게시하지 않는다.
    - **GitHub 게시 모드**에서는 findings가 0개여도 publisher가
-     `> ✅ 확실하게 수정이 필요한 항목을 찾지 못했습니다.` summary를 자동으로
+     `> ✅ 꼭 고쳐야 할 문제는 찾지 못했습니다.` summary를 자동으로
      채우므로 step 8까지 진행한다.
 
 7. **GitHub 게시 모드에서만** review result를 scratch `$REVIEW_JSON` (step 0,
    레포 밖)에 쓴다. `.github/codex-review-output-schema.json`을 사용한다.
    **레포 루트에 쓰지 않는다.** 본문·inline 형식과 marker는 publisher가 만든다
-   ("Review Output Format").
+   ("Review Output Format"). JSON에 쓰는 문장은 `.ai/review/REVIEW.md`의
+   "문장 작성 기준"을 따르고, 게시 전에 한 번 다시 읽어 어색한 문장을 고친다.
 
 8. **GitHub 게시 모드에서만 publisher를 실행해 PR 코멘트를 게시한다.**
    `REVIEWER=claude`로 로컬 publisher를 실행한다. 셸 변수는 다음 명령으로 이어지지 않을 수
