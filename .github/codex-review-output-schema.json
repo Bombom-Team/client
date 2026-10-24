@@ -7,12 +7,44 @@
       "enum": ["patch is correct", "patch is incorrect"]
     },
     "overall_explanation": {
-      "type": "string"
+      "type": "string",
+      "description": "리뷰 결론을 1~2문장으로 적는다. 확인한 파일 목록, Review Point별 판단, 실행하지 않은 검증은 review_points와 verification에 나눠 적는다."
     },
     "overall_confidence_score": {
       "type": "number",
       "minimum": 0,
       "maximum": 1
+    },
+    "review_points": {
+      "type": "array",
+      "description": "PR 본문 '👀 Review Point'의 항목별 확인 결과. 항목이 없으면 생략한다.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "point": {
+            "type": "string",
+            "description": "Review Point 항목 이름. 짧은 명사구로 적는다."
+          },
+          "result": {
+            "type": "string",
+            "enum": ["ok", "issue", "unverified"],
+            "description": "ok: 이상 없음, issue: finding으로 지적함, unverified: 확인하지 못함"
+          },
+          "note": {
+            "type": "string",
+            "description": "판단 근거 한 문장. 읽은 파일:라인이나 검색 결과를 적는다."
+          }
+        },
+        "required": ["point", "result", "note"]
+      }
+    },
+    "verification": {
+      "type": "array",
+      "description": "확인한 근거, 계산한 값, 확인하지 못한 영역, 실행하지 않은 검증을 한 항목에 한 문장씩 적는다.",
+      "items": {
+        "type": "string"
+      }
     },
     "findings": {
       "type": "array",
@@ -21,10 +53,34 @@
         "additionalProperties": false,
         "properties": {
           "title": {
-            "type": "string"
+            "type": "string",
+            "description": "문제를 한 줄로 요약한다."
           },
           "body": {
-            "type": "string"
+            "type": "string",
+            "description": "무엇이 왜 문제인지 1~3문장으로 적는다. 발생 조건, 영향, 근거, 수정 제안은 아래 필드에 나눠 적는다."
+          },
+          "condition": {
+            "type": "string",
+            "description": "문제가 발생하는 조건 한 문장."
+          },
+          "impact": {
+            "type": "string",
+            "description": "사용자·운영 영향 한 문장."
+          },
+          "evidence": {
+            "type": "array",
+            "description": "근거 위치와 짧은 설명. 예: \"web/src/foo.ts:12 — queryKey에 id가 없음\"",
+            "items": {
+              "type": "string"
+            }
+          },
+          "suggestion": {
+            "type": "array",
+            "description": "구체적인 수정 방법. 대안이 여럿이면 항목을 나눈다.",
+            "items": {
+              "type": "string"
+            }
           },
           "severity": {
             "type": "string",

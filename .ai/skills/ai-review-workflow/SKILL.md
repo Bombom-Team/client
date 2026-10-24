@@ -261,8 +261,9 @@ unless the user explicitly asks.
 실 PR에 mock review를 게시하지 않는다.
 
 1. 임시 mock JSON 작성 (스키마: `.github/codex-review-output-schema.json`):
-   - one `major`
-   - two `minor`
+   - one `major` with `condition`, `impact`, `evidence`, `suggestion`
+   - two `minor`, one of them with `body`만 있는 구 형식
+   - `review_points` with `ok`, `issue`, `unverified` one each, and `verification`
    - optional `previous_issues` with one `resolved` and one `open`
 
 2. 가짜 repo/PR/SHA로 publisher 실행. `gh api` 호출은 실패하지만 그 전에
