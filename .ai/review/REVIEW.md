@@ -47,6 +47,21 @@ CodeRabbit과 `ai-review-workflow` skill이 이 문서를 읽습니다.
 - `''`이나 `0`이 유효한 값인데 `||`로 fallback해 값이 바뀌는 경우
 - API 경로·payload를 바꿨는데 `mocks/handlers/**`가 갱신되지 않은 경우
 
+### UI 레이아웃·반응형
+
+변경 파일만으로는 화면 결과를 판단할 수 없으므로, [근거 기준](#근거-기준)의 렌더링 맥락을
+확인한 뒤 아래 결과가 특정 device·화면 폭에서 생길 때 Major로 지적합니다. 발생 조건
+(device, 화면 폭, 함께 렌더링되는 요소)을 적습니다.
+
+- `position: fixed`·`sticky`, `top`·`height`, `z-index`를 바꿔 같은 route에 함께 렌더링되는
+  다른 고정 요소(헤더, 진행바, 플로팅 툴바, 하단 내비게이션)가 내용이나 조작 요소를 가리는 경우
+- `useDevice()` 분기로 `rem` 기반 theme 토큰을 바꿨는데, 전역 root font-size를 반영한 실제
+  px가 특정 device에서 PR 설명의 의도와 어긋나는 경우. 예: "입력창 16px 이상"이 목적인데
+  mobile에서 16px 미만이 되어 iOS Safari가 화면을 확대하는 경우
+
+Major에 해당하지 않는 화면 결과(가리지 않는 겹침, device별 크기 차이)는 finding으로 만들지
+않고, 계산한 값과 근거를 리뷰 본문 "검증 과정"에 적습니다.
+
 ### 보안·설정
 
 - API base URL, 토큰, secret을 소스에 리터럴로 넣은 경우. 외부 링크 URL은 해당하지 않습니다.
@@ -104,6 +119,12 @@ CodeRabbit과 `ai-review-workflow` skill이 이 문서를 읽습니다.
 - 영향 범위는 PR이 변경한 workspace 안에서만 셉니다. 같은 이름의 훅·컴포넌트가 다른
   workspace에 있어도 같은 구현으로 보지 않습니다. `shared`를 변경했다면 이를 import하는
   workspace까지 확인합니다.
+- 위치·크기·`z-index`·글꼴 토큰·device 분기를 바꾼 UI 변경은 렌더링 맥락까지 확인합니다.
+  - 변경된 컴포넌트를 렌더링하는 route 파일까지 올라가, 같은 화면의 다른 고정 요소와 그
+    `top`·`z-index`를 `파일:라인`으로 비교합니다.
+  - `rem` 값은 workspace의 전역 root font-size로 device별 px를 계산해 적습니다. `web/`은
+    `web/src/styles/reset.ts`의 `html` font-size를 기준으로 합니다.
+  - 브라우저에서 직접 확인하지 않은 화면 결과는 리뷰 본문 "검증 과정"에 남깁니다.
 - 구현을 직접 확인하지 않은 상태에서 Critical로 분류하지 않습니다.
 - finding에는 발생 조건, 사용자·운영 영향, 코드 근거를 적습니다.
 - 확인하지 못한 영역과 실행하지 않은 검증은 리뷰 본문에 남깁니다. finding이 0개라는
