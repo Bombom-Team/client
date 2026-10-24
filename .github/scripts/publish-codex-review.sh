@@ -26,7 +26,7 @@ BODY_ONLY_PAYLOAD_PATH="$OUTPUT_DIR/codex-review-payload-body-only.json"
 if [ ! -s "$REVIEW_JSON" ]; then
   gh pr comment "$PR_NUMBER" \
     --repo "$REPOSITORY" \
-    --body "## ${REVIEWER_LABEL} PR Review\n\n${REVIEWER_LABEL} structured output was not produced. Check the workflow logs."
+    --body "$(printf '## %s PR Review\n\n리뷰 결과(JSON)가 만들어지지 않았습니다. 실행 로그를 확인해 주세요.' "$REVIEWER_LABEL")"
   exit 0
 fi
 
@@ -60,35 +60,65 @@ CRITICAL_COUNT="$(jq '[.findings[] | select(.severity == "critical")] | length' 
 MAJOR_COUNT="$(jq '[.findings[] | select(.severity == "major")] | length' "$REVIEW_JSON")"
 MINOR_COUNT="$(jq '[.findings[] | select(.severity == "minor")] | length' "$REVIEW_JSON")"
 PREVIOUS_ISSUES_COUNT="$(jq '(.previous_issues // []) | length' "$REVIEW_JSON")"
+REVIEW_POINTS_COUNT="$(jq '(.review_points // []) | length' "$REVIEW_JSON")"
+VERIFICATION_COUNT="$(jq '(.verification // []) | length' "$REVIEW_JSON")"
+
+# review body와 inline comment가 함께 쓰는 jq 렌더링 함수
+JQ_HELPERS='
+  def cell: gsub("\\|"; "\\|") | gsub("\r?\n"; " ");
+  def location:
+    .code_location.relative_file_path
+    + ":"
+    + (.code_location.line_range.start | tostring)
+    + (if .code_location.line_range.start != .code_location.line_range.end then "-" + (.code_location.line_range.end | tostring) else "" end);
+  def severity_emoji:
+    if .severity == "critical" then "🚨" elif .severity == "major" then "⚠️" else "📝" end;
+  def severity_name:
+    if .severity == "critical" then "Critical" elif .severity == "major" then "Major" else "Minor" end;
+  def severity_label: severity_emoji + " " + severity_name;
+  def list_field($title; $items):
+    if ($items | length) == 0 then []
+    elif ($items | length) == 1 then ["- **" + $title + "**" + (if ($title | endswith("?")) then " " else ": " end) + $items[0]]
+    else ["- **" + $title + "**"] + ($items | map("  - " + .))
+    end;
+  def detail_lines:
+    (if (.condition // "") != "" then ["- **언제 생기나요?** " + .condition] else [] end)
+    + (if (.impact // "") != "" then ["- **무슨 문제가 생기나요?** " + .impact] else [] end)
+    + list_field("근거"; .evidence // [])
+    + list_field("어떻게 고치나요?"; .suggestion // []);
+'
 
 {
   printf '%s\n' '## 🤖 PR Review'
   printf '%s\n' ''
   if [ "$PREVIOUS_ISSUES_COUNT" != "0" ]; then
-    printf '%s\n' '> 📌 Force-push 후 재리뷰: 이전 리뷰의 미해결 이슈를 추적합니다.'
+    printf '%s\n' '> 📌 다시 리뷰했습니다. 지난 리뷰에서 나온 문제가 고쳐졌는지도 함께 확인했습니다.'
     printf '%s\n' ''
   fi
   if [ "$OVERALL" = "patch is correct" ]; then
-    printf '%s\n' '> ✅ 확실하게 수정이 필요한 항목을 찾지 못했습니다.'
+    printf '%s\n' '> ✅ 꼭 고쳐야 할 문제는 찾지 못했습니다.'
   else
-    printf '%s\n' '> ⚠️ 수정이 필요한 리뷰 코멘트가 있습니다.'
+    printf '%s\n' '> ⚠️ 고쳐야 할 문제가 있습니다. 아래 표와 코드 줄에 단 코멘트를 확인해 주세요.'
   fi
+  printf '%s\n' '>'
+  printf '> 🚨 **%s** Critical · ⚠️ **%s** Major · 📝 **%s** Minor\n' "$CRITICAL_COUNT" "$MAJOR_COUNT" "$MINOR_COUNT"
+  printf '%s\n' '>'
+  printf '%s\n' '> <sub>Critical: 장애·데이터 손실·보안 문제 · Major: 특정 상황에서 생기는 버그 · Minor: 동작은 하지만 고치면 좋은 것</sub>'
   printf '%s\n' ''
-  printf '> %s\n' "$EXPLANATION"
-  printf '%s\n' ''
-  printf '🚨 **%s** Critical · ⚠️ **%s** Major · 📝 **%s** Minor\n' "$CRITICAL_COUNT" "$MAJOR_COUNT" "$MINOR_COUNT"
+  printf '%s\n' '### 요약'
+  printf '%s\n' "$EXPLANATION"
   printf '%s\n' ''
 
   if [ "$PREVIOUS_ISSUES_COUNT" != "0" ]; then
-    printf '%s\n' '### 이전 리뷰 이슈 추적'
-    printf '%s\n' '| ID | 상태 | 심각도 | 파일 | 이슈 |'
+    printf '%s\n' '### 지난 리뷰에서 나온 문제'
+    printf '%s\n' '| ID | 상태 | 심각도 | 위치 | 내용 |'
     printf '%s\n' '|----|------|--------|------|------|'
-    jq -r '
+    jq -r "$JQ_HELPERS"'
       (.previous_issues // [])
       | .[]
       | "| " + .id
         + " | "
-        + (if .status == "resolved" then "✅ 해결" else "❌ 미해결" end)
+        + (if .status == "resolved" then "✅ 고쳐짐" else "❌ 아직 남음" end)
         + " | "
         + .severity
         + " | "
@@ -96,48 +126,66 @@ PREVIOUS_ISSUES_COUNT="$(jq '(.previous_issues // []) | length' "$REVIEW_JSON")"
         + ":"
         + (.line | tostring)
         + " | "
-        + .title
+        + (.title | cell)
         + " |"
     ' "$REVIEW_JSON"
     printf '%s\n' ''
   fi
 
   if [ "$CRITICAL_COUNT" != "0" ] || [ "$MAJOR_COUNT" != "0" ]; then
-    printf '%s\n' '### 수정 필요'
-    jq -r '
+    printf '%s\n' '### 꼭 고쳐야 할 것'
+    printf '%s\n' '| 심각도 | 위치 | 내용 |'
+    printf '%s\n' '|--------|------|------|'
+    jq -r "$JQ_HELPERS"'
       .findings[]
       | select(.severity == "critical" or .severity == "major")
-      | "- **" + .code_location.relative_file_path
-        + ":"
-        + (.code_location.line_range.start | tostring)
-        + "** — "
-        + .title
-        + " (인라인 코멘트 참조)."
+      | "| " + severity_label + " | `" + location + "` | " + (.title | cell) + " |"
+    ' "$REVIEW_JSON"
+    printf '%s\n' ''
+    printf '%s\n' '자세한 설명은 해당 코드 줄에 단 코멘트에 있습니다.'
+    printf '%s\n' ''
+  fi
+
+  if [ "$REVIEW_POINTS_COUNT" != "0" ]; then
+    printf '%s\n' '### 👀 Review Point 확인 결과'
+    printf '%s\n' '| 항목 | 결과 | 근거 |'
+    printf '%s\n' '|------|------|------|'
+    jq -r "$JQ_HELPERS"'
+      .review_points[]
+      | "| " + (.point | cell)
+        + " | "
+        + (if .result == "ok" then "✅ 문제 없음"
+           elif .result == "issue" then "⚠️ 문제 있음"
+           else "❔ 확인 못 함"
+           end)
+        + " | "
+        + (.note | cell)
+        + " |"
     ' "$REVIEW_JSON"
     printf '%s\n' ''
   fi
 
   if [ "$MINOR_COUNT" != "0" ]; then
-    printf '%s\n' '### 참고'
-    jq -r '
+    printf '%s\n' '### 참고 (고치면 좋은 것)'
+    jq -r "$JQ_HELPERS"'
       .findings[]
       | select(.severity == "minor")
-      | "- **" + .code_location.relative_file_path
-        + ":"
-        + (.code_location.line_range.start | tostring)
-        + "** — "
-        + .title
-        + "\n  "
-        + (.body | gsub("\n"; " "))
+      | (["- 📝 **" + .title + "** — `" + location + "`", "  - " + (.body | gsub("\r?\n"; " "))]
+         + (detail_lines | map("  " + .)))
+      | join("\n")
     ' "$REVIEW_JSON"
     printf '%s\n' ''
   fi
 
-  printf '%s\n' '<details><summary>📋 검증 과정</summary>'
+  printf '%s\n' '<details><summary>📋 리뷰하면서 확인한 내용</summary>'
   printf '%s\n' ''
-  printf '%s\n' "- ${REVIEWER_LABEL} structured review 결과 중 확신도가 있는 항목만 정리했습니다."
-  printf '%s\n' '- Critical/Major는 inline comment로 게시하고, Minor는 참고 항목으로 summary에 포함합니다.'
-  printf '%s\n' '- 자동 생성된 OpenAPI 타입 선언 파일과 lock 파일은 리뷰 대상에서 제외합니다.'
+  if [ "$VERIFICATION_COUNT" != "0" ]; then
+    jq -r '.verification[] | "- " + gsub("\r?\n"; " ")' "$REVIEW_JSON"
+  else
+    printf '%s\n' '- 근거가 확실한 문제만 남겼습니다.'
+    printf '%s\n' "- 꼭 고쳐야 할 것(Critical·Major)은 해당 코드 줄에 코멘트로 달고, 고치면 좋은 것(Minor)은 이 글의 '참고'에 적었습니다."
+    printf '%s\n' '- 자동으로 만들어지는 파일(OpenAPI 타입 등)과 lock 파일은 보지 않았습니다.'
+  fi
   printf '%s\n' ''
   printf '%s\n' '</details>'
   printf '%s\n' ''
@@ -172,7 +220,7 @@ PREVIOUS_ISSUES_COUNT="$(jq '(.previous_issues // []) | length' "$REVIEW_JSON")"
   printf '%s\n' "<sub>🤖 ${REVIEWER_LABEL} PR Review</sub>"
 } > "$BODY_PATH"
 
-jq -c --arg commit "$HEAD_SHA" --arg reviewer_label "$REVIEWER_LABEL" '
+jq -c --arg commit "$HEAD_SHA" --arg reviewer_label "$REVIEWER_LABEL" "$JQ_HELPERS"'
   .findings[]
   | select(.severity == "critical" or .severity == "major")
   | {
@@ -182,25 +230,20 @@ jq -c --arg commit "$HEAD_SHA" --arg reviewer_label "$REVIEWER_LABEL" '
       start_line: (if .code_location.line_range.start != .code_location.line_range.end then .code_location.line_range.start else null end),
       start_side: (if .code_location.line_range.start != .code_location.line_range.end then "RIGHT" else null end),
       body: (
-        (if .severity == "critical" then "🚨 **[Critical] "
-         elif .severity == "major" then "⚠️ **[Major] "
-         else "📝 **[Minor] "
-         end)
-        + .title
-        + "**\n\n"
-        + .body
-        + "\n\n**" + $reviewer_label + " 검증**: 변경 diff의 `"
-        + .code_location.relative_file_path
-        + ":"
-        + (.code_location.line_range.start | tostring)
-        + (if .code_location.line_range.start != .code_location.line_range.end then "-" + (.code_location.line_range.end | tostring) else "" end)
-        + "` 기준으로 확인했습니다. 실제 코드와 다르면 이 코멘트는 무시해 주세요. "
-        + "(confidence "
-        + (.confidence_score | tostring)
-        + ").\n\n"
-        + "**수정 제안:**\n"
-        + "이 finding이 여전히 유효한지 먼저 확인한 뒤, 관련 코드만 최소 범위로 수정하고 필요한 검증을 실행해 주세요.\n\n"
-        + "<!-- CODEX_REVIEW_COMMENT -->"
+        ([severity_emoji + " **[" + severity_name + "] " + .title + "**", "", .body]
+         + (detail_lines as $details | if ($details | length) > 0 then [""] + $details else [] end)
+         + (if ((.suggestion // []) | length) == 0 then
+              ["", "**어떻게 고치나요?** 이 지적이 지금 코드에도 맞는지 먼저 확인하고, 관련된 부분만 고친 뒤 테스트해 주세요."]
+            else [] end)
+         + [
+             "",
+             "<sub>" + $reviewer_label + " 리뷰 · `" + location + "` 기준 · 확신도 "
+               + (.confidence_score | tostring)
+               + " · 실제 코드와 다르면 이 코멘트는 무시해도 됩니다.</sub>",
+             "",
+             "<!-- CODEX_REVIEW_COMMENT -->"
+           ])
+        | join("\n")
       )
     }
   | with_entries(select(.value != null))
