@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useEffect, useRef, useState } from 'react';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
@@ -20,6 +21,8 @@ const EditableMemoCard = ({
   onRemoveButtonClick,
   onMemoChange,
 }: EditableMemoCardProps) => {
+  const device = useDevice();
+  const isMobile = device !== 'pc';
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [localMemo, setLocalMemo] = useState(memo);
   const debouncedMemo = useDebouncedValue(localMemo, 500);
@@ -49,9 +52,24 @@ const EditableMemoCard = ({
     if (!textAreaRef.current) return;
 
     const el = textAreaRef.current;
-    el.style.height = 'auto';
-    el.style.height = `${el.scrollHeight}px`;
-  }, [localMemo]);
+    const resizeTextArea = () => {
+      el.style.height = 'auto';
+      const borderHeight = el.offsetHeight - el.clientHeight;
+      el.style.height = `${el.scrollHeight + borderHeight}px`;
+    };
+
+    resizeTextArea();
+
+    let width = el.clientWidth;
+    const observer = new ResizeObserver(() => {
+      if (el.clientWidth === width) return;
+      width = el.clientWidth;
+      resizeTextArea();
+    });
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, [localMemo, isMobile]);
 
   return (
     <Container>
@@ -60,6 +78,7 @@ const EditableMemoCard = ({
       </MemoContent>
 
       <NoteMemo
+        isMobile={isMobile}
         ref={textAreaRef}
         name="memo"
         rows={1}
@@ -88,6 +107,7 @@ const Container = styled.div`
   display: flex;
   gap: 16px;
   flex-direction: column;
+  flex-shrink: 0;
   align-items: flex-start;
   align-self: stretch;
 
@@ -148,7 +168,7 @@ const MemoContentText = styled.p`
   word-break: break-all;
 `;
 
-const NoteMemo = styled.textarea`
+const NoteMemo = styled.textarea<{ isMobile: boolean }>`
   width: 100%;
   height: auto;
   padding: 16px;
@@ -159,7 +179,8 @@ const NoteMemo = styled.textarea`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
+  font: ${({ theme, isMobile }) =>
+    isMobile ? theme.fonts.t8Regular : theme.fonts.t5Regular};
 
   resize: none;
   transition: all 0.2s ease-in-out;
