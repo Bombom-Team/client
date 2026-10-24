@@ -120,8 +120,9 @@ Major에 해당하지 않는 화면 결과(가리지 않는 겹침, device별 �
   workspace에 있어도 같은 구현으로 보지 않습니다. `shared`를 변경했다면 이를 import하는
   workspace까지 확인합니다.
 - 위치·크기·`z-index`·글꼴 토큰·device 분기를 바꾼 UI 변경은 렌더링 맥락까지 확인합니다.
-  - 변경된 컴포넌트를 렌더링하는 route 파일까지 올라가, 같은 화면의 다른 고정 요소와 그
-    `top`·`z-index`를 `파일:라인`으로 비교합니다.
+  - 변경된 컴포넌트를 렌더링하는 route 파일까지 올라가, 같은 화면의 다른 고정 요소가
+    차지하는 영역(`top`·`bottom`·`height`, 가로로 겹칠 수 있으면 `left`·`right`·`width`)과
+    `z-index`를 `파일:라인`으로 비교합니다.
   - `rem` 값은 workspace의 전역 root font-size로 device별 px를 계산해 적습니다. `web/`은
     `web/src/styles/reset.ts`의 `html` font-size를 기준으로 합니다.
   - 브라우저에서 직접 확인하지 않은 화면 결과는 리뷰 요약에 남깁니다.
