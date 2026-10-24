@@ -342,6 +342,11 @@ src/apis/{domain}/
 - 커스텀 훅이 반환하는 함수는 `useCallback`으로, 반환하는 객체·배열·계산값은 `useMemo`로
   감쌉니다. 훅을 쓰는 쪽의 의존성 배열과 메모이제이션이 깨지지 않게 하기 위함입니다.
   컴포넌트 내부의 메모이제이션은 필요할 때만 사용합니다.
+- `window`·`visualViewport`의 `scroll`·`resize`, `pointermove`처럼 연속으로 발생하는 이벤트에서 state를
+  갱신할 때는 `requestAnimationFrame`으로 프레임당 한 번만 갱신합니다
+  (`web/src/hooks/useScrollProgress.ts` 참고).
+- 연속 이벤트는 그 값을 쓰는 UI가 보일 때만 구독합니다. 닫힌 패널이나 분기에서 제외된
+  device에서는 listener를 등록하지 않습니다.
 
 ---
 
