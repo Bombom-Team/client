@@ -22,6 +22,8 @@ export const useMemoPanelViewport = () => {
     const visualViewport = window.visualViewport;
     if (!visualViewport) return;
 
+    let animationFrameId: number | null = null;
+
     const updateViewport = () => {
       setViewport({
         height: visualViewport.height,
@@ -31,13 +33,25 @@ export const useMemoPanelViewport = () => {
       });
     };
 
+    const scheduleViewportUpdate = () => {
+      if (animationFrameId !== null) return;
+
+      animationFrameId = window.requestAnimationFrame(() => {
+        animationFrameId = null;
+        updateViewport();
+      });
+    };
+
     updateViewport();
-    visualViewport.addEventListener('resize', updateViewport);
-    visualViewport.addEventListener('scroll', updateViewport);
+    visualViewport.addEventListener('resize', scheduleViewportUpdate);
+    visualViewport.addEventListener('scroll', scheduleViewportUpdate);
 
     return () => {
-      visualViewport.removeEventListener('resize', updateViewport);
-      visualViewport.removeEventListener('scroll', updateViewport);
+      visualViewport.removeEventListener('resize', scheduleViewportUpdate);
+      visualViewport.removeEventListener('scroll', scheduleViewportUpdate);
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
     };
   }, []);
 

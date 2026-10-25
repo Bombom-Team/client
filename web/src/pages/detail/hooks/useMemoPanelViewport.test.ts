@@ -6,7 +6,14 @@ const ORIGINAL_VIEWPORT = Object.getOwnPropertyDescriptor(
   'visualViewport',
 );
 
+beforeEach(() => {
+  jest.useFakeTimers();
+});
+
 afterEach(() => {
+  jest.useRealTimers();
+  jest.restoreAllMocks();
+
   if (ORIGINAL_VIEWPORT) {
     Object.defineProperty(window, 'visualViewport', ORIGINAL_VIEWPORT);
   } else {
@@ -33,12 +40,14 @@ describe('useMemoPanelViewport', () => {
     act(() => {
       viewport.height = 320;
       viewport.dispatchEvent(new Event('resize'));
+      jest.advanceTimersByTime(16);
     });
     expect(result.current['--memo-viewport-height']).toBe('320px');
 
     act(() => {
       viewport.offsetTop = 120;
       viewport.dispatchEvent(new Event('scroll'));
+      jest.advanceTimersByTime(16);
     });
     expect(result.current['--memo-viewport-top']).toBe('120px');
 
@@ -67,12 +76,14 @@ describe('useMemoPanelViewport', () => {
     act(() => {
       viewport.width = 195;
       viewport.dispatchEvent(new Event('resize'));
+      jest.advanceTimersByTime(16);
     });
     expect(result.current['--memo-viewport-width']).toBe('195px');
 
     act(() => {
       viewport.offsetLeft = 96;
       viewport.dispatchEvent(new Event('scroll'));
+      jest.advanceTimersByTime(16);
     });
     expect(result.current['--memo-viewport-left']).toBe('96px');
 
@@ -80,9 +91,78 @@ describe('useMemoPanelViewport', () => {
       viewport.width = 390;
       viewport.offsetLeft = 0;
       viewport.dispatchEvent(new Event('resize'));
+      jest.advanceTimersByTime(16);
     });
     expect(result.current['--memo-viewport-width']).toBe('390px');
     expect(result.current['--memo-viewport-left']).toBe('0px');
+  });
+
+  it('한 프레임에 여러 이벤트가 발생하면 마지막 화면 영역을 한 번만 반영한다', () => {
+    const viewport = Object.assign(new EventTarget(), {
+      height: 800,
+      offsetTop: 0,
+      width: 390,
+      offsetLeft: 0,
+    });
+    Object.defineProperty(window, 'visualViewport', {
+      configurable: true,
+      value: viewport,
+    });
+    const requestAnimationFrame = jest.spyOn(window, 'requestAnimationFrame');
+    const { result } = renderHook(() => useMemoPanelViewport());
+
+    act(() => {
+      viewport.height = 320;
+      viewport.dispatchEvent(new Event('resize'));
+      viewport.offsetTop = 120;
+      viewport.offsetLeft = 96;
+      viewport.width = 195;
+      viewport.dispatchEvent(new Event('scroll'));
+    });
+
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(1);
+    expect(result.current['--memo-viewport-height']).toBe('800px');
+
+    act(() => jest.advanceTimersByTime(16));
+
+    expect(result.current).toEqual({
+      '--memo-viewport-height': '320px',
+      '--memo-viewport-top': '120px',
+      '--memo-viewport-width': '195px',
+      '--memo-viewport-left': '96px',
+    });
+
+    act(() => {
+      viewport.height = 400;
+      viewport.dispatchEvent(new Event('resize'));
+      jest.advanceTimersByTime(16);
+    });
+
+    expect(result.current['--memo-viewport-height']).toBe('400px');
+  });
+
+  it('예약된 갱신이 있을 때 unmount하면 다음 프레임 실행을 취소한다', () => {
+    const viewport = Object.assign(new EventTarget(), {
+      height: 800,
+      offsetTop: 0,
+      width: 390,
+      offsetLeft: 0,
+    });
+    Object.defineProperty(window, 'visualViewport', {
+      configurable: true,
+      value: viewport,
+    });
+    const requestAnimationFrame = jest.spyOn(window, 'requestAnimationFrame');
+    const cancelAnimationFrame = jest.spyOn(window, 'cancelAnimationFrame');
+    const { unmount } = renderHook(() => useMemoPanelViewport());
+
+    act(() => viewport.dispatchEvent(new Event('resize')));
+    unmount();
+
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(1);
+    expect(cancelAnimationFrame).toHaveBeenCalledWith(
+      requestAnimationFrame.mock.results[0]?.value,
+    );
   });
 
   it('VisualViewport 미지원 환경에서는 CSS의 화면 높이를 사용한다', () => {
