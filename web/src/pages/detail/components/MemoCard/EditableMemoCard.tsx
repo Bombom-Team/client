@@ -67,8 +67,12 @@ const EditableMemoCard = ({
       resizeTextArea();
     });
     observer.observe(el);
+    window.addEventListener('resize', resizeTextArea);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', resizeTextArea);
+    };
   }, [localMemo, isMobile]);
 
   return (
