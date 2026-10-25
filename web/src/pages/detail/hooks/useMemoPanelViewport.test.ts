@@ -165,6 +165,35 @@ describe('useMemoPanelViewport', () => {
     );
   });
 
+  it('화면 영역 값이 같으면 이벤트가 발생해도 기존 스타일 참조를 유지한다', () => {
+    const viewport = Object.assign(new EventTarget(), {
+      height: 800,
+      offsetTop: 0,
+      width: 390,
+      offsetLeft: 0,
+    });
+    Object.defineProperty(window, 'visualViewport', {
+      configurable: true,
+      value: viewport,
+    });
+    const { result } = renderHook(() => useMemoPanelViewport());
+    const initialStyle = result.current;
+
+    act(() => {
+      viewport.dispatchEvent(new Event('scroll'));
+      jest.advanceTimersByTime(16);
+    });
+
+    expect(result.current).toBe(initialStyle);
+
+    act(() => {
+      viewport.dispatchEvent(new Event('resize'));
+      jest.advanceTimersByTime(16);
+    });
+
+    expect(result.current).toBe(initialStyle);
+  });
+
   it('VisualViewport 미지원 환경에서는 CSS의 화면 높이를 사용한다', () => {
     Object.defineProperty(window, 'visualViewport', {
       configurable: true,

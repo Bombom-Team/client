@@ -28,6 +28,7 @@ const MemoPanel = ({
   const device = useDevice();
   const isPC = device === 'pc';
   const notesId = useId();
+  // 닫힌 패널의 펼치기 버튼도 확대된 화면 영역을 따라가므로 구독을 유지한다.
   const viewportStyle = useMemoPanelViewport();
 
   return (

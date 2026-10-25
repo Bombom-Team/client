@@ -25,11 +25,24 @@ export const useMemoPanelViewport = () => {
     let animationFrameId: number | null = null;
 
     const updateViewport = () => {
-      setViewport({
+      const nextViewport = {
         height: visualViewport.height,
         offsetTop: visualViewport.offsetTop,
         width: visualViewport.width,
         offsetLeft: visualViewport.offsetLeft,
+      };
+
+      setViewport((previousViewport) => {
+        if (
+          previousViewport?.height === nextViewport.height &&
+          previousViewport.offsetTop === nextViewport.offsetTop &&
+          previousViewport.width === nextViewport.width &&
+          previousViewport.offsetLeft === nextViewport.offsetLeft
+        ) {
+          return previousViewport;
+        }
+
+        return nextViewport;
       });
     };
 
