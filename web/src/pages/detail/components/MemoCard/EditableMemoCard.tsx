@@ -183,7 +183,9 @@ const NoteMemo = styled.textarea<{ isMobile: boolean }>`
     isMobile ? theme.fonts.t8Regular : theme.fonts.t5Regular};
 
   resize: none;
-  transition: all 0.2s ease-in-out;
+  transition:
+    border-color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
 
   &:focus {
     box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primaryBomBom}20;
