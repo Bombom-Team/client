@@ -14,7 +14,7 @@ interface LoginFailureGuide {
   action: 'retry' | 'support' | 'confirm';
 }
 
-const SUPPORT_URL = 'https://e0pq0.channel.io/';
+const SUPPORT_URL = 'https://bombom.news/support/inquiry';
 const SUPPORT_EMAIL = 'bombom.news7@gmail.com';
 
 const RETRY_GUIDE: LoginFailureGuide = {
