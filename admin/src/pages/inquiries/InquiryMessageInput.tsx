@@ -4,6 +4,7 @@ import { FiImage, FiSend, FiX } from 'react-icons/fi';
 import { uploadInquiryImages } from '@/apis/inquiries/inquiryMessages.api';
 import { useSendInquiryMessageMutation } from '@/apis/inquiries/inquiryMessages.query';
 
+const MAX_CONTENT_LENGTH = 500;
 const MAX_IMAGE_COUNT = 4;
 
 interface InquiryMessageInputProps {
@@ -144,7 +145,9 @@ export function InquiryMessageInput({
         <MessageTextarea
           ref={textareaRef}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e) =>
+            setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
+          }
           onKeyDown={handleKeyDown}
           placeholder={disabled ? '종료된 문의입니다.' : '메시지를 입력하세요'}
           disabled={disabled}
@@ -158,6 +161,9 @@ export function InquiryMessageInput({
           <FiSend size={18} />
         </SendButton>
       </InputRow>
+      <CharCount>
+        {content.length} / {MAX_CONTENT_LENGTH}
+      </CharCount>
     </InputContainer>
   );
 }
@@ -274,4 +280,12 @@ const SendButton = styled.button`
   &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.primaryHover};
   }
+`;
+
+const CharCount = styled.p`
+  margin-top: ${({ theme }) => theme.spacing.xs};
+
+  color: ${({ theme }) => theme.colors.gray400};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  text-align: right;
 `;
