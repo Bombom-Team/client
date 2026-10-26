@@ -1,8 +1,8 @@
-import { useDevice } from '@bombom/shared/ui-web';
+import { isIOS, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useRouter, useRouterState } from '@tanstack/react-router';
-import { motion, useReducedMotion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { motion, useAnimate, useReducedMotion } from 'framer-motion';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ParsedLocation } from '@tanstack/react-router';
 import type { PropsWithChildren } from 'react';
 
@@ -55,6 +55,7 @@ interface PageSnapshot {
 }
 
 interface PageTransition {
+  id: number;
   direction: NavigationDirection;
   snapshot: PageSnapshot;
 }
@@ -67,22 +68,39 @@ const RouteTransition = ({ children }: PropsWithChildren) => {
   const loadedLocation = useRouterState({
     select: (state) => (state.isLoading ? undefined : state.location),
   });
-  const pageRef = useRef<HTMLDivElement>(null);
+  const [pageScope, animatePage] = useAnimate<HTMLDivElement>();
   const snapshotRef = useRef<PageSnapshot>({ html: '', scrollY: 0 });
   const [renderedLocation, setRenderedLocation] = useState(loadedLocation);
-  const [pageKey, setPageKey] = useState(0);
   const [transition, setTransition] = useState<PageTransition | null>(null);
+  const isMobile = device === 'mobile';
 
   useEffect(
     () =>
       router.subscribe('onBeforeLoad', () => {
-        const page = pageRef.current;
+        const page = pageScope.current;
         if (!page) return;
 
         snapshotRef.current = { html: page.innerHTML, scrollY: window.scrollY };
       }),
-    [router],
+    [router, pageScope],
   );
+
+  // Outlet이 다시 마운트되지 않도록 같은 요소에서 Push 애니메이션을 재생한다
+  useLayoutEffect(() => {
+    const page = pageScope.current;
+    if (!page || transition?.direction !== 'push') return;
+
+    page.style.transform = 'translateX(100%)';
+    const controls = animatePage(page, { x: ['100%', 0] }, PAGE_TRANSITION);
+    controls.then(() =>
+      setTransition((current) => (current === transition ? null : current)),
+    );
+
+    return () => {
+      controls.stop();
+      page.style.transform = '';
+    };
+  }, [animatePage, pageScope, transition]);
 
   if (
     loadedLocation &&
@@ -95,72 +113,79 @@ const RouteTransition = ({ children }: PropsWithChildren) => {
       renderedLocation && getDirection(renderedLocation, loadedLocation);
 
     if (renderedLocation && direction) {
+      // iOS는 스와이프 뒤로 가기가 네이티브 전환을 먼저 보여 주므로 Pop 전환을 생략한다
       const shouldAnimate =
-        device === 'mobile' &&
+        isMobile &&
         !shouldReduceMotion &&
+        !(direction === 'pop' && isIOS()) &&
         shouldAnimateBetween(renderedLocation, loadedLocation);
 
       setTransition(
-        shouldAnimate ? { direction, snapshot: snapshotRef.current } : null,
+        shouldAnimate
+          ? {
+              id: (transition?.id ?? 0) + 1,
+              direction,
+              snapshot: snapshotRef.current,
+            }
+          : null,
       );
-      if (shouldAnimate) setPageKey((key) => key + 1);
     }
   }
 
-  const handleTransitionComplete = () => setTransition(null);
-
-  if (device !== 'mobile') return children;
+  const handleSnapshotExitComplete = () => setTransition(null);
 
   const isPush = transition?.direction === 'push';
 
   return (
-    <Container>
+    <Container isMobile={isMobile}>
       {transition && (
         <SnapshotPage
           aria-hidden
-          key={`snapshot-${pageKey}`}
+          inert
+          key={transition.id}
           scrollY={transition.snapshot.scrollY}
           isOverlay={!isPush}
           initial={{ x: 0 }}
           animate={{ x: isPush ? 0 : '100%' }}
           transition={PAGE_TRANSITION}
-          onAnimationComplete={isPush ? undefined : handleTransitionComplete}
+          onAnimationComplete={isPush ? undefined : handleSnapshotExitComplete}
           dangerouslySetInnerHTML={{ __html: transition.snapshot.html }}
         />
       )}
-      <AnimatedPage
-        ref={pageRef}
-        key={`page-${pageKey}`}
-        initial={isPush ? { x: '100%' } : false}
-        animate={{ x: 0 }}
-        transition={PAGE_TRANSITION}
-        onAnimationComplete={isPush ? handleTransitionComplete : undefined}
-      >
+      <Page ref={pageScope} isMobile={isMobile}>
         {children}
-      </AnimatedPage>
+      </Page>
     </Container>
   );
 };
 
 export default RouteTransition;
 
-const Container = styled.div`
-  position: relative;
-  width: 100%;
-  min-height: 100dvh;
+const Container = styled.div<{ isMobile: boolean }>`
+  ${({ isMobile, theme }) =>
+    isMobile &&
+    `
+    position: relative;
+    width: 100%;
+    min-height: 100dvh;
 
-  background-color: ${({ theme }) => theme.colors.white};
+    background-color: ${theme.colors.white};
 
-  overflow-x: clip;
+    overflow-x: clip;
+  `}
 `;
 
-const AnimatedPage = styled(motion.div)`
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  min-height: 100dvh;
+const Page = styled.div<{ isMobile: boolean }>`
+  ${({ isMobile, theme }) =>
+    isMobile &&
+    `
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: 100dvh;
 
-  background-color: ${({ theme }) => theme.colors.white};
+    background-color: ${theme.colors.white};
+  `}
 `;
 
 const SnapshotPage = styled(motion.div, {
