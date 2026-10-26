@@ -1,9 +1,6 @@
-import { Button } from '@bombom/shared/ui-web';
-import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
-
+import { Button, sendMessageToRN, isWebView } from '@bombom/shared/ui-web';
 import { MAEIL_MAIL_URL } from '@/constants/urls';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 
 const BOMBOM_LOGIN_URL = `https://www.bombom.news/login?redirect=${encodeURIComponent(MAEIL_MAIL_URL)}`;
 

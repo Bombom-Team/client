@@ -1,8 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import { createFileRoute } from '@tanstack/react-router';
 import { Suspense } from 'react';
 import { queries } from '@/apis/queries';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
-import { useDevice } from '@/hooks/useDevice';
 import NewsletterDetailDesktop from '@/pages/newsletter-detail/NewsletterDetailDesktop';
 import NewsletterDetailDesktopSkeleton from '@/pages/newsletter-detail/NewsletterDetailDesktopSkeleton';
 import NewsletterDetailMobile from '@/pages/newsletter-detail/NewsletterDetailMobile';

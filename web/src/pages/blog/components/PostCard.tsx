@@ -1,12 +1,11 @@
+import { Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import Text from '@/components/Text';
-import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
 import { createSlug } from '@/utils/url';
-import type { Device } from '@/hooks/useDevice';
 import type { PostListItem } from '@/pages/blog/types/post';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface PostCardProps {
   post: PostListItem;
@@ -110,8 +109,7 @@ const NoThumbnailPlaceholder = styled.div`
 
   background-color: ${({ theme }) => theme.colors.dividers};
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t5SemiBold};
 `;
 
 const Title = styled.h3<{ device: Device }>`

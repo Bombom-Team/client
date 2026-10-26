@@ -1,3 +1,4 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import {
   MOBILE_HORIZONTAL_PADDING,
@@ -6,7 +7,6 @@ import {
 import BomBomFooter from '../Footer/BomBomFooter';
 import PCHeader from '../Header/PCHeader';
 import { useActiveNav } from '@/hooks/useActiveNav';
-import { useDevice } from '@/hooks/useDevice';
 import type { PropsWithChildren } from 'react';
 
 const BomBomPageLayout = ({ children }: PropsWithChildren) => {

@@ -1,12 +1,10 @@
+import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
-import Flex from '@/components/Flex';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import Text from '@/components/Text';
-import { useDevice } from '@/hooks/useDevice';
 import { createSlug } from '@/utils/url';
-import type { Device } from '@/hooks/useDevice';
 import type { PostListItem } from '@/pages/blog/types/post';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface FeaturedPostProps {
   post: PostListItem;
@@ -114,8 +112,7 @@ const NoThumbnailPlaceholder = styled.div`
 
   background-color: ${({ theme }) => theme.colors.dividers};
   color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t5SemiBold};
 `;
 
 export const ContentWrapper = styled.div<{ device: Device }>`
@@ -141,7 +138,6 @@ const Title = styled.h2<{ device: Device }>`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t7Regular : theme.fonts.t10Bold};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.t7Regular : theme.fonts.t10Regular};
   line-height: ${({ device }) => (device === 'mobile' ? '1.7' : 'inherit')};
 `;

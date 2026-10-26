@@ -144,7 +144,9 @@ export const MainScreen = () => {
               console.log('외부 브라우저 열기: URL 형식 확인 필요');
             }
             WebBrowser.openBrowserAsync(message.payload.url, {
-              presentationStyle: WebBrowser.WebBrowserPresentationStyle.POPOVER,
+              // iPad에서 POPOVER는 화면 하단의 작은 창으로 열려 페이지가 보이지 않는다.
+              presentationStyle:
+                WebBrowser.WebBrowserPresentationStyle.FULL_SCREEN,
               dismissButtonStyle: 'close',
             });
           }

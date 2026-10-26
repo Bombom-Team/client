@@ -1,17 +1,17 @@
 import { theme } from '@bombom/shared';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Outlet, useMatch } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
-import { useDevice } from '@/hooks/useDevice';
 import ChallengeGuideModal from '@/pages/challenge/index/components/ChallengeGuideModal/ChallengeGuideModal';
 import ChallengeStreakCard from '@/pages/challenge/index/components/ChallengeStreakCard';
 import { useChallengeDetailTabs } from '@/pages/challenge/index/hooks/useChallengeDetailTabs';
 import ReviewNotice from '@/pages/challenge/review/components/ReviewNotice';
 import { compareDates } from '@/utils/date';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import type { CSSObject, Theme } from '@emotion/react';
 import TrophyIcon from '#/assets/svg/trophy.svg';
 

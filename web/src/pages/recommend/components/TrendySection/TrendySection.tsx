@@ -1,3 +1,4 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
@@ -8,11 +9,10 @@ import Chip from '@/components/Chip/Chip';
 import ImageInfoCardSkeleton from '@/components/ImageInfoCard/ImageInfoCardSkeleton';
 import SearchInput from '@/components/SearchInput/SearchInput';
 import { NEWSLETTER_COUNT } from '@/constants/newsletter';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { createSlug } from '@/utils/url';
-import type { Device } from '@/hooks/useDevice';
 import type { Newsletter } from '@/types/newsletter';
+import type { Device } from '@bombom/shared/ui-web';
 import type { ChangeEvent } from 'react';
 import CloseIcon from '#/assets/svg/close.svg';
 import ReadingGlassesIcon from '#/assets/svg/reading-glasses.svg';

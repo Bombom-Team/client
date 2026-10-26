@@ -1,10 +1,9 @@
 import { theme } from '@bombom/shared/theme';
+import { useModal, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import ArticleCard from '../ArticleCard/ArticleCard';
 import EmptyLetterCard from '../EmptyLetterCard/EmptyLetterCard';
-import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import ArticleDeleteModal from '@/pages/storage/components/ArticleDeleteModal/ArticleDeleteModal';
 import type { Article } from '@/types/articles';

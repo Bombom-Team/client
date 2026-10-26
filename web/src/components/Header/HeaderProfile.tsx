@@ -1,10 +1,9 @@
+import { Modal, useModal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import ProfileDetail from './ProfileDetail';
 import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
-import Modal from '../Modal/Modal';
-import useModal from '../Modal/useModal';
-import type { Device } from '@/hooks/useDevice';
 import type { UserProfile } from '@/types/me';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface HeaderProfileProps {
   userProfile: UserProfile;

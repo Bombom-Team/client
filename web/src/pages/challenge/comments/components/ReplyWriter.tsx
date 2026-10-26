@@ -1,10 +1,8 @@
 import { theme } from '@bombom/shared';
+import { Button, Text, Checkbox } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { useAddCommentReplyMutation } from '../hooks/useAddCommentReplyMutation';
-import Button from '@/components/Button/Button';
-import Checkbox from '@/components/Checkbox/Checkbox';
-import Text from '@/components/Text/Text';
 import SendIcon from '#/assets/svg/send.svg';
 
 interface ReplyWriterProps {

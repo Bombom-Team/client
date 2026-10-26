@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
+import { ChevronIcon } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useCarouselContext } from './contexts/CarouselContext';
-import ChevronIcon from '../icons/ChevronIcon';
 import type { SlideButtonPosition } from './Carousel.types';
 
 interface CarouselNavButtonsProps {

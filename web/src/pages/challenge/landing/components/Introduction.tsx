@@ -1,9 +1,7 @@
 import { theme } from '@bombom/shared';
+import { Flex, Text, useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
-import Text from '@/components/Text';
-import { useDevice, type Device } from '@/hooks/useDevice';
-import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
+import type { Device } from '@bombom/shared/ui-web';
 import type { RefObject } from 'react';
 import CalendarIcon from '#/assets/svg/calendar.svg';
 import CheckIcon from '#/assets/svg/check-circle.svg';
@@ -173,8 +171,7 @@ const QuoteItem = styled(Flex)<{ isVisible: boolean }>`
 const QuoteText = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t11Bold};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t11Regular};
   text-align: center;
 `;
 
@@ -199,8 +196,7 @@ const ClosingQuoteIcon = styled(QuoteIcon)<{ device: Device }>`
 const IntroText = styled(Text)<{ device: Device; isVisible: boolean }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t10Bold};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t10Regular};
   text-align: center;
 
   animation: ${({ isVisible }) =>
@@ -255,8 +251,7 @@ const Strong = styled.span`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t10Bold};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t10Regular};
   line-height: 1.8;
   text-align: center;
 `;
@@ -303,8 +298,7 @@ const OverviewItem = styled.p<{ device: Device }>`
 const OverViewText = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Bold};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
 `;
 
 const Period = styled.div`
@@ -326,12 +320,10 @@ const PeriodDate = styled.span<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t10Bold};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t10Regular};
 `;
 
 const ComingSoonText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 400;
 `;

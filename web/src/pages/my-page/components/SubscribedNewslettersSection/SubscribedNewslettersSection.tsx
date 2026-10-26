@@ -1,3 +1,4 @@
+import { Modal, useModal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
@@ -7,9 +8,7 @@ import MySubscriptionCard from './MySubscriptionCard';
 import NewsletterUnsubscribeModal from './NewsletterUnsubscribeModal';
 import { useUnsubscribe } from '../../hooks/useUnsubscribe';
 import { queries } from '@/apis/queries';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const NATIVE_NEWSLETTER_SOURCE = 'MAEIL_MAIL' as const;

@@ -1,7 +1,7 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import { ModalDescription, ModalTitle } from '../ChallengeApplyModal';
-import { useDevice } from '@/hooks/useDevice';
 import { createSlug } from '@/utils/url';
 import type { Challenge } from '@/apis/challenge/challenge.api';
 import ArrowRightIcon from '#/assets/svg/arrow-right.svg';
@@ -149,6 +149,5 @@ const SubscribeAction = styled.div`
 `;
 
 const SubscribeText = styled.span`
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t3SemiBold};
 `;

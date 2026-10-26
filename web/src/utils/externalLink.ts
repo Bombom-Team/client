@@ -1,6 +1,8 @@
-import { isWebView } from './device';
-import { isAppVersionSupported } from './version';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
+import {
+  isWebView,
+  isAppVersionSupported,
+  sendMessageToRN,
+} from '@bombom/shared/ui-web';
 
 export const openExternalLink = (link: string) => {
   const url = link.startsWith('http') ? link : `https://${link}`;

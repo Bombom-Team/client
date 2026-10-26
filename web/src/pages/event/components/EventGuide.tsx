@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
+import { Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Text from '@/components/Text';
-import { useDevice, type Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import AppleIcon from '#/assets/svg/apple.svg';
 import GoogleIcon from '#/assets/svg/google.svg';
 import PointerIcon from '#/assets/svg/pointer.svg';
@@ -17,8 +17,8 @@ const EventGuide = () => {
 
       <StepWrapper>
         <StepCard>
-          <StepBadge device={device}>STEP 1.</StepBadge>
-          <Description device={device}>
+          <StepBadge>STEP 1.</StepBadge>
+          <Description>
             <StepHighlight>[로그인]</StepHighlight> 버튼을 눌러 회원가입 하러
             가기
           </Description>
@@ -29,8 +29,8 @@ const EventGuide = () => {
         </StepCard>
 
         <StepCard>
-          <StepBadge device={device}>STEP 2.</StepBadge>
-          <Description device={device}>
+          <StepBadge>STEP 2.</StepBadge>
+          <Description>
             <StepHighlight>[간편한 소셜 로그인으로]</StepHighlight> 회원가입
             하기
           </Description>
@@ -51,8 +51,8 @@ const EventGuide = () => {
         </StepCard>
 
         <StepCard>
-          <StepBadge device={device}>STEP 3.</StepBadge>
-          <Description device={device}>
+          <StepBadge>STEP 3.</StepBadge>
+          <Description>
             가입완료!{'\n'}이벤트 페이지 상단의{' '}
             <StepHighlight>[선착순 경품받기]</StepHighlight>
             {'\n'}
@@ -128,7 +128,7 @@ const StepCard = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-const StepBadge = styled.div<{ device: Device }>`
+const StepBadge = styled.div`
   position: absolute;
   top: -16px;
   left: 50%;
@@ -137,18 +137,14 @@ const StepBadge = styled.div<{ device: Device }>`
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t6Bold};
 
   transform: translateX(-50%);
 `;
 
-const Description = styled.p<{ device: Device }>`
+const Description = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t6Bold};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t6Bold};
   text-align: center;
 `;
 

@@ -1,7 +1,7 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { useClickOutsideRef } from '@/hooks/useClickOutsideRef';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { ArticleFontSizePercentage } from '../../constants/articleFontSize';
 import CloseIcon from '#/assets/svg/close.svg';

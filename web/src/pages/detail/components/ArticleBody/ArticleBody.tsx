@@ -1,3 +1,4 @@
+import { useModal, toast } from '@bombom/shared/ui-web';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
@@ -19,8 +20,6 @@ import FloatingToolbar from '../FloatingToolbar/FloatingToolbar';
 import MaeilMailAnswerModal from '../MaeilMailAnswerModal/MaeilMailAnswerModal';
 import MemoPanel from '../MemoPanel/MemoPanel';
 import { queries } from '@/apis/queries';
-import useModal from '@/components/Modal/useModal';
-import { toast } from '@/components/Toast/utils/toastActions';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { ArticleFontSizePercentage } from '../../constants/articleFontSize';
 import type { GetArticleByIdResponse } from '@/apis/articles/articles.api';

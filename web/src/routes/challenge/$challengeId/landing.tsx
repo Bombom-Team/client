@@ -1,15 +1,12 @@
 import { theme } from '@bombom/shared';
+import { Button, Modal, useModal, useDevice } from '@bombom/shared/ui-web';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
 import ArrowIcon from '@/components/icons/ArrowIcon';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import ChallengeApplyModal from '@/pages/challenge/index/components/ChallengeApplyModal/ChallengeApplyModal';
 import LoadingModal from '@/pages/challenge/index/components/ChallengeApplyModal/modals/LoadingModal';
@@ -24,7 +21,7 @@ import Introduction from '@/pages/challenge/landing/components/Introduction';
 import ParticipationGuide from '@/pages/challenge/landing/components/ParticipationGuide';
 import RecommendNewsletters from '@/pages/challenge/landing/components/RecommendNewsletters';
 import LandingHeader from '@/pages/landing/components/LandingHeader';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import type { MouseEvent } from 'react';
 
 export const Route = createFileRoute('/challenge/$challengeId/landing')({

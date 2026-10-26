@@ -39,7 +39,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./maeil-mail
-        run: pnpm install --filter @bombom/maeil-mail... --frozen-lockfile --prefer-offline
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Lint
         run: pnpm run maeil-mail:lint

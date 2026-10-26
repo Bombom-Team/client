@@ -1,4 +1,4 @@
-import { isWebView } from '@/utils/device';
+import { isWebView } from '@bombom/shared/ui-web';
 
 // 서드파티 인앱브라우저 UA 토큰 (봄봄 네이티브 앱 'bombom'은 매칭되지 않음)
 const IN_APP_BROWSER_UA_PATTERN =

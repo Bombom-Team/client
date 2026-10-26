@@ -1,7 +1,7 @@
 import { ApiError } from '@bombom/shared/apis';
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation } from '@tanstack/react-query';
 import { uploadInquiryImages } from '@/apis/inquiry/inquiry.api';
-import { toast } from '@/components/Toast/utils/toastActions';
 
 export const useInquiryImagesUploadMutation = () =>
   useMutation({

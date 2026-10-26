@@ -1,8 +1,7 @@
+import { useScrollVisible, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
-import { useScrollVisible } from '../hooks/useScrollVisible';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import careet from '#/assets/avif/careet.avif';
 import dailybyte from '#/assets/avif/dailybyte.avif';
 import geeknews from '#/assets/avif/geeknews.avif';

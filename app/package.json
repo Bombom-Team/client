@@ -2,7 +2,7 @@
   "name": "@bombom/app",
   "private": true,
   "main": "expo-router/entry",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "scripts": {
     "start": "expo start",
     "build:ios": "expo prebuild --platform ios --clean",

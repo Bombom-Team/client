@@ -1,8 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import EmptyNewsletter from './EmptyNewsletter';
 import NewsletterCardList from './NewsletterCardList';
 import NewsletterCarousel from './NewsletterCarousel';
 import RequestNewsletterCard from './RequestNewsletterCard';
-import { useDevice } from '@/hooks/useDevice';
 import type { Newsletter } from '@/types/newsletter';
 
 interface NewsletterListProps {

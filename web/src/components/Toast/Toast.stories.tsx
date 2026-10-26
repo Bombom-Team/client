@@ -1,9 +1,7 @@
 import { theme } from '@bombom/shared/theme';
+import { Toast, Button, toast } from '@bombom/shared/ui-web';
 import { ThemeProvider } from '@emotion/react';
-import Toast from './Toast';
-import Button from '../Button/Button';
-import { toast } from './utils/toastActions';
-import type { ToastPosition } from './Toast.types';
+import type { ToastPosition } from '@bombom/shared/ui-web';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
 type StoryArgs = {

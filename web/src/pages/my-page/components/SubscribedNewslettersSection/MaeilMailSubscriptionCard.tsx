@@ -1,3 +1,4 @@
+import { Button, Modal, useModal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import MaeilMailEditModal from './MaeilMailEditModal';
@@ -5,10 +6,7 @@ import NewsletterUnsubscribeModal from './NewsletterUnsubscribeModal';
 import { useUnsubscribeMaeilMailSubscriptionMutations } from '../../hooks/useUnsubscribeMaeilMailSubscriptionMutations';
 import { useUpdateMaeilMailSubscriptionMutations } from '../../hooks/useUpdateMaeilMailSubscriptionMutations';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
 import type { Track } from '../../types/subscribeNewsletters';
 import type { SubscribedNewsletterResponse } from '@/apis/members/members.api';
 
@@ -154,8 +152,7 @@ const NewsletterName = styled.h3`
   overflow: hidden;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t6SemiBold};
   white-space: nowrap;
 
   text-overflow: ellipsis;

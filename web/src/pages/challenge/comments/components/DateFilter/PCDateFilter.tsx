@@ -1,9 +1,8 @@
 import { theme } from '@bombom/shared';
+import { Button, ChevronIcon } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import DateTab from './DateTab';
 import { useDateFilterScroll } from '../../hooks/useDateFilterScroll';
-import Button from '@/components/Button/Button';
-import ChevronIcon from '@/components/icons/ChevronIcon';
 import Tabs from '@/components/Tabs/Tabs';
 
 interface PCDateFilterProps {

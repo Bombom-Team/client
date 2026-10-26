@@ -1,7 +1,7 @@
+import { useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { type ReactNode } from 'react';
-import { useDevice, type Device } from '@/hooks/useDevice';
-import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
+import type { Device } from '@bombom/shared/ui-web';
 
 export type ImagePosition = 'left' | 'right';
 export interface DetailCardProps {
@@ -106,8 +106,7 @@ const FeatureTitle = styled.h3`
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t7Bold};
-  font-weight: 400;
+  font: ${({ theme }) => theme.fonts.t7Regular};
   line-height: 2;
 `;
 

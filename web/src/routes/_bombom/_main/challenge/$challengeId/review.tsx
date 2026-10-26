@@ -1,8 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, redirect, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
-import { useDevice } from '@/hooks/useDevice';
 import MobileReviewsContent from '@/pages/challenge/review/components/MobileReviewsContent';
 import MyReviewSection from '@/pages/challenge/review/components/MyReviewSection';
 import PCReviewsContent from '@/pages/challenge/review/components/PCReviewsContent';

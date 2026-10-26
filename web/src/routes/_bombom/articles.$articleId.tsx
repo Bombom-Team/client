@@ -1,3 +1,4 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useQuery } from '@tanstack/react-query';
@@ -8,7 +9,6 @@ import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import { MOBILE_HORIZONTAL_PADDING } from '@/components/PageLayout/PageLayout.constants';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import Spacing from '@/components/Spacing/Spacing';
-import { useDevice } from '@/hooks/useDevice';
 import useScrollProgress from '@/hooks/useScrollProgress';
 import useScrollRestoration from '@/hooks/useScrollRestoration';
 import { useScrollThreshold } from '@/hooks/useScrollThreshold';
@@ -21,7 +21,7 @@ import useArticleAsReadMutation from '@/pages/detail/hooks/useArticleAsReadMutat
 import { useArticleBookmark } from '@/pages/detail/hooks/useArticleBookmark';
 import { useArticleFontSize } from '@/pages/detail/hooks/useArticleFontSize';
 import { throwNotFoundForApiError } from '@/utils/routeError';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import BookmarkActiveIcon from '#/assets/svg/bookmark-active.svg';
 import BookmarkInactiveIcon from '#/assets/svg/bookmark-inactive.svg';
 

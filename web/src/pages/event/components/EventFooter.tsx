@@ -1,6 +1,7 @@
 import { theme } from '@bombom/shared';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useDevice, type Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 
 const NOTICE = [
@@ -65,8 +66,7 @@ const FooterHeader = styled.div`
 
 const Title = styled.p`
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t6Bold};
 `;
 
 const NoticeList = styled.ul`

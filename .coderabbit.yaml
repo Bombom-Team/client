@@ -3,26 +3,23 @@
 language: ko-KR
 
 tone_instructions: >
-  한국어로 간결하게 작성하세요. 실제 변경 라인, 발생 조건, 사용자 또는 운영 영향을
-  설명하고, 근거 없는 개선 제안과 스타일 의견은 남기지 마세요.
+  주니어 개발자도 한 번에 이해하도록 쉬운 한국어로 결론부터 쓰세요. 영어 용어와 번역체를
+  피하고, 실제 변경 라인, 발생 조건, 사용자 영향을 설명하세요. 근거 없는 제안과 스타일
+  의견은 남기지 마세요.
 
 knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - files: 'CONVENTIONS.md'
+      - files: '.ai/RULES.md'
         applyTo: '**/*'
-      - files: 'docs/ai-rules.md'
+      - files: '.ai/CONVENTIONS.md'
         applyTo: '**/*'
       - files: 'docs/architecture.md'
         applyTo: '{web,app,admin,maeil-mail,shared}/**/*'
-      - files: 'docs/frontend-coding-standards.md'
-        applyTo: '{web,admin,maeil-mail}/**/*'
-      - files: '.review-learnings/REVIEW.md'
+      - files: '.ai/review/REVIEW.md'
         applyTo: '**/*'
-      - files: '.review-learnings/additional-rules.md'
-        applyTo: 'web/**/*'
-      - files: '.review-learnings/false-positives.md'
+      - files: '.ai/review/false-positives.md'
         applyTo: '{web,admin,maeil-mail}/**/*'
 
 reviews:

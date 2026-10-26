@@ -1,13 +1,13 @@
+import { useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
-import { useDevice, useScrollVisible } from '@bombom/shared/ui-web';
-import LandingAboutSection from '@/pages/landing/components/LandingAboutSection';
-import HowSection from '@/pages/landing/components/HowSection';
-import LandingHeader from '@/pages/landing/components/LandingHeader';
-import LandingFAQSection from '@/pages/landing/components/LandingFaqSection';
-import { FAQ_ITEMS } from '@/pages/landing/constants/faq';
-import LandingHero from '@/pages/landing/components/LandingHero';
 import { MAEIL_MAIL_URL } from '@/constants/urls';
+import HowSection from '@/pages/landing/components/HowSection';
+import LandingAboutSection from '@/pages/landing/components/LandingAboutSection';
+import LandingFAQSection from '@/pages/landing/components/LandingFaqSection';
+import LandingHeader from '@/pages/landing/components/LandingHeader';
+import LandingHero from '@/pages/landing/components/LandingHero';
+import { FAQ_ITEMS } from '@/pages/landing/constants/faq';
 
 const TITLE = '봄봄 × 매일메일 | 매일 받는 기술 면접 질문을 간편하게';
 const DESCRIPTION =

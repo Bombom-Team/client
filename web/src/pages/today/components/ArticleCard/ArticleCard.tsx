@@ -1,8 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import Badge from '@/components/Badge/Badge';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
 import type { components } from '@/types/openapi';
 import type { ComponentProps } from 'react';
@@ -146,8 +146,7 @@ export const Title = styled.h2<{ isMobile: boolean }>`
   display: -webkit-box;
 
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.t6Regular : theme.fonts.t10Bold};
-  font-weight: 600;
+    isMobile ? theme.fonts.t6SemiBold : theme.fonts.t10SemiBold};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;

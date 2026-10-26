@@ -1,6 +1,6 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { EVENT_STATUS_TYPE } from '../constants/constants';
-import Button from '@/components/Button/Button';
 import type { EventErrorStatus } from '../types/event';
 
 interface NoticeModalProps {
@@ -70,8 +70,7 @@ const Title = styled.h3`
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t7Bold};
-  font-weight: 400;
+  font: ${({ theme }) => theme.fonts.t7Regular};
   text-align: center;
 `;
 

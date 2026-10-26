@@ -1,9 +1,8 @@
+import { Flex, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { ThumbnailBox } from './PostDetail';
-import Flex from '@/components/Flex';
 import Skeleton from '@/components/Skeleton/Skeleton';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 const PostDetailSkeleton = () => {
   const device = useDevice();

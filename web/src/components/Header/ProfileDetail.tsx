@@ -1,11 +1,10 @@
+import { toast, isWebView } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useMutation } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
-import { toast } from '../Toast/utils/toastActions';
 import { postLogout } from '@/apis/auth/auth.api';
 import { copyToClipboard } from '@/utils/copy';
-import { isWebView } from '@/utils/device';
 import type { UserProfile } from '@/types/me';
 import CopyIcon from '#/assets/svg/copy.svg';
 import LogoutIcon from '#/assets/svg/logout.svg';

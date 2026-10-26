@@ -1,6 +1,6 @@
 import { theme } from '@bombom/shared';
+import { Checkbox } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Checkbox from '@/components/Checkbox/Checkbox';
 import CancelIcon from '#/assets/svg/close.svg';
 import DeleteIcon from '#/assets/svg/delete.svg';
 

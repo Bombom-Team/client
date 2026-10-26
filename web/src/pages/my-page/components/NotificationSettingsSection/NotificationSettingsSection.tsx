@@ -1,14 +1,12 @@
 import { theme } from '@bombom/shared';
+import { ChevronIcon, Text, sendMessageToRN } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQueries } from '@tanstack/react-query';
 import SettingList, { NOTIFICATION_SETTINGS } from './SettingList';
 import useCategoryNotificationMutation from '../../hooks/useCategoryNotificationMutation';
 import { queries } from '@/apis/queries';
-import ChevronIcon from '@/components/icons/ChevronIcon';
-import Text from '@/components/Text';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebViewNotificationPermission } from '@/libs/webview/useWebViewNotificationPermission';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import type { Category } from '../../types/notification';
 import InfoIcon from '#/assets/svg/info-circle.svg';
 

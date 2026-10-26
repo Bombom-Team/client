@@ -1,9 +1,8 @@
 import { theme } from '@bombom/shared';
+import { useScrollVisible, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useScrollVisible } from '../hooks/useScrollVisible';
-import { useDevice } from '@/hooks/useDevice';
 import type { AlignType } from '../types/position';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import type { ReactNode, ComponentType, SVGProps } from 'react';
 
 interface FeatureContentProps {

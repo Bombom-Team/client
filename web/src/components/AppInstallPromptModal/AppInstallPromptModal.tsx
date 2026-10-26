@@ -1,6 +1,5 @@
+import { Button, Modal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '../Button/Button';
-import Modal from '../Modal/Modal';
 import { useAppInstallPrompt } from '@/hooks/useAppInstallPrompt';
 import logo from '#/assets/avif/logo.avif';
 

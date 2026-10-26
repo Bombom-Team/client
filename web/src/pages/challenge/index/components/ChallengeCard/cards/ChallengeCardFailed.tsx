@@ -1,9 +1,9 @@
+import { Flex } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import CardContainer from '../CardContainer';
 import { Applicant, DDay, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
-import Flex from '@/components/Flex';
 import type { ChallengeCardProps } from '../ChallengeCard';
 
 const ChallengeCardFailed = (props: ChallengeCardProps) => {

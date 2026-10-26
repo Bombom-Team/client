@@ -1,6 +1,6 @@
 import { theme } from '@bombom/shared';
+import { Select } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Select from '@/components/Select/Select';
 import type { CandidateArticles } from '../../types/comment';
 
 interface NewsletterSelectorProps {

@@ -1,8 +1,8 @@
+import { useModal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
-import useModal from '@/components/Modal/useModal';
 import DailyGuideCard from '@/pages/challenge/daily/components/DailyGuideCard';
 import DailyGuideComment from '@/pages/challenge/daily/components/DailyGuideComment';
 import DailyGuideCommentsModal from '@/pages/challenge/daily/components/DailyGuideCommentsModal';
@@ -94,8 +94,7 @@ const DayBadge = styled.div`
 
   background-color: ${({ theme }) => theme.colors.primaryLight};
   color: ${({ theme }) => theme.colors.primaryBomBom};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t5SemiBold};
 `;
 
 const NoticeBox = styled.div`

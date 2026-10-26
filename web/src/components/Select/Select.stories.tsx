@@ -1,5 +1,5 @@
+import { Select } from '@bombom/shared/ui-web';
 import { useState } from 'react';
-import Select from './Select';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
 const meta: Meta<typeof Select> = {

@@ -1,15 +1,17 @@
+import {
+  useModal,
+  useDevice,
+  sendMessageToRN,
+  isWebView,
+} from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import useEventNotification from '../hooks/useEventNotification';
 import { formatEventDateTime } from '../utils/date';
-import useModal from '@/components/Modal/useModal';
 import { useAuth } from '@/contexts/AuthContext';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import QRCodeModal from '@/pages/recommend/components/QRCodeModal/QRCodeModal';
-import { isWebView } from '@/utils/device';
 import { downloadApp } from '@/utils/downloadApp';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 const EventNotificationButton = () => {
   const { modalRef, closeModal, isOpen, openModal } = useModal();
@@ -97,8 +99,7 @@ const Container = styled.button<{
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t7Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t7SemiBold};
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.white};

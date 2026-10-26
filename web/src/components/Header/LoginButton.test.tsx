@@ -8,12 +8,6 @@ jest.mock('@bombom/shared/ui-web', () => ({
     <button type="button">{children}</button>
   ),
 }));
-jest.mock('@/components/Button/Button', () => ({
-  __esModule: true,
-  default: ({ children }: PropsWithChildren) => (
-    <button type="button">{children}</button>
-  ),
-}));
 jest.mock('@tanstack/react-router', () => ({
   useNavigate: () => jest.fn(),
 }));

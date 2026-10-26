@@ -1,9 +1,6 @@
+import { Button, Modal, useDevice, Checkbox } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '@/components/Button/Button';
-import Checkbox from '@/components/Checkbox/Checkbox';
-import Modal from '@/components/Modal/Modal';
 import { useChallengeStartModal } from '@/hooks/useChallengeStartModal';
-import { useDevice } from '@/hooks/useDevice';
 
 const ChallengeStartModal = () => {
   const device = useDevice();

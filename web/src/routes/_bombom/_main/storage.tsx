@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useSearch } from '@tanstack/react-router';
@@ -6,7 +7,6 @@ import { useState } from 'react';
 import { queries } from '@/apis/queries';
 import AnnounceBar from '@/components/AnnounceBar/AnnounceBar';
 import RequireLogin from '@/hocs/RequireLogin';
-import { useDevice } from '@/hooks/useDevice';
 import MobileStorageContent from '@/pages/storage/components/MobileStorageContent/MobileStorageContent';
 import NewsLetterFilter from '@/pages/storage/components/NewsletterFilter/NewsletterFilter';
 import NewsletterFilterSkeleton from '@/pages/storage/components/NewsletterFilter/NewsletterFilterSkeleton';

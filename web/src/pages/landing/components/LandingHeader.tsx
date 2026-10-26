@@ -1,11 +1,11 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import HeaderLogo from '@/components/Header/HeaderLogo';
 import LoginButton from '@/components/Header/LoginButton';
 import Skeleton from '@/components/Skeleton/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 const LandingHeader = () => {
   const device = useDevice();
