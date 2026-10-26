@@ -35,10 +35,12 @@ const isSameChallenge = (fromPathname: string, toPathname: string) => {
 
 // 상세 화면으로 들어가는 Push와 상세 화면에서 나오는 Pop만 전환한다.
 // replace 이동(리다이렉트 등)은 history index가 그대로라 전환하지 않는다.
+// 검색 조건이나 해시만 바뀐 이동은 화면이 그대로라 전환하지 않는다.
 const getTransitionDirection = (
   from: ParsedLocation,
   to: ParsedLocation,
 ): NavigationDirection | null => {
+  if (from.pathname === to.pathname) return null;
   if (isSameChallenge(from.pathname, to.pathname)) return null;
 
   if (
