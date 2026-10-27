@@ -128,7 +128,7 @@ const useNotification = () => {
       Notifications.addNotificationResponseReceivedListener((response) => {
         const { data } = response.notification.request.content;
 
-        const url = getNotificationUrl(data);
+        const url = getNotificationUrl(data ?? {});
         if (url) {
           sendMessageToWeb({
             type: 'NOTIFICATION_ROUTING',
