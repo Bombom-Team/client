@@ -207,6 +207,9 @@ export const MainScreen = () => {
             Platform.OS === 'ios' ? IOS_SUPPRESSED_MENU_ITEMS : undefined
           }
           scalesPageToFit={false}
+          // New Architecture의 react-native-webview 13.x는 값을 지정하지 않으면 iOS 감속률이 0이 되어 관성 스크롤이 사라진다.
+          // Android는 문자열 값을 변환하지 못해 오류가 나므로 iOS에만 전달한다.
+          decelerationRate={Platform.OS === 'ios' ? 'normal' : undefined}
           automaticallyAdjustsScrollIndicatorInsets={false}
           injectedJavaScript={`
             const rootElement = document.documentElement;
