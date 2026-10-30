@@ -25,6 +25,39 @@ Notifications.setNotificationHandler({
 const useNotification = () => {
   const { sendMessageToWeb } = useWebView();
   const isRegisteringRef = useRef(false);
+  const isWebReadyRef = useRef(false);
+  const pendingNotificationUrlRef = useRef<string | null>(null);
+  const hasHandledInitialNotificationRef = useRef(false);
+
+  // 웹이 준비 신호를 보내기 전에 보낸 메시지는 웹이 받지 못하므로 준비될 때까지 보관한다.
+  const routeToNotificationUrl = useCallback(
+    (url: string) => {
+      if (!isWebReadyRef.current) {
+        pendingNotificationUrlRef.current = url;
+        return;
+      }
+
+      sendMessageToWeb({
+        type: 'NOTIFICATION_ROUTING',
+        payload: { url },
+      });
+    },
+    [sendMessageToWeb],
+  );
+
+  const handleWebLoadStart = useCallback(() => {
+    isWebReadyRef.current = false;
+  }, []);
+
+  const handleWebReady = useCallback(() => {
+    isWebReadyRef.current = true;
+
+    const url = pendingNotificationUrlRef.current;
+    if (!url) return;
+
+    pendingNotificationUrlRef.current = null;
+    routeToNotificationUrl(url);
+  }, [routeToNotificationUrl]);
 
   const registerFCMToken = useCallback(async () => {
     if (isRegisteringRef.current) {
@@ -61,24 +94,23 @@ const useNotification = () => {
   }, []);
 
   // 앱 종료 상태에서 알림을 탭한 경우
+  // WebView를 다시 불러올 때마다 호출되므로, iOS에 남아 있는 이전 탭으로 다시 이동하지 않게 한 번만 처리한다.
   const coldStartNotificationOpen = useCallback(async () => {
+    if (hasHandledInitialNotificationRef.current) return;
+    hasHandledInitialNotificationRef.current = true;
+
     try {
       const message = await messaging().getInitialNotification();
       if (!message) return;
 
       const url = getNotificationUrl(message.data ?? {});
       if (url) {
-        setTimeout(() => {
-          sendMessageToWeb({
-            type: 'NOTIFICATION_ROUTING',
-            payload: { url },
-          });
-        }, 800);
+        routeToNotificationUrl(url);
       }
     } catch (error) {
       console.error('앱 종료 상태의 알림 수신에 문제가 발생했습니다.', error);
     }
-  }, [sendMessageToWeb]);
+  }, [routeToNotificationUrl]);
 
   const onNotification = useCallback(() => {
     coldStartNotificationOpen();
@@ -115,25 +147,22 @@ const useNotification = () => {
       (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
         const url = getNotificationUrl(remoteMessage.data ?? {});
         if (url) {
-          sendMessageToWeb({
-            type: 'NOTIFICATION_ROUTING',
-            payload: { url },
-          });
+          routeToNotificationUrl(url);
         }
       },
     );
 
-    // 포그라운드에서 알림을 탭한 경우
+    // 포그라운드에서 띄운 로컬 알림을 탭한 경우
     const responseListener =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        const { data } = response.notification.request.content;
+        const { content, trigger } = response.notification.request;
 
-        const url = getNotificationUrl(data);
+        // 원격 푸시 탭은 Firebase 리스너가 처리한다. iOS는 같은 탭을 여기로도 보내지만 data가 비어 있다.
+        if (trigger && 'type' in trigger && trigger.type === 'push') return;
+
+        const url = getNotificationUrl(content.data ?? {});
         if (url) {
-          sendMessageToWeb({
-            type: 'NOTIFICATION_ROUTING',
-            payload: { url },
-          });
+          routeToNotificationUrl(url);
         }
       });
 
@@ -144,7 +173,7 @@ const useNotification = () => {
       unsubscribeNotificationOpened();
       responseListener.remove();
     };
-  }, [coldStartNotificationOpen, registerFCMToken, sendMessageToWeb]);
+  }, [coldStartNotificationOpen, registerFCMToken, routeToNotificationUrl]);
 
   useEffect(() => {
     createAndroidChannel();
@@ -153,6 +182,8 @@ const useNotification = () => {
   return {
     onNotification,
     registerFCMToken,
+    handleWebLoadStart,
+    handleWebReady,
   };
 };
 

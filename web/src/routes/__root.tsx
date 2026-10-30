@@ -14,6 +14,7 @@ import GoogleAnalyticsTracker from '@/libs/googleAnalytics/GoogleAnalyticsTracke
 import { useReferrerTracking } from '@/libs/googleAnalytics/useReferrerTracking';
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
 import { useWebViewRouting } from '@/libs/webview/useWebViewRouting';
+import WebViewReadyNotifier from '@/libs/webview/WebViewReadyNotifier';
 import { queryClient } from '@/main';
 import { isDevelopment, isLocal } from '@/utils/environment';
 import type { QueryClient } from '@tanstack/react-query';
@@ -36,6 +37,7 @@ const RootComponent = () => {
         <ThemeProvider theme={theme}>
           <AuthProvider>
             <GoogleAnalyticsTracker />
+            <WebViewReadyNotifier />
             <Outlet />
             <Toast />
           </AuthProvider>

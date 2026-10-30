@@ -89,7 +89,12 @@ export const MainScreen = () => {
   }, []);
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
-  const { onNotification, registerFCMToken } = useNotification();
+  const {
+    onNotification,
+    registerFCMToken,
+    handleWebLoadStart,
+    handleWebReady,
+  } = useNotification();
   const { isVersionCheckCompleted, isForceUpdateRequired, openStore } =
     useForceUpdate();
   const { sendPermissionToWeb } = useNotificationPermission({
@@ -168,6 +173,10 @@ export const MainScreen = () => {
           sendPermissionToWeb();
           break;
 
+        case 'WEB_READY':
+          handleWebReady();
+          break;
+
         case 'SHOW_NOTIFICATION_PERMISSION_SETTING':
           goToSystemPermission();
           break;
@@ -243,6 +252,7 @@ export const MainScreen = () => {
           originWhitelist={['*']}
           onMessage={handleWebViewMessage}
           onNavigationStateChange={handleNavigationStateChange}
+          onLoadStart={handleWebLoadStart}
           onLoadEnd={handleWebViewLoadEnd}
           onContentProcessDidTerminate={() => {
             console.warn('WebView Content Process Did Terminate');
