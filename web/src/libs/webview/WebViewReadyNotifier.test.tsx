@@ -23,7 +23,7 @@ describe('웹 준비 신호', () => {
     jest.mocked(isWebView).mockReturnValue(true);
   });
 
-  it('프로필 조회 중에는 보내지 않는다', () => {
+  it('프로필을 조회하는 중이면 준비 신호를 보내지 않는다', () => {
     mockAuth(true);
 
     render(<WebViewReadyNotifier />);
@@ -31,7 +31,7 @@ describe('웹 준비 신호', () => {
     expect(sendMessageToRN).not.toHaveBeenCalled();
   });
 
-  it('프로필 조회가 끝나면 앱에 보낸다', () => {
+  it('프로필 조회가 끝나면 준비 신호를 한 번 보낸다', () => {
     mockAuth(true);
     const { rerender } = render(<WebViewReadyNotifier />);
 
@@ -42,7 +42,7 @@ describe('웹 준비 신호', () => {
     expect(sendMessageToRN).toHaveBeenCalledWith({ type: 'WEB_READY' });
   });
 
-  it('WebView가 아니면 보내지 않는다', () => {
+  it('WebView 밖에서 열리면 준비 신호를 보내지 않는다', () => {
     jest.mocked(isWebView).mockReturnValue(false);
     mockAuth(false);
 
