@@ -44,6 +44,7 @@ export type WebToRNMessage =
       type: 'SHOW_NOTIFICATION_PERMISSION_SETTING';
     }
   | { type: 'REGISTER_FCM_TOKEN'; payload: { memberId: number } }
+  | { type: 'WEB_READY' }
   | {
       type: 'SAVE_IMAGE';
       payload: { imageFileBase64: string; fileName: string };
