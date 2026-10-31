@@ -23,7 +23,7 @@ import { ENV } from '@/constants/env';
 import { WEBVIEW_USER_AGENT } from '@/constants/webview';
 import { goToSystemPermission, updateMemberId } from '@/utils/notification';
 import useNotification from '@/hooks/useNotification';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDeviceInfo } from '@/hooks/useDeviceInfo';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import ForceUpdateScreen from './ForceUpdateScreen';
@@ -81,7 +81,6 @@ export const MainScreen = () => {
   const { showWebViewLogin, showLogin, hideLogin } = useAuth();
   const { webViewRef } = useWebView();
   const { sendDeviceInfoToWeb } = useDeviceInfo();
-  const webViewLoadEndCleanupRef = useRef<() => void>(null);
   const [webLoginFailure, setWebLoginFailure] =
     useState<WebViewLoginFailure | null>(null);
   const handleWebLoginFailureHandled = useCallback(() => {
@@ -89,12 +88,14 @@ export const MainScreen = () => {
   }, []);
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
+  const reloadWebView = useCallback(() => webViewRef.current?.reload(), [webViewRef]);
   const {
     onNotification,
     registerFCMToken,
     handleWebLoadStart,
     handleWebReady,
-  } = useNotification();
+    handleWebLoadError,
+  } = useNotification(reloadWebView);
   const { isVersionCheckCompleted, isForceUpdateRequired, openStore } =
     useForceUpdate();
   const { sendPermissionToWeb } = useNotificationPermission({
@@ -103,19 +104,10 @@ export const MainScreen = () => {
 
   const handleWebViewLoadEnd = () => {
     console.log('WebView 로드 완료');
-    if (webViewLoadEndCleanupRef.current) {
-      webViewLoadEndCleanupRef.current();
-    }
-
     SplashScreen.hide();
-    webViewLoadEndCleanupRef.current = onNotification();
   };
 
-  useEffect(() => {
-    return () => {
-      webViewLoadEndCleanupRef.current?.();
-    };
-  }, []);
+  useEffect(() => onNotification(), [onNotification]);
 
   const handleWebViewMessage = (event: WebViewMessageEvent) => {
     try {
@@ -260,6 +252,7 @@ export const MainScreen = () => {
           }}
           onError={() => {
             console.error('WebView Error');
+            handleWebLoadError();
           }}
           onHttpError={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent;
