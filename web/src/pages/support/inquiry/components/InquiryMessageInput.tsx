@@ -29,6 +29,7 @@ const PhotoIcon = ({ color }: { color: string }) => (
 );
 
 interface InquiryMessageInputProps {
+  roomId: number;
   disabled?: boolean;
   isSubmitting?: boolean;
   onSubmit: (body: SendInquiryMessageBody) => Promise<unknown>;
@@ -38,6 +39,7 @@ const MAX_CONTENT_LENGTH = 500;
 const MAX_IMAGE_COUNT = 4;
 
 const InquiryMessageInput = ({
+  roomId,
   disabled = false,
   isSubmitting = false,
   onSubmit,
@@ -45,7 +47,7 @@ const InquiryMessageInput = ({
   const [content, setContent] = useState('');
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const { mutate: mutateUploadImages, isPending: isUploading } =
-    useInquiryImagesUploadMutation();
+    useInquiryImagesUploadMutation({ roomId });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {

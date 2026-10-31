@@ -24,6 +24,8 @@ jest.mock('@bombom/shared/ui-web', () => ({
   toast: { error: jest.fn() },
 }));
 
+const ROOM_ID = 1;
+
 const renderInput = () => {
   const onMutationError = jest.fn();
   const onSubmit = jest.fn().mockResolvedValue(undefined);
@@ -34,7 +36,7 @@ const renderInput = () => {
   const { container } = render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <InquiryMessageInput onSubmit={onSubmit} />
+        <InquiryMessageInput roomId={ROOM_ID} onSubmit={onSubmit} />
       </ThemeProvider>
     </QueryClientProvider>,
   );
@@ -87,6 +89,9 @@ describe('InquiryMessageInput', () => {
     });
 
     await screen.findByAltText('첨부 미리보기');
+    expect(uploadInquiryImages).toHaveBeenCalledWith(ROOM_ID, [
+      expect.any(File),
+    ]);
     fireEvent.click(screen.getByRole('button', { name: '전송' }));
 
     await waitFor(() => {
