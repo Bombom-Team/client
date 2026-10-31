@@ -89,11 +89,11 @@ export type InquiryImageUploadResponse =
 
 export const uploadInquiryImages = (roomId: number, images: File[]) => {
   const formData = new FormData();
+  formData.append('roomId', String(roomId));
   images.forEach((image) => formData.append('images', image));
 
   return fetcher.post<FormData, InquiryImageUploadResponse>({
     path: '/inquiries/images',
-    query: { roomId },
     body: formData,
     headers: guestHeaders(),
   });
