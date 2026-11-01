@@ -28,6 +28,7 @@ export const Route = createFileRoute('/_bombom/_main/support/')({
         { title: '봄봄 | 고객센터' },
         { name: 'description', content: description },
         { name: 'robots', content: 'index, follow' },
+        { property: 'og:url', content: 'https://www.bombom.news/support' },
       ],
       links: [{ rel: 'canonical', href: 'https://www.bombom.news/support' }],
     };

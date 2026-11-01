@@ -30,6 +30,7 @@ export const Route = createFileRoute('/blog/post/$postId/$title')({
     if (!post) return { meta: [] };
 
     const description = post.content.slice(0, 50);
+    const url = `https://www.bombom.news/blog/post/${params.postId}/${createSlug(post.title)}`;
     const schemaJson = createBlogPostingSchema(
       post,
       params.postId,
@@ -45,6 +46,7 @@ export const Route = createFileRoute('/blog/post/$postId/$title')({
         { property: 'og:description', content: description },
         { property: 'og:image', content: post.thumbnailImageUrl ?? '' },
         { property: 'og:type', content: 'article' },
+        { property: 'og:url', content: url },
         { property: 'article:published_time', content: post.publishedAt },
         ...post.hashTags.map((tag) => ({
           property: 'article:tag',
@@ -66,7 +68,7 @@ export const Route = createFileRoute('/blog/post/$postId/$title')({
       links: [
         {
           rel: 'canonical',
-          href: `https://www.bombom.news/blog/post/${params.postId}/${createSlug(post.title)}`,
+          href: url,
         },
       ],
       scripts: [
