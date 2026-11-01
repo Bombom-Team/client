@@ -7,6 +7,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { SwcMinifyWebpackPlugin } from 'swc-minify-webpack-plugin';
 import webpack from 'webpack';
 import 'webpack-dev-server';
+import { appendNewsletterUrls } from './scripts/sitemap';
 
 dotenv.config();
 
@@ -128,6 +129,11 @@ export default (env: Env, argv: Argv) => {
                 {
                   from: path.resolve(__dirname, 'public', 'sitemap.xml'),
                   to: path.resolve(__dirname, 'dist', 'sitemap.xml'),
+                  transform: (content: Buffer) =>
+                    appendNewsletterUrls(
+                      content.toString(),
+                      process.env.API_BASE_URL,
+                    ),
                 },
               ]
             : []),

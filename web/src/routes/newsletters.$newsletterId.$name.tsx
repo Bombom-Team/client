@@ -7,7 +7,8 @@ import NewsletterDetailDesktop from '@/pages/newsletter-detail/NewsletterDetailD
 import NewsletterDetailDesktopSkeleton from '@/pages/newsletter-detail/NewsletterDetailDesktopSkeleton';
 import NewsletterDetailMobile from '@/pages/newsletter-detail/NewsletterDetailMobile';
 import NewsletterDetailMobileSkeleton from '@/pages/newsletter-detail/NewsletterDetailMobileSkeleton';
-import { createSlug } from '@/utils/url';
+import { createNewsletterSchema } from '@/pages/newsletter-detail/utils/seo';
+import { getNewsletterDetailUrl } from '@/utils/url';
 import type { NewsletterTab } from '@/pages/newsletter-detail/types';
 import type { SearchSchemaInput } from '@tanstack/react-router';
 
@@ -34,7 +35,7 @@ export const Route = createFileRoute('/newsletters/$newsletterId/$name')({
 
     const description = (newsletter.description ?? '').slice(0, 160);
     const title = `${newsletter.name} | 봄봄`;
-    const url = `https://www.bombom.news/newsletters/${params.newsletterId}/${createSlug(newsletter.name, params.newsletterId)}`;
+    const url = getNewsletterDetailUrl(params.newsletterId, newsletter.name);
     const image = newsletter.imageUrl ?? '';
 
     return {
@@ -62,6 +63,12 @@ export const Route = createFileRoute('/newsletters/$newsletterId/$name')({
           : []),
       ],
       links: [{ rel: 'canonical', href: url }],
+      scripts: [
+        {
+          type: 'application/ld+json',
+          children: createNewsletterSchema(newsletter, url),
+        },
+      ],
     };
   },
   component: NewsletterDetailRoute,
