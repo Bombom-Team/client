@@ -9,6 +9,7 @@ import {
   Outlet,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import RouteTransition from '@/components/RouteTransition/RouteTransition';
 import { AuthProvider } from '@/contexts/AuthContext';
 import GoogleAnalyticsTracker from '@/libs/googleAnalytics/GoogleAnalyticsTracker';
 import { useReferrerTracking } from '@/libs/googleAnalytics/useReferrerTracking';
@@ -36,7 +37,9 @@ const RootComponent = () => {
         <ThemeProvider theme={theme}>
           <AuthProvider>
             <GoogleAnalyticsTracker />
-            <Outlet />
+            <RouteTransition>
+              <Outlet />
+            </RouteTransition>
             <Toast />
           </AuthProvider>
         </ThemeProvider>
