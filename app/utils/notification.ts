@@ -117,4 +117,18 @@ export const getMemberId = async () => {
   }
 };
 
-export { getNotificationUrl } from './getNotificationUrl';
+export const getNotificationUrl = (data: Record<string, unknown>) => {
+  switch (data.notificationType) {
+    case 'ARTICLE':
+      return `/articles/${data.articleId}`;
+    case 'EVENT':
+      return '/event';
+    case 'INQUIRY_MESSAGE_ARRIVAL': {
+      const roomId = Number(data.roomId);
+      if (Number.isNaN(roomId)) return null;
+      return `/support/inquiry/${roomId}`;
+    }
+    default:
+      return null;
+  }
+};
