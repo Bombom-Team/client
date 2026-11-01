@@ -1,5 +1,5 @@
 import { useDevice } from '@bombom/shared/ui-web';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { Suspense } from 'react';
 import { queries } from '@/apis/queries';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
@@ -8,7 +8,7 @@ import NewsletterDetailDesktopSkeleton from '@/pages/newsletter-detail/Newslette
 import NewsletterDetailMobile from '@/pages/newsletter-detail/NewsletterDetailMobile';
 import NewsletterDetailMobileSkeleton from '@/pages/newsletter-detail/NewsletterDetailMobileSkeleton';
 import { createNewsletterSchema } from '@/pages/newsletter-detail/utils/seo';
-import { getNewsletterDetailUrl } from '@/utils/url';
+import { createSlug, getNewsletterDetailUrl } from '@/utils/url';
 import type { NewsletterTab } from '@/pages/newsletter-detail/types';
 import type { SearchSchemaInput } from '@tanstack/react-router';
 
@@ -17,11 +17,23 @@ interface NewsletterDetailSearch {
 }
 
 export const Route = createFileRoute('/newsletters/$newsletterId/$name')({
-  loader: async ({ context, params }) => {
+  loaderDeps: ({ search }) => ({ tab: search.tab }),
+  loader: async ({ context, params, deps }) => {
     const id = Number(params.newsletterId);
     const newsletter = await context.queryClient.ensureQueryData(
       queries.newsletterDetail({ id }),
     );
+    const slug = createSlug(newsletter.name, params.newsletterId);
+
+    if (params.name !== slug) {
+      throw redirect({
+        to: '/newsletters/$newsletterId/$name',
+        params: { newsletterId: params.newsletterId, name: slug },
+        search: { tab: deps.tab },
+        replace: true,
+      });
+    }
+
     return { newsletter };
   },
   head: ({ loaderData, params }) => {
@@ -29,7 +41,10 @@ export const Route = createFileRoute('/newsletters/$newsletterId/$name')({
 
     if (!newsletter) {
       return {
-        meta: [{ title: '봄봄 | 뉴스레터 상세' }],
+        meta: [
+          { title: '봄봄 | 뉴스레터 상세' },
+          { name: 'robots', content: 'noindex' },
+        ],
       };
     }
 
