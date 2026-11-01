@@ -10,6 +10,7 @@ import PostDetail from '@/pages/blog/components/PostDetail/PostDetail';
 import PostDetailSkeleton from '@/pages/blog/components/PostDetail/PostDetailSkeleton';
 import ShareButton from '@/pages/blog/components/PostDetail/ShareButton';
 import { createBlogPostingSchema } from '@/pages/blog/utils/seo';
+import { getPlainText } from '@/pages/blog/utils/tiptap';
 import { createSlug } from '@/utils/url';
 import type { Device } from '@bombom/shared/ui-web';
 
@@ -29,7 +30,7 @@ export const Route = createFileRoute('/blog/post/$postId/$title')({
 
     if (!post) return { meta: [] };
 
-    const description = post.content.slice(0, 50);
+    const description = getPlainText(post.content).slice(0, 160);
     const url = `https://www.bombom.news/blog/post/${params.postId}/${createSlug(post.title)}`;
     const schemaJson = createBlogPostingSchema(
       post,
