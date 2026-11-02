@@ -1,5 +1,3 @@
-// web/scripts/sitemap.ts(webpack 빌드)에서도 import합니다. `@/` alias import와 브라우저 전용 API를 쓰지 않습니다.
-
 const ALLOWED_PROTOCOL = ['https:', 'http:', 'mailto:'];
 const SITE_URL = 'https://www.bombom.news';
 
@@ -24,10 +22,15 @@ export const createSlug = (text: string, fallback = '') => {
   return slug || fallback;
 };
 
-export const getNewsletterDetailUrl = (
+export const getNewsletterDetailPath = (
   newsletterId: number | string,
   name: string,
 ) => {
   const id = String(newsletterId);
-  return `${SITE_URL}/newsletters/${id}/${createSlug(name, id)}`;
+  return `/newsletters/${id}/${createSlug(name, id)}`;
 };
+
+export const getNewsletterDetailUrl = (
+  newsletterId: number | string,
+  name: string,
+) => `${SITE_URL}${getNewsletterDetailPath(newsletterId, name)}`;

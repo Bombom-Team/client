@@ -7,6 +7,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { SwcMinifyWebpackPlugin } from 'swc-minify-webpack-plugin';
 import webpack from 'webpack';
 import 'webpack-dev-server';
+import { createNewsletterPrerenderPlugin } from './scripts/prerender';
 import { appendNewsletterUrls } from './scripts/sitemap';
 
 dotenv.config();
@@ -159,6 +160,7 @@ export default (env: Env, argv: Argv) => {
       }),
       ...(isProduction
         ? [
+            createNewsletterPrerenderPlugin(process.env.API_BASE_URL),
             sentryWebpackPlugin({
               org: process.env.SENTRY_ORG,
               project: process.env.SENTRY_PROJECT,
