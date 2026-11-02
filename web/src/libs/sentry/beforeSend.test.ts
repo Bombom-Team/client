@@ -65,7 +65,7 @@ describe('beforeSend', () => {
     });
   });
 
-  it('ChunkLoadError는 CHUNK_LOAD P2 warning으로 분류한다.', () => {
+  it('에러가 ChunkLoadError면 CHUNK_LOAD P2 warning으로 분류한다.', () => {
     const error = new Error('Loading chunk 7568 failed.');
     error.name = 'ChunkLoadError';
 
