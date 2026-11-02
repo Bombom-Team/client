@@ -61,6 +61,8 @@ jobs:
 
       # 지금 빌드에 없고, 마지막으로 올린 지 RETENTION_DAYS일이 지난 파일만 지운다.
       - name: Prune stale assets
+        # 파이프 중간의 aws·jq 실패도 단계 실패로 처리한다 (bash -eo pipefail).
+        shell: bash
         env:
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           RETENTION_DAYS: 45
