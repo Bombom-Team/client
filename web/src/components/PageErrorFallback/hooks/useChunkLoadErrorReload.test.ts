@@ -90,4 +90,20 @@ describe('useChunkLoadErrorReload', () => {
     expect(result.current).toBe(false);
     expect(getLastAutoReloadAt()).toBeNull();
   });
+
+  it('sessionStorage에 저장하지 못하면 새로고침하지 않는다.', () => {
+    jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceededError');
+    });
+    const error = createChunkLoadError();
+
+    const { result } = renderHook(() => useChunkLoadErrorReload(error));
+
+    expect(result.current).toBe(false);
+    expect(captureChunkLoadError).toHaveBeenCalledTimes(1);
+    expect(captureChunkLoadError).toHaveBeenCalledWith({
+      error,
+      isAutoReload: false,
+    });
+  });
 });

@@ -21,19 +21,24 @@ const canAutoReload = () => {
 };
 
 export const useChunkLoadErrorReload = (error: unknown) => {
-  const [isReloading] = useState(
+  const [isReloading, setIsReloading] = useState(
     () => isChunkLoadError(error) && canAutoReload(),
   );
 
   useEffect(() => {
     if (!isChunkLoadError(error)) return;
 
-    captureChunkLoadError({ error, isAutoReload: isReloading });
+    if (isReloading) {
+      if (lastAutoReloadAtStorage.set(Date.now())) {
+        captureChunkLoadError({ error, isAutoReload: true });
+        window.location.reload();
+      } else {
+        setIsReloading(false);
+      }
+      return;
+    }
 
-    if (!isReloading) return;
-
-    lastAutoReloadAtStorage.set(Date.now());
-    window.location.reload();
+    captureChunkLoadError({ error, isAutoReload: false });
   }, [error, isReloading]);
 
   return isReloading;
