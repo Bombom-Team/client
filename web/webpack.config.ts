@@ -10,6 +10,19 @@ import 'webpack-dev-server';
 
 dotenv.config();
 
+// 번들에 넣을 환경변수. src/apis/env.ts에서 읽는 값만 둔다. (NODE_ENV는 webpack이 mode로 넣는다)
+const CLIENT_ENV_KEYS = [
+  'API_BASE_URL',
+  'API_BASE_URL_EVENT',
+  'API_BASE_URL_NOTIFICATION',
+  'API_TOKEN',
+  'SENTRY_DSN',
+  'SENTRY_RELEASE',
+  'CLARITY_PROJECT_ID',
+  'MONITORING_STATUS_URL',
+  'CAPTCHA_SITE_KEY',
+];
+
 type Env = Record<string, string>;
 type Mode = 'development' | 'production';
 type Argv = { mode: Mode };
@@ -98,7 +111,14 @@ export default (env: Env, argv: Argv) => {
         semicolons: true,
       }),
       new webpack.DefinePlugin({
-        'process.env': JSON.stringify(process.env),
+        // process.env 전체를 넣으면 빌드 환경의 모든 변수가 번들에 들어간다.
+        'process.env': '{}',
+        ...Object.fromEntries(
+          CLIENT_ENV_KEYS.map((key) => [
+            `process.env.${key}`,
+            JSON.stringify(process.env[key]),
+          ]),
+        ),
         'process.env.ENABLE_MSW': JSON.stringify(env.ENABLE_MSW),
       }),
       new CopyWebpackPlugin({
@@ -141,6 +161,8 @@ export default (env: Env, argv: Argv) => {
               authToken: process.env.SENTRY_AUTH_TOKEN,
               release: {
                 name: process.env.SENTRY_RELEASE,
+                // release는 Sentry.init에서 넘긴다. 켜 두면 모든 청크에 커밋 sha가 들어가 파일 이름이 배포마다 바뀐다.
+                inject: false,
               },
               sourcemaps: {
                 filesToDeleteAfterUpload: ['./dist/**/*.map'],
