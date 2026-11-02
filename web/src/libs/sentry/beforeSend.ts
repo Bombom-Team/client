@@ -6,6 +6,7 @@ import {
   type EventHint,
   type SeverityLevel,
 } from '@sentry/react';
+import { isChunkLoadError } from './errorFilters';
 
 const RENDER_CRASH_MECHANISM = 'auto.function.react.error_boundary';
 
@@ -57,6 +58,13 @@ const classifyError = (event: ErrorEvent, hint: EventHint): Classification => {
         priority: isP1 ? 'P1' : 'P2',
       },
       level: isP1 ? 'error' : 'warning',
+    };
+  }
+
+  if (isChunkLoadError(hint.originalException)) {
+    return {
+      tags: { error_type: 'CHUNK_LOAD', priority: 'P2' },
+      level: 'warning',
     };
   }
 
