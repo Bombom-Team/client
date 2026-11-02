@@ -44,7 +44,7 @@ describe('useChunkLoadErrorReload', () => {
     expect(getLastAutoReloadAt()).toBeNull();
   });
 
-  it('처음 난 ChunkLoadError는 새로고침하고 자동 새로고침으로 기록한다.', () => {
+  it('ChunkLoadError가 처음 나면 새로고침하고 자동 새로고침으로 기록한다.', () => {
     const error = createChunkLoadError();
 
     const { result } = renderHook(() => useChunkLoadErrorReload(error));
