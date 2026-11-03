@@ -87,8 +87,9 @@ export const deleteInquiryMessage = (roomId: number, messageId: number) =>
 export type InquiryImageUploadResponse =
   components['schemas']['InquiryImageUploadResponse'];
 
-export const uploadInquiryImages = (images: File[]) => {
+export const uploadInquiryImages = (roomId: number, images: File[]) => {
   const formData = new FormData();
+  formData.append('roomId', String(roomId));
   images.forEach((image) => formData.append('images', image));
 
   return fetcher.post<FormData, InquiryImageUploadResponse>({
