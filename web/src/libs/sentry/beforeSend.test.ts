@@ -65,6 +65,19 @@ describe('beforeSend', () => {
     });
   });
 
+  it('에러가 ChunkLoadError면 CHUNK_LOAD P2 warning으로 분류한다.', () => {
+    const error = new Error('Loading chunk 7568 failed.');
+    error.name = 'ChunkLoadError';
+
+    const result = runBeforeSend({}, { originalException: error });
+
+    expect(result?.level).toBe('warning');
+    expect(result?.tags).toMatchObject({
+      error_type: 'CHUNK_LOAD',
+      priority: 'P2',
+    });
+  });
+
   it('에러 바운더리 렌더 크래시는 P1 fatal로 분류한다.', () => {
     const result = runBeforeSend(
       {

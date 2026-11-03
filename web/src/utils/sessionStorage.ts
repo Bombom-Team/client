@@ -8,7 +8,7 @@ type Serializable =
 
 interface StorageType<T extends Serializable> {
   get: () => T;
-  set: (data: T) => void;
+  set: (data: T) => boolean;
   remove: () => void;
 }
 
@@ -28,8 +28,9 @@ export const createSessionStorage = <T extends Serializable>(
   set(data) {
     try {
       window.sessionStorage.setItem(key, JSON.stringify(data));
+      return true;
     } catch {
-      // noop
+      return false;
     }
   },
 
