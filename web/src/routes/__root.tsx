@@ -70,7 +70,6 @@ export const Route = createRootRouteWithContext<BomBomRouterContext>()({
       },
       { property: 'og:image', content: '/assets/png/og-image.png' },
       { property: 'og:image:alt', content: '봄봄 로고' },
-      { property: 'og:url', content: 'https://www.bombom.news' },
       { name: 'twitter:title', content: '봄봄' },
       {
         name: 'twitter:description',
@@ -80,7 +79,6 @@ export const Route = createRootRouteWithContext<BomBomRouterContext>()({
       { name: 'twitter:image:alt', content: '봄봄 로고' },
       { name: 'robots', content: 'index, follow' },
     ],
-    links: [{ rel: 'canonical', href: 'https://www.bombom.news' }],
   }),
   component: () => (
     <>

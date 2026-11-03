@@ -17,7 +17,9 @@ export const Route = createFileRoute('/_bombom/_main/')({
       {
         title: '봄봄 | 뉴스레터 추천',
       },
+      { property: 'og:url', content: 'https://www.bombom.news' },
     ],
+    links: [{ rel: 'canonical', href: 'https://www.bombom.news' }],
   }),
   component: Index,
 });
