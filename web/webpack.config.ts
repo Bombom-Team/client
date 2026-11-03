@@ -10,6 +10,18 @@ import 'webpack-dev-server';
 
 dotenv.config();
 
+const CLIENT_ENV_KEYS = [
+  'API_BASE_URL',
+  'API_BASE_URL_EVENT',
+  'API_BASE_URL_NOTIFICATION',
+  'API_TOKEN',
+  'SENTRY_DSN',
+  'SENTRY_RELEASE',
+  'CLARITY_PROJECT_ID',
+  'MONITORING_STATUS_URL',
+  'CAPTCHA_SITE_KEY',
+];
+
 type Env = Record<string, string>;
 type Mode = 'development' | 'production';
 type Argv = { mode: Mode };
@@ -98,7 +110,13 @@ export default (env: Env, argv: Argv) => {
         semicolons: true,
       }),
       new webpack.DefinePlugin({
-        'process.env': JSON.stringify(process.env),
+        'process.env': '{}',
+        ...Object.fromEntries(
+          CLIENT_ENV_KEYS.map((key) => [
+            `process.env.${key}`,
+            JSON.stringify(process.env[key]),
+          ]),
+        ),
         'process.env.ENABLE_MSW': JSON.stringify(env.ENABLE_MSW),
       }),
       new CopyWebpackPlugin({
@@ -141,6 +159,7 @@ export default (env: Env, argv: Argv) => {
               authToken: process.env.SENTRY_AUTH_TOKEN,
               release: {
                 name: process.env.SENTRY_RELEASE,
+                inject: false,
               },
               sourcemaps: {
                 filesToDeleteAfterUpload: ['./dist/**/*.map'],
