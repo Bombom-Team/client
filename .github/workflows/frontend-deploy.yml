@@ -44,10 +44,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # 이전 배포의 JS 파일은 지우지 않는다. 배포 전에 열어 둔 화면이 메뉴를 옮길 때 이 파일을 불러온다.
       - name: Upload to S3
         run: |
           echo "Uploading to bucket: ${{ secrets.S3_BUCKET }}"
-          aws s3 sync web/dist s3://${{ secrets.S3_BUCKET }}/build-origin --delete
+          aws s3 sync web/dist s3://${{ secrets.S3_BUCKET }}/build-origin --exclude "index.html"
+          # index.html은 새 JS 파일을 모두 올린 뒤 마지막에 올린다.
+          aws s3 cp web/dist/index.html s3://${{ secrets.S3_BUCKET }}/build-origin/index.html
 
       - name: CloudFront Invalidation
         run: |
@@ -55,6 +58,36 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
+
+      # 지금 빌드에 없고, 마지막으로 올린 지 RETENTION_DAYS일이 지난 파일만 지운다.
+      - name: Prune stale assets
+        # 파이프 중간의 aws·jq 실패도 단계 실패로 처리한다 (bash -eo pipefail).
+        shell: bash
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          RETENTION_DAYS: 45
+        run: |
+          export LC_ALL=C
+          (cd web/dist && find . -type f | sed 's|^\./||' | sort) > "$RUNNER_TEMP/current-files.txt"
+          if ! grep -qx 'index.html' "$RUNNER_TEMP/current-files.txt"; then
+            echo "index.html not found in web/dist. Stopping prune."
+            exit 1
+          fi
+
+          CUTOFF=$(date -u -d "$RETENTION_DAYS days ago" +%s)
+          # LastModified를 초 단위로 바꿔 CUTOFF보다 오래된 파일만 고른다.
+          aws s3api list-objects-v2 --bucket "$S3_BUCKET" --prefix build-origin/ --output json \
+            | jq -r --argjson cutoff "$CUTOFF" '
+                .Contents[]?
+                | select((.LastModified | sub("\\.[0-9]+"; "") | sub("\\+00:00$"; "Z") | fromdateiso8601) < $cutoff)
+                | .Key | ltrimstr("build-origin/")' \
+            | sort > "$RUNNER_TEMP/expired-files.txt"
+          comm -23 "$RUNNER_TEMP/expired-files.txt" "$RUNNER_TEMP/current-files.txt" > "$RUNNER_TEMP/stale-files.txt"
+
+          echo "Deleting $(wc -l < "$RUNNER_TEMP/stale-files.txt") files not uploaded in the last $RETENTION_DAYS days"
+          while IFS= read -r file; do
+            aws s3 rm "s3://$S3_BUCKET/build-origin/$file"
+          done < "$RUNNER_TEMP/stale-files.txt"
   notify:
     runs-on: ubuntu-latest
     needs: deploy
