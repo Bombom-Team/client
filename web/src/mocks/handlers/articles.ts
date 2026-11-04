@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import {
   ARTICLE_DETAIL,
+  LONG_URL_ARTICLE_DETAIL,
+  LONG_URL_ARTICLE_ID,
   MAEIL_MAIL_ARTICLE_DETAIL,
   MAEIL_MAIL_ARTICLE_ID,
 } from '../datas/articleDetail';
@@ -109,6 +111,10 @@ export const articleHandlers = [
 
     if (Number(id) === MAEIL_MAIL_ARTICLE_ID) {
       return HttpResponse.json(MAEIL_MAIL_ARTICLE_DETAIL);
+    }
+
+    if (Number(id) === LONG_URL_ARTICLE_ID) {
+      return HttpResponse.json(LONG_URL_ARTICLE_DETAIL);
     }
 
     return HttpResponse.json(ARTICLE_DETAIL);

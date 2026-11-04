@@ -1,4 +1,4 @@
-import { MAEIL_MAIL_ARTICLE_ID } from './articleDetail';
+import { LONG_URL_ARTICLE_ID, MAEIL_MAIL_ARTICLE_ID } from './articleDetail';
 import type { Article } from '@/types/articles';
 
 export const ARTICLES: Article[] = [
@@ -102,7 +102,7 @@ export const ARTICLES: Article[] = [
     },
   },
   {
-    articleId: 8,
+    articleId: LONG_URL_ARTICLE_ID,
     title: '[Korean FE Article] 고마워요, Deno',
     contentsSummary:
       '[Korean FE Article] 고마워요, Deno 글 링크: https://junghan92.medium.com/%EB%B2%88%EC%97%AD-%EA%B3%A0%EB%A7...',
