@@ -14,96 +14,9 @@ const DEFAULT_ERROR_MESSAGES: Record<number, string> = {
 type JsonBody = Record<string, unknown> | unknown[] | FormData;
 type Query = Record<string, string | number | boolean | undefined | string[]>;
 
-type FetcherOptions<TRequest extends JsonBody> = {
-  path: string;
-  baseUrl?: string;
-  query?: Query;
-  body?: TRequest;
-  headers?: Record<string, string>;
-};
-
-type GetFetcherOptions = FetcherOptions<never> & {
-  credentials?: RequestCredentials;
-  signal?: AbortSignal;
-};
-
-export const fetcher = {
-  get: async <TResponse>({
-    path,
-    baseUrl,
-    query,
-    credentials,
-    headers,
-    signal,
-  }: GetFetcherOptions) =>
-    request<never, TResponse>({
-      path,
-      baseUrl,
-      query,
-      credentials,
-      headers,
-      method: 'GET',
-      signal,
-    }),
-  post: async <TRequest extends JsonBody, TResponse>({
-    path,
-    baseUrl,
-    body,
-    headers,
-  }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({
-      path,
-      baseUrl,
-      body,
-      method: 'POST',
-      headers,
-    }),
-  patch: async <TRequest extends JsonBody, TResponse>({
-    path,
-    baseUrl,
-    query,
-    body,
-    headers,
-  }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({
-      path,
-      baseUrl,
-      query,
-      body,
-      method: 'PATCH',
-      headers,
-    }),
-  put: async <TRequest extends JsonBody, TResponse>({
-    path,
-    baseUrl,
-    body,
-    headers,
-  }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({
-      path,
-      baseUrl,
-      body,
-      method: 'PUT',
-      headers,
-    }),
-  delete: async <TRequest extends JsonBody, TResponse>({
-    path,
-    baseUrl,
-    body,
-    headers,
-  }: FetcherOptions<TRequest>) =>
-    request<TRequest, TResponse>({
-      path,
-      baseUrl,
-      body,
-      method: 'DELETE',
-      headers,
-    }),
-};
-
 type FetchMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
 
-type RequestOptions<TRequest> = {
+interface RequestOptions<TRequest extends JsonBody> {
   path: string;
   baseUrl?: string;
   method: FetchMethod;
@@ -112,9 +25,42 @@ type RequestOptions<TRequest> = {
   headers?: Record<string, string>;
   credentials?: RequestCredentials;
   signal?: AbortSignal;
+}
+
+type FetcherOptions<TRequest extends JsonBody> = Pick<
+  RequestOptions<TRequest>,
+  'path' | 'baseUrl' | 'body' | 'headers'
+>;
+
+type GetFetcherOptions = Pick<
+  RequestOptions<never>,
+  'path' | 'baseUrl' | 'query' | 'headers' | 'credentials' | 'signal'
+>;
+
+type PostFetcherOptions<TRequest extends JsonBody> = FetcherOptions<TRequest> &
+  Pick<RequestOptions<TRequest>, 'query'>;
+
+type PatchFetcherOptions<TRequest extends JsonBody> = FetcherOptions<TRequest> &
+  Pick<RequestOptions<TRequest>, 'query'>;
+
+export const fetcher = {
+  get: async <TResponse>(options: GetFetcherOptions) =>
+    request<never, TResponse>({ ...options, method: 'GET' }),
+  post: async <TRequest extends JsonBody, TResponse>(
+    options: PostFetcherOptions<TRequest>,
+  ) => request<TRequest, TResponse>({ ...options, method: 'POST' }),
+  patch: async <TRequest extends JsonBody, TResponse>(
+    options: PatchFetcherOptions<TRequest>,
+  ) => request<TRequest, TResponse>({ ...options, method: 'PATCH' }),
+  put: async <TRequest extends JsonBody, TResponse>(
+    options: FetcherOptions<TRequest>,
+  ) => request<TRequest, TResponse>({ ...options, method: 'PUT' }),
+  delete: async <TRequest extends JsonBody, TResponse>(
+    options: FetcherOptions<TRequest>,
+  ) => request<TRequest, TResponse>({ ...options, method: 'DELETE' }),
 };
 
-const request = async <TRequest, TResponse>({
+const request = async <TRequest extends JsonBody, TResponse>({
   path,
   baseUrl = ENV.baseUrl,
   method,
