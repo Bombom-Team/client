@@ -152,7 +152,7 @@ export const membersHandlers = [
     async ({ request }) => {
       const { isVisible } = (await request.json()) as PostWarningVisibleParams;
       warningSetting = { isVisible: isVisible ?? warningSetting.isVisible };
-      return new HttpResponse(null, { status: 200 });
+      return new HttpResponse(null, { status: 204 });
     },
   ),
 
