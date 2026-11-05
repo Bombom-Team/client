@@ -1,6 +1,7 @@
 import { useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import { useEffect, useRef, useState } from 'react';
 import type { Device } from '@bombom/shared/ui-web';
 import QuoteIcon from '#/assets/svg/quote.svg';
 
@@ -87,6 +88,21 @@ const SECONDS_PER_CARD = 12;
 const ChallengeReviews = () => {
   const device = useDevice();
   const { visibleRef, isVisible } = useScrollVisible(0.3);
+  const rowListRef = useRef<HTMLDivElement>(null);
+  const [isRowListInView, setIsRowListInView] = useState(false);
+
+  // useScrollVisible은 한 번 보이면 true로 고정되므로, 화면 밖에서 흐름을 멈추려면 따로 관찰한다.
+  useEffect(() => {
+    const rowList = rowListRef.current;
+    if (!rowList) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsRowListInView(entry?.isIntersecting ?? false);
+    });
+    observer.observe(rowList);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <Container ref={visibleRef} device={device} isVisible={isVisible}>
@@ -98,13 +114,13 @@ const ChallengeReviews = () => {
           챌린지에 참여한 분들이 직접 남긴 후기예요.
         </Description>
       </TitleWrapper>
-      <RowList>
+      <RowList ref={rowListRef}>
         {REVIEW_ROWS.map((reviews, rowIndex) => (
           <Row key={rowIndex}>
             <Track
               cardCount={reviews.length}
               isReverse={rowIndex % 2 === 1}
-              isVisible={isVisible}
+              isPlaying={isRowListInView}
             >
               {/* 끊김 없이 이어 흐르도록 같은 목록을 한 번 더 붙이고, 복제본은 보조기기에서 숨긴다. */}
               {[false, true].map((isDuplicate) => (
@@ -169,6 +185,14 @@ const Container = styled.section<{ device: Device; isVisible: boolean }>`
       transform: translate3d(0, 0, 0);
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+
+    opacity: 1;
+
+    transform: none;
+  }
 `;
 
 const TitleWrapper = styled.div<{ device: Device }>`
@@ -227,7 +251,7 @@ const Row = styled.div`
 const Track = styled.div<{
   cardCount: number;
   isReverse: boolean;
-  isVisible: boolean;
+  isPlaying: boolean;
 }>`
   width: max-content;
 
@@ -237,7 +261,7 @@ const Track = styled.div<{
     linear infinite;
 
   animation-direction: ${({ isReverse }) => (isReverse ? 'reverse' : 'normal')};
-  animation-play-state: ${({ isVisible }) => (isVisible ? 'running' : 'paused')};
+  animation-play-state: ${({ isPlaying }) => (isPlaying ? 'running' : 'paused')};
 
   &:hover {
     animation-play-state: paused;
