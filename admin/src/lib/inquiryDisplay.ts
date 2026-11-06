@@ -25,9 +25,12 @@ export const getLastMessagePreviewLabel = (
   if (!room.lastMessage) {
     return '메시지가 없습니다.';
   }
+  // Member.nickname은 not-null이라 살아있는 관리자면 반드시 값이 있다. 탈퇴 시 member 행이
+  // 실제로 삭제되는데 inquiry_message.admin_id에는 FK가 없어 그대로 남으므로, 닉네임을
+  // 찾지 못했다는 것은 그 관리자가 탈퇴했다는 뜻이다.
   const prefix =
     room.lastMessage.senderType === 'ADMIN'
-      ? `${room.lastMessage.adminNickname ?? '탈퇴한 관리자'}: `
+      ? `${room.lastMessage.adminNickname ?? '탈퇴한 운영자'}: `
       : '';
   return `${prefix}${room.lastMessage.content}`;
 };
