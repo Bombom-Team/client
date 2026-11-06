@@ -256,11 +256,7 @@ export function InquiryRoomDetailPanel({
         </ClosedNotice>
       )}
 
-      <InquiryMessageInput
-        roomId={roomId}
-        disabled={isClosed}
-        onSent={invalidateMessages}
-      />
+      <InquiryMessageInput roomId={roomId} disabled={isClosed} />
     </DetailContainer>
   );
 }

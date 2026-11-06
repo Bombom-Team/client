@@ -10,7 +10,6 @@ const MAX_IMAGE_COUNT = 4;
 interface InquiryMessageInputProps {
   roomId: number;
   disabled: boolean;
-  onSent: () => void;
 }
 
 interface UploadedImage {
@@ -21,7 +20,6 @@ interface UploadedImage {
 export function InquiryMessageInput({
   roomId,
   disabled,
-  onSent,
 }: InquiryMessageInputProps) {
   const [content, setContent] = useState('');
   const [images, setImages] = useState<UploadedImage[]>([]);
@@ -94,7 +92,6 @@ export function InquiryMessageInput({
         onSuccess: () => {
           setContent('');
           setImages([]);
-          onSent();
         },
         onError: (error) => {
           alert(`메시지 전송 실패: ${error.message}`);
