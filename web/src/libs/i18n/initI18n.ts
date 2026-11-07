@@ -1,6 +1,15 @@
+import {
+  DEVICE_LANGUAGES_KEY,
+  type WindowWithDeviceLanguages,
+} from '@bombom/shared/webview';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale';
+import {
+  DEFAULT_LOCALE,
+  SUPPORTED_LOCALES,
+  getPreferredLanguages,
+  resolveLocale,
+} from './locale';
 import { DEFAULT_NAMESPACE, RESOURCES } from './resources';
 import { ENV } from '@/apis/env';
 import { createStorage } from '@/utils/localStorage';
@@ -9,13 +18,18 @@ const LOCALE_STORAGE_KEY = 'bombom_locale';
 
 const localeStorage = createStorage<string>(LOCALE_STORAGE_KEY);
 
-// 플래그가 꺼져 있으면 저장값과 브라우저 언어를 무시하고 한국어로 표시한다
+// 플래그가 꺼져 있으면 저장값과 기기·브라우저 언어를 무시하고 한국어로 표시한다
 const getInitialLocale = () => {
   if (ENV.enableI18n !== 'true') return DEFAULT_LOCALE;
 
   return resolveLocale({
     storedLocale: localeStorage.get(),
-    browserLanguages: navigator.languages,
+    preferredLanguages: getPreferredLanguages({
+      deviceLanguages: (window as WindowWithDeviceLanguages)[
+        DEVICE_LANGUAGES_KEY
+      ],
+      browserLanguages: navigator.languages,
+    }),
   });
 };
 

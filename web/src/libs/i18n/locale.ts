@@ -13,19 +13,34 @@ export const normalizeLocale = (languageTag: string): Locale | null => {
   return isSupportedLocale(language) ? language : null;
 };
 
-interface ResolveLocaleParams {
-  storedLocale: string | undefined;
+const isStringArray = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((item) => typeof item === 'string');
+
+interface GetPreferredLanguagesParams {
+  deviceLanguages: unknown;
   browserLanguages: readonly string[];
 }
 
-// 직접 선택한 언어 → 브라우저 선호 언어 중 처음 지원하는 언어 → 한국어 순으로 정한다
+export const getPreferredLanguages = ({
+  deviceLanguages,
+  browserLanguages,
+}: GetPreferredLanguagesParams): readonly string[] =>
+  isStringArray(deviceLanguages) && deviceLanguages.length > 0
+    ? deviceLanguages
+    : browserLanguages;
+
+interface ResolveLocaleParams {
+  storedLocale: string | undefined;
+  preferredLanguages: readonly string[];
+}
+
 export const resolveLocale = ({
   storedLocale,
-  browserLanguages,
+  preferredLanguages,
 }: ResolveLocaleParams): Locale => {
   const languageTags = storedLocale
-    ? [storedLocale, ...browserLanguages]
-    : browserLanguages;
+    ? [storedLocale, ...preferredLanguages]
+    : preferredLanguages;
 
   return (
     languageTags.map(normalizeLocale).find((locale) => locale !== null) ??
