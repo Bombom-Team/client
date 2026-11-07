@@ -50,10 +50,10 @@ jobs:
           echo "Uploading to bucket: ${{ secrets.S3_BUCKET }}"
           aws s3 sync web/dist s3://${{ secrets.S3_BUCKET }}/build-origin --exclude "index.html" --exclude "newsletters/*"
           # index.html과 뉴스레터 상세 HTML은 새 JS 파일을 모두 올린 뒤 마지막에 올린다.
-          # 상세 HTML은 빌드 때 뉴스레터 목록 조회에 실패하면 만들어지지 않는다.
-          if [ -d web/dist/newsletters ]; then
-            aws s3 sync web/dist/newsletters s3://${{ secrets.S3_BUCKET }}/build-origin/newsletters
-          fi
+          # 이번 빌드에 없는 상세 HTML은 지운다. 남겨 두면 이전 빌드의 JS로 화면이 열린다.
+          # 뉴스레터 목록 조회에 실패해 상세 HTML이 없으면 모두 지워 SPA index.html이 응답되게 한다.
+          mkdir -p web/dist/newsletters
+          aws s3 sync web/dist/newsletters s3://${{ secrets.S3_BUCKET }}/build-origin/newsletters --delete
           aws s3 cp web/dist/index.html s3://${{ secrets.S3_BUCKET }}/build-origin/index.html
 
       - name: CloudFront Invalidation

@@ -1,3 +1,5 @@
+// web/scripts(webpack 빌드)에서도 import합니다. `@/` alias import와 브라우저 전용 API를 쓰지 않습니다.
+
 const ALLOWED_PROTOCOL = ['https:', 'http:', 'mailto:'];
 const SITE_URL = 'https://www.bombom.news';
 
