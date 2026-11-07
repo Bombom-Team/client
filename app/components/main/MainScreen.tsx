@@ -8,9 +8,10 @@ import type { SuppressMenuItem } from 'react-native-webview/lib/WebViewTypes';
 import { useAuth } from '../../contexts/AuthContext';
 import { useWebView } from '../../contexts/WebViewContext';
 import useAndroidNavigationState from '../../hooks/useAndroidNavigationState';
-import type {
-  WebToRNMessage,
-  WebViewLoginFailure,
+import {
+  DEVICE_LANGUAGES_KEY,
+  type WebToRNMessage,
+  type WebViewLoginFailure,
 } from '@bombom/shared/webview';
 import { LoginScreenOverlay } from '../login/LoginScreenOverlay';
 
@@ -18,6 +19,7 @@ import * as WebBrowser from 'expo-web-browser';
 import * as SplashScreen from 'expo-splash-screen';
 import { File, Paths } from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
+import { getLocales } from 'expo-localization';
 
 import { ENV } from '@/constants/env';
 import { WEBVIEW_USER_AGENT } from '@/constants/webview';
@@ -212,6 +214,13 @@ export const MainScreen = () => {
           // Android는 문자열 값을 변환하지 못해 오류가 나므로 iOS에만 전달한다.
           decelerationRate={Platform.OS === 'ios' ? 'normal' : undefined}
           automaticallyAdjustsScrollIndicatorInsets={false}
+          // 웹이 i18n을 초기화하기 전에 기기 선호 언어를 넘긴다. iOS WebView의 navigator.languages는 기기 언어와 다를 수 있다.
+          injectedJavaScriptBeforeContentLoaded={`
+            window.${DEVICE_LANGUAGES_KEY} = ${JSON.stringify(
+              getLocales().map(({ languageTag }) => languageTag),
+            )};
+            true;
+          `}
           injectedJavaScript={`
             const rootElement = document.documentElement;
             rootElement.classList.add('webview');

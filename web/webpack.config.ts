@@ -21,6 +21,7 @@ const CLIENT_ENV_KEYS = [
   'CLARITY_PROJECT_ID',
   'MONITORING_STATUS_URL',
   'CAPTCHA_SITE_KEY',
+  'ENABLE_I18N',
 ];
 
 type Env = Record<string, string>;

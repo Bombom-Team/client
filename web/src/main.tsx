@@ -18,6 +18,7 @@ import {
   GOOGLE_ANALYTICS_ID,
 } from './libs/googleAnalytics/constants';
 import { initGA } from './libs/googleAnalytics/initGA';
+import { initI18n } from './libs/i18n/initI18n';
 import { initSentry } from './libs/sentry/initSentry';
 import {
   captureMutationError,
@@ -34,6 +35,8 @@ if (isProduction) Clarity.init(ENV.clarityProjectId);
 if (isDevelopment) initGA(DEV_GOOGLE_ANALYTICS_ID);
 
 if (isProduction) initGA(GOOGLE_ANALYTICS_ID);
+
+initI18n();
 
 const EXPECTED_UNAUTHORIZED_QUERY_KEYS = [
   queries.userProfile().queryKey,
