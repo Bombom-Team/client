@@ -52,17 +52,39 @@ const renderHead = ({ meta, links, scripts }: NewsletterHead) =>
     ),
   ].join('');
 
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// 템플릿에 기본값으로 있는 meta(og:type, twitter:card 등)는 상세 태그와 겹치지 않게 지웁니다.
+const removeTemplateMeta = (template: string, meta: NewsletterHeadMeta[]) =>
+  meta.reduce((html, item) => {
+    if ('title' in item) return html;
+
+    const [key, value] =
+      'name' in item ? ['name', item.name] : ['property', item.property];
+    const pattern = new RegExp(
+      `<meta\\b[^>]*\\b${key}="${escapeRegExp(value)}"[^>]*>`,
+      'g',
+    );
+    return html.replace(pattern, '');
+  }, template);
+
 const createNewsletterPage = (
   template: string,
   newsletter: BuildNewsletter,
 ): PrerenderedPage => {
   const { newsletterId, name } = newsletter;
   const url = getNewsletterDetailUrl(newsletterId, name);
-  const head = renderHead(createNewsletterHead(newsletter, url));
+  const newsletterHead = createNewsletterHead(newsletter, url);
+  const head = renderHead(newsletterHead);
 
   return {
     fileName: `${getNewsletterDetailPath(newsletterId, name).slice(1)}/index.html`,
-    html: template.replace('</head>', `${head}</head>`),
+    // 문자열을 넘기면 뉴스레터 설명의 `$&`, `$'` 등이 치환 패턴으로 해석되므로 함수로 넘깁니다.
+    html: removeTemplateMeta(template, newsletterHead.meta).replace(
+      '</head>',
+      () => `${head}</head>`,
+    ),
   };
 };
 
