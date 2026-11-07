@@ -64,10 +64,8 @@ export const createNewsletterHead = (
       { property: 'og:image:alt', content: newsletter.name },
       { property: 'og:type', content: 'website' },
       { property: 'og:url', content: url },
-      {
-        name: 'twitter:card',
-        content: image ? 'summary_large_image' : 'summary',
-      },
+      // 뉴스레터 이미지는 대부분 정사각형 로고라 2:1로 잘리는 summary_large_image 대신 summary를 씁니다.
+      { name: 'twitter:card', content: 'summary' },
       { name: 'twitter:title', content: title },
       { name: 'twitter:description', content: description },
       ...(image
