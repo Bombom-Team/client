@@ -1,7 +1,6 @@
 import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import NewsletterList from './NewsletterList';
 import { queries } from '@/apis/queries';
@@ -10,7 +9,6 @@ import ImageInfoCardSkeleton from '@/components/ImageInfoCard/ImageInfoCardSkele
 import SearchInput from '@/components/SearchInput/SearchInput';
 import { NEWSLETTER_COUNT } from '@/constants/newsletter';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { createSlug } from '@/utils/url';
 import type { Newsletter } from '@/types/newsletter';
 import type { Device } from '@bombom/shared/ui-web';
 import type { ChangeEvent } from 'react';
@@ -22,7 +20,6 @@ const ALL_NEWSLETTERS = '전체';
 
 const TrendySection = () => {
   const device = useDevice();
-  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] =
     useState<string>(ALL_NEWSLETTERS);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -57,21 +54,12 @@ const TrendySection = () => {
   };
 
   const handleCardClick = (newsletter: Newsletter) => {
-    if (newsletter.source === 'MAEIL_MAIL') {
-      navigate({ href: 'https://maeilmail.bombom.news' });
-      return;
-    }
+    if (newsletter.source === 'MAEIL_MAIL') return;
+
     trackEvent({
       category: 'Newsletter',
       action: '뉴스레터 카드 클릭',
       label: newsletter.name ?? 'Unknown Newsletter',
-    });
-    navigate({
-      to: '/newsletters/$newsletterId/$name',
-      params: {
-        newsletterId: String(newsletter.newsletterId),
-        name: createSlug(newsletter.name, String(newsletter.newsletterId)),
-      },
     });
   };
 

@@ -3,9 +3,15 @@ import { toast } from '@bombom/shared/ui-web';
 import { useMutation } from '@tanstack/react-query';
 import { uploadInquiryImages } from '@/apis/inquiry/inquiry.api';
 
-export const useInquiryImagesUploadMutation = () =>
+interface UseInquiryImagesUploadMutationParams {
+  roomId: number;
+}
+
+export const useInquiryImagesUploadMutation = ({
+  roomId,
+}: UseInquiryImagesUploadMutationParams) =>
   useMutation({
-    mutationFn: uploadInquiryImages,
+    mutationFn: (images: File[]) => uploadInquiryImages(roomId, images),
     onError: (error) => {
       toast.error(
         error instanceof ApiError && error.message

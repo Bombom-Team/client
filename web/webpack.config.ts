@@ -7,8 +7,21 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { SwcMinifyWebpackPlugin } from 'swc-minify-webpack-plugin';
 import webpack from 'webpack';
 import 'webpack-dev-server';
+import { appendNewsletterUrls } from './scripts/sitemap';
 
 dotenv.config();
+
+const CLIENT_ENV_KEYS = [
+  'API_BASE_URL',
+  'API_BASE_URL_EVENT',
+  'API_BASE_URL_NOTIFICATION',
+  'API_TOKEN',
+  'SENTRY_DSN',
+  'SENTRY_RELEASE',
+  'CLARITY_PROJECT_ID',
+  'MONITORING_STATUS_URL',
+  'CAPTCHA_SITE_KEY',
+];
 
 type Env = Record<string, string>;
 type Mode = 'development' | 'production';
@@ -98,7 +111,13 @@ export default (env: Env, argv: Argv) => {
         semicolons: true,
       }),
       new webpack.DefinePlugin({
-        'process.env': JSON.stringify(process.env),
+        'process.env': '{}',
+        ...Object.fromEntries(
+          CLIENT_ENV_KEYS.map((key) => [
+            `process.env.${key}`,
+            JSON.stringify(process.env[key]),
+          ]),
+        ),
         'process.env.ENABLE_MSW': JSON.stringify(env.ENABLE_MSW),
       }),
       new CopyWebpackPlugin({
@@ -128,6 +147,11 @@ export default (env: Env, argv: Argv) => {
                 {
                   from: path.resolve(__dirname, 'public', 'sitemap.xml'),
                   to: path.resolve(__dirname, 'dist', 'sitemap.xml'),
+                  transform: (content: Buffer) =>
+                    appendNewsletterUrls(
+                      content.toString(),
+                      process.env.API_BASE_URL,
+                    ),
                 },
               ]
             : []),
@@ -141,6 +165,7 @@ export default (env: Env, argv: Argv) => {
               authToken: process.env.SENTRY_AUTH_TOKEN,
               release: {
                 name: process.env.SENTRY_RELEASE,
+                inject: false,
               },
               sourcemaps: {
                 filesToDeleteAfterUpload: ['./dist/**/*.map'],

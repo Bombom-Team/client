@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useNavigate } from '@tanstack/react-router';
+import { createLink } from '@tanstack/react-router';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { createSlug } from '@/utils/url';
@@ -10,7 +10,7 @@ interface SimilarNewsletterCardProps {
 }
 
 const SimilarNewsletterCard = ({ newsletter }: SimilarNewsletterCardProps) => {
-  const navigate = useNavigate();
+  const newsletterId = String(newsletter.newsletterId);
 
   const handleClick = () => {
     trackEvent({
@@ -18,17 +18,17 @@ const SimilarNewsletterCard = ({ newsletter }: SimilarNewsletterCardProps) => {
       action: '비슷한 뉴스레터 카드 클릭',
       label: newsletter.name,
     });
-    navigate({
-      to: '/newsletters/$newsletterId/$name',
-      params: {
-        newsletterId: String(newsletter.newsletterId),
-        name: createSlug(newsletter.name, String(newsletter.newsletterId)),
-      },
-    });
   };
 
   return (
-    <Container type="button" onClick={handleClick}>
+    <Container
+      to="/newsletters/$newsletterId/$name"
+      params={{
+        newsletterId,
+        name: createSlug(newsletter.name, newsletterId),
+      }}
+      onClick={handleClick}
+    >
       <Thumbnail
         src={newsletter.imageUrl ?? ''}
         alt={`${newsletter.name} 뉴스레터 이미지`}
@@ -43,10 +43,9 @@ const SimilarNewsletterCard = ({ newsletter }: SimilarNewsletterCardProps) => {
 
 export default SimilarNewsletterCard;
 
-const Container = styled.button`
+const ContainerAnchor = styled.a`
   width: 100%;
   padding: 12px 0;
-  border: none;
 
   display: flex;
   gap: 12px;
@@ -63,6 +62,8 @@ const Container = styled.button`
     background-color: ${({ theme }) => theme.colors.backgroundHover};
   }
 `;
+
+const Container = createLink(ContainerAnchor);
 
 const Thumbnail = styled(ImageWithFallback)`
   width: 48px;

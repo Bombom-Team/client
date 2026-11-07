@@ -36,3 +36,8 @@ script 목록을 옮겨 적지 않습니다.
   [app 네이티브 설정과 prebuild](../CONVENTIONS.md#app-네이티브-설정과-prebuild)를 먼저 확인합니다.
 - store 제출(`--auto-submit`)이나 production build를 실행하는 script는 사용자가 요청할 때만
   실행합니다. `reset-project`도 project file을 변경하므로 요청 범위일 때만 실행합니다.
+
+## Tests
+
+test runner가 있는지는 `app/package.json`의 `scripts`로 확인합니다. test script가 없으면
+[검증 및 완료](../RULES.md#검증-및-완료)의 test runner가 없는 workspace 규칙을 따릅니다.

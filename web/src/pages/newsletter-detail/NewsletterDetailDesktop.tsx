@@ -247,7 +247,7 @@ export const TitleWrapper = styled.div`
   gap: 8px;
 `;
 
-const NewsletterTitle = styled.h2`
+const NewsletterTitle = styled.h1`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t11Bold};
 `;

@@ -17,3 +17,6 @@ export const isNetworkNoiseError = (error: unknown) => {
     NETWORK_NOISE_ERROR_PATTERNS.some((pattern) => pattern.test(message))
   );
 };
+
+export const isChunkLoadError = (error: unknown) =>
+  error instanceof Error && error.name === 'ChunkLoadError';
