@@ -21,6 +21,15 @@ interface PrerenderedPage {
   html: string;
 }
 
+type MetaKey = ['name' | 'property', string];
+type NamedMeta = Exclude<NewsletterHeadMeta, { title: string }>;
+
+// 템플릿의 이미지 크기(1200x630)는 사이트 기본 이미지 기준이라 뉴스레터 이미지와 맞지 않습니다.
+const TEMPLATE_IMAGE_SIZE_KEYS: MetaKey[] = [
+  ['property', 'og:image:width'],
+  ['property', 'og:image:height'],
+];
+
 const escapeHtml = (value: string) =>
   value
     .replace(/&/g, '&amp;')
@@ -28,13 +37,15 @@ const escapeHtml = (value: string) =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
+const getMetaKey = (meta: NamedMeta): MetaKey =>
+  'name' in meta ? ['name', meta.name] : ['property', meta.property];
+
 const renderMeta = (meta: NewsletterHeadMeta) => {
   if ('title' in meta) {
     return `<title ${PRERENDERED_ATTRIBUTE}>${escapeHtml(meta.title)}</title>`;
   }
 
-  const [key, value] =
-    'name' in meta ? ['name', meta.name] : ['property', meta.property];
+  const [key, value] = getMetaKey(meta);
   return `<meta ${PRERENDERED_ATTRIBUTE} ${key}="${escapeHtml(value)}" content="${escapeHtml(meta.content)}">`;
 };
 
@@ -55,13 +66,8 @@ const renderHead = ({ meta, links, scripts }: NewsletterHead) =>
 const escapeRegExp = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-// 템플릿에 기본값으로 있는 meta(og:type, twitter:card 등)는 상세 태그와 겹치지 않게 지웁니다.
-const removeTemplateMeta = (template: string, meta: NewsletterHeadMeta[]) =>
-  meta.reduce((html, item) => {
-    if ('title' in item) return html;
-
-    const [key, value] =
-      'name' in item ? ['name', item.name] : ['property', item.property];
+const removeTemplateMeta = (template: string, keys: MetaKey[]) =>
+  keys.reduce((html, [key, value]) => {
     const pattern = new RegExp(
       `<meta\\b[^>]*\\b${key}="${escapeRegExp(value)}"[^>]*>`,
       'g',
@@ -77,14 +83,18 @@ const createNewsletterPage = (
   const url = getNewsletterDetailUrl(newsletterId, name);
   const newsletterHead = createNewsletterHead(newsletter, url);
   const head = renderHead(newsletterHead);
+  // 템플릿에 기본값으로 있는 meta(og:type, twitter:card 등)는 상세 태그와 겹치지 않게 지웁니다.
+  const overriddenKeys = newsletterHead.meta
+    .filter((meta): meta is NamedMeta => !('title' in meta))
+    .map(getMetaKey);
 
   return {
     fileName: `${getNewsletterDetailPath(newsletterId, name).slice(1)}/index.html`,
     // 문자열을 넘기면 뉴스레터 설명의 `$&`, `$'` 등이 치환 패턴으로 해석되므로 함수로 넘깁니다.
-    html: removeTemplateMeta(template, newsletterHead.meta).replace(
-      '</head>',
-      () => `${head}</head>`,
-    ),
+    html: removeTemplateMeta(template, [
+      ...overriddenKeys,
+      ...TEMPLATE_IMAGE_SIZE_KEYS,
+    ]).replace('</head>', () => `${head}</head>`),
   };
 };
 
