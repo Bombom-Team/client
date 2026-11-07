@@ -48,8 +48,12 @@ jobs:
       - name: Upload to S3
         run: |
           echo "Uploading to bucket: ${{ secrets.S3_BUCKET }}"
-          aws s3 sync web/dist s3://${{ secrets.S3_BUCKET }}/build-origin --exclude "index.html"
-          # index.html은 새 JS 파일을 모두 올린 뒤 마지막에 올린다.
+          aws s3 sync web/dist s3://${{ secrets.S3_BUCKET }}/build-origin --exclude "index.html" --exclude "newsletters/*"
+          # index.html과 뉴스레터 상세 HTML은 새 JS 파일을 모두 올린 뒤 마지막에 올린다.
+          # 상세 HTML은 빌드 때 뉴스레터 목록 조회에 실패하면 만들어지지 않는다.
+          if [ -d web/dist/newsletters ]; then
+            aws s3 sync web/dist/newsletters s3://${{ secrets.S3_BUCKET }}/build-origin/newsletters
+          fi
           aws s3 cp web/dist/index.html s3://${{ secrets.S3_BUCKET }}/build-origin/index.html
 
       - name: CloudFront Invalidation
