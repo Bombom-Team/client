@@ -22,7 +22,7 @@ workspace의 `package.json`을 직접 읽는다.
   인증은 bearer token을 직접 보관하는 구조가 아니라 서버 세션 쿠키에 의존한다.
 - 실패 응답은 `ApiError(status, message, rawBody)`다. 호출부가 axios 전용 shape인
   `error.response.status`를 전제하면 동작하지 않는다.
-- GET query는 값의 `toString()` 결과가 truthy인 항목만 직렬화한다. 배열은 쉼표 문자열이
+- query는 값의 `toString()` 결과가 truthy인 항목만 직렬화한다. 배열은 쉼표 문자열이
   되며 빈 문자열·`undefined`는 사라진다. 다른 계약이 필요하면 모든 소비 API를 확인한다.
 - `shared/src/core/apis/generated/`, `openapi.d.ts`, `routeTree.gen.ts`는 생성물이다.
   직접 수정하지 않고 generator와 API spec을 통해 갱신한다.
