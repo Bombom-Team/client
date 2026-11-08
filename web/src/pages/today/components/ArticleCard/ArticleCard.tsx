@@ -132,6 +132,7 @@ export const Container = styled(Link, {
 
 export const InfoWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
+  min-width: 0;
 
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
@@ -150,6 +151,7 @@ export const Title = styled.h2<{ isMobile: boolean }>`
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
 `;
 
 export const Description = styled.p`
@@ -162,6 +164,7 @@ export const Description = styled.p`
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
 `;
 
 export const MetaInfoRow = styled.div<{ isMobile: boolean }>`
