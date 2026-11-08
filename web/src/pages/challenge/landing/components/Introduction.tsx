@@ -270,7 +270,7 @@ const InfoCard = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.primaryInfo};
 `;
 
-const Overview = styled.div`
+const Overview = styled.ul`
   display: flex;
   gap: 12px;
   flex: 1;
@@ -278,7 +278,7 @@ const Overview = styled.div`
   align-items: flex-start;
 `;
 
-const OverviewItem = styled.p<{ device: Device }>`
+const OverviewItem = styled.li<{ device: Device }>`
   display: flex;
   gap: 4px;
   align-items: flex-start;
