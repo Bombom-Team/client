@@ -7,7 +7,7 @@ import NewsletterDetailDesktop from '@/pages/newsletter-detail/NewsletterDetailD
 import NewsletterDetailDesktopSkeleton from '@/pages/newsletter-detail/NewsletterDetailDesktopSkeleton';
 import NewsletterDetailMobile from '@/pages/newsletter-detail/NewsletterDetailMobile';
 import NewsletterDetailMobileSkeleton from '@/pages/newsletter-detail/NewsletterDetailMobileSkeleton';
-import { createNewsletterSchema } from '@/pages/newsletter-detail/utils/seo';
+import { createNewsletterHead } from '@/pages/newsletter-detail/utils/seo';
 import { createSlug, getNewsletterDetailUrl } from '@/utils/url';
 import type { NewsletterTab } from '@/pages/newsletter-detail/types';
 import type { SearchSchemaInput } from '@tanstack/react-router';
@@ -48,43 +48,8 @@ export const Route = createFileRoute('/newsletters/$newsletterId/$name')({
       };
     }
 
-    const description = (newsletter.description ?? '').slice(0, 160);
-    const title = `${newsletter.name} | 봄봄`;
     const url = getNewsletterDetailUrl(params.newsletterId, newsletter.name);
-    const image = newsletter.imageUrl ?? '';
-
-    return {
-      meta: [
-        { title },
-        { name: 'description', content: description },
-        { name: 'robots', content: 'index, follow' },
-        { property: 'og:title', content: title },
-        { property: 'og:description', content: description },
-        { property: 'og:image', content: image },
-        { property: 'og:image:alt', content: newsletter.name },
-        { property: 'og:type', content: 'website' },
-        { property: 'og:url', content: url },
-        {
-          name: 'twitter:card',
-          content: image ? 'summary_large_image' : 'summary',
-        },
-        { name: 'twitter:title', content: title },
-        { name: 'twitter:description', content: description },
-        ...(image
-          ? [
-              { name: 'twitter:image', content: image },
-              { name: 'twitter:image:alt', content: newsletter.name },
-            ]
-          : []),
-      ],
-      links: [{ rel: 'canonical', href: url }],
-      scripts: [
-        {
-          type: 'application/ld+json',
-          children: createNewsletterSchema(newsletter, url),
-        },
-      ],
-    };
+    return createNewsletterHead(newsletter, url);
   },
   component: NewsletterDetailRoute,
   pendingComponent: NewsletterDetailPending,
