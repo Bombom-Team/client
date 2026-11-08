@@ -27,17 +27,3 @@ export const isChunkLoadError = (error: unknown) =>
 export const CEFSHARP_BRIDGE_REJECTION_PATTERNS = [
   /Object Not Found Matching Id:\d+, MethodName:\w+, ParamCount:\d+/,
 ];
-
-export const isCefSharpBridgeRejection = (error: unknown) => {
-  const message =
-    error instanceof Error
-      ? error.message
-      : typeof error === 'string'
-        ? error
-        : null;
-
-  return (
-    message !== null &&
-    CEFSHARP_BRIDGE_REJECTION_PATTERNS.some((pattern) => pattern.test(message))
-  );
-};
