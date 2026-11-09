@@ -8,6 +8,8 @@ import {
 import { formatDate } from '@/utils/date';
 import type { InquiryRoom } from '@/types/inquiry';
 
+const IMAGE_ONLY_MESSAGE = '사진을 보냈습니다.';
+
 interface InquiryRoomListItemProps {
   room: InquiryRoom;
   categoryName?: string;
@@ -18,6 +20,11 @@ const InquiryRoomListItem = ({
   categoryName,
 }: InquiryRoomListItemProps) => {
   const hasUnread = Boolean(room.hasUnreadMessage);
+  const lastMessage = room.lastMessage;
+  const lastMessageText = lastMessage
+    ? lastMessage.content?.trim() || IMAGE_ONLY_MESSAGE
+    : null;
+  const listDate = lastMessage?.createdAt ?? room.createdAt;
 
   return (
     <Container
@@ -29,20 +36,29 @@ const InquiryRoomListItem = ({
           : categoryName
       }
     >
-      <BadgeGroup>
-        {room.status && (
-          <Badge
-            text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
-            variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
-          />
+      <ContentColumn>
+        <TopRow>
+          <BadgeGroup>
+            {room.status && (
+              <Badge
+                text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
+                variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
+              />
+            )}
+            {categoryName && (
+              <CategoryText hasUnread={hasUnread}>{categoryName}</CategoryText>
+            )}
+          </BadgeGroup>
+          <CreatedAt hasUnread={hasUnread}>
+            {formatDate(new Date(listDate ?? ''))}
+          </CreatedAt>
+        </TopRow>
+        {lastMessageText && (
+          <LastMessageText hasUnread={hasUnread}>
+            {lastMessageText}
+          </LastMessageText>
         )}
-        {categoryName && (
-          <CategoryText hasUnread={hasUnread}>{categoryName}</CategoryText>
-        )}
-      </BadgeGroup>
-      <CreatedAt hasUnread={hasUnread}>
-        {formatDate(new Date(room.createdAt ?? ''))}
-      </CreatedAt>
+      </ContentColumn>
     </Container>
   );
 };
@@ -60,9 +76,34 @@ const Container = styled(Link, {
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
 
   text-decoration: none;
+`;
+
+const ContentColumn = styled.div`
+  overflow: hidden;
+  width: 100%;
+
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+`;
+
+const TopRow = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const LastMessageText = styled.span<{ hasUnread: boolean }>`
+  overflow: hidden;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme, hasUnread }) =>
+    hasUnread ? theme.fonts.t5Bold : theme.fonts.t5Regular};
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const BadgeGroup = styled.div`
