@@ -9,6 +9,8 @@ import type { InquiryMessage } from '@/types/inquiry';
 import CloseIcon from '#/assets/svg/close.svg';
 import DeleteIcon from '#/assets/svg/delete.svg';
 
+const DEFAULT_ADMIN_NAME = '봄봄 운영자';
+
 interface InquiryMessageBubbleProps {
   message: InquiryMessage;
   isOwnMessage: boolean;
@@ -37,6 +39,7 @@ const InquiryMessageBubble = ({
   });
 
   const imageUrls = message.imageUrls ?? [];
+  const senderName = message.adminNickname ?? DEFAULT_ADMIN_NAME;
 
   const handleDeleteClick = () => {
     openModal();
@@ -55,6 +58,8 @@ const InquiryMessageBubble = ({
 
   return (
     <BubbleColumn isOwnMessage={isOwnMessage}>
+      {!isOwnMessage && <SenderName>{senderName}</SenderName>}
+
       <BubbleRow isOwnMessage={isOwnMessage}>
         {isOwnMessage && (
           <ActionMenu>
@@ -281,6 +286,11 @@ const ActionButton = styled.button`
   &:hover {
     background-color: ${({ theme }) => theme.colors.dividers};
   }
+`;
+
+const SenderName = styled.span`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t2Regular};
 `;
 
 const DateText = styled.span<{ isOwnMessage: boolean }>`
