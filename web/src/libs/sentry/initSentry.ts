@@ -6,7 +6,10 @@ import {
 } from '@sentry/react';
 /* eslint-enable import/named */
 import { beforeBreadcrumb, beforeSend } from './beforeSend';
-import { NETWORK_NOISE_ERROR_PATTERNS } from './errorFilters';
+import {
+  CEFSHARP_BRIDGE_REJECTION_PATTERNS,
+  NETWORK_NOISE_ERROR_PATTERNS,
+} from './errorFilters';
 import { ENV } from '@/apis/env';
 
 type InitSentryParams = {
@@ -21,7 +24,10 @@ export const initSentry = ({ router }: InitSentryParams) => {
     release: ENV.sentryRelease,
     sendDefaultPii: false,
     allowUrls: [/https:\/\/(?:.*\.)?bombom\.news/],
-    ignoreErrors: [...NETWORK_NOISE_ERROR_PATTERNS],
+    ignoreErrors: [
+      ...NETWORK_NOISE_ERROR_PATTERNS,
+      ...CEFSHARP_BRIDGE_REJECTION_PATTERNS,
+    ],
     integrations: [
       tanstackRouterBrowserTracingIntegration(router),
       replayIntegration(),

@@ -12,8 +12,13 @@ export const updateToastsState = (
   store.setState(toasts);
 };
 
+// 토스트 id는 화면 안에서만 구분하면 되므로 crypto.randomUUID 대신 카운터를 쓴다.
+// Chrome 92 미만 WebView에는 crypto.randomUUID가 없다.
+let toastIdCount = 0;
+
 export const showToast = (toast: ToastData, store: Store = toastStore) => {
-  const id = crypto.randomUUID();
+  toastIdCount += 1;
+  const id = `toast-${toastIdCount}`;
 
   updateToastsState(store, (toasts) => {
     if (

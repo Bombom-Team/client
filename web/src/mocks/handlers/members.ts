@@ -13,9 +13,13 @@ import type {
   GetMyChallengeSummaryResponse,
   GetMyOngoingChallengesResponse,
   GetMyCompletedChallengesResponse,
+  getWarningVisibleResponse,
+  PostWarningVisibleParams,
 } from '@/apis/members/members.api';
 
 const baseURL = ENV.baseUrl;
+
+let warningSetting: getWarningVisibleResponse = { isVisible: true };
 
 const MY_CHALLENGE_SUMMARY: GetMyChallengeSummaryResponse = {
   completedChallengeCount: 5,
@@ -138,6 +142,19 @@ export const membersHandlers = [
       nickname: 'mock-user',
     });
   }),
+
+  http.get(`${baseURL}/members/me/warning/near-capacity`, () => {
+    return HttpResponse.json(warningSetting);
+  }),
+
+  http.post(
+    `${baseURL}/members/me/warning/near-capacity`,
+    async ({ request }) => {
+      const { isVisible } = (await request.json()) as PostWarningVisibleParams;
+      warningSetting = { isVisible: isVisible ?? warningSetting.isVisible };
+      return new HttpResponse(null, { status: 204 });
+    },
+  ),
 
   http.get(`${baseURL}/members/me/category-stats`, ({ request }) => {
     const url = new URL(request.url);

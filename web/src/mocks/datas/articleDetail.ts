@@ -75,6 +75,24 @@ export const MAEIL_MAIL_ARTICLE_DETAIL = {
   },
 };
 
+export const LONG_URL_ARTICLE_ID = 8;
+
+export const LONG_URL_ARTICLE_DETAIL = {
+  title: '[Korean FE Article] 고마워요, Deno',
+  contents:
+    '<div><p>[Korean FE Article] 고마워요, Deno</p><p>글 링크: <a href="https://junghan92.medium.com/%EB%B2%88%EC%97%AD-%EA%B3%A0%EB%A7%88%EC%9B%8C%EC%9A%94-deno">https://junghan92.medium.com/%EB%B2%88%EC%97%AD-%EA%B3%A0%EB%A7%88%EC%9B%8C%EC%9A%94-deno</a></p></div>',
+  arrivedDateTime: '2026-11-04T08:31:50.088201',
+  expectedReadTime: 5,
+  isRead: false,
+  newsletter: {
+    name: 'Korean FE Article',
+    email: 'contact@example.com',
+    imageUrl:
+      'https://substackcdn.com/image/fetch/$s_!0VPi!,w_176,h_176,c_fill,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F13b944aa-4b63-4c0e-97f0-23df3c2261a7_1280x1280.png',
+    category: 'IT/테크',
+  },
+};
+
 // 나중에 하단 버튼 ui를 위해 남겨놔요
 // <table role="presentation" style="width:100%;border-collapse:collapse">
 //     <tbody><tr style="height:5rem"></tr>

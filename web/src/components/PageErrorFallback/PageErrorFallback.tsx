@@ -1,10 +1,19 @@
 import { Button, Text } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
+import { useChunkLoadErrorReload } from './hooks/useChunkLoadErrorReload';
 
-const PageErrorFallback = () => {
+interface PageErrorFallbackProps {
+  error: unknown;
+}
+
+const PageErrorFallback = ({ error }: PageErrorFallbackProps) => {
+  const isReloading = useChunkLoadErrorReload(error);
+
   const handleRefresh = () => {
     window.location.reload();
   };
+
+  if (isReloading) return <Container />;
 
   return (
     <Container role="alert">

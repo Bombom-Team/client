@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import {
   ARTICLE_DETAIL,
+  LONG_URL_ARTICLE_DETAIL,
+  LONG_URL_ARTICLE_ID,
   MAEIL_MAIL_ARTICLE_DETAIL,
   MAEIL_MAIL_ARTICLE_ID,
 } from '../datas/articleDetail';
@@ -17,6 +19,19 @@ import { ENV } from '@/apis/env';
 
 const baseURL = ENV.baseUrl;
 let ARTICLES = [...ARTICLE_FONT_SIZE_ARTICLES, ...ORIGINAL_ARTICLES];
+
+const sortArticlesByArrivedDateTime = (
+  articles: typeof ARTICLES,
+  direction: 'ASC' | 'DESC',
+) => {
+  const sign = direction === 'ASC' ? 1 : -1;
+  return [...articles].sort(
+    (a, b) =>
+      sign *
+      (new Date(a.arrivedDateTime ?? 0).getTime() -
+        new Date(b.arrivedDateTime ?? 0).getTime()),
+  );
+};
 
 export const articleHandlers = [
   // 뉴스레터 통계
@@ -98,6 +113,10 @@ export const articleHandlers = [
       return HttpResponse.json(MAEIL_MAIL_ARTICLE_DETAIL);
     }
 
+    if (Number(id) === LONG_URL_ARTICLE_ID) {
+      return HttpResponse.json(LONG_URL_ARTICLE_DETAIL);
+    }
+
     return HttpResponse.json(ARTICLE_DETAIL);
   }),
 
@@ -107,14 +126,21 @@ export const articleHandlers = [
   }),
 
   // 아티클 목록
-  http.get(`${baseURL}/articles`, () => {
+  http.get(`${baseURL}/articles`, ({ request }) => {
+    const url = new URL(request.url);
+    const [, direction] = (url.searchParams.get('sort') ?? '').split(',');
+    const sortedArticles = sortArticlesByArrivedDateTime(
+      ARTICLES,
+      direction === 'ASC' ? 'ASC' : 'DESC',
+    );
+
     return HttpResponse.json({
       totalPages: 1,
-      totalElements: ARTICLES.length,
+      totalElements: sortedArticles.length,
       first: true,
       last: true,
-      size: ARTICLES.length,
-      content: ARTICLES,
+      size: sortedArticles.length,
+      content: sortedArticles,
       number: 0,
       sort: {
         empty: true,

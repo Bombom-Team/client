@@ -41,6 +41,50 @@ describe('fetcher', () => {
     },
   );
 
+  it('GET 요청에 query, credentials, signal을 넘기면 요청에 반영한다', async () => {
+    const mockFetch = jest
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(null, { status: 204 }));
+    const controller = new AbortController();
+
+    await fetcher.get<unknown>({
+      path: '/articles',
+      query: { page: 1, sort: 'latest' },
+      credentials: 'omit',
+      signal: controller.signal,
+    });
+
+    const [url, init] = mockFetch.mock.calls[0] ?? [];
+    expect(String(url)).toBe(
+      'https://api.example.com/articles?page=1&sort=latest',
+    );
+    expect(init).toEqual(
+      expect.objectContaining({
+        method: 'GET',
+        credentials: 'omit',
+        signal: controller.signal,
+      }),
+    );
+  });
+
+  it.each([
+    ['POST', fetcher.post<never, unknown>],
+    ['PATCH', fetcher.patch<never, unknown>],
+  ] as const)(
+    '%s 요청에 query를 넘기면 요청 URL에 반영한다',
+    async (method, request) => {
+      const mockFetch = jest
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue(new Response(null, { status: 204 }));
+
+      await request({ path: '/articles', query: { memberId: 1 } });
+
+      const [url, init] = mockFetch.mock.calls[0] ?? [];
+      expect(String(url)).toBe('https://api.example.com/articles?memberId=1');
+      expect(init?.method).toBe(method);
+    },
+  );
+
   it('FormData를 그대로 전달하고 multipart Content-Type은 자동 생성되도록 둔다', async () => {
     const mockFetch = jest
       .spyOn(globalThis, 'fetch')

@@ -15,6 +15,7 @@ import ChallengeApplySection from '@/pages/challenge/landing/components/Challeng
 import ChallengeBenefits from '@/pages/challenge/landing/components/ChallengeBenefits';
 import ChallengeChecklist from '@/pages/challenge/landing/components/ChallengeChecklist';
 import ChallengeDetail from '@/pages/challenge/landing/components/ChallengeDetail';
+import ChallengeReviews from '@/pages/challenge/landing/components/ChallengeReviews';
 import ChallengeRewards from '@/pages/challenge/landing/components/ChallengeRewards';
 import Hero from '@/pages/challenge/landing/components/Hero';
 import Introduction from '@/pages/challenge/landing/components/Introduction';
@@ -123,6 +124,7 @@ function ChallengeLanding() {
             startDate={challengeLandingInfo.startDate}
             endDate={challengeLandingInfo.endDate}
           />
+          <ChallengeReviews />
           <ChallengeBenefits />
           <ChallengeDetail />
           <ChallengeChecklist />

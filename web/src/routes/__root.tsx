@@ -9,11 +9,13 @@ import {
   Outlet,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import RouteTransition from '@/components/RouteTransition/RouteTransition';
 import { AuthProvider } from '@/contexts/AuthContext';
 import GoogleAnalyticsTracker from '@/libs/googleAnalytics/GoogleAnalyticsTracker';
 import { useReferrerTracking } from '@/libs/googleAnalytics/useReferrerTracking';
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
 import { useWebViewRouting } from '@/libs/webview/useWebViewRouting';
+import WebViewReadyNotifier from '@/libs/webview/WebViewReadyNotifier';
 import { queryClient } from '@/main';
 import { isDevelopment, isLocal } from '@/utils/environment';
 import type { QueryClient } from '@tanstack/react-query';
@@ -36,7 +38,10 @@ const RootComponent = () => {
         <ThemeProvider theme={theme}>
           <AuthProvider>
             <GoogleAnalyticsTracker />
-            <Outlet />
+            <WebViewReadyNotifier />
+            <RouteTransition>
+              <Outlet />
+            </RouteTransition>
             <Toast />
           </AuthProvider>
         </ThemeProvider>
@@ -67,7 +72,6 @@ export const Route = createRootRouteWithContext<BomBomRouterContext>()({
       },
       { property: 'og:image', content: '/assets/png/og-image.png' },
       { property: 'og:image:alt', content: '봄봄 로고' },
-      { property: 'og:url', content: 'https://www.bombom.news' },
       { name: 'twitter:title', content: '봄봄' },
       {
         name: 'twitter:description',
@@ -77,7 +81,6 @@ export const Route = createRootRouteWithContext<BomBomRouterContext>()({
       { name: 'twitter:image:alt', content: '봄봄 로고' },
       { name: 'robots', content: 'index, follow' },
     ],
-    links: [{ rel: 'canonical', href: 'https://www.bombom.news' }],
   }),
   component: () => (
     <>
