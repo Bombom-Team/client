@@ -8,6 +8,7 @@ import { getInquiryCategories } from '../src/apis/inquiries/inquiryCategories.ap
 import {
   getInquiryMessages,
   sendInquiryMessage,
+  updateInquiryMessage,
 } from '../src/apis/inquiries/inquiryMessages.api';
 import {
   getInquiryRoomDetail,
@@ -17,10 +18,7 @@ import {
 import { getMembers } from '../src/apis/members/members.api';
 import { InquiryRoomDetailPanel } from '../src/pages/inquiries/InquiryRoomDetailPanel';
 import { theme } from '../src/styles/theme';
-import type {
-  InquiryRoom,
-  InquiryRoomDetail,
-} from '../src/types/inquiry';
+import type { InquiryRoom, InquiryRoomDetail } from '../src/types/inquiry';
 
 vi.mock('../src/apis/inquiries/inquiryRooms.api', () => ({
   getInquiryRoomDetail: vi.fn(),
@@ -127,6 +125,10 @@ beforeEach(() => {
   );
   vi.mocked(getInquiryMessages).mockReset();
   vi.mocked(sendInquiryMessage).mockReset();
+  vi.mocked(updateInquiryMessage).mockReset();
+  vi.mocked(updateInquiryMessage).mockResolvedValue(
+    {} as Awaited<ReturnType<typeof updateInquiryMessage>>,
+  );
   vi.mocked(getInquiryCategories).mockReset();
   vi.mocked(getMembers).mockReset();
 
@@ -171,9 +173,7 @@ describe('문의 상세 패널', () => {
 
     renderPanel();
 
-    await waitFor(() =>
-      expect(getSelectByValue('')?.value).toBe(''),
-    );
+    await waitFor(() => expect(getSelectByValue('')?.value).toBe(''));
     expect(getSelectByValue('UNCONFIRMED')).toBeTruthy();
 
     fireEvent.change(screen.getByPlaceholderText(/메시지를 입력하세요/), {
@@ -290,8 +290,44 @@ describe('문의 상세 패널', () => {
 
     renderPanel(memberListRoom);
 
-    await screen.findByText('종료된 문의입니다. 상태를 변경한 뒤 답변할 수 있습니다.');
+    await screen.findByText(
+      '종료된 문의입니다. 상태를 변경한 뒤 답변할 수 있습니다.',
+    );
     expect(screen.queryByRole('button', { name: /종료/ })).toBeNull();
+  });
+
+  it('메시지를 수정하면 목록 미리보기가 쓰는 방 정보도 다시 조회한다', async () => {
+    // 목록 카드가 마지막 메시지를 미리보기로 쓰므로, 메시지만 갱신하면 목록이
+    // 수정 전 내용을 그대로 보여준다.
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+    vi.mocked(getInquiryMessages).mockResolvedValue({
+      messages: [
+        {
+          id: 1,
+          roomId: ROOM_ID,
+          senderType: 'ADMIN',
+          adminId: ADMIN_ID,
+          content: '고칠 내용',
+          imageUrls: [],
+          createdAt: '2026-11-03T10:00:00Z',
+        },
+      ],
+      hasNext: false,
+    });
+
+    renderPanel(memberListRoom);
+
+    await screen.findByText('고칠 내용');
+    const detailCallsBefore = vi.mocked(getInquiryRoomDetail).mock.calls.length;
+
+    fireEvent.click(screen.getByRole('button', { name: '메시지 수정' }));
+    fireEvent.click(screen.getByRole('button', { name: '저장' }));
+
+    await waitFor(() =>
+      expect(vi.mocked(getInquiryRoomDetail).mock.calls.length).toBeGreaterThan(
+        detailCallsBefore,
+      ),
+    );
   });
 
   it('비회원 메시지에도 이름과 아바타를 보여준다', async () => {

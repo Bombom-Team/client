@@ -34,8 +34,8 @@ import {
 
 interface InquiryRoomDetailPanelProps {
   roomId: number;
-  // 목록에서 이미 받아온 문의자/담당자 등 정보. 상세 조회 API가 아직 같은 정보를
-  // 내려주지 않으므로, 있으면 이 값을 우선 사용해 추가 API 호출 없이 표시한다.
+  // 목록 쿼리가 받아둔 방 정보. 상세 조회 응답에 문의자 닉네임·이메일이 없어
+  // 필요하다. 목록이 갱신되면 이 값도 함께 바뀌어야 두 화면이 어긋나지 않는다.
   listRoom?: InquiryRoom;
 }
 
@@ -76,10 +76,13 @@ export function InquiryRoomDetailPanel({
     queryClient.invalidateQueries({ queryKey: inquiryRoomsQueries.all });
   };
 
+  // 목록 카드가 마지막 메시지를 미리보기로 쓰므로, 메시지가 바뀌면 방 정보도 함께
+  // 다시 받아와야 목록과 상세가 어긋나지 않는다.
   const invalidateMessages = () => {
     queryClient.invalidateQueries({
       queryKey: inquiryMessagesQueries.all(roomId),
     });
+    invalidateRoom();
   };
 
   const topSentinelRef = useRef<HTMLDivElement | null>(null);
@@ -130,17 +133,21 @@ export function InquiryRoomDetailPanel({
   const timelineItems = orderedMessages.flatMap((message, index) => {
     const previousMessage = orderedMessages[index - 1];
     const needsDateDivider =
-      !previousMessage || !isSameDay(previousMessage.createdAt, message.createdAt);
+      !previousMessage ||
+      !isSameDay(previousMessage.createdAt, message.createdAt);
     return needsDateDivider
       ? [
-          { type: 'divider' as const, key: `divider-${message.id}`, date: message.createdAt },
+          {
+            type: 'divider' as const,
+            key: `divider-${message.id}`,
+            date: message.createdAt,
+          },
           { type: 'message' as const, key: message.id, message },
         ]
       : [{ type: 'message' as const, key: message.id, message }];
   });
 
-  const latestMessageId =
-    orderedMessages[orderedMessages.length - 1]?.id;
+  const latestMessageId = orderedMessages[orderedMessages.length - 1]?.id;
 
   // 최초 진입 시, 그리고 최신 메시지(끝쪽)가 새로 추가됐을 때만 맨 아래로 스크롤한다.
   // 위로 스크롤해서 과거 메시지를 불러온 경우(latestMessageId 불변)에는 스크롤 위치를 건드리지 않는다.
@@ -276,7 +283,9 @@ export function InquiryRoomDetailPanel({
         {timelineItems.map((item) =>
           item.type === 'divider' ? (
             <DateDivider key={item.key}>
-              <DateDividerLabel>{formatDateDivider(item.date)}</DateDividerLabel>
+              <DateDividerLabel>
+                {formatDateDivider(item.date)}
+              </DateDividerLabel>
             </DateDivider>
           ) : (
             <InquiryMessageBubble
@@ -486,4 +495,3 @@ const ClosedNotice = styled.div`
   font-size: ${({ theme }) => theme.fontSize.sm};
   text-align: center;
 `;
-

@@ -62,7 +62,11 @@ const renderPanel = () => {
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={client}>
         <Suspense fallback={<div>로딩 중</div>}>
-          <InquiryRoomListPanel selectedRoomId={null} onSelectRoom={() => {}} />
+          <InquiryRoomListPanel
+            selectedRoomId={null}
+            onSelectRoom={() => {}}
+            onSelectedRoomChange={() => {}}
+          />
         </Suspense>
       </QueryClientProvider>
     </ThemeProvider>,

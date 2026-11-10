@@ -41,11 +41,15 @@ const STATUS_TAB_LABELS: Record<'ALL' | InquiryStatus, string> = {
 interface InquiryRoomListPanelProps {
   selectedRoomId: number | null;
   onSelectRoom: (room: InquiryRoom) => void;
+  // 목록이 갱신되면 선택된 방의 최신 정보를 알린다. 상세 패널이 들고 있는 복제본이
+  // 낡아 목록과 다른 담당자·상태를 보여주는 것을 막는다.
+  onSelectedRoomChange: (room: InquiryRoom | undefined) => void;
 }
 
 export function InquiryRoomListPanel({
   selectedRoomId,
   onSelectRoom,
+  onSelectedRoomChange,
 }: InquiryRoomListPanelProps) {
   const [status, setStatus] = useState<InquiryStatus | undefined>(undefined);
   const [assigneeId, setAssigneeId] = useState<number | undefined>(undefined);
@@ -81,6 +85,13 @@ export function InquiryRoomListPanel({
 
   const rooms = roomPages.pages.flatMap((page) => page.content);
   const totalCount = roomPages.pages[0]?.totalElements ?? 0;
+
+  const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
+
+  // 목록이 다시 조회되면 선택된 방의 최신 값을 상세 패널로 올린다.
+  useEffect(() => {
+    onSelectedRoomChange(selectedRoom);
+  }, [selectedRoom, onSelectedRoomChange]);
 
   const bottomSentinelRef = useRef<HTMLDivElement | null>(null);
 

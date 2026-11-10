@@ -15,7 +15,11 @@ export const Route = createFileRoute('/_admin/inquiries/rooms')({
 });
 
 function InquiryRoomsPage() {
-  const [selectedRoom, setSelectedRoom] = useState<InquiryRoom | null>(null);
+  // 선택은 id로 관리하고, 표시에 쓸 방 정보는 목록 패널이 쿼리에서 읽어 올려준다.
+  // 객체를 선택 시점에 복제해두면 담당자·상태가 바뀌어도 갱신되지 않아 목록과
+  // 상세가 서로 다른 값을 보여준다.
+  const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<InquiryRoom | undefined>();
 
   return (
     <Layout
@@ -30,13 +34,14 @@ function InquiryRoomsPage() {
         <Suspense fallback={<RoomsSkeleton />}>
           <SplitContainer>
             <InquiryRoomListPanel
-              selectedRoomId={selectedRoom?.id ?? null}
-              onSelectRoom={setSelectedRoom}
+              selectedRoomId={selectedRoomId}
+              onSelectRoom={(room) => setSelectedRoomId(room.id)}
+              onSelectedRoomChange={setSelectedRoom}
             />
-            {selectedRoom ? (
+            {selectedRoomId !== null ? (
               <InquiryRoomDetailPanel
-                key={selectedRoom.id}
-                roomId={selectedRoom.id}
+                key={selectedRoomId}
+                roomId={selectedRoomId}
                 listRoom={selectedRoom}
               />
             ) : (

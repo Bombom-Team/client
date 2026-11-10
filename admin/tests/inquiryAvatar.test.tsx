@@ -30,23 +30,29 @@ describe('아바타 이니셜', () => {
 
 describe('아바타 색', () => {
   it('같은 이름이면 항상 같은 색을 준다', () => {
-    expect(getAvatarColor('새로이')).toBe(getAvatarColor('새로이'));
+    expect(getAvatarColor('새로이', theme.avatarPalette)).toBe(
+      getAvatarColor('새로이', theme.avatarPalette),
+    );
   });
 
   it('이름이 다르면 색이 갈린다', () => {
     const names = ['강철원', '새로이', '상추신', '메이', '김현아', '고유진'];
-    const colors = new Set(names.map((name) => getAvatarColor(name)));
+    const colors = new Set(
+      names.map((name) => getAvatarColor(name, theme.avatarPalette)),
+    );
     expect(colors.size).toBeGreaterThan(1);
   });
 
   it('이름이 비어도 색을 준다', () => {
-    expect(getAvatarColor('')).toMatch(/^#[0-9A-F]{6}$/i);
+    expect(getAvatarColor('', theme.avatarPalette)).toMatch(/^#[0-9A-F]{6}$/i);
   });
 
   it('theme에 정의된 팔레트 안에서만 고른다', () => {
     const names = ['강철원', '새로이', '상추신', '메이', '김현아', '고유진'];
     names.forEach((name) => {
-      expect(theme.avatarPalette).toContain(getAvatarColor(name));
+      expect(theme.avatarPalette).toContain(
+        getAvatarColor(name, theme.avatarPalette),
+      );
     });
   });
 });

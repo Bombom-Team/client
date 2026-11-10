@@ -1,6 +1,5 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { theme as defaultTheme } from '@/styles/theme';
 
 /**
  * 이름에서 아바타에 쓸 한 글자를 뽑는다.
@@ -17,7 +16,7 @@ export const getAvatarInitial = (name: string): string => {
  */
 export const getAvatarColor = (
   name: string,
-  palette: readonly string[] = defaultTheme.avatarPalette,
+  palette: readonly string[],
 ): string => {
   const trimmed = name.trim();
   if (!trimmed) return palette[0];
@@ -50,16 +49,17 @@ export function InquiryAvatar({ name, size = 'md' }: InquiryAvatarProps) {
   );
 }
 
-const AVATAR_SIZES = {
-  sm: { box: '24px', font: '12px' },
-  md: { box: '36px', font: '14px' },
+// 지름은 theme에 대응 토큰이 없어 직접 적되, 글자 크기는 fontSize 토큰을 따른다.
+const AVATAR_BOX_SIZES = {
+  sm: '24px',
+  md: '36px',
 } as const;
 
 const AvatarCircle = styled('span', {
   shouldForwardProp: (prop) => prop !== '$color' && prop !== '$size',
 })<{ $color: string; $size: 'sm' | 'md' }>`
-  width: ${({ $size }) => AVATAR_SIZES[$size].box};
-  height: ${({ $size }) => AVATAR_SIZES[$size].box};
+  width: ${({ $size }) => AVATAR_BOX_SIZES[$size]};
+  height: ${({ $size }) => AVATAR_BOX_SIZES[$size]};
   border-radius: ${({ theme }) => theme.borderRadius.full};
 
   display: inline-flex;
@@ -70,7 +70,8 @@ const AvatarCircle = styled('span', {
   background-color: ${({ $color }) => $color};
   color: ${({ theme }) => theme.colors.white};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  font-size: ${({ $size }) => AVATAR_SIZES[$size].font};
+  font-size: ${({ $size, theme }) =>
+    $size === 'sm' ? theme.fontSize.xs : theme.fontSize.sm};
   line-height: 1;
   user-select: none;
 `;
