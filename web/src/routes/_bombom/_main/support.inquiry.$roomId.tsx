@@ -346,8 +346,10 @@ function InquiryRoomDetailPage() {
 }
 
 const ChatCard = styled.div<{ isMobile: boolean }>`
+
+  /* 모바일에서는 헤더가 페이지를 기준으로 sticky 해야 하므로 overflow를 만들지 않는다 */
+  overflow: ${({ isMobile }) => (isMobile ? 'visible' : 'hidden')};
   position: relative;
-  overflow: hidden;
   width: 100%;
   height: ${({ isMobile }) => (isMobile ? 'auto' : '100%')};
   max-width: ${({ isMobile }) => (isMobile ? '800px' : 'none')};
