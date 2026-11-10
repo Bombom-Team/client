@@ -6,7 +6,7 @@ import InquiryRoomListPanel from '@/pages/support/inquiry/components/InquiryRoom
 export const Route = createFileRoute('/_bombom/_main/support/inquiry/')({
   head: () => ({
     meta: [
-      { title: '봄봄 | 1:1 문의하기' },
+      { title: '봄봄 | 1:1 채팅 문의' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),

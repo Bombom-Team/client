@@ -27,8 +27,8 @@ const MobileMainHeader = () => {
               variant="transparent"
               aria-label={
                 unreadStatus?.hasUnread
-                  ? '1:1 문의 (읽지 않은 문의 있음)'
-                  : '1:1 문의'
+                  ? '1:1 채팅 문의 (읽지 않은 문의 있음)'
+                  : '1:1 채팅 문의'
               }
             >
               <HeadsetIconWrapper>
