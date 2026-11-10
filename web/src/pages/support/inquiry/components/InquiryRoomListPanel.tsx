@@ -90,8 +90,14 @@ const NewInquiryButton = styled(Button)`
 
   gap: 4px;
 
+  background-color: ${({ theme }) => theme.colors.primaryInfo};
+  color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme }) => theme.fonts.t5Regular};
   white-space: nowrap;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primaryLight};
+  }
 `;
 
 const ListArea = styled.div`
