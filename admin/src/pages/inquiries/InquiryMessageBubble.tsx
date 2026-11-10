@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useEffect, useRef, useState } from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
+import { InquiryImageViewer } from '@/pages/inquiries/InquiryImageViewer';
 import type { InquiryMessage } from '@/types/inquiry';
 
 interface InquiryMessageBubbleProps {
@@ -20,6 +21,8 @@ export function InquiryMessageBubble({
 }: InquiryMessageBubbleProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
+  // 크게 볼 이미지의 위치. null이면 뷰어를 닫은 상태다.
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
   const editTextareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   // 수정 입력창을 내용 높이에 맞춰 늘린다. 긴 메시지를 좁은 칸에서 스크롤하며
@@ -108,8 +111,15 @@ export function InquiryMessageBubble({
               {message.content}
               {message.imageUrls.length > 0 && (
                 <ImageGrid>
-                  {message.imageUrls.map((url) => (
-                    <MessageImage key={url} src={url} alt="첨부 이미지" />
+                  {message.imageUrls.map((url, imageIndex) => (
+                    <ImageButton
+                      key={url}
+                      type="button"
+                      aria-label={`첨부 이미지 ${imageIndex + 1} 크게 보기`}
+                      onClick={() => setViewerIndex(imageIndex)}
+                    >
+                      <MessageImage src={url} alt="첨부 이미지" />
+                    </ImageButton>
                   ))}
                 </ImageGrid>
               )}
@@ -119,6 +129,13 @@ export function InquiryMessageBubble({
         {/* 작성자 줄에 시각이 이미 있으면 아래에 반복하지 않는다. */}
         {(isAdminMessage || !senderName) && <BubbleTime>{sentAt}</BubbleTime>}
       </BubbleColumn>
+      {viewerIndex !== null && (
+        <InquiryImageViewer
+          images={message.imageUrls}
+          startIndex={viewerIndex}
+          onClose={() => setViewerIndex(null)}
+        />
+      )}
     </BubbleRow>
   );
 }
@@ -250,6 +267,25 @@ const ImageGrid = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.xs};
   flex-wrap: wrap;
+`;
+
+// 썸네일을 눌러 크게 볼 수 있게 버튼으로 감싼다. 버튼 기본 여백은 없애고
+// 이미지가 그대로 보이게 둔다.
+const ImageButton = styled.button`
+  overflow: hidden;
+  padding: 0;
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+
+  display: block;
+
+  background: none;
+
+  cursor: zoom-in;
+
+  &:hover img {
+    opacity: 0.85;
+  }
 `;
 
 const MessageImage = styled.img`
