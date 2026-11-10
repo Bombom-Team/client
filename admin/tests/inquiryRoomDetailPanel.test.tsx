@@ -12,6 +12,7 @@ import {
 import {
   getInquiryRoomDetail,
   getInquiryRooms,
+  updateInquiryRoomStatus,
 } from '../src/apis/inquiries/inquiryRooms.api';
 import { getMembers } from '../src/apis/members/members.api';
 import { InquiryRoomDetailPanel } from '../src/pages/inquiries/InquiryRoomDetailPanel';
@@ -120,6 +121,10 @@ const getSelectByValue = (value: string) =>
 beforeEach(() => {
   vi.mocked(getInquiryRoomDetail).mockReset();
   vi.mocked(getInquiryRooms).mockReset();
+  vi.mocked(updateInquiryRoomStatus).mockReset();
+  vi.mocked(updateInquiryRoomStatus).mockResolvedValue(
+    undefined as Awaited<ReturnType<typeof updateInquiryRoomStatus>>,
+  );
   vi.mocked(getInquiryMessages).mockReset();
   vi.mocked(sendInquiryMessage).mockReset();
   vi.mocked(getInquiryCategories).mockReset();
@@ -259,6 +264,34 @@ describe('문의 상세 패널', () => {
     expect(editTextarea).toBeTruthy();
     expect(screen.getByRole('button', { name: '저장' })).toBeTruthy();
     expect(screen.getByRole('button', { name: '취소' })).toBeTruthy();
+  });
+
+  it('종료 버튼을 누르면 상태를 완료로 바꾼다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+
+    renderPanel(memberListRoom);
+
+    fireEvent.click(await screen.findByRole('button', { name: /종료/ }));
+
+    // TanStack Query가 mutationFn에 context를 함께 넘기므로 첫 인자만 확인한다.
+    await waitFor(() =>
+      expect(vi.mocked(updateInquiryRoomStatus).mock.calls[0]?.[0]).toEqual({
+        roomId: ROOM_ID,
+        status: 'DONE',
+      }),
+    );
+  });
+
+  it('이미 종료된 문의에는 종료 버튼을 보여주지 않는다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue({
+      ...assignedRoom,
+      status: 'DONE',
+    });
+
+    renderPanel(memberListRoom);
+
+    await screen.findByText('종료된 문의입니다. 상태를 변경한 뒤 답변할 수 있습니다.');
+    expect(screen.queryByRole('button', { name: /종료/ })).toBeNull();
   });
 
   it('비회원 메시지에도 이름과 아바타를 보여준다', async () => {

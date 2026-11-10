@@ -5,6 +5,7 @@ import {
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
+import { FiCheck } from 'react-icons/fi';
 import { inquiryCategoriesQueries } from '@/apis/inquiries/inquiryCategories.query';
 import {
   inquiryMessagesQueries,
@@ -169,6 +170,11 @@ export function InquiryRoomDetailPanel({
     );
   };
 
+  // 되돌리려면 상태 셀렉트에서 바꾸면 되므로 따로 확인하지 않고 바로 종료한다.
+  const handleCloseRoom = () => {
+    handleStatusChange('DONE');
+  };
+
   const handleCategoryChange = (categoryId: number) => {
     changeCategory(
       { roomId, categoryId },
@@ -253,6 +259,12 @@ export function InquiryRoomDetailPanel({
               ))}
             </StatusSelect>
           </StatusSelectWrapper>
+          {!isClosed && (
+            <CloseRoomButton type="button" onClick={handleCloseRoom}>
+              <FiCheck size={14} />
+              종료
+            </CloseRoomButton>
+          )}
         </HeaderControls>
       </DetailHeader>
 
@@ -375,6 +387,31 @@ const HeaderSelect = styled.select`
   &:disabled {
     cursor: not-allowed;
     opacity: 0.6;
+  }
+`;
+
+// 상담을 끝내는 동작이라 셀렉트와 구분되게 채워진 버튼으로 둔다.
+const CloseRoomButton = styled.button`
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  align-items: center;
+
+  background-color: ${({ theme }) => theme.colors.gray800};
+  color: ${({ theme }) => theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.gray900};
   }
 `;
 
