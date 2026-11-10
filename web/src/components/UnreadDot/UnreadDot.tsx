@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
+import type { ComponentProps } from 'react';
 
-const UnreadDot = () => <Container />;
+type UnreadDotProps = ComponentProps<'span'>;
+
+const UnreadDot = (props: UnreadDotProps) => <Container {...props} />;
 
 export default UnreadDot;
 

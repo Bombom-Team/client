@@ -51,7 +51,7 @@ const InquiryRoomListPanel = () => {
           disabled={isPending || isCategoriesPending}
           onClick={handleCreateRoom}
         >
-          <PlusIcon width={16} height={16} />새 문의
+          <PlusIcon width={20} height={20} />새 문의
         </NewInquiryButton>
       </Header>
 
