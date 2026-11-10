@@ -99,8 +99,8 @@ const SkeletonRoomItem = styled.div`
 
 const SkeletonLines = styled.div`
   display: flex;
-  flex: 1;
   gap: ${({ theme }) => theme.spacing.sm};
+  flex: 1;
   flex-direction: column;
 `;
 
@@ -127,25 +127,29 @@ const SkeletonLine = styled(SkeletonBlock)<{ $width: string }>`
 
 const SkeletonDetailPanel = styled.div`
   flex: 1;
-
   background-color: ${({ theme }) => theme.colors.gray50};
 `;
 
 const SplitContainer = styled.div`
+  overflow: hidden;
+
+  /* 안쪽 헤더나 메시지가 길어도 이 상자를 넓히지 못하게 묶는다. 묶지 않으면
+     상위 레이아웃까지 밀려 사이드바 옆 영역 전체가 오른쪽으로 흐른다. */
+  width: 100%;
   height: calc(100vh - 64px - ${({ theme }) => theme.spacing.xl} * 2);
+  max-width: 100%;
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: ${({ theme }) => theme.shadows.sm};
 
   display: flex;
-  overflow: hidden;
 
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const DetailPlaceholder = styled.div`
   display: flex;
-  flex: 1;
   gap: ${({ theme }) => theme.spacing.md};
+  flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
