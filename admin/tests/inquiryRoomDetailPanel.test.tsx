@@ -330,6 +330,27 @@ describe('문의 상세 패널', () => {
     );
   });
 
+  it('헤더에서 잘리는 이메일과 담당자는 마우스를 올려 전체를 볼 수 있다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+
+    renderPanel({
+      ...memberListRoom,
+      inquirerEmail: 'very.long.address.for.testing@bombom.news',
+    });
+
+    // 이메일은 복사 버튼으로 감싸져 있고, 접근 가능한 이름에 전체 주소가 들어간다.
+    expect(
+      await screen.findByRole('button', {
+        name: 'very.long.address.for.testing@bombom.news 복사하기',
+      }),
+    ).toBeTruthy();
+
+    // 담당자 셀렉트는 선택된 이름을 title로 보여준다.
+    expect(
+      screen.getByRole('combobox', { name: '담당자' }).getAttribute('title'),
+    ).toBe('담당자몽');
+  });
+
   it('비회원 메시지에도 이름과 아바타를 보여준다', async () => {
     vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
     vi.mocked(getInquiryMessages).mockResolvedValue({

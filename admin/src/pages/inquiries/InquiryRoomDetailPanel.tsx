@@ -21,6 +21,7 @@ import {
 import { membersQueries } from '@/apis/members/members.query';
 import { formatDateDivider, isSameDay } from '@/lib/formatRelativeTime';
 import { getRequesterIdentity } from '@/lib/inquiryDisplay';
+import { CopyableText } from '@/pages/inquiries/CopyableText';
 import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
 import { InquiryMessageBubble } from '@/pages/inquiries/InquiryMessageBubble';
 import { InquiryMessageInput } from '@/pages/inquiries/InquiryMessageInput';
@@ -117,6 +118,14 @@ export function InquiryRoomDetailPanel({
           : `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`,
         email: null,
       };
+
+  // 셀렉트 폭이 좁아 긴 이름은 잘린다. 잘린 값을 title로 볼 수 있게 미리 만든다.
+  const assigneeName =
+    admins.content.find((admin) => admin.id === room.assigneeId)?.nickname ??
+    '담당자 미지정';
+  const categoryName =
+    categories.find((category) => category.id === room.categoryId)?.name ??
+    '카테고리 없음';
 
   // 문의자 메시지는 모두 같은 사람이 보낸 것이라 방 정보의 이름을 그대로 쓴다.
   // 관리자 메시지에는 작성자 표시를 두지 않는다.
@@ -218,15 +227,15 @@ export function InquiryRoomDetailPanel({
         <HeaderInfo>
           <InquiryAvatar name={requester.name} />
           <RequesterText>
-            <RoomIdentity>{requester.name}</RoomIdentity>
-            {requester.email && (
-              <RequesterEmail>{requester.email}</RequesterEmail>
-            )}
+            <RoomIdentity title={requester.name}>{requester.name}</RoomIdentity>
+            {/* 이메일은 복사해서 쓰는 일이 잦아 눌러서 바로 복사할 수 있게 한다. */}
+            {requester.email && <RequesterEmail value={requester.email} />}
           </RequesterText>
         </HeaderInfo>
         <HeaderControls>
           <HeaderSelect
             aria-label="카테고리"
+            title={categoryName}
             value={room.categoryId}
             onChange={(e) => handleCategoryChange(Number(e.target.value))}
           >
@@ -238,6 +247,7 @@ export function InquiryRoomDetailPanel({
           </HeaderSelect>
           <HeaderSelect
             aria-label="담당자"
+            title={assigneeName}
             value={room.assigneeId ?? ''}
             onChange={(e) =>
               e.target.value && handleAssigneeChange(Number(e.target.value))
@@ -311,33 +321,38 @@ export function InquiryRoomDetailPanel({
 }
 
 const DetailContainer = styled.div`
+  min-width: 0;
+
   display: flex;
   flex: 1;
   flex-direction: column;
-
-  min-width: 0;
 `;
 
 const DetailHeader = styled.div`
+  /* 내용이 길어도 헤더가 패널 밖으로 넘쳐 레이아웃을 밀어내지 않게 한다. */
+  min-width: 0;
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
 
   display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
   justify-content: space-between;
 `;
 
 const HeaderInfo = styled.div`
+  min-width: 0;
+
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
   align-items: center;
-  min-width: 0;
 `;
 
 const RequesterText = styled.div`
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
-  min-width: 0;
 `;
 
 const RoomIdentity = styled.span`
@@ -345,25 +360,31 @@ const RoomIdentity = styled.span`
 
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  text-overflow: ellipsis;
   white-space: nowrap;
+
+  text-overflow: ellipsis;
 `;
 
-const RequesterEmail = styled.span`
-  overflow: hidden;
-
+const RequesterEmail = styled(CopyableText)`
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 
+// 공간이 모자라면 셀렉트부터 줄어들게 둔다. 종료 버튼은 flex-shrink를 0으로 두어
+// 항상 온전히 보인다.
 const HeaderControls = styled.div`
+  min-width: 0;
+
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
+  align-items: center;
 `;
 
 const HeaderSelect = styled.select`
+
+  /* flex 자식은 기본값이 min-width: auto라 내용보다 작아지지 않는다. 0으로 풀어
+     공간이 모자랄 때 셀렉트가 줄어들게 한다. */
+  min-width: 0;
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   padding-right: 28px;
   border: 1px solid ${({ theme }) => theme.colors.gray200};
@@ -389,8 +410,10 @@ const HeaderSelect = styled.select`
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
+
     background-color: ${({ theme }) => theme.colors.white};
+
+    border-color: ${({ theme }) => theme.colors.primary};
   }
 
   &:disabled {
@@ -447,6 +470,7 @@ const StatusDot = styled('span', {
   border-radius: ${({ theme }) => theme.borderRadius.full};
 
   background-color: ${({ $color }) => $color};
+
   pointer-events: none;
 `;
 
@@ -454,12 +478,13 @@ const MessageTimeline = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
 
   display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
   flex: 1;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.md};
-  overflow-y: auto;
 
   background-color: ${({ theme }) => theme.colors.gray50};
+
+  overflow-y: auto;
 `;
 
 const LoadingMore = styled.div`

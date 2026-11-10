@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@emotion/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { screen } from '@testing-library/dom';
-import { cleanup, render } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/dom';
+import { cleanup, fireEvent, render } from '@testing-library/react';
 import { Suspense } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getInquiryCategories } from '../src/apis/inquiries/inquiryCategories.api';
@@ -53,7 +53,9 @@ const room = (overrides: Partial<InquiryRoom> = {}): InquiryRoom => ({
 
 const clients: QueryClient[] = [];
 
-const renderPanel = () => {
+const renderPanel = ({
+  onSelectRoom = () => {},
+}: { onSelectRoom?: (room: InquiryRoom) => void } = {}) => {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -64,7 +66,7 @@ const renderPanel = () => {
         <Suspense fallback={<div>로딩 중</div>}>
           <InquiryRoomListPanel
             selectedRoomId={null}
-            onSelectRoom={() => {}}
+            onSelectRoom={onSelectRoom}
             onSelectedRoomChange={() => {}}
           />
         </Suspense>
@@ -129,13 +131,105 @@ describe('문의 목록', () => {
     expect(screen.getByText('비회원 (4034bc92)')).toBeTruthy();
   });
 
+  it('잘리는 이름과 담당자는 마우스를 올려 전체를 볼 수 있다', async () => {
+    mockRooms([
+      room({
+        inquirerNickname: '아주아주긴닉네임을가진회원',
+        assigneeNickname: 'dummy_nick_1',
+      }),
+    ]);
+
+    renderPanel();
+
+    expect(
+      (await screen.findByText('아주아주긴닉네임을가진회원')).getAttribute(
+        'title',
+      ),
+    ).toBe('아주아주긴닉네임을가진회원');
+    expect(screen.getByText('dummy_nick_1').getAttribute('title')).toBe(
+      'dummy_nick_1',
+    );
+  });
+
+  it('이메일을 누르면 클립보드에 전체 주소를 복사한다', async () => {
+    const email = 'very.long.address.for.testing@bombom.news';
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    // navigator 전체를 stub하면 뒤 테스트까지 번지므로 clipboard만 끼웠다 되돌린다.
+    const originalClipboard = Object.getOwnPropertyDescriptor(
+      navigator,
+      'clipboard',
+    );
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+
+    try {
+      mockRooms([room({ inquirerEmail: email })]);
+
+      renderPanel();
+
+      fireEvent.click(
+        await screen.findByRole('button', { name: `${email} 복사하기` }),
+      );
+
+      expect(writeText).toHaveBeenCalledWith(email);
+      expect(await screen.findByText('복사됨')).toBeTruthy();
+    } finally {
+      if (originalClipboard) {
+        Object.defineProperty(navigator, 'clipboard', originalClipboard);
+      } else {
+        Reflect.deleteProperty(navigator, 'clipboard');
+      }
+    }
+  });
+
+  it('복사 버튼을 눌러도 방이 선택되지 않는다', async () => {
+    const email = 'bom@bombom.news';
+    const onSelectRoom = vi.fn();
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+      configurable: true,
+    });
+
+    try {
+      mockRooms([room({ inquirerEmail: email })]);
+
+      renderPanel({ onSelectRoom });
+
+      fireEvent.click(
+        await screen.findByRole('button', { name: `${email} 복사하기` }),
+      );
+
+      expect(onSelectRoom).not.toHaveBeenCalled();
+    } finally {
+      Reflect.deleteProperty(navigator, 'clipboard');
+    }
+  });
+
+  it('클립보드를 쓸 수 없으면 복사됨 표시를 띄우지 않는다', async () => {
+    const email = 'bom@bombom.news';
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    // 보안 컨텍스트가 아니면 navigator.clipboard 자체가 없다.
+    Reflect.deleteProperty(navigator, 'clipboard');
+
+    mockRooms([room({ inquirerEmail: email })]);
+
+    renderPanel();
+
+    fireEvent.click(
+      await screen.findByRole('button', { name: `${email} 복사하기` }),
+    );
+
+    await waitFor(() => expect(alertSpy).toHaveBeenCalledTimes(1));
+    expect(screen.queryByText('복사됨')).toBeNull();
+  });
+
   it('조건에 맞는 문의가 없으면 안내 문구를 보여준다', async () => {
     mockRooms([]);
 
     renderPanel();
 
-    expect(
-      await screen.findByText('해당 조건의 문의가 없습니다'),
-    ).toBeTruthy();
+    expect(await screen.findByText('해당 조건의 문의가 없습니다')).toBeTruthy();
   });
 });

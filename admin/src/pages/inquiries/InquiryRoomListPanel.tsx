@@ -14,6 +14,7 @@ import {
   getLastMessagePreviewLabel,
   getRequesterIdentity,
 } from '@/lib/inquiryDisplay';
+import { CopyableText } from '@/pages/inquiries/CopyableText';
 import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
 import {
   INQUIRY_STATUS_LABELS,
@@ -175,6 +176,10 @@ export function InquiryRoomListPanel({
         {rooms.map((room) => {
           const category = categories.find((c) => c.id === room.categoryId);
           const requester = getRequesterIdentity(room);
+          const lastMessagePreview = getLastMessagePreviewLabel(room);
+          const assigneeLabel =
+            room.assigneeNickname ??
+            (room.assigneeId ? '탈퇴한 담당자' : '담당자 미지정');
           return (
             <RoomItem
               key={room.id}
@@ -183,27 +188,30 @@ export function InquiryRoomListPanel({
             >
               <InquiryAvatar name={requester.name} />
               <RoomItemBody>
+                {/* 카드 폭이 좁아 말줄임되므로 전체 값을 title로 띄운다. */}
                 <RoomItemTop>
-                  <RoomRequester>{requester.name}</RoomRequester>
+                  <RoomRequester title={requester.name}>
+                    {requester.name}
+                  </RoomRequester>
                   <RoomTime>
                     {room.lastMessage
                       ? formatRelativeTime(room.lastMessage.createdAt)
                       : '없음'}
                   </RoomTime>
                 </RoomItemTop>
+                {/* 이메일은 복사해서 쓰는 일이 잦아 눌러서 바로 복사하게 한다. */}
                 {requester.email && (
-                  <RoomRequesterEmail>{requester.email}</RoomRequesterEmail>
+                  <RoomRequesterEmail value={requester.email} />
                 )}
-                <RoomLastMessagePreview>
-                  {getLastMessagePreviewLabel(room)}
+                <RoomLastMessagePreview title={lastMessagePreview}>
+                  {lastMessagePreview}
                 </RoomLastMessagePreview>
                 <RoomItemBottom>
-                  <RoomCategoryName>
+                  <RoomCategoryName title={category?.name ?? '카테고리 없음'}>
                     {category?.name ?? '카테고리 없음'}
                   </RoomCategoryName>
-                  <RoomAssignee>
-                    {room.assigneeNickname ??
-                      (room.assigneeId ? '탈퇴한 담당자' : '담당자 미지정')}
+                  <RoomAssignee title={assigneeLabel}>
+                    {assigneeLabel}
                   </RoomAssignee>
                 </RoomItemBottom>
               </RoomItemBody>
@@ -357,13 +365,9 @@ const RoomItemTop = styled.div`
   justify-content: space-between;
 `;
 
-const RoomRequesterEmail = styled.p`
-  overflow: hidden;
-
+const RoomRequesterEmail = styled(CopyableText)`
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 
 const RoomTime = styled.span`
@@ -408,11 +412,14 @@ const RoomCategoryName = styled.div`
   text-overflow: ellipsis;
 `;
 
+// 긴 닉네임이 카테고리를 밀어내지 않도록 함께 줄어들게 둔다. 잘린 값은 title로 본다.
 const RoomAssignee = styled.span`
-  flex-shrink: 0;
+  overflow: hidden;
 
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const EmptyState = styled.div`
