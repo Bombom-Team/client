@@ -213,7 +213,8 @@ export const MainScreen = () => {
           // Android는 문자열 값을 변환하지 못해 오류가 나므로 iOS에만 전달한다.
           decelerationRate={Platform.OS === 'ios' ? 'normal' : undefined}
           automaticallyAdjustsScrollIndicatorInsets={false}
-          // 웹이 i18n을 초기화하기 전에 기기 선호 언어를 넘긴다. iOS WebView의 navigator.languages는 기기 언어와 다를 수 있다.
+          // 기기 선호 언어를 웹에 넘긴다. iOS WebView의 navigator.languages는 기기 언어와 다를 수 있다.
+          // iOS는 문서 시작 시점에 실행되지만 Android는 웹 JS보다 늦을 수 있고, 그때 웹은 navigator.languages를 쓴다.
           injectedJavaScriptBeforeContentLoaded={`
             window.${DEVICE_LANGUAGES_KEY} = ${JSON.stringify(
               getLocales().map(({ languageTag }) => languageTag),
