@@ -5,7 +5,7 @@ import {
   INQUIRY_ROOM_STATUS_BADGE_VARIANTS,
   INQUIRY_ROOM_STATUS_LABELS,
 } from '@/types/inquiry';
-import { formatDate } from '@/utils/date';
+import { convertRelativeTime } from '@/utils/date';
 import type { InquiryRoom } from '@/types/inquiry';
 
 const IMAGE_ONLY_MESSAGE = '사진을 보냈습니다.';
@@ -50,7 +50,7 @@ const InquiryRoomListItem = ({
             )}
           </BadgeGroup>
           <CreatedAt hasUnread={hasUnread}>
-            {formatDate(new Date(listDate ?? ''))}
+            {convertRelativeTime(listDate ?? '')}
           </CreatedAt>
         </TopRow>
         {lastMessageText && (

@@ -1,8 +1,8 @@
 import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { convertRelativeTime } from '../utils/date';
 import { queries } from '@/apis/queries';
+import { convertRelativeTime } from '@/utils/date';
 
 const DELETED_USER_NICKNAME = '탈퇴한 회원';
 
