@@ -3,7 +3,7 @@ import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useMatchRoute } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { queries } from '@/apis/queries';
 import ChatBubbleDotsIcon from '#/assets/svg/chat-bubble-dots.svg';
@@ -13,11 +13,6 @@ const BUTTON_LABEL = '1:1 채팅 문의';
 const UNREAD_LABEL = '1:1 채팅 문의 (읽지 않은 문의 있음)';
 const UNREAD_NOTICE = '문의 답변이 도착했어요!';
 const NOTICE_DURATION = 5000;
-
-/**
- * 화면을 옮겨 다닐 때마다 말풍선이 다시 뜨지 않도록, 이미 안내한 안읽음 상태를 모듈 단위로 기억한다.
- */
-let hasNoticedUnread = false;
 
 /**
  * PC에서 어느 화면에 있든 문의로 바로 들어갈 수 있도록 띄우는 버튼이다.
@@ -31,19 +26,20 @@ const InquiryFloatingButton = () => {
   const isVisible = device === 'pc' && !isOnSupportPage;
   const hasUnread = Boolean(unreadStatus?.hasUnread);
   const [isNoticeOpen, setIsNoticeOpen] = useState(false);
+  const hadUnreadRef = useRef(false);
 
-  // 답변이 새로 도착한 순간에만 안내하고, 읽고 나면 다음 답변을 다시 안내할 수 있도록 되돌린다.
-  // 버튼이 보이지 않는 화면에서는 안내 기회를 소비하지 않는다.
+  // 안읽음이 없다가 생긴 순간에만 안내해, 화면을 옮겨 다닐 때마다 말풍선이 다시 뜨지 않게 한다.
+  // 버튼이 보이지 않는 화면에서는 안내를 건너뛰되 직전 상태는 갱신하지 않아, 돌아왔을 때 한 번 더 안내한다.
   useEffect(() => {
     if (!hasUnread) {
-      hasNoticedUnread = false;
+      hadUnreadRef.current = false;
       setIsNoticeOpen(false);
       return;
     }
 
-    if (!isVisible || hasNoticedUnread) return;
+    if (!isVisible || hadUnreadRef.current) return;
 
-    hasNoticedUnread = true;
+    hadUnreadRef.current = true;
     setIsNoticeOpen(true);
   }, [hasUnread, isVisible]);
 
@@ -66,7 +62,7 @@ const InquiryFloatingButton = () => {
   return createPortal(
     <Container>
       {isNoticeOpen && (
-        <Notice>
+        <Notice role="status">
           <NoticeLink to="/support/inquiry">{UNREAD_NOTICE}</NoticeLink>
           <CloseButton
             type="button"
