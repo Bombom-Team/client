@@ -142,12 +142,13 @@ const SenderTime = styled.span`
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
-// 수정 중에는 입력 폭을 넓혀 긴 메시지를 한눈에 보며 고칠 수 있게 한다.
+// 말풍선이 좁으면 어절 중간에서 줄이 자주 끊겨 읽기 불편하다. 어드민 답변은 보통
+// 길어서 넉넉한 폭이 필요하고, 수정 중에는 더 넓혀 한눈에 보며 고칠 수 있게 한다.
 const BubbleColumn = styled('div', {
   shouldForwardProp: (prop) => prop !== '$isAdmin' && prop !== '$isEditing',
 })<{ $isAdmin: boolean; $isEditing: boolean }>`
   width: ${({ $isEditing }) => ($isEditing ? '100%' : 'auto')};
-  max-width: ${({ $isEditing }) => ($isEditing ? '85%' : '60%')};
+  max-width: ${({ $isEditing }) => ($isEditing ? '90%' : '80%')};
 
   display: flex;
   flex-direction: column;
@@ -173,7 +174,13 @@ const Bubble = styled('div', {
 })<{ $isAdmin: boolean }>`
   padding: ${({ $isAdmin, theme }) =>
     $isAdmin ? `${theme.spacing.sm} ${theme.spacing.md}` : '0'};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  /* 오른쪽에 붙는 관리자 말풍선은 그쪽 아래 모서리를 각지게 두어 보내는 방향을
+     드러낸다. 말풍선 꼬리와 같은 역할이다. */
+  border-radius: ${({ $isAdmin, theme }) =>
+    $isAdmin
+      ? `${theme.borderRadius.md} ${theme.borderRadius.md} 0 ${theme.borderRadius.md}`
+      : theme.borderRadius.md};
 
   background-color: ${({ $isAdmin, theme }) =>
     $isAdmin ? theme.colors.gray100 : 'transparent'};
@@ -181,7 +188,12 @@ const Bubble = styled('div', {
   font-size: ${({ theme }) => theme.fontSize.sm};
   line-height: 1.6;
   white-space: pre-wrap;
-  word-break: break-word;
+
+  overflow-wrap: anywhere;
+
+  /* 한글은 어절 단위로 끊어야 읽기 편하다. 다만 URL처럼 공백 없이 긴 문자열은
+     넘치지 않도록 중간에서 끊는다. */
+  word-break: keep-all;
 `;
 
 const BubbleActions = styled.div`
@@ -240,19 +252,19 @@ const EditForm = styled.div`
 // 말풍선과 같은 글자 크기·줄간격·패딩을 써서, 수정 중에도 완성된 모습과
 // 비슷하게 보이도록 한다. 높이는 내용에 맞춰 스크립트가 조절한다.
 const EditTextarea = styled.textarea`
-  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
-  border: 1px solid ${({ theme }) => theme.colors.gray300};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-
   width: 100%;
   min-height: 60px;
   max-height: 480px;
-  overflow-y: auto;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
 
   background-color: ${({ theme }) => theme.colors.white};
   font-family: inherit;
   font-size: ${({ theme }) => theme.fontSize.sm};
   line-height: 1.6;
+
+  overflow-y: auto;
   resize: none;
 
   &:focus {

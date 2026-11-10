@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useEffect, useRef, useState } from 'react';
-import { FiImage, FiSend, FiX } from 'react-icons/fi';
+import { FiPaperclip, FiSend, FiX } from 'react-icons/fi';
 import { uploadInquiryImages } from '@/apis/inquiries/inquiryMessages.api';
 import { useSendInquiryMessageMutation } from '@/apis/inquiries/inquiryMessages.query';
 
@@ -131,7 +131,7 @@ export function InquiryMessageInput({
           disabled={disabled || isUploading || images.length >= MAX_IMAGE_COUNT}
           onClick={() => fileInputRef.current?.click()}
         >
-          <FiImage size={18} />
+          <FiPaperclip size={18} />
         </AttachButton>
         <HiddenFileInput
           ref={fileInputRef}
@@ -147,24 +147,23 @@ export function InquiryMessageInput({
             setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
           }
           onKeyDown={handleKeyDown}
-          placeholder={
-            disabled
-              ? '종료된 문의입니다.'
-              : '메시지를 입력하세요. Enter로 전송, Shift+Enter로 줄바꿈'
-          }
+          placeholder={disabled ? '종료된 문의입니다' : '메시지를 입력하세요'}
+          title="Enter로 전송, Shift+Enter로 줄바꿈"
           disabled={disabled}
           rows={1}
         />
         <SendButton
           type="button"
+          aria-label={isSending ? '전송 중' : '전송'}
           disabled={disabled || isSending || isUploading}
           onClick={handleSend}
         >
           <FiSend size={16} />
-          {isSending ? '전송 중' : '전송'}
         </SendButton>
       </InputRow>
-      <CharCount>
+      {/* 빈 입력창 아래 0 / 500이 떠 있으면 시선만 끌어 입력 전에는 감춘다. 다만
+          자리는 늘 차지하게 두어 첫 글자를 칠 때 입력창이 밀려 올라가지 않게 한다. */}
+      <CharCount $visible={content.length > 0}>
         {content.length} / {MAX_CONTENT_LENGTH}
       </CharCount>
     </InputContainer>
@@ -178,6 +177,7 @@ const InputContainer = styled.div`
 
 const ImagePreviewRow = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.sm};
+  padding-left: ${({ theme }) => theme.spacing.sm};
 
   display: flex;
   gap: ${({ theme }) => theme.spacing.xs};
@@ -214,25 +214,52 @@ const RemoveButton = styled.button`
   cursor: pointer;
 `;
 
+// 첨부·입력·전송을 테두리 하나로 묶어 한 덩어리로 보이게 한다. 내부 요소는
+// 각자 테두리를 갖지 않고, 포커스 표시도 이 컨테이너가 대신 받는다.
 const InputRow = styled.div`
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+
   display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
-  align-items: flex-end;
+  gap: ${({ theme }) => theme.spacing.xs};
+  align-items: center;
+
+  background-color: ${({ theme }) => theme.colors.white};
+
+  transition: border-color 0.15s;
+
+  &:focus-within {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const AttachButton = styled.button`
-  padding: ${({ theme }) => theme.spacing.sm};
-  border: 1px solid ${({ theme }) => theme.colors.gray200};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
 
-  background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.gray600};
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.gray400};
 
   cursor: pointer;
+
+  transition: background-color 0.15s, color 0.15s;
 
   &:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: ${({ theme }) => theme.colors.gray100};
+    color: ${({ theme }) => theme.colors.gray600};
   }
 `;
 
@@ -241,44 +268,48 @@ const HiddenFileInput = styled.input`
 `;
 
 const MessageTextarea = styled.textarea`
-  padding: ${({ theme }) => theme.spacing.sm};
-  border: 1px solid ${({ theme }) => theme.colors.gray200};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+  min-height: 24px;
+  max-height: 200px;
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border: none;
 
   flex: 1;
-  min-height: 40px;
-  max-height: 320px;
-  overflow-y: auto;
 
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.gray900};
+  font-family: inherit;
   font-size: ${({ theme }) => theme.fontSize.sm};
-  line-height: 1.4;
+  line-height: 1.5;
+
+  overflow-y: auto;
   resize: none;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.gray400};
+  }
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
   }
 
   &:disabled {
-    background-color: ${({ theme }) => theme.colors.gray50};
     cursor: not-allowed;
   }
 `;
 
 const SendButton = styled.button`
-  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  width: 32px;
+  height: 32px;
   border: none;
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
   display: flex;
   flex-shrink: 0;
-  gap: ${({ theme }) => theme.spacing.xs};
   align-items: center;
+  justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
-  font-size: ${({ theme }) => theme.fontSize.sm};
 
   cursor: pointer;
 
@@ -292,10 +323,15 @@ const SendButton = styled.button`
   }
 `;
 
-const CharCount = styled.p`
+const CharCount = styled('p', {
+  shouldForwardProp: (prop) => prop !== '$visible',
+})<{ $visible: boolean }>`
   margin-top: ${({ theme }) => theme.spacing.xs};
+  padding-right: ${({ theme }) => theme.spacing.md};
 
   color: ${({ theme }) => theme.colors.gray400};
   font-size: ${({ theme }) => theme.fontSize.xs};
   text-align: right;
+
+  visibility: ${({ $visible }) => ($visible ? 'visible' : 'hidden')};
 `;
