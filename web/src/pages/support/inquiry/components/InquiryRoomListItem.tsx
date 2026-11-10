@@ -164,9 +164,11 @@ const UnreadDot = styled.span`
   background-color: ${({ theme }) => theme.colors.primaryBomBom};
 `;
 
+/* 상태 배지의 좌측 패딩만큼 들여써서 배지 글자와 세로선을 맞춘다 */
 const LastMessageText = styled.p<{ hasUnread: boolean }>`
   overflow: hidden;
   min-height: 20px;
+  padding-left: 8px;
 
   color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme, hasUnread }) =>
