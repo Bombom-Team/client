@@ -90,7 +90,10 @@ export function InquiryRoomListPanel({
   const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
 
   // 목록이 다시 조회되면 선택된 방의 최신 값을 상세 패널로 올린다.
+  // 필터를 바꿔 선택된 방이 목록에서 빠졌을 때는 알리지 않는다. undefined를 올리면
+  // 열려 있는 상세 화면의 문의자 이름이 내부 ID 표기로 퇴화한다.
   useEffect(() => {
+    if (!selectedRoom) return;
     onSelectedRoomChange(selectedRoom);
   }, [selectedRoom, onSelectedRoomChange]);
 
