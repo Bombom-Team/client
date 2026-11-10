@@ -250,11 +250,7 @@ describe('문의 상세 패널', () => {
 
     await screen.findByText(longContent);
 
-    // 관리자 메시지에만 수정/삭제 버튼이 뜬다. 수정 버튼은 아이콘뿐이라 순서로 찾는다.
-    const iconButtons = screen
-      .getAllByRole('button')
-      .filter((button) => button.textContent === '');
-    fireEvent.click(iconButtons[0]);
+    fireEvent.click(screen.getByRole('button', { name: '메시지 수정' }));
 
     // 하단 메시지 입력창과 구분하기 위해 값으로 찾는다.
     const editTextarea = screen

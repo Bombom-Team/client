@@ -85,6 +85,25 @@ export function InquiryMessageBubble({
           </EditForm>
         ) : (
           <BubbleWrapper>
+            {/* 관리자 말풍선은 오른쪽 끝에 붙이고, 수정·삭제는 왼쪽에 띄운다. */}
+            {isAdminMessage && (
+              <BubbleActions data-bubble-actions>
+                <ActionIcon
+                  type="button"
+                  aria-label="메시지 수정"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <FiEdit2 size={14} />
+                </ActionIcon>
+                <ActionIcon
+                  type="button"
+                  aria-label="메시지 삭제"
+                  onClick={handleDelete}
+                >
+                  <FiTrash2 size={14} />
+                </ActionIcon>
+              </BubbleActions>
+            )}
             <Bubble $isAdmin={isAdminMessage}>
               {message.content}
               {message.imageUrls.length > 0 && (
@@ -95,16 +114,6 @@ export function InquiryMessageBubble({
                 </ImageGrid>
               )}
             </Bubble>
-            {isAdminMessage && (
-              <BubbleActions data-bubble-actions>
-                <ActionIcon onClick={() => setIsEditing(true)}>
-                  <FiEdit2 size={14} />
-                </ActionIcon>
-                <ActionIcon onClick={handleDelete}>
-                  <FiTrash2 size={14} />
-                </ActionIcon>
-              </BubbleActions>
-            )}
           </BubbleWrapper>
         )}
         {/* 작성자 줄에 시각이 이미 있으면 아래에 반복하지 않는다. */}
@@ -159,7 +168,6 @@ const BubbleWrapper = styled.div`
   position: relative;
 
   display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
   align-items: flex-end;
 
   &:hover [data-bubble-actions] {
@@ -196,12 +204,23 @@ const Bubble = styled('div', {
   word-break: keep-all;
 `;
 
+// 흐름에서 빼내 말풍선 왼쪽 바깥에 띄운다. 흐름 안에 두면 숨어 있을 때도 자리를
+// 차지해 말풍선이 오른쪽 끝까지 붙지 못한다.
 const BubbleActions = styled.div`
+  position: absolute;
+  right: 100%;
+  bottom: 0;
+  margin-right: ${({ theme }) => theme.spacing.xs};
+
   display: flex;
   gap: 2px;
 
   opacity: 0;
   transition: opacity 0.15s;
+
+  &:focus-within {
+    opacity: 1;
+  }
 `;
 
 const ActionIcon = styled.button`
