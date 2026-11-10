@@ -1,3 +1,4 @@
+import { theme } from '@bombom/shared';
 import { ApiError } from '@bombom/shared/apis';
 import { ChevronIcon, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
@@ -18,12 +19,14 @@ import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessa
 import { useInquiryMessageDeleteMutation } from '@/pages/support/inquiry/hooks/useInquiryMessageDeleteMutation';
 import { useInquiryMessageScroll } from '@/pages/support/inquiry/hooks/useInquiryMessageScroll';
 import { useInquiryMessageSendMutation } from '@/pages/support/inquiry/hooks/useInquiryMessageSendMutation';
+import { formatAssigneeLabel } from '@/pages/support/inquiry/utils/assignee';
 import {
   INQUIRY_ROOM_STATUS_BADGE_VARIANTS,
   INQUIRY_ROOM_STATUS_LABELS,
 } from '@/types/inquiry';
 import { compareDates, formatDateToKorean } from '@/utils/date';
 import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
+import ClockIcon from '#/assets/svg/clock.svg';
 
 export const Route = createFileRoute('/_bombom/_main/support/inquiry/$roomId')({
   head: () => ({
@@ -87,10 +90,6 @@ function InquiryRoomDetailPage() {
   const isRoomFetchError = roomError != null && !isRoomNotFound;
   const isAwaitingMoreMessages =
     room?.status === 'UNCONFIRMED' || room?.status === 'IN_PROGRESS';
-  const { data: categories } = useQuery(queries.inquiryCategories());
-  const categoryName = categories?.find(
-    (category) => category.id === room?.categoryId,
-  )?.name;
 
   const {
     data: messagePages,
@@ -264,27 +263,33 @@ function InquiryRoomDetailPage() {
           </BackLink>
         )}
 
-        {room && (
-          <CreatedAtText>
-            {formatDateToKorean(new Date(room.createdAt ?? ''))}
-          </CreatedAtText>
-        )}
-
         <HeaderRow>
-          <HeaderSpacer />
-          {categoryName && <CategoryText>{categoryName}</CategoryText>}
-          <HeaderSpacer>
-            {room?.status && (
-              <Badge
-                text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
-                variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
-              />
-            )}
-          </HeaderSpacer>
+          {room && (
+            <HeaderTitleGroup>
+              <CreatedAtText>
+                {formatDateToKorean(new Date(room.createdAt ?? ''))}
+              </CreatedAtText>
+              <AssigneeText>
+                {formatAssigneeLabel(room.assigneeNickname)}
+              </AssigneeText>
+            </HeaderTitleGroup>
+          )}
+          {room?.status && (
+            <Badge
+              text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
+              variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
+            />
+          )}
         </HeaderRow>
 
         <ResponseTimeNotice>
-          문의 답변에는 평일 기준 평균 2시간이 소요됩니다.
+          {/* clock.svg는 stroke 색이 하드코딩되어 있어 color 대신 stroke로 덮어쓴다 */}
+          <ClockIcon
+            width={16}
+            height={16}
+            stroke={theme.colors.textTertiary}
+          />
+          평일 10:00-18:00 운영, 보통 1영업일 안에 답변드려요
         </ResponseTimeNotice>
       </Header>
 
@@ -392,36 +397,39 @@ const BackLink = styled(Link)`
   text-decoration: none;
 `;
 
+const HeaderTitleGroup = styled.div`
+  display: flex;
+  gap: 2px;
+  flex-direction: column;
+`;
+
 const CreatedAtText = styled.span`
-  color: ${({ theme }) => theme.colors.textTertiary};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t6Bold};
+`;
+
+const AssigneeText = styled.span`
+  color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t3Regular};
-  text-align: center;
 `;
 
 const HeaderRow = styled.div`
   display: flex;
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
-`;
-
-const HeaderSpacer = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-`;
-
-const CategoryText = styled.span`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t5Bold};
-  text-align: center;
 `;
 
 const ResponseTimeNotice = styled.p`
   margin-top: 4px;
 
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t3Regular};
-  text-align: center;
 `;
 
 const MessageList = styled.div<{ isMobile: boolean }>`
@@ -429,7 +437,7 @@ const MessageList = styled.div<{ isMobile: boolean }>`
   padding: 4px 0;
 
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex: ${({ isMobile }) => (isMobile ? 'none' : '1')};
   flex-direction: column;
 

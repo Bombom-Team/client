@@ -3,13 +3,13 @@ import { Modal, useModal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import InquiryMessageDeleteModal from './InquiryMessageDeleteModal';
+import { ADMIN_FALLBACK_NAME } from '../constants/inquiry';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { formatTimeToKorean } from '@/utils/date';
 import type { InquiryMessage } from '@/types/inquiry';
 import CloseIcon from '#/assets/svg/close.svg';
 import DeleteIcon from '#/assets/svg/delete.svg';
-
-const DEFAULT_ADMIN_NAME = '봄봄 운영자';
+import HeadsetIcon from '#/assets/svg/headset.svg';
 
 interface InquiryMessageBubbleProps {
   message: InquiryMessage;
@@ -39,7 +39,7 @@ const InquiryMessageBubble = ({
   });
 
   const imageUrls = message.imageUrls ?? [];
-  const senderName = message.adminNickname ?? DEFAULT_ADMIN_NAME;
+  const senderName = message.adminNickname ?? ADMIN_FALLBACK_NAME;
 
   const handleDeleteClick = () => {
     openModal();
@@ -58,7 +58,20 @@ const InquiryMessageBubble = ({
 
   return (
     <BubbleColumn isOwnMessage={isOwnMessage}>
-      {!isOwnMessage && <SenderName>{senderName}</SenderName>}
+      {!isOwnMessage && (
+        <SenderRow>
+          <SenderName>{senderName}</SenderName>
+          <HeadsetIcon
+            width={16}
+            height={16}
+            color={theme.colors.primaryBomBom}
+            aria-label="봄봄 운영팀"
+          />
+          <SentTime>
+            {formatTimeToKorean(new Date(message.createdAt ?? ''))}
+          </SentTime>
+        </SenderRow>
+      )}
 
       <BubbleRow isOwnMessage={isOwnMessage}>
         {isOwnMessage && (
@@ -107,9 +120,11 @@ const InquiryMessageBubble = ({
         </Bubble>
       </BubbleRow>
 
-      <DateText isOwnMessage={isOwnMessage}>
-        {formatTimeToKorean(new Date(message.createdAt ?? ''))}
-      </DateText>
+      {isOwnMessage && (
+        <DateText>
+          {formatTimeToKorean(new Date(message.createdAt ?? ''))}
+        </DateText>
+      )}
 
       <Modal
         isOpen={isPreviewOpen}
@@ -149,7 +164,7 @@ const BubbleColumn = styled.div<{ isOwnMessage: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: 4px;
+  gap: 8px;
   flex-direction: column;
   align-items: ${({ isOwnMessage }) =>
     isOwnMessage ? 'flex-end' : 'flex-start'};
@@ -159,28 +174,36 @@ const BubbleRow = styled.div<{ isOwnMessage: boolean }>`
   width: 100%;
 
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: flex-end;
   justify-content: ${({ isOwnMessage }) =>
     isOwnMessage ? 'flex-end' : 'flex-start'};
 `;
 
+/**
+ * 말풍선이 향하는 쪽 아래 모서리만 각지게 해 보낸 사람 방향을 드러낸다.
+ */
 const Bubble = styled.div<{
   hasImages: boolean;
   isOwnMessage: boolean;
   isMobile: boolean;
 }>`
   width: ${({ hasImages }) => (hasImages ? '272px' : 'fit-content')};
-  max-width: ${({ isMobile }) => (isMobile ? 'calc(100% - 60px)' : '520px')};
+
+  /* 어드민 답변은 길어지기 쉬워 폭을 넓게 쓰되, 반대편 끝에 닿지 않도록 여백을 남긴다 */
+  max-width: ${({ isOwnMessage, isMobile }) => {
+    if (!isOwnMessage) return 'calc(100% - 80px)';
+    return isMobile ? 'calc(100% - 60px)' : '520px';
+  }};
   padding: 12px 16px;
-  border-radius: 16px;
+  border-radius: ${({ isOwnMessage }) =>
+    isOwnMessage ? '16px 16px 0' : '16px 16px 16px 0'};
 
   flex-shrink: 0;
 
   background: ${({ isOwnMessage, theme }) =>
-    isOwnMessage ? theme.colors.primaryBomBom : theme.colors.dividers};
-  color: ${({ isOwnMessage, theme }) =>
-    isOwnMessage ? theme.colors.white : theme.colors.textPrimary};
+    isOwnMessage ? theme.colors.primaryInfo : theme.colors.dividers};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t6Regular};
 
   box-sizing: border-box;
@@ -288,12 +311,23 @@ const ActionButton = styled.button`
   }
 `;
 
+const SenderRow = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
 const SenderName = styled.span`
-  color: ${({ theme }) => theme.colors.textSecondary};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t5Bold};
+`;
+
+const SentTime = styled.span`
+  color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t2Regular};
 `;
 
-const DateText = styled.span<{ isOwnMessage: boolean }>`
+const DateText = styled.span`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t2Regular};
 `;

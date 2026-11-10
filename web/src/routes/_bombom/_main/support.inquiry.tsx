@@ -32,8 +32,8 @@ function InquiryLayout() {
 
 const SplitContainer = styled.div`
   overflow: hidden;
-  height: 70vh;
-  min-height: 520px;
+  height: 80vh;
+  min-height: 640px;
   border: 1px solid ${({ theme }) => theme.colors.dividers};
   border-radius: 16px;
 

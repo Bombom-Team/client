@@ -9,6 +9,8 @@ import {
 } from '@tanstack/react-router';
 import { render, screen } from '@testing-library/react';
 import InquiryRoomListItem from './InquiryRoomListItem';
+import { ADMIN_FALLBACK_NAME } from '../constants/inquiry';
+import { INQUIRY_ROOM_STATUS_LABELS } from '@/types/inquiry';
 import type { InquiryRoom } from '@/types/inquiry';
 
 jest.mock('@bombom/shared/env', () => ({
@@ -39,7 +41,6 @@ const renderRoomListItem = async (room: Partial<InquiryRoom>) => {
             createdAt: '2026-11-01T09:00:00',
             ...room,
           }}
-          categoryName="서비스 이용"
         />
       </ThemeProvider>
     ),
@@ -50,7 +51,7 @@ const renderRoomListItem = async (room: Partial<InquiryRoom>) => {
   });
 
   render(<RouterProvider router={router} />);
-  await screen.findByText('서비스 이용');
+  await screen.findByText(INQUIRY_ROOM_STATUS_LABELS.IN_PROGRESS);
 };
 
 describe('InquiryRoomListItem', () => {
@@ -64,6 +65,43 @@ describe('InquiryRoomListItem', () => {
     });
 
     expect(screen.queryByText('답변 감사합니다')).not.toBeNull();
+  });
+
+  it('마지막_메시지가_어드민이면_어드민_닉네임을_표시한다', async () => {
+    await renderRoomListItem({
+      lastMessage: {
+        content: '답변드립니다',
+        senderType: 'ADMIN',
+        adminNickname: '상담원',
+        createdAt: '2026-11-03T12:00:00',
+      },
+    });
+
+    expect(screen.queryByText('상담원:')).not.toBeNull();
+  });
+
+  it('마지막_메시지가_어드민인데_닉네임이_없으면_기본_이름을_표시한다', async () => {
+    await renderRoomListItem({
+      lastMessage: {
+        content: '답변드립니다',
+        senderType: 'ADMIN',
+        createdAt: '2026-11-03T12:00:00',
+      },
+    });
+
+    expect(screen.queryByText(`${ADMIN_FALLBACK_NAME}:`)).not.toBeNull();
+  });
+
+  it('senderType이_없으면_내_메시지가_아닌_어드민_메시지로_표시한다', async () => {
+    await renderRoomListItem({
+      lastMessage: {
+        content: '답변드립니다',
+        adminNickname: '상담원',
+        createdAt: '2026-11-03T12:00:00',
+      },
+    });
+
+    expect(screen.queryByText('상담원:')).not.toBeNull();
   });
 
   it('내용이_없는_이미지_메시지는_대체_문구를_표시한다', async () => {

@@ -1,20 +1,15 @@
 import { useDevice } from '@bombom/shared/ui-web';
 import MobileInquiryRoomList from './MobileInquiryRoomList';
 import PCInquiryRoomList from './PCInquiryRoomList';
-import type { InquiryCategory } from '@/types/inquiry';
 
-interface InquiryRoomListProps {
-  categories?: InquiryCategory[];
-}
-
-const InquiryRoomList = ({ categories }: InquiryRoomListProps) => {
+const InquiryRoomList = () => {
   const device = useDevice();
 
   if (device === 'pc') {
-    return <PCInquiryRoomList categories={categories} />;
+    return <PCInquiryRoomList />;
   }
 
-  return <MobileInquiryRoomList categories={categories} />;
+  return <MobileInquiryRoomList />;
 };
 
 export default InquiryRoomList;
