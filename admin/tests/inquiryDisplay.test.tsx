@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   getLastMessagePreviewLabel,
-  getRequesterLabel,
+  getRequesterIdentity,
 } from '../src/lib/inquiryDisplay';
 import type { InquiryRoom } from '../src/types/inquiry';
 
@@ -46,36 +46,37 @@ describe('마지막 메시지 미리보기', () => {
 });
 
 describe('문의자 표시', () => {
-  it('비회원이면 게스트 식별자 앞부분을 보여준다', () => {
+  it('회원이면 닉네임과 이메일을 나눠서 돌려준다', () => {
     expect(
-      getRequesterLabel({
-        inquirerType: 'GUEST',
-        inquirerNickname: null,
-        inquirerEmail: null,
-        guestId: 'abcdefgh12345678',
-      }),
-    ).toBe('비회원 (abcdefgh)');
-  });
-
-  it('회원인데 닉네임이 없으면 탈퇴한 회원으로 표시한다', () => {
-    expect(
-      getRequesterLabel({
-        inquirerType: 'MEMBER',
-        inquirerNickname: null,
-        inquirerEmail: 'a@b.com',
-        guestId: null,
-      }),
-    ).toBe('탈퇴한 회원');
-  });
-
-  it('회원이면 닉네임과 이메일을 함께 표시한다', () => {
-    expect(
-      getRequesterLabel({
+      getRequesterIdentity({
         inquirerType: 'MEMBER',
         inquirerNickname: '봄봄이',
         inquirerEmail: 'a@b.com',
         guestId: null,
       }),
-    ).toBe('봄봄이 (a@b.com)');
+    ).toEqual({ name: '봄봄이', email: 'a@b.com' });
+  });
+
+  it('비회원이면 이메일 자리를 비운다', () => {
+    expect(
+      getRequesterIdentity({
+        inquirerType: 'GUEST',
+        inquirerNickname: null,
+        inquirerEmail: null,
+        guestId: 'abcdefgh12345678',
+      }),
+    ).toEqual({ name: '비회원 (abcdefgh)', email: null });
+  });
+
+  // 닉네임이 사라져도 어느 계정의 문의였는지 추적할 수 있도록 이메일은 남긴다.
+  it('탈퇴한 회원도 이메일은 남겨서 보여준다', () => {
+    expect(
+      getRequesterIdentity({
+        inquirerType: 'MEMBER',
+        inquirerNickname: null,
+        inquirerEmail: 'a@b.com',
+        guestId: null,
+      }),
+    ).toEqual({ name: '탈퇴한 회원', email: 'a@b.com' });
   });
 });

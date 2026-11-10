@@ -1,22 +1,40 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
 import type { InquiryMessage } from '@/types/inquiry';
 
 interface InquiryMessageBubbleProps {
   message: InquiryMessage;
+  // 문의자 메시지의 작성자 표시용 이름. 관리자 메시지에는 쓰지 않는다.
+  senderName?: string;
   onEdit: (messageId: number, content: string) => void;
   onDelete: (messageId: number) => void;
 }
 
 export function InquiryMessageBubble({
   message,
+  senderName,
   onEdit,
   onDelete,
 }: InquiryMessageBubbleProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
+  const editTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // 수정 입력창을 내용 높이에 맞춰 늘린다. 긴 메시지를 좁은 칸에서 스크롤하며
+  // 고치지 않도록, 말풍선과 비슷한 크기에서 바로 편집할 수 있게 한다.
+  useEffect(() => {
+    const textarea = editTextareaRef.current;
+    if (!textarea) return;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }, [editContent, isEditing]);
   const isAdminMessage = message.senderType === 'ADMIN';
+  const sentAt = new Date(message.createdAt).toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   const handleSubmitEdit = () => {
     const trimmed = editContent.trim();
@@ -37,21 +55,32 @@ export function InquiryMessageBubble({
 
   return (
     <BubbleRow $isAdmin={isAdminMessage}>
-      <BubbleColumn $isAdmin={isAdminMessage}>
+      {/* 작성자 표시는 문의자 메시지에만 둔다. 관리자 메시지는 본문과 시각만 보여준다. */}
+      {!isAdminMessage && senderName && (
+        <InquiryAvatar name={senderName} size="sm" />
+      )}
+      <BubbleColumn $isAdmin={isAdminMessage} $isEditing={isEditing}>
+        {!isAdminMessage && senderName && (
+          <SenderLine>
+            <SenderName>{senderName}</SenderName>
+            <SenderTime>{sentAt}</SenderTime>
+          </SenderLine>
+        )}
         {isEditing ? (
           <EditForm>
             <EditTextarea
+              ref={editTextareaRef}
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
               autoFocus
             />
             <EditActions>
-              <button type="button" onClick={() => setIsEditing(false)}>
+              <EditButton type="button" onClick={() => setIsEditing(false)}>
                 취소
-              </button>
-              <button type="button" onClick={handleSubmitEdit}>
+              </EditButton>
+              <EditButton type="button" $primary onClick={handleSubmitEdit}>
                 저장
-              </button>
+              </EditButton>
             </EditActions>
           </EditForm>
         ) : (
@@ -78,12 +107,8 @@ export function InquiryMessageBubble({
             )}
           </BubbleWrapper>
         )}
-        <BubbleTime>
-          {new Date(message.createdAt).toLocaleTimeString('ko-KR', {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </BubbleTime>
+        {/* 작성자 줄에 시각이 이미 있으면 아래에 반복하지 않는다. */}
+        {(isAdminMessage || !senderName) && <BubbleTime>{sentAt}</BubbleTime>}
       </BubbleColumn>
     </BubbleRow>
   );
@@ -93,13 +118,36 @@ const BubbleRow = styled('div', {
   shouldForwardProp: (prop) => prop !== '$isAdmin',
 })<{ $isAdmin: boolean }>`
   display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: flex-start;
   justify-content: ${({ $isAdmin }) => ($isAdmin ? 'flex-end' : 'flex-start')};
 `;
 
+const SenderLine = styled.div`
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: baseline;
+`;
+
+const SenderName = styled.span`
+  color: ${({ theme }) => theme.colors.gray900};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const SenderTime = styled.span`
+  color: ${({ theme }) => theme.colors.gray400};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+// 수정 중에는 입력 폭을 넓혀 긴 메시지를 한눈에 보며 고칠 수 있게 한다.
 const BubbleColumn = styled('div', {
-  shouldForwardProp: (prop) => prop !== '$isAdmin',
-})<{ $isAdmin: boolean }>`
-  max-width: 60%;
+  shouldForwardProp: (prop) => prop !== '$isAdmin' && prop !== '$isEditing',
+})<{ $isAdmin: boolean; $isEditing: boolean }>`
+  width: ${({ $isEditing }) => ($isEditing ? '100%' : 'auto')};
+  max-width: ${({ $isEditing }) => ($isEditing ? '85%' : '60%')};
 
   display: flex;
   flex-direction: column;
@@ -118,17 +166,20 @@ const BubbleWrapper = styled.div`
   }
 `;
 
+// 회원 메시지는 타임라인 배경과 같은 색이라 말풍선 테두리 없이 본문만 흐른다.
+// 관리자 메시지만 회색 말풍선으로 구분한다.
 const Bubble = styled('div', {
   shouldForwardProp: (prop) => prop !== '$isAdmin',
 })<{ $isAdmin: boolean }>`
-  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  padding: ${({ $isAdmin, theme }) =>
+    $isAdmin ? `${theme.spacing.sm} ${theme.spacing.md}` : '0'};
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
   background-color: ${({ $isAdmin, theme }) =>
-    $isAdmin ? theme.colors.primary : theme.colors.gray100};
-  color: ${({ $isAdmin, theme }) =>
-    $isAdmin ? theme.colors.white : theme.colors.gray900};
+    $isAdmin ? theme.colors.gray100 : 'transparent'};
+  color: ${({ theme }) => theme.colors.gray900};
   font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
 `;
@@ -186,14 +237,23 @@ const EditForm = styled.div`
   flex-direction: column;
 `;
 
+// 말풍선과 같은 글자 크기·줄간격·패딩을 써서, 수정 중에도 완성된 모습과
+// 비슷하게 보이도록 한다. 높이는 내용에 맞춰 스크립트가 조절한다.
 const EditTextarea = styled.textarea`
-  padding: ${({ theme }) => theme.spacing.sm};
-  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
+  width: 100%;
   min-height: 60px;
+  max-height: 480px;
+  overflow-y: auto;
 
+  background-color: ${({ theme }) => theme.colors.white};
+  font-family: inherit;
   font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.6;
+  resize: none;
 
   &:focus {
     outline: none;
@@ -205,15 +265,30 @@ const EditActions = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.xs};
   justify-content: flex-end;
+`;
 
-  button {
-    padding: 4px 8px;
-    border: none;
-    border-radius: ${({ theme }) => theme.borderRadius.sm};
+const EditButton = styled('button', {
+  shouldForwardProp: (prop) => prop !== '$primary',
+})<{ $primary?: boolean }>`
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
+  border: 1px solid
+    ${({ $primary, theme }) =>
+      $primary ? theme.colors.primary : theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
 
-    background-color: ${({ theme }) => theme.colors.gray100};
+  background-color: ${({ $primary, theme }) =>
+    $primary ? theme.colors.primary : theme.colors.white};
+  color: ${({ $primary, theme }) =>
+    $primary ? theme.colors.white : theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 
-    cursor: pointer;
-    font-size: 12px;
+  cursor: pointer;
+
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: ${({ $primary, theme }) =>
+      $primary ? theme.colors.primaryHover : theme.colors.gray50};
   }
 `;

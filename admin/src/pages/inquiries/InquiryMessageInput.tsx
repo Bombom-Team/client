@@ -127,6 +127,7 @@ export function InquiryMessageInput({
       <InputRow>
         <AttachButton
           type="button"
+          aria-label="이미지 첨부"
           disabled={disabled || isUploading || images.length >= MAX_IMAGE_COUNT}
           onClick={() => fileInputRef.current?.click()}
         >
@@ -146,7 +147,11 @@ export function InquiryMessageInput({
             setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
           }
           onKeyDown={handleKeyDown}
-          placeholder={disabled ? '종료된 문의입니다.' : '메시지를 입력하세요'}
+          placeholder={
+            disabled
+              ? '종료된 문의입니다.'
+              : '메시지를 입력하세요. Enter로 전송, Shift+Enter로 줄바꿈'
+          }
           disabled={disabled}
           rows={1}
         />
@@ -155,7 +160,8 @@ export function InquiryMessageInput({
           disabled={disabled || isSending || isUploading}
           onClick={handleSend}
         >
-          <FiSend size={18} />
+          <FiSend size={16} />
+          {isSending ? '전송 중' : '전송'}
         </SendButton>
       </InputRow>
       <CharCount>
@@ -260,12 +266,19 @@ const MessageTextarea = styled.textarea`
 `;
 
 const SendButton = styled.button`
-  padding: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
   border: none;
   border-radius: ${({ theme }) => theme.borderRadius.md};
 
+  display: flex;
+  flex-shrink: 0;
+  gap: ${({ theme }) => theme.spacing.xs};
+  align-items: center;
+
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 
   cursor: pointer;
 

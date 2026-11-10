@@ -1,22 +1,28 @@
 import type { InquiryRoom } from '@/types/inquiry';
 
-// inquirerType이 MEMBER인데 inquirerNickname이 없으면 탈퇴한 회원(Member.nickname은 not-null이라
-// 정상 회원이면 반드시 값이 있다)으로 간주한다.
-export const getRequesterLabel = (
+/**
+ * 문의자 이름과 이메일을 나눠 돌려준다. 목록 카드와 상세 헤더가 둘을 각각 다른
+ * 줄에 배치하므로 합치지 않고 그대로 넘긴다.
+ *
+ * inquirerType이 MEMBER인데 inquirerNickname이 없으면 탈퇴한 회원(Member.nickname은
+ * not-null이라 정상 회원이면 반드시 값이 있다)으로 간주한다.
+ */
+export const getRequesterIdentity = (
   room: Pick<
     InquiryRoom,
     'inquirerType' | 'inquirerNickname' | 'inquirerEmail' | 'guestId'
   >,
-): string => {
+): { name: string; email: string | null } => {
   if (room.inquirerType === 'GUEST') {
-    return `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`;
+    return {
+      name: `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`,
+      email: null,
+    };
   }
-  if (!room.inquirerNickname) {
-    return '탈퇴한 회원';
-  }
-  return room.inquirerEmail
-    ? `${room.inquirerNickname} (${room.inquirerEmail})`
-    : room.inquirerNickname;
+  return {
+    name: room.inquirerNickname ?? '탈퇴한 회원',
+    email: room.inquirerEmail,
+  };
 };
 
 export const getLastMessagePreviewLabel = (

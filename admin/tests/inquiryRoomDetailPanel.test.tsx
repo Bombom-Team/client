@@ -16,7 +16,10 @@ import {
 import { getMembers } from '../src/apis/members/members.api';
 import { InquiryRoomDetailPanel } from '../src/pages/inquiries/InquiryRoomDetailPanel';
 import { theme } from '../src/styles/theme';
-import type { InquiryRoomDetail } from '../src/types/inquiry';
+import type {
+  InquiryRoom,
+  InquiryRoomDetail,
+} from '../src/types/inquiry';
 
 vi.mock('../src/apis/inquiries/inquiryRooms.api', () => ({
   getInquiryRoomDetail: vi.fn(),
@@ -75,7 +78,7 @@ class NoopIntersectionObserver {
 }
 vi.stubGlobal('IntersectionObserver', NoopIntersectionObserver);
 
-const renderPanel = () => {
+const renderPanel = (listRoom?: InquiryRoom) => {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -84,12 +87,27 @@ const renderPanel = () => {
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={client}>
         <Suspense fallback={<div>로딩 중</div>}>
-          <InquiryRoomDetailPanel roomId={ROOM_ID} />
+          <InquiryRoomDetailPanel roomId={ROOM_ID} listRoom={listRoom} />
         </Suspense>
       </QueryClientProvider>
     </ThemeProvider>,
   );
   return client;
+};
+
+const memberListRoom: InquiryRoom = {
+  id: ROOM_ID,
+  categoryId: 1,
+  status: 'IN_PROGRESS',
+  assigneeId: ADMIN_ID,
+  assigneeNickname: '담당자몽',
+  inquirerType: 'MEMBER',
+  guestId: null,
+  inquirerNickname: '봄봄이',
+  inquirerEmail: 'bom@bombom.news',
+  lastMessage: null,
+  createdAt: '2026-11-01T09:00:00Z',
+  closedAt: null,
 };
 
 const getSelectByValue = (value: string) =>
@@ -153,12 +171,10 @@ describe('문의 상세 패널', () => {
     );
     expect(getSelectByValue('UNCONFIRMED')).toBeTruthy();
 
-    fireEvent.change(screen.getByPlaceholderText('메시지를 입력하세요'), {
+    fireEvent.change(screen.getByPlaceholderText(/메시지를 입력하세요/), {
       target: { value: '안녕하세요, 확인했습니다.' },
     });
-    // 첨부/전송 모두 아이콘 버튼이라 접근 가능한 이름이 없다. 전송 버튼이 마지막이다.
-    const buttons = screen.getAllByRole('button');
-    fireEvent.click(buttons[buttons.length - 1]);
+    fireEvent.click(screen.getByRole('button', { name: '전송' }));
 
     await waitFor(() => expect(sendInquiryMessage).toHaveBeenCalledTimes(1));
 
@@ -167,5 +183,120 @@ describe('문의 상세 패널', () => {
       expect(getSelectByValue(String(ADMIN_ID))).toBeTruthy();
       expect(getSelectByValue('IN_PROGRESS')).toBeTruthy();
     });
+  });
+
+  it('회원 메시지에는 아바타를 붙이고 관리자 메시지에는 붙이지 않는다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+    vi.mocked(getInquiryMessages).mockResolvedValue({
+      messages: [
+        {
+          id: 2,
+          roomId: ROOM_ID,
+          senderType: 'ADMIN',
+          adminId: ADMIN_ID,
+          content: '확인 후 안내드리겠습니다.',
+          imageUrls: [],
+          createdAt: '2026-11-03T10:05:00Z',
+        },
+        {
+          id: 1,
+          roomId: ROOM_ID,
+          senderType: 'USER',
+          adminId: null,
+          content: '메일이 안 와요.',
+          imageUrls: [],
+          createdAt: '2026-11-03T10:00:00Z',
+        },
+      ],
+      hasNext: false,
+    });
+
+    renderPanel(memberListRoom);
+
+    await screen.findByText('메일이 안 와요.');
+
+    // 회원 메시지에는 작성자 이름과 아바타(이니셜 '봄')가 붙는다.
+    expect(screen.getAllByText('봄봄이').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('봄').length).toBeGreaterThan(0);
+
+    // 관리자 메시지에는 작성자 표시를 두지 않는다. 담당자 셀렉트의 option을 빼면
+    // '담당자몽'은 화면에 없고, 관리자 이니셜도 없다.
+    const adminNameNodes = screen
+      .getAllByText('담당자몽')
+      .filter((node) => node.tagName !== 'OPTION');
+    expect(adminNameNodes).toHaveLength(0);
+    expect(screen.queryByText('담')).toBeNull();
+  });
+
+  it('관리자 메시지를 수정하면 원래 내용이 입력창에 채워진다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+    const longContent = 'd'.repeat(300);
+    vi.mocked(getInquiryMessages).mockResolvedValue({
+      messages: [
+        {
+          id: 1,
+          roomId: ROOM_ID,
+          senderType: 'ADMIN',
+          adminId: ADMIN_ID,
+          content: longContent,
+          imageUrls: [],
+          createdAt: '2026-11-03T10:00:00Z',
+        },
+      ],
+      hasNext: false,
+    });
+
+    renderPanel(memberListRoom);
+
+    await screen.findByText(longContent);
+
+    // 관리자 메시지에만 수정/삭제 버튼이 뜬다. 수정 버튼은 아이콘뿐이라 순서로 찾는다.
+    const iconButtons = screen
+      .getAllByRole('button')
+      .filter((button) => button.textContent === '');
+    fireEvent.click(iconButtons[0]);
+
+    // 하단 메시지 입력창과 구분하기 위해 값으로 찾는다.
+    const editTextarea = screen
+      .getAllByRole('textbox')
+      .find((node) => (node as HTMLTextAreaElement).value === longContent);
+    expect(editTextarea).toBeTruthy();
+    expect(screen.getByRole('button', { name: '저장' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '취소' })).toBeTruthy();
+  });
+
+  it('비회원 메시지에도 이름과 아바타를 보여준다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+    vi.mocked(getInquiryMessages).mockResolvedValue({
+      messages: [
+        {
+          id: 1,
+          roomId: ROOM_ID,
+          senderType: 'USER',
+          adminId: null,
+          content: '메일이 안 와요.',
+          imageUrls: [],
+          createdAt: '2026-11-03T10:00:00Z',
+        },
+      ],
+      hasNext: false,
+    });
+
+    renderPanel({
+      ...memberListRoom,
+      inquirerType: 'GUEST',
+      inquirerNickname: null,
+      inquirerEmail: null,
+      guestId: '4034bc92-0138-4633-a534-8569b7b4c138',
+    });
+
+    await screen.findByText('메일이 안 와요.');
+
+    // 이름은 메시지 작성자 줄과 헤더 두 곳에 나온다.
+    expect(
+      screen.getAllByText('비회원 (4034bc92)').length,
+    ).toBeGreaterThanOrEqual(2);
+    // 비회원도 아바타(이니셜 '비')를 붙인다.
+    expect(screen.getAllByText('비').length).toBeGreaterThan(0);
   });
 });

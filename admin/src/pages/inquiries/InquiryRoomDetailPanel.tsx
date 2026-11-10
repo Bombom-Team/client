@@ -19,11 +19,14 @@ import {
 } from '@/apis/inquiries/inquiryRooms.query';
 import { membersQueries } from '@/apis/members/members.query';
 import { formatDateDivider, isSameDay } from '@/lib/formatRelativeTime';
-import { getRequesterLabel } from '@/lib/inquiryDisplay';
+import { getRequesterIdentity } from '@/lib/inquiryDisplay';
+import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
 import { InquiryMessageBubble } from '@/pages/inquiries/InquiryMessageBubble';
 import { InquiryMessageInput } from '@/pages/inquiries/InquiryMessageInput';
 import {
+  INQUIRY_STATUS_COLORS,
   INQUIRY_STATUS_LABELS,
+  type InquiryMessage,
   type InquiryRoom,
   type InquiryStatus,
 } from '@/types/inquiry';
@@ -99,6 +102,22 @@ export function InquiryRoomDetailPanel({
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const isClosed = room.status === 'DONE' || room.status === 'ON_HOLD';
+
+  // 상세 조회 응답에는 문의자 닉네임이 없다. 목록에서 받아온 값이 있으면 그것을 쓰고,
+  // 없으면 상세 응답의 식별자만으로 표시한다.
+  const requester = listRoom
+    ? getRequesterIdentity(listRoom)
+    : {
+        name: room.memberId
+          ? `회원 #${room.memberId}`
+          : `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`,
+        email: null,
+      };
+
+  // 문의자 메시지는 모두 같은 사람이 보낸 것이라 방 정보의 이름을 그대로 쓴다.
+  // 관리자 메시지에는 작성자 표시를 두지 않는다.
+  const getSenderName = (message: InquiryMessage): string | undefined =>
+    message.senderType === 'ADMIN' ? undefined : requester.name;
 
   // 서버는 최신순(id desc)으로 페이지를 내려주므로, 오래된 페이지가 뒤에 오도록 뒤집고
   // 각 페이지 내부도 오래된 메시지가 위로 오도록 뒤집어 시간 순으로 렌더링한다.
@@ -184,16 +203,17 @@ export function InquiryRoomDetailPanel({
     <DetailContainer>
       <DetailHeader>
         <HeaderInfo>
-          <RoomIdentity>
-            {listRoom
-              ? getRequesterLabel(listRoom)
-              : room.memberId
-                ? `회원 #${room.memberId}`
-                : `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`}
-          </RoomIdentity>
+          <InquiryAvatar name={requester.name} />
+          <RequesterText>
+            <RoomIdentity>{requester.name}</RoomIdentity>
+            {requester.email && (
+              <RequesterEmail>{requester.email}</RequesterEmail>
+            )}
+          </RequesterText>
         </HeaderInfo>
         <HeaderControls>
           <HeaderSelect
+            aria-label="카테고리"
             value={room.categoryId}
             onChange={(e) => handleCategoryChange(Number(e.target.value))}
           >
@@ -204,6 +224,7 @@ export function InquiryRoomDetailPanel({
             ))}
           </HeaderSelect>
           <HeaderSelect
+            aria-label="담당자"
             value={room.assigneeId ?? ''}
             onChange={(e) =>
               e.target.value && handleAssigneeChange(Number(e.target.value))
@@ -216,16 +237,22 @@ export function InquiryRoomDetailPanel({
               </option>
             ))}
           </HeaderSelect>
-          <HeaderSelect
-            value={room.status}
-            onChange={(e) => handleStatusChange(e.target.value as InquiryStatus)}
-          >
-            {STATUS_OPTIONS.map((status) => (
-              <option key={status} value={status}>
-                {INQUIRY_STATUS_LABELS[status]}
-              </option>
-            ))}
-          </HeaderSelect>
+          <StatusSelectWrapper>
+            <StatusDot $color={INQUIRY_STATUS_COLORS[room.status]} />
+            <StatusSelect
+              aria-label="상태"
+              value={room.status}
+              onChange={(e) =>
+                handleStatusChange(e.target.value as InquiryStatus)
+              }
+            >
+              {STATUS_OPTIONS.map((status) => (
+                <option key={status} value={status}>
+                  {INQUIRY_STATUS_LABELS[status]}
+                </option>
+              ))}
+            </StatusSelect>
+          </StatusSelectWrapper>
         </HeaderControls>
       </DetailHeader>
 
@@ -243,6 +270,7 @@ export function InquiryRoomDetailPanel({
             <InquiryMessageBubble
               key={item.key}
               message={item.message}
+              senderName={getSenderName(item.message)}
               onEdit={handleEditMessage}
               onDelete={handleDeleteMessage}
             />
@@ -281,12 +309,32 @@ const DetailHeader = styled.div`
 const HeaderInfo = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
-  align-items: baseline;
+  align-items: center;
+  min-width: 0;
+`;
+
+const RequesterText = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 `;
 
 const RoomIdentity = styled.span`
+  overflow: hidden;
+
   color: ${({ theme }) => theme.colors.gray900};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const RequesterEmail = styled.span`
+  overflow: hidden;
+
+  color: ${({ theme }) => theme.colors.gray500};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const HeaderControls = styled.div`
@@ -330,14 +378,42 @@ const HeaderSelect = styled.select`
   }
 `;
 
+// 좌측 색점이 들어갈 자리만큼 패딩을 넓힌 상태 전용 셀렉트.
+const StatusSelect = styled(HeaderSelect)`
+  padding-left: 24px;
+`;
+
+// 상태 색점을 셀렉트 안쪽에 겹쳐 놓기 위한 래퍼.
+const StatusSelectWrapper = styled.div`
+  position: relative;
+
+  display: flex;
+  align-items: center;
+`;
+
+const StatusDot = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$color',
+})<{ $color: string }>`
+  position: absolute;
+  left: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+
+  background-color: ${({ $color }) => $color};
+  pointer-events: none;
+`;
+
 const MessageTimeline = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
 
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.md};
   overflow-y: auto;
+
+  background-color: ${({ theme }) => theme.colors.gray50};
 `;
 
 const LoadingMore = styled.div`
