@@ -98,8 +98,9 @@ const Container = styled(Link, {
   display: flex;
   align-items: center;
 
+  /* 상태 배지 배경(primaryInfo)과 같은 색을 쓰면 배지 형태가 묻히므로 중립색으로 구분한다 */
   background-color: ${({ theme, isSelected, isMobile }) =>
-    isSelected && !isMobile ? theme.colors.primaryInfo : 'transparent'};
+    isSelected && !isMobile ? theme.colors.backgroundHover : 'transparent'};
 
   text-decoration: none;
 
