@@ -1,5 +1,16 @@
-import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
+import { theme } from '@/styles/theme';
+
+// 아바타 전용 색 조합. 연하게 깐 배경 위에 같은 색을 어둡게 눌러 글자로 올리므로
+// 너무 어둡거나 옅은 색은 넣지 않는다.
+export const AVATAR_PALETTE = [
+  theme.colors.primary,
+  theme.colors.secondary,
+  theme.colors.success,
+  theme.colors.warning,
+  theme.colors.error,
+  theme.colors.sky,
+] as const;
 
 /**
  * 이름에서 아바타에 쓸 한 글자를 뽑는다.
@@ -14,12 +25,9 @@ export const getAvatarInitial = (name: string): string => {
 /**
  * 같은 이름이 항상 같은 색을 갖도록 문자열을 팔레트 인덱스로 환산한다.
  */
-export const getAvatarColor = (
-  name: string,
-  palette: readonly string[],
-): string => {
+export const getAvatarColor = (name: string): string => {
   const trimmed = name.trim();
-  if (!trimmed) return palette[0];
+  if (!trimmed) return AVATAR_PALETTE[0];
 
   // 32비트 정수 범위에서 섞는다. 작은 수로 나머지를 취하면 마지막 글자가 결과를
   // 좌우해, 끝 글자가 같은 한글 이름끼리 색이 뭉친다.
@@ -27,7 +35,7 @@ export const getAvatarColor = (
     (acc, char) => (Math.imul(acc, 31) + char.codePointAt(0)!) | 0,
     7,
   );
-  return palette[Math.abs(hash) % palette.length];
+  return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
 };
 
 interface InquiryAvatarProps {
@@ -36,14 +44,8 @@ interface InquiryAvatarProps {
 }
 
 export function InquiryAvatar({ name, size = 'md' }: InquiryAvatarProps) {
-  const theme = useTheme();
-
   return (
-    <AvatarCircle
-      $color={getAvatarColor(name, theme.avatarPalette)}
-      $size={size}
-      aria-hidden="true"
-    >
+    <AvatarCircle $color={getAvatarColor(name)} $size={size} aria-hidden="true">
       {getAvatarInitial(name)}
     </AvatarCircle>
   );
