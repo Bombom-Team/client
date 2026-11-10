@@ -55,6 +55,35 @@ const AVATAR_BOX_SIZES = {
   md: '36px',
 } as const;
 
+// 배경을 연하게 깔고 글자를 같은 계열 진한 색으로 쓰는 조합. 원색에 흰 글자를
+// 올리면 팔레트가 밝아 글자가 묻히는데, 이 방식은 톤을 낮추면서 대비는 오히려
+// 올라간다.
+const AVATAR_BACKGROUND_ALPHA = 0.18;
+const AVATAR_TEXT_DARKEN = 0.55;
+
+const parseHex = (hexColor: string): [number, number, number] => {
+  const hex = hexColor.replace('#', '');
+  return [
+    parseInt(hex.slice(0, 2), 16),
+    parseInt(hex.slice(2, 4), 16),
+    parseInt(hex.slice(4, 6), 16),
+  ];
+};
+
+/** 배경용: 원색에 알파를 입혀 연한 바탕을 만든다. */
+const toAvatarBackground = (hexColor: string): string => {
+  const [r, g, b] = parseHex(hexColor);
+  return `rgba(${r}, ${g}, ${b}, ${AVATAR_BACKGROUND_ALPHA})`;
+};
+
+/** 글자용: 원색을 어둡게 눌러 연한 바탕 위에서도 또렷하게 만든다. */
+const toAvatarTextColor = (hexColor: string): string => {
+  const [r, g, b] = parseHex(hexColor).map((channel) =>
+    Math.round(channel * AVATAR_TEXT_DARKEN),
+  );
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
 const AvatarCircle = styled('span', {
   shouldForwardProp: (prop) => prop !== '$color' && prop !== '$size',
 })<{ $color: string; $size: 'sm' | 'md' }>`
@@ -67,9 +96,9 @@ const AvatarCircle = styled('span', {
   align-items: center;
   justify-content: center;
 
-  background-color: ${({ $color }) => $color};
-  color: ${({ theme }) => theme.colors.white};
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  background-color: ${({ $color }) => toAvatarBackground($color)};
+  color: ${({ $color }) => toAvatarTextColor($color)};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
   font-size: ${({ $size, theme }) =>
     $size === 'sm' ? theme.fontSize.xs : theme.fontSize.sm};
   line-height: 1;

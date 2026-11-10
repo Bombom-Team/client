@@ -22,8 +22,9 @@ const colors = {
 
 export const theme = {
   colors,
-  // 이름에서 색을 뽑아 쓰는 아바타용 팔레트. 흰 글자가 올라가므로 충분히 어두운
-  // 색만 모은다.
+  // 이름에서 색을 뽑아 쓰는 아바타용 팔레트. 이 색을 연하게 깐 배경 위에 같은 색을
+  // 어둡게 눌러 글자로 올리므로(InquiryAvatar 참고), 너무 어두운 색은 글자가 검게
+  // 뭉개진다. 중간 밝기의 선명한 색으로 고른다.
   avatarPalette: [
     colors.primary,
     colors.secondary,
