@@ -233,12 +233,14 @@ function InquiryRoomDetailPage() {
   const canSendMessage = isAwaitingMoreMessages;
 
   return (
-    <ChatCard>
+    <ChatCard isMobile={isMobile}>
       <Header isMobile={isMobile}>
-        <BackLink to="/support/inquiry">
-          <ChevronIcon direction="left" width={20} height={20} />
-          목록으로
-        </BackLink>
+        {isMobile && (
+          <BackLink to="/support/inquiry">
+            <ChevronIcon direction="left" width={20} height={20} />
+            목록으로
+          </BackLink>
+        )}
 
         {room && (
           <CreatedAtText>
@@ -264,7 +266,7 @@ function InquiryRoomDetailPage() {
         </ResponseTimeNotice>
       </Header>
 
-      <MessageList>
+      <MessageList isMobile={isMobile}>
         <LoadMoreTrigger ref={loadMoreRef} />
         {messages.map((message, index) => {
           const prevMessage = messages[index - 1];
@@ -317,17 +319,23 @@ function InquiryRoomDetailPage() {
   );
 }
 
-const ChatCard = styled.div`
+const ChatCard = styled.div<{ isMobile: boolean }>`
   width: 100%;
-  max-width: 800px;
+  max-width: ${({ isMobile }) => (isMobile ? '800px' : 'none')};
+  height: ${({ isMobile }) => (isMobile ? 'auto' : '100%')};
   margin: 0 auto;
+  padding: ${({ isMobile }) => (isMobile ? '0' : '0 20px')};
 
   display: flex;
   flex-direction: column;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
 `;
 
 const Header = styled.div<{ isMobile: boolean }>`
-  position: sticky;
+  position: ${({ isMobile }) => (isMobile ? 'sticky' : 'static')};
   top: ${({ isMobile, theme }) =>
     isMobile
       ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`
@@ -389,7 +397,9 @@ const ResponseTimeNotice = styled.p`
   text-align: center;
 `;
 
-const MessageList = styled.div`
+const MessageList = styled.div<{ isMobile: boolean }>`
+  overflow-y: ${({ isMobile }) => (isMobile ? 'visible' : 'auto')};
+  flex: ${({ isMobile }) => (isMobile ? 'none' : '1')};
   padding: 4px 0;
 
   display: flex;
