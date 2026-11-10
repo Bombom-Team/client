@@ -25,8 +25,19 @@ export const getRequesterIdentity = (
   };
 };
 
+/**
+ * 목록 카드의 마지막 메시지 미리보기를 만든다.
+ * 누가 보낸 메시지인지 구분할 수 있도록 양쪽 모두 작성자 이름을 앞에 붙인다.
+ */
 export const getLastMessagePreviewLabel = (
-  room: Pick<InquiryRoom, 'lastMessage'>,
+  room: Pick<
+    InquiryRoom,
+    | 'lastMessage'
+    | 'inquirerType'
+    | 'inquirerNickname'
+    | 'inquirerEmail'
+    | 'guestId'
+  >,
 ): string => {
   if (!room.lastMessage) {
     return '메시지가 없습니다.';
@@ -34,9 +45,9 @@ export const getLastMessagePreviewLabel = (
   // Member.nickname은 not-null이라 살아있는 관리자면 반드시 값이 있다. 탈퇴 시 member 행이
   // 실제로 삭제되는데 inquiry_message.admin_id에는 FK가 없어 그대로 남으므로, 닉네임을
   // 찾지 못했다는 것은 그 관리자가 탈퇴했다는 뜻이다.
-  const prefix =
+  const senderName =
     room.lastMessage.senderType === 'ADMIN'
-      ? `${room.lastMessage.adminNickname ?? '탈퇴한 운영자'}: `
-      : '';
-  return `${prefix}${room.lastMessage.content}`;
+      ? (room.lastMessage.adminNickname ?? '탈퇴한 운영자')
+      : getRequesterIdentity(room).name;
+  return `${senderName}: ${room.lastMessage.content}`;
 };
