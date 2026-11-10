@@ -20,13 +20,13 @@ function InquiryRoomListPage() {
   const device = useDevice();
 
   if (device === 'pc') {
-    return <EmptyState>문의를 선택하면 대화 내용을 볼 수 있어요</EmptyState>;
+    return <Container>문의를 선택하면 대화 내용을 볼 수 있어요</Container>;
   }
 
   return <InquiryRoomListPanel />;
 }
 
-const EmptyState = styled.p`
+const Container = styled.p`
   height: 100%;
 
   display: flex;

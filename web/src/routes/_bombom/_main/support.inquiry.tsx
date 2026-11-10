@@ -19,18 +19,18 @@ function InquiryLayout() {
   }
 
   return (
-    <SplitContainer>
+    <Container>
       <ListPane>
         <InquiryRoomListPanel />
       </ListPane>
       <DetailPane>
         <Outlet />
       </DetailPane>
-    </SplitContainer>
+    </Container>
   );
 }
 
-const SplitContainer = styled.div`
+const Container = styled.div`
   overflow: hidden;
   height: 80vh;
   min-height: 640px;

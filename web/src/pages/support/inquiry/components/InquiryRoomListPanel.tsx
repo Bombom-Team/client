@@ -3,8 +3,8 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import InquiryRoomList from './InquiryRoomList/InquiryRoomList';
+import { useInquiryRoomCreateMutation } from '../hooks/useInquiryRoomCreateMutation';
 import { queries } from '@/apis/queries';
-import { useInquiryRoomCreateMutation } from '@/pages/support/inquiry/hooks/useInquiryRoomCreateMutation';
 import PlusIcon from '#/assets/svg/plus.svg';
 
 const DEFAULT_CATEGORY_NAME = '기타';

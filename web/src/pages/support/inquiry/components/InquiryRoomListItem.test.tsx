@@ -55,7 +55,7 @@ const renderRoomListItem = async (room: Partial<InquiryRoom>) => {
 };
 
 describe('InquiryRoomListItem', () => {
-  it('마지막_메시지_내용을_표시한다', async () => {
+  it('마지막 메시지 내용을 표시한다', async () => {
     await renderRoomListItem({
       lastMessage: {
         content: '답변 감사합니다',
@@ -67,7 +67,7 @@ describe('InquiryRoomListItem', () => {
     expect(screen.queryByText('답변 감사합니다')).not.toBeNull();
   });
 
-  it('마지막_메시지가_어드민이면_어드민_닉네임을_표시한다', async () => {
+  it('마지막 메시지가 어드민이면 어드민 닉네임을 표시한다', async () => {
     await renderRoomListItem({
       lastMessage: {
         content: '답변드립니다',
@@ -80,7 +80,7 @@ describe('InquiryRoomListItem', () => {
     expect(screen.queryByText('상담원:')).not.toBeNull();
   });
 
-  it('마지막_메시지가_어드민인데_닉네임이_없으면_기본_이름을_표시한다', async () => {
+  it('마지막 메시지가 어드민인데 닉네임이 없으면 기본 이름을 표시한다', async () => {
     await renderRoomListItem({
       lastMessage: {
         content: '답변드립니다',
@@ -92,7 +92,7 @@ describe('InquiryRoomListItem', () => {
     expect(screen.queryByText(`${ADMIN_FALLBACK_NAME}:`)).not.toBeNull();
   });
 
-  it('senderType이_없으면_내_메시지가_아닌_어드민_메시지로_표시한다', async () => {
+  it('senderType이 없으면 내 메시지가 아닌 어드민 메시지로 표시한다', async () => {
     await renderRoomListItem({
       lastMessage: {
         content: '답변드립니다',
@@ -104,7 +104,7 @@ describe('InquiryRoomListItem', () => {
     expect(screen.queryByText('상담원:')).not.toBeNull();
   });
 
-  it('내용이_없는_이미지_메시지는_대체_문구를_표시한다', async () => {
+  it('내용이 없는 이미지 메시지는 대체 문구를 표시한다', async () => {
     await renderRoomListItem({
       lastMessage: {
         content: '',
@@ -116,7 +116,7 @@ describe('InquiryRoomListItem', () => {
     expect(screen.queryByText('사진을 보냈습니다.')).not.toBeNull();
   });
 
-  it('마지막_메시지가_있으면_메시지_시각을_상대시간으로_표시한다', async () => {
+  it('마지막 메시지가 있으면 메시지 시각을 상대시간으로 표시한다', async () => {
     await renderRoomListItem({
       createdAt: '2026-11-01T09:00:00',
       lastMessage: {
@@ -130,13 +130,13 @@ describe('InquiryRoomListItem', () => {
     expect(screen.queryByText('2시간 전')).not.toBeNull();
   });
 
-  it('마지막_메시지가_없으면_방_생성일을_상대시간으로_표시한다', async () => {
+  it('마지막 메시지가 없으면 방 생성일을 상대시간으로 표시한다', async () => {
     await renderRoomListItem({ createdAt: '2026-11-01T09:00:00' });
 
     expect(screen.queryByText('2일 전')).not.toBeNull();
   });
 
-  it('마지막_메시지가_일주일_넘게_지났으면_날짜로_표시한다', async () => {
+  it('마지막 메시지가 일주일 넘게 지났으면 날짜로 표시한다', async () => {
     await renderRoomListItem({
       createdAt: '2026-10-01T09:00:00',
       lastMessage: {

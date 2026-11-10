@@ -28,19 +28,19 @@ const renderBubble = (message: Partial<InquiryMessage>) =>
   );
 
 describe('InquiryMessageBubble', () => {
-  it('어드민_메시지는_어드민_닉네임을_표시한다', () => {
+  it('어드민 메시지는 어드민 닉네임을 표시한다', () => {
     renderBubble({ senderType: 'ADMIN', adminId: 1, adminNickname: '김봄봄' });
 
     expect(screen.queryByText('김봄봄')).not.toBeNull();
   });
 
-  it('어드민_닉네임이_없으면_봄봄_운영자로_표시한다', () => {
+  it('어드민 닉네임이 없으면 봄봄 운영자로 표시한다', () => {
     renderBubble({ senderType: 'ADMIN', adminId: 1 });
 
     expect(screen.queryByText('봄봄 운영자')).not.toBeNull();
   });
 
-  it('내가_보낸_메시지는_이름을_표시하지_않는다', () => {
+  it('내가 보낸 메시지는 이름을 표시하지 않는다', () => {
     renderBubble({ senderType: 'USER' });
 
     expect(screen.queryByText('봄봄 운영자')).toBeNull();
