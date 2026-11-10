@@ -16,6 +16,7 @@ import InquiryMessageBubble from '@/pages/support/inquiry/components/InquiryMess
 import InquiryMessageDateDivider from '@/pages/support/inquiry/components/InquiryMessageDateDivider';
 import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessageInput';
 import { useInquiryMessageDeleteMutation } from '@/pages/support/inquiry/hooks/useInquiryMessageDeleteMutation';
+import { useInquiryMessageScroll } from '@/pages/support/inquiry/hooks/useInquiryMessageScroll';
 import { useInquiryMessageSendMutation } from '@/pages/support/inquiry/hooks/useInquiryMessageSendMutation';
 import {
   INQUIRY_ROOM_STATUS_BADGE_VARIANTS,
@@ -42,6 +43,16 @@ function InquiryRoomDetailPage() {
   const isMobile = device !== 'pc';
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const messageListRef = useRef<HTMLDivElement>(null);
+  const {
+    getScrollTarget,
+    getScrollHeight,
+    getScrollPosition,
+    getViewportHeight,
+    getDistanceFromBottom,
+    scrollTo,
+    scrollToBottom,
+  } = useInquiryMessageScroll({ messageListRef });
   const hasScrolledToBottomRef = useRef(false);
   const prevScrollHeightRef = useRef<number | null>(null);
   const isSendingRef = useRef(false);
@@ -148,40 +159,47 @@ function InquiryRoomDetailPage() {
     if (!messageArrival) return;
 
     if (!hasScrolledToBottomRef.current) {
-      window.scrollTo(0, document.body.scrollHeight);
+      scrollToBottom();
       hasScrolledToBottomRef.current = true;
       return;
     }
 
     if (isSendingRef.current) {
-      window.scrollTo(0, document.body.scrollHeight);
+      scrollToBottom();
       isSendingRef.current = false;
       return;
     }
 
     if (prevScrollHeightRef.current !== null) {
-      const scrollHeightDiff =
-        document.body.scrollHeight - prevScrollHeightRef.current;
-      window.scrollTo(0, window.scrollY + scrollHeightDiff);
+      const scrollHeightDiff = getScrollHeight() - prevScrollHeightRef.current;
+      scrollTo(getScrollPosition() + scrollHeightDiff);
       prevScrollHeightRef.current = null;
       return;
     }
 
     if (messageArrival.hasNewMessage) {
-      const distanceFromBottom =
-        document.body.scrollHeight - (window.scrollY + window.innerHeight);
-      const wasNearBottom = distanceFromBottom <= window.innerHeight * 0.5;
+      const wasNearBottom =
+        getDistanceFromBottom() <= getViewportHeight() * 0.5;
 
       if (wasNearBottom) {
-        window.scrollTo(0, document.body.scrollHeight);
+        scrollToBottom();
       } else {
         setHasNewMessageArrived(true);
       }
     }
-  }, [isMessagesReady, messages]);
+  }, [
+    isMessagesReady,
+    messages,
+    getDistanceFromBottom,
+    getScrollHeight,
+    getScrollPosition,
+    getViewportHeight,
+    scrollTo,
+    scrollToBottom,
+  ]);
 
   const handleScrollToBottom = () => {
-    window.scrollTo(0, document.body.scrollHeight);
+    scrollToBottom();
     setHasNewMessageArrived(false);
   };
 
@@ -189,16 +207,20 @@ function InquiryRoomDetailPage() {
     if (!hasNewMessageArrived) return;
 
     const handleScroll = () => {
-      const distanceFromBottom =
-        document.body.scrollHeight - (window.scrollY + window.innerHeight);
-      if (distanceFromBottom <= window.innerHeight * 0.2) {
+      if (getDistanceFromBottom() <= getViewportHeight() * 0.2) {
         setHasNewMessageArrived(false);
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasNewMessageArrived]);
+    const scrollTarget = getScrollTarget() ?? window;
+    scrollTarget.addEventListener('scroll', handleScroll, { passive: true });
+    return () => scrollTarget.removeEventListener('scroll', handleScroll);
+  }, [
+    hasNewMessageArrived,
+    getDistanceFromBottom,
+    getScrollTarget,
+    getViewportHeight,
+  ]);
 
   const { mutateAsync: mutateSendMessage, isPending: isSending } =
     useInquiryMessageSendMutation({ roomId });
@@ -320,9 +342,10 @@ function InquiryRoomDetailPage() {
 }
 
 const ChatCard = styled.div<{ isMobile: boolean }>`
+  overflow: hidden;
   width: 100%;
-  max-width: ${({ isMobile }) => (isMobile ? '800px' : 'none')};
   height: ${({ isMobile }) => (isMobile ? 'auto' : '100%')};
+  max-width: ${({ isMobile }) => (isMobile ? '800px' : 'none')};
   margin: 0 auto;
   padding: ${({ isMobile }) => (isMobile ? '0' : '0 20px')};
 
@@ -330,8 +353,6 @@ const ChatCard = styled.div<{ isMobile: boolean }>`
   flex-direction: column;
 
   box-sizing: border-box;
-
-  overflow: hidden;
 `;
 
 const Header = styled.div<{ isMobile: boolean }>`
@@ -341,7 +362,6 @@ const Header = styled.div<{ isMobile: boolean }>`
       ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`
       : `calc(${theme.heights.headerPC} + 40px)`};
   z-index: ${({ theme }) => theme.zIndex.panel};
-
   padding: 16px 0 12px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.stroke};
 
@@ -398,13 +418,14 @@ const ResponseTimeNotice = styled.p`
 `;
 
 const MessageList = styled.div<{ isMobile: boolean }>`
-  overflow-y: ${({ isMobile }) => (isMobile ? 'visible' : 'auto')};
-  flex: ${({ isMobile }) => (isMobile ? 'none' : '1')};
   padding: 4px 0;
 
   display: flex;
   gap: 12px;
+  flex: ${({ isMobile }) => (isMobile ? 'none' : '1')};
   flex-direction: column;
+
+  overflow-y: ${({ isMobile }) => (isMobile ? 'visible' : 'auto')};
 `;
 
 const LoadMoreTrigger = styled.div`
@@ -428,12 +449,13 @@ const NewMessageButton = styled.button`
   padding: 8px 16px;
   border: none;
   border-radius: 999px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
 
   background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t4Bold};
 
-  transform: translate(-50%, -50%);
-  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
   cursor: pointer;
+
+  transform: translate(-50%, -50%);
 `;

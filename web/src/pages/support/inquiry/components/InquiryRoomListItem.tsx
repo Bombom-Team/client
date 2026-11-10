@@ -103,6 +103,7 @@ const LastMessageText = styled.span<{ hasUnread: boolean }>`
   font: ${({ theme, hasUnread }) =>
     hasUnread ? theme.fonts.t5Bold : theme.fonts.t5Regular};
   white-space: nowrap;
+
   text-overflow: ellipsis;
 `;
 

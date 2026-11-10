@@ -79,14 +79,15 @@ const NewInquiryButton = styled(Button)`
   align-items: center;
 
   background-color: ${({ theme }) => theme.colors.primaryBomBom};
-
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t5Regular};
   white-space: nowrap;
 `;
 
 const ListArea = styled.div`
-  overflow-y: auto;
-  flex: 1;
   padding: 0 12px 20px;
+
+  flex: 1;
+
+  overflow-y: auto;
 `;

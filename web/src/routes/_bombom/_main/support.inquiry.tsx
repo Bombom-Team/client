@@ -31,17 +31,17 @@ function InquiryLayout() {
 }
 
 const SplitContainer = styled.div`
+  overflow: hidden;
   height: 70vh;
   min-height: 520px;
   border: 1px solid ${({ theme }) => theme.colors.dividers};
   border-radius: 16px;
 
   display: grid;
-  grid-template-columns: minmax(280px, 360px) 1fr;
 
   background-color: ${({ theme }) => theme.colors.white};
 
-  overflow: hidden;
+  grid-template-columns: minmax(280px, 360px) 1fr;
 `;
 
 const ListPane = styled.div`
