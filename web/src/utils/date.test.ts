@@ -159,4 +159,12 @@ describe('convertRelativeTime', () => {
   it('미래 시각이면 방금 전 대신 날짜로 반환한다.', () => {
     expect(convertRelativeTime('2026-11-11T12:00:00')).toBe('2026.11.11');
   });
+
+  it('날짜가 비어 있으면 빈 문자열을 반환한다.', () => {
+    expect(convertRelativeTime('')).toBe('');
+  });
+
+  it('날짜 형식이 올바르지 않으면 빈 문자열을 반환한다.', () => {
+    expect(convertRelativeTime('날짜가 아님')).toBe('');
+  });
 });

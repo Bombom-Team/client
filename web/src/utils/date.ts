@@ -66,6 +66,9 @@ export const convertRelativeTime = (dateString: string) => {
   const targetDate = new Date(dateString);
   const diffMs = now.getTime() - targetDate.getTime();
 
+  // 날짜가 비어 있거나 형식이 깨지면 NaN 비교가 모두 false로 빠져 "NaN.NaN.NaN"이 노출된다
+  if (Number.isNaN(diffMs)) return '';
+
   // 기기 시계가 어긋나 미래 시각이 들어오면 "방금 전"으로 뭉개지 않고 날짜를 그대로 보여준다
   if (diffMs < 0) return formatDate(targetDate);
 
