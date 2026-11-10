@@ -238,7 +238,7 @@ function InquiryRoomDetailPage() {
   };
 
   const handleLoadMore = () => {
-    prevScrollHeightRef.current = document.body.scrollHeight;
+    prevScrollHeightRef.current = getScrollHeight();
     fetchNextPage();
   };
 
@@ -288,7 +288,7 @@ function InquiryRoomDetailPage() {
         </ResponseTimeNotice>
       </Header>
 
-      <MessageList isMobile={isMobile}>
+      <MessageList ref={messageListRef} isMobile={isMobile}>
         <LoadMoreTrigger ref={loadMoreRef} />
         {messages.map((message, index) => {
           const prevMessage = messages[index - 1];
@@ -316,7 +316,11 @@ function InquiryRoomDetailPage() {
       </MessageList>
 
       {hasNewMessageArrived && (
-        <NewMessageButton type="button" onClick={handleScrollToBottom}>
+        <NewMessageButton
+          type="button"
+          isMobile={isMobile}
+          onClick={handleScrollToBottom}
+        >
           새 메시지가 도착했어요
         </NewMessageButton>
       )}
@@ -342,6 +346,7 @@ function InquiryRoomDetailPage() {
 }
 
 const ChatCard = styled.div<{ isMobile: boolean }>`
+  position: relative;
   overflow: hidden;
   width: 100%;
   height: ${({ isMobile }) => (isMobile ? 'auto' : '100%')};
@@ -418,6 +423,7 @@ const ResponseTimeNotice = styled.p`
 `;
 
 const MessageList = styled.div<{ isMobile: boolean }>`
+  min-height: ${({ isMobile }) => (isMobile ? 'auto' : '0')};
   padding: 4px 0;
 
   display: flex;
@@ -441,8 +447,8 @@ const ClosedNotice = styled.p`
   text-align: center;
 `;
 
-const NewMessageButton = styled.button`
-  position: fixed;
+const NewMessageButton = styled.button<{ isMobile: boolean }>`
+  position: ${({ isMobile }) => (isMobile ? 'fixed' : 'absolute')};
   top: 30%;
   left: 50%;
   z-index: ${({ theme }) => theme.zIndex.floating};

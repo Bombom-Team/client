@@ -71,15 +71,10 @@ const PanelTitle = styled.h2`
 `;
 
 const NewInquiryButton = styled(Button)`
-  padding: 10px 16px;
   border-radius: 8px;
 
-  display: flex;
   gap: 4px;
-  align-items: center;
 
-  background-color: ${({ theme }) => theme.colors.primaryBomBom};
-  color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t5Regular};
   white-space: nowrap;
 `;
