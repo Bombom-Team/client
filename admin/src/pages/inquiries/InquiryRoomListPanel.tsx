@@ -182,7 +182,7 @@ export function InquiryRoomListPanel({
           const lastMessagePreview = getLastMessagePreviewLabel(room);
           const assigneeLabel =
             room.assigneeNickname ??
-            (room.assigneeId ? '탈퇴한 담당자' : '담당자 미지정');
+            (room.assigneeId ? '탈퇴한 운영자' : '담당자 미지정');
           return (
             <RoomItem
               key={room.id}
