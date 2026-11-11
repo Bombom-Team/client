@@ -116,7 +116,8 @@ export function InquiryRoomDetailPanel({
         name: room.memberId
           ? `회원 #${room.memberId}`
           : `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`,
-        contact: null,
+        // 목록 값이 없어도 비회원 식별자는 복사할 수 있어야 한다.
+        contact: room.guestId,
       };
 
   // 셀렉트 폭이 좁아 긴 이름은 잘린다. 잘린 값을 title로 볼 수 있게 미리 만든다.

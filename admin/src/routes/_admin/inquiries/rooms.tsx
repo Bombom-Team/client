@@ -72,8 +72,8 @@ const RoomsSkeleton = () => {
           <SkeletonRoomItem key={index}>
             <SkeletonCircle />
             <SkeletonLines>
-              <SkeletonLine width="60%" />
-              <SkeletonLine width="85%" />
+              <SkeletonLine lineWidth="60%" />
+              <SkeletonLine lineWidth="85%" />
             </SkeletonLines>
           </SkeletonRoomItem>
         ))}
@@ -126,8 +126,9 @@ const SkeletonCircle = styled(SkeletonBlock)`
   flex-shrink: 0;
 `;
 
-const SkeletonLine = styled(SkeletonBlock)<{ width: string }>`
-  width: ${({ width }) => width};
+// width는 유효한 HTML 속성이라 그대로 쓰면 Emotion이 DOM으로 흘린다. 다른 이름을 쓴다.
+const SkeletonLine = styled(SkeletonBlock)<{ lineWidth: string }>`
+  width: ${({ lineWidth }) => lineWidth};
   height: 8px;
 `;
 

@@ -351,6 +351,23 @@ describe('문의 상세 패널', () => {
     ).toBe('담당자몽');
   });
 
+  it('목록 정보 없이 열어도 비회원 식별자를 복사할 수 있다', async () => {
+    const guestId = '4034bc92-0138-4633-a534-8569b7b4c138';
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue({
+      ...assignedRoom,
+      memberId: null,
+      guestId,
+    });
+
+    // listRoom 없이 연다. 상세 응답만으로 그려지는 경로다.
+    renderPanel();
+
+    expect(
+      await screen.findByRole('button', { name: `${guestId} 복사하기` }),
+    ).toBeTruthy();
+    expect(screen.getAllByText('비회원 (4034bc92)').length).toBeGreaterThan(0);
+  });
+
   it('비회원 메시지에도 이름과 아바타를 보여준다', async () => {
     vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
     vi.mocked(getInquiryMessages).mockResolvedValue({
