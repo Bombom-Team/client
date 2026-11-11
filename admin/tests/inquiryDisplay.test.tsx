@@ -79,10 +79,10 @@ describe('문의자 표시', () => {
         inquirerEmail: 'a@b.com',
         guestId: null,
       }),
-    ).toEqual({ name: '봄봄이', email: 'a@b.com' });
+    ).toEqual({ name: '봄봄이', contact: 'a@b.com' });
   });
 
-  it('비회원이면 이메일 자리를 비운다', () => {
+  it('비회원은 전체 게스트 ID를 복사용으로 돌려준다', () => {
     expect(
       getRequesterIdentity({
         inquirerType: 'GUEST',
@@ -90,7 +90,10 @@ describe('문의자 표시', () => {
         inquirerEmail: null,
         guestId: 'abcdefgh12345678',
       }),
-    ).toEqual({ name: '비회원 (abcdefgh)', email: null });
+    ).toEqual({
+      name: '비회원 (abcdefgh)',
+      contact: 'abcdefgh12345678',
+    });
   });
 
   // 닉네임이 사라져도 어느 계정의 문의였는지 추적할 수 있도록 이메일은 남긴다.
@@ -102,6 +105,6 @@ describe('문의자 표시', () => {
         inquirerEmail: 'a@b.com',
         guestId: null,
       }),
-    ).toEqual({ name: '탈퇴한 회원', email: 'a@b.com' });
+    ).toEqual({ name: '탈퇴한 회원', contact: 'a@b.com' });
   });
 });

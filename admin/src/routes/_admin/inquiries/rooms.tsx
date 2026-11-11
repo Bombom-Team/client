@@ -64,7 +64,7 @@ function InquiryRoomsPage() {
 }
 
 // 실제 화면과 같은 2단 골격을 유지해, 로딩이 끝나도 레이아웃이 튀지 않는다.
-function RoomsSkeleton() {
+const RoomsSkeleton = () => {
   return (
     <SplitContainer role="status" aria-label="문의 목록 불러오는 중">
       <SkeletonListPanel>
@@ -72,8 +72,8 @@ function RoomsSkeleton() {
           <SkeletonRoomItem key={index}>
             <SkeletonCircle />
             <SkeletonLines>
-              <SkeletonLine $width="60%" />
-              <SkeletonLine $width="85%" />
+              <SkeletonLine width="60%" />
+              <SkeletonLine width="85%" />
             </SkeletonLines>
           </SkeletonRoomItem>
         ))}
@@ -81,7 +81,7 @@ function RoomsSkeleton() {
       <SkeletonDetailPanel />
     </SplitContainer>
   );
-}
+};
 
 const shimmer = keyframes`
   from { opacity: 0.55; }
@@ -126,9 +126,9 @@ const SkeletonCircle = styled(SkeletonBlock)`
   flex-shrink: 0;
 `;
 
-const SkeletonLine = styled(SkeletonBlock)<{ $width: string }>`
-  width: ${({ $width }) => $width};
-  height: 10px;
+const SkeletonLine = styled(SkeletonBlock)<{ width: string }>`
+  width: ${({ width }) => width};
+  height: 8px;
 `;
 
 const SkeletonDetailPanel = styled.div`

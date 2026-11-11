@@ -225,6 +225,38 @@ describe('문의 목록', () => {
     expect(screen.queryByText('복사됨')).toBeNull();
   });
 
+  it('비회원은 잘려 보이는 게스트 ID 전체를 복사한다', async () => {
+    const guestId = '4034bc92-0138-4633-a534-8569b7b4c138';
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+
+    try {
+      mockRooms([
+        room({
+          inquirerType: 'GUEST',
+          inquirerNickname: null,
+          inquirerEmail: null,
+          guestId,
+        }),
+      ]);
+
+      renderPanel();
+
+      fireEvent.click(
+        await screen.findByRole('button', { name: `${guestId} 복사하기` }),
+      );
+
+      // 화면에는 앞 8자만 보이지만 복사되는 값은 전체여야 한다.
+      expect(screen.getByText('비회원 (4034bc92)')).toBeTruthy();
+      expect(writeText).toHaveBeenCalledWith(guestId);
+    } finally {
+      Reflect.deleteProperty(navigator, 'clipboard');
+    }
+  });
+
   it('조건에 맞는 문의가 없으면 안내 문구를 보여준다', async () => {
     mockRooms([]);
 

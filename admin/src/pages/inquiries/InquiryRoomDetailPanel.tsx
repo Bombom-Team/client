@@ -116,7 +116,7 @@ export function InquiryRoomDetailPanel({
         name: room.memberId
           ? `회원 #${room.memberId}`
           : `비회원 (${room.guestId?.slice(0, 8) ?? '알 수 없음'})`,
-        email: null,
+        contact: null,
       };
 
   // 셀렉트 폭이 좁아 긴 이름은 잘린다. 잘린 값을 title로 볼 수 있게 미리 만든다.
@@ -229,7 +229,7 @@ export function InquiryRoomDetailPanel({
           <RequesterText>
             <RoomIdentity title={requester.name}>{requester.name}</RoomIdentity>
             {/* 이메일은 복사해서 쓰는 일이 잦아 눌러서 바로 복사할 수 있게 한다. */}
-            {requester.email && <RequesterEmail value={requester.email} />}
+            {requester.contact && <RequesterEmail value={requester.contact} />}
           </RequesterText>
         </HeaderInfo>
         <HeaderControls>

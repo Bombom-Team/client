@@ -203,8 +203,8 @@ export function InquiryRoomListPanel({
                   </RoomTime>
                 </RoomItemTop>
                 {/* 이메일은 복사해서 쓰는 일이 잦아 눌러서 바로 복사하게 한다. */}
-                {requester.email && (
-                  <RoomRequesterEmail value={requester.email} />
+                {requester.contact && (
+                  <RoomRequesterEmail value={requester.contact} />
                 )}
                 <RoomLastMessagePreview title={lastMessagePreview}>
                   {lastMessagePreview}
