@@ -23,7 +23,11 @@ const InquiryFloatingButton = () => {
   const matchRoute = useMatchRoute();
   const { data: unreadStatus } = useQuery(queries.inquiryUnreadStatus());
   const isOnSupportPage = Boolean(matchRoute({ to: '/support', fuzzy: true }));
-  const isVisible = device === 'pc' && !isOnSupportPage;
+  // 읽기 노트 패널이 오른쪽 아래를 차지해 버튼이 메모 입력칸을 덮으므로 아티클 상세에서는 숨긴다
+  const isOnArticleDetail =
+    Boolean(matchRoute({ to: '/articles/$articleId' })) ||
+    Boolean(matchRoute({ to: '/articles/guide/$guideId' }));
+  const isVisible = device === 'pc' && !isOnSupportPage && !isOnArticleDetail;
   const hasUnread = Boolean(unreadStatus?.hasUnread);
   const [isNoticeOpen, setIsNoticeOpen] = useState(false);
   const hadUnreadRef = useRef(false);
