@@ -1,4 +1,6 @@
-const EMOJI_PATTERN = /\p{Extended_Pictographic}|\p{Regional_Indicator}/u;
+// alt 전체가 이모지일 때만 매칭 — 키캡(1️⃣), 국기, 피부색·ZWJ 조합 포함
+const EMOJI_ONLY_PATTERN =
+  /^(?:[0-9#*]️?⃣|\p{Extended_Pictographic}|\p{Regional_Indicator}|\p{Emoji_Modifier}|‍|️|[\u{E0020}-\u{E007F}])+$/u;
 const PRESERVED_WHITE_SPACE_PATTERN = /^(pre|pre-wrap|pre-line|break-spaces)$/;
 const BLOCK_SELECTOR =
   'p, div, h1, h2, h3, h4, h5, h6, ul, ol, li, blockquote, pre, table, hr';
@@ -21,7 +23,8 @@ const replaceEmojiImages = (body: HTMLElement) => {
   body.querySelectorAll('img').forEach((image) => {
     const alt = image.getAttribute('alt') ?? '';
     const isEmoji =
-      EMOJI_PATTERN.test(alt) || image.getAttribute('data-type') === 'emoji';
+      EMOJI_ONLY_PATTERN.test(alt) ||
+      image.getAttribute('data-type') === 'emoji';
     if (isEmoji && alt) image.replaceWith(alt);
   });
 };
