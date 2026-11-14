@@ -18,6 +18,7 @@ export const theme = {
     success: '#10B981',
     error: '#EF4444',
     warning: '#F59E0B',
+    sky: '#0EA5E9',
   },
   spacing: {
     xs: '4px',

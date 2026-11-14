@@ -1,30 +1,37 @@
 import styled from '@emotion/styled';
 import {
+  useQueries,
   useSuspenseInfiniteQuery,
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
+import { FiInbox } from 'react-icons/fi';
 import { inquiryCategoriesQueries } from '@/apis/inquiries/inquiryCategories.query';
 import { inquiryRoomsQueries } from '@/apis/inquiries/inquiryRooms.query';
 import { membersQueries } from '@/apis/members/members.query';
 import { formatRelativeTime } from '@/lib/formatRelativeTime';
 import {
   getLastMessagePreviewLabel,
-  getRequesterLabel,
+  getRequesterIdentity,
 } from '@/lib/inquiryDisplay';
+import { CopyableText } from '@/pages/inquiries/CopyableText';
+import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
 import {
-  INQUIRY_STATUS_COLORS,
   INQUIRY_STATUS_LABELS,
   type InquiryRoom,
   type InquiryStatus,
 } from '@/types/inquiry';
 
-const STATUS_TABS: (InquiryStatus | undefined)[] = [
-  undefined,
+const STATUS_OPTIONS: InquiryStatus[] = [
   'UNCONFIRMED',
   'IN_PROGRESS',
   'DONE',
   'ON_HOLD',
+];
+
+const STATUS_TABS: (InquiryStatus | undefined)[] = [
+  undefined,
+  ...STATUS_OPTIONS,
 ];
 
 const STATUS_TAB_LABELS: Record<'ALL' | InquiryStatus, string> = {
@@ -35,11 +42,15 @@ const STATUS_TAB_LABELS: Record<'ALL' | InquiryStatus, string> = {
 interface InquiryRoomListPanelProps {
   selectedRoomId: number | null;
   onSelectRoom: (room: InquiryRoom) => void;
+  // 목록이 갱신되면 선택된 방의 최신 정보를 알린다. 상세 패널이 들고 있는 복제본이
+  // 낡아 목록과 다른 담당자·상태를 보여주는 것을 막는다.
+  onSelectedRoomChange: (room: InquiryRoom | undefined) => void;
 }
 
 export function InquiryRoomListPanel({
   selectedRoomId,
   onSelectRoom,
+  onSelectedRoomChange,
 }: InquiryRoomListPanelProps) {
   const [status, setStatus] = useState<InquiryStatus | undefined>(undefined);
   const [assigneeId, setAssigneeId] = useState<number | undefined>(undefined);
@@ -60,8 +71,31 @@ export function InquiryRoomListPanel({
     membersQueries.list({ role: 'ADMIN', size: 100 }),
   );
 
+  // 탭에 붙일 상태별 건수. 담당자·카테고리 필터는 함께 반영하고 상태만 각각 바꾼다.
+  const statusCounts = useQueries({
+    queries: STATUS_OPTIONS.map((tabStatus) =>
+      inquiryRoomsQueries.statusCount(tabStatus, { assigneeId, categoryId }),
+    ),
+  });
+  const countByStatus = new Map(
+    STATUS_OPTIONS.map((tabStatus, index) => [
+      tabStatus,
+      statusCounts[index]?.data,
+    ]),
+  );
+
   const rooms = roomPages.pages.flatMap((page) => page.content);
   const totalCount = roomPages.pages[0]?.totalElements ?? 0;
+
+  const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
+
+  // 목록이 다시 조회되면 선택된 방의 최신 값을 상세 패널로 올린다.
+  // 필터를 바꿔 선택된 방이 목록에서 빠졌을 때는 알리지 않는다. undefined를 올리면
+  // 열려 있는 상세 화면의 문의자 이름이 내부 ID 표기로 퇴화한다.
+  useEffect(() => {
+    if (!selectedRoom) return;
+    onSelectedRoomChange(selectedRoom);
+  }, [selectedRoom, onSelectedRoomChange]);
 
   const bottomSentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -94,10 +128,12 @@ export function InquiryRoomListPanel({
             key={tab ?? 'ALL'}
             type="button"
             $active={status === tab}
-            $color={tab ? INQUIRY_STATUS_COLORS[tab] : undefined}
             onClick={() => handleStatusChange(tab)}
           >
             {STATUS_TAB_LABELS[tab ?? 'ALL']}
+            {tab && countByStatus.get(tab) !== undefined && (
+              <TabCount>{countByStatus.get(tab)}</TabCount>
+            )}
           </StatusTab>
         ))}
       </StatusTabs>
@@ -135,39 +171,53 @@ export function InquiryRoomListPanel({
 
       <RoomList>
         {rooms.length === 0 && (
-          <EmptyState>해당 조건의 문의가 없습니다.</EmptyState>
+          <EmptyState>
+            <FiInbox size={32} aria-hidden="true" />
+            해당 조건의 문의가 없습니다
+          </EmptyState>
         )}
         {rooms.map((room) => {
           const category = categories.find((c) => c.id === room.categoryId);
+          const requester = getRequesterIdentity(room);
+          const lastMessagePreview = getLastMessagePreviewLabel(room);
+          const assigneeLabel =
+            room.assigneeNickname ??
+            (room.assigneeId ? '탈퇴한 운영자' : '담당자 미지정');
           return (
             <RoomItem
               key={room.id}
               $selected={room.id === selectedRoomId}
               onClick={() => onSelectRoom(room)}
             >
-              <RoomItemTop>
-                <StatusBadge color={INQUIRY_STATUS_COLORS[room.status]}>
-                  {INQUIRY_STATUS_LABELS[room.status]}
-                </StatusBadge>
-                <RoomTime>
-                  {room.lastMessage
-                    ? formatRelativeTime(room.lastMessage.createdAt)
-                    : '없음'}
-                </RoomTime>
-              </RoomItemTop>
-              <RoomRequester>{getRequesterLabel(room)}</RoomRequester>
-              <RoomLastMessagePreview>
-                {getLastMessagePreviewLabel(room)}
-              </RoomLastMessagePreview>
-              <RoomItemBottom>
-                <RoomCategoryName>
-                  {category?.name ?? '카테고리 없음'}
-                </RoomCategoryName>
-                <RoomAssignee $unassigned={!room.assigneeNickname}>
-                  {room.assigneeNickname ??
-                    (room.assigneeId ? '탈퇴한 담당자' : '담당자 미지정')}
-                </RoomAssignee>
-              </RoomItemBottom>
+              <InquiryAvatar name={requester.name} />
+              <RoomItemBody>
+                {/* 카드 폭이 좁아 말줄임되므로 전체 값을 title로 띄운다. */}
+                <RoomItemTop>
+                  <RoomRequester title={requester.name}>
+                    {requester.name}
+                  </RoomRequester>
+                  <RoomTime>
+                    {room.lastMessage
+                      ? formatRelativeTime(room.lastMessage.createdAt)
+                      : '없음'}
+                  </RoomTime>
+                </RoomItemTop>
+                {/* 이메일은 복사해서 쓰는 일이 잦아 눌러서 바로 복사하게 한다. */}
+                {requester.contact && (
+                  <RoomRequesterEmail value={requester.contact} />
+                )}
+                <RoomLastMessagePreview title={lastMessagePreview}>
+                  {lastMessagePreview}
+                </RoomLastMessagePreview>
+                <RoomItemBottom>
+                  <RoomCategoryName title={category?.name ?? '카테고리 없음'}>
+                    {category?.name ?? '카테고리 없음'}
+                  </RoomCategoryName>
+                  <RoomAssignee title={assigneeLabel}>
+                    {assigneeLabel}
+                  </RoomAssignee>
+                </RoomItemBottom>
+              </RoomItemBody>
             </RoomItem>
           );
         })}
@@ -193,28 +243,47 @@ const Panel = styled.div`
 `;
 
 const StatusTabs = styled.div`
-  padding: ${({ theme }) => theme.spacing.md};
+  padding: 0 ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray200};
 
   display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
+// 선택 상태는 하단 보더와 글자 굵기로만 나타낸다. 보더 자리를 항상 차지하게 두어
+// 탭을 오갈 때 글자가 밀리지 않는다.
 const StatusTab = styled('button', {
-  shouldForwardProp: (prop) => prop !== '$active' && prop !== '$color',
-})<{ $active: boolean; $color?: string }>`
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  shouldForwardProp: (prop) => prop !== '$active',
+})<{ $active: boolean }>`
+  padding: ${({ theme }) => `${theme.spacing.sm} 0`};
   border: none;
-  border-radius: ${({ theme }) => theme.borderRadius.full};
+  border-bottom: 2px solid
+    ${({ $active, theme }) => ($active ? theme.colors.primary : 'transparent')};
 
-  background-color: ${({ $active, $color, theme }) =>
-    $active ? ($color ?? theme.colors.primary) : theme.colors.gray100};
+  display: flex;
+  gap: 4px;
+  align-items: center;
+
+  background-color: transparent;
   color: ${({ $active, theme }) =>
-    $active ? theme.colors.white : theme.colors.gray700};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
-  font-size: ${({ theme }) => theme.fontSize.xs};
+    $active ? theme.colors.gray900 : theme.colors.gray500};
+  font-weight: ${({ $active, theme }) =>
+    $active ? theme.fontWeight.semibold : theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
 
   cursor: pointer;
+
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.gray900};
+  }
+`;
+
+const TabCount = styled.span`
+  color: ${({ theme }) => theme.colors.gray400};
+  font-weight: ${({ theme }) => theme.fontWeight.normal};
+  font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
 const FilterRow = styled.div`
@@ -257,39 +326,50 @@ const LoadingMore = styled.div`
   text-align: center;
 `;
 
+// 선택 표시는 좌측 primary 바로 한다. 선택되지 않은 항목도 같은 두께의 투명 보더를
+// 두어 글자가 밀리지 않게 한다.
 const RoomItem = styled('div', {
   shouldForwardProp: (prop) => prop !== '$selected',
 })<{ $selected: boolean }>`
-  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.md}`};
+  padding: ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray100};
+  border-left: 3px solid
+    ${({ $selected, theme }) =>
+      $selected ? theme.colors.primary : 'transparent'};
 
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: flex-start;
 
   background-color: ${({ $selected, theme }) =>
     $selected ? theme.colors.gray50 : theme.colors.white};
 
   cursor: pointer;
 
+  transition: background-color 0.15s, border-color 0.15s;
+
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray50};
   }
 `;
 
+const RoomItemBody = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+`;
+
 const RoomItemTop = styled.div`
   display: flex;
-  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  align-items: baseline;
   justify-content: space-between;
 `;
 
-const StatusBadge = styled.span<{ color: string }>`
-  padding: 2px 8px;
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-
-  background-color: ${({ color }) => color};
-  color: ${({ theme }) => theme.colors.white};
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
+const RoomRequesterEmail = styled(CopyableText)`
+  color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
@@ -335,22 +415,24 @@ const RoomCategoryName = styled.div`
   text-overflow: ellipsis;
 `;
 
-const RoomAssignee = styled('span', {
-  shouldForwardProp: (prop) => prop !== '$unassigned',
-})<{ $unassigned: boolean }>`
-  flex-shrink: 0;
+// 긴 닉네임이 카테고리를 밀어내지 않도록 함께 줄어들게 둔다. 잘린 값은 title로 본다.
+const RoomAssignee = styled.span`
+  overflow: hidden;
 
-  color: ${({ $unassigned, theme }) =>
-    $unassigned ? theme.colors.gray400 : theme.colors.primary};
-  font-weight: ${({ $unassigned, theme }) =>
-    $unassigned ? theme.fontWeight.normal : theme.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const EmptyState = styled.div`
   padding: ${({ theme }) => theme.spacing.xl};
 
-  color: ${({ theme }) => theme.colors.gray500};
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  flex-direction: column;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.gray400};
   font-size: ${({ theme }) => theme.fontSize.sm};
-  text-align: center;
 `;
