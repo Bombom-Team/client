@@ -8,67 +8,83 @@ import QuoteIcon from '#/assets/svg/quote.svg';
 interface ChallengeReview {
   generation: number;
   content: string;
+  // 형광펜으로 강조할 구절. content 안에 그대로 있어야 칠해진다.
+  highlight?: string;
 }
 
 const CHALLENGE_REVIEWS: ChallengeReview[] = [
   {
-    generation: 7,
+    generation: 6,
     content:
-      '처음엔 꾸준히 보기 어려워서 항상 탈락했는데 2번 연속으로 수료할 수 있어서 뿌듯해요ㅎㅎ\n사람들이 많이 참여했으면 좋겠어요',
+      '뉴스레터를 매일 챙겨보기가 쉽지 않은데, 그래도 챌린지 덕분에 꾸준히 읽을 수 있었던 것 같아요~!',
+    highlight: '챌린지 덕분에 꾸준히 읽을 수 있었던 것 같아요',
   },
   {
     generation: 8,
     content:
       '이번 챌린지도 덕분에 매일 하나라도 읽을 수 있었어요. 이번에도 에세이나 자기계발 레터를 주로 읽었는데, 지친 하루에 공감과 위로를 받을 수 있어서 좋았습니다. 다른 참여자분들이 올린 코멘트를 통해서도 경제와 같이 제가 잘 읽지 않는 분야의 인사이트를 얻을 수 있어서 좋았어요.',
-  },
-  {
-    generation: 6,
-    content:
-      '뉴스레터를 매일 챙겨보기가 쉽지 않은데, 그래도 챌린지 덕분에 꾸준히 읽을 수 있었던 것 같아요~! 동기부여 유지가 어려워서 개근하지 못한게 아쉽긴 하네요',
-  },
-  {
-    generation: 6,
-    content:
-      '챌린지 덕분에 100% 달성할 수 있었습니다! 혼자서 뉴스레터를 항상 읽었었는데 다른사람들 리뷰도 보고 저도 뉴스레터 다읽고 리뷰를 남기니까 더 오래 기억에 남는 것 같네요 한달 동안 다들 고생 많으셨습니다!',
+    highlight: '매일 하나라도 읽을 수 있었어요',
   },
   {
     generation: 4,
     content:
       '등하교할때 저의 심심함을 덜어주는 좋은 서비스였습니다! 이번엔 주로 경제뉴스레터만 읽었는데 세상의 흐름을 조금이라도 따라갈 수 있어서 좋았어요. 다음 챌린지에서는 다양한 카테고리의 뉴스레터를 읽어보려고요!',
+    highlight: '등하교할때 저의 심심함을 덜어주는 좋은 서비스였습니다',
   },
   {
-    generation: 5,
+    generation: 6,
     content:
-      '이번 챌린지도 덕분에 뉴스레터를 챙겨 볼 수 있었습니다! 바쁜 삶 속에서도 뉴스레터를 읽어서 자기계발이나 시사지식을 얻을 수 있었어요. 다른분들도 열심히 참여해주시는 모습에 동기부여를 얻을 수 있었습니다! 다들 수고 많으셨어요~',
+      '챌린지 덕분에 100% 달성할 수 있었습니다! 혼자서 뉴스레터를 항상 읽었었는데 다른사람들 리뷰도 보고 저도 뉴스레터 다읽고 리뷰를 남기니까 더 오래 기억에 남는 것 같네요 한달 동안 다들 고생 많으셨습니다!',
+    highlight:
+      '다른사람들 리뷰도 보고 저도 뉴스레터 다읽고 리뷰를 남기니까 더 오래 기억에 남는 것 같네요',
   },
   {
     generation: 5,
     content:
       '확실히 챌린지를 해야 더 잘 읽는 것 같아요.\n매일 많은 시간 읽을 수는 없지만 매일매일 조금씩 읽는게 참 많은 도움이 되는 것 같아요\n앞으로 더 나은 챌린지가 될 수 있도록 노력해볼게요!!',
-  },
-  {
-    generation: 8,
-    content:
-      '이번 빠짐없이 참여한 제8기 챌린지를 통하여 급변하는 많은 세계정세와 지식들을 접할 수 있어서 좋았고 유익한 시간이었다. 제9기 챌린지에도 열심을 내어 진보를 가져오기를 기대한다.',
+    highlight: '확실히 챌린지를 해야 더 잘 읽는 것 같아요',
   },
   {
     generation: 5,
     content:
-      '제5기 뉴스레터 챌린지를 통하여 세계와 국내 여러가지 지식과 정보를 한 눈에 볼 수 있어 좋았고 더불어 개인적인 많은 식견을 쌓을 수 있어서 좋았습니다~더 많은 유저들이 참여하여 다양한 정보와 지식을 함께 공유했으면 하는 바램입니다. 봄봄의 무궁한 발전을 기원합니다~^^',
+      '이번 챌린지도 덕분에 뉴스레터를 챙겨 볼 수 있었습니다! 바쁜 삶 속에서도 뉴스레터를 읽어서 자기계발이나 시사지식을 얻을 수 있었어요. 다른분들도 열심히 참여해주시는 모습에 동기부여를 얻을 수 있었습니다! 다들 수고 많으셨어요~',
+    highlight:
+      '다른분들도 열심히 참여해주시는 모습에 동기부여를 얻을 수 있었습니다',
+  },
+  {
+    generation: 7,
+    content:
+      '2번 연속으로 수료할 수 있어서 뿌듯해요ㅎㅎ\n사람들이 많이 참여했으면 좋겠어요',
+    highlight: '2번 연속으로 수료할 수 있어서 뿌듯해요',
+  },
+  {
+    generation: 8,
+    content:
+      '이번 빠짐없이 참여한 제8기 챌린지를 통하여 급변하는 많은 세계정세와 지식들을 접할 수 있어서 좋았고 유익한 시간이었다.',
+    highlight: '빠짐없이 참여한',
+  },
+  {
+    generation: 5,
+    content:
+      '제5기 뉴스레터 챌린지를 통하여 세계와 국내 여러가지 지식과 정보를 한 눈에 볼 수 있어 좋았고 더불어 개인적인 많은 식견을 쌓을 수 있어서 좋았습니다~더 많은 유저들이 참여하여 다양한 정보와 지식을 함께 공유했으면 하는 바램입니다.',
+    highlight: '개인적인 많은 식견을 쌓을 수 있어서 좋았습니다',
   },
   {
     generation: 4,
     content:
       '챌린지 덕분에 안읽던 뉴스도 읽게되고 다양한 소식들을 접하니 좋았습니다!',
+    highlight: '챌린지 덕분에 안읽던 뉴스도 읽게되고',
   },
   {
     generation: 8,
     content: '매일 뉴스레터를 읽을 수 있게 되었다! 한글날 빼고 전부 성공',
+    highlight: '매일 뉴스레터를 읽을 수 있게 되었다',
   },
   {
     generation: 6,
     content:
       '챌린지 성공을 위해서라도 어플을 들어와서 뉴스를 읽게 되고 리뷰를 쓰기 위해 뉴스를 꼼꼼히 읽게 되었다',
+    highlight: '챌린지 성공을 위해서라도 어플을 들어와서 뉴스를 읽게 되고',
   },
   {
     generation: 5,
@@ -84,6 +100,20 @@ const REVIEW_ROWS = [
 
 // 줄마다 카드 수가 달라도 같은 속도로 흐르도록 재생 시간을 카드 수에 비례시킨다.
 const SECONDS_PER_CARD = 12;
+
+const splitByHighlight = ({ content, highlight }: ChallengeReview) => {
+  const index = highlight ? content.indexOf(highlight) : -1;
+
+  if (!highlight || index === -1) {
+    return { before: content, highlighted: '', after: '' };
+  }
+
+  return {
+    before: content.slice(0, index),
+    highlighted: highlight,
+    after: content.slice(index + highlight.length),
+  };
+};
 
 const ChallengeReviews = () => {
   const device = useDevice();
@@ -130,17 +160,26 @@ const ChallengeReviews = () => {
                   isDuplicate={isDuplicate}
                   aria-hidden={isDuplicate}
                 >
-                  {reviews.map((review) => (
-                    <ReviewCard key={review.content} device={device}>
-                      <QuoteMark device={device} />
-                      <ReviewContent device={device}>
-                        {review.content}
-                      </ReviewContent>
-                      <Reviewer device={device}>
-                        {review.generation}기 참가자
-                      </Reviewer>
-                    </ReviewCard>
-                  ))}
+                  {reviews.map((review) => {
+                    const { before, highlighted, after } =
+                      splitByHighlight(review);
+
+                    return (
+                      <ReviewCard key={review.content} device={device}>
+                        <QuoteMark device={device} />
+                        <ReviewContent device={device}>
+                          {before}
+                          {highlighted && (
+                            <KeyPhrase device={device}>{highlighted}</KeyPhrase>
+                          )}
+                          {after}
+                        </ReviewContent>
+                        <Reviewer device={device}>
+                          {review.generation}기 참가자
+                        </Reviewer>
+                      </ReviewCard>
+                    );
+                  })}
                 </ReviewList>
               ))}
             </Track>
@@ -306,10 +345,24 @@ const QuoteMark = styled(QuoteIcon)<{ device: Device }>`
 `;
 
 const ReviewContent = styled.p<{ device: Device }>`
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ device, theme }) =>
     device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Regular};
   white-space: pre-line;
+`;
+
+// 글자 아래쪽 절반에만 색을 깔아 형광펜으로 그은 것처럼 보이게 한다.
+const KeyPhrase = styled.mark<{ device: Device }>`
+  background: linear-gradient(
+    transparent 55%,
+    ${({ theme }) => theme.colors.primaryLight} 55%
+  );
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ device, theme }) =>
+    device === 'mobile' ? theme.fonts.t5Bold : theme.fonts.t6Bold};
+
+  /* 줄이 바뀌어도 줄마다 형광펜이 이어지게 한다. */
+  box-decoration-break: clone;
 `;
 
 const Reviewer = styled.span<{ device: Device }>`
