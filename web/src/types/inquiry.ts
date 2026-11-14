@@ -23,10 +23,10 @@ export const INQUIRY_ROOM_STATUS_LABELS: Record<InquiryRoomStatus, string> = {
 
 export const INQUIRY_ROOM_STATUS_BADGE_VARIANTS: Record<
   InquiryRoomStatus,
-  'default' | 'outlinePrimary'
+  'default' | 'softPrimary'
 > = {
-  UNCONFIRMED: 'outlinePrimary',
-  IN_PROGRESS: 'outlinePrimary',
+  UNCONFIRMED: 'softPrimary',
+  IN_PROGRESS: 'softPrimary',
   DONE: 'default',
   ON_HOLD: 'default',
 };

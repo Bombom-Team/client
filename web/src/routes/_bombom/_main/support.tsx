@@ -46,7 +46,7 @@ function SupportLayout() {
           selected={activeTab === 'INQUIRY'}
           onClick={() => handleTabSelect('INQUIRY')}
         >
-          1:1 문의하기
+          1:1 채팅 문의
         </TabButton>
       </TabList>
 

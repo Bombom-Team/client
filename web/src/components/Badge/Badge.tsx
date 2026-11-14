@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import type { Theme } from '@emotion/react';
 import type { ComponentProps } from 'react';
 
-type Variant = 'default' | 'outlinePrimary' | 'outlineDefault';
+type Variant = 'default' | 'outlinePrimary' | 'outlineDefault' | 'softPrimary';
 
 interface BadgeProps extends ComponentProps<'div'> {
   text: string;
@@ -59,6 +59,12 @@ const variantStyles = {
   outlineDefault: (theme: Theme) => ({
     border: `1px solid ${theme.colors.black}`,
     backgroundColor: theme.colors.white,
+    fontWeight: 600,
+  }),
+  softPrimary: (theme: Theme) => ({
+    border: 'none',
+    backgroundColor: theme.colors.primaryInfo,
+    color: theme.colors.primaryBomBom,
     fontWeight: 600,
   }),
 };

@@ -1,72 +1,38 @@
-import { Button, useModal } from '@bombom/shared/ui-web';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { queries } from '@/apis/queries';
-import InquiryCategoryModal from '@/pages/support/inquiry/components/InquiryCategoryModal';
-import InquiryRoomList from '@/pages/support/inquiry/components/InquiryRoomList/InquiryRoomList';
-import { useInquiryRoomCreateMutation } from '@/pages/support/inquiry/hooks/useInquiryRoomCreateMutation';
-import PlusIcon from '#/assets/svg/plus.svg';
+import { createFileRoute } from '@tanstack/react-router';
+import InquiryRoomListPanel from '@/pages/support/inquiry/components/InquiryRoomListPanel';
 
 export const Route = createFileRoute('/_bombom/_main/support/inquiry/')({
   head: () => ({
     meta: [
-      { title: '봄봄 | 1:1 문의하기' },
+      { title: '봄봄 | 1:1 채팅 문의' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
   component: InquiryRoomListPage,
 });
 
+/**
+ * PC에서는 상위 레이아웃이 목록을 상시 노출하므로 채팅방 선택 안내만 보여준다.
+ */
 function InquiryRoomListPage() {
-  const navigate = useNavigate();
-  const { data: categories } = useQuery(queries.inquiryCategories());
-  const { modalRef, isOpen, openModal, closeModal } = useModal();
+  const device = useDevice();
 
-  const { mutate: mutateCreateRoom, isPending } = useInquiryRoomCreateMutation({
-    onSuccess: (room) => {
-      closeModal();
-      navigate({
-        to: '/support/inquiry/$roomId',
-        params: { roomId: String(room.id) },
-      });
-    },
-  });
+  if (device === 'pc') {
+    return <Container>문의를 선택하면 대화 내용을 볼 수 있어요</Container>;
+  }
 
-  return (
-    <ContentWrapper>
-      <Header>
-        <NewInquiryButton variant="transparent" onClick={openModal}>
-          <PlusIcon width={16} height={16} />새 문의
-        </NewInquiryButton>
-      </Header>
-
-      <InquiryRoomList categories={categories} />
-
-      <InquiryCategoryModal
-        isOpen={isOpen}
-        modalRef={modalRef}
-        closeModal={closeModal}
-        isSubmitting={isPending}
-        onSelectCategory={mutateCreateRoom}
-      />
-    </ContentWrapper>
-  );
+  return <InquiryRoomListPanel />;
 }
 
-const ContentWrapper = styled.div`
-  display: flex;
-  gap: 16px;
-  flex-direction: column;
-`;
+const Container = styled.p`
+  height: 100%;
 
-const Header = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-`;
+  justify-content: center;
 
-const NewInquiryButton = styled(Button)`
-  color: ${({ theme }) => theme.colors.primaryBomBom};
-  font: ${({ theme }) => theme.fonts.t5Regular};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t6Regular};
 `;
