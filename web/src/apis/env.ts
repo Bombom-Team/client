@@ -4,6 +4,7 @@ export const ENV = {
   notificationBaseUrl: `${process.env.API_BASE_URL_NOTIFICATION}`,
   token: `${process.env.API_TOKEN}`,
   enableMsw: `${process.env.ENABLE_MSW}`,
+  enableI18n: `${process.env.ENABLE_I18N}`,
   sentryDsn: `${process.env.SENTRY_DSN}`,
   sentryRelease: `${process.env.SENTRY_RELEASE}`,
   nodeEnv: `${process.env.NODE_ENV}`,
