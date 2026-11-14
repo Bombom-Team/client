@@ -1,9 +1,11 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { Alert } from 'react-native';
+import * as Sentry from '@sentry/react-native';
 import * as Notifications from 'expo-notifications';
 import messaging from '@react-native-firebase/messaging';
 import type { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import {
+  checkNotificationPermission,
   createAndroidChannel,
   getFCMToken,
   getMemberId,
@@ -175,8 +177,14 @@ const useNotification = (reloadWebView: () => void) => {
     // FCM 포그라운드 메시지 리스너: 앱이 열려있을 때 FCM 메시지를 받으면 즉시 로컬 알림으로 표시
     const unsubscribe = messaging().onMessage(
       async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-        // FCM에서 메시지를 받으면 Expo Notifications로 로컬 알림 표시
-        if (remoteMessage.notification) {
+        if (!remoteMessage.notification) return;
+
+        // 권한이 없으면 iOS가 로컬 알림 저장을 거절한다. 그 rejection을 올리지 않는다.
+        let permissionGranted = false;
+        try {
+          permissionGranted = await checkNotificationPermission();
+          if (!permissionGranted) return;
+
           await Notifications.scheduleNotificationAsync({
             content: {
               title: remoteMessage.notification.title,
@@ -185,6 +193,11 @@ const useNotification = (reloadWebView: () => void) => {
             },
             trigger: null, // 즉시 표시 (타이머 없음)
           });
+        } catch (error) {
+          console.error('포그라운드 알림 표시에 실패했습니다.', error);
+          if (permissionGranted) {
+            Sentry.captureException(error);
+          }
         }
       },
     );
