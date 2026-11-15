@@ -51,6 +51,19 @@ export const getArticleById = async ({ id }: GetArticleByIdParams) => {
   });
 };
 
+export type GetArticleHighlightsParams =
+  operations['getHighlights_1']['parameters']['path'];
+export type GetArticleHighlightsResponse =
+  components['schemas']['ArticleHighlightResponse'][];
+
+export const getArticleHighlights = async ({
+  articleId,
+}: GetArticleHighlightsParams) => {
+  return await fetcher.get<GetArticleHighlightsResponse>({
+    path: `/articles/${articleId}/highlights`,
+  });
+};
+
 export type PatchArticleReadParams =
   operations['updateIsRead']['parameters']['path'];
 

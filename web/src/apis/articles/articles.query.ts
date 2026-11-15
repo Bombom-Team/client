@@ -1,10 +1,12 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import {
   getArticleById,
+  getArticleHighlights,
   getArticles,
   getArticlesStatisticsNewsletters,
   getArticlesWithSearch,
   type GetArticleByIdParams,
+  type GetArticleHighlightsParams,
   type GetArticlesParams,
   type GetArticleStatisticsNewslettersParams,
   type GetArticlesWithSearchParams,
@@ -100,6 +102,12 @@ export const articlesQueries = {
     queryOptions({
       queryKey: ['articles', params.id],
       queryFn: () => getArticleById(params),
+    }),
+
+  articleHighlights: (params: GetArticleHighlightsParams) =>
+    queryOptions({
+      queryKey: ['articles', 'highlights', params.articleId],
+      queryFn: () => getArticleHighlights(params),
     }),
 
   articlesStatisticsNewsletters: (
