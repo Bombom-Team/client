@@ -1,8 +1,10 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useEffect, useRef, useState } from 'react';
 import GuideArticleContent from './GuideArticleContent';
 import { useFloatingToolbarSelection } from '@/pages/detail/components/ArticleBody/useFloatingToolbarSelection';
 import FloatingToolbar from '@/pages/detail/components/FloatingToolbar/FloatingToolbar';
 import MemoPanel from '@/pages/detail/components/MemoPanel/MemoPanel';
+import { HIGHLIGHT_UNAVAILABLE_MESSAGE } from '@/pages/detail/constants/highlight';
 import { useArticleContentFontScale } from '@/pages/detail/hooks/useArticleContentFontScale';
 import { useFloatingToolbarState } from '@/pages/detail/hooks/useFloatingToolbarState';
 import { useHighlightHoverEffect } from '@/pages/detail/hooks/useHighlightHoverEffect';
@@ -38,7 +40,7 @@ const GuideArticleBody = ({
     addHighlight,
     updateMemo,
     removeHighlight,
-  } = useLocalHighlightData({ articleId });
+  } = useLocalHighlightData({ articleId, contentRef });
   const { activeSelectionRange, activeHighlightId } =
     useFloatingToolbarSelection({
       contentRef,
@@ -47,11 +49,19 @@ const GuideArticleBody = ({
     });
 
   const addNewHighlight = (range: Range | null) => {
-    if (!range) return;
+    const contentEl = contentRef.current;
+    if (!range || !contentEl) return false;
 
-    const highlightData = saveSelection(range, articleId);
-    addHighlight(highlightData);
+    const highlightData = saveSelection(contentEl, range, articleId);
     window.getSelection()?.removeAllRanges();
+
+    if (!highlightData) {
+      toast.error(HIGHLIGHT_UNAVAILABLE_MESSAGE);
+      return false;
+    }
+
+    addHighlight(highlightData);
+    return true;
   };
   const handleHighlightClick = () => {
     const isNewMode = mode === 'new';
@@ -69,12 +79,12 @@ const GuideArticleBody = ({
   const handleMemoClick = () => {
     const isNewMode = mode === 'new';
 
-    if (isNewMode) {
-      addNewHighlight(activeSelectionRange);
-    }
+    hideToolbar();
+
+    // 칠하지 못한 선택에는 메모를 달 수 없다.
+    if (isNewMode && !addNewHighlight(activeSelectionRange)) return;
 
     setPanelOpen(true);
-    hideToolbar();
   };
 
   useHighlightHoverEffect();
@@ -101,11 +111,12 @@ const GuideArticleBody = ({
   }, [contentRef, fontSizePercentage, hideToolbar]);
 
   useEffect(() => {
-    if (isHighlightLoaded) restoreHighlightAll(highlights);
+    const contentEl = contentRef.current;
+    if (!contentEl || !isHighlightLoaded) return;
 
-    // 하이라이트가 처음 로드될 때만 restore 실행 (highlight 변경 시 재실행 방지)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHighlightLoaded]);
+    // 이미 그린 형광펜은 건너뛰므로, 목록이 바뀔 때마다 다시 실행해도 된다.
+    restoreHighlightAll(contentEl, highlights);
+  }, [contentRef, highlights, isHighlightLoaded]);
 
   return (
     <>
