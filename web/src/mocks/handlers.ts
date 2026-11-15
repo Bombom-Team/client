@@ -18,6 +18,7 @@ import type { Highlight } from '@/pages/detail/types/highlight';
 const baseURL = ENV.baseUrl;
 
 const HIGHLIGHTS: Highlight[] = [];
+let lastHighlightId = 0;
 
 export const handlers = [
   // 뉴스레터 목록
@@ -60,9 +61,14 @@ export const handlers = [
   // ------------------ 하이라이트 CRUD ------------------
 
   // 전체 조회
-  http.get(`${baseURL}/highlights`, () => {
+  http.get(`${baseURL}/highlights`, ({ request }) => {
+    const articleId = new URL(request.url).searchParams.get('articleId');
+    const content = articleId
+      ? HIGHLIGHTS.filter((h) => h.articleId === Number(articleId))
+      : [...HIGHLIGHTS];
+
     return HttpResponse.json({
-      content: [...HIGHLIGHTS],
+      content,
       pageable: {
         pageNumber: 0,
         pageSize: 10,
@@ -75,7 +81,7 @@ export const handlers = [
         paged: true,
         unpaged: false,
       },
-      totalElements: 2,
+      totalElements: content.length,
       totalPages: 1,
       last: true,
       size: 10,
@@ -85,17 +91,25 @@ export const handlers = [
         sorted: true,
         unsorted: false,
       },
-      numberOfElements: 2,
+      numberOfElements: content.length,
       first: true,
-      empty: false,
+      empty: content.length === 0,
     });
+  }),
+
+  // 글의 하이라이트 전체 조회
+  http.get(`${baseURL}/articles/:articleId/highlights`, ({ params }) => {
+    return HttpResponse.json(
+      HIGHLIGHTS.filter((h) => h.articleId === Number(params.articleId)),
+    );
   }),
 
   // 생성
   http.post(`${baseURL}/highlights`, async ({ request }) => {
     const newHighlight = (await request.json()) as Highlight;
-    // ID가 없는 경우 임의 ID 생성
-    newHighlight.id = HIGHLIGHTS.length + 1;
+    // 지운 뒤에도 id가 겹치지 않게 증가하는 값을 쓴다.
+    lastHighlightId += 1;
+    newHighlight.id = lastHighlightId;
     HIGHLIGHTS.push(newHighlight);
     return HttpResponse.json(newHighlight, { status: 201 });
   }),
