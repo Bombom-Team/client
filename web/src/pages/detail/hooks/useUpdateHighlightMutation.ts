@@ -3,15 +3,21 @@ import { patchHighlight } from '@/apis/highlight/highlight.api';
 import { queries } from '@/apis/queries';
 import type { PatchHighlightParams } from '@/apis/highlight/highlight.api';
 
-export const useUpdateHighlightMutation = () => {
+interface UseUpdateHighlightMutationParams {
+  articleId: number;
+}
+
+export const useUpdateHighlightMutation = ({
+  articleId,
+}: UseUpdateHighlightMutationParams) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (params: PatchHighlightParams) => patchHighlight(params),
 
-    onSuccess: (_, params) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queries.highlights({ articleId: params.id }).queryKey,
+        queryKey: queries.articleHighlights({ articleId }).queryKey,
       });
     },
   });
