@@ -20,6 +20,7 @@ import {
   useUpdateVisibility,
 } from '@/apis/blog/blog.query';
 import { Sidebar } from '@/components/Sidebar';
+import { normalizePastedHtml } from '@/lib/normalizePastedHtml';
 import { Route } from '@/routes/_admin/blog/$postId';
 import type { BlogVisibility } from '@/types/blog';
 
@@ -139,6 +140,7 @@ export const BlogEditor = () => {
     })(),
     onUpdate: () => setIsDirty(true),
     editorProps: {
+      transformPastedHTML: normalizePastedHtml,
       handlePaste: (view, event) => {
         // 클립보드에 이미지 파일이 있으면 업로드
         const files = event.clipboardData?.files;

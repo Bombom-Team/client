@@ -22,6 +22,7 @@ import {
 } from '@/apis/notices/notices.api';
 import { noticesQueries } from '@/apis/notices/notices.query';
 import { Sidebar } from '@/components/Sidebar';
+import { normalizePastedHtml } from '@/lib/normalizePastedHtml';
 // EditorToolbar는 blog/notice 공용 — 추후 src/components/editor로 이동 예정
 import { EditorToolbar } from '@/pages/blog/components/EditorToolbar';
 import type { NoticeCategoryType, NoticeVisibility } from '@/types/notice';
@@ -127,6 +128,7 @@ export const NoticeEditor = ({
       parseTiptapDoc(initialContent) ?? plainTextToTiptapHtml(initialContent),
     onUpdate: () => setIsDirty(true),
     editorProps: {
+      transformPastedHTML: normalizePastedHtml,
       handlePaste: (view, event) => {
         // 클립보드에 이미지 파일이 있으면 삽입
         const files = event.clipboardData?.files;
