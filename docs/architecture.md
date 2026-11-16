@@ -50,6 +50,71 @@ workspace의 `package.json`을 직접 읽는다.
 - 브라우저 로그인은 서버 OAuth 엔드포인트로 이동한다. 앱 로그인은 WebView 메시지로
   native credential을 받아 `/auth/login/{provider}/native`를 호출한다.
 
+## 화면 공통 구조와 여기에 기대는 기능
+
+화면 공통 구조는 다른 화면을 감싸거나 모든 화면에 함께 그려지는 코드다. 이 코드를 바꾸면
+import 관계가 없는 기능이 깨질 수 있다. 리뷰에서 확인할 범위와 검색 단서는
+`.ai/review/REVIEW.md`의 "화면 공통 구조를 바꾸는 PR"을 따른다.
+
+### 화면 공통 구조 파일
+
+| 파일 | 영향 범위 |
+| --- | --- |
+| `web/src/main.tsx`, `web/src/styles/reset.ts` | 앱 전체. root 렌더링, 전역 스타일, 오류 경계, router 옵션 |
+| `web/src/routes/__root.tsx` | 모든 route. 전역 Provider, 화면 전환 요소, `Toast`, head 태그 |
+| `web/src/components/RouteTransition/RouteTransition.tsx` | 모든 route의 화면을 감싸는 요소 |
+| `web/src/contexts/AuthContext.tsx` | `/_bombom` 아래 화면이 그려지는 시점. `_bombom.tsx`가 로그인 상태를 기다린다 |
+| `web/src/routes/_bombom.tsx`, `web/src/components/PageLayout/BomBomPageLayout.tsx` | `/_bombom` 아래 화면의 헤더·footer·여백·공통 모달 |
+| `web/src/routes/_bombom/_main.tsx` | `/_bombom/_main` 아래 화면의 모바일 헤더·하단 내비게이션 |
+| `web/src/routes/blog.tsx` | 블로그 화면의 헤더·footer·여백 |
+| `shared/src/ui-web/Modal/`, `shared/src/ui-web/Toast/`, `shared/src/ui-web/hooks/useDevice.ts` | 이를 import하는 workspace의 모달, 알림, device 분기 |
+
+이 밖에 `<Outlet />`을 렌더링하는 route 파일도 하위 화면에 같은 영향을 준다. `admin`과
+`maeil-mail`은 entry 파일, `__root.tsx`, layout route·컴포넌트가 같은 역할을 한다.
+
+### 화면 전체 구조에 기대는 기능
+
+아래 기능은 화면 공통 구조 파일과 import 관계가 없지만, 문서 전체 DOM 구조·마운트 시점·window
+스크롤을 전제로 동작한다. `web` 기준 목록이다. 다른 workspace와 새로 생긴 기능은 REVIEW.md의
+검색 단서로 찾는다.
+
+- **형광펜 위치 저장·복원**: 위치를 XPath와 글자 offset으로 저장하고, 본문이 그려진 뒤 그 위치를
+  다시 찾아 `mark`로 감싼다. 본문 바깥 구조와 본문 안 구조에 모두 기댄다.
+  - 본문 바깥: 서버와 localStorage에 이미 저장된 값에는 문서 전체 기준 경로
+    (`./html[1]/body[1]/...`)가 있다. 새 위치를 어느 요소 기준으로 저장하고 예전 값을 어떻게
+    다시 찾는지는 `highlight.ts`를 읽어 확인한다.
+  - 본문 안: 경로와 offset은 가공한 본문 HTML의 요소 구조와 글자 수를 따른다. 본문 HTML을
+    가공하는 코드를 바꾸면 저장된 위치가 어긋난다. 본문 HTML이 다시 들어가면 그려 둔 `mark`가
+    지워진다.
+  - hover 표시는 문서 전체에서 `data-highlight-id`로 `mark`를 찾는다.
+  - 원본: `web/src/pages/detail/utils/highlight.ts`, `web/src/pages/detail/utils/selection.ts`,
+    `web/src/pages/detail/hooks/useHighlightHoverEffect.ts`. 본문 가공과 렌더링은
+    `web/src/utils/element.ts`, `web/src/pages/detail/components/ArticleContent/`. 복원 시점은
+    `web/src/pages/detail/components/ArticleBody/ArticleBody.tsx`,
+    `web/src/pages/guide-detail/components/GuideArticleBody.tsx`.
+- **글 읽던 위치 복원**: window 스크롤 위치를 저장하고, 글 데이터가 준비되면 한 번 복원한다.
+  원본: `web/src/hooks/useScrollRestoration.ts`.
+- **route 이동 시 스크롤 복원**: router가 window 스크롤 위치를 복원한다. 원본: `web/src/main.tsx`의
+  router 옵션.
+- **읽기 진행률·읽음 처리**: 문서 전체 스크롤 높이와 본문 요소의 viewport 좌표로 계산한다.
+  원본: `web/src/hooks/useScrollProgress.ts`, `web/src/hooks/useScrollThreshold.ts`,
+  `web/src/utils/scroll.ts`.
+- **문의 채팅 스크롤 유지**: `document.body` 높이와 window 스크롤로 맨 아래를 유지하고 위치를
+  보정한다. 원본: `web/src/routes/_bombom/_main/support.inquiry.$roomId.tsx`.
+- **화면 전환 스냅샷**: 감싸는 요소 두 겹은 모든 device에서 그려진다. mobile에서는 전환 동안
+  이전 화면의 HTML 사본을 문서에 넣어 `id`·`data-*`가 두 벌이 되고, Push 동안 현재 화면을 감싼
+  요소에 `transform`을 준다. `<Outlet />`이 다시 마운트되지 않아야 한다. 원본:
+  `web/src/components/RouteTransition/RouteTransition.tsx`.
+- **viewport 기준 고정 요소**: portal 없이 제자리에서 `position: fixed`로 그린다. 조상에
+  `transform`·`filter`가 생기면 기준이 그 조상으로 바뀐다. 원본: `shared/src/ui-web/Modal/Modal.tsx`,
+  `web/src/components/Header/`, `web/src/routes/_bombom/_main.tsx`,
+  `web/src/pages/detail/components/FloatingToolbar/FloatingToolbar.tsx`,
+  `web/src/pages/detail/components/MemoPanel/MemoPanel.tsx`.
+- **모달의 body 스크롤 잠금**: 모달이 열리면 `document.body`의 `overflow`를 바꾼다. 원본:
+  `shared/src/ui-web/hooks/useScrollLock.ts`.
+- **prerender head 태그 정리**: 빌드 때 넣은 head 태그를 첫 렌더링 전에 지우고, `__root.tsx`의
+  `HeadContent`가 다시 넣는다. 원본: `web/src/main.tsx`, `web/scripts/prerender.ts`.
+
 ## WebView 양방향 계약 (`web` ↔ `app`)
 
 메시지 계약은 `shared/src/core/webview.ts`의 `WebToRNMessage`와 `RNToWebMessage`다.
@@ -98,6 +163,8 @@ workspace의 `package.json`을 직접 읽는다.
 - mutation invalidation 누락, 워크스페이스별 캐시 정책 혼동, axios 오류 shape 전제.
 - FCM identity 연결, 알림 type→web route mapping, listener cleanup 누락.
 - 신규 route의 layout/guard 위치와 생성 route tree 수동 수정.
+- 화면 공통 구조 변경 뒤, import 관계 없이 문서 전체 DOM 구조·마운트 시점·window 스크롤에
+  기대는 기능의 회귀.
 - admin 외부 연동을 공용 API로 오인하거나 optional 의존성을 admin 전체 장애로 확대.
 
 ## 리뷰어가 자주 확인할 파일

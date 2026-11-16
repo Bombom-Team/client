@@ -10,7 +10,7 @@ CodeRabbit과 `ai-review-workflow` skill이 이 문서를 읽습니다.
 | --- | --- |
 | React UI code 규칙(`web/`, `admin/`, `maeil-mail/`) | [CONVENTIONS.md의 Frontend coding standards](../CONVENTIONS.md#frontend-coding-standards) |
 | 생성 파일·검증 정책 | [RULES.md의 AI behavior rules](../RULES.md#ai-behavior-rules) |
-| workspace 경계·인증·API·WebView 계약 | [architecture.md](../../docs/architecture.md) |
+| workspace 경계·인증·API·WebView 계약, 화면 공통 구조 | [architecture.md](../../docs/architecture.md) |
 | 알려진 오탐과 적용 조건 | [false-positives.md](false-positives.md) |
 
 > **PR 본문의 `👀 Review Point` 참고**: PR 본문에 `👀 Review Point` 섹션이 있으면,
@@ -61,6 +61,33 @@ CodeRabbit과 `ai-review-workflow` skill이 이 문서를 읽습니다.
 
 Major에 해당하지 않는 화면 결과(가리지 않는 겹침, device별 크기 차이)는 finding으로 만들지
 않고, 계산한 값과 근거를 [리뷰 요약](#근거-기준)에 적습니다.
+
+### 화면 공통 구조 변경의 부수효과
+
+화면 공통 구조(다른 화면을 감싸거나 모든 화면에 함께 그려지는 코드)를 바꾸면, 변경 파일과
+import 관계가 없는 기능이 깨질 수 있습니다. [화면 공통 구조를 바꾸는 PR](#화면-공통-구조를-바꾸는-pr)의
+범위로 확인한 뒤, 아래 결과가 생기는 경로를 코드에서 찾았을 때 Major로 지적합니다.
+
+- 감싸는 요소를 추가·제거하거나 형제 순서를 바꿔, 문서 전체 기준 위치(XPath, 자식 순서, 문서
+  전체 selector)로 요소를 찾는 코드가 다른 요소를 찾거나 찾지 못하는 경우. 그 위치가 이미
+  저장된 사용자 데이터에 들어 있으면 기존 데이터도 함께 깨집니다.
+- 화면 일부의 HTML 사본을 문서에 넣어 `id`·`data-*` 값이 두 벌이 되고, 그 값으로 요소를 찾는
+  코드가 사본을 잡는 경우
+- 하위 화면이 그려지는 시점이나 다시 마운트되는 조건을 바꿔, 마운트 뒤 한 번만 실행되는
+  복원·측정 코드가 대상이 준비되기 전에 실행되거나 다시 실행되지 않는 경우
+- 스크롤 주체를 window에서 내부 요소로 바꿔, window 스크롤을 전제로 한 위치 복원·진행률·읽음
+  처리가 동작하지 않는 경우
+- 조상에 `transform`·`filter`를 넣어, 그 아래 `position: fixed` 요소의 기준이 viewport에서 그
+  조상으로 바뀌는 경우
+
+지적할 때는 다음을 지킵니다.
+
+- 깨지는 기능과 그 코드의 `파일:라인`을 근거에 적습니다. 코드 줄 코멘트는 구조를 바꾼 변경
+  줄에 답니다.
+- 기존 코드가 원래 구조에 기대고 있었더라도, 이번 PR의 변경으로 동작이 깨지면 이번 PR의
+  이슈로 봅니다. [지적하지 말 것](#지적하지-말-것)의 기존 이슈에 해당하지 않습니다.
+- 깨지는 경로를 코드에서 찾지 못한 가능성은 finding으로 만들지 않습니다. 검색한 단서와 확인한
+  기능을 [리뷰 요약](#근거-기준)에 적습니다.
 
 ### 보안·설정
 
@@ -114,6 +141,8 @@ Major에 해당하지 않는 화면 결과(가리지 않는 겹침, device별 �
 ## 근거 기준
 
 - diff에서 시작하되, head 기준 변경 파일 전체와 직접 의존성·소비처를 확인합니다.
+  [화면 공통 구조를 바꾸는 PR](#화면-공통-구조를-바꾸는-pr)만 import 관계가 없는 코드까지
+  범위를 넓힙니다.
 - 호출부 수, 미사용 여부, "기존 패턴과 다름" 같은 cross-file 주장은 검색 결과를 열어
   실제 호출인지 확인하고 `파일:라인`을 적습니다. 구체 위치가 없으면 게시하지 않습니다.
 - 영향 범위는 PR이 변경한 workspace 안에서만 셉니다. 같은 이름의 훅·컴포넌트가 다른
@@ -138,6 +167,40 @@ Major에 해당하지 않는 화면 결과(가리지 않는 겹침, device별 �
   - Review Point별 결과와 근거: `review_points`
   - 계산한 값, 확인하지 못한 영역, 실행하지 않은 검증: `verification`. 리뷰 본문의
     "📋 리뷰하면서 확인한 내용"에 표시됩니다.
+
+### 화면 공통 구조를 바꾸는 PR
+
+직접 의존성·소비처만 확인하면 놓치는 회귀가 있어, 이 PR에 한해 확인 범위를 넓힙니다.
+BOM-1255(#370)가 `web/src/routes/__root.tsx`의 `<Outlet />`을 화면 전환 요소로 감싼 뒤, 문서
+전체 기준 XPath로 위치를 저장하던 형광펜이 복원되지 않았습니다(BOM-1303). 두 코드 사이에는
+import 관계가 없었습니다.
+
+- 대상: 화면 공통 구조 파일에서 DOM 구조(감싸는 요소, 형제 순서), 위치·`overflow`·`transform`
+  스타일, 하위 화면을 그리는 조건이나 시점을 바꾼 PR입니다.
+  - 화면 공통 구조 파일은 entry, root·layout route, 화면 전환·페이지 layout 컴포넌트, 전역
+    Provider·전역 스타일, 모든 화면에 함께 그려지는 공통 컴포넌트입니다. 현재 해당하는 파일은
+    [architecture.md의 화면 공통 구조 파일](../../docs/architecture.md#화면-공통-구조-파일)에서
+    찾습니다. 목록에 없어도 같은 역할이면 대상입니다.
+  - 이 파일에서 문구, 분석 이벤트, 데이터 요청만 바꾼 PR은 대상이 아닙니다.
+- 범위: 변경한 workspace 전체에서 아래 단서를 검색합니다. `shared`를 바꿨다면 이를 import하는
+  workspace도 검색합니다.
+  - 문서 전체에서 요소를 찾는 코드: `document.querySelector`·`querySelectorAll`,
+    `document.getElementById`, `document.evaluate`·XPath, 감싸는 요소의 자식 순서에 기대는
+    `:nth-child`·`:nth-of-type`
+  - 사본으로 생기는 중복: `innerHTML`·`cloneNode`·`dangerouslySetInnerHTML`로 복사되는 영역의
+    `id`·`data-*` 속성과 이를 가리키는 selector, `htmlFor`, `aria-*`
+  - 실행 시점: 의존성을 일부러 줄인 `useEffect`·`useLayoutEffect`
+    (`react-hooks/exhaustive-deps` 예외 주석), 조건이 처음 참이 될 때 한 번만 실행되는 복원 코드
+  - 스크롤·위치: `scrollRestoration`, `window.scrollY`·`window.scrollTo`,
+    `document.documentElement`·`document.body`의 scroll 값, `getBoundingClientRect` 좌표를 쓰는
+    `position: fixed` 요소
+- [architecture.md의 화면 전체 구조에 기대는 기능](../../docs/architecture.md#화면-전체-구조에-기대는-기능)은
+  검색 결과와 관계없이 원본 파일을 열어 확인합니다.
+- 검색 결과는 파일을 열어, 바뀐 구조나 시점에 실제로 기대는지 확인합니다. 단서가 검색됐다는
+  것만으로 지적하지 않습니다.
+- 확인한 기능과 `파일:라인`, 영향이 없다고 판단한 이유를 리뷰 요약에 남깁니다.
+  `ai-review-workflow`에서는 `verification`에 적습니다. 브라우저에서 확인하지 않은 동작도 함께
+  적습니다.
 
 ---
 

@@ -169,6 +169,8 @@ Procedure:
    - 변경 파일은 hunk뿐 아니라 파일 전체를 읽는다: `git show <head>:<path>`.
    - 변경된 export·hook·API·공용 type의 호출처를 추적한다:
      `git grep -n '<symbol>' <head> -- web app admin maeil-mail shared`.
+   - 화면 공통 구조를 바꾸는 PR이면 `.ai/review/REVIEW.md` 근거 기준의 "화면 공통 구조를 바꾸는
+     PR"에 따라 import 관계가 없는 코드까지 검색한다.
    - 같은 워크스페이스·도메인의 이웃 구현 1~2개와 비교한다. 다른 워크스페이스의
      우연히 같은 이름인 구현을 표준으로 오인하지 않는다.
    - 이전 AI 리뷰가 있으면 답글과 resolve 상태를 읽고 반박된 finding을 반복하지 않는다.
@@ -189,6 +191,8 @@ Procedure:
      - FCM의 memberId/deviceUuid/token 연결, notificationType→route mapping, listener cleanup
        중 하나가 빠진 변경.
      - admin 외부 adapter를 공용 API로 오인하거나 Supabase lazy 초기화를 깨는 변경.
+     - 화면 공통 구조(root·layout route, 화면 전환 요소, 전역 Provider) 변경 뒤, import 관계 없이
+       문서 전체 DOM 구조·마운트 시점·window 스크롤에 기대는 기능의 회귀.
    - **제네릭 필터**: 아무 React/React Native 모노레포에도 성립하는 코멘트면 버리거나,
      실제 호출 흐름·워크스페이스 계약·file:line 근거를 붙여 서비스 특화 finding으로
      다시 쓴다. 일반론 체크리스트는 게시하지 않는다.

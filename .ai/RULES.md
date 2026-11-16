@@ -173,6 +173,7 @@ API를 새로 호출하거나 요청·응답 타입을 바꾸는 작업은 타�
 | 일반 application code 변경 | 변경한 workspace의 `lint`와 `type-check`를 실행합니다. |
 | 기존 test가 있는 기능 변경 | 변경한 workspace의 `lint`와 `type-check`, 해당 기능의 focused test를 실행합니다. |
 | UI 또는 사용자 흐름 변경 | 변경한 workspace의 `lint`와 `type-check`를 실행하고, 대상 흐름의 E2E test가 있으면 실행합니다. E2E test가 없으면 해당 흐름을 직접 확인합니다. |
+| 화면 공통 구조 변경 | 위 UI 검증에 더해, [화면 전체 구조에 기대는 기능](../docs/architecture.md#화면-전체-구조에-기대는-기능) 중 변경이 닿는 기능을 직접 확인합니다. 대상 변경과 목록에 없는 기능을 찾는 검색 단서는 [REVIEW.md의 화면 공통 구조를 바꾸는 PR](review/REVIEW.md#화면-공통-구조를-바꾸는-pr)을 따릅니다. 확인한 기능과 방법, 확인하지 못한 기능을 보고에 적습니다. |
 | API, TanStack Query, authorization, routing 변경 | 변경한 workspace의 `lint`와 `type-check`, 관련 focused test를 실행하고 request·response type과 소비 code를 확인합니다. |
 | Dependency 또는 lint·TypeScript·build 설정 변경 | 변경한 workspace의 `lint`와 `type-check`를 실행합니다. 이어서 새 git worktree에 변경을 옮기고(`git diff HEAD \| git -C <worktree> apply`. 이 명령에 빠지는 새 파일은 `git ls-files --others --exclude-standard`로 찾아 같은 경로로 복사), 해당 workspace CI workflow(`.github/workflows/`)의 install 단계를 그대로 실행한 뒤 `lint`와 `type-check`를 다시 실행합니다. 끝나면 worktree를 삭제합니다. CI가 workspace 의존성만 설치하면 로컬 전체 설치에서 보이던 package가 없을 수 있기 때문입니다. |
 | Configuration, script, CI 변경 | configuration syntax를 확인하고, 변경한 command 또는 build를 안전한 범위에서 실행합니다. |
