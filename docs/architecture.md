@@ -75,45 +75,24 @@ import 관계가 없는 기능이 깨질 수 있다. 리뷰에서 확인할 범�
 ### 화면 전체 구조에 기대는 기능
 
 아래 기능은 화면 공통 구조 파일과 import 관계가 없지만, 문서 전체 DOM 구조·마운트 시점·window
-스크롤을 전제로 동작한다. `web` 기준 목록이다. 다른 workspace와 새로 생긴 기능은 REVIEW.md의
-검색 단서로 찾는다.
+스크롤을 전제로 동작한다. 어떻게 기대는지는 여기에 적지 않으므로 원본 파일을 열어 확인한다.
+`web` 기준 목록이다. 다른 workspace와 새로 생긴 기능은 REVIEW.md의 검색 단서로 찾는다.
 
-- **형광펜 위치 저장·복원**: 위치를 XPath와 글자 offset으로 저장하고, 본문이 그려진 뒤 그 위치를
-  다시 찾아 `mark`로 감싼다. 본문 바깥 구조와 본문 안 구조에 모두 기댄다.
-  - 본문 바깥: 서버와 localStorage에 이미 저장된 값에는 문서 전체 기준 경로
-    (`./html[1]/body[1]/...`)가 있다. 새 위치를 어느 요소 기준으로 저장하고 예전 값을 어떻게
-    다시 찾는지는 `highlight.ts`를 읽어 확인한다.
-  - 본문 안: 경로와 offset은 가공한 본문 HTML의 요소 구조와 글자 수를 따른다. 본문 HTML을
-    가공하는 코드를 바꾸면 저장된 위치가 어긋난다. 본문 HTML이 다시 들어가면 그려 둔 `mark`가
-    지워진다.
-  - hover 표시는 문서 전체에서 `data-highlight-id`로 `mark`를 찾는다.
-  - 원본: `web/src/pages/detail/utils/highlight.ts`, `web/src/pages/detail/utils/selection.ts`,
-    `web/src/pages/detail/hooks/useHighlightHoverEffect.ts`. 본문 가공과 렌더링은
-    `web/src/utils/element.ts`, `web/src/pages/detail/components/ArticleContent/`. 복원 시점은
-    `web/src/pages/detail/components/ArticleBody/ArticleBody.tsx`,
-    `web/src/pages/guide-detail/components/GuideArticleBody.tsx`.
-- **글 읽던 위치 복원**: window 스크롤 위치를 저장하고, 글 데이터가 준비되면 한 번 복원한다.
-  원본: `web/src/hooks/useScrollRestoration.ts`.
-- **route 이동 시 스크롤 복원**: router가 window 스크롤 위치를 복원한다. 원본: `web/src/main.tsx`의
-  router 옵션.
-- **읽기 진행률·읽음 처리**: 문서 전체 스크롤 높이와 본문 요소의 viewport 좌표로 계산한다.
-  원본: `web/src/hooks/useScrollProgress.ts`, `web/src/hooks/useScrollThreshold.ts`,
-  `web/src/utils/scroll.ts`.
-- **문의 채팅 스크롤 유지**: `document.body` 높이와 window 스크롤로 맨 아래를 유지하고 위치를
-  보정한다. 원본: `web/src/routes/_bombom/_main/support.inquiry.$roomId.tsx`.
-- **화면 전환 스냅샷**: 감싸는 요소 두 겹은 모든 device에서 그려진다. mobile에서는 전환 동안
-  이전 화면의 HTML 사본을 문서에 넣어 `id`·`data-*`가 두 벌이 되고, Push 동안 현재 화면을 감싼
-  요소에 `transform`을 준다. `<Outlet />`이 다시 마운트되지 않아야 한다. 원본:
-  `web/src/components/RouteTransition/RouteTransition.tsx`.
-- **viewport 기준 고정 요소**: portal 없이 제자리에서 `position: fixed`로 그린다. 조상에
-  `transform`·`filter`가 생기면 기준이 그 조상으로 바뀐다. 원본: `shared/src/ui-web/Modal/Modal.tsx`,
-  `web/src/components/Header/`, `web/src/routes/_bombom/_main.tsx`,
+- 형광펜 위치 저장·복원: `web/src/pages/detail/utils/highlight.ts`,
+  `web/src/pages/detail/utils/selection.ts`, `web/src/pages/detail/hooks/useHighlightHoverEffect.ts`
+- 글 읽던 위치 복원: `web/src/hooks/useScrollRestoration.ts`
+- route 이동 시 스크롤 복원: `web/src/main.tsx`의 router 옵션
+- 읽기 진행률·읽음 처리: `web/src/hooks/useScrollProgress.ts`, `web/src/hooks/useScrollThreshold.ts`,
+  `web/src/utils/scroll.ts`
+- 문의 채팅 스크롤 유지: `web/src/routes/_bombom/_main/support.inquiry.$roomId.tsx`
+- 화면 전환 스냅샷: `web/src/components/RouteTransition/RouteTransition.tsx`
+- 화면에 고정된 요소(모달, 헤더, 하단 내비게이션, 형광펜 툴바, 메모장):
+  `shared/src/ui-web/Modal/Modal.tsx`, `web/src/components/Header/`,
+  `web/src/routes/_bombom/_main.tsx`,
   `web/src/pages/detail/components/FloatingToolbar/FloatingToolbar.tsx`,
-  `web/src/pages/detail/components/MemoPanel/MemoPanel.tsx`.
-- **모달의 body 스크롤 잠금**: 모달이 열리면 `document.body`의 `overflow`를 바꾼다. 원본:
-  `shared/src/ui-web/hooks/useScrollLock.ts`.
-- **prerender head 태그 정리**: 빌드 때 넣은 head 태그를 첫 렌더링 전에 지우고, `__root.tsx`의
-  `HeadContent`가 다시 넣는다. 원본: `web/src/main.tsx`, `web/scripts/prerender.ts`.
+  `web/src/pages/detail/components/MemoPanel/MemoPanel.tsx`
+- 모달의 body 스크롤 잠금: `shared/src/ui-web/hooks/useScrollLock.ts`
+- prerender head 태그 정리: `web/src/main.tsx`, `web/scripts/prerender.ts`
 
 ## WebView 양방향 계약 (`web` ↔ `app`)
 
