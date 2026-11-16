@@ -287,7 +287,23 @@ describe('addHighlightToDOM', () => {
     expect(content.querySelectorAll('mark')).toHaveLength(0);
   });
 
-  it('두 오프셋이 모두 -1로 저장된 형광펜은 그리지 않는다', () => {
+  it('두 오프셋이 모두 -1이면 본문에 한 번만 나오는 글자를 찾아 그린다', () => {
+    const savedContent = renderContent(1);
+    const highlight = createDocumentXPathHighlight(
+      getParagraph(savedContent, 1),
+      -1,
+      -1,
+      '여기도 형광펜을 칠합니다.',
+    );
+    document.body.innerHTML = '';
+    const content = renderContent(3);
+
+    addHighlightToDOM(content, highlight);
+
+    expect(getMarkedText(content)).toBe('여기도 형광펜을 칠합니다.');
+  });
+
+  it('두 오프셋이 모두 -1이고 같은 글자가 본문에 여러 번 나오면 그리지 않는다', () => {
     const content = renderContent(1);
     const highlight = createDocumentXPathHighlight(
       getParagraph(content, 1),

@@ -234,10 +234,24 @@ const getRangeByDocumentXPath = (
   return getRangeByXPath(root, startXPath, document, offsets);
 };
 
+/**
+ * 두 오프셋이 모두 -1이면 본문에서 저장된 글자를 찾는다.
+ * 같은 글자가 여러 번 나오면 어느 것인지 알 수 없어 찾지 않는다.
+ */
+const getRangeByUniqueText = (root: HTMLElement, text: string) => {
+  if (!text?.trim()) return null;
+
+  const rootText = root.textContent ?? '';
+  const start = rootText.indexOf(text);
+  if (start === -1 || start !== rootText.lastIndexOf(text)) return null;
+
+  return getHighlightRange(root, start, start + text.length);
+};
+
 const getRangeFromHighlight = (root: HTMLElement, data: Highlight) => {
   const { startXPath } = data.location;
   const offsets = getSavedOffsets(data);
-  if (!offsets) return null;
+  if (!offsets) return getRangeByUniqueText(root, data.text);
 
   return startXPath.startsWith(DOCUMENT_XPATH_PREFIX)
     ? getRangeByDocumentXPath(root, data, offsets)
