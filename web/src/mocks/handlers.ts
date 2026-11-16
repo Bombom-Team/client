@@ -62,37 +62,45 @@ export const handlers = [
 
   // 전체 조회
   http.get(`${baseURL}/highlights`, ({ request }) => {
-    const articleId = new URL(request.url).searchParams.get('articleId');
-    const content = articleId
-      ? HIGHLIGHTS.filter((h) => h.articleId === Number(articleId))
-      : [...HIGHLIGHTS];
+    const { searchParams } = new URL(request.url);
+    const articleId = searchParams.get('articleId');
+    // 실제 서버처럼 최신순으로, size를 주지 않으면 10개씩 나눠 준다.
+    const page = Number(searchParams.get('page') ?? 0);
+    const size = Number(searchParams.get('size') ?? 10);
+    const filtered = (
+      articleId
+        ? HIGHLIGHTS.filter((h) => h.articleId === Number(articleId))
+        : [...HIGHLIGHTS]
+    ).reverse();
+    const content = filtered.slice(page * size, (page + 1) * size);
+    const totalPages = Math.ceil(filtered.length / size);
 
     return HttpResponse.json({
       content,
       pageable: {
-        pageNumber: 0,
-        pageSize: 10,
+        pageNumber: page,
+        pageSize: size,
         sort: {
           empty: false,
           sorted: true,
           unsorted: false,
         },
-        offset: 0,
+        offset: page * size,
         paged: true,
         unpaged: false,
       },
-      totalElements: content.length,
-      totalPages: 1,
-      last: true,
-      size: 10,
-      number: 0,
+      totalElements: filtered.length,
+      totalPages,
+      last: page >= totalPages - 1,
+      size,
+      number: page,
       sort: {
         empty: false,
         sorted: true,
         unsorted: false,
       },
       numberOfElements: content.length,
-      first: true,
+      first: page === 0,
       empty: content.length === 0,
     });
   }),
