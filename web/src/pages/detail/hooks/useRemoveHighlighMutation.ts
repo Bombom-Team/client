@@ -16,11 +16,14 @@ export const useRemoveHighlightMutation = ({
 
   return useMutation({
     mutationFn: (params: DeleteHighlightParams) => deleteHighlight(params),
-
-    onSuccess: (_, params) => {
+    // 응답이 오기 전에 다른 글로 넘어가도 요청한 글의 목록을 갱신하도록 글 id를 기억한다.
+    onMutate: () => ({ articleId }),
+    onSuccess: (_, params, mutatedArticle) => {
       removeHighlightFromDOM(params.id);
       queryClient.invalidateQueries({
-        queryKey: queries.articleHighlights({ articleId }).queryKey,
+        queryKey: queries.articleHighlights({
+          articleId: mutatedArticle.articleId,
+        }).queryKey,
       });
     },
     onError: () => {
