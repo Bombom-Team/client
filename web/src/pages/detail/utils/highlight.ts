@@ -234,6 +234,19 @@ const getRangeByDocumentXPath = (
   return getRangeByXPath(root, startXPath, document, offsets);
 };
 
+// style·script의 글자는 찾는 대상에서 뺀다. 자리는 남겨 두어 오프셋이 본문 전체 기준과 같게 한다.
+const getVisibleText = (root: HTMLElement) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let text = '';
+
+  while (walker.nextNode()) {
+    const node = walker.currentNode as Text;
+    text += isHiddenText(node) ? '\0'.repeat(node.data.length) : node.data;
+  }
+
+  return text;
+};
+
 /**
  * 두 오프셋이 모두 -1이면 본문에서 저장된 글자를 찾는다.
  * 같은 글자가 여러 번 나오면 어느 것인지 알 수 없어 찾지 않는다.
@@ -241,7 +254,7 @@ const getRangeByDocumentXPath = (
 const getRangeByUniqueText = (root: HTMLElement, text: string) => {
   if (!text?.trim()) return null;
 
-  const rootText = root.textContent ?? '';
+  const rootText = getVisibleText(root);
   const start = rootText.indexOf(text);
   if (start === -1 || start !== rootText.lastIndexOf(text)) return null;
 

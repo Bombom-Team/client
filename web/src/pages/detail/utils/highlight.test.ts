@@ -303,6 +303,24 @@ describe('addHighlightToDOM', () => {
     expect(getMarkedText(content)).toBe('여기도 형광펜을 칠합니다.');
   });
 
+  it('두 오프셋이 모두 -1이면 style 안의 같은 글자는 세지 않고 본문 글자를 찾아 그린다', () => {
+    const content = renderContent(1);
+    const style = document.createElement('style');
+    style.textContent = '/* 여기도 형광펜을 칠합니다. */';
+    content.prepend(style);
+    const highlight = createDocumentXPathHighlight(
+      getParagraph(content, 1),
+      -1,
+      -1,
+      '여기도 형광펜을 칠합니다.',
+    );
+
+    addHighlightToDOM(content, highlight);
+
+    expect(getMarkedText(content)).toBe('여기도 형광펜을 칠합니다.');
+    expect(style.querySelector('mark')).toBeNull();
+  });
+
   it('두 오프셋이 모두 -1이고 같은 글자가 본문에 여러 번 나오면 그리지 않는다', () => {
     const content = renderContent(1);
     const highlight = createDocumentXPathHighlight(
