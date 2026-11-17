@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { useFloatingToolbarSelection } from './useFloatingToolbarSelection';
+import { HIGHLIGHT_UNAVAILABLE_MESSAGE } from '../../constants/highlight';
 import {
   getMaeilMailAnswerUrl,
   MAEIL_MAIL_ANSWER_CHECK_BUTTON_ID,
@@ -14,7 +15,11 @@ import { useHighlights } from '../../hooks/useHighlights';
 import { useMaeilMailAnswerButton } from '../../hooks/useMaeilMailAnswerButton';
 import { useRemoveHighlightMutation } from '../../hooks/useRemoveHighlighMutation';
 import { useUpdateHighlightMutation } from '../../hooks/useUpdateHighlightMutation';
-import { restoreHighlightAll, saveSelection } from '../../utils/highlight';
+import {
+  removeDeletedHighlights,
+  restoreHighlightAll,
+  saveSelection,
+} from '../../utils/highlight';
 import ArticleContent from '../ArticleContent/ArticleContent';
 import FloatingToolbar from '../FloatingToolbar/FloatingToolbar';
 import MaeilMailAnswerModal from '../MaeilMailAnswerModal/MaeilMailAnswerModal';
@@ -22,6 +27,7 @@ import MemoPanel from '../MemoPanel/MemoPanel';
 import { queries } from '@/apis/queries';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { ArticleFontSizePercentage } from '../../constants/articleFontSize';
+import type { Highlight } from '../../types/highlight';
 import type { GetArticleByIdResponse } from '@/apis/articles/articles.api';
 import type { RefObject } from 'react';
 
@@ -52,9 +58,15 @@ const ArticleBody = ({
   } = useFloatingToolbarState();
   const [panelOpen, setPanelOpen] = useState(false);
   const previousFontSizePercentageRef = useRef(fontSizePercentage);
+  const restoredHighlightsRef = useRef<Highlight[]>([]);
   const { highlights, isHighlightLoaded } = useHighlights({ articleId });
-  const { mutate: addHighlight } = useAddHighlightMutation();
-  const { mutate: updateHighlight } = useUpdateHighlightMutation();
+  const { mutate: addHighlight } = useAddHighlightMutation({
+    articleId,
+    contentRef,
+  });
+  const { mutate: updateHighlight } = useUpdateHighlightMutation({
+    articleId,
+  });
   const { mutate: removeHighlight } = useRemoveHighlightMutation({ articleId });
   const { activeSelectionRange, activeHighlightId } =
     useFloatingToolbarSelection({
@@ -123,19 +135,25 @@ const ArticleBody = ({
   };
 
   const addNewHighlight = (range: Range | null) => {
-    if (!range) return;
+    const contentEl = contentRef.current;
+    if (!range || !contentEl) return false;
 
-    const highlightData = saveSelection(range, articleId);
-    addHighlight(highlightData);
+    const highlightData = saveSelection(contentEl, range, articleId);
     window.getSelection()?.removeAllRanges();
+
+    if (!highlightData) {
+      toast.error(HIGHLIGHT_UNAVAILABLE_MESSAGE);
+      return false;
+    }
+
+    addHighlight(highlightData);
+    return true;
   };
 
   const handleHighlightClick = () => {
     const isNewMode = mode === 'new';
 
-    if (isNewMode) {
-      addNewHighlight(activeSelectionRange);
-
+    if (isNewMode && addNewHighlight(activeSelectionRange)) {
       trackEvent({
         category: 'Memo',
         action: 'FloatingToolbar - 하이라이트 추가',
@@ -158,8 +176,11 @@ const ArticleBody = ({
   const handleMemoClick = () => {
     const isNewMode = mode === 'new';
 
+    hideToolbar();
+
     if (isNewMode) {
-      addNewHighlight(activeSelectionRange);
+      // 칠하지 못한 선택에는 메모를 달 수 없다.
+      if (!addNewHighlight(activeSelectionRange)) return;
 
       trackEvent({
         category: 'Memo',
@@ -169,17 +190,22 @@ const ArticleBody = ({
     }
 
     setPanelOpen(true);
-    hideToolbar();
   };
 
   useEffect(() => {
-    if (!articleContent) return;
+    const contentEl = contentRef.current;
+    if (!contentEl || !articleContent || !isHighlightLoaded) return;
 
-    if (isHighlightLoaded) restoreHighlightAll(highlights);
-
-    // 하이라이트가 처음 로드될 때만 restore 실행 (highlight 변경 시 재실행 방지)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [articleContent, isHighlightLoaded]);
+    // 목록이 갱신될 때마다 화면을 목록에 맞춘다.
+    // 방금 칠해 아직 목록에 없는 형광펜은 지우지 않도록, 이전 목록에 있던 것만 지운다.
+    removeDeletedHighlights(
+      contentEl,
+      restoredHighlightsRef.current,
+      highlights,
+    );
+    restoreHighlightAll(contentEl, highlights);
+    restoredHighlightsRef.current = highlights;
+  }, [articleContent, contentRef, highlights, isHighlightLoaded]);
 
   return (
     <>

@@ -20,7 +20,7 @@ export const getXPathForNode = (node: Node, root: Node = document): string => {
 };
 
 /** XPath로 노드를 다시 찾는 함수 */
-export const getNodeByXPath = (xpath: string, root: Document = document) => {
+export const getNodeByXPath = (xpath: string, root: Node = document) => {
   const result = document.evaluate(
     xpath,
     root,
