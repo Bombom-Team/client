@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { memo, useRef } from 'react';
+import { memo, useMemo, useRef } from 'react';
 import { processContent } from './ArticleContent.utils';
 import { useArticleContentFontScale } from '../../hooks/useArticleContentFontScale';
 import { useAutoScaleContent } from '../../hooks/useAutoScaleContent';
@@ -24,6 +24,12 @@ const ArticleContent = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const bodyContent = extractBodyContent(content ?? '');
   const processedContent = processContent(newsletterName, bodyContent);
+  // React 19는 이 객체가 바뀌면 HTML이 같아도 innerHTML을 다시 넣는다.
+  // 객체를 유지해야 본문에 그린 형광펜이 리렌더로 지워지지 않는다.
+  const innerHTML = useMemo(
+    () => ({ __html: processedContent }),
+    [processedContent],
+  );
   const { scale, recalculateScale } = useAutoScaleContent({
     layoutRef: containerRef,
     contentRef: ref,
@@ -40,13 +46,7 @@ const ArticleContent = ({
 
   return (
     <Container ref={containerRef}>
-      <Content
-        ref={ref}
-        scale={scale}
-        dangerouslySetInnerHTML={{
-          __html: processedContent,
-        }}
-      />
+      <Content ref={ref} scale={scale} dangerouslySetInnerHTML={innerHTML} />
     </Container>
   );
 };

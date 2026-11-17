@@ -19,6 +19,8 @@ import { ENV } from '@/apis/env';
 
 const baseURL = ENV.baseUrl;
 let ARTICLES = [...ARTICLE_FONT_SIZE_ARTICLES, ...ORIGINAL_ARTICLES];
+// 읽음 처리한 글은 새로고침 전까지 상세 조회에서도 읽음으로 내려준다
+const readArticleIds = new Set<number>();
 
 const sortArticlesByArrivedDateTime = (
   articles: typeof ARTICLES,
@@ -100,28 +102,32 @@ export const articleHandlers = [
 
   // 아티클 상세
   http.get(`${baseURL}/articles/:id`, ({ params }) => {
-    const { id } = params;
+    const articleId = Number(params.id);
     const articleFontSizeMock = ARTICLE_FONT_SIZE_MOCKS.find(
-      ({ articleId }) => articleId === Number(id),
+      (mock) => mock.articleId === articleId,
     );
 
-    if (articleFontSizeMock) {
-      return HttpResponse.json(articleFontSizeMock.detail);
-    }
+    const getDetail = () => {
+      if (articleFontSizeMock) return articleFontSizeMock.detail;
+      if (articleId === MAEIL_MAIL_ARTICLE_ID) return MAEIL_MAIL_ARTICLE_DETAIL;
+      if (articleId === LONG_URL_ARTICLE_ID) return LONG_URL_ARTICLE_DETAIL;
+      return ARTICLE_DETAIL;
+    };
+    const detail = getDetail();
 
-    if (Number(id) === MAEIL_MAIL_ARTICLE_ID) {
-      return HttpResponse.json(MAEIL_MAIL_ARTICLE_DETAIL);
-    }
-
-    if (Number(id) === LONG_URL_ARTICLE_ID) {
-      return HttpResponse.json(LONG_URL_ARTICLE_DETAIL);
-    }
-
-    return HttpResponse.json(ARTICLE_DETAIL);
+    return HttpResponse.json(
+      readArticleIds.has(articleId) ? { ...detail, isRead: true } : detail,
+    );
   }),
 
   // 아티클 읽음 처리
-  http.patch(`${baseURL}/articles/:id/read`, () => {
+  http.patch(`${baseURL}/articles/:id/read`, ({ params }) => {
+    const articleId = Number(params.id);
+    readArticleIds.add(articleId);
+    ARTICLES = ARTICLES.map((article) =>
+      article.articleId === articleId ? { ...article, isRead: true } : article,
+    );
+
     return new HttpResponse(null, { status: 204 });
   }),
 
