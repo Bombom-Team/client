@@ -3,6 +3,7 @@ import {
   keepPreviousData,
   queryOptions,
   useMutation,
+  useQueryClient,
 } from '@tanstack/react-query';
 import {
   assignInquiryRoom,
@@ -78,20 +79,40 @@ export const inquiryRoomsQueries = {
     }),
 };
 
+/**
+ * 방 정보가 바뀌면 목록·상세·상태별 개수가 모두 달라지므로 접두 key로 한 번에 무효화한다.
+ */
+const useInvalidateInquiryRooms = () => {
+  const queryClient = useQueryClient();
+
+  return () => {
+    queryClient.invalidateQueries({ queryKey: inquiryRoomsQueries.all });
+  };
+};
+
 export const useAssignInquiryRoomMutation = () => {
+  const invalidateInquiryRooms = useInvalidateInquiryRooms();
+
   return useMutation({
     mutationFn: assignInquiryRoom,
+    onSuccess: invalidateInquiryRooms,
   });
 };
 
 export const useUpdateInquiryRoomStatusMutation = () => {
+  const invalidateInquiryRooms = useInvalidateInquiryRooms();
+
   return useMutation({
     mutationFn: updateInquiryRoomStatus,
+    onSuccess: invalidateInquiryRooms,
   });
 };
 
 export const useUpdateInquiryRoomCategoryMutation = () => {
+  const invalidateInquiryRooms = useInvalidateInquiryRooms();
+
   return useMutation({
     mutationFn: updateInquiryRoomCategory,
+    onSuccess: invalidateInquiryRooms,
   });
 };

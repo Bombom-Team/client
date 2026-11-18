@@ -330,6 +330,39 @@ describe('문의 상세 패널', () => {
     );
   });
 
+  it('메시지를 삭제하면 목록 미리보기가 쓰는 방 정보도 다시 조회한다', async () => {
+    // 삭제로 마지막 메시지가 바뀌면 목록 카드의 미리보기도 함께 갱신되어야 한다.
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+    vi.mocked(getInquiryMessages).mockResolvedValue({
+      messages: [
+        {
+          id: 1,
+          roomId: ROOM_ID,
+          senderType: 'ADMIN',
+          adminId: ADMIN_ID,
+          content: '지울 내용',
+          imageUrls: [],
+          createdAt: '2026-11-03T10:00:00Z',
+        },
+      ],
+      hasNext: false,
+    });
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    renderPanel(memberListRoom);
+
+    await screen.findByText('지울 내용');
+    const detailCallsBefore = vi.mocked(getInquiryRoomDetail).mock.calls.length;
+
+    fireEvent.click(screen.getByRole('button', { name: '메시지 삭제' }));
+
+    await waitFor(() =>
+      expect(vi.mocked(getInquiryRoomDetail).mock.calls.length).toBeGreaterThan(
+        detailCallsBefore,
+      ),
+    );
+  });
+
   it('헤더에서 잘리는 이메일과 담당자는 마우스를 올려 전체를 볼 수 있다', async () => {
     vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
 

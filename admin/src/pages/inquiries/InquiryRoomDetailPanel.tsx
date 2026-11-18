@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import {
-  useQueryClient,
   useSuspenseInfiniteQuery,
   useSuspenseQuery,
 } from '@tanstack/react-query';
@@ -51,7 +50,6 @@ export function InquiryRoomDetailPanel({
   roomId,
   listRoom,
 }: InquiryRoomDetailPanelProps) {
-  const queryClient = useQueryClient();
   const { data: room } = useSuspenseQuery(inquiryRoomsQueries.detail(roomId));
   const { data: categories } = useSuspenseQuery(
     inquiryCategoriesQueries.list(),
@@ -72,19 +70,6 @@ export function InquiryRoomDetailPanel({
   const { mutate: changeCategory } = useUpdateInquiryRoomCategoryMutation();
   const { mutate: updateMessage } = useUpdateInquiryMessageMutation();
   const { mutate: deleteMessage } = useDeleteInquiryMessageMutation();
-
-  const invalidateRoom = () => {
-    queryClient.invalidateQueries({ queryKey: inquiryRoomsQueries.all });
-  };
-
-  // 목록 카드가 마지막 메시지를 미리보기로 쓰므로, 메시지가 바뀌면 방 정보도 함께
-  // 다시 받아와야 목록과 상세가 어긋나지 않는다.
-  const invalidateMessages = () => {
-    queryClient.invalidateQueries({
-      queryKey: inquiryMessagesQueries.all(roomId),
-    });
-    invalidateRoom();
-  };
 
   const topSentinelRef = useRef<HTMLDivElement | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
@@ -171,7 +156,6 @@ export function InquiryRoomDetailPanel({
     assignRoom(
       { roomId, assigneeId },
       {
-        onSuccess: invalidateRoom,
         onError: (error) => alert(`담당자 지정 실패: ${error.message}`),
       },
     );
@@ -181,7 +165,6 @@ export function InquiryRoomDetailPanel({
     changeStatus(
       { roomId, status },
       {
-        onSuccess: invalidateRoom,
         onError: (error) => alert(`상태 변경 실패: ${error.message}`),
       },
     );
@@ -196,7 +179,6 @@ export function InquiryRoomDetailPanel({
     changeCategory(
       { roomId, categoryId },
       {
-        onSuccess: invalidateRoom,
         onError: (error) => alert(`카테고리 변경 실패: ${error.message}`),
       },
     );
@@ -206,7 +188,6 @@ export function InquiryRoomDetailPanel({
     updateMessage(
       { roomId, messageId, content },
       {
-        onSuccess: invalidateMessages,
         onError: (error) => alert(`메시지 수정 실패: ${error.message}`),
       },
     );
@@ -216,7 +197,6 @@ export function InquiryRoomDetailPanel({
     deleteMessage(
       { roomId, messageId },
       {
-        onSuccess: invalidateMessages,
         onError: (error) => alert(`메시지 삭제 실패: ${error.message}`),
       },
     );
