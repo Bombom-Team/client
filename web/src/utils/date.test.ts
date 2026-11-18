@@ -156,8 +156,12 @@ describe('convertRelativeTime', () => {
     expect(convertRelativeTime('2026-11-01T12:00:00')).toBe('2026.11.01');
   });
 
-  it('미래 시각이면 방금 전 대신 날짜로 반환한다.', () => {
-    expect(convertRelativeTime('2026-11-11T12:00:00')).toBe('2026.11.11');
+  it('기기 시계 오차 범위의 미래 시각이면 방금 전을 반환한다.', () => {
+    expect(convertRelativeTime('2026-11-10T12:01:00')).toBe('방금 전');
+  });
+
+  it('오차 범위를 넘는 미래 시각이면 날짜로 반환한다.', () => {
+    expect(convertRelativeTime('2026-11-10T12:01:01')).toBe('2026.11.10');
   });
 
   it('날짜가 비어 있으면 빈 문자열을 반환한다.', () => {

@@ -61,6 +61,9 @@ export const formatTimeToKorean = (date: Date) => {
   return `${period} ${hour12}:${minutes}`;
 };
 
+// 이 범위를 넘는 미래 시각은 기기 시계 오차가 아니라 잘못된 값으로 보고 날짜를 그대로 보여준다
+const FUTURE_TOLERANCE_MS = 60 * 1000;
+
 export const convertRelativeTime = (dateString: string) => {
   const now = new Date();
   const targetDate = new Date(dateString);
@@ -69,8 +72,10 @@ export const convertRelativeTime = (dateString: string) => {
   // 날짜가 비어 있거나 형식이 깨지면 NaN 비교가 모두 false로 빠져 "NaN.NaN.NaN"이 노출된다
   if (Number.isNaN(diffMs)) return '';
 
-  // 기기 시계가 어긋나 미래 시각이 들어오면 "방금 전"으로 뭉개지 않고 날짜를 그대로 보여준다
-  if (diffMs < 0) return formatDate(targetDate);
+  // 기기 시계가 서버보다 몇 초 늦는 일은 흔해, 그 정도 미래는 방금 보낸 것으로 다룬다
+  if (diffMs < 0) {
+    return diffMs < -FUTURE_TOLERANCE_MS ? formatDate(targetDate) : '방금 전';
+  }
 
   const diffSeconds = Math.floor(diffMs / 1000);
   const diffMinutes = Math.floor(diffSeconds / 60);
