@@ -68,6 +68,45 @@ describe('마지막 메시지 미리보기', () => {
       getLastMessagePreviewLabel({ ...memberRoom, lastMessage: null }),
     ).toBe('메시지가 없습니다.');
   });
+
+  it('내용이 비어 있는 사진만 보낸 메시지면 사진 문구를 반환한다', () => {
+    expect(
+      getLastMessagePreviewLabel({
+        ...memberRoom,
+        lastMessage: lastMessage({
+          senderType: 'USER',
+          adminNickname: null,
+          content: null,
+        }),
+      }),
+    ).toBe('봄봄이: 사진을 보냈습니다.');
+  });
+
+  it('내용이 빈 문자열이면 사진 문구를 반환한다', () => {
+    expect(
+      getLastMessagePreviewLabel({
+        ...memberRoom,
+        lastMessage: lastMessage({
+          senderType: 'USER',
+          adminNickname: null,
+          content: '',
+        }),
+      }),
+    ).toBe('봄봄이: 사진을 보냈습니다.');
+  });
+
+  it('내용이 공백뿐이면 사진 문구를 반환한다', () => {
+    expect(
+      getLastMessagePreviewLabel({
+        ...memberRoom,
+        lastMessage: lastMessage({
+          senderType: 'USER',
+          adminNickname: null,
+          content: '   ',
+        }),
+      }),
+    ).toBe('봄봄이: 사진을 보냈습니다.');
+  });
 });
 
 describe('문의자 표시', () => {

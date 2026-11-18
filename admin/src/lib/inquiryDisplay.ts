@@ -1,5 +1,7 @@
 import type { InquiryRoom } from '@/types/inquiry';
 
+const IMAGE_ONLY_PREVIEW = '사진을 보냈습니다.';
+
 /**
  * 문의자 이름과 이메일을 나눠 돌려준다. 목록 카드와 상세 헤더가 둘을 각각 다른
  * 줄에 배치하므로 합치지 않고 그대로 넘긴다. contact는 복사해서 쓰는 식별자로,
@@ -52,5 +54,9 @@ export const getLastMessagePreviewLabel = (
     room.lastMessage.senderType === 'ADMIN'
       ? (room.lastMessage.adminNickname ?? '탈퇴한 운영자')
       : getRequesterIdentity(room).name;
-  return `${senderName}: ${room.lastMessage.content}`;
+  // 목록 API의 마지막 메시지에는 이미지 정보가 없다. 글 없이 보낼 수 있는 것은 사진뿐이라
+  // 내용이 비어 있으면 사진만 보낸 메시지로 보고 문구를 대신 보여준다.
+  const content = room.lastMessage.content?.trim() || IMAGE_ONLY_PREVIEW;
+
+  return `${senderName}: ${content}`;
 };
