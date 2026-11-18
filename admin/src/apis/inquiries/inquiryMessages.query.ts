@@ -1,10 +1,15 @@
-import { infiniteQueryOptions, useMutation } from '@tanstack/react-query';
+import {
+  infiniteQueryOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import {
   deleteInquiryMessage,
   getInquiryMessages,
   sendInquiryMessage,
   updateInquiryMessage,
 } from './inquiryMessages.api';
+import { inquiryRoomsQueries } from './inquiryRooms.query';
 
 const INQUIRY_MESSAGES_PAGE_SIZE = 20;
 
@@ -30,20 +35,46 @@ export const inquiryMessagesQueries = {
     }),
 };
 
+/**
+ * 목록 카드가 마지막 메시지를 미리보기로 쓰므로, 메시지가 바뀌면 방 정보도 함께
+ * 다시 받아와야 목록과 상세가 어긋나지 않는다.
+ */
+const useInvalidateMessagesAndRooms = () => {
+  const queryClient = useQueryClient();
+
+  return (roomId: number) => {
+    queryClient.invalidateQueries({
+      queryKey: inquiryMessagesQueries.all(roomId),
+    });
+    queryClient.invalidateQueries({ queryKey: inquiryRoomsQueries.all });
+  };
+};
+
 export const useSendInquiryMessageMutation = () => {
+  const invalidateMessagesAndRooms = useInvalidateMessagesAndRooms();
+
   return useMutation({
     mutationFn: sendInquiryMessage,
+    // 첫 답변을 보내면 서버가 담당자를 자동 배정하고 상태를 진행중으로 바꾸므로,
+    // 메시지뿐 아니라 방 정보도 다시 조회해야 화면이 실제 값과 어긋나지 않는다.
+    onSuccess: (_, { roomId }) => invalidateMessagesAndRooms(roomId),
   });
 };
 
 export const useUpdateInquiryMessageMutation = () => {
+  const invalidateMessagesAndRooms = useInvalidateMessagesAndRooms();
+
   return useMutation({
     mutationFn: updateInquiryMessage,
+    onSuccess: (_, { roomId }) => invalidateMessagesAndRooms(roomId),
   });
 };
 
 export const useDeleteInquiryMessageMutation = () => {
+  const invalidateMessagesAndRooms = useInvalidateMessagesAndRooms();
+
   return useMutation({
     mutationFn: deleteInquiryMessage,
+    onSuccess: (_, { roomId }) => invalidateMessagesAndRooms(roomId),
   });
 };
