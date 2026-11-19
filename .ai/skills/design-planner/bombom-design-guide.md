@@ -10,7 +10,7 @@
 
 - 서비스명: **봄봄(BomBom)** — 뉴스레터 독서 습관 플랫폼
 - 분위기: 밝고 따뜻함. 강한 원색보다는 브랜드 primary(주황) 포인트 + 깔끔한 흑백 타이포 기반
-- 핵심 경험: 오늘의 뉴스레터 읽기, 챌린지, 보관함, 개인 기록(펫, 리더보드)
+- 핵심 경험: 오늘의 뉴스레터 읽기, 챌린지, 보관함, 개인 기록(리더보드)
 - 디바이스 우선순위: **모바일 우선**, PC는 확장형 레이아웃으로 지원
 
 ---
@@ -24,7 +24,7 @@
 | 페이지 좌우 패딩 | `web/src/components/PageLayout/PageLayout.constants.ts` |
 | 공용 컴포넌트와 props·variant·radius·shadow | `web/src/components/*`, `shared/src/ui-web/*`의 각 컴포넌트 구현 |
 | 메인 레이아웃(헤더·하단 네비) | `web/src/routes/_bombom/_main.tsx`, `web/src/routes/_bombom.tsx` |
-| 투컬럼 페이지 | `web/src/routes/_bombom/_main/index.tsx`, `today.tsx` |
+| 투컬럼 페이지 | `web/src/routes/_bombom/_main/index.tsx`, `storage.tsx` |
 | 상세 페이지 | `web/src/routes/_bombom/articles.$articleId.tsx` |
 | 구현 규칙 | `.ai/CONVENTIONS.md` |
 
