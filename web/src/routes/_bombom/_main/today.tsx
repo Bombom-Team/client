@@ -5,8 +5,6 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { queries } from '@/apis/queries';
-import PetCard from '@/components/PetCard/PetCard';
-import PetCardSkeleton from '@/components/PetCard/PetCardSkeleton';
 import RequireLogin from '@/hocs/RequireLogin';
 import {
   GUIDE_MAIL_STORAGE_KEY,
@@ -15,12 +13,9 @@ import {
 import { useDeleteArticlesMutation } from '@/pages/storage/hooks/useDeleteArticlesMutation';
 import ArticleCardList from '@/pages/today/components/ArticleCardList/ArticleCardList';
 import ArticleCardListSkeleton from '@/pages/today/components/ArticleCardList/ArticleCardListSkeleton';
-import ReadingStatusCard from '@/pages/today/components/ReadingStatusCard/ReadingStatusCard';
 import { formatDate } from '@/utils/date';
 import { createStorage } from '@/utils/localStorage';
 import type { LocalGuideMail } from '@/types/guide';
-import type { Device } from '@bombom/shared/ui-web';
-import type { CSSObject, Theme } from '@emotion/react';
 import HomeIcon from '#/assets/svg/home.svg';
 
 export const Route = createFileRoute('/_bombom/_main/today')({
@@ -49,8 +44,6 @@ function Index() {
   const { data: todayArticles, isLoading: isArticlesLoading } = useQuery(
     queries.articles({ date: todayDateStr, size: 50 }),
   );
-
-  const { data: pet, isLoading: isPetLoading } = useQuery(queries.pet());
 
   const { mutate: deleteArticles } = useDeleteArticlesMutation('today');
 
@@ -93,20 +86,14 @@ function Index() {
         </>
       )}
 
-      <ContentWrapper device={device}>
-        {isArticlesLoading ? (
-          <ArticleCardListSkeleton />
-        ) : (
-          <ArticleCardList
-            articles={mergedArticles}
-            onDeleteArticles={(articleIds) => deleteArticles(articleIds)}
-          />
-        )}
-        <ReaderCompanion device={device}>
-          {isPetLoading ? <PetCardSkeleton /> : pet && <PetCard pet={pet} />}
-          <ReadingStatusCard />
-        </ReaderCompanion>
-      </ContentWrapper>
+      {isArticlesLoading ? (
+        <ArticleCardListSkeleton />
+      ) : (
+        <ArticleCardList
+          articles={mergedArticles}
+          onDeleteArticles={(articleIds) => deleteArticles(articleIds)}
+        />
+      )}
     </Container>
   );
 }
@@ -147,50 +134,3 @@ const TitleIconBox = styled.div`
 const Title = styled.h1`
   font: ${({ theme }) => theme.fonts.t11Bold};
 `;
-
-const ContentWrapper = styled.div<{ device: Device }>`
-  width: 100%;
-
-  display: flex;
-  gap: 24px;
-  flex-direction: ${({ device }) =>
-    device === 'pc' ? 'row' : 'column-reverse'};
-  align-items: ${({ device }) => (device === 'pc' ? 'flex-start' : 'center')};
-  align-self: stretch;
-  justify-content: center;
-`;
-
-const ReaderCompanion = styled.div<{ device: Device }>`
-  min-width: 300px;
-
-  display: flex;
-  gap: 36px;
-
-  box-sizing: border-box;
-
-  ${({ device, theme }) => sideCardWrapperStyles[device](theme)}
-`;
-
-const sideCardWrapperStyles: Record<Device, (theme: Theme) => CSSObject> = {
-  pc: (theme) => ({
-    width: '310px',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    gap: '24px',
-    border: `1px solid ${theme.colors.white}`,
-  }),
-  tablet: () => ({
-    width: '100%',
-    maxWidth: 'calc(100% - 200px)',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  }),
-  mobile: () => ({
-    position: 'relative',
-    paddingBottom: '44px',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }),
-};

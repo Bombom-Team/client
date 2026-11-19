@@ -7,7 +7,6 @@ import {
   getMyMonthlyReadingRank,
   getStreakReadingRank,
   getMyStreakReadingRank,
-  getReadingStatus,
   getUserInfo,
   getMySubscriptions,
   getUserProfile,
@@ -51,12 +50,6 @@ export const membersQueries = {
       retryOnMount: false,
       staleTime: 5 * 60 * 1000, // 5분
       refetchOnWindowFocus: false, // 탭 이동해도 안 튀게
-    }),
-
-  readingStatus: () =>
-    queryOptions({
-      queryKey: ['members', 'me', 'reading'],
-      queryFn: getReadingStatus,
     }),
 
   monthlyReadingRank: (params: GetMonthlyReadingRankParams) =>
