@@ -31,8 +31,11 @@ const LoginSheet = ({
 }: LoginSheetProps) => {
   const navigate = useNavigate();
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     if (isWebView()) {
+      // 앱은 로그인에 성공하면 현재 URL을 새로고침한다. 돌아올 화면으로 먼저 이동해 둔다.
+      closeModal();
+      await navigate({ href: redirectPath });
       sendMessageToRN({ type: 'SHOW_LOGIN_SCREEN' });
       return;
     }

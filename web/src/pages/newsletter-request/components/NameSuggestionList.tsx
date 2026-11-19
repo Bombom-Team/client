@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
+import { getRequestCount } from '../utils/newsletterRequestDisplay';
 import { queries } from '@/apis/queries';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
-import { getRequestCount } from '@/types/newsletterRequest';
 import type {
   NewsletterRequest,
   NewsletterSuggestion,
-} from '@/types/newsletterRequest';
+} from '@/apis/newsletterRequests/newsletterRequests.api';
 
 interface NameSuggestionListProps {
   keyword: string;

@@ -6,8 +6,8 @@ import { Layout } from '@/components/Layout';
 import {
   DRAFT_COLLECT_STATUS_LABELS,
   NEWSLETTER_REQUEST_STATUS_LABELS,
-  type NewsletterRequestStatus,
-} from '@/types/newsletterRequest';
+} from '@/pages/newsletter-requests/newsletterRequestLabels';
+import type { NewsletterRequestStatus } from '@/apis/newsletterRequests/newsletterRequests.api';
 
 const STATUS_TABS: {
   value: NewsletterRequestStatus | undefined;

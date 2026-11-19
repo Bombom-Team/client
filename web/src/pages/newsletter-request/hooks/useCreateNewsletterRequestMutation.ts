@@ -1,10 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { postNewsletterRequest } from '@/apis/newsletterRequests/newsletterRequests.api';
+import {
+  postNewsletterRequest,
+  type PostNewsletterRequestResponse,
+} from '@/apis/newsletterRequests/newsletterRequests.api';
 import { queries } from '@/apis/queries';
-import type { CreateNewsletterRequestResponse } from '@/types/newsletterRequest';
 
 type UseCreateNewsletterRequestMutationOptions = {
-  onSuccess?: (response: CreateNewsletterRequestResponse) => void;
+  onSuccess?: (response: PostNewsletterRequestResponse) => void;
   onError?: (error: Error) => void;
 };
 

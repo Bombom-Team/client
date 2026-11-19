@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import LoginSheet from '@/pages/newsletter-request/components/LoginSheet';
 import NewsletterRequestItem from '@/pages/newsletter-request/components/NewsletterRequestItem';
 import useToggleNewsletterRequestLikeMutation from '@/pages/newsletter-request/hooks/useToggleNewsletterRequestLikeMutation';
-import type { NewsletterRequest } from '@/types/newsletterRequest';
+import type { NewsletterRequest } from '@/apis/newsletterRequests/newsletterRequests.api';
 import ClockIcon from '#/assets/svg/clock.svg';
 
 type BoardTab = 'all' | 'mine';
@@ -35,17 +35,22 @@ function NewsletterRequestBoardPage() {
   const [loginRedirectPath, setLoginRedirectPath] = useState(FUNNEL_PATH);
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
-  const { data: requests = [], isLoading } = useQuery(
+  const { data: requests = [], isLoading: isRequestsLoading } = useQuery(
     queries.newsletterRequests(),
   );
-  const { data: myRequests = [] } = useQuery({
+  const { data: myRequests = [], isLoading: isMyRequestsLoading } = useQuery({
     ...queries.myNewsletterRequests(),
     enabled: isLoggedIn && tab === 'mine',
   });
   const { mutate: toggleLike, isPending: isLikePending } =
     useToggleNewsletterRequestLikeMutation();
 
-  const visibleRequests = tab === 'mine' ? myRequests : requests;
+  const isMineTab = tab === 'mine';
+  const visibleRequests = isMineTab ? myRequests : requests;
+  const isVisibleLoading = isMineTab ? isMyRequestsLoading : isRequestsLoading;
+  const needsLoginForMine = isMineTab && !isLoggedIn;
+  const isEmpty =
+    !needsLoginForMine && !isVisibleLoading && visibleRequests.length === 0;
 
   const handleTabChange = (nextTab: BoardTab) => {
     navigate({
@@ -104,7 +109,7 @@ function NewsletterRequestBoardPage() {
         </TabButton>
       </TabWrapper>
 
-      {tab === 'mine' && !isLoggedIn ? (
+      {needsLoginForMine ? (
         <EmptyBox>로그인하면 내 신청을 볼 수 있어요</EmptyBox>
       ) : (
         <RequestList>
@@ -118,9 +123,9 @@ function NewsletterRequestBoardPage() {
           ))}
         </RequestList>
       )}
-      {!isLoading && visibleRequests.length === 0 && (
+      {isEmpty && (
         <EmptyBox>
-          {tab === 'mine'
+          {isMineTab
             ? '아직 신청한 뉴스레터가 없어요'
             : '아직 신청된 뉴스레터가 없어요. 첫 신청을 남겨 보세요'}
         </EmptyBox>

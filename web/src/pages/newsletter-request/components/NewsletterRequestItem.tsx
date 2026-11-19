@@ -2,11 +2,11 @@ import styled from '@emotion/styled';
 import {
   getRequestCount,
   NEWSLETTER_REQUEST_STATUS_LABELS,
-} from '@/types/newsletterRequest';
+} from '../utils/newsletterRequestDisplay';
 import type {
   NewsletterRequest,
   NewsletterRequestStatus,
-} from '@/types/newsletterRequest';
+} from '@/apis/newsletterRequests/newsletterRequests.api';
 import type { Theme } from '@emotion/react';
 import HeartFilledIcon from '#/assets/svg/heart-filled.svg';
 import HeartIcon from '#/assets/svg/heart.svg';

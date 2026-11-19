@@ -5,12 +5,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useRef, useState } from 'react';
 import DoneTimeline from './DoneTimeline';
-import DuplicateRequestSheet from './DuplicateRequestSheet';
+import DuplicateRequestSheet, {
+  type DuplicateRelation,
+} from './DuplicateRequestSheet';
 import FunnelLayout from './FunnelLayout';
 import FunnelTitle from './FunnelTitle';
 import NameSuggestionList from './NameSuggestionList';
 import useCreateNewsletterRequestMutation from '../hooks/useCreateNewsletterRequestMutation';
 import useToggleNewsletterRequestLikeMutation from '../hooks/useToggleNewsletterRequestLikeMutation';
+import { getRequestCount } from '../utils/newsletterRequestDisplay';
 import {
   isValidNewsletterUrl,
   toAbsoluteUrl,
@@ -20,11 +23,10 @@ import { queries } from '@/apis/queries';
 import InputField from '@/components/InputField/InputField';
 import RequireLoginCard from '@/components/RequireLoginCard/RequireLoginCard';
 import { useAuth } from '@/contexts/AuthContext';
-import { getRequestCount } from '@/types/newsletterRequest';
 import type {
   NewsletterRequest,
   NewsletterSuggestion,
-} from '@/types/newsletterRequest';
+} from '@/apis/newsletterRequests/newsletterRequests.api';
 import type { ChangeEvent } from 'react';
 import CheckIcon from '#/assets/svg/check.svg';
 import ClockIcon from '#/assets/svg/clock.svg';
@@ -41,6 +43,15 @@ type DuplicateTarget = {
   id: number;
   name: string;
   requestCount: number;
+  relation: DuplicateRelation;
+};
+
+const toRelation = (
+  request: Pick<NewsletterRequest, 'liked' | 'mine'> | undefined,
+): DuplicateRelation => {
+  if (request?.mine) return 'mine';
+  if (request?.liked) return 'liked';
+  return 'none';
 };
 
 const formatElapsed = (milliseconds: number) => {
@@ -111,6 +122,7 @@ const NewsletterRequestFunnel = () => {
       id: request.id,
       name: request.name,
       requestCount: getRequestCount(request),
+      relation: toRelation(request),
     });
   };
 
@@ -158,6 +170,7 @@ const NewsletterRequestFunnel = () => {
           id: check.newsletterRequestId,
           name: found?.name ?? name,
           requestCount: found ? getRequestCount(found) : 1,
+          relation: toRelation(found),
         });
         return;
       }
@@ -179,11 +192,15 @@ const NewsletterRequestFunnel = () => {
   };
 
   const handleLike = () => {
-    if (!duplicateTarget) return;
+    if (!duplicateTarget || duplicateTarget.relation !== 'none') return;
     toggleLike({
       newsletterRequestId: duplicateTarget.id,
       liked: false,
     });
+  };
+
+  const goToMyRequests = () => {
+    navigate({ to: BOARD_PATH, search: { tab: 'mine' } });
   };
 
   if (!isLoggedIn) {
@@ -213,11 +230,7 @@ const NewsletterRequestFunnel = () => {
           />
         </DoneHeroWrapper>
         <DoneTimeline />
-        <PrimaryButton
-          onClick={() => navigate({ to: BOARD_PATH, search: { tab: 'mine' } })}
-        >
-          내 신청 보기
-        </PrimaryButton>
+        <PrimaryButton onClick={goToMyRequests}>내 신청 보기</PrimaryButton>
       </DoneContainer>
     );
   }
@@ -408,8 +421,10 @@ const NewsletterRequestFunnel = () => {
           closeModal={duplicateModal.closeModal}
           name={duplicateTarget.name}
           requestCount={duplicateTarget.requestCount}
+          relation={duplicateTarget.relation}
           isPending={isLiking}
           onLike={handleLike}
+          onViewMine={goToMyRequests}
         />
       )}
     </>

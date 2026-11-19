@@ -13,6 +13,11 @@ import {
 import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import {
+  DRAFT_COLLECT_STATUS_LABELS,
+  DRAFT_FIELD_LABELS,
+  NEWSLETTER_REQUEST_STATUS_LABELS,
+} from '@/pages/newsletter-requests/newsletterRequestLabels';
+import {
   Container,
   Divider,
   FormGroup,
@@ -23,13 +28,10 @@ import {
   Select,
   TextArea,
 } from '@/routes/_admin/newsletters/NewsletterFormStyles';
-import {
-  DRAFT_COLLECT_STATUS_LABELS,
-  DRAFT_FIELD_LABELS,
-  NEWSLETTER_REQUEST_STATUS_LABELS,
-  type NewsletterRequestDraft,
-  type UpdateNewsletterRequestDraftRequest,
-} from '@/types/newsletterRequest';
+import type {
+  NewsletterRequestDraft,
+  UpdateNewsletterRequestDraftBody,
+} from '@/apis/newsletterRequests/newsletterRequests.api';
 
 export const Route = createFileRoute('/_admin/newsletter-requests/$requestId')({
   component: NewsletterRequestReviewPage,
@@ -82,18 +84,24 @@ const toForm = (draft: NewsletterRequestDraft): DraftForm => ({
   previousNewsletterUrl: draft.previousNewsletterUrl ?? '',
 });
 
-// 빈 값은 보내지 않는다. 서버는 보낸 필드만 수정한다.
+const toNullable = (value: string) => value.trim() || null;
+
+// 초안 전체를 보낸다. 운영자가 비운 칸은 null로 보내 서버 값도 지운다.
 const toUpdateRequest = (
   form: DraftForm,
-): UpdateNewsletterRequestDraftRequest =>
-  Object.fromEntries(
-    Object.entries(form)
-      .filter(([, value]) => value.trim() !== '')
-      .map(([key, value]) => [
-        key,
-        key === 'categoryId' ? Number(value) : value.trim(),
-      ]),
-  );
+): UpdateNewsletterRequestDraftBody => ({
+  name: toNullable(form.name),
+  description: toNullable(form.description),
+  imageUrl: toNullable(form.imageUrl),
+  email: toNullable(form.email),
+  categoryId: form.categoryId ? Number(form.categoryId) : null,
+  mainPageUrl: toNullable(form.mainPageUrl),
+  subscribeUrl: toNullable(form.subscribeUrl),
+  issueCycle: toNullable(form.issueCycle),
+  sender: toNullable(form.sender),
+  subscribeMethod: toNullable(form.subscribeMethod),
+  previousNewsletterUrl: toNullable(form.previousNewsletterUrl),
+});
 
 function NewsletterRequestReviewPage() {
   const { requestId } = Route.useParams();
