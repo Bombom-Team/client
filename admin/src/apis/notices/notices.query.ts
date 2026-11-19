@@ -4,6 +4,7 @@ import {
   deleteNotice,
   getNoticeDetail,
   updateNotice,
+  setNoticeRepresentative,
 } from './notices.api';
 import type { GetNoticesParams } from './notices.api';
 
@@ -35,6 +36,9 @@ export const noticesQueries = {
     }),
     update: () => ({
       mutationFn: updateNotice,
+    }),
+    setRepresentative: () => ({
+      mutationFn: setNoticeRepresentative,
     }),
   },
 };

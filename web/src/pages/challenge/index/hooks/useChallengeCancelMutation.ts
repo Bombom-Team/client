@@ -1,7 +1,7 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { cancelChallengeApplication } from '@/apis/challenge/challenge.api';
 import { challengeQueries } from '@/apis/challenge/challenge.query';
-import { toast } from '@/components/Toast/utils/toastActions';
 
 interface UseChallengeCancelMutationProps {
   challengeId: number;

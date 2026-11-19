@@ -1,3 +1,4 @@
+import { getPlainText } from './tiptap';
 import type { PostDetail } from '@/pages/blog/types/post';
 
 const SITE_URL = 'https://www.bombom.news';
@@ -13,7 +14,7 @@ export const createBlogPostingSchema = (
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
-    description: post.content.slice(0, 200),
+    description: getPlainText(post.content).slice(0, 200),
     datePublished: post.publishedAt,
     url,
     mainEntityOfPage: {

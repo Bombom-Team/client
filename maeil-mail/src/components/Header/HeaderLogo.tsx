@@ -1,8 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
-import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
-import { useDevice } from '@bombom/shared/ui-web';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 
 const HeaderLogo = () => {
   const device = useDevice();

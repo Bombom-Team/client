@@ -1,3 +1,4 @@
+import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMemo } from 'react';
@@ -5,12 +6,9 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { useCaptcha } from '../../hooks/useCaptcha';
 import { useIssueCouponMutation } from '../../hooks/useIssueCouponMutation';
 import { ENV } from '@/apis/env';
-import Flex from '@/components/Flex';
-import Text from '@/components/Text';
 import { useCountdown } from '@/hooks/useCountdown';
-import { useDevice } from '@/hooks/useDevice';
 import type { QueueEntry } from '@/apis/event/event.api';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface ReadyStateProps {
   queueEntry: QueueEntry;

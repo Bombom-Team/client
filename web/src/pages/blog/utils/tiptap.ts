@@ -1,19 +1,5 @@
-import type { TiptapDoc, TiptapNode } from '../types/post';
-
-export const parseTiptapDoc = (content: string): TiptapDoc => {
-  const parsedContent = JSON.parse(content) as unknown;
-
-  if (
-    !parsedContent ||
-    typeof parsedContent !== 'object' ||
-    (parsedContent as TiptapDoc).type !== 'doc' ||
-    !Array.isArray((parsedContent as TiptapDoc).content)
-  ) {
-    throw new Error('유효한 Tiptap 문서가 아닙니다.');
-  }
-
-  return parsedContent as TiptapDoc;
-};
+import { validateTiptapDoc } from '@/utils/tiptap/validateTiptapDoc';
+import type { TiptapNode } from '@/utils/tiptap/types';
 
 const CHARACTER_PER_MINUTE = 500;
 
@@ -31,7 +17,7 @@ const countNodeTextLength = (node: TiptapNode): number => {
 };
 
 export const getReadingTimeMinutes = (content: string) => {
-  const doc = parseTiptapDoc(content);
+  const doc = validateTiptapDoc(content);
   const textLength = doc.content.reduce(
     (total, node) => total + countNodeTextLength(node),
     0,
@@ -39,4 +25,19 @@ export const getReadingTimeMinutes = (content: string) => {
 
   if (textLength === 0) return 0;
   return Math.ceil(textLength / CHARACTER_PER_MINUTE);
+};
+
+const collectNodeText = (node: TiptapNode): string => {
+  if (node.text) return node.text;
+  if (node.type === 'hardBreak') return ' ';
+
+  const childText = (node.content ?? []).map(collectNodeText).join('');
+  // text가 아닌 노드는 문단·목록 같은 블록이므로 다음 블록과 붙지 않게 공백을 둡니다.
+  return `${childText} `;
+};
+
+export const getPlainText = (content: string) => {
+  const doc = validateTiptapDoc(content);
+
+  return doc.content.map(collectNodeText).join('').replace(/\s+/g, ' ').trim();
 };

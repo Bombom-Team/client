@@ -1,10 +1,8 @@
 import { theme } from '@bombom/shared/theme';
+import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
-import Text from '@/components/Text';
-import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import ClockIcon from '#/assets/svg/clock.svg';
 
 interface PostMetadataProps {

@@ -1,8 +1,8 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import ViewAllCommentsButton from './ViewAllCommentsButton';
 import { useSubmitDailyGuideCommentMutation } from '../../index/hooks/useSubmitDailyGuideComment';
-import Button from '@/components/Button/Button';
 import type { components } from '@/types/openapi';
 
 type MyComment = components['schemas']['TodayDailyGuideResponse']['myComment'];

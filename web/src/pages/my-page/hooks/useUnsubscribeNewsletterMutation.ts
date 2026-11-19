@@ -1,7 +1,7 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postNewsletterUnsubscribe } from '@/apis/members/members.api';
 import { queries } from '@/apis/queries';
-import { toast } from '@/components/Toast/utils/toastActions';
 import type { PostNewsletterUnsubscribeParams } from '@/apis/members/members.api';
 
 export const useUnsubscribeNewsletterMutation = () => {

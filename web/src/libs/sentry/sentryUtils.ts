@@ -23,6 +23,16 @@ export const captureMutationError = ({ error }: { error: unknown }) => {
   captureException(error);
 };
 
+export const captureChunkLoadError = ({
+  error,
+  isAutoReload,
+}: {
+  error: unknown;
+  isAutoReload: boolean;
+}) => {
+  captureException(error, { tags: { auto_reload: isAutoReload } });
+};
+
 export const captureNotFound = ({ path }: { path: string }) => {
   captureMessage('Route not found', {
     tags: {

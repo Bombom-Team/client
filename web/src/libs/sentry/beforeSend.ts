@@ -1,9 +1,12 @@
 import { ApiError } from '@bombom/shared/apis';
 import {
+  type Breadcrumb,
+  type BreadcrumbHint,
   type ErrorEvent,
   type EventHint,
   type SeverityLevel,
 } from '@sentry/react';
+import { isChunkLoadError } from './errorFilters';
 
 const RENDER_CRASH_MECHANISM = 'auto.function.react.error_boundary';
 
@@ -25,6 +28,18 @@ const isP1Status = (status: number) => status >= 500 || status === 401;
 const isNotFound = (event: ErrorEvent) =>
   event.tags?.error_type === 'NOT_FOUND';
 
+export const beforeBreadcrumb = (
+  breadcrumb: Breadcrumb,
+  hint?: BreadcrumbHint,
+): Breadcrumb | null => {
+  const containsApiError =
+    breadcrumb.category === 'console' &&
+    Array.isArray(hint?.input) &&
+    hint.input.some((value) => value instanceof ApiError);
+
+  return containsApiError ? null : breadcrumb;
+};
+
 const classifyError = (event: ErrorEvent, hint: EventHint): Classification => {
   if (isNotFound(event)) {
     return {
@@ -43,6 +58,13 @@ const classifyError = (event: ErrorEvent, hint: EventHint): Classification => {
         priority: isP1 ? 'P1' : 'P2',
       },
       level: isP1 ? 'error' : 'warning',
+    };
+  }
+
+  if (isChunkLoadError(hint.originalException)) {
+    return {
+      tags: { error_type: 'CHUNK_LOAD', priority: 'P2' },
+      level: 'warning',
     };
   }
 

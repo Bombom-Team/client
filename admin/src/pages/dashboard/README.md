@@ -2,7 +2,7 @@
 
 ## 현재 연결 범위
 
-기존 `GET /dashboard/stats`의 확장 응답과 DTO에서 생성된 `DashboardStatsResponse`를 사용한다.
+기존 `GET /dashboard/stats`의 확장 응답과 OpenAPI 생성 타입의 `DashboardStatsResponse`를 사용한다.
 신규 API, 생성 타입 수동 수정, 주기적 폴링, 브라우저 저장은 추가하지 않는다.
 
 - 오늘/최근 7일/이번 달 가입을 먼저 배치하고, 하루 평균은 최근 7일 합계 ÷ 7로 계산한다.
@@ -23,16 +23,6 @@
 
 회원·가입·오늘 활동 구현과 탈퇴 집계의 남은 제한을 구분해 검토한다.
 목표·운영 계획·과거 활동 표·추가 DB 테이블은 이번 범위가 아니다.
-
-## 응답 타입 재생성
-
-배포 전 계약은 admin 백엔드의 실제 응답 DTO에서 생성한다. 전체 API 타입 파일은 수동 수정하지 않는다.
-
-1. 백엔드에서 `./gradlew test --tests '*DashboardSchemaTest' -x installGitHooks -x spotlessApply`를 실행한다.
-2. 생성된 `build/openapi/dashboard.json`을 client의 `admin/openapi/dashboard.json`으로 복사한다.
-3. client 루트에서 `pnpm --filter @bombom/admin generate-dashboard-types`를 실행한다.
-
-`admin/src/types/dashboard.gen.ts`와 계약 JSON은 생성 결과를 함께 커밋한다.
 
 ## 시각 기준
 

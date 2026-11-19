@@ -16,8 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # PR 작성자를 Assignee로 자동 설정
+      # PR 작성자를 Assignee로 자동 설정 (봇 제외)
       - name: Auto Assign PR Author
+        if: github.event.pull_request.user.type != 'Bot'
         uses: actions/github-script@v6
         with:
           script: |

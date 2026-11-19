@@ -1,6 +1,6 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { openExternalLink } from '@/utils/externalLink';
 import type { SubscribedNewsletterResponse } from '@/apis/members/members.api';
@@ -141,8 +141,7 @@ const NewsletterName = styled.h3`
   overflow: hidden;
 
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t6SemiBold};
   white-space: nowrap;
 
   text-overflow: ellipsis;

@@ -1,10 +1,8 @@
+import { Button, Flex, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import Flex from '@/components/Flex';
-import { useDevice } from '@/hooks/useDevice';
 
 const FIRST_DAY_INDEX = 1;
 

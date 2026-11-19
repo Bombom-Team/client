@@ -8,7 +8,10 @@ import type { SuppressMenuItem } from 'react-native-webview/lib/WebViewTypes';
 import { useAuth } from '../../contexts/AuthContext';
 import { useWebView } from '../../contexts/WebViewContext';
 import useAndroidNavigationState from '../../hooks/useAndroidNavigationState';
-import { WebToRNMessage } from '@bombom/shared/webview';
+import type {
+  WebToRNMessage,
+  WebViewLoginFailure,
+} from '@bombom/shared/webview';
 import { LoginScreenOverlay } from '../login/LoginScreenOverlay';
 
 import * as WebBrowser from 'expo-web-browser';
@@ -20,7 +23,7 @@ import { ENV } from '@/constants/env';
 import { WEBVIEW_USER_AGENT } from '@/constants/webview';
 import { goToSystemPermission, updateMemberId } from '@/utils/notification';
 import useNotification from '@/hooks/useNotification';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDeviceInfo } from '@/hooks/useDeviceInfo';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import ForceUpdateScreen from './ForceUpdateScreen';
@@ -78,10 +81,21 @@ export const MainScreen = () => {
   const { showWebViewLogin, showLogin, hideLogin } = useAuth();
   const { webViewRef } = useWebView();
   const { sendDeviceInfoToWeb } = useDeviceInfo();
-  const webViewLoadEndCleanupRef = useRef<() => void>(null);
+  const [webLoginFailure, setWebLoginFailure] =
+    useState<WebViewLoginFailure | null>(null);
+  const handleWebLoginFailureHandled = useCallback(() => {
+    setWebLoginFailure(null);
+  }, []);
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
-  const { onNotification, registerFCMToken } = useNotification();
+  const reloadWebView = useCallback(() => webViewRef.current?.reload(), [webViewRef]);
+  const {
+    onNotification,
+    registerFCMToken,
+    handleWebLoadStart,
+    handleWebReady,
+    handleWebLoadError,
+  } = useNotification(reloadWebView);
   const { isVersionCheckCompleted, isForceUpdateRequired, openStore } =
     useForceUpdate();
   const { sendPermissionToWeb } = useNotificationPermission({
@@ -90,24 +104,15 @@ export const MainScreen = () => {
 
   const handleWebViewLoadEnd = () => {
     console.log('WebView 로드 완료');
-    if (webViewLoadEndCleanupRef.current) {
-      webViewLoadEndCleanupRef.current();
-    }
-
     SplashScreen.hide();
-    webViewLoadEndCleanupRef.current = onNotification();
   };
 
-  useEffect(() => {
-    return () => {
-      webViewLoadEndCleanupRef.current?.();
-    };
-  }, []);
+  useEffect(() => onNotification(), [onNotification]);
 
   const handleWebViewMessage = (event: WebViewMessageEvent) => {
     try {
       const message: WebToRNMessage = JSON.parse(event.nativeEvent.data);
-      console.log('WebView에서 메시지 수신:', message);
+      console.log('WebView에서 메시지 수신:', message.type);
 
       switch (message.type) {
         case 'SHOW_LOGIN_SCREEN':
@@ -115,20 +120,30 @@ export const MainScreen = () => {
           break;
 
         case 'LOGIN_SUCCESS':
-          console.log('웹뷰에서 로그인 성공 알림 수신:', message.payload);
+          console.log('웹뷰에서 로그인 성공 알림 수신');
           hideLogin();
           break;
 
         case 'LOGIN_FAILED':
-          console.log('웹뷰에서 로그인 실패 알림 수신:', message.payload);
-          hideLogin();
+          console.log('웹뷰에서 로그인 실패 알림 수신');
+          // 실패 후에도 로그인 화면을 유지해 재시도나 다른 로그인 방법을 선택할 수 있게 한다.
+          showLogin();
+          setWebLoginFailure(message.payload ?? {});
           break;
 
         case 'OPEN_BROWSER':
           if (message.payload?.url) {
-            console.log('외부 브라우저 열기:', message.payload.url);
+            try {
+              console.log('외부 브라우저 열기:', {
+                hostname: new URL(message.payload.url).hostname,
+              });
+            } catch {
+              console.log('외부 브라우저 열기: URL 형식 확인 필요');
+            }
             WebBrowser.openBrowserAsync(message.payload.url, {
-              presentationStyle: WebBrowser.WebBrowserPresentationStyle.POPOVER,
+              // iPad에서 POPOVER는 화면 하단의 작은 창으로 열려 페이지가 보이지 않는다.
+              presentationStyle:
+                WebBrowser.WebBrowserPresentationStyle.FULL_SCREEN,
               dismissButtonStyle: 'close',
             });
           }
@@ -150,6 +165,10 @@ export const MainScreen = () => {
           sendPermissionToWeb();
           break;
 
+        case 'WEB_READY':
+          handleWebReady();
+          break;
+
         case 'SHOW_NOTIFICATION_PERMISSION_SETTING':
           goToSystemPermission();
           break;
@@ -162,11 +181,11 @@ export const MainScreen = () => {
           break;
 
         default:
-          console.log('알수 없는 메시지 수신:', message);
+          console.log('알수 없는 메시지 수신');
           break;
       }
-    } catch (error) {
-      console.error('WebView 메시지 파싱 실패:', error);
+    } catch {
+      console.error('WebView 메시지 파싱 실패');
     }
   };
 
@@ -189,6 +208,9 @@ export const MainScreen = () => {
             Platform.OS === 'ios' ? IOS_SUPPRESSED_MENU_ITEMS : undefined
           }
           scalesPageToFit={false}
+          // New Architecture의 react-native-webview 13.x는 값을 지정하지 않으면 iOS 감속률이 0이 되어 관성 스크롤이 사라진다.
+          // Android는 문자열 값을 변환하지 못해 오류가 나므로 iOS에만 전달한다.
+          decelerationRate={Platform.OS === 'ios' ? 'normal' : undefined}
           automaticallyAdjustsScrollIndicatorInsets={false}
           injectedJavaScript={`
             const rootElement = document.documentElement;
@@ -222,24 +244,29 @@ export const MainScreen = () => {
           originWhitelist={['*']}
           onMessage={handleWebViewMessage}
           onNavigationStateChange={handleNavigationStateChange}
+          onLoadStart={handleWebLoadStart}
           onLoadEnd={handleWebViewLoadEnd}
-          onContentProcessDidTerminate={(syntheticEvent) => {
-            const { nativeEvent } = syntheticEvent;
-            console.warn('WebView Content Process Did Terminate:', nativeEvent);
+          onContentProcessDidTerminate={() => {
+            console.warn('WebView Content Process Did Terminate');
             webViewRef.current?.reload();
           }}
-          onError={(syntheticEvent) => {
-            const { nativeEvent } = syntheticEvent;
-            console.error('WebView Error:', nativeEvent);
+          onError={() => {
+            console.error('WebView Error');
+            handleWebLoadError();
           }}
           onHttpError={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent;
-            console.error('WebView HTTP Error:', nativeEvent);
+            console.error('WebView HTTP Error:', nativeEvent.statusCode);
           }}
         />
       </WebViewContainer>
 
-      <LoginScreenOverlay visible={showWebViewLogin} onClose={hideLogin} />
+      <LoginScreenOverlay
+        visible={showWebViewLogin}
+        onClose={hideLogin}
+        webLoginFailure={webLoginFailure}
+        onWebLoginFailureHandled={handleWebLoginFailureHandled}
+      />
     </Container>
   );
 };

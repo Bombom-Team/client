@@ -1,6 +1,5 @@
+import { Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '../Button/Button';
-import { useDevice } from '@/hooks/useDevice';
 import CloseIcon from '#/assets/svg/close.svg';
 
 interface AnnounceBarProps {

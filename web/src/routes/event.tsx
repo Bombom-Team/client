@@ -1,7 +1,6 @@
+import { Modal, useModal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
 import EventFooter from '@/pages/event/components/EventFooter';
 import EventGuide from '@/pages/event/components/EventGuide';
 import EventHero from '@/pages/event/components/EventHero';

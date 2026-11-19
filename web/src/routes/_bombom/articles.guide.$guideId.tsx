@@ -1,9 +1,9 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
 import FloatingActionPanel from '@/components/FloatingActionPanel/FloatingActionPanel';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
 import Spacing from '@/components/Spacing/Spacing';
-import { useDevice } from '@/hooks/useDevice';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
 import { useScrollThreshold } from '@/hooks/useScrollThreshold';
 import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';

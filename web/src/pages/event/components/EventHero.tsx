@@ -1,14 +1,16 @@
+import {
+  Flex,
+  useDevice,
+  sendMessageToRN,
+  isWebView,
+} from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import EventNotificationButton from './EventNotificationButton';
 import { formatEventDateTime } from '../utils/date';
-import Flex from '@/components/Flex';
 import { useAuth } from '@/contexts/AuthContext';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface EventHeroProps {
   onApply: () => void;
@@ -172,8 +174,7 @@ const HeroBadge = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
-  font-weight: 700;
+    device === 'mobile' ? theme.fonts.t6Bold : theme.fonts.t7Bold};
   text-align: center;
 
   transform: rotate(-2deg);
@@ -229,8 +230,7 @@ const InfoCardBadge = styled.div<{ device: Device }>`
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t5Regular : theme.fonts.t6Bold};
-  font-weight: 700;
+    device === 'mobile' ? theme.fonts.t5Bold : theme.fonts.t6Bold};
   text-align: center;
   white-space: nowrap;
 
@@ -267,8 +267,7 @@ const InfoValue = styled.p<{ device: Device }>`
 
   color: ${({ theme }) => theme.colors.black};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t6Regular : theme.fonts.t7Regular};
-  font-weight: 700;
+    device === 'mobile' ? theme.fonts.t6Bold : theme.fonts.t7Bold};
   text-align: left;
 `;
 

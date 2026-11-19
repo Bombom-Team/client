@@ -1,7 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import Tab from '@/components/Tab/Tab';
-import { useDevice, type Device } from '@/hooks/useDevice';
 import type { TabProps } from '@/components/Tab/Tab';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface DateTabProps {
   dateString: string;

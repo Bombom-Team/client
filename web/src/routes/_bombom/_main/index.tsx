@@ -1,16 +1,15 @@
+import { useDevice, isWebView } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import ReadingKingLeaderboard from '../../../pages/recommend/components/ReadingKingLeaderboard/ReadingKingLeaderboard';
 import { queries } from '@/apis/queries';
-import { useDevice } from '@/hooks/useDevice';
 import AppInstallSection from '@/pages/recommend/components/AppInstallSection/AppInstallSection';
 import ChallengeSection from '@/pages/recommend/components/ChallengeSection/ChallengeSection';
 import NoticeAnnounceBar from '@/pages/recommend/components/NoticeAnnounceBar/NoticeAnnounceBar';
 import SlideCardList from '@/pages/recommend/components/SlideCardList/SlideCardList';
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
-import { isWebView } from '@/utils/device';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 export const Route = createFileRoute('/_bombom/_main/')({
   head: () => ({
@@ -18,21 +17,24 @@ export const Route = createFileRoute('/_bombom/_main/')({
       {
         title: '봄봄 | 뉴스레터 추천',
       },
+      { property: 'og:url', content: 'https://www.bombom.news' },
     ],
+    links: [{ rel: 'canonical', href: 'https://www.bombom.news' }],
   }),
   component: Index,
 });
 
 function Index() {
   const device = useDevice();
-  const { data: notices } = useQuery(queries.notices());
-
-  const recentNotice = notices?.content || [];
-  const firstNotice = recentNotice[0];
+  const { data: representativeNotice } = useQuery(
+    queries.representativeNotice(),
+  );
 
   return (
     <Container device={device}>
-      {firstNotice && <NoticeAnnounceBar notice={firstNotice} />}
+      {representativeNotice && (
+        <NoticeAnnounceBar notice={representativeNotice} />
+      )}
 
       <MainContent device={device}>
         <MainSection device={device}>

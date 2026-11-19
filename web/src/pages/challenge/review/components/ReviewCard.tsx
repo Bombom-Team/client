@@ -1,9 +1,6 @@
 import { theme } from '@bombom/shared';
+import { Button, Flex, Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '@/components/Button/Button';
-import Flex from '@/components/Flex/Flex';
-import Text from '@/components/Text/Text';
-import { useDevice } from '@/hooks/useDevice';
 import type { Review } from '../types/review';
 import EditIcon from '#/assets/svg/edit.svg';
 

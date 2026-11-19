@@ -1,9 +1,9 @@
 import { myPageQueries } from '@bombom/shared/apis/mypage';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { queries } from '@/apis/queries';
-import { useDevice } from '@/hooks/useDevice';
 import DottedRankGraph from '@/pages/my-page/components/ReadingActivityStats/DottedRankGraph';
 import MonthlyReport from '@/pages/my-page/components/ReadingActivityStats/MonthlyReport';
 import CrownIcon from '#/assets/svg/crown.svg';

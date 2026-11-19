@@ -1,5 +1,5 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import Skeleton from '@/components/Skeleton/Skeleton';
-import { useDevice } from '@/hooks/useDevice';
 
 const CommentCardSkeleton = () => {
   const device = useDevice();

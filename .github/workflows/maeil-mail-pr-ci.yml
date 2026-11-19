@@ -6,6 +6,7 @@ on:
       - 'maeil-mail/**'
       - 'shared/**'
       - '.github/workflows/maeil-mail-*.yml'
+      - '.nvmrc'
       - 'pnpm-lock.yaml'
       - 'package.json'
 

@@ -1,4 +1,4 @@
-import Text from './Text';
+import { Text } from '@bombom/shared/ui-web';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
 const meta = {

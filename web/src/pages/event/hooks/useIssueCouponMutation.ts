@@ -1,9 +1,9 @@
 import { ApiError } from '@bombom/shared/apis';
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUEUE_STATUS_TYPE } from '../constants/constants';
 import { postIssueCoupon } from '@/apis/event/event.api';
 import { eventQueries } from '@/apis/event/event.query';
-import { toast } from '@/components/Toast/utils/toastActions';
 import type { CouponName } from '@/apis/event/event.api';
 
 interface UseIssueCouponMutationParams {

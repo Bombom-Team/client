@@ -1,9 +1,9 @@
 import { theme } from '@bombom/shared/theme';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import Badge from '@/components/Badge/Badge';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
-import { useDevice } from '@/hooks/useDevice';
 import { useSearchParamState } from '@/hooks/useSearchParamState';
 import type {
   BookmarkFilters,

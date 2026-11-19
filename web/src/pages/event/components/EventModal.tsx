@@ -1,8 +1,8 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useEffect, useRef } from 'react';
 import QueueStatus from './QueueStatus/QueueStatus';
 import { QUEUE_STATUS_TYPE } from '../constants/constants';
-import Button from '@/components/Button/Button';
 import type { QueueEntry } from '@/apis/event/event.api';
 
 interface EventModalProps {

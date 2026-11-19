@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import {
   ARTICLE_DETAIL,
+  LONG_URL_ARTICLE_DETAIL,
+  LONG_URL_ARTICLE_ID,
   MAEIL_MAIL_ARTICLE_DETAIL,
   MAEIL_MAIL_ARTICLE_ID,
 } from '../datas/articleDetail';
@@ -17,6 +19,21 @@ import { ENV } from '@/apis/env';
 
 const baseURL = ENV.baseUrl;
 let ARTICLES = [...ARTICLE_FONT_SIZE_ARTICLES, ...ORIGINAL_ARTICLES];
+// 읽음 처리한 글은 새로고침 전까지 상세 조회에서도 읽음으로 내려준다
+const readArticleIds = new Set<number>();
+
+const sortArticlesByArrivedDateTime = (
+  articles: typeof ARTICLES,
+  direction: 'ASC' | 'DESC',
+) => {
+  const sign = direction === 'ASC' ? 1 : -1;
+  return [...articles].sort(
+    (a, b) =>
+      sign *
+      (new Date(a.arrivedDateTime ?? 0).getTime() -
+        new Date(b.arrivedDateTime ?? 0).getTime()),
+  );
+};
 
 export const articleHandlers = [
   // 뉴스레터 통계
@@ -85,36 +102,51 @@ export const articleHandlers = [
 
   // 아티클 상세
   http.get(`${baseURL}/articles/:id`, ({ params }) => {
-    const { id } = params;
+    const articleId = Number(params.id);
     const articleFontSizeMock = ARTICLE_FONT_SIZE_MOCKS.find(
-      ({ articleId }) => articleId === Number(id),
+      (mock) => mock.articleId === articleId,
     );
 
-    if (articleFontSizeMock) {
-      return HttpResponse.json(articleFontSizeMock.detail);
-    }
+    const getDetail = () => {
+      if (articleFontSizeMock) return articleFontSizeMock.detail;
+      if (articleId === MAEIL_MAIL_ARTICLE_ID) return MAEIL_MAIL_ARTICLE_DETAIL;
+      if (articleId === LONG_URL_ARTICLE_ID) return LONG_URL_ARTICLE_DETAIL;
+      return ARTICLE_DETAIL;
+    };
+    const detail = getDetail();
 
-    if (Number(id) === MAEIL_MAIL_ARTICLE_ID) {
-      return HttpResponse.json(MAEIL_MAIL_ARTICLE_DETAIL);
-    }
-
-    return HttpResponse.json(ARTICLE_DETAIL);
+    return HttpResponse.json(
+      readArticleIds.has(articleId) ? { ...detail, isRead: true } : detail,
+    );
   }),
 
   // 아티클 읽음 처리
-  http.patch(`${baseURL}/articles/:id/read`, () => {
+  http.patch(`${baseURL}/articles/:id/read`, ({ params }) => {
+    const articleId = Number(params.id);
+    readArticleIds.add(articleId);
+    ARTICLES = ARTICLES.map((article) =>
+      article.articleId === articleId ? { ...article, isRead: true } : article,
+    );
+
     return new HttpResponse(null, { status: 204 });
   }),
 
   // 아티클 목록
-  http.get(`${baseURL}/articles`, () => {
+  http.get(`${baseURL}/articles`, ({ request }) => {
+    const url = new URL(request.url);
+    const [, direction] = (url.searchParams.get('sort') ?? '').split(',');
+    const sortedArticles = sortArticlesByArrivedDateTime(
+      ARTICLES,
+      direction === 'ASC' ? 'ASC' : 'DESC',
+    );
+
     return HttpResponse.json({
       totalPages: 1,
-      totalElements: ARTICLES.length,
+      totalElements: sortedArticles.length,
       first: true,
       last: true,
-      size: ARTICLES.length,
-      content: ARTICLES,
+      size: sortedArticles.length,
+      content: sortedArticles,
       number: 0,
       sort: {
         empty: true,

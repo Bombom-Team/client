@@ -1,12 +1,9 @@
+import { Button, Modal, toast, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { getMaeilMailAnswerUrl } from '../../constants/maeilMail';
 import { useMaeilMailAnswerMutation } from '../../hooks/useMaeilMailAnswerMutation';
-import Button from '@/components/Button/Button';
-import Modal from '@/components/Modal/Modal';
-import { toast } from '@/components/Toast/utils/toastActions';
-import { useDevice } from '@/hooks/useDevice';
 import type { ChangeEvent } from 'react';
 
 interface MaeilMailAnswerModalProps {

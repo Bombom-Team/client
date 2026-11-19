@@ -1,6 +1,6 @@
+import { ChevronIcon } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useRouter } from '@tanstack/react-router';
-import ChevronIcon from '@/components/icons/ChevronIcon';
 import type { ReactNode } from 'react';
 
 interface MobileDetailHeaderProps {

@@ -8,6 +8,7 @@ import { articleHandlers } from './handlers/articles';
 import { blogHandlers } from './handlers/blog';
 import { bookmarkHandlers } from './handlers/bookmark';
 import { challengeHandlers } from './handlers/challenge';
+import { inquiryHandlers } from './handlers/inquiry';
 import { maeilMailHandlers } from './handlers/maeilMail';
 import { membersHandlers } from './handlers/members';
 import { newsletterDetailHandlers } from './handlers/newsletterDetail';
@@ -17,6 +18,7 @@ import type { Highlight } from '@/pages/detail/types/highlight';
 const baseURL = ENV.baseUrl;
 
 const HIGHLIGHTS: Highlight[] = [];
+let lastHighlightId = 0;
 
 export const handlers = [
   // 뉴스레터 목록
@@ -59,42 +61,63 @@ export const handlers = [
   // ------------------ 하이라이트 CRUD ------------------
 
   // 전체 조회
-  http.get(`${baseURL}/highlights`, () => {
+  http.get(`${baseURL}/highlights`, ({ request }) => {
+    const { searchParams } = new URL(request.url);
+    const articleId = searchParams.get('articleId');
+    // 실제 서버처럼 최신순으로, size를 주지 않으면 10개씩 나눠 준다.
+    const page = Number(searchParams.get('page') ?? 0);
+    const size = Number(searchParams.get('size') ?? 10);
+    const filtered = (
+      articleId
+        ? HIGHLIGHTS.filter((h) => h.articleId === Number(articleId))
+        : [...HIGHLIGHTS]
+    ).reverse();
+    const content = filtered.slice(page * size, (page + 1) * size);
+    const totalPages = Math.ceil(filtered.length / size);
+
     return HttpResponse.json({
-      content: [...HIGHLIGHTS],
+      content,
       pageable: {
-        pageNumber: 0,
-        pageSize: 10,
+        pageNumber: page,
+        pageSize: size,
         sort: {
           empty: false,
           sorted: true,
           unsorted: false,
         },
-        offset: 0,
+        offset: page * size,
         paged: true,
         unpaged: false,
       },
-      totalElements: 2,
-      totalPages: 1,
-      last: true,
-      size: 10,
-      number: 0,
+      totalElements: filtered.length,
+      totalPages,
+      last: page >= totalPages - 1,
+      size,
+      number: page,
       sort: {
         empty: false,
         sorted: true,
         unsorted: false,
       },
-      numberOfElements: 2,
-      first: true,
-      empty: false,
+      numberOfElements: content.length,
+      first: page === 0,
+      empty: content.length === 0,
     });
+  }),
+
+  // 글의 하이라이트 전체 조회
+  http.get(`${baseURL}/articles/:articleId/highlights`, ({ params }) => {
+    return HttpResponse.json(
+      HIGHLIGHTS.filter((h) => h.articleId === Number(params.articleId)),
+    );
   }),
 
   // 생성
   http.post(`${baseURL}/highlights`, async ({ request }) => {
     const newHighlight = (await request.json()) as Highlight;
-    // ID가 없는 경우 임의 ID 생성
-    newHighlight.id = HIGHLIGHTS.length + 1;
+    // 지운 뒤에도 id가 겹치지 않게 증가하는 값을 쓴다.
+    lastHighlightId += 1;
+    newHighlight.id = lastHighlightId;
     HIGHLIGHTS.push(newHighlight);
     return HttpResponse.json(newHighlight, { status: 201 });
   }),
@@ -156,4 +179,5 @@ export const handlers = [
   ...challengeHandlers,
   ...queueEntryHandlers,
   ...maeilMailHandlers,
+  ...inquiryHandlers,
 ];

@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { useDevice } from '@bombom/shared/ui-web';
 import {
   Container,
   IconWrapper,
@@ -7,7 +8,6 @@ import {
   TitleWrapper,
 } from './NewsletterFilter';
 import TabSkeleton from '@/components/Tab/TabSkeleton';
-import { useDevice } from '@/hooks/useDevice';
 import NewsIcon from '#/assets/svg/news.svg';
 
 const SKELETON_LENGTH = {

@@ -1,7 +1,7 @@
 import { monthlyReportQueries } from '@bombom/shared/apis/monthlyreport';
+import { Text } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import Text from '@/components/Text';
 
 interface Props {
   year: number;

@@ -3,7 +3,7 @@ import { ThemeProvider } from '@emotion/react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import MobileDateFilter from './MobileDateFilter';
 
-jest.mock('@/hooks/useDevice', () => ({
+jest.mock('@bombom/shared/ui-web', () => ({
   useDevice: () => 'mobile',
 }));
 

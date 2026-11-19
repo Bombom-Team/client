@@ -1,10 +1,10 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect } from 'react';
 import LoginCard from '../pages/login/components/LoginCard';
-import { useDevice } from '@/hooks/useDevice';
+import LoginFailureModal from '../pages/login/components/LoginFailureModal';
 import { getResponsiveValue } from '@/utils/responsive';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 export const Route = createFileRoute('/login')({
   validateSearch: (search: Record<string, unknown>): { redirect?: string } => ({
@@ -27,20 +27,11 @@ export const Route = createFileRoute('/login')({
 function Login() {
   const device = useDevice();
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.has('error')) {
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, '', cleanUrl);
-
-      alert('로그인에 실패했습니다. 다시 시도해주세요.');
-    }
-  }, []);
-
   return (
     <Container device={device}>
       <ContentWrapper device={device}>
         <LoginCard />
+        <LoginFailureModal />
       </ContentWrapper>
     </Container>
   );

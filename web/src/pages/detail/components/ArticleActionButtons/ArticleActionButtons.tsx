@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared/theme';
+import { ChevronIcon } from '@bombom/shared/ui-web';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import FloatingActionPanel from '@/components/FloatingActionPanel/FloatingActionPanel';
-import ChevronIcon from '@/components/icons/ChevronIcon';
 import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';
 import type { ArticleFontSizePercentage } from '../../constants/articleFontSize';
 import BookmarkActiveIcon from '#/assets/svg/bookmark-active.svg';

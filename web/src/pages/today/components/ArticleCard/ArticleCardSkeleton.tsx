@@ -1,3 +1,4 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import {
   Container,
@@ -6,7 +7,6 @@ import {
   ThumbnailWrapper,
 } from './ArticleCard';
 import Skeleton from '@/components/Skeleton/Skeleton';
-import { useDevice } from '@/hooks/useDevice';
 
 const ArticleCardSkeleton = () => {
   const device = useDevice();

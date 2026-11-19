@@ -1,8 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import Badge from '@/components/Badge/Badge';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import { useDevice } from '@/hooks/useDevice';
 import { formatDate } from '@/utils/date';
 import type { components } from '@/types/openapi';
 import type { ComponentProps } from 'react';
@@ -132,6 +132,7 @@ export const Container = styled(Link, {
 
 export const InfoWrapper = styled.div<{ isMobile: boolean }>`
   width: 100%;
+  min-width: 0;
 
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '8px' : '12px')};
@@ -146,11 +147,11 @@ export const Title = styled.h2<{ isMobile: boolean }>`
   display: -webkit-box;
 
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.t6Regular : theme.fonts.t10Bold};
-  font-weight: 600;
+    isMobile ? theme.fonts.t6SemiBold : theme.fonts.t10SemiBold};
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
 `;
 
 export const Description = styled.p`
@@ -163,6 +164,7 @@ export const Description = styled.p`
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
 `;
 
 export const MetaInfoRow = styled.div<{ isMobile: boolean }>`

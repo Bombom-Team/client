@@ -42,9 +42,13 @@ export default function MobileStorageContent({
   } = useInfiniteArticles(baseQueryParams);
 
   const infiniteArticlesPages = infiniteArticles?.pages || [];
-  const articleList = infiniteArticlesPages.flatMap(
-    (page) => page?.content || [],
-  );
+  const articleList = [
+    ...new Map(
+      infiniteArticlesPages
+        .flatMap((page) => page?.content || [])
+        .map((article) => [article.articleId, article]),
+    ).values(),
+  ];
 
   const IsContentsEmpty = !isInfiniteLoading && articleList.length === 0;
   const emptyKeyword = !baseQueryParams.keyword;

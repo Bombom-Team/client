@@ -1,7 +1,7 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
-import { useDevice } from '@/hooks/useDevice';
 import { getDisplayDays } from '@/pages/challenge/utils/streak';
 
 const STREAK_FREEZE_IMAGE_SRC = '/assets/png/streak-freeze.png';
@@ -114,7 +114,6 @@ const StreakCount = styled.span`
 
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t7Bold};
-  font-weight: 700;
   line-height: 1;
 
   transform: translate(-50%, -50%);
@@ -180,8 +179,7 @@ const DayCheckBox = styled.div<{
         ? theme.colors.primaryBomBom
         : theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t3Bold};
   line-height: 1;
 `;
 
@@ -216,8 +214,7 @@ const FreezeCheckMark = styled.span`
   justify-content: center;
 
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t3Bold};
   line-height: 1;
 
   transform: translate(-50%, -50%);

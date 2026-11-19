@@ -1,8 +1,7 @@
+import { Flex, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
 import { INSTAGRAM_URL } from '@/constants/socialLinks';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import InstagramIcon from '#/assets/svg/instagram.svg';
 import TistoryIcon from '#/assets/svg/tistory.svg';
 import YoutubeIcon from '#/assets/svg/youtube.svg';
@@ -96,8 +95,7 @@ const FooterWrapper = styled.div<{ device: Device }>`
 
 const LogoText = styled.h3`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t6SemiBold};
 `;
 
 const Description = styled.p`

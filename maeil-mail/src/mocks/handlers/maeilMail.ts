@@ -61,12 +61,15 @@ export const maeilMailHandlers = [
     });
   }),
 
-  http.get(`${baseURL}/maeil-mail/articles/:articleId/answers/me`, ({ params }) => {
-    const { articleId } = params;
-    const maeilMailAnswer = getMaeilMailAnswer(String(articleId));
+  http.get(
+    `${baseURL}/maeil-mail/articles/:articleId/answers/me`,
+    ({ params }) => {
+      const { articleId } = params;
+      const maeilMailAnswer = getMaeilMailAnswer(String(articleId));
 
-    return HttpResponse.json({
-      answer: maeilMailAnswer.myAnswer,
-    });
-  }),
+      return HttpResponse.json({
+        answer: maeilMailAnswer.myAnswer,
+      });
+    },
+  ),
 ];

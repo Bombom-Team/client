@@ -1,9 +1,8 @@
+import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
-import Text from '@/components/Text';
-import { useDevice, type Device } from '@/hooks/useDevice';
 import type { QueueEntry } from '@/apis/event/event.api';
+import type { Device } from '@bombom/shared/ui-web';
 
 interface WaitingStateProps {
   queueEntry: QueueEntry;

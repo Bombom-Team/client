@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import CheckIcon from '#/assets/svg/check.svg';
 import EditIcon from '#/assets/svg/edit.svg';

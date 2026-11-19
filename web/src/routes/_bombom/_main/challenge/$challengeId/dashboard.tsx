@@ -1,15 +1,16 @@
 import { theme } from '@bombom/shared';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
 import Tab from '@/components/Tab/Tab';
 import Tabs from '@/components/Tabs/Tabs';
-import { useDevice, type Device } from '@/hooks/useDevice';
 import ChallengeDashboard from '@/pages/challenge/dashboard/components/ChallengeDashboard/ChallengeDashboard';
 import UserChallengeInfo from '@/pages/challenge/dashboard/components/UserChallengeInfo/UserChallengeInfo';
 import { useChallengeTeamProgressTabs } from '@/pages/challenge/index/hooks/useChallengeTeamProgressTabs';
 import type { TeamInfoResponse } from '@/pages/challenge/dashboard/types/challengeTeamInfo';
+import type { Device } from '@bombom/shared/ui-web';
 import type { Theme } from '@emotion/react/macro';
 import type { CSSObject } from '@emotion/styled';
 import InfoIcon from '#/assets/svg/info-circle.svg';
@@ -114,7 +115,7 @@ function ChallengeDashboardRoute() {
         <NoticeMessage>
           {' '}
           공휴일이나 뉴스레터의 임시 휴재 등으로 인해 챌린지 인증 상태에 대한
-          문의가 필요하신 경우 채널톡으로 문의 부탁드립니다.
+          문의가 필요하신 경우 고객센터로 문의 부탁드립니다.
         </NoticeMessage>
       </NoticeMessageWrapper>
     </Container>

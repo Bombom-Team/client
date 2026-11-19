@@ -1,4 +1,4 @@
-import Button from '@/components/Button/Button';
+import { Button } from '@bombom/shared/ui-web';
 import { useSharePost } from '@/pages/blog/hooks/useSharePost';
 import ShareIcon from '#/assets/svg/share.svg';
 

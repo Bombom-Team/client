@@ -1,7 +1,6 @@
+import { ChevronIcon, Text } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import ChevronIcon from '@/components/icons/ChevronIcon';
-import Text from '@/components/Text';
 import MonthlyReadingCalendar from '@/pages/my-page/components/ReadingActivityStats/MonthlyReadingCalendar';
 import MonthlyReportStats from '@/pages/my-page/components/ReadingActivityStats/MonthlyReportStats';
 import SubscribedCategoryStats from '@/pages/my-page/components/ReadingActivityStats/SubscribedCategoryStats';

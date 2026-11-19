@@ -1,7 +1,7 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Container, ContentWrapper, MetaInfo } from '../PostCard';
 import Skeleton from '@/components/Skeleton/Skeleton';
-import { useDevice } from '@/hooks/useDevice';
 
 const PostCardSkeleton = () => {
   const device = useDevice();

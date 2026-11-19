@@ -1,6 +1,6 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 
 const EventLandingHero = () => {
@@ -87,8 +87,7 @@ const HeroBadge = styled.div<{ isPC: boolean }>`
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.black};
   font: ${({ theme, isPC }) =>
-    isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
-  font-weight: 700;
+    isPC ? theme.fonts.t5Bold : theme.fonts.t3Bold};
   text-align: center;
 
   transform: rotate(-2deg);
@@ -102,6 +101,5 @@ const IndicateText = styled.p<{ isPC: boolean }>`
   background: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primaryBomBom};
   font: ${({ theme, isPC }) =>
-    isPC ? theme.fonts.t5Regular : theme.fonts.t3Regular};
-  font-weight: 700;
+    isPC ? theme.fonts.t5Bold : theme.fonts.t3Bold};
 `;

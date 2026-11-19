@@ -1,13 +1,11 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import BannerNavigation from './BannerNavigation';
 import LandingIntroBanner from '../LandingIntroBanner/LandingIntroBanner';
 import BlogOpenBanner from '../PromotionBanner/BlogOpenBanner';
-import InstagramPromotionBanner from '../PromotionBanner/InstagramPromotionBanner';
-import MaeilMailPromotionBanner from '../PromotionBanner/MaeilMailPromotionBanner';
 import { Carousel } from '@/components/Carousel/Carousel';
 import CarouselNavButtons from '@/components/Carousel/CarouselNavButtons';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 const SlideCardList = () => {
   const device = useDevice();
@@ -16,16 +14,6 @@ const SlideCardList = () => {
     <>
       <Carousel.Root loop autoPlay>
         <Carousel.Slides>
-          <Carousel.Slide>
-            <BannerWrapper device={device}>
-              <InstagramPromotionBanner />
-            </BannerWrapper>
-          </Carousel.Slide>
-          <Carousel.Slide>
-            <BannerWrapper device={device}>
-              <MaeilMailPromotionBanner />
-            </BannerWrapper>
-          </Carousel.Slide>
           <Carousel.Slide>
             <BannerWrapper device={device}>
               <BlogOpenBanner />

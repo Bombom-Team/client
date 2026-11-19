@@ -1,7 +1,6 @@
+import { sendMessageToRN, isWebView } from '@bombom/shared/ui-web';
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
 
 export const useWebViewRegisterToken = () => {
   const { userProfile } = useAuth();

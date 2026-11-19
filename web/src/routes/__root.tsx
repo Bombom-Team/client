@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { Toast } from '@bombom/shared/ui-web';
 import { ThemeProvider } from '@emotion/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -8,14 +9,13 @@ import {
   Outlet,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import Toast from '@/components/Toast/Toast';
+import RouteTransition from '@/components/RouteTransition/RouteTransition';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { useChannelTalk } from '@/hooks/useChannelTalk';
-import { useDevice } from '@/hooks/useDevice';
 import GoogleAnalyticsTracker from '@/libs/googleAnalytics/GoogleAnalyticsTracker';
 import { useReferrerTracking } from '@/libs/googleAnalytics/useReferrerTracking';
 import { useWebViewAuth } from '@/libs/webview/useWebViewAuth';
 import { useWebViewRouting } from '@/libs/webview/useWebViewRouting';
+import WebViewReadyNotifier from '@/libs/webview/WebViewReadyNotifier';
 import { queryClient } from '@/main';
 import { isDevelopment, isLocal } from '@/utils/environment';
 import type { QueryClient } from '@tanstack/react-query';
@@ -25,19 +25,11 @@ interface BomBomRouterContext {
   queryClient: QueryClient;
 }
 
-// 우하단 채널톡 런처 버튼(약 60px + 하단 여백)과 겹치지 않도록 토스트를 그 위로 띄운다.
-// 채널톡 버튼은 PC에서만 노출되므로 PC에서만 간격을 띄운다.
-const CHANNEL_TALK_TOAST_OFFSET = 96;
-
 const RootComponent = () => {
-  const device = useDevice();
-
   useReferrerTracking();
   useWebViewAuth();
   useWebViewRouting();
-  useChannelTalk();
 
-  const toastOffset = device === 'pc' ? CHANNEL_TALK_TOAST_OFFSET : undefined;
   const showDevtools = isLocal || isDevelopment;
 
   return (
@@ -46,8 +38,11 @@ const RootComponent = () => {
         <ThemeProvider theme={theme}>
           <AuthProvider>
             <GoogleAnalyticsTracker />
-            <Outlet />
-            <Toast offset={toastOffset} />
+            <WebViewReadyNotifier />
+            <RouteTransition>
+              <Outlet />
+            </RouteTransition>
+            <Toast />
           </AuthProvider>
         </ThemeProvider>
         {showDevtools && (
@@ -77,7 +72,6 @@ export const Route = createRootRouteWithContext<BomBomRouterContext>()({
       },
       { property: 'og:image', content: '/assets/png/og-image.png' },
       { property: 'og:image:alt', content: '봄봄 로고' },
-      { property: 'og:url', content: 'https://www.bombom.news' },
       { name: 'twitter:title', content: '봄봄' },
       {
         name: 'twitter:description',
@@ -87,7 +81,6 @@ export const Route = createRootRouteWithContext<BomBomRouterContext>()({
       { name: 'twitter:image:alt', content: '봄봄 로고' },
       { name: 'robots', content: 'index, follow' },
     ],
-    links: [{ rel: 'canonical', href: 'https://www.bombom.news' }],
   }),
   component: () => (
     <>

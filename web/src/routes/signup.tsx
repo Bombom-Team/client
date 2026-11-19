@@ -1,9 +1,9 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute } from '@tanstack/react-router';
-import { useDevice } from '@/hooks/useDevice';
 import SignupCard from '@/pages/signup/components/SignupCard';
 import { getResponsiveValue } from '@/utils/responsive';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 export const Route = createFileRoute('/signup')({
   head: () => ({

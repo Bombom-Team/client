@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
@@ -7,7 +8,6 @@ import { queries } from '@/apis/queries';
 import PetCard from '@/components/PetCard/PetCard';
 import PetCardSkeleton from '@/components/PetCard/PetCardSkeleton';
 import RequireLogin from '@/hocs/RequireLogin';
-import { useDevice } from '@/hooks/useDevice';
 import {
   GUIDE_MAIL_STORAGE_KEY,
   GUIDE_MAILS,
@@ -18,8 +18,8 @@ import ArticleCardListSkeleton from '@/pages/today/components/ArticleCardList/Ar
 import ReadingStatusCard from '@/pages/today/components/ReadingStatusCard/ReadingStatusCard';
 import { formatDate } from '@/utils/date';
 import { createStorage } from '@/utils/localStorage';
-import type { Device } from '@/hooks/useDevice';
 import type { LocalGuideMail } from '@/types/guide';
+import type { Device } from '@bombom/shared/ui-web';
 import type { CSSObject, Theme } from '@emotion/react';
 import HomeIcon from '#/assets/svg/home.svg';
 

@@ -1,7 +1,6 @@
+import { sendMessageToRN, isWebView } from '@bombom/shared/ui-web';
 import html2canvas from 'html2canvas';
 import { useRef } from 'react';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
 
 export const useCertificateDownload = (nickname?: string) => {
   const certificateRef = useRef<HTMLDivElement>(null);

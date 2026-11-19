@@ -5,10 +5,19 @@ import {
 } from '../../detail/utils/highlight';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
 import type { Highlight } from '../../detail/types/highlight';
+import type { RefObject } from 'react';
 
 type StorageKey = `guide-highlight-${string}`;
 
-export const useLocalHighlightData = ({ articleId }: { articleId: number }) => {
+interface UseLocalHighlightDataParams {
+  articleId: number;
+  contentRef: RefObject<HTMLDivElement | null>;
+}
+
+export const useLocalHighlightData = ({
+  articleId,
+  contentRef,
+}: UseLocalHighlightDataParams) => {
   const storageKey: StorageKey = `guide-highlight-${articleId}`;
   const [highlights, setHighlights] =
     useLocalStorageState<Highlight[]>(storageKey);
@@ -22,9 +31,11 @@ export const useLocalHighlightData = ({ articleId }: { articleId: number }) => {
         }
         return [...prev, highlightWithMemo];
       });
-      addHighlightToDOM(highlightWithMemo);
+      if (contentRef.current) {
+        addHighlightToDOM(contentRef.current, highlightWithMemo);
+      }
     },
-    [setHighlights],
+    [contentRef, setHighlights],
   );
 
   const removeHighlight = useCallback(

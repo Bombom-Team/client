@@ -1,7 +1,8 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
-import { useDevice, type Device } from '@/hooks/useDevice';
 import FeatureContent from '@/pages/landing/components/FeatureContent';
+import type { Device } from '@bombom/shared/ui-web';
 import highlight from '#/assets/avif/highlight.avif';
 import navBar from '#/assets/avif/nav-bar.avif';
 import newslettersCategory from '#/assets/avif/newsletters-category.avif';

@@ -1,5 +1,5 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useCallback } from 'react';
-import { toast } from '@/components/Toast/utils/toastActions';
 import { copyToClipboard } from '@/utils/copy';
 
 export const useSharePost = () => {

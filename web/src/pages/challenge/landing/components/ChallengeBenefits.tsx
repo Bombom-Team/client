@@ -1,7 +1,6 @@
+import { Text, useDevice, useScrollVisible } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Text from '@/components/Text';
-import { useDevice, type Device } from '@/hooks/useDevice';
-import { useScrollVisible } from '@/pages/landing/hooks/useScrollVisible';
+import type { Device } from '@bombom/shared/ui-web';
 import BookIcon from '#/assets/svg/book.svg';
 import FlagIcon from '#/assets/svg/flag.svg';
 import LampIcon from '#/assets/svg/lamp.svg';

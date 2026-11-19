@@ -1,12 +1,13 @@
 import { theme } from '@bombom/shared/theme';
+import { Accordion } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { queries } from '@/apis/queries';
-import Accordion from '@/components/Accordion/Accordion';
 import Badge from '@/components/Badge/Badge';
 import EmptyNoticeCard from '@/pages/notice/components/EmptyNoticeCard';
+import NoticeContent from '@/pages/notice/components/NoticeContent';
 import MenuIcon from '#/assets/svg/menu.svg';
 
 export const Route = createFileRoute('/_bombom/_main/notice')({
@@ -71,7 +72,7 @@ function NoticePage() {
               </Accordion.Header>
 
               <Accordion.Content isOpen={isOpen}>
-                <AccordionContent>{content.content}</AccordionContent>
+                <NoticeContent content={content.content} />
               </Accordion.Content>
             </Accordion>
           );
@@ -143,8 +144,4 @@ const AccordionTitle = styled.span`
 
 const AccordionDescription = styled.span`
   font: ${({ theme }) => theme.fonts.t3Regular};
-`;
-
-const AccordionContent = styled.p`
-  width: 100%;
 `;

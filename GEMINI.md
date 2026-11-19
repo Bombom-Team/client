@@ -1,0 +1,6 @@
+# Gemini CLI compatibility
+
+이 파일은 Gemini CLI가 `.ai/`의 공통 지침을 불러오기 위한 다리입니다. 지침 원본은 `.ai/`에 있습니다.
+
+@.ai/RULES.md
+@.ai/CONVENTIONS.md

@@ -1,7 +1,5 @@
+import { Button, Flex, Text } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '@/components/Button/Button';
-import Flex from '@/components/Flex';
-import Text from '@/components/Text';
 
 interface CloseWarningModalProps {
   onDownload: () => Promise<void>;
@@ -70,8 +68,7 @@ const PrimaryButton = styled(Button)`
   width: 100%;
   max-width: 200px;
 
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t6SemiBold};
 `;
 
 const SecondaryButton = styled(Button)`

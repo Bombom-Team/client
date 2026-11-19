@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import {
   sendMessageToRN,
   addWebViewMessageListener,
-} from '@/libs/webview/webview.utils';
+} from '@bombom/shared/ui-web';
+import { useEffect, useState } from 'react';
 
 export const useWebViewDeviceUuid = () => {
   const [deviceUuid, setDeviceUuid] = useState('');

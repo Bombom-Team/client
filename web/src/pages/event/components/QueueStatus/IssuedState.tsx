@@ -1,3 +1,13 @@
+import {
+  Button,
+  Flex,
+  Modal,
+  useModal,
+  Text,
+  useDevice,
+  sendMessageToRN,
+  isWebView,
+} from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import html2canvas from 'html2canvas';
@@ -5,14 +15,6 @@ import { useCallback, useRef } from 'react';
 import { formatEventDateTime } from '../../utils/date';
 import CloseWarningModal from '../CloseWarningModal';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import Flex from '@/components/Flex';
-import Modal from '@/components/Modal/Modal';
-import useModal from '@/components/Modal/useModal';
-import Text from '@/components/Text';
-import { useDevice } from '@/hooks/useDevice';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
-import { isWebView } from '@/utils/device';
 
 interface IssuedStateProps {
   onClose: () => void;

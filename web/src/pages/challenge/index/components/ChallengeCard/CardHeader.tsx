@@ -1,4 +1,4 @@
-import Flex from '@/components/Flex';
+import { Flex } from '@bombom/shared/ui-web';
 import type { PropsWithChildren } from 'react';
 
 const CardHeader = ({ children }: PropsWithChildren) => {

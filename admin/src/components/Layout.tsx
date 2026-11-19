@@ -9,6 +9,9 @@ const LayoutContainer = styled.div`
 `;
 
 const MainContent = styled.div`
+  /* flex 자식의 기본값은 min-width: auto라 내용이 넓으면 이 영역이 부풀어
+     헤더까지 화면 밖으로 밀어낸다. 0으로 풀어 사이드바 옆 폭을 지키게 한다. */
+  min-width: 0;
   margin-left: 256px;
 
   display: flex;
@@ -17,6 +20,7 @@ const MainContent = styled.div`
 `;
 
 const ContentArea = styled.main`
+  min-width: 0;
   padding: ${({ theme }) => theme.spacing.xl};
 
   flex: 1;

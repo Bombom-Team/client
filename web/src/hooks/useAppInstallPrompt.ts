@@ -1,6 +1,6 @@
+import { getDeviceInWebApp, isWebView } from '@bombom/shared/ui-web';
 import { useEffect, useRef, useState } from 'react';
 import { useLocalStorageState } from './useLocalStorageState';
-import { getDeviceInWebApp, isWebView } from '@/utils/device';
 import { downloadApp } from '@/utils/downloadApp';
 
 const APP_INSTALL_DISMISSED_KEY = 'app-install-prompt-dismissed';

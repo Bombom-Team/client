@@ -1,7 +1,6 @@
-import { Flex, Button } from '@bombom/shared/ui-web';
+import { Flex, Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import { useDevice } from '@/hooks/useDevice';
 import MailIcon from '#/assets/svg/mail.svg';
 import PlusIcon from '#/assets/svg/plus.svg';
 

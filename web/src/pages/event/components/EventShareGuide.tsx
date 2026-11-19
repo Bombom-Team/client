@@ -1,5 +1,5 @@
+import { Flex } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Flex from '@/components/Flex';
 import LinkIcon from '#/assets/svg/link.svg';
 import SparklesIcon from '#/assets/svg/sparkles.svg';
 
@@ -151,7 +151,6 @@ const Description = styled.p`
 
   color: #4b5563;
   font: ${({ theme }) => theme.fonts.t6Bold};
-  font-weight: 700;
 `;
 
 const CardWrapper = styled.div`
@@ -249,8 +248,7 @@ const StepBadge = styled.div`
 
   background-color: ${({ theme }) => theme.colors.black};
   color: ${({ theme }) => theme.colors.white};
-  font: ${({ theme }) => theme.fonts.t1Regular};
-  font-weight: 700;
+  font: ${({ theme }) => theme.fonts.t1Bold};
 `;
 
 const StepText = styled.p`

@@ -1,7 +1,7 @@
+import { isWebView } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 
-import { isWebView } from '@/utils/device';
 import { openExternalLink } from '@/utils/externalLink';
 import type { ReactNode } from 'react';
 

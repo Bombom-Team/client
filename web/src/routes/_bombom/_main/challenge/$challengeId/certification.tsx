@@ -1,9 +1,8 @@
+import { Button, Flex } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import Flex from '@/components/Flex';
 import Certificate from '@/pages/challenge/certification/components/Certificate';
 import { useCertificateDownload } from '@/pages/challenge/certification/hooks/useCertificateDownload';
 
@@ -65,7 +64,6 @@ const DownloadButton = styled(Button)`
   border: none;
   border-radius: 8px;
 
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t3SemiBold};
   white-space: nowrap;
 `;

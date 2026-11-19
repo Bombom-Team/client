@@ -1,9 +1,9 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import HeaderNavButtons from '@/components/Header/HeaderNavButtons';
 import MobileMainHeader from '@/components/Header/MobileMainHeader';
 import { useActiveNav } from '@/hooks/useActiveNav';
-import { useDevice } from '@/hooks/useDevice';
 
 export const Route = createFileRoute('/_bombom/_main')({
   component: RouteComponent,

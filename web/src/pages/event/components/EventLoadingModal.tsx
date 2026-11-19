@@ -1,5 +1,5 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '@/components/Button/Button';
 
 interface EventLoadingModalProps {
   closeModal: () => void;
@@ -48,8 +48,7 @@ const Title = styled.h3`
 
 const Description = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t7Bold};
-  font-weight: 400;
+  font: ${({ theme }) => theme.fonts.t7Regular};
   text-align: center;
 `;
 

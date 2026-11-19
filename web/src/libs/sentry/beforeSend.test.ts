@@ -1,6 +1,11 @@
 import { ApiError } from '@bombom/shared/apis';
-import { beforeSend } from './beforeSend';
-import type { ErrorEvent, EventHint } from '@sentry/react';
+import { beforeBreadcrumb, beforeSend } from './beforeSend';
+import type {
+  Breadcrumb,
+  BreadcrumbHint,
+  ErrorEvent,
+  EventHint,
+} from '@sentry/react';
 
 jest.mock('@bombom/shared/apis', () => ({
   ApiError: class ApiError extends Error {
@@ -16,6 +21,10 @@ jest.mock('@bombom/shared/apis', () => ({
 
 const runBeforeSend = (event: Partial<ErrorEvent>, hint: Partial<EventHint>) =>
   beforeSend(event as ErrorEvent, hint as EventHint);
+
+const runBeforeBreadcrumb = (breadcrumb: Breadcrumb, hint: BreadcrumbHint) => {
+  return beforeBreadcrumb(breadcrumb, hint);
+};
 
 describe('beforeSend', () => {
   it('NOT_FOUND 태그가 붙은 이벤트는 P2 warning으로 분류한다.', () => {
@@ -56,6 +65,19 @@ describe('beforeSend', () => {
     });
   });
 
+  it('에러가 ChunkLoadError면 CHUNK_LOAD P2 warning으로 분류한다.', () => {
+    const error = new Error('Loading chunk 7568 failed.');
+    error.name = 'ChunkLoadError';
+
+    const result = runBeforeSend({}, { originalException: error });
+
+    expect(result?.level).toBe('warning');
+    expect(result?.tags).toMatchObject({
+      error_type: 'CHUNK_LOAD',
+      priority: 'P2',
+    });
+  });
+
   it('에러 바운더리 렌더 크래시는 P1 fatal로 분류한다.', () => {
     const result = runBeforeSend(
       {
@@ -83,5 +105,26 @@ describe('beforeSend', () => {
       error_type: 'JS_RUNTIME',
       priority: 'P2',
     });
+  });
+});
+
+describe('beforeBreadcrumb', () => {
+  it('ApiError 원본 객체가 포함된 console breadcrumb는 제거한다.', () => {
+    const result = runBeforeBreadcrumb(
+      { category: 'console', message: 'server secret' },
+      { input: [new ApiError(500, 'server secret')] },
+    );
+
+    expect(result).toBeNull();
+  });
+
+  it('ApiError와 무관한 breadcrumb는 유지한다.', () => {
+    const breadcrumb = { category: 'console', message: 'login started' };
+
+    const result = runBeforeBreadcrumb(breadcrumb, {
+      input: ['login started'],
+    });
+
+    expect(result).toBe(breadcrumb);
   });
 });

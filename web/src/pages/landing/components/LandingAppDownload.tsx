@@ -1,13 +1,11 @@
 import { theme } from '@bombom/shared';
+import { Button, useModal, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import Button from '@/components/Button/Button';
-import useModal from '@/components/Modal/useModal';
-import { useDevice } from '@/hooks/useDevice';
 import QRCodeModal from '@/pages/recommend/components/QRCodeModal/QRCodeModal';
 import { downloadApp } from '@/utils/downloadApp';
-import type { Device } from '@/hooks/useDevice';
 import type { StoreType } from '@/pages/recommend/components/PromotionBanner/PromotionBanner.types';
+import type { Device } from '@bombom/shared/ui-web';
 import playStoreIcon from '#/assets/avif/play_store.avif';
 import AppStoreIcon from '#/assets/svg/apple.svg';
 
@@ -106,8 +104,7 @@ const Title = styled.h2<{ device: Device }>`
 const Description = styled.p<{ device: Device }>`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ device, theme }) =>
-    device === 'mobile' ? theme.fonts.t3Regular : theme.fonts.t7Bold};
-  font-weight: 400;
+    device === 'mobile' ? theme.fonts.t3Regular : theme.fonts.t7Regular};
 `;
 
 const ButtonGroup = styled.div<{ device: Device }>`

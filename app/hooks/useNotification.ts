@@ -1,8 +1,11 @@
 import { useEffect, useCallback, useRef } from 'react';
+import { Alert } from 'react-native';
+import * as Sentry from '@sentry/react-native';
 import * as Notifications from 'expo-notifications';
 import messaging from '@react-native-firebase/messaging';
 import type { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import {
+  checkNotificationPermission,
   createAndroidChannel,
   getFCMToken,
   getMemberId,
@@ -22,9 +25,88 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const useNotification = () => {
+const WEB_READY_TIMEOUT_MS = 10_000;
+
+const useNotification = (reloadWebView: () => void) => {
   const { sendMessageToWeb } = useWebView();
   const isRegisteringRef = useRef(false);
+  const isWebReadyRef = useRef(false);
+  const pendingNotificationUrlRef = useRef<string | null>(null);
+  const hasHandledInitialNotificationRef = useRef(false);
+  const readyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isWaitingForRetryRef = useRef(false);
+
+  const clearReadyTimer = useCallback(() => {
+    if (readyTimerRef.current) clearTimeout(readyTimerRef.current);
+    readyTimerRef.current = null;
+  }, []);
+
+  const showReadyError = useCallback(() => {
+    if (!pendingNotificationUrlRef.current || isWaitingForRetryRef.current) return;
+    clearReadyTimer();
+    isWaitingForRetryRef.current = true;
+    Alert.alert(
+      '페이지를 불러오지 못했어요',
+      '네트워크 연결을 확인하고 다시 시도해 주세요.',
+      [
+        {
+          text: '닫기',
+          style: 'cancel',
+          onPress: () => {
+            pendingNotificationUrlRef.current = null;
+            isWaitingForRetryRef.current = false;
+          },
+        },
+        {
+          text: '다시 시도',
+          onPress: () => {
+            isWaitingForRetryRef.current = false;
+            isWebReadyRef.current = false;
+            readyTimerRef.current = setTimeout(showReadyError, WEB_READY_TIMEOUT_MS);
+            reloadWebView();
+          },
+        },
+      ],
+      { cancelable: false },
+    );
+  }, [clearReadyTimer, reloadWebView]);
+
+  useEffect(() => clearReadyTimer, [clearReadyTimer]);
+
+  // 웹이 준비 신호를 보내기 전에 보낸 메시지는 웹이 받지 못하므로 준비될 때까지 보관한다.
+  const routeToNotificationUrl = useCallback(
+    (url: string) => {
+      if (!isWebReadyRef.current) {
+        pendingNotificationUrlRef.current = url;
+        if (!readyTimerRef.current && !isWaitingForRetryRef.current) {
+          readyTimerRef.current = setTimeout(showReadyError, WEB_READY_TIMEOUT_MS);
+        }
+        return;
+      }
+
+      sendMessageToWeb({
+        type: 'NOTIFICATION_ROUTING',
+        payload: { url },
+      });
+    },
+    [sendMessageToWeb, showReadyError],
+  );
+
+  const handleWebLoadStart = useCallback(() => {
+    isWebReadyRef.current = false;
+  }, []);
+
+  const handleWebReady = useCallback(() => {
+    if (isWaitingForRetryRef.current) return;
+    isWebReadyRef.current = true;
+    clearReadyTimer();
+
+    const url = pendingNotificationUrlRef.current;
+    if (!url) return;
+
+    pendingNotificationUrlRef.current = null;
+    routeToNotificationUrl(url);
+  }, [clearReadyTimer, routeToNotificationUrl]);
 
   const registerFCMToken = useCallback(async () => {
     if (isRegisteringRef.current) {
@@ -61,24 +143,23 @@ const useNotification = () => {
   }, []);
 
   // 앱 종료 상태에서 알림을 탭한 경우
+  // WebView를 다시 불러올 때마다 호출되므로, iOS에 남아 있는 이전 탭으로 다시 이동하지 않게 한 번만 처리한다.
   const coldStartNotificationOpen = useCallback(async () => {
+    if (hasHandledInitialNotificationRef.current) return;
+    hasHandledInitialNotificationRef.current = true;
+
     try {
       const message = await messaging().getInitialNotification();
       if (!message) return;
 
       const url = getNotificationUrl(message.data ?? {});
       if (url) {
-        setTimeout(() => {
-          sendMessageToWeb({
-            type: 'NOTIFICATION_ROUTING',
-            payload: { url },
-          });
-        }, 800);
+        routeToNotificationUrl(url);
       }
     } catch (error) {
       console.error('앱 종료 상태의 알림 수신에 문제가 발생했습니다.', error);
     }
-  }, [sendMessageToWeb]);
+  }, [routeToNotificationUrl]);
 
   const onNotification = useCallback(() => {
     coldStartNotificationOpen();
@@ -96,8 +177,14 @@ const useNotification = () => {
     // FCM 포그라운드 메시지 리스너: 앱이 열려있을 때 FCM 메시지를 받으면 즉시 로컬 알림으로 표시
     const unsubscribe = messaging().onMessage(
       async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-        // FCM에서 메시지를 받으면 Expo Notifications로 로컬 알림 표시
-        if (remoteMessage.notification) {
+        if (!remoteMessage.notification) return;
+
+        // 권한이 없으면 iOS가 로컬 알림 저장을 거절한다. 그 rejection을 올리지 않는다.
+        let permissionGranted = false;
+        try {
+          permissionGranted = await checkNotificationPermission();
+          if (!permissionGranted) return;
+
           await Notifications.scheduleNotificationAsync({
             content: {
               title: remoteMessage.notification.title,
@@ -106,6 +193,11 @@ const useNotification = () => {
             },
             trigger: null, // 즉시 표시 (타이머 없음)
           });
+        } catch (error) {
+          console.error('포그라운드 알림 표시에 실패했습니다.', error);
+          if (permissionGranted) {
+            Sentry.captureException(error);
+          }
         }
       },
     );
@@ -115,25 +207,22 @@ const useNotification = () => {
       (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
         const url = getNotificationUrl(remoteMessage.data ?? {});
         if (url) {
-          sendMessageToWeb({
-            type: 'NOTIFICATION_ROUTING',
-            payload: { url },
-          });
+          routeToNotificationUrl(url);
         }
       },
     );
 
-    // 포그라운드에서 알림을 탭한 경우
+    // 포그라운드에서 띄운 로컬 알림을 탭한 경우
     const responseListener =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        const { data } = response.notification.request.content;
+        const { content, trigger } = response.notification.request;
 
-        const url = getNotificationUrl(data);
+        // 원격 푸시 탭은 Firebase 리스너가 처리한다. iOS는 같은 탭을 여기로도 보내지만 data가 비어 있다.
+        if (trigger && 'type' in trigger && trigger.type === 'push') return;
+
+        const url = getNotificationUrl(content.data ?? {});
         if (url) {
-          sendMessageToWeb({
-            type: 'NOTIFICATION_ROUTING',
-            payload: { url },
-          });
+          routeToNotificationUrl(url);
         }
       });
 
@@ -144,7 +233,7 @@ const useNotification = () => {
       unsubscribeNotificationOpened();
       responseListener.remove();
     };
-  }, [coldStartNotificationOpen, registerFCMToken, sendMessageToWeb]);
+  }, [coldStartNotificationOpen, registerFCMToken, routeToNotificationUrl]);
 
   useEffect(() => {
     createAndroidChannel();
@@ -153,6 +242,9 @@ const useNotification = () => {
   return {
     onNotification,
     registerFCMToken,
+    handleWebLoadStart,
+    handleWebReady,
+    handleWebLoadError: showReadyError,
   };
 };
 

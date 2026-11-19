@@ -1,9 +1,9 @@
-import styled from '@emotion/styled';
 import { ServiceSwitcher, useDevice } from '@bombom/shared/ui-web';
-import type { Device } from '@bombom/shared/ui-web';
+import styled from '@emotion/styled';
 import { useRouter } from '@tanstack/react-router';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import MaeilMailLogo from '@/assets/svg/maeilmail-logo.svg';
+import type { Device } from '@bombom/shared/ui-web';
 
 const Header = () => {
   const device = useDevice();

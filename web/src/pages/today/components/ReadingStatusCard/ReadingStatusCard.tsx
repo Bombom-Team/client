@@ -1,4 +1,5 @@
 import { theme } from '@bombom/shared/theme';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -8,9 +9,8 @@ import StreakCounter from '../StreakCounter/StreakCounter';
 import { queries } from '@/apis/queries';
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import ProgressWithLabel from '@/components/ProgressWithLabel/ProgressWithLabel';
-import { useDevice } from '@/hooks/useDevice';
 import useUpdateWeeklyGoalMutation from '@/pages/today/hooks/useUpdateWeeklyGoalMutation';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import type { CSSObject, Theme } from '@emotion/react';
 import GoalIcon from '#/assets/svg/goal.svg';
 import StatusIcon from '#/assets/svg/reading-status.svg';

@@ -1,10 +1,10 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import type { RefObject } from 'react';
-import { useDevice } from '@bombom/shared/ui-web';
+import maeilmailAnswerImage from '@/assets/avif/maeilmail-answer.avif';
 import maeilmailQuestionImage from '@/assets/avif/maeilmail-question.avif';
 import myAnswerImage from '@/assets/avif/my-answer.avif';
-import maeilmailAnswerImage from '@/assets/avif/maeilmail-answer.avif';
+import type { RefObject } from 'react';
 
 const FEATURE_ITEMS = [
   {

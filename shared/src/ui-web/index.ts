@@ -12,6 +12,10 @@ export type { TextProps } from './Text/Text';
 export { default as Modal } from './Modal/Modal';
 export { default as useModal } from './Modal/useModal';
 
+export { default as Accordion } from './Accordion/Accordion';
+
+export { default as Checkbox } from './Checkbox/Checkbox';
+
 export { default as Select } from './Select/Select';
 export type { SelectOption } from './Select/Select.types';
 

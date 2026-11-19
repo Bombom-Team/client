@@ -1,3 +1,4 @@
+import { Button } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import NewsletterSubscribeGuide from './components/NewsletterSubscribeGuide';
@@ -11,7 +12,6 @@ import {
 import { useNewsletterHeroActions } from './hooks/useNewsletterHeroActions';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
-import Button from '@/components/Button/Button';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import HomeIcon from '#/assets/svg/home.svg';
 import InfoIcon from '#/assets/svg/info-circle.svg';
@@ -247,7 +247,7 @@ export const TitleWrapper = styled.div`
   gap: 8px;
 `;
 
-const NewsletterTitle = styled.h2`
+const NewsletterTitle = styled.h1`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t11Bold};
 `;

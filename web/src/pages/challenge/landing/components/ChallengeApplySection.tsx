@@ -1,8 +1,7 @@
+import { Button, Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '@/components/Button/Button';
-import Text from '@/components/Text';
-import { useDevice, type Device } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import type { Device } from '@bombom/shared/ui-web';
 import type { MouseEvent } from 'react';
 
 interface ChallengeApplySectionProps {

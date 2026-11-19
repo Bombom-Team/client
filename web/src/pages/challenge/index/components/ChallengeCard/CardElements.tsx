@@ -1,8 +1,7 @@
 import { theme } from '@bombom/shared';
+import { Flex, Text } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { getDday } from '../../utils/date';
-import Flex from '@/components/Flex/Flex';
-import Text from '@/components/Text';
 import type { ComponentProps } from 'react';
 import PersonIcon from '#/assets/svg/person.svg';
 
@@ -18,8 +17,7 @@ export const Tag = styled.span`
 
   background-color: ${({ theme }) => `${theme.colors.primaryLight}40`};
   color: ${({ theme }) => theme.colors.primaryBomBom};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t3SemiBold};
 `;
 
 export const Applicant = (props: ComponentProps<typeof Text>) => (
@@ -57,8 +55,7 @@ export const CardDetailButton = styled.button`
 
   background-color: transparent;
   color: ${({ theme }) => theme.colors.primaryBomBom};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t5SemiBold};
 
   &:hover {
     text-decoration: underline;

@@ -3,17 +3,12 @@
 PR 리뷰 전에 읽는 코드베이스 지도다. 목표는 "아무 React/React Native 레포에나
 성립하는 리뷰"가 아니라 **봄봄의 실제 계약과 워크스페이스 경계를 근거로 한 리뷰**를
 가능하게 하는 것이다. 이 문서와 코드가 어긋나면 코드가 진실이다. 발견 시 문서 갱신을
-제안한다. 코딩 규칙은 `CONVENTIONS.md`와 그 문서가 가리키는 `docs/` 문서가 담당한다.
+제안한다. 코딩 규칙은 `.ai/CONVENTIONS.md`가 담당한다.
 
 ## 저장소 구성
 
-| 워크스페이스 | 역할 | 주요 기술 |
-| --- | --- | --- |
-| `web` | 뉴스레터·아티클·챌린지·이벤트 사용자 웹 | React 19, Webpack, TanStack Router/Query, Emotion |
-| `app` | `web` WebView와 소셜 로그인·푸시·기기 기능을 제공하는 앱 | Expo 54, React Native 0.81, Firebase |
-| `admin` | 회원·콘텐츠·챌린지·이벤트 운영 웹 | React 19, Vite, TanStack Router/Query, Supabase 일부 사용 |
-| `maeil-mail` | 매일메일 구독·콘텐츠용 별도 웹 | React 19, Vite, TanStack Router/Query |
-| `shared` | theme·웹 UI·fetcher·생성 API·WebView 메시지 타입 | TypeScript package |
+워크스페이스 목록과 역할은 `.ai/RULES.md`의 Repository overview, 기술 스택과 버전은 각
+workspace의 `package.json`을 직접 읽는다.
 
 `web`·`app`·`admin`·`maeil-mail`은 독립 배포 단위다. 같은 이름의 컴포넌트·훅·API가
 각 워크스페이스에 따로 있을 수 있으므로 한 곳의 패턴을 다른 곳에 무조건 적용하지 않는다.
@@ -27,22 +22,23 @@ PR 리뷰 전에 읽는 코드베이스 지도다. 목표는 "아무 React/React
   인증은 bearer token을 직접 보관하는 구조가 아니라 서버 세션 쿠키에 의존한다.
 - 실패 응답은 `ApiError(status, message, rawBody)`다. 호출부가 axios 전용 shape인
   `error.response.status`를 전제하면 동작하지 않는다.
-- GET query는 값의 `toString()` 결과가 truthy인 항목만 직렬화한다. 배열은 쉼표 문자열이
+- query는 값의 `toString()` 결과가 truthy인 항목만 직렬화한다. 배열은 쉼표 문자열이
   되며 빈 문자열·`undefined`는 사라진다. 다른 계약이 필요하면 모든 소비 API를 확인한다.
 - `shared/src/core/apis/generated/`, `openapi.d.ts`, `routeTree.gen.ts`는 생성물이다.
   직접 수정하지 않고 generator와 API spec을 통해 갱신한다.
 
 ## 서버 상태와 오류 처리
 
-- 서버 상태는 TanStack Query가 담당한다. query factory를 사용하고 mutation은 커스텀
-  훅으로 분리한다. mutation 후 관련 목록·상세·사용자 queryKey를 모두 무효화해야 한다.
-- `web`은 일반 네트워크/서버 오류를 최대 3회 재시도하지만 401은 재시도하지 않는다.
-  mutation은 중복 실행을 막기 위해 재시도하지 않는다.
+- 서버 상태 코드 규칙은 `.ai/CONVENTIONS.md`의 TanStack Query 사용 규칙을 따른다. 리뷰에서는
+  mutation 후 관련 목록·상세·사용자 queryKey가 모두 무효화됐는지 확인한다.
+- 재시도 횟수와 401 처리 같은 QueryClient 정책 값은 이 문서에 옮겨 적지 않는다. `web/src/main.tsx`,
+  `admin/src/index.tsx`, `maeil-mail/src/main.tsx`의 QueryClient 설정을 직접 읽는다.
+- `web`은 401을 재시도하지 않고, mutation은 중복 실행을 막기 위해 재시도하지 않는다.
 - `web`은 일부 비로그인 정상 쿼리의 401을 무시한다. 그 외 쿼리에서 로그인 profile
   cache가 있는데 401이 나면 reload한다. queryKey나 profile cache 변경 시 새로고침 루프와
   오류 수집 누락을 함께 확인한다.
-- `admin`은 query 재시도 1회와 `refetchOnWindowFocus: false`, `maeil-mail`은 401 무재시도와
-  일반 오류 최대 3회 정책이다. 캐시·재시도 정책은 워크스페이스별로 다르다.
+- 캐시·재시도 정책은 워크스페이스별로 다르다. 한 workspace의 정책을 다른 workspace에
+  전제하지 않는다.
 
 ## web 라우팅·인증
 
@@ -53,6 +49,52 @@ PR 리뷰 전에 읽는 코드베이스 지도다. 목표는 "아무 React/React
   아니며 같은 SPA 세션의 이후 이동은 재검증하지 않는다.
 - 브라우저 로그인은 서버 OAuth 엔드포인트로 이동한다. 앱 로그인은 WebView 메시지로
   native credential을 받아 `/auth/login/{provider}/native`를 호출한다.
+
+## 화면 공통 구조와 여기에 기대는 기능
+
+화면 공통 구조는 다른 화면을 감싸거나 모든 화면에 함께 그려지는 코드다. 이 코드를 바꾸면
+import 관계가 없는 기능이 깨질 수 있다. 리뷰에서 확인할 범위와 검색 단서는
+`.ai/review/REVIEW.md`의 "화면 공통 구조를 바꾸는 PR"을 따른다.
+
+### 화면 공통 구조 파일
+
+이 표는 수정을 막는 목록이 아니다. 필요한 변경은 한다. 바꿀 때 확인할 범위가 넓어지는 파일이다.
+
+| 파일 | 영향 범위 |
+| --- | --- |
+| `web/src/main.tsx`, `web/src/styles/reset.ts` | 앱 전체. root 렌더링, 전역 스타일, 오류 경계, router 옵션 |
+| `web/src/routes/__root.tsx` | 모든 route. 전역 Provider, 화면 전환 요소, `Toast`, head 태그 |
+| `web/src/components/RouteTransition/RouteTransition.tsx` | 모든 route의 화면을 감싸는 요소 |
+| `web/src/contexts/AuthContext.tsx` | `/_bombom` 아래 화면이 그려지는 시점. `_bombom.tsx`가 로그인 상태를 기다린다 |
+| `web/src/routes/_bombom.tsx`, `web/src/components/PageLayout/BomBomPageLayout.tsx` | `/_bombom` 아래 화면의 헤더·footer·여백·공통 모달 |
+| `web/src/routes/_bombom/_main.tsx` | `/_bombom/_main` 아래 화면의 모바일 헤더·하단 내비게이션 |
+| `web/src/routes/blog.tsx` | 블로그 화면의 헤더·footer·여백 |
+| `shared/src/ui-web/Modal/`, `shared/src/ui-web/Toast/`, `shared/src/ui-web/hooks/useDevice.ts` | 이를 import하는 workspace의 모달, 알림, device 분기 |
+
+이 밖에 `<Outlet />`을 렌더링하는 route 파일도 하위 화면에 같은 영향을 준다. `admin`과
+`maeil-mail`은 entry 파일, `__root.tsx`, layout route·컴포넌트가 같은 역할을 한다.
+
+### 화면 전체 구조에 기대는 기능
+
+아래 기능은 화면 공통 구조 파일과 import 관계가 없지만, 문서 전체 DOM 구조·마운트 시점·window
+스크롤을 전제로 동작한다. 어떻게 기대는지는 여기에 적지 않으므로 원본 파일을 열어 확인한다.
+`web` 기준 목록이다. 다른 workspace와 새로 생긴 기능은 REVIEW.md의 검색 단서로 찾는다.
+
+- 형광펜 위치 저장·복원: `web/src/pages/detail/utils/highlight.ts`,
+  `web/src/pages/detail/utils/selection.ts`, `web/src/pages/detail/hooks/useHighlightHoverEffect.ts`
+- 글 읽던 위치 복원: `web/src/hooks/useScrollRestoration.ts`
+- route 이동 시 스크롤 복원: `web/src/main.tsx`의 router 옵션
+- 읽기 진행률·읽음 처리: `web/src/hooks/useScrollProgress.ts`, `web/src/hooks/useScrollThreshold.ts`,
+  `web/src/utils/scroll.ts`
+- 문의 채팅 스크롤 유지: `web/src/routes/_bombom/_main/support.inquiry.$roomId.tsx`
+- 화면 전환 스냅샷: `web/src/components/RouteTransition/RouteTransition.tsx`
+- 화면에 고정된 요소(모달, 헤더, 하단 내비게이션, 형광펜 툴바, 메모장):
+  `shared/src/ui-web/Modal/Modal.tsx`, `web/src/components/Header/`,
+  `web/src/routes/_bombom/_main.tsx`,
+  `web/src/pages/detail/components/FloatingToolbar/FloatingToolbar.tsx`,
+  `web/src/pages/detail/components/MemoPanel/MemoPanel.tsx`
+- 모달의 body 스크롤 잠금: `shared/src/ui-web/hooks/useScrollLock.ts`
+- prerender head 태그 정리: `web/src/main.tsx`, `web/scripts/prerender.ts`
 
 ## WebView 양방향 계약 (`web` ↔ `app`)
 
@@ -102,6 +144,8 @@ PR 리뷰 전에 읽는 코드베이스 지도다. 목표는 "아무 React/React
 - mutation invalidation 누락, 워크스페이스별 캐시 정책 혼동, axios 오류 shape 전제.
 - FCM identity 연결, 알림 type→web route mapping, listener cleanup 누락.
 - 신규 route의 layout/guard 위치와 생성 route tree 수동 수정.
+- 화면 공통 구조 변경 뒤, import 관계 없이 문서 전체 DOM 구조·마운트 시점·window 스크롤에
+  기대는 기능의 회귀.
 - admin 외부 연동을 공용 API로 오인하거나 optional 의존성을 admin 전체 장애로 확대.
 
 ## 리뷰어가 자주 확인할 파일

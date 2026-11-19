@@ -1,10 +1,8 @@
 import { theme } from '@bombom/shared/theme';
+import { Button, useDevice, isIOS, isWebView } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import Button from '@/components/Button/Button';
-import { useDevice } from '@/hooks/useDevice';
 import { getRedirectPathFromSearch, navigateToOAuthLogin } from '@/utils/auth';
-import { isIOS, isWebView } from '@/utils/device';
 import { isInAppBrowser } from '@/utils/inAppBrowser';
 import logo from '#/assets/avif/logo.avif';
 import AppleIcon from '#/assets/svg/apple.svg';

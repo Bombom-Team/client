@@ -1,9 +1,9 @@
+import { Text } from '@bombom/shared/ui-web';
 import { useNavigate } from '@tanstack/react-router';
 import CardContainer from '../CardContainer';
 import { CardDetailButton, Tag, Title } from '../CardElements';
 import CardFooter from '../CardFooter';
 import CardHeader from '../CardHeader';
-import Text from '@/components/Text';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { getDatesDiff } from '@/utils/date';
 import { openExternalLink } from '@/utils/externalLink';

@@ -1,11 +1,10 @@
+import { ChevronIcon, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import ChallengeEmptyState from './ChallengeEmptyState';
 import CompletedChallengeCard from './CompletedChallengeCard';
 import { queries } from '@/apis/queries';
-import ChevronIcon from '@/components/icons/ChevronIcon';
-import { useDevice } from '@/hooks/useDevice';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 
 const PAGE_SIZE: Record<Device, number> = {
   pc: 6,

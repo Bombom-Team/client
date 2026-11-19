@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useDebounce } from './useDebounce';
 import { READ_THRESHOLD } from '@/constants/article';
 import { createStorage } from '@/utils/localStorage';
@@ -33,7 +33,7 @@ const useScrollRestoration = ({
 
     window.scroll({
       top: scrollLocation,
-      behavior: 'smooth',
+      behavior: 'instant',
     });
   }, []);
 
@@ -47,11 +47,15 @@ const useScrollRestoration = ({
     scrollStorage.set(window.scrollY);
   }, 100);
 
-  useEffect(() => {
+  // 모바일 화면 전환과 겹치지 않도록 화면이 보이기 전에 읽던 위치로 바로 옮긴다.
+  // 라우터가 같은 커밋에서 새 화면의 스크롤을 맨 위로 되돌리므로 다음 프레임에서 복원한다.
+  useLayoutEffect(() => {
     const scrollLocation = scrollStorage.get();
-    if (scrollLocation && enabled) {
-      restoreScroll(scrollLocation);
-    }
+    if (!scrollLocation || !enabled) return;
+
+    const frameId = requestAnimationFrame(() => restoreScroll(scrollLocation));
+
+    return () => cancelAnimationFrame(frameId);
     // store 생성될 때마다 다시 복구하는 이슈
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [restoreScroll, enabled]);

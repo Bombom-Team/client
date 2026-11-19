@@ -1,6 +1,5 @@
+import { useDevice, isAndroid, isIOS, isWebView } from '@bombom/shared/ui-web';
 import { useCallback, useEffect, useRef } from 'react';
-import { useDevice } from '@/hooks/useDevice';
-import { isAndroid, isIOS, isWebView } from '@/utils/device';
 import type { FloatingToolbarMode } from '../FloatingToolbar/FloatingToolbar.types';
 import type { Position } from '@/types/position';
 import type { RefObject } from 'react';

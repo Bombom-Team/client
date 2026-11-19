@@ -89,7 +89,7 @@ export interface paths {
     };
     /**
      * 구독 해지 패턴 목록 조회
-     * @description 시스템에 등록된 모든 구독 해지 패턴 목록을 조회합니다.
+     * @description patternType에 따라 구독 해지 패턴 목록을 조회합니다. AUTO_UNSUBSCRIBE는 구독 자동 취소 Lambda 호출 시 사용하는 패턴으로, patternKey가 parse.로 시작하지 않는 데이터를 조회합니다. PARSE는 구독 취소 URL 파싱 시 감지하는 패턴으로, patternKey가 parse.로 시작하는 데이터를 조회합니다.
      */
     get: operations['getUnsubscribePatterns'];
     put?: never;
@@ -204,6 +204,85 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/api/v1/inquiries/rooms/{roomId}/messages': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 문의 채팅 메시지 커서 조회 */
+    get: operations['getMessages'];
+    put?: never;
+    /**
+     * 어드민 메시지 전송
+     * @description 담당자가 없으면 자동 배정되고, 상태가 미확인이면 진행중으로 전환됩니다.
+     */
+    post: operations['sendMessage'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/inquiries/images': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 문의 채팅 이미지 업로드
+     * @description 최대 4장까지 업로드 가능합니다.
+     */
+    post: operations['uploadImages'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/inquiries/categories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 문의 카테고리 목록 조회 */
+    get: operations['getCategories'];
+    put?: never;
+    /** 문의 카테고리 생성 */
+    post: operations['createCategory'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/flyway/wip': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 작업중 등록
+     * @description flyway-wip 라벨 이슈를 생성한다 (GITHUB_ISSUE_TOKEN 필요)
+     */
+    post: operations['createWipIssue'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/api/v1/files': {
     parameters: {
       query?: never;
@@ -218,6 +297,30 @@ export interface paths {
      * @description 파일을 업로드하고 URL을 반환합니다.
      */
     post: operations['upload'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/faqs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * FAQ 목록 조회
+     * @description FAQ 목록을 조회합니다. (카테고리 필터링 지원)
+     */
+    get: operations['getFaqs'];
+    put?: never;
+    /**
+     * FAQ 생성
+     * @description 새로운 FAQ를 등록합니다.
+     */
+    post: operations['createFaq'];
     delete?: never;
     options?: never;
     head?: never;
@@ -518,13 +621,13 @@ export interface paths {
      * 카테고리 목록 조회
      * @description 전체 카테고리 목록을 조회합니다.
      */
-    get: operations['getCategories'];
+    get: operations['getCategories_1'];
     put?: never;
     /**
      * 카테고리 생성
      * @description 새로운 카테고리를 등록합니다.
      */
-    post: operations['createCategory'];
+    post: operations['createCategory_1'];
     delete?: never;
     options?: never;
     head?: never;
@@ -744,6 +847,127 @@ export interface paths {
      * @description 특정 회원의 권한(Role)을 수정합니다.
      */
     patch: operations['updateRole'];
+    trace?: never;
+  };
+  '/admin/api/v1/inquiries/rooms/{roomId}/status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 채팅방 상태 변경 */
+    patch: operations['changeStatus'];
+    trace?: never;
+  };
+  '/admin/api/v1/inquiries/rooms/{roomId}/messages/{messageId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * 어드민 메시지 삭제
+     * @description 본인이 작성한 메시지만 삭제 가능합니다.
+     */
+    delete: operations['deleteMessage'];
+    options?: never;
+    head?: never;
+    /**
+     * 어드민 메시지 수정
+     * @description 본인이 작성한 메시지만 수정 가능합니다.
+     */
+    patch: operations['updateMessage'];
+    trace?: never;
+  };
+  '/admin/api/v1/inquiries/rooms/{roomId}/category': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 문의 카테고리 변경 */
+    patch: operations['changeCategory'];
+    trace?: never;
+  };
+  '/admin/api/v1/inquiries/rooms/{roomId}/assignee': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 담당자 지정/변경 */
+    patch: operations['assignRoom'];
+    trace?: never;
+  };
+  '/admin/api/v1/inquiries/categories/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 문의 카테고리 삭제 */
+    delete: operations['deleteCategory'];
+    options?: never;
+    head?: never;
+    /** 문의 카테고리 수정 */
+    patch: operations['updateCategory'];
+    trace?: never;
+  };
+  '/admin/api/v1/faqs/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * FAQ 상세 조회
+     * @description FAQ 상세 정보를 조회합니다.
+     */
+    get: operations['getFaq'];
+    put?: never;
+    post?: never;
+    /**
+     * FAQ 삭제
+     * @description 기존 FAQ를 삭제합니다.
+     */
+    delete: operations['deleteFaq'];
+    options?: never;
+    head?: never;
+    /**
+     * FAQ 수정
+     * @description 기존 FAQ를 수정합니다.
+     */
+    patch: operations['updateFaq'];
     trace?: never;
   };
   '/admin/api/v1/events/{id}': {
@@ -981,14 +1205,14 @@ export interface paths {
      * 카테고리 삭제
      * @description 카테고리를 삭제합니다.
      */
-    delete: operations['deleteCategory'];
+    delete: operations['deleteCategory_1'];
     options?: never;
     head?: never;
     /**
      * 카테고리 수정
      * @description 카테고리 이름을 수정합니다.
      */
-    patch: operations['updateCategory'];
+    patch: operations['updateCategory_1'];
     trace?: never;
   };
   '/admin/api/v1/blog/posts/{postId}/visibility': {
@@ -1071,6 +1295,83 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/api/v1/inquiries/rooms': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 문의 채팅방 목록 조회
+     * @description 상태/담당자/카테고리로 필터링하여 조회합니다. 목록은 최신 메시지 시각(없으면 방 생성 시각) 기준 내림차순으로 정렬되며, 각 방에는 문의자 정보(회원/게스트)와 담당자 닉네임, 최근 메시지 미리보기가 함께 내려갑니다.
+     */
+    get: operations['getRooms'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/inquiries/rooms/{roomId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 문의 채팅방 상세 조회 */
+    get: operations['getRoom'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/flyway/script': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 마이그레이션 스크립트 조회
+     * @description 단일 마이그레이션 SQL 본문을 server→main 순으로 탐색해 반환
+     */
+    get: operations['getScript'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/api/v1/flyway/overview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 형상 개요 조회
+     * @description 적용완료/PR/이슈 통합 목록 + 같은번호 충돌 + 순서역전 경고 + 다음 안전 번호
+     */
+    get: operations['getOverview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/api/v1/dashboard/stats': {
     parameters: {
       query?: never;
@@ -1080,7 +1381,13 @@ export interface paths {
     };
     /**
      * 대시보드 통계 조회
-     * @description 전체 회원 수, 공지사항 수, 이번 달 신규 회원 수를 조회합니다.
+     * @description 회원, 가입 및 오늘 활동 집계에서 role_id=4인 테스트 계정을 제외합니다.
+     *     일별 가입 추이는 서울 날짜 기준 오늘 포함 30일이며, 가입자가 없는 날은 0을 반환합니다.
+     *     서버 인스턴스에서 운영/개발 DB와 서울 날짜별로 최대 3시간 캐시하며 aggregatedAt은 집계 완료 시각입니다.
+     *     가입 집계는 현재 회원 데이터 기준으로 탈퇴한 회원은 포함하지 않습니다.
+     *     탈퇴 집계에는 권한 정보가 없어 테스트 계정 제외를 적용하지 않습니다.
+     *     오늘 활동은 기존 유효 세션 기준 집계이며 회원 연결이 없는 세션은 기존대로 포함합니다.
+     *
      */
     get: operations['getStats'];
     put?: never;
@@ -1260,6 +1567,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/admin/api/v1/flyway/cache': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * 형상 캐시 초기화
+     * @description 캐시를 즉시 비워 다음 조회 시 GitHub에서 최신 데이터를 가져온다
+     */
+    delete: operations['refreshCache'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/admin/api/v1/challenges/{challengeId}/teams/{teamId}': {
     parameters: {
       query?: never;
@@ -1346,8 +1673,56 @@ export interface components {
       arrivedDateTime: string;
       isFixed: boolean;
     };
+    SendAdminInquiryMessageRequest: {
+      content: string;
+      imageUrls?: string[];
+    };
+    InquiryMessageResponse: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int64 */
+      roomId?: number;
+      /** @enum {string} */
+      senderType?: 'USER' | 'ADMIN';
+      /** Format: int64 */
+      adminId?: number;
+      content?: string;
+      imageUrls?: string[];
+      /** Format: date-time */
+      createdAt?: string;
+    };
+    InquiryImageUploadResponse: {
+      imageUrls?: string[];
+    };
+    CreateInquiryCategoryRequest: {
+      name: string;
+    };
+    CreateWipIssueRequest: {
+      /** @enum {string} */
+      workKind: 'NEW_TABLE' | 'EXISTING_TABLE';
+      targetTable?: string;
+      plannedVersion: string;
+      description: string;
+      assignee: string;
+    };
+    CreateWipIssueResponse: {
+      /** Format: int32 */
+      issueNumber?: number;
+      issueUrl?: string;
+    };
     UploadFileResponse: {
       url?: string;
+    };
+    CreateFaqRequest: {
+      question: string;
+      answer: string;
+      /** @enum {string} */
+      faqCategory:
+        | 'INTRODUCTION'
+        | 'FEATURE'
+        | 'ACCOUNT'
+        | 'NEWSLETTER'
+        | 'ETC';
     };
     CreateEventRequest: {
       name: string;
@@ -1464,6 +1839,35 @@ export interface components {
     UpdateRoleRequest: {
       authority: string;
     };
+    UpdateInquiryRoomStatusRequest: {
+      /** @enum {string} */
+      status: 'UNCONFIRMED' | 'IN_PROGRESS' | 'DONE' | 'ON_HOLD';
+    };
+    UpdateAdminInquiryMessageRequest: {
+      content: string;
+    };
+    UpdateInquiryRoomCategoryRequest: {
+      /** Format: int64 */
+      categoryId: number;
+    };
+    AssignInquiryRoomRequest: {
+      /** Format: int64 */
+      assigneeId: number;
+    };
+    UpdateInquiryCategoryRequest: {
+      name: string;
+    };
+    UpdateFaqRequest: {
+      question?: string;
+      answer?: string;
+      /** @enum {string} */
+      faqCategory?:
+        | 'INTRODUCTION'
+        | 'FEATURE'
+        | 'ACCOUNT'
+        | 'NEWSLETTER'
+        | 'ETC';
+    };
     UpdateEventRequest: {
       name: string;
       /** Format: date-time */
@@ -1546,17 +1950,17 @@ export interface components {
       /** Format: int64 */
       offset?: number;
       sort?: components['schemas']['SortObject'];
-      unpaged?: boolean;
       paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
       /** Format: int32 */
       pageSize?: number;
+      unpaged?: boolean;
     };
     SortObject: {
       empty?: boolean;
-      unsorted?: boolean;
       sorted?: boolean;
+      unsorted?: boolean;
     };
     GetNoticeDetailResponse: {
       title?: string;
@@ -1666,6 +2070,159 @@ export interface components {
     LambdaPlaywrightSourceResponse: {
       content?: string;
     };
+    InquiryRoomResponse: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int64 */
+      categoryId?: number;
+      /** @enum {string} */
+      status?: 'UNCONFIRMED' | 'IN_PROGRESS' | 'DONE' | 'ON_HOLD';
+      /** Format: int64 */
+      assigneeId?: number;
+      assigneeNickname?: string;
+      /** @enum {string} */
+      inquirerType?: 'MEMBER' | 'GUEST';
+      guestId?: string;
+      inquirerNickname?: string;
+      inquirerEmail?: string;
+      lastMessage?: components['schemas']['LastMessageResponse'];
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      closedAt?: string;
+    };
+    LastMessageResponse: {
+      content?: string;
+      /** @enum {string} */
+      senderType?: 'USER' | 'ADMIN';
+      adminNickname?: string;
+      /** Format: date-time */
+      createdAt?: string;
+    };
+    PageInquiryRoomResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['InquiryRoomResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      first?: boolean;
+      last?: boolean;
+      empty?: boolean;
+    };
+    InquiryRoomDetailResponse: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int64 */
+      memberId?: number;
+      guestId?: string;
+      /** Format: int64 */
+      categoryId?: number;
+      /** @enum {string} */
+      status?: 'UNCONFIRMED' | 'IN_PROGRESS' | 'DONE' | 'ON_HOLD';
+      /** Format: int64 */
+      assigneeId?: number;
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      closedAt?: string;
+    };
+    InquiryMessagePageResponse: {
+      messages?: components['schemas']['InquiryMessageResponse'][];
+      hasNext?: boolean;
+    };
+    InquiryCategoryResponse: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
+    };
+    MigrationScriptResponse: {
+      fileName?: string;
+      content?: string;
+      sourceUrl?: string;
+    };
+    FlywayConflictResponse: {
+      version?: string;
+      sources?: string[];
+      suggestedVersion?: string;
+    };
+    FlywayLeapfrogResponse: {
+      mineVersion?: string;
+      aheadVersion?: string;
+      sharedTables?: string[];
+      severity?: string;
+    };
+    FlywayOverviewResponse: {
+      deployBranch?: string;
+      integrationBranch?: string;
+      latestVersion?: string;
+      /** Format: int32 */
+      appliedCount?: number;
+      /** Format: int32 */
+      pendingCount?: number;
+      nextSafeMinor?: string;
+      nextSafeMajor?: string;
+      migrations?: components['schemas']['MigrationItemResponse'][];
+      conflicts?: components['schemas']['FlywayConflictResponse'][];
+      leapfrogWarnings?: components['schemas']['FlywayLeapfrogResponse'][];
+    };
+    MigrationItemResponse: {
+      version?: string;
+      description?: string;
+      fileName?: string;
+      status?: string;
+      createsNewTable?: boolean;
+      tables?: string[];
+      sourceLabel?: string;
+      sourceUrl?: string;
+      author?: string;
+    };
+    GetFaqResponse: {
+      /** Format: int64 */
+      id?: number;
+      question?: string;
+      faqCategory?: string;
+      /** Format: date */
+      createdAt?: string;
+    };
+    PageGetFaqResponse: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components['schemas']['GetFaqResponse'][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components['schemas']['SortObject'];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components['schemas']['PageableObject'];
+      first?: boolean;
+      last?: boolean;
+      empty?: boolean;
+    };
+    GetFaqDetailResponse: {
+      question?: string;
+      /** @enum {string} */
+      faqCategory?:
+        | 'INTRODUCTION'
+        | 'FEATURE'
+        | 'ACCOUNT'
+        | 'NEWSLETTER'
+        | 'ETC';
+      answer?: string;
+      /** Format: date */
+      createdAt?: string;
+    };
     GetEventResponse: {
       /** Format: int64 */
       id?: number;
@@ -1715,6 +2272,12 @@ export interface components {
       /** Format: date-time */
       sentAt?: string;
     };
+    DailyJoinedMembersResponse: {
+      /** Format: date */
+      date?: string;
+      /** Format: int64 */
+      count?: number;
+    };
     DashboardStatsResponse: {
       /** Format: int64 */
       totalMembers?: number;
@@ -1732,6 +2295,9 @@ export interface components {
       withdrawnMembersThisMonth?: number;
       /** Format: int64 */
       todayActiveMembers?: number;
+      dailyJoinedTrend?: components['schemas']['DailyJoinedMembersResponse'][];
+      /** Format: date-time */
+      aggregatedAt?: string;
     };
     GetChallengeResponse: {
       /** Format: int64 */
@@ -2188,7 +2754,13 @@ export interface operations {
   };
   getUnsubscribePatterns: {
     parameters: {
-      query?: never;
+      query?: {
+        /**
+         * @description 패턴 목록 타입
+         * @example AUTO_UNSUBSCRIBE
+         */
+        patternType?: 'AUTO_UNSUBSCRIBE' | 'PARSE';
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -2523,6 +3095,269 @@ export interface operations {
       };
     };
   };
+  getMessages: {
+    parameters: {
+      query?: {
+        /** @description 커서(마지막으로 받은 메시지 ID) */
+        cursor?: number;
+        /** @description 페이지 크기 */
+        size?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessagePageResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  sendMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SendAdminInquiryMessageRequest'];
+      };
+    };
+    responses: {
+      /** @description 전송 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessageResponse'];
+        };
+      };
+      /** @description 종료된 채팅방 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 채팅방 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  uploadImages: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'multipart/form-data': {
+          images: string[];
+        };
+      };
+    };
+    responses: {
+      /** @description 업로드 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryImageUploadResponse'];
+        };
+      };
+      /** @description 이미지 개수 초과 등 잘못된 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getCategories: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryCategoryResponse'][];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  createCategory: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateInquiryCategoryRequest'];
+      };
+    };
+    responses: {
+      /** @description 생성 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 이름 중복 등 잘못된 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  createWipIssue: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateWipIssueRequest'];
+      };
+    };
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CreateWipIssueResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CreateWipIssueResponse'];
+        };
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CreateWipIssueResponse'];
+        };
+      };
+    };
+  };
   upload: {
     parameters: {
       query?: never;
@@ -2574,6 +3409,97 @@ export interface operations {
       };
       /** @description 업로드 실패 */
       500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getFaqs: {
+    parameters: {
+      query?: {
+        faqCategory?:
+          | 'INTRODUCTION'
+          | 'FEATURE'
+          | 'ACCOUNT'
+          | 'NEWSLETTER'
+          | 'ETC';
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageGetFaqResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  createFaq: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description faqCategory: [INTRODUCTION, FEATURE, ACCOUNT, NEWSLETTER, ETC] 중 하나 선택 */
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateFaqRequest'];
+      };
+    };
+    responses: {
+      /** @description FAQ 생성 성공 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
         headers: {
           [name: string]: unknown;
         };
@@ -3131,7 +4057,7 @@ export interface operations {
       };
     };
   };
-  getCategories: {
+  getCategories_1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3158,7 +4084,7 @@ export interface operations {
       };
     };
   };
-  createCategory: {
+  createCategory_1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3910,6 +4836,465 @@ export interface operations {
       };
     };
   };
+  changeStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateInquiryRoomStatusRequest'];
+      };
+    };
+    responses: {
+      /** @description 변경 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 채팅방 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+        /** @description 메시지 ID */
+        messageId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 삭제 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 메시지 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  updateMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+        /** @description 메시지 ID */
+        messageId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateAdminInquiryMessageRequest'];
+      };
+    };
+    responses: {
+      /** @description 수정 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryMessageResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 메시지 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  changeCategory: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateInquiryRoomCategoryRequest'];
+      };
+    };
+    responses: {
+      /** @description 변경 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 채팅방 또는 카테고리 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  assignRoom: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AssignInquiryRoomRequest'];
+      };
+    };
+    responses: {
+      /** @description 지정 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 채팅방 또는 어드민 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteCategory: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 삭제할 카테고리 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 삭제 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 사용 중인 카테고리 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 카테고리 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  updateCategory: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 수정할 카테고리 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateInquiryCategoryRequest'];
+      };
+    };
+    responses: {
+      /** @description 수정 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 카테고리 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getFaq: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 조회할 FAQ ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 상세 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['GetFaqDetailResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 FAQ */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  deleteFaq: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 삭제할 FAQ ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description FAQ 삭제 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 요청 값 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  updateFaq: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 수정할 FAQ ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateFaqRequest'];
+      };
+    };
+    responses: {
+      /** @description FAQ 수정 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 FAQ */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   getEvent: {
     parameters: {
       query?: never;
@@ -4527,7 +5912,7 @@ export interface operations {
       };
     };
   };
-  deleteCategory: {
+  deleteCategory_1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4561,7 +5946,7 @@ export interface operations {
       };
     };
   };
-  updateCategory: {
+  updateCategory_1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4748,6 +6133,154 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getRooms: {
+    parameters: {
+      query?: {
+        status?: 'UNCONFIRMED' | 'IN_PROGRESS' | 'DONE' | 'ON_HOLD';
+        assigneeId?: number;
+        categoryId?: number;
+        /** @description Zero-based page index (0..N) */
+        page?: number;
+        /** @description The size of the page to be returned */
+        size?: number;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 목록 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['PageInquiryRoomResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getRoom: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 채팅방 ID */
+        roomId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 상세 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomDetailResponse'];
+        };
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 존재하지 않는 채팅방 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getScript: {
+    parameters: {
+      query: {
+        fileName: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MigrationScriptResponse'];
+        };
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['MigrationScriptResponse'];
+        };
+      };
+    };
+  };
+  getOverview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['FlywayOverviewResponse'];
+        };
+      };
+      /** @description 권한 없음 */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['FlywayOverviewResponse'];
+        };
       };
     };
   };
@@ -5028,6 +6561,38 @@ export interface operations {
       };
       /** @description 수정할 수 없는 상태 */
       409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  refreshCache: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 인증 실패 (로그인 필요) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 권한 없음 */
+      403: {
         headers: {
           [name: string]: unknown;
         };

@@ -20,10 +20,19 @@ export const getUserInfo = async () => {
 
 type GetUserProfileResponse = components['schemas']['MemberProfileResponse'];
 
-export const getUserProfile = () =>
-  fetcher.get<GetUserProfileResponse>({
-    path: '/members/me/profile',
-  });
+export const getUserProfile = async () => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+  try {
+    return await fetcher.get<GetUserProfileResponse>({
+      path: '/members/me/profile',
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
 
 type PatchWeeklyReadingGoalParams =
   operations['updateWeeklyGoalCount']['parameters']['query'];

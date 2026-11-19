@@ -1,5 +1,5 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useDevice } from '@/hooks/useDevice';
 import type { GetMemberChallengeProgressResponse } from '@/apis/challenge/challenge.api';
 
 interface UserChallengeSummaryCardProps {
@@ -157,8 +157,7 @@ const StreakCount = styled.div<{ isMobile: boolean }>`
 
   color: ${({ theme }) => theme.colors.white};
   font: ${({ isMobile, theme }) =>
-    isMobile ? theme.fonts.t6Regular : theme.fonts.t7Bold};
-  font-weight: 700;
+    isMobile ? theme.fonts.t6Bold : theme.fonts.t7Bold};
   line-height: 1;
 
   transform: translate(-50%, -50%);

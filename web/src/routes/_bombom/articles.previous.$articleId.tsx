@@ -1,14 +1,11 @@
 import { theme } from '@bombom/shared';
+import { Button, ChevronIcon, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useRouterState } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
 import MobileDetailHeader from '@/components/Header/MobileDetailHeader';
-import ChevronIcon from '@/components/icons/ChevronIcon';
 import { useAuth } from '@/contexts/AuthContext';
-import { useDevice } from '@/hooks/useDevice';
 import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import { processContent } from '@/pages/detail/components/ArticleContent/ArticleContent.utils';
 import ArticleFontSizeControl from '@/pages/detail/components/ArticleFontSizeControl/ArticleFontSizeControl';
@@ -17,8 +14,20 @@ import { useArticleFontSize } from '@/pages/detail/hooks/useArticleFontSize';
 import PreviousArticleContent from '@/pages/newsletter-detail/components/PreviousArticleContent';
 import { openSubscribeLink } from '@/pages/newsletter-detail/utils';
 import { cutHtmlByTextRatio } from '@/utils/element';
+import { throwNotFoundForApiError } from '@/utils/routeError';
 
 export const Route = createFileRoute('/_bombom/articles/previous/$articleId')({
+  loader: async ({ context, params }) => {
+    try {
+      const article = await context.queryClient.fetchQuery(
+        queries.previousArticleDetail({ id: Number(params.articleId) }),
+      );
+
+      return { article };
+    } catch (error) {
+      return throwNotFoundForApiError(error, [400, 404]);
+    }
+  },
   head: () => ({
     meta: [
       {
@@ -37,16 +46,12 @@ function RouteComponent() {
   const device = useDevice();
   const { percentage, selectFontSize } = useArticleFontSize();
   const { userProfile, isLoggedIn } = useAuth();
-  const { articleId } = Route.useParams();
+  const { article } = Route.useLoaderData();
   const { subscribeUrl } = useRouterState({
     select: (routerState) => ({
       subscribeUrl: routerState.location.state.subscribeUrl,
     }),
   });
-  const articleIdNumber = Number(articleId);
-  const { data: article } = useQuery(
-    queries.previousArticleDetail({ id: articleIdNumber }),
-  );
 
   const shouldShowSubscribePrompt =
     !!article?.exposureRatio && article.exposureRatio !== 100;
@@ -59,8 +64,6 @@ function RouteComponent() {
     () => processContent(article?.newsletter.name ?? '', bodyContent),
     [article?.newsletter.name, bodyContent],
   );
-
-  if (!article) return null;
 
   const handleSubscribeClick = () => {
     trackEvent({

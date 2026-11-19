@@ -1,11 +1,9 @@
+import { Flex, Text, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import MedalDonutChart from './MedalDonutChart';
 import { MEDAL_COLORS, MEDAL_LABEL } from '../../constants/challenge';
-import Flex from '@/components/Flex';
-import Text from '@/components/Text';
-import { useDevice } from '@/hooks/useDevice';
 import type { GetMyChallengeSummaryResponse } from '@/apis/members/members.api';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import CrownIcon from '#/assets/svg/crown-colored.svg';
 import MedalIcon from '#/assets/svg/medal.svg';
 import TrophyColoredIcon from '#/assets/svg/trophy-colored.svg';

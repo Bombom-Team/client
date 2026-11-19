@@ -1,9 +1,9 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import CommentCard from './CommentCard';
 import CommentEmptyState from './CommentEmptyState';
 import CommentSkeletonList from './CommentSkeletonList';
 import { useInfiniteComments } from '../hooks/useInfiniteComments';
-import { useDevice } from '@/hooks/useDevice';
 
 const NEXT_PAGE_SKELETON_COUNT = 1;
 

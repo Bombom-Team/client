@@ -1,12 +1,11 @@
 import { theme } from '@bombom/shared/theme';
+import { Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
-import Button from '@/components/Button/Button';
-import { useDevice } from '@/hooks/useDevice';
 import { navigateToOAuthLogin } from '@/utils/auth';
 import { downloadApp } from '@/utils/downloadApp';
 import { getResponsiveValue } from '@/utils/responsive';
-import type { Device } from '@/hooks/useDevice';
+import type { Device } from '@bombom/shared/ui-web';
 import logo from '#/assets/avif/logo.avif';
 import AppleIcon from '#/assets/svg/apple.svg';
 

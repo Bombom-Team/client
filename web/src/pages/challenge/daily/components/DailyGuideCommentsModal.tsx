@@ -1,8 +1,7 @@
+import { Modal, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
-import Modal from '@/components/Modal/Modal';
-import { useDevice } from '@/hooks/useDevice';
 import { convertRelativeTime } from '@/pages/challenge/comments/utils/date';
 import type { components } from '@/types/openapi';
 
@@ -164,8 +163,7 @@ const CommentMeta = styled.div`
 
 const Nickname = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Regular};
-  font-weight: 600;
+  font: ${({ theme }) => theme.fonts.t6SemiBold};
 `;
 
 const Timestamp = styled.time`

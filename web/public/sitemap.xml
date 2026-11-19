@@ -12,4 +12,12 @@
     <priority>1.0</priority>
   </url>
 
+  <!-- 고객센터 FAQ -->
+  <url>
+    <loc>https://www.bombom.news/support</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
 </urlset>

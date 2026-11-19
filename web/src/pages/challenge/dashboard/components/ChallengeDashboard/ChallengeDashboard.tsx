@@ -1,5 +1,5 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useDevice } from '@/hooks/useDevice';
 import { useChallengeDashboardData } from '@/pages/challenge/dashboard/hooks/useChallengeDashboardData';
 import { formatDate } from '@/utils/date';
 import type { GetChallengesTeamsProgressResponse } from '@/apis/challenge/challenge.api';

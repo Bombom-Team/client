@@ -1,7 +1,6 @@
+import { ServiceSwitcher, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import HeaderLogo from '@/components/Header/HeaderLogo';
-import { ServiceSwitcher } from '@bombom/shared/ui-web';
-import { useDevice } from '@bombom/shared/ui-web';
 import type { Device } from '@bombom/shared/ui-web';
 
 const BOMBOM_SERVICE_URL = 'https://bombom.news';

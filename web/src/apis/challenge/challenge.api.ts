@@ -326,14 +326,16 @@ export const getChallengeReviews = async ({
   });
 };
 
-export const getMyReview = async (challengeId: number) => {
+export const getMyReview = async (
+  challengeId: number,
+): Promise<MyReview | null> => {
   try {
     return await fetcher.get<MyReview>({
       path: `/challenges/${challengeId}/reviews/me`,
     });
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
-      return;
+      return null;
     }
     throw error;
   }

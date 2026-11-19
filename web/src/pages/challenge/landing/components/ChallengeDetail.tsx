@@ -1,9 +1,9 @@
 import { theme } from '@bombom/shared';
+import { Flex, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import DetailCard from './DetailCard';
-import Flex from '@/components/Flex';
-import { useDevice, type Device } from '@/hooks/useDevice';
 import type { DetailCardProps } from './DetailCard';
+import type { Device } from '@bombom/shared/ui-web';
 import commentCard1 from '#/assets/avif/challenge-comment1.avif';
 import commentCard2 from '#/assets/avif/challenge-comment2.avif';
 import commentCard3 from '#/assets/avif/challenge-comment3.avif';

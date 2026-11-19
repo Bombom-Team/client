@@ -8,10 +8,14 @@ import { Platform } from 'react-native';
 import { AuthProvider } from '../contexts/AuthContext';
 import { EmotionThemeProvider } from '../contexts/ThemeContext';
 import { WebViewProvider } from '../contexts/WebViewContext';
+import { initSentry } from '../libs/sentry/initSentry';
 
+import * as Sentry from '@sentry/react-native';
+
+initSentry();
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+function RootLayout() {
   useEffect(() => {
     if (Platform.OS === 'web') return;
 
@@ -33,3 +37,5 @@ export default function RootLayout() {
     </EmotionThemeProvider>
   );
 }
+
+export default Sentry.wrap(RootLayout);
