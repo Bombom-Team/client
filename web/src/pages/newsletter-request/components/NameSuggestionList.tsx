@@ -1,8 +1,7 @@
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
-import { getRequestCount } from '../utils/newsletterRequestDisplay';
-import { queries } from '@/apis/queries';
-import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import RegisteredNewsletterCard from './RegisteredNewsletterCard';
+import RequestedNewsletterRow from './RequestedNewsletterRow';
 import type {
   NewsletterRequest,
   NewsletterSuggestion,
@@ -10,88 +9,91 @@ import type {
 
 interface NameSuggestionListProps {
   keyword: string;
-  onRequestSelect: (request: NewsletterRequest) => void;
-  onNewsletterSelect: (newsletter: NewsletterSuggestion) => void;
+  requests: NewsletterRequest[];
+  newsletters: NewsletterSuggestion[];
+  isLikePending: boolean;
+  onLike: (request: NewsletterRequest) => void;
 }
 
-const SUGGESTION_DEBOUNCE_MS = 300;
-
+// 이름을 치는 동안 입력창 아래에 검색 결과처럼 보여준다.
+// 이미 봄봄에 있는 뉴스레터는 여기서 바로 구독하고, 신청 중인 뉴스레터는 바로 공감할 수 있다.
 const NameSuggestionList = ({
   keyword,
-  onRequestSelect,
-  onNewsletterSelect,
+  requests,
+  newsletters,
+  isLikePending,
+  onLike,
 }: NameSuggestionListProps) => {
-  const debouncedKeyword = useDebouncedValue(keyword, SUGGESTION_DEBOUNCE_MS);
-  const { data } = useQuery(
-    queries.newsletterRequestSuggestions({ keyword: debouncedKeyword }),
-  );
+  const device = useDevice();
+  const isMobile = device === 'mobile';
+  const hasResults = requests.length > 0 || newsletters.length > 0;
 
-  const requests = data?.requests ?? [];
-  const newsletters = data?.newsletters ?? [];
-  if (requests.length === 0 && newsletters.length === 0) return null;
+  if (!hasResults) return null;
 
   return (
-    <Container aria-live="polite">
-      <Label>혹시 이 뉴스레터인가요?</Label>
-      {newsletters.map((newsletter) => (
-        <SuggestionButton
-          key={`newsletter-${newsletter.newsletterId}`}
-          type="button"
-          onClick={() => onNewsletterSelect(newsletter)}
-        >
-          <SuggestionName>{newsletter.name}</SuggestionName>
-          <SuggestionMeta>이미 봄봄에 있어요</SuggestionMeta>
-        </SuggestionButton>
-      ))}
-      {requests.map((request) => (
-        <SuggestionButton
-          key={`request-${request.id}`}
-          type="button"
-          onClick={() => onRequestSelect(request)}
-        >
-          <SuggestionName>{request.name}</SuggestionName>
-          <SuggestionMeta>신청 {getRequestCount(request)}명</SuggestionMeta>
-        </SuggestionButton>
-      ))}
+    <Container isPanel={!isMobile}>
+      {newsletters.length > 0 && (
+        <Section aria-label="봄봄에 이미 있어요">
+          <SectionLabel>봄봄에 이미 있어요</SectionLabel>
+          {newsletters.map((newsletter) => (
+            <RegisteredNewsletterCard
+              key={newsletter.newsletterId}
+              newsletterId={newsletter.newsletterId}
+              name={newsletter.name}
+              imageUrl={newsletter.imageUrl}
+              keyword={keyword}
+              variant={isMobile ? 'card' : 'row'}
+            />
+          ))}
+        </Section>
+      )}
+      {requests.length > 0 && (
+        <Section aria-label="신청 중이에요">
+          <SectionLabel>신청 중이에요</SectionLabel>
+          {requests.map((request) => (
+            <RequestedNewsletterRow
+              key={request.id}
+              request={request}
+              keyword={keyword}
+              isLikePending={isLikePending}
+              onLike={onLike}
+            />
+          ))}
+        </Section>
+      )}
     </Container>
   );
 };
 
 export default NameSuggestionList;
 
-const Container = styled.div`
+const Container = styled.div<{ isPanel: boolean }>`
   display: flex;
-  gap: 4px;
+  gap: 20px;
+  flex-direction: column;
+
+
+  ${({ isPanel, theme }) =>
+    isPanel &&
+    `
+    padding: 12px;
+    border: 1px solid ${theme.colors.stroke};
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgb(0 0 0 / 8%);
+
+    gap: 12px;
+
+    background-color: ${theme.colors.white};
+  `}
+`;
+
+const Section = styled.section`
+  display: flex;
+  gap: 8px;
   flex-direction: column;
 `;
 
-const Label = styled.span`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-`;
-
-const SuggestionButton = styled.button`
-  padding: 12px 8px;
-  border-radius: 12px;
-
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: space-between;
-
-  text-align: left;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.backgroundHover};
-  }
-`;
-
-const SuggestionName = styled.span`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t5Bold};
-`;
-
-const SuggestionMeta = styled.span`
-  color: ${({ theme }) => theme.colors.textTertiary};
-  font: ${({ theme }) => theme.fonts.t3Regular};
+const SectionLabel = styled.h2`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t3Bold};
 `;
