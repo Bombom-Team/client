@@ -11,7 +11,9 @@ import DuplicateRequestSheet, {
 import FunnelLayout from './FunnelLayout';
 import FunnelTitle from './FunnelTitle';
 import NameSuggestionList from './NameSuggestionList';
+import RegisteredNewsletterCard from './RegisteredNewsletterCard';
 import useCreateNewsletterRequestMutation from '../hooks/useCreateNewsletterRequestMutation';
+import useNameSuggestions from '../hooks/useNameSuggestions';
 import useToggleNewsletterRequestLikeMutation from '../hooks/useToggleNewsletterRequestLikeMutation';
 import { getRequestCount } from '../utils/newsletterRequestDisplay';
 import {
@@ -23,10 +25,7 @@ import { queries } from '@/apis/queries';
 import InputField from '@/components/InputField/InputField';
 import RequireLoginCard from '@/components/RequireLoginCard/RequireLoginCard';
 import { useAuth } from '@/contexts/AuthContext';
-import type {
-  NewsletterRequest,
-  NewsletterSuggestion,
-} from '@/apis/newsletterRequests/newsletterRequests.api';
+import type { NewsletterRequest } from '@/apis/newsletterRequests/newsletterRequests.api';
 import type { ChangeEvent } from 'react';
 import CheckIcon from '#/assets/svg/check.svg';
 import ClockIcon from '#/assets/svg/clock.svg';
@@ -75,9 +74,15 @@ const NewsletterRequestFunnel = () => {
   const [elapsed, setElapsed] = useState<string | null>(null);
   const [duplicateTarget, setDuplicateTarget] =
     useState<DuplicateTarget | null>(null);
+  // 링크 확인 결과 이미 봄봄에 있는 뉴스레터. 이동하지 않고 입력창 아래에 보여준다.
+  const [registeredNewsletterId, setRegisteredNewsletterId] = useState<
+    number | null
+  >(null);
+  const urlInputRef = useRef<HTMLInputElement>(null);
   const duplicateModal = useModal({
     onClose: () => setDuplicateTarget(null),
   });
+  const suggestions = useNameSuggestions(name);
 
   const { mutate: createRequest, isPending: isCreating } =
     useCreateNewsletterRequestMutation({
@@ -97,9 +102,7 @@ const NewsletterRequestFunnel = () => {
       },
     });
   const { mutate: toggleLike, isPending: isLiking } =
-    useToggleNewsletterRequestLikeMutation({
-      onSuccess: () => navigate({ to: BOARD_PATH }),
-    });
+    useToggleNewsletterRequestLikeMutation();
 
   const stepNumber = QUESTION_STEPS.indexOf(step) + 1;
 
@@ -117,26 +120,21 @@ const NewsletterRequestFunnel = () => {
     duplicateModal.openModal();
   };
 
-  const handleRequestSelect = (request: NewsletterRequest) => {
-    openDuplicateSheet({
-      id: request.id,
-      name: request.name,
-      requestCount: getRequestCount(request),
-      relation: toRelation(request),
-    });
-  };
-
-  const handleNewsletterSelect = (newsletter: NewsletterSuggestion) => {
-    toast.info(`${newsletter.name}은(는) 이미 봄봄에 있어요.`);
-    navigate({
-      to: '/newsletters/$newsletterId',
-      params: { newsletterId: String(newsletter.newsletterId) },
-    });
+  // 이름 단계 검색 결과에서 바로 공감한다. 결과 목록이 새로고침되며 '공감함'으로 바뀐다.
+  const handleSuggestionLike = (request: NewsletterRequest) => {
+    toggleLike({ newsletterRequestId: request.id, liked: false });
   };
 
   const handleUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUrl(event.target.value);
     setUrlError(null);
+    setRegisteredNewsletterId(null);
+  };
+
+  const resetLink = () => {
+    setUrl('');
+    setRegisteredNewsletterId(null);
+    urlInputRef.current?.focus();
   };
 
   const handleLinkNext = async () => {
@@ -152,11 +150,9 @@ const NewsletterRequestFunnel = () => {
         queries.newsletterRequestCheck({ url: toAbsoluteUrl(url) }),
       );
       if (check.result === 'REGISTERED' && check.newsletterId) {
-        toast.info('이미 봄봄에 있는 뉴스레터예요.');
-        navigate({
-          to: '/newsletters/$newsletterId',
-          params: { newsletterId: String(check.newsletterId) },
-        });
+        // 신청 직전 중복으로 돌아온 경우에도 링크 단계에서 결과를 보여준다.
+        setStep('link');
+        setRegisteredNewsletterId(check.newsletterId);
         return;
       }
       if (check.result === 'REQUESTED' && check.newsletterRequestId) {
@@ -193,10 +189,10 @@ const NewsletterRequestFunnel = () => {
 
   const handleLike = () => {
     if (!duplicateTarget || duplicateTarget.relation !== 'none') return;
-    toggleLike({
-      newsletterRequestId: duplicateTarget.id,
-      liked: false,
-    });
+    toggleLike(
+      { newsletterRequestId: duplicateTarget.id, liked: false },
+      { onSuccess: () => navigate({ to: BOARD_PATH }) },
+    );
   };
 
   const goToMyRequests = () => {
@@ -248,17 +244,24 @@ const NewsletterRequestFunnel = () => {
                 disabled={!name.trim()}
                 onClick={() => setStep('link')}
               >
-                다음
+                {suggestions.hasResults
+                  ? '찾는 게 없어요, 새로 신청할게요'
+                  : '다음'}
               </PrimaryButton>
             )}
-            {step === 'link' && (
-              <PrimaryButton
-                disabled={!url.trim() || isChecking}
-                onClick={handleLinkNext}
-              >
-                다음
-              </PrimaryButton>
-            )}
+            {step === 'link' &&
+              (registeredNewsletterId ? (
+                <TextButton variant="transparent" onClick={resetLink}>
+                  다른 링크로 다시 입력하기
+                </TextButton>
+              ) : (
+                <PrimaryButton
+                  disabled={!url.trim() || isChecking}
+                  onClick={handleLinkNext}
+                >
+                  다음
+                </PrimaryButton>
+              ))}
             {step === 'reason' && (
               <ButtonRow>
                 <SecondaryButton
@@ -309,9 +312,11 @@ const NewsletterRequestFunnel = () => {
               placeholder="예: 주간 개발 노트"
             />
             <NameSuggestionList
-              keyword={name}
-              onRequestSelect={handleRequestSelect}
-              onNewsletterSelect={handleNewsletterSelect}
+              keyword={suggestions.keyword}
+              requests={suggestions.requests}
+              newsletters={suggestions.newsletters}
+              isLikePending={isLiking}
+              onLike={handleSuggestionLike}
             />
           </>
         )}
@@ -336,7 +341,19 @@ const NewsletterRequestFunnel = () => {
               onInputChange={handleUrlChange}
               placeholder="https://"
               errorString={urlError}
+              ref={urlInputRef}
             />
+            {registeredNewsletterId && (
+              <>
+                <RegisteredNotice role="status">
+                  이 링크의 뉴스레터는 이미 봄봄에 있어요
+                </RegisteredNotice>
+                <RegisteredNewsletterCard
+                  newsletterId={registeredNewsletterId}
+                  variant="tinted"
+                />
+              </>
+            )}
           </>
         )}
         {step === 'reason' && (
@@ -445,6 +462,21 @@ const SecondaryButton = styled(Button)`
   height: 52px;
 
   font: ${({ theme }) => theme.fonts.t6Bold};
+`;
+
+const TextButton = styled(Button)`
+  width: 100%;
+  height: 48px;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t5Regular};
+
+  text-decoration: underline;
+`;
+
+const RegisteredNotice = styled.p`
+  color: ${({ theme }) => theme.colors.primaryDark};
+  font: ${({ theme }) => theme.fonts.t4Bold};
 `;
 
 const ButtonRow = styled.div`

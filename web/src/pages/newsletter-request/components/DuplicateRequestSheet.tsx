@@ -1,4 +1,4 @@
-import { Button, Modal } from '@bombom/shared/ui-web';
+import { Button, Modal, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import type { Ref } from 'react';
 
@@ -42,6 +42,8 @@ const DuplicateRequestSheet = ({
   onLike,
   onViewMine,
 }: DuplicateRequestSheetProps) => {
+  const device = useDevice();
+  const isMobile = device === 'mobile';
   const isAlreadyMine = relation !== 'none';
 
   return (
@@ -49,10 +51,10 @@ const DuplicateRequestSheet = ({
       modalRef={modalRef}
       isOpen={isOpen}
       closeModal={closeModal}
-      position="bottom"
+      position={isMobile ? 'bottom' : 'center'}
       showCloseButton={false}
     >
-      <Container>
+      <Container isMobile={isMobile}>
         <HeadWrapper>
           <Title>
             {isAlreadyMine
@@ -85,8 +87,9 @@ const DuplicateRequestSheet = ({
 
 export default DuplicateRequestSheet;
 
-const Container = styled.div`
-  width: 100%;
+const Container = styled.div<{ isMobile: boolean }>`
+  width: ${({ isMobile }) => (isMobile ? '100%' : '400px')};
+  max-width: 100%;
   padding: 8px 4px 4px;
 
   display: flex;
