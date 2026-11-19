@@ -10,7 +10,6 @@ import {
   FiGitPullRequest,
   FiHelpCircle,
   FiHome,
-  FiInbox,
   FiMail,
   FiMessageSquare,
   FiUsers,
@@ -70,13 +69,6 @@ export const Sidebar = () => {
         >
           <FiMail />
           <span>뉴스레터 관리</span>
-        </NavItem>
-        <NavItem
-          to="/newsletter-requests"
-          $isActive={currentPath.startsWith('/newsletter-requests')}
-        >
-          <FiInbox />
-          <span>뉴스레터 신청</span>
         </NavItem>
         <NavItem to="/blog" $isActive={currentPath.startsWith('/blog')}>
           <FiEdit />
