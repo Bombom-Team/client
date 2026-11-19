@@ -15,6 +15,17 @@ describe('splitByKeyword', () => {
     ]);
   });
 
+  it('소문자로 바꾸면 길이가 바뀌는 문자가 앞에 있어도 위치가 어긋나지 않는다.', () => {
+    expect(splitByKeyword('İDev', 'dev')).toEqual([
+      { text: 'İ', isMatch: false },
+      { text: 'Dev', isMatch: true },
+    ]);
+    expect(splitByKeyword('İDev', 'İd')).toEqual([
+      { text: 'İD', isMatch: true },
+      { text: 'ev', isMatch: false },
+    ]);
+  });
+
   it('여러 번 나오면 모두 강조한다.', () => {
     expect(splitByKeyword('개발 그리고 개발', '개발')).toEqual([
       { text: '개발', isMatch: true },
