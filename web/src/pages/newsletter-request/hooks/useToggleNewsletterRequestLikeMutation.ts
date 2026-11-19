@@ -6,17 +6,17 @@ import {
 } from '@/apis/newsletterRequests/newsletterRequests.api';
 import { queries } from '@/apis/queries';
 
-type ToggleNewsletterRequestLikeVariables = {
+interface ToggleNewsletterRequestLikeVariables {
   newsletterRequestId: number;
   liked: boolean;
-};
+}
 
-type UseToggleNewsletterRequestLikeMutationOptions = {
+interface UseToggleNewsletterRequestLikeMutationParams {
   onSuccess?: () => void;
-};
+}
 
 const useToggleNewsletterRequestLikeMutation = (
-  options?: UseToggleNewsletterRequestLikeMutationOptions,
+  options?: UseToggleNewsletterRequestLikeMutationParams,
 ) => {
   const queryClient = useQueryClient();
 

@@ -15,7 +15,7 @@ export type DraftCollectStatus =
   | 'FAILED';
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type NewsletterRequestSummary = {
+export interface NewsletterRequestSummary {
   id: number;
   requestedName: string;
   requestedUrl: string;
@@ -25,10 +25,10 @@ export type NewsletterRequestSummary = {
   draftName: string | null;
   imageUrl: string | null;
   createdAt: string;
-};
+}
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type NewsletterRequestDraft = {
+export interface NewsletterRequestDraft {
   collectStatus: DraftCollectStatus;
   collectAttemptCount: number;
   collectStartedAt: string | null;
@@ -45,8 +45,9 @@ export type NewsletterRequestDraft = {
   subscribeMethod: string | null;
   previousNewsletterUrl: string | null;
   missingFields: string[];
-};
+}
 
+// fetcher의 Query 제약(인덱스 시그니처)을 만족해야 해서 interface 대신 type으로 둔다.
 export type GetNewsletterRequestsParams = {
   status?: NewsletterRequestStatus;
 };
@@ -63,7 +64,7 @@ export const getNewsletterRequests = async (
 };
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type GetNewsletterRequestResponse = {
+export interface GetNewsletterRequestResponse {
   id: number;
   requestedName: string;
   requestedUrl: string;
@@ -75,7 +76,7 @@ export type GetNewsletterRequestResponse = {
   rejectReason: string | null;
   createdAt: string;
   draft: NewsletterRequestDraft;
-};
+}
 
 export const getNewsletterRequest = async (id: number) => {
   return fetcher.get<GetNewsletterRequestResponse>({
@@ -85,6 +86,7 @@ export const getNewsletterRequest = async (id: number) => {
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
 // 초안 전체를 보낸다. null인 필드는 서버에서 비운다.
+// fetcher의 JsonBody 제약(인덱스 시그니처)을 만족해야 해서 interface 대신 type으로 둔다.
 export type UpdateNewsletterRequestDraftBody = {
   name: string | null;
   description: string | null;
@@ -99,10 +101,10 @@ export type UpdateNewsletterRequestDraftBody = {
   previousNewsletterUrl: string | null;
 };
 
-export type UpdateNewsletterRequestDraftParams = {
+export interface UpdateNewsletterRequestDraftParams {
   id: number;
   body: UpdateNewsletterRequestDraftBody;
-};
+}
 
 export const updateNewsletterRequestDraft = async ({
   id,
@@ -121,9 +123,9 @@ export const recollectNewsletterRequest = async (id: number) => {
 };
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type ApproveNewsletterRequestResponse = {
+export interface ApproveNewsletterRequestResponse {
   newsletterId: number;
-};
+}
 
 export const approveNewsletterRequest = async (id: number) => {
   return fetcher.post<Record<string, never>, ApproveNewsletterRequestResponse>({
@@ -131,10 +133,10 @@ export const approveNewsletterRequest = async (id: number) => {
   });
 };
 
-export type RejectNewsletterRequestParams = {
+export interface RejectNewsletterRequestParams {
   id: number;
   reason: string;
-};
+}
 
 export const rejectNewsletterRequest = async ({
   id,

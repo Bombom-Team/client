@@ -9,6 +9,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
 import { navigateToOAuthLogin } from '@/utils/auth';
 import { isInAppBrowser } from '@/utils/inAppBrowser';
+import { savePostSignupRedirect } from '@/utils/postSignupRedirect';
 import type { Ref } from 'react';
 import AppleIcon from '#/assets/svg/apple.svg';
 import GoogleIcon from '#/assets/svg/google.svg';
@@ -32,6 +33,8 @@ const LoginSheet = ({
   const navigate = useNavigate();
 
   const handleGoogleLogin = async () => {
+    // 처음 가입하는 사람은 /signup을 거치므로, 가입 후에도 돌아올 수 있게 남겨 둔다.
+    savePostSignupRedirect(redirectPath);
     if (isWebView()) {
       // 앱은 로그인에 성공하면 현재 URL을 새로고침한다. 돌아올 화면으로 먼저 이동해 둔다.
       closeModal();
@@ -47,10 +50,12 @@ const LoginSheet = ({
   };
 
   const handleAppleLogin = () => {
+    savePostSignupRedirect(redirectPath);
     navigateToOAuthLogin({ provider: 'apple', redirectPath });
   };
 
   const handleSignupClick = () => {
+    savePostSignupRedirect(redirectPath);
     navigate({ to: '/login', search: { redirect: redirectPath } });
   };
 

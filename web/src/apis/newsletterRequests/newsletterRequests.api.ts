@@ -8,7 +8,7 @@ export type NewsletterRequestStatus =
   | 'REJECTED';
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type NewsletterRequest = {
+export interface NewsletterRequest {
   id: number;
   name: string;
   url: string;
@@ -19,7 +19,7 @@ export type NewsletterRequest = {
   categoryName: string | null;
   imageUrl: string | null;
   newsletterId: number | null;
-};
+}
 
 export type GetNewsletterRequestsResponse = NewsletterRequest[];
 
@@ -37,22 +37,22 @@ export const getMyNewsletterRequests = async () => {
   });
 };
 
-export type GetNewsletterRequestSuggestionsParams = {
+export interface GetNewsletterRequestSuggestionsParams {
   keyword: string;
-};
+}
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type NewsletterSuggestion = {
+export interface NewsletterSuggestion {
   newsletterId: number;
   name: string;
   imageUrl: string | null;
-};
+}
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type GetNewsletterRequestSuggestionsResponse = {
+export interface GetNewsletterRequestSuggestionsResponse {
   requests: NewsletterRequest[];
   newsletters: NewsletterSuggestion[];
-};
+}
 
 export const getNewsletterRequestSuggestions = async ({
   keyword,
@@ -63,16 +63,16 @@ export const getNewsletterRequestSuggestions = async ({
   });
 };
 
-export type GetNewsletterRequestCheckParams = {
+export interface GetNewsletterRequestCheckParams {
   url: string;
-};
+}
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type GetNewsletterRequestCheckResponse = {
+export interface GetNewsletterRequestCheckResponse {
   result: 'AVAILABLE' | 'REQUESTED' | 'REGISTERED';
   newsletterRequestId: number | null;
   newsletterId: number | null;
-};
+}
 
 export const getNewsletterRequestCheck = async ({
   url,
@@ -84,6 +84,7 @@ export const getNewsletterRequestCheck = async ({
 };
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
+// fetcher의 JsonBody 제약(인덱스 시그니처)을 만족해야 해서 interface 대신 type으로 둔다.
 export type PostNewsletterRequestParams = {
   name: string;
   url: string;
@@ -92,9 +93,9 @@ export type PostNewsletterRequestParams = {
 };
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type PostNewsletterRequestResponse = {
+export interface PostNewsletterRequestResponse {
   newsletterRequestId: number;
-};
+}
 
 export const postNewsletterRequest = async (
   body: PostNewsletterRequestParams,
@@ -108,14 +109,14 @@ export const postNewsletterRequest = async (
   });
 };
 
-export type NewsletterRequestLikeParams = {
+export interface NewsletterRequestLikeParams {
   newsletterRequestId: number;
-};
+}
 
 // TODO(BOM-1245): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type NewsletterRequestLikeResponse = {
+export interface NewsletterRequestLikeResponse {
   likeCount: number;
-};
+}
 
 export const putNewsletterRequestLike = async ({
   newsletterRequestId,

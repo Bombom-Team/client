@@ -5,13 +5,13 @@ import {
 } from '@/apis/newsletterRequests/newsletterRequests.api';
 import { queries } from '@/apis/queries';
 
-type UseCreateNewsletterRequestMutationOptions = {
+interface UseCreateNewsletterRequestMutationParams {
   onSuccess?: (response: PostNewsletterRequestResponse) => void;
   onError?: (error: Error) => void;
-};
+}
 
 const useCreateNewsletterRequestMutation = (
-  options?: UseCreateNewsletterRequestMutationOptions,
+  options?: UseCreateNewsletterRequestMutationParams,
 ) => {
   const queryClient = useQueryClient();
 
