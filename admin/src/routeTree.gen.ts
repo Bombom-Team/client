@@ -26,6 +26,7 @@ import { Route as AdminReviewersIndexRouteImport } from './routes/_admin/reviewe
 import { Route as AdminResourcesIndexRouteImport } from './routes/_admin/resources/index';
 import { Route as AdminNoticesIndexRouteImport } from './routes/_admin/notices/index';
 import { Route as AdminNewslettersIndexRouteImport } from './routes/_admin/newsletters/index';
+import { Route as AdminNewsletterRequestsIndexRouteImport } from './routes/_admin/newsletter-requests/index';
 import { Route as AdminInquiriesIndexRouteImport } from './routes/_admin/inquiries/index';
 import { Route as AdminFaqsIndexRouteImport } from './routes/_admin/faqs/index';
 import { Route as AdminEventsIndexRouteImport } from './routes/_admin/events/index';
@@ -40,6 +41,7 @@ import { Route as AdminNoticesNoticeIdRouteImport } from './routes/_admin/notice
 import { Route as AdminNewslettersNewRouteImport } from './routes/_admin/newsletters/new';
 import { Route as AdminNewslettersCategoriesRouteImport } from './routes/_admin/newsletters/categories';
 import { Route as AdminNewslettersNewsletterIdRouteImport } from './routes/_admin/newsletters/$newsletterId';
+import { Route as AdminNewsletterRequestsRequestIdRouteImport } from './routes/_admin/newsletter-requests/$requestId';
 import { Route as AdminInquiriesRoomsRouteImport } from './routes/_admin/inquiries/rooms';
 import { Route as AdminFaqsNewRouteImport } from './routes/_admin/faqs/new';
 import { Route as AdminFaqsFaqIdRouteImport } from './routes/_admin/faqs/$faqId';
@@ -145,6 +147,12 @@ const AdminNewslettersIndexRoute = AdminNewslettersIndexRouteImport.update({
   path: '/newsletters/',
   getParentRoute: () => AdminRoute,
 } as any);
+const AdminNewsletterRequestsIndexRoute =
+  AdminNewsletterRequestsIndexRouteImport.update({
+    id: '/newsletter-requests/',
+    path: '/newsletter-requests/',
+    getParentRoute: () => AdminRoute,
+  } as any);
 const AdminInquiriesIndexRoute = AdminInquiriesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -218,6 +226,12 @@ const AdminNewslettersNewsletterIdRoute =
   AdminNewslettersNewsletterIdRouteImport.update({
     id: '/newsletters/$newsletterId',
     path: '/newsletters/$newsletterId',
+    getParentRoute: () => AdminRoute,
+  } as any);
+const AdminNewsletterRequestsRequestIdRoute =
+  AdminNewsletterRequestsRequestIdRouteImport.update({
+    id: '/newsletter-requests/$requestId',
+    path: '/newsletter-requests/$requestId',
     getParentRoute: () => AdminRoute,
   } as any);
 const AdminInquiriesRoomsRoute = AdminInquiriesRoomsRouteImport.update({
@@ -354,6 +368,7 @@ export interface FileRoutesByFullPath {
   '/faqs/$faqId': typeof AdminFaqsFaqIdRouteWithChildren;
   '/faqs/new': typeof AdminFaqsNewRoute;
   '/inquiries/rooms': typeof AdminInquiriesRoomsRoute;
+  '/newsletter-requests/$requestId': typeof AdminNewsletterRequestsRequestIdRoute;
   '/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRouteWithChildren;
   '/newsletters/categories': typeof AdminNewslettersCategoriesRoute;
   '/newsletters/new': typeof AdminNewslettersNewRoute;
@@ -368,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/events/': typeof AdminEventsIndexRoute;
   '/faqs/': typeof AdminFaqsIndexRoute;
   '/inquiries/': typeof AdminInquiriesIndexRoute;
+  '/newsletter-requests': typeof AdminNewsletterRequestsIndexRoute;
   '/newsletters': typeof AdminNewslettersIndexRoute;
   '/notices/': typeof AdminNoticesIndexRoute;
   '/resources/': typeof AdminResourcesIndexRoute;
@@ -397,6 +413,7 @@ export interface FileRoutesByTo {
   '/events/$eventId': typeof AdminEventsEventIdRoute;
   '/faqs/new': typeof AdminFaqsNewRoute;
   '/inquiries/rooms': typeof AdminInquiriesRoomsRoute;
+  '/newsletter-requests/$requestId': typeof AdminNewsletterRequestsRequestIdRoute;
   '/newsletters/categories': typeof AdminNewslettersCategoriesRoute;
   '/newsletters/new': typeof AdminNewslettersNewRoute;
   '/notices/new': typeof AdminNoticesNewRoute;
@@ -408,6 +425,7 @@ export interface FileRoutesByTo {
   '/events': typeof AdminEventsIndexRoute;
   '/faqs': typeof AdminFaqsIndexRoute;
   '/inquiries': typeof AdminInquiriesIndexRoute;
+  '/newsletter-requests': typeof AdminNewsletterRequestsIndexRoute;
   '/newsletters': typeof AdminNewslettersIndexRoute;
   '/notices': typeof AdminNoticesIndexRoute;
   '/resources': typeof AdminResourcesIndexRoute;
@@ -447,6 +465,7 @@ export interface FileRoutesById {
   '/_admin/faqs/$faqId': typeof AdminFaqsFaqIdRouteWithChildren;
   '/_admin/faqs/new': typeof AdminFaqsNewRoute;
   '/_admin/inquiries/rooms': typeof AdminInquiriesRoomsRoute;
+  '/_admin/newsletter-requests/$requestId': typeof AdminNewsletterRequestsRequestIdRoute;
   '/_admin/newsletters/$newsletterId': typeof AdminNewslettersNewsletterIdRouteWithChildren;
   '/_admin/newsletters/categories': typeof AdminNewslettersCategoriesRoute;
   '/_admin/newsletters/new': typeof AdminNewslettersNewRoute;
@@ -461,6 +480,7 @@ export interface FileRoutesById {
   '/_admin/events/': typeof AdminEventsIndexRoute;
   '/_admin/faqs/': typeof AdminFaqsIndexRoute;
   '/_admin/inquiries/': typeof AdminInquiriesIndexRoute;
+  '/_admin/newsletter-requests/': typeof AdminNewsletterRequestsIndexRoute;
   '/_admin/newsletters/': typeof AdminNewslettersIndexRoute;
   '/_admin/notices/': typeof AdminNoticesIndexRoute;
   '/_admin/resources/': typeof AdminResourcesIndexRoute;
@@ -501,6 +521,7 @@ export interface FileRouteTypes {
     | '/faqs/$faqId'
     | '/faqs/new'
     | '/inquiries/rooms'
+    | '/newsletter-requests/$requestId'
     | '/newsletters/$newsletterId'
     | '/newsletters/categories'
     | '/newsletters/new'
@@ -515,6 +536,7 @@ export interface FileRouteTypes {
     | '/events/'
     | '/faqs/'
     | '/inquiries/'
+    | '/newsletter-requests'
     | '/newsletters'
     | '/notices/'
     | '/resources/'
@@ -544,6 +566,7 @@ export interface FileRouteTypes {
     | '/events/$eventId'
     | '/faqs/new'
     | '/inquiries/rooms'
+    | '/newsletter-requests/$requestId'
     | '/newsletters/categories'
     | '/newsletters/new'
     | '/notices/new'
@@ -555,6 +578,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/faqs'
     | '/inquiries'
+    | '/newsletter-requests'
     | '/newsletters'
     | '/notices'
     | '/resources'
@@ -593,6 +617,7 @@ export interface FileRouteTypes {
     | '/_admin/faqs/$faqId'
     | '/_admin/faqs/new'
     | '/_admin/inquiries/rooms'
+    | '/_admin/newsletter-requests/$requestId'
     | '/_admin/newsletters/$newsletterId'
     | '/_admin/newsletters/categories'
     | '/_admin/newsletters/new'
@@ -607,6 +632,7 @@ export interface FileRouteTypes {
     | '/_admin/events/'
     | '/_admin/faqs/'
     | '/_admin/inquiries/'
+    | '/_admin/newsletter-requests/'
     | '/_admin/newsletters/'
     | '/_admin/notices/'
     | '/_admin/resources/'
@@ -752,6 +778,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewslettersIndexRouteImport;
       parentRoute: typeof AdminRoute;
     };
+    '/_admin/newsletter-requests/': {
+      id: '/_admin/newsletter-requests/';
+      path: '/newsletter-requests';
+      fullPath: '/newsletter-requests';
+      preLoaderRoute: typeof AdminNewsletterRequestsIndexRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
     '/_admin/inquiries/': {
       id: '/_admin/inquiries/';
       path: '/';
@@ -848,6 +881,13 @@ declare module '@tanstack/react-router' {
       path: '/newsletters/$newsletterId';
       fullPath: '/newsletters/$newsletterId';
       preLoaderRoute: typeof AdminNewslettersNewsletterIdRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
+    '/_admin/newsletter-requests/$requestId': {
+      id: '/_admin/newsletter-requests/$requestId';
+      path: '/newsletter-requests/$requestId';
+      fullPath: '/newsletter-requests/$requestId';
+      preLoaderRoute: typeof AdminNewsletterRequestsRequestIdRouteImport;
       parentRoute: typeof AdminRoute;
     };
     '/_admin/inquiries/rooms': {
@@ -1215,10 +1255,12 @@ interface AdminRouteChildren {
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren;
   AdminResourcesRoute: typeof AdminResourcesRouteWithChildren;
   AdminIndexRoute: typeof AdminIndexRoute;
+  AdminNewsletterRequestsRequestIdRoute: typeof AdminNewsletterRequestsRequestIdRoute;
   AdminNewslettersNewsletterIdRoute: typeof AdminNewslettersNewsletterIdRouteWithChildren;
   AdminNewslettersCategoriesRoute: typeof AdminNewslettersCategoriesRoute;
   AdminNewslettersNewRoute: typeof AdminNewslettersNewRoute;
   AdminReviewersStatsRoute: typeof AdminReviewersStatsRoute;
+  AdminNewsletterRequestsIndexRoute: typeof AdminNewsletterRequestsIndexRoute;
   AdminNewslettersIndexRoute: typeof AdminNewslettersIndexRoute;
   AdminReviewersIndexRoute: typeof AdminReviewersIndexRoute;
 }
@@ -1235,11 +1277,13 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
   AdminResourcesRoute: AdminResourcesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
+  AdminNewsletterRequestsRequestIdRoute: AdminNewsletterRequestsRequestIdRoute,
   AdminNewslettersNewsletterIdRoute:
     AdminNewslettersNewsletterIdRouteWithChildren,
   AdminNewslettersCategoriesRoute: AdminNewslettersCategoriesRoute,
   AdminNewslettersNewRoute: AdminNewslettersNewRoute,
   AdminReviewersStatsRoute: AdminReviewersStatsRoute,
+  AdminNewsletterRequestsIndexRoute: AdminNewsletterRequestsIndexRoute,
   AdminNewslettersIndexRoute: AdminNewslettersIndexRoute,
   AdminReviewersIndexRoute: AdminReviewersIndexRoute,
 };

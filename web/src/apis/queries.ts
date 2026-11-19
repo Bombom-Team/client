@@ -9,6 +9,7 @@ import { highlightQueries } from './highlight/highlight.query';
 import { inquiryQueries } from './inquiry/inquiry.query';
 import { maeilMailQueries } from './maeilMail/maeilMail.query';
 import { membersQueries } from './members/members.query';
+import { newsletterRequestsQueries } from './newsletterRequests/newsletterRequests.query';
 import { newslettersQueries } from './newsletters/newsletters.query';
 import { noticeQueries } from './notice/notice.query';
 import { notificationQueries } from './notification/notification.query';
@@ -43,6 +44,9 @@ export const queries = {
 
   // newsletters
   ...newslettersQueries,
+
+  // newsletter requests
+  ...newsletterRequestsQueries,
 
   // notices
   ...noticeQueries,
