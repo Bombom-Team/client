@@ -1,10 +1,10 @@
+import { toast } from '@bombom/shared/ui-web';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   deleteNewsletterRequestLike,
   putNewsletterRequestLike,
 } from '@/apis/newsletterRequests/newsletterRequests.api';
 import { queries } from '@/apis/queries';
-import { toast } from '@/components/Toast/utils/toastActions';
 
 type ToggleNewsletterRequestLikeVariables = {
   newsletterRequestId: number;

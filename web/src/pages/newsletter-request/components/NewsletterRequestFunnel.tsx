@@ -1,4 +1,5 @@
 import { ApiError } from '@bombom/shared/apis';
+import { Button, useModal, toast } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
@@ -16,11 +17,8 @@ import {
   toHostLabel,
 } from '../utils/newsletterRequestUrl';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
 import InputField from '@/components/InputField/InputField';
-import useModal from '@/components/Modal/useModal';
 import RequireLoginCard from '@/components/RequireLoginCard/RequireLoginCard';
-import { toast } from '@/components/Toast/utils/toastActions';
 import { useAuth } from '@/contexts/AuthContext';
 import { getRequestCount } from '@/types/newsletterRequest';
 import type {

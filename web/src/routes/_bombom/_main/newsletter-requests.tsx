@@ -1,12 +1,10 @@
+import { Button, useModal, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { queries } from '@/apis/queries';
-import Button from '@/components/Button/Button';
-import useModal from '@/components/Modal/useModal';
 import { useAuth } from '@/contexts/AuthContext';
-import { useDevice } from '@/hooks/useDevice';
 import LoginSheet from '@/pages/newsletter-request/components/LoginSheet';
 import NewsletterRequestItem from '@/pages/newsletter-request/components/NewsletterRequestItem';
 import useToggleNewsletterRequestLikeMutation from '@/pages/newsletter-request/hooks/useToggleNewsletterRequestLikeMutation';

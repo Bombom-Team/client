@@ -1,10 +1,13 @@
+import {
+  Button,
+  Modal,
+  sendMessageToRN,
+  isIOS,
+  isWebView,
+} from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useNavigate } from '@tanstack/react-router';
-import Button from '@/components/Button/Button';
-import Modal from '@/components/Modal/Modal';
-import { sendMessageToRN } from '@/libs/webview/webview.utils';
 import { navigateToOAuthLogin } from '@/utils/auth';
-import { isIOS, isWebView } from '@/utils/device';
 import { isInAppBrowser } from '@/utils/inAppBrowser';
 import type { Ref } from 'react';
 import AppleIcon from '#/assets/svg/apple.svg';

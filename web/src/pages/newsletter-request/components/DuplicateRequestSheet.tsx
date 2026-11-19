@@ -1,6 +1,5 @@
+import { Button, Modal } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import Button from '@/components/Button/Button';
-import Modal from '@/components/Modal/Modal';
 import type { Ref } from 'react';
 
 interface DuplicateRequestSheetProps {
