@@ -74,7 +74,7 @@ function Index() {
   const device = useDevice();
 
   return (
-    <Container>
+    <Container isPC={device === 'pc'}>
       {device !== 'mobile' && (
         <>
           <TitleWrapper>
@@ -98,9 +98,10 @@ function Index() {
   );
 }
 
-const Container = styled.div`
+// PC는 보관함 목록과 같은 폭(1280 - 사이드바 320 - 간격 32)으로 가운데에 둔다.
+const Container = styled.div<{ isPC: boolean }>`
   width: 100%;
-  max-width: 1280px;
+  max-width: ${({ isPC }) => (isPC ? '928px' : '1280px')};
   margin: 0 auto;
 
   display: flex;
