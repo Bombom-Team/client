@@ -56,7 +56,7 @@ const RequestedNewsletterRow = ({
 export default RequestedNewsletterRow;
 
 const Container = styled.div`
-  padding: 10px 0;
+  padding: 12px 0;
 
   display: flex;
   gap: 12px;
@@ -67,7 +67,7 @@ const Thumbnail = styled.div`
   overflow: hidden;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 12px;
 
   display: flex;
   flex-shrink: 0;
@@ -127,7 +127,7 @@ const LikeButton = styled.button`
 `;
 
 const StatusLabel = styled.span`
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 999px;
 
   flex-shrink: 0;

@@ -3,7 +3,7 @@ import { Button, useModal, toast, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import DoneTimeline from './DoneTimeline';
 import DuplicateRequestSheet, {
   type DuplicateRelation,
@@ -83,29 +83,40 @@ const NewsletterRequestFunnel = () => {
     number | null
   >(null);
   const urlInputRef = useRef<HTMLInputElement>(null);
-  const nameInputRef = useRef<HTMLInputElement>(null);
+  const nameFieldRef = useRef<HTMLDivElement>(null);
   const registeredNoticeRef = useRef<HTMLParagraphElement>(null);
   // 링크 확인 응답이 늦게 와도 지금 화면과 맞을 때만 반영하려고 최신 값을 따로 둔다.
   const latestUrlRef = useRef(url);
   const latestStepRef = useRef(step);
-  latestUrlRef.current = url;
-  latestStepRef.current = step;
+  useLayoutEffect(() => {
+    latestUrlRef.current = url;
+    latestStepRef.current = step;
+  }, [url, step]);
   const duplicateModal = useModal({
     onClose: () => setDuplicateTarget(null),
   });
   const suggestions = useNameSuggestions(name);
+  // 스크린리더에는 목록 전체 대신 결과 개수만 알린다.
+  const suggestionSummary = suggestions.hasResults
+    ? `봄봄에 있는 뉴스레터 ${suggestions.newsletters.length}개, 신청 중 ${suggestions.requests.length}개`
+    : '';
   const device = useDevice();
   const isMobile = device === 'mobile';
 
-  // 모바일은 키보드가 결과를 가리기 쉬워서, 결과가 처음 뜰 때 입력창을 화면 위쪽으로 올린다.
+  // 모바일은 키보드가 결과를 가리기 쉬워서, 결과가 처음 뜰 때 이름 입력칸을 화면 위쪽으로 올린다.
+  // 단계 이동으로는 다시 올리지 않도록 결과가 생길 때만 반응한다.
   useEffect(() => {
-    if (isMobile && step === 'name' && suggestions.hasResults) {
-      nameInputRef.current?.scrollIntoView({
+    if (
+      isMobile &&
+      suggestions.hasResults &&
+      latestStepRef.current === 'name'
+    ) {
+      nameFieldRef.current?.scrollIntoView({
         block: 'start',
         behavior: 'smooth',
       });
     }
-  }, [isMobile, step, suggestions.hasResults]);
+  }, [isMobile, suggestions.hasResults]);
 
   // 링크 확인 결과로 '다음' 버튼이 사라지므로, 포커스를 안내 문구로 옮겨 스크린리더가 읽게 한다.
   useEffect(() => {
@@ -176,18 +187,16 @@ const NewsletterRequestFunnel = () => {
     }
     const requestedUrl = url;
     const requestedStep = step;
+    // 확인하는 사이 링크를 고쳤거나 다른 단계로 갔다면 지난 결과는 버린다.
+    const isStale = () =>
+      latestUrlRef.current !== requestedUrl ||
+      latestStepRef.current !== requestedStep;
     setIsChecking(true);
     try {
       const check = await queryClient.fetchQuery(
         queries.newsletterRequestCheck({ url: toAbsoluteUrl(requestedUrl) }),
       );
-      // 확인하는 사이 링크를 고쳤거나 다른 단계로 갔다면 지난 결과는 버린다.
-      if (
-        latestUrlRef.current !== requestedUrl ||
-        latestStepRef.current !== requestedStep
-      ) {
-        return;
-      }
+      if (isStale()) return;
       if (check.result === 'REGISTERED' && check.newsletterId) {
         // 신청 직전 중복으로 돌아온 경우에만 링크 단계로 되돌려 결과를 보여준다.
         if (isFromSubmit) setStep('link');
@@ -198,6 +207,7 @@ const NewsletterRequestFunnel = () => {
         const requests = await queryClient.fetchQuery(
           queries.newsletterRequests(),
         );
+        if (isStale()) return;
         const found = requests.find(
           (request) => request.id === check.newsletterRequestId,
         );
@@ -341,26 +351,27 @@ const NewsletterRequestFunnel = () => {
               }
               description="뉴스레터 이름을 알려주세요."
             />
-            <InputField
-              name="newsletter-name"
-              label="뉴스레터 이름"
-              inputValue={name}
-              onInputChange={(event) =>
-                setName(event.target.value.slice(0, NAME_MAX_LENGTH))
-              }
-              placeholder="예: 주간 개발 노트"
-              ref={nameInputRef}
-              style={{ scrollMarginTop: '96px' }}
-            />
-            <div aria-live="polite">
-              <NameSuggestionList
-                keyword={suggestions.keyword}
-                requests={suggestions.requests}
-                newsletters={suggestions.newsletters}
-                isLikePending={isLiking}
-                onLike={handleSuggestionLike}
+            <NameFieldWrapper ref={nameFieldRef}>
+              <InputField
+                name="newsletter-name"
+                label="뉴스레터 이름"
+                inputValue={name}
+                onInputChange={(event) =>
+                  setName(event.target.value.slice(0, NAME_MAX_LENGTH))
+                }
+                placeholder="예: 주간 개발 노트"
               />
-            </div>
+            </NameFieldWrapper>
+            <VisuallyHiddenStatus role="status">
+              {suggestionSummary}
+            </VisuallyHiddenStatus>
+            <NameSuggestionList
+              keyword={suggestions.keyword}
+              requests={suggestions.requests}
+              newsletters={suggestions.newsletters}
+              isLikePending={isLiking}
+              onLike={handleSuggestionLike}
+            />
           </>
         )}
         {step === 'link' && (
@@ -519,6 +530,24 @@ const TextButton = styled(Button)`
   font: ${({ theme }) => theme.fonts.t5Regular};
 
   text-decoration: underline;
+`;
+
+const NameFieldWrapper = styled.div`
+  scroll-margin-top: 16px;
+`;
+
+const VisuallyHiddenStatus = styled.p`
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+
+  white-space: nowrap;
+
+  clip: rect(0 0 0 0);
 `;
 
 const RegisteredNotice = styled.p`

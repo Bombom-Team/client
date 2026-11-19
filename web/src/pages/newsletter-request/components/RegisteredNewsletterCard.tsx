@@ -85,8 +85,15 @@ const RegisteredNewsletterCard = ({
             borderRadius="12px"
           />
           <InfoText>
-            <Skeleton width="60%" height="18px" />
-            <Skeleton width="40%" height="14px" />
+            {/* 이름은 검색 결과로 이미 알고 있으면 먼저 보여준다. */}
+            {displayName ? (
+              <Name>
+                <HighlightedText text={displayName} keyword={keyword} />
+              </Name>
+            ) : (
+              <Skeleton width="60%" height="20px" />
+            )}
+            <Skeleton width="40%" height="16px" />
           </InfoText>
         </InfoRow>
         {!isRow && <Skeleton width="100%" height="44px" borderRadius="8px" />}
@@ -180,7 +187,7 @@ const RegisteredNewsletterCard = ({
 export default RegisteredNewsletterCard;
 
 const Container = styled.div<{ variant: RegisteredCardVariant }>`
-  padding: ${({ variant }) => (variant === 'row' ? '12px' : '14px')};
+  padding: ${({ variant }) => (variant === 'row' ? '12px' : '16px')};
   border: 1px solid
     ${({ theme, variant }) =>
       variant === 'card' ? theme.colors.dividers : theme.colors.primaryLight};
@@ -227,7 +234,7 @@ const InfoText = styled.div`
   min-width: 0;
 
   display: flex;
-  gap: 2px;
+  gap: 4px;
   flex: 1;
   flex-direction: column;
 `;
@@ -278,7 +285,7 @@ const RowActions = styled.div`
 
 const ActionButton = styled(Button)`
   min-height: 44px;
-  padding: 0 14px;
+  padding: 0 16px;
 
   font: ${({ theme }) => theme.fonts.t5Bold};
 `;
