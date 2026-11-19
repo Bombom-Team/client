@@ -4,9 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import HighlightedText from './HighlightedText';
 import { queries } from '@/apis/queries';
-import { openExternalLink } from '@/utils/externalLink';
+import Skeleton from '@/components/Skeleton/Skeleton';
+import { useAuth } from '@/contexts/AuthContext';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
+import { openSubscribeLink } from '@/pages/newsletter-detail/utils';
 
 export type RegisteredCardVariant = 'card' | 'tinted' | 'row';
+
+const MAEIL_MAIL_URL = 'https://maeilmail.bombom.news';
 
 interface RegisteredNewsletterCardProps {
   newsletterId: number;
@@ -25,17 +30,24 @@ const RegisteredNewsletterCard = ({
   variant = 'card',
 }: RegisteredNewsletterCardProps) => {
   const navigate = useNavigate();
-  const { data: detail } = useQuery(
-    queries.newsletterDetail({ id: newsletterId }),
-  );
+  const { userProfile } = useAuth();
+  const {
+    data: detail,
+    isPending,
+    isError,
+  } = useQuery(queries.newsletterDetail({ id: newsletterId }));
 
   const displayName = detail?.name ?? name ?? '';
   const thumbnailUrl = detail?.imageUrl ?? imageUrl ?? null;
   const meta = [detail?.category, detail?.issueCycle]
     .filter(Boolean)
     .join(' · ');
-  const subscribeUrl = detail?.subscribeUrl;
   const isRow = variant === 'row';
+  const isMaeilMail = detail?.source === 'MAEIL_MAIL';
+  const canSubscribe = Boolean(
+    detail && !detail.isSubscribed && (isMaeilMail || detail.subscribeUrl),
+  );
+  const hasSubscribeAction = Boolean(detail?.isSubscribed) || canSubscribe;
 
   const goToDetail = () => {
     navigate({
@@ -44,9 +56,72 @@ const RegisteredNewsletterCard = ({
     });
   };
 
-  const openSubscribePage = () => {
-    if (subscribeUrl) openExternalLink(subscribeUrl);
+  // 상세 화면의 구독 버튼과 같은 경로로 연다. 봄봄 이메일로 구독해야 뉴스레터가 봄봄에 도착한다.
+  const subscribe = () => {
+    if (!detail) return;
+    trackEvent({
+      category: 'Newsletter',
+      action: '구독하기 버튼 클릭',
+      label: detail.name,
+    });
+    if (isMaeilMail) {
+      navigate({ href: MAEIL_MAIL_URL });
+      return;
+    }
+    openSubscribeLink(detail.subscribeUrl, detail.name, userProfile);
   };
+
+  const detailLabel = displayName
+    ? `${displayName} 자세히 보기`
+    : '뉴스레터 자세히 보기';
+
+  if (isPending) {
+    return (
+      <Container variant={variant} aria-busy="true">
+        <InfoRow>
+          <Skeleton
+            width={isRow ? '52px' : '48px'}
+            height={isRow ? '52px' : '48px'}
+            borderRadius="12px"
+          />
+          <InfoText>
+            <Skeleton width="60%" height="18px" />
+            <Skeleton width="40%" height="14px" />
+          </InfoText>
+        </InfoRow>
+        {!isRow && <Skeleton width="100%" height="44px" borderRadius="8px" />}
+      </Container>
+    );
+  }
+
+  // 상세를 못 불러와도 이미 있다는 사실과 상세 이동은 남긴다.
+  if (isError || !detail) {
+    return (
+      <Container variant={variant}>
+        <Name>{displayName || '이미 봄봄에 있는 뉴스레터예요'}</Name>
+        <ActionButton
+          variant="outlined"
+          onClick={goToDetail}
+          aria-label={detailLabel}
+        >
+          자세히 보기
+        </ActionButton>
+      </Container>
+    );
+  }
+
+  const subscribeButton = detail.isSubscribed ? (
+    <ActionButton disabled>구독 중</ActionButton>
+  ) : (
+    canSubscribe && (
+      <ActionButton
+        onClick={subscribe}
+        aria-label={`${detail.name} 구독하러 가기`}
+      >
+        {isRow ? '구독하기' : '구독하러 가기'}
+      </ActionButton>
+    )
+  );
 
   return (
     <Container variant={variant}>
@@ -64,7 +139,7 @@ const RegisteredNewsletterCard = ({
           </Name>
           {isRow ? (
             <Meta isEllipsis>
-              {[meta, detail?.description].filter(Boolean).join(' · ')}
+              {[meta, detail.description].filter(Boolean).join(' · ')}
             </Meta>
           ) : (
             meta && <Meta>{meta}</Meta>
@@ -72,28 +147,30 @@ const RegisteredNewsletterCard = ({
         </InfoText>
         {isRow && (
           <RowActions>
-            <ActionButton variant="outlined" onClick={goToDetail}>
+            <ActionButton
+              variant="outlined"
+              onClick={goToDetail}
+              aria-label={detailLabel}
+            >
               자세히
             </ActionButton>
-            {subscribeUrl && (
-              <ActionButton onClick={openSubscribePage}>구독하기</ActionButton>
-            )}
+            {subscribeButton}
           </RowActions>
         )}
       </InfoRow>
-      {!isRow && detail?.description && (
+      {!isRow && detail.description && (
         <Description>{detail.description}</Description>
       )}
       {!isRow && (
-        <ActionGrid hasSubscribe={Boolean(subscribeUrl)}>
-          <ActionButton variant="outlined" onClick={goToDetail}>
+        <ActionGrid hasSubscribe={hasSubscribeAction}>
+          <ActionButton
+            variant="outlined"
+            onClick={goToDetail}
+            aria-label={detailLabel}
+          >
             자세히 보기
           </ActionButton>
-          {subscribeUrl && (
-            <ActionButton onClick={openSubscribePage}>
-              구독하러 가기
-            </ActionButton>
-          )}
+          {subscribeButton}
         </ActionGrid>
       )}
     </Container>
@@ -158,6 +235,8 @@ const InfoText = styled.div`
 const Name = styled.span`
   color: ${({ theme }) => theme.colors.textPrimary};
   font: ${({ theme }) => theme.fonts.t6Bold};
+
+  overflow-wrap: anywhere;
 `;
 
 const Meta = styled.span<{ isEllipsis?: boolean }>`

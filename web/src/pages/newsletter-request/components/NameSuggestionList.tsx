@@ -1,6 +1,5 @@
 import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useEffect, useRef } from 'react';
 import RegisteredNewsletterCard from './RegisteredNewsletterCard';
 import RequestedNewsletterRow from './RequestedNewsletterRow';
 import type {
@@ -27,23 +26,12 @@ const NameSuggestionList = ({
 }: NameSuggestionListProps) => {
   const device = useDevice();
   const isMobile = device === 'mobile';
-  const containerRef = useRef<HTMLDivElement>(null);
   const hasResults = requests.length > 0 || newsletters.length > 0;
-
-  // 모바일은 키보드에 결과가 가려지기 쉬워서, 결과가 처음 뜰 때 보이는 곳으로 올린다.
-  useEffect(() => {
-    if (isMobile && hasResults) {
-      containerRef.current?.scrollIntoView({
-        block: 'nearest',
-        behavior: 'smooth',
-      });
-    }
-  }, [isMobile, hasResults]);
 
   if (!hasResults) return null;
 
   return (
-    <Container ref={containerRef} isPanel={!isMobile} aria-live="polite">
+    <Container isPanel={!isMobile}>
       {newsletters.length > 0 && (
         <Section aria-label="봄봄에 이미 있어요">
           <SectionLabel>봄봄에 이미 있어요</SectionLabel>
@@ -60,8 +48,8 @@ const NameSuggestionList = ({
         </Section>
       )}
       {requests.length > 0 && (
-        <Section aria-label="다른 사람이 신청했어요">
-          <SectionLabel>다른 사람이 신청했어요</SectionLabel>
+        <Section aria-label="신청 중이에요">
+          <SectionLabel>신청 중이에요</SectionLabel>
           {requests.map((request) => (
             <RequestedNewsletterRow
               key={request.id}
@@ -84,7 +72,6 @@ const Container = styled.div<{ isPanel: boolean }>`
   gap: 20px;
   flex-direction: column;
 
-  scroll-margin-bottom: 96px;
 
   ${({ isPanel, theme }) =>
     isPanel &&
