@@ -99,6 +99,44 @@
   <tr>
     <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
+        src="https://github.com/user-attachments/assets/58cfff2c-1047-469b-812c-b6c8ccc7521a"
+        alt="읽기 랭킹 화면"
+        height="300"
+      />
+    </td>
+    <td style="width: 50%; vertical-align: top;">
+
+### 🏆 읽기 랭킹으로 꾸준히 읽어요
+
+- 아티클을 읽으며 연속 읽기 기록을 쌓아요.
+- 연속왕과 다독왕 순위에서 나의 순위를 확인해요.
+
+</td>
+  </tr>
+
+  <!-- Row 5 -->
+  <tr>
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
+      <img
+        src="https://github.com/user-attachments/assets/84ada23a-818c-4395-92f2-5fe1fdfd8b56"
+        alt="읽기 활동 화면"
+        height="300"
+      />
+    </td>
+    <td style="width: 50%; vertical-align: top;">
+
+### 📅 월간 리포트로 읽기 습관을 돌아봐요
+
+- 월간 리포트에서 읽은 아티클과 뉴스레터를 한눈에 확인해요.
+- 읽기 캘린더와 통계로 나의 읽기 패턴을 돌아봐요.
+
+</td>
+  </tr>
+
+  <!-- Row 6 -->
+  <tr>
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
+      <img
         src="https://github.com/user-attachments/assets/71913742-6239-4b16-b7e1-4ed8070b8421"
         alt="매일메일 화면"
         height="300"
@@ -115,44 +153,6 @@
 <br/>
 
 [매일메일 바로가기](https://maeilmail.bombom.news)
-
-</td>
-  </tr>
-
-  <!-- Row 5 -->
-  <tr>
-    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
-      <img
-        src="https://github.com/user-attachments/assets/58cfff2c-1047-469b-812c-b6c8ccc7521a"
-        alt="읽기 랭킹 화면"
-        height="300"
-      />
-    </td>
-    <td style="width: 50%; vertical-align: top;">
-
-### 🏆 읽기 랭킹으로 꾸준히 읽어요
-
-- 아티클을 읽으며 연속 읽기 기록을 쌓아요.
-- 연속왕과 다독왕 순위에서 나의 순위를 확인해요.
-
-</td>
-  </tr>
-
-  <!-- Row 6 -->
-  <tr>
-    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
-      <img
-        src="https://github.com/user-attachments/assets/84ada23a-818c-4395-92f2-5fe1fdfd8b56"
-        alt="읽기 활동 화면"
-        height="300"
-      />
-    </td>
-    <td style="width: 50%; vertical-align: top;">
-
-### 📅 월간 리포트로 읽기 습관을 돌아봐요
-
-- 월간 리포트에서 읽은 아티클과 뉴스레터를 한눈에 확인해요.
-- 읽기 캘린더와 통계로 나의 읽기 패턴을 돌아봐요.
 
 </td>
   </tr>
