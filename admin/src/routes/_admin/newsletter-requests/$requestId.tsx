@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { categoriesQueries } from '@/apis/categories/categories.query';
 import {
   newsletterRequestsQueries,
@@ -108,10 +108,19 @@ function NewsletterRequestReviewPage() {
   const id = Number(requestId);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data: request } = useQuery(newsletterRequestsQueries.detail(id));
+  const {
+    data: request,
+    isError: isDetailError,
+    refetch: refetchDetail,
+  } = useQuery(newsletterRequestsQueries.detail(id));
   const { data: categories = [] } = useQuery(categoriesQueries.list());
   const [form, setForm] = useState<DraftForm | null>(null);
   const [rejectReason, setRejectReason] = useState('');
+  // 저장부터 재조회, 승인 응답까지 승인 버튼을 잠근다. 재조회 구간에는 isSaving·isApproving이 모두 false다.
+  const [isApproveFlowPending, setIsApproveFlowPending] = useState(false);
+  // 서버 값으로 폼을 채운 뒤 운영자가 고친 내용이 있는지. 있으면 재조회 결과로 덮어쓰지 않는다.
+  const hasUnsavedEditRef = useRef(false);
+  const formRequestIdRef = useRef<number | null>(null);
 
   const { mutateAsync: updateDraft, isPending: isSaving } =
     useUpdateNewsletterRequestDraftMutation();
@@ -123,8 +132,26 @@ function NewsletterRequestReviewPage() {
     useRejectNewsletterRequestMutation();
 
   useEffect(() => {
-    if (request) setForm(toForm(request.draft));
+    if (!request) return;
+    const isSameRequest = formRequestIdRef.current === request.id;
+    if (isSameRequest && hasUnsavedEditRef.current) return;
+    formRequestIdRef.current = request.id;
+    hasUnsavedEditRef.current = false;
+    setForm(toForm(request.draft));
   }, [request]);
+
+  if (isDetailError && !request) {
+    return (
+      <Layout title="뉴스레터 신청 검토">
+        <ErrorWrapper>
+          <ErrorText>신청 정보를 불러오지 못했습니다.</ErrorText>
+          <Button variant="secondary" onClick={() => void refetchDetail()}>
+            다시 시도
+          </Button>
+        </ErrorWrapper>
+      </Layout>
+    );
+  }
 
   if (!request || !form) {
     return <Layout title="뉴스레터 신청 검토">불러오는 중...</Layout>;
@@ -132,6 +159,8 @@ function NewsletterRequestReviewPage() {
 
   const isClosed =
     request.status === 'APPROVED' || request.status === 'REJECTED';
+  // 승인 흐름 중에 고친 값은 저장되지 않은 채 승인되므로 입력과 다른 버튼도 함께 잠근다.
+  const isFormLocked = isClosed || isApproveFlowPending;
   const isCollected = request.draft.collectStatus === 'SUCCESS';
   const missingFields = Object.entries(DRAFT_FIELD_LABELS)
     .filter(([key]) => (form[key as keyof DraftForm] ?? '').trim() === '')
@@ -146,11 +175,21 @@ function NewsletterRequestReviewPage() {
     >,
   ) => {
     const { name, value } = event.target;
+    hasUnsavedEditRef.current = true;
     setForm((prev) => (prev ? { ...prev, [name]: value } : prev));
   };
 
   const saveDraft = async () => {
-    await updateDraft({ id, body: toUpdateRequest(form) });
+    // 지금 폼을 저장하므로 수정 표시를 내린다. 응답과 재조회를 기다리는 동안 다시 고치면 표시가 올라가 입력이 남는다.
+    const hadUnsavedEdit = hasUnsavedEditRef.current;
+    hasUnsavedEditRef.current = false;
+    try {
+      await updateDraft({ id, body: toUpdateRequest(form) });
+    } catch (error) {
+      // 저장에 실패하면 저장 전 표시로 되돌린다. 요청 중에 고친 내용이 있으면 그 표시는 남긴다.
+      hasUnsavedEditRef.current = hasUnsavedEditRef.current || hadUnsavedEdit;
+      throw error;
+    }
     await refresh();
   };
 
@@ -176,14 +215,17 @@ function NewsletterRequestReviewPage() {
   };
 
   const handleApprove = async () => {
+    if (isApproveFlowPending) return;
     if (missingFields.length > 0) {
       alert(`비어 있는 필수 값: ${missingFields.join(', ')}`);
       return;
     }
     if (!confirm('이 초안으로 뉴스레터를 등록할까요?')) return;
+    setIsApproveFlowPending(true);
     try {
       await saveDraft();
     } catch (error) {
+      setIsApproveFlowPending(false);
       alert(`저장 실패: ${(error as Error).message}`);
       return;
     }
@@ -197,7 +239,11 @@ function NewsletterRequestReviewPage() {
           params: { newsletterId: String(newsletterId) },
         });
       },
-      onError: (error) => alert(`승인 실패: ${error.message}`),
+      // 성공하면 상세 화면으로 이동하므로 잠금을 풀지 않는다. 이동이 끝나기 전에 다시 눌리지 않게 한다.
+      onError: (error) => {
+        setIsApproveFlowPending(false);
+        alert(`승인 실패: ${error.message}`);
+      },
     });
   };
 
@@ -274,7 +320,7 @@ function NewsletterRequestReviewPage() {
               name="description"
               value={form.description}
               onChange={handleChange}
-              disabled={isClosed}
+              disabled={isFormLocked}
             />
           </FormGroup>
           <FormGroup>
@@ -283,7 +329,7 @@ function NewsletterRequestReviewPage() {
               name="categoryId"
               value={form.categoryId}
               onChange={handleChange}
-              disabled={isClosed}
+              disabled={isFormLocked}
             >
               <option value="">카테고리 선택</option>
               {categories.map((category) => (
@@ -300,7 +346,7 @@ function NewsletterRequestReviewPage() {
                 name={field.name}
                 value={form[field.name]}
                 onChange={handleChange}
-                disabled={isClosed}
+                disabled={isFormLocked}
                 placeholder={
                   field.name === 'email'
                     ? '자동 수집하지 않습니다. 발신 주소를 직접 입력해주세요.'
@@ -329,27 +375,27 @@ function NewsletterRequestReviewPage() {
               <Button
                 variant="outline"
                 onClick={handleReject}
-                disabled={isRejecting}
+                disabled={isRejecting || isApproveFlowPending}
               >
                 반려
               </Button>
               <Button
                 variant="secondary"
                 onClick={handleRecollect}
-                disabled={isRecollecting}
+                disabled={isRecollecting || isApproveFlowPending}
               >
                 재수집
               </Button>
               <Button
                 variant="secondary"
                 onClick={handleSave}
-                disabled={isSaving}
+                disabled={isSaving || isApproveFlowPending}
               >
                 초안 저장
               </Button>
               <Button
                 onClick={handleApprove}
-                disabled={isApproving || isSaving}
+                disabled={isApproveFlowPending || isApproving || isSaving}
               >
                 승인하고 등록
               </Button>
@@ -416,6 +462,19 @@ const ThumbnailPreview = styled.img`
 
   object-fit: cover;
 `;
+
+const ErrorWrapper = styled.div`
+  padding: 40px 0;
+
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.gray500};
+`;
+
+const ErrorText = styled.p``;
 
 const ActionWrapper = styled.div`
   display: flex;

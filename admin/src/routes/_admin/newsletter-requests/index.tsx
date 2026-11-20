@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { newsletterRequestsQueries } from '@/apis/newsletterRequests/newsletterRequests.query';
+import { Button } from '@/components/Button';
 import { Layout } from '@/components/Layout';
 import {
   DRAFT_COLLECT_STATUS_LABELS,
@@ -38,9 +39,12 @@ export const Route = createFileRoute('/_admin/newsletter-requests/')({
 function NewsletterRequestListPage() {
   const navigate = useNavigate();
   const { status } = Route.useSearch();
-  const { data: requests = [], isLoading } = useQuery(
-    newsletterRequestsQueries.list({ status }),
-  );
+  const {
+    data: requests = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery(newsletterRequestsQueries.list({ status }));
 
   return (
     <Layout title="뉴스레터 신청">
@@ -104,7 +108,15 @@ function NewsletterRequestListPage() {
             ))}
           </tbody>
         </Table>
-        {!isLoading && requests.length === 0 && (
+        {isError && requests.length === 0 && (
+          <ErrorWrapper>
+            <ErrorText>신청 목록을 불러오지 못했습니다.</ErrorText>
+            <Button variant="secondary" onClick={() => void refetch()}>
+              다시 시도
+            </Button>
+          </ErrorWrapper>
+        )}
+        {!isLoading && !isError && requests.length === 0 && (
           <EmptyText>해당하는 신청이 없습니다.</EmptyText>
         )}
       </Container>
@@ -174,6 +186,19 @@ const UrlText = styled.span`
   font-size: 13px;
   word-break: break-all;
 `;
+
+const ErrorWrapper = styled.div`
+  padding: 40px 0;
+
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.gray500};
+`;
+
+const ErrorText = styled.p``;
 
 const EmptyText = styled.p`
   padding: 40px 0;
