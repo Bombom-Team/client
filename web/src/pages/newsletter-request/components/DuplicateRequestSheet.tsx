@@ -10,7 +10,7 @@ interface DuplicateRequestSheetProps {
   isOpen: boolean;
   closeModal: () => void;
   name: string;
-  requestCount: number;
+  requestCount: number | null;
   relation: DuplicateRelation;
   isPending: boolean;
   onLike: () => void;
@@ -30,6 +30,11 @@ const SHEET_TEXTS: Record<
     description: '등록되면 함께 알려드려요.',
   },
 };
+
+const getRequestedTitle = (requestCount: number | null) =>
+  requestCount === null
+    ? '이미 신청된 뉴스레터예요'
+    : `이미 ${requestCount}명이 신청한 뉴스레터예요`;
 
 const DuplicateRequestSheet = ({
   modalRef,
@@ -59,7 +64,7 @@ const DuplicateRequestSheet = ({
           <Title>
             {isAlreadyMine
               ? SHEET_TEXTS[relation].title
-              : `이미 ${requestCount}명이 신청한 뉴스레터예요`}
+              : getRequestedTitle(requestCount)}
           </Title>
           <Description>
             {isAlreadyMine

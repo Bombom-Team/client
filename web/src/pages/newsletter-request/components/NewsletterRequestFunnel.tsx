@@ -25,6 +25,7 @@ import { queries } from '@/apis/queries';
 import InputField from '@/components/InputField/InputField';
 import RequireLoginCard from '@/components/RequireLoginCard/RequireLoginCard';
 import { useAuth } from '@/contexts/AuthContext';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { NewsletterRequest } from '@/apis/newsletterRequests/newsletterRequests.api';
 import type { ChangeEvent } from 'react';
 import CheckIcon from '#/assets/svg/check.svg';
@@ -41,7 +42,8 @@ const DUPLICATED_DATA_ERROR_CODE = 'M009';
 type DuplicateTarget = {
   id: number;
   name: string;
-  requestCount: number;
+  // 신청 현황 목록과 내 신청 어디에서도 찾지 못하면 인원을 알 수 없다.
+  requestCount: number | null;
   relation: DuplicateRelation;
 };
 
@@ -126,6 +128,7 @@ const NewsletterRequestFunnel = () => {
   const { mutate: createRequest, isPending: isCreating } =
     useCreateNewsletterRequestMutation({
       onSuccess: () => {
+        trackEvent({ category: 'Newsletter', action: '뉴스레터 신청 완료' });
         setElapsed(formatElapsed(Date.now() - startedAtRef.current));
         setStep('done');
       },
@@ -144,8 +147,11 @@ const NewsletterRequestFunnel = () => {
     useToggleNewsletterRequestLikeMutation();
 
   const stepNumber = QUESTION_STEPS.indexOf(step) + 1;
+  // 신청을 보내거나 중복 링크를 다시 확인하는 동안에는 보낸 값과 화면이 어긋나지 않게 입력을 잠근다.
+  const isSubmitLocked = step === 'confirm' && (isCreating || isChecking);
 
   const goBack = () => {
+    if (isSubmitLocked) return;
     const previousStep = QUESTION_STEPS[stepNumber - 2];
     if (!previousStep) {
       navigate({ to: BOARD_PATH });
@@ -208,19 +214,29 @@ const NewsletterRequestFunnel = () => {
           queries.newsletterRequests(),
         );
         if (isStale()) return;
-        const found = requests.find(
-          (request) => request.id === check.newsletterRequestId,
-        );
+        const isCheckedRequest = (request: NewsletterRequest) =>
+          request.id === check.newsletterRequestId;
+        let found = requests.find(isCheckedRequest);
+        if (!found) {
+          // 신청 현황은 공감 순 상위 일부만 내려온다. 거기 없으면 내가 신청했거나 공감한 목록에서 한 번 더 찾는다.
+          const myRequests = await queryClient.fetchQuery(
+            queries.myNewsletterRequests(),
+          );
+          if (isStale()) return;
+          found = myRequests.find(isCheckedRequest);
+        }
         openDuplicateSheet({
           id: check.newsletterRequestId,
           name: found?.name ?? name,
-          requestCount: found ? getRequestCount(found) : 1,
+          requestCount: found ? getRequestCount(found) : null,
           relation: toRelation(found),
         });
         return;
       }
       setStep('reason');
     } catch {
+      // 확인하는 사이 고친 링크의 실패는 알리지 않는다.
+      if (isStale()) return;
       toast.error('링크를 확인하지 못했어요. 다시 시도해 주세요.');
     } finally {
       setIsChecking(false);
@@ -331,7 +347,7 @@ const NewsletterRequestFunnel = () => {
               </ButtonRow>
             )}
             {step === 'confirm' && (
-              <PrimaryButton disabled={isCreating} onClick={handleSubmit}>
+              <PrimaryButton disabled={isSubmitLocked} onClick={handleSubmit}>
                 신청하기
               </PrimaryButton>
             )}
@@ -453,14 +469,22 @@ const NewsletterRequestFunnel = () => {
               <SummaryRow>
                 <SummaryTerm>이름</SummaryTerm>
                 <SummaryValue>{name.trim()}</SummaryValue>
-                <EditButton type="button" onClick={() => setStep('name')}>
+                <EditButton
+                  type="button"
+                  disabled={isSubmitLocked}
+                  onClick={() => setStep('name')}
+                >
                   수정
                 </EditButton>
               </SummaryRow>
               <SummaryRow>
                 <SummaryTerm>링크</SummaryTerm>
                 <SummaryValue>{toHostLabel(url)}</SummaryValue>
-                <EditButton type="button" onClick={() => setStep('link')}>
+                <EditButton
+                  type="button"
+                  disabled={isSubmitLocked}
+                  onClick={() => setStep('link')}
+                >
                   수정
                 </EditButton>
               </SummaryRow>
@@ -469,7 +493,11 @@ const NewsletterRequestFunnel = () => {
                 <SummaryValue isMuted={!reason.trim()}>
                   {reason.trim() || '적지 않았어요'}
                 </SummaryValue>
-                <EditButton type="button" onClick={() => setStep('reason')}>
+                <EditButton
+                  type="button"
+                  disabled={isSubmitLocked}
+                  onClick={() => setStep('reason')}
+                >
                   수정
                 </EditButton>
               </SummaryRow>
@@ -480,6 +508,7 @@ const NewsletterRequestFunnel = () => {
                 id="newsletter-notify"
                 type="checkbox"
                 checked={isNotificationEnabled}
+                disabled={isSubmitLocked}
                 onChange={(event) =>
                   setIsNotificationEnabled(event.target.checked)
                 }
