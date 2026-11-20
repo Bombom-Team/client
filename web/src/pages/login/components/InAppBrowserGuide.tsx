@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared/theme';
 import { Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { Link } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import { navigateToOAuthLogin } from '@/utils/auth';
 import { downloadApp } from '@/utils/downloadApp';
 import { getResponsiveValue } from '@/utils/responsive';
@@ -13,8 +13,12 @@ const InAppBrowserGuide = () => {
   const device = useDevice();
   const isMobile = device === 'mobile';
 
+  // 로그인 전에 보던 화면으로 돌아가도록 복귀 경로를 이어 준다.
+  // 스토리북처럼 /login-guide 라우트 밖에서 그려도 깨지지 않게 strict를 끈다.
+  const { redirect: redirectPath } = useSearch({ strict: false });
+
   const handleAppleLogin = () => {
-    navigateToOAuthLogin({ provider: 'apple' });
+    navigateToOAuthLogin({ provider: 'apple', redirectPath });
   };
 
   return (
@@ -35,7 +39,12 @@ const InAppBrowserGuide = () => {
             <AppleIcon width={24} height={24} fill="black" />
             Apple로 계속하기
           </ActionButton>
-          <BackLink to="/login" device={device}>
+          <BackLink
+            to="/login"
+            // styled(Link)는 경로별 search 타입을 잃어 never로 추론된다. /login의 search와 같은 모양이다.
+            search={{ redirect: redirectPath } as never}
+            device={device}
+          >
             ← 로그인으로 돌아가기
           </BackLink>
         </Card>
