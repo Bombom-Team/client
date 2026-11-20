@@ -144,7 +144,7 @@ function NewsletterRequestReviewPage() {
     return (
       <Layout title="뉴스레터 신청 검토">
         <ErrorWrapper>
-          <p>신청 정보를 불러오지 못했습니다.</p>
+          <ErrorText>신청 정보를 불러오지 못했습니다.</ErrorText>
           <Button variant="secondary" onClick={() => void refetchDetail()}>
             다시 시도
           </Button>
@@ -468,6 +468,8 @@ const ErrorWrapper = styled.div`
 
   color: ${({ theme }) => theme.colors.gray500};
 `;
+
+const ErrorText = styled.p``;
 
 const ActionWrapper = styled.div`
   display: flex;

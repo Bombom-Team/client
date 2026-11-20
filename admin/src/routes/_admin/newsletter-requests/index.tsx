@@ -110,7 +110,7 @@ function NewsletterRequestListPage() {
         </Table>
         {isError && requests.length === 0 && (
           <ErrorWrapper>
-            <p>신청 목록을 불러오지 못했습니다.</p>
+            <ErrorText>신청 목록을 불러오지 못했습니다.</ErrorText>
             <Button variant="secondary" onClick={() => void refetch()}>
               다시 시도
             </Button>
@@ -197,6 +197,8 @@ const ErrorWrapper = styled.div`
 
   color: ${({ theme }) => theme.colors.gray500};
 `;
+
+const ErrorText = styled.p``;
 
 const EmptyText = styled.p`
   padding: 40px 0;
