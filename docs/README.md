@@ -39,7 +39,7 @@
 
   <!-- Row 1 -->
   <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/fce87c25-69cb-4f4c-af74-7f4c3950e475"
         height="300"
@@ -58,7 +58,7 @@
 
   <!-- Row 2 -->
   <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/7bb1b5dd-ac68-42fd-9e25-580d340ebad9"
         alt="하이라이트와 메모 화면"
@@ -77,7 +77,7 @@
 
   <!-- Row 3 -->
   <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/d9a8df0b-f628-42b3-af3a-2b1dfc205296"
         alt="챌린지 화면"
@@ -97,7 +97,7 @@
 
   <!-- Row 4 -->
   <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/71913742-6239-4b16-b7e1-4ed8070b8421"
         alt="매일메일 화면"
@@ -121,7 +121,7 @@
 
   <!-- Row 5 -->
   <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/58cfff2c-1047-469b-812c-b6c8ccc7521a"
         alt="읽기 랭킹 화면"
@@ -140,7 +140,7 @@
 
   <!-- Row 6 -->
   <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/84ada23a-818c-4395-92f2-5fe1fdfd8b56"
         alt="읽기 활동 화면"
