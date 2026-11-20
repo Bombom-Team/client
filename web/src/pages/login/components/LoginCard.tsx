@@ -17,7 +17,7 @@ const LoginCard = () => {
   const handleGoogleLogin = () => {
     // 인앱브라우저에서는 구글 OAuth가 차단되므로 안내 화면으로 이동시킨다.
     if (isInAppBrowser()) {
-      navigate({ to: '/login-guide' });
+      navigate({ to: '/login-guide', search: { redirect: redirectPath } });
       return;
     }
     navigateToOAuthLogin({ provider: 'google', redirectPath });

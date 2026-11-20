@@ -35,10 +35,18 @@ function NewsletterRequestBoardPage() {
   const [loginRedirectPath, setLoginRedirectPath] = useState(FUNNEL_PATH);
   const { modalRef, isOpen, openModal, closeModal } = useModal();
 
-  const { data: requests = [], isLoading: isRequestsLoading } = useQuery(
-    queries.newsletterRequests(),
-  );
-  const { data: myRequests = [], isLoading: isMyRequestsLoading } = useQuery({
+  const {
+    data: requests = [],
+    isLoading: isRequestsLoading,
+    isError: isRequestsError,
+    refetch: refetchRequests,
+  } = useQuery(queries.newsletterRequests());
+  const {
+    data: myRequests = [],
+    isLoading: isMyRequestsLoading,
+    isError: isMyRequestsError,
+    refetch: refetchMyRequests,
+  } = useQuery({
     ...queries.myNewsletterRequests(),
     enabled: isLoggedIn && tab === 'mine',
   });
@@ -49,8 +57,21 @@ function NewsletterRequestBoardPage() {
   const visibleRequests = isMineTab ? myRequests : requests;
   const isVisibleLoading = isMineTab ? isMyRequestsLoading : isRequestsLoading;
   const needsLoginForMine = isMineTab && !isLoggedIn;
+  // 조회에 실패하면 목록이 비어 보인다. 빈 목록 문구와 구분해 다시 시도하게 한다.
+  const isVisibleError =
+    !needsLoginForMine &&
+    (isMineTab ? isMyRequestsError : isRequestsError) &&
+    visibleRequests.length === 0;
   const isEmpty =
-    !needsLoginForMine && !isVisibleLoading && visibleRequests.length === 0;
+    !needsLoginForMine &&
+    !isVisibleLoading &&
+    !isVisibleError &&
+    visibleRequests.length === 0;
+
+  const handleRetry = () => {
+    if (isMineTab) void refetchMyRequests();
+    else void refetchRequests();
+  };
 
   const handleTabChange = (nextTab: BoardTab) => {
     navigate({
@@ -122,6 +143,14 @@ function NewsletterRequestBoardPage() {
             />
           ))}
         </RequestList>
+      )}
+      {isVisibleError && (
+        <ErrorBox>
+          <span>목록을 불러오지 못했어요</span>
+          <Button variant="outlined" onClick={handleRetry}>
+            다시 시도
+          </Button>
+        </ErrorBox>
       )}
       {isEmpty && (
         <EmptyBox>
@@ -220,6 +249,18 @@ const EmptyBox = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
+`;
+
+const ErrorBox = styled.div`
+  padding: 40px 0;
+
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.textTertiary};
+  font: ${({ theme }) => theme.fonts.t5Regular};
 `;
 
 const CtaWrapper = styled.div<{ isPC: boolean }>`

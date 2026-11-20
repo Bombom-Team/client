@@ -221,6 +221,8 @@ const NewsletterRequestFunnel = () => {
       }
       setStep('reason');
     } catch {
+      // 확인하는 사이 고친 링크의 실패는 알리지 않는다.
+      if (isStale()) return;
       toast.error('링크를 확인하지 못했어요. 다시 시도해 주세요.');
     } finally {
       setIsChecking(false);
@@ -331,7 +333,10 @@ const NewsletterRequestFunnel = () => {
               </ButtonRow>
             )}
             {step === 'confirm' && (
-              <PrimaryButton disabled={isCreating} onClick={handleSubmit}>
+              <PrimaryButton
+                disabled={isCreating || isChecking}
+                onClick={handleSubmit}
+              >
                 신청하기
               </PrimaryButton>
             )}

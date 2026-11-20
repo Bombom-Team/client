@@ -43,7 +43,7 @@ const LoginSheet = ({
       return;
     }
     if (isInAppBrowser()) {
-      navigate({ to: '/login-guide' });
+      navigate({ to: '/login-guide', search: { redirect: redirectPath } });
       return;
     }
     navigateToOAuthLogin({ provider: 'google', redirectPath });
