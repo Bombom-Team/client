@@ -218,7 +218,7 @@ const NewsletterRequestFunnel = () => {
           request.id === check.newsletterRequestId;
         let found = requests.find(isCheckedRequest);
         if (!found) {
-          // 신청 현황은 공감 순 상위 일부만 내려온다. 거기 없으면 내 신청에서 한 번 더 찾는다.
+          // 신청 현황은 공감 순 상위 일부만 내려온다. 거기 없으면 내가 신청했거나 공감한 목록에서 한 번 더 찾는다.
           const myRequests = await queryClient.fetchQuery(
             queries.myNewsletterRequests(),
           );

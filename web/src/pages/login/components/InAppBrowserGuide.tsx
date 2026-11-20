@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared/theme';
 import { Button, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { Link, useSearch } from '@tanstack/react-router';
+import { createLink, useSearch } from '@tanstack/react-router';
 import { navigateToOAuthLogin } from '@/utils/auth';
 import { downloadApp } from '@/utils/downloadApp';
 import { getResponsiveValue } from '@/utils/responsive';
@@ -41,8 +41,7 @@ const InAppBrowserGuide = () => {
           </ActionButton>
           <BackLink
             to="/login"
-            // styled(Link)는 경로별 search 타입을 잃어 never로 추론된다. /login의 search와 같은 모양이다.
-            search={{ redirect: redirectPath } as never}
+            search={{ redirect: redirectPath }}
             device={device}
           >
             ← 로그인으로 돌아가기
@@ -158,10 +157,12 @@ const ActionButton = styled(Button)`
   font: ${({ theme }) => theme.fonts.t6Regular};
 `;
 
-const BackLink = styled(Link)<{ device: Device }>`
+const BackAnchor = styled.a<{ device: Device }>`
   color: ${({ device, theme }) =>
     device === 'mobile' ? theme.colors.textSecondary : theme.colors.white};
   font: ${({ theme }) => theme.fonts.t5Regular};
 
   text-decoration: none;
 `;
+
+const BackLink = createLink(BackAnchor);
