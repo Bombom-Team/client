@@ -222,18 +222,18 @@
 
 ### Backend 🔧
 
-| 모루 | 새로이 | 조로 | 피글렛 | 밍곰 | 메이 |
-|:-------:|:------:|:--------:|:--------:|:-------: |:-------: |
-| <img src="https://avatars.githubusercontent.com/u/58469870?v=4" alt="모루" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/76567238?v=4" alt="새로이" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/115832836?v=4" alt="조로" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/88280787?v=4" alt="피글렛" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/63039855?v=4" alt="밍곰" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/121426422?v=4" alt="메이" style="width:100px;height:100px;object-fit:cover;" /> |
-| [@choidongjun0830](https://github.com/Choidongjun0830) | [@Ryan-Dia](https://github.com/Ryan-Dia) | [@kysub99](https://github.com/kysub99) | [@rladmstn](https://github.com/rladmstn) | [@minSsan](https://github.com/minSsan) | [@seaniiio](https://github.com/seaniiio) |
+| 모루 | 새로이 | 피글렛 | 밍곰 | 메이 |
+|:-------:|:------:|:--------:|:-------: |:-------: |
+| <img src="https://avatars.githubusercontent.com/u/58469870?v=4" alt="모루" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/76567238?v=4" alt="새로이" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/88280787?v=4" alt="피글렛" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/63039855?v=4" alt="밍곰" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/121426422?v=4" alt="메이" style="width:100px;height:100px;object-fit:cover;" /> |
+| [@choidongjun0830](https://github.com/Choidongjun0830) | [@Ryan-Dia](https://github.com/Ryan-Dia) | [@rladmstn](https://github.com/rladmstn) | [@minSsan](https://github.com/minSsan) | [@seaniiio](https://github.com/seaniiio) |
 
 <details>
 <summary>과거 멤버</summary>
 
-| 재오(FE) | 피터(FE) | 메이토(FE) |
-|:--------:|:------:|:------:|
-| <img src="https://avatars.githubusercontent.com/u/61729032?v=4" alt="재오" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/62178788?v=4" alt="피터" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/162319857?v=4" alt="메이토" style="width:100px;height:100px;object-fit:cover;" /> |
-| [@jaeyoung-kwon](https://github.com/jaeyoung-kwon) | [@guesung](https://github.com/guesung) | [@Db0111](https://github.com/Db0111) |
+| 재오(FE) | 피터(FE) | 메이토(FE) | 조로(BE) |
+|:--------:|:------:|:------:|:------:|
+| <img src="https://avatars.githubusercontent.com/u/61729032?v=4" alt="재오" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/62178788?v=4" alt="피터" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/162319857?v=4" alt="메이토" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/115832836?v=4" alt="조로" style="width:100px;height:100px;object-fit:cover;" /> |
+| [@jaeyoung-kwon](https://github.com/jaeyoung-kwon) | [@guesung](https://github.com/guesung) | [@Db0111](https://github.com/Db0111) | [@kysub99](https://github.com/kysub99) |
 
 </details>
 
