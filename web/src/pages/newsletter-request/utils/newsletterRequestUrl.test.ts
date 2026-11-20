@@ -9,7 +9,7 @@ describe('isValidNewsletterUrl', () => {
     'https://example.com?subscribe=true',
     'https://example.com#subscribe',
     'example.com?ref=bombom',
-  ])('%s 는 받는다.', (value) => {
+  ])('%s 를 넣으면 유효한 링크로 판단한다.', (value) => {
     expect(isValidNewsletterUrl(value)).toBe(true);
   });
 
@@ -27,7 +27,7 @@ describe('isValidNewsletterUrl', () => {
     'https:///example.com',
     '한글.com',
     '뉴스레터 이름',
-  ])('"%s" 는 받지 않는다.', (value) => {
+  ])('"%s" 를 넣으면 유효하지 않은 링크로 판단한다.', (value) => {
     expect(isValidNewsletterUrl(value)).toBe(false);
   });
 });

@@ -5,6 +5,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { queries } from '@/apis/queries';
 import { useAuth } from '@/contexts/AuthContext';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import LoginSheet from '@/pages/newsletter-request/components/LoginSheet';
 import NewsletterRequestItem from '@/pages/newsletter-request/components/NewsletterRequestItem';
 import useToggleNewsletterRequestLikeMutation from '@/pages/newsletter-request/hooks/useToggleNewsletterRequestLikeMutation';
@@ -82,6 +83,10 @@ function NewsletterRequestBoardPage() {
   };
 
   const handleStartClick = () => {
+    trackEvent({
+      category: 'Newsletter',
+      action: '새 뉴스레터 신청하기 버튼 클릭',
+    });
     if (!isLoggedIn) {
       setLoginRedirectPath(FUNNEL_PATH);
       openModal();
@@ -146,7 +151,7 @@ function NewsletterRequestBoardPage() {
       )}
       {isVisibleError && (
         <ErrorBox>
-          <span>목록을 불러오지 못했어요</span>
+          <ErrorText>목록을 불러오지 못했어요</ErrorText>
           <Button variant="outlined" onClick={handleRetry}>
             다시 시도
           </Button>
@@ -262,6 +267,8 @@ const ErrorBox = styled.div`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t5Regular};
 `;
+
+const ErrorText = styled.span``;
 
 const CtaWrapper = styled.div<{ isPC: boolean }>`
   position: sticky;
