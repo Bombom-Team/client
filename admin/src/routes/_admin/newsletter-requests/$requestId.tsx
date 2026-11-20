@@ -181,11 +181,13 @@ function NewsletterRequestReviewPage() {
 
   const saveDraft = async () => {
     // 지금 폼을 저장하므로 수정 표시를 내린다. 응답과 재조회를 기다리는 동안 다시 고치면 표시가 올라가 입력이 남는다.
+    const hadUnsavedEdit = hasUnsavedEditRef.current;
     hasUnsavedEditRef.current = false;
     try {
       await updateDraft({ id, body: toUpdateRequest(form) });
     } catch (error) {
-      hasUnsavedEditRef.current = true;
+      // 저장에 실패하면 저장 전 표시로 되돌린다. 요청 중에 고친 내용이 있으면 그 표시는 남긴다.
+      hasUnsavedEditRef.current = hasUnsavedEditRef.current || hadUnsavedEdit;
       throw error;
     }
     await refresh();
@@ -237,8 +239,11 @@ function NewsletterRequestReviewPage() {
           params: { newsletterId: String(newsletterId) },
         });
       },
-      onError: (error) => alert(`승인 실패: ${error.message}`),
-      onSettled: () => setIsApproveFlowPending(false),
+      // 성공하면 상세 화면으로 이동하므로 잠금을 풀지 않는다. 이동이 끝나기 전에 다시 눌리지 않게 한다.
+      onError: (error) => {
+        setIsApproveFlowPending(false);
+        alert(`승인 실패: ${error.message}`);
+      },
     });
   };
 
