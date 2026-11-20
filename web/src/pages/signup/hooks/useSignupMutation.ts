@@ -7,6 +7,7 @@ import { markSignUpPending } from '@/libs/googleAnalytics/retentionEvents';
 import { GUIDE_MAIL_STORAGE_KEY } from '@/pages/guide-detail/constants/guideMail';
 import { formatDate } from '@/utils/date';
 import { createStorage } from '@/utils/localStorage';
+import { consumePostSignupRedirect } from '@/utils/postSignupRedirect';
 import type { Gender } from '../components/SignupCard.types';
 
 type UseSignupMutationParams = {
@@ -49,6 +50,11 @@ export const useSignupMutation = ({
         type: 'LOGIN_SUCCESS',
       });
       markSignUpPending();
+      const redirectPath = consumePostSignupRedirect();
+      if (redirectPath) {
+        navigate({ href: redirectPath });
+        return;
+      }
       navigate({ to: '/today' });
     },
     onError: () => {

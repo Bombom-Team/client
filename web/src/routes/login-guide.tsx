@@ -2,6 +2,9 @@ import { createFileRoute } from '@tanstack/react-router';
 import InAppBrowserGuide from '../pages/login/components/InAppBrowserGuide';
 
 export const Route = createFileRoute('/login-guide')({
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } => ({
+    redirect: typeof search.redirect === 'string' ? search.redirect : undefined,
+  }),
   head: () => ({
     meta: [
       {
