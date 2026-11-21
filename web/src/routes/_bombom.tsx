@@ -7,6 +7,7 @@ import {
 import { useEffect, useRef } from 'react';
 import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstallPromptModal';
 import ChallengeStartModal from '@/components/ChallengeStartModal/ChallengeStartModal';
+import InquiryFloatingButton from '@/components/InquiryFloatingButton/InquiryFloatingButton';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
@@ -41,6 +42,8 @@ function RouteComponent() {
       {!isWaitingForAuth && <Outlet />}
       <ChallengeStartModal />
       <AppInstallPromptModal />
+
+      <InquiryFloatingButton />
     </BomBomPageLayout>
   );
 }

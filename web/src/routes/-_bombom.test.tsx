@@ -31,6 +31,10 @@ jest.mock('@/components/AppInstallPromptModal/AppInstallPromptModal', () => ({
   __esModule: true,
   default: () => null,
 }));
+jest.mock('@/components/InquiryFloatingButton/InquiryFloatingButton', () => ({
+  __esModule: true,
+  default: () => null,
+}));
 
 const NAVIGATE = jest.fn();
 const ROUTER_STATE = useRouterState as jest.Mock;
