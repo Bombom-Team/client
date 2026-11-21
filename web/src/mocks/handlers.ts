@@ -29,35 +29,6 @@ export const handlers = [
     });
   }),
 
-  // 멤버 읽기 상태
-  http.get(`${baseURL}/members/me/reading`, () => {
-    return HttpResponse.json({
-      streakReadDay: 3,
-      today: {
-        readCount: 2,
-        totalCount: 5,
-      },
-      weekly: {
-        readCount: 7,
-        goalCount: 10,
-      },
-    });
-  }),
-
-  // 펫 정보 조회
-  http.get(`${baseURL}/members/me/pet`, () => {
-    return HttpResponse.json({
-      level: 1,
-      currentStageScore: 100,
-      requiredStageScore: 50,
-    });
-  }),
-
-  // 펫 출석 체크
-  http.post(`${baseURL}/members/me/pet/attendance`, () => {
-    return HttpResponse.json();
-  }),
-
   // ------------------ 하이라이트 CRUD ------------------
 
   // 전체 조회

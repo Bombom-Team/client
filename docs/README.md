@@ -28,7 +28,7 @@
 
 | 사용자 문제 | 봄봄의 해결 방식 | 전달 가치 |
 | --- | --- | --- |
-| 뉴스레터가 쌓여만 간다 | 통합 보관 + 읽기 목표 설정 | 읽는 습관 형성 |
+| 뉴스레터가 쌓여만 간다 | 통합 보관 + 연속 읽기 기록 | 읽는 습관 형성 |
 | 어디까지 읽었는지 기억나지 않는다 | 읽기 진행률 자동 기록 | 이어서 읽기 |
 | 혼자서는 읽기 습관을 만들기 어렵다 | 챌린지 + 팀 현황판 | 지속적인 읽기 동기 |
 | 읽은 내용을 다시 활용하기 어렵다 | 하이라이트 + 메모 + 아카이빙 | 지식 자산화 |
@@ -39,7 +39,7 @@
 
   <!-- Row 1 -->
   <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/fce87c25-69cb-4f4c-af74-7f4c3950e475"
         height="300"
@@ -58,7 +58,7 @@
 
   <!-- Row 2 -->
   <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/7bb1b5dd-ac68-42fd-9e25-580d340ebad9"
         alt="하이라이트와 메모 화면"
@@ -77,7 +77,7 @@
 
   <!-- Row 3 -->
   <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/d9a8df0b-f628-42b3-af3a-2b1dfc205296"
         alt="챌린지 화면"
@@ -97,7 +97,45 @@
 
   <!-- Row 4 -->
   <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
+      <img
+        src="https://github.com/user-attachments/assets/58cfff2c-1047-469b-812c-b6c8ccc7521a"
+        alt="읽기 랭킹 화면"
+        height="300"
+      />
+    </td>
+    <td style="width: 50%; vertical-align: top;">
+
+### 🏆 읽기 랭킹으로 꾸준히 읽어요
+
+- 아티클을 읽으며 연속 읽기 기록을 쌓아요.
+- 연속왕과 다독왕 순위에서 나의 순위를 확인해요.
+
+</td>
+  </tr>
+
+  <!-- Row 5 -->
+  <tr>
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
+      <img
+        src="https://github.com/user-attachments/assets/84ada23a-818c-4395-92f2-5fe1fdfd8b56"
+        alt="읽기 활동 화면"
+        height="300"
+      />
+    </td>
+    <td style="width: 50%; vertical-align: top;">
+
+### 📅 월간 리포트로 읽기 습관을 돌아봐요
+
+- 월간 리포트에서 읽은 아티클과 뉴스레터를 한눈에 확인해요.
+- 읽기 캘린더와 통계로 나의 읽기 패턴을 돌아봐요.
+
+</td>
+  </tr>
+
+  <!-- Row 6 -->
+  <tr>
+    <td align="center" style="width: 50%; vertical-align: top; text-align: center;">
       <img
         src="https://github.com/user-attachments/assets/71913742-6239-4b16-b7e1-4ed8070b8421"
         alt="매일메일 화면"
@@ -115,50 +153,6 @@
 <br/>
 
 [매일메일 바로가기](https://maeilmail.bombom.news)
-
-</td>
-  </tr>
-
-  <!-- Row 5 -->
-  <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
-      <img
-        src="https://github.com/user-attachments/assets/58cfff2c-1047-469b-812c-b6c8ccc7521a"
-        alt="읽기 랭킹 화면"
-        height="300"
-      />
-      <img
-        src="https://github.com/user-attachments/assets/f84c0281-b1c4-48a2-a1c3-0e54cf7809a0"
-        alt="출석 화면"
-        height="100"
-      />
-    </td>
-    <td style="width: 50%; vertical-align: top;">
-
-### 🏆 읽기 랭킹으로 꾸준히 읽어요
-
-- 매일 또는 매주 읽기 목표를 설정해요.
-- 출석하고 아티클을 읽으며 연속 읽기 기록을 쌓아요.
-- 연속왕과 다독왕 순위에서 나의 순위를 확인해요.
-
-</td>
-  </tr>
-
-  <!-- Row 6 -->
-  <tr>
-    <td style="width: 50%; vertical-align: top; text-align: center;">
-      <img
-        src="https://github.com/user-attachments/assets/84ada23a-818c-4395-92f2-5fe1fdfd8b56"
-        alt="읽기 활동 화면"
-        height="300"
-      />
-    </td>
-    <td style="width: 50%; vertical-align: top;">
-
-### 📅 월간 리포트로 읽기 습관을 돌아봐요
-
-- 월간 리포트에서 읽은 아티클과 뉴스레터를 한눈에 확인해요.
-- 읽기 캘린더와 통계로 나의 읽기 패턴을 돌아봐요.
 
 </td>
   </tr>
@@ -228,18 +222,18 @@
 
 ### Backend 🔧
 
-| 모루 | 새로이 | 조로 | 피글렛 | 밍곰 | 메이 |
-|:-------:|:------:|:--------:|:--------:|:-------: |:-------: |
-| <img src="https://avatars.githubusercontent.com/u/58469870?v=4" alt="모루" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/76567238?v=4" alt="새로이" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/115832836?v=4" alt="조로" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/88280787?v=4" alt="피글렛" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/63039855?v=4" alt="밍곰" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/121426422?v=4" alt="메이" style="width:100px;height:100px;object-fit:cover;" /> |
-| [@choidongjun0830](https://github.com/Choidongjun0830) | [@Ryan-Dia](https://github.com/Ryan-Dia) | [@kysub99](https://github.com/kysub99) | [@rladmstn](https://github.com/rladmstn) | [@minSsan](https://github.com/minSsan) | [@seaniiio](https://github.com/seaniiio) |
+| 모루 | 새로이 | 피글렛 | 밍곰 | 메이 |
+|:-------:|:------:|:--------:|:-------: |:-------: |
+| <img src="https://avatars.githubusercontent.com/u/58469870?v=4" alt="모루" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/76567238?v=4" alt="새로이" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/88280787?v=4" alt="피글렛" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/63039855?v=4" alt="밍곰" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/121426422?v=4" alt="메이" style="width:100px;height:100px;object-fit:cover;" /> |
+| [@choidongjun0830](https://github.com/Choidongjun0830) | [@Ryan-Dia](https://github.com/Ryan-Dia) | [@rladmstn](https://github.com/rladmstn) | [@minSsan](https://github.com/minSsan) | [@seaniiio](https://github.com/seaniiio) |
 
 <details>
 <summary>과거 멤버</summary>
 
-| 재오(FE) | 피터(FE) | 메이토(FE) |
-|:--------:|:------:|:------:|
-| <img src="https://avatars.githubusercontent.com/u/61729032?v=4" alt="재오" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/62178788?v=4" alt="피터" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/162319857?v=4" alt="메이토" style="width:100px;height:100px;object-fit:cover;" /> |
-| [@jaeyoung-kwon](https://github.com/jaeyoung-kwon) | [@guesung](https://github.com/guesung) | [@Db0111](https://github.com/Db0111) |
+| 재오(FE) | 피터(FE) | 메이토(FE) | 조로(BE) |
+|:--------:|:------:|:------:|:------:|
+| <img src="https://avatars.githubusercontent.com/u/61729032?v=4" alt="재오" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/62178788?v=4" alt="피터" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/162319857?v=4" alt="메이토" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://avatars.githubusercontent.com/u/115832836?v=4" alt="조로" style="width:100px;height:100px;object-fit:cover;" /> |
+| [@jaeyoung-kwon](https://github.com/jaeyoung-kwon) | [@guesung](https://github.com/guesung) | [@Db0111](https://github.com/Db0111) | [@kysub99](https://github.com/kysub99) |
 
 </details>
 

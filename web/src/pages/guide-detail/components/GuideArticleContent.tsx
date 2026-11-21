@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { memo } from 'react';
 import GuideMail1 from './GuideMail1';
-import GuideMail2 from './GuideMail2';
 import GuideMail3 from './GuideMail3';
 import { useHighlightHoverEffect } from '@/pages/detail/hooks/useHighlightHoverEffect';
 import type { RefObject } from 'react';
@@ -16,13 +15,7 @@ const ArticleContent = ({ ref, articleId }: ArticleContentProps) => {
 
   return (
     <Container ref={ref}>
-      {articleId === 1 ? (
-        <GuideMail1 />
-      ) : articleId === 2 ? (
-        <GuideMail2 />
-      ) : (
-        <GuideMail3 />
-      )}
+      {articleId === 1 ? <GuideMail1 /> : <GuideMail3 />}
     </Container>
   );
 };
