@@ -2,7 +2,7 @@ import { Modal, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { queries } from '@/apis/queries';
-import { convertRelativeTime } from '@/pages/challenge/comments/utils/date';
+import { convertRelativeTime } from '@/utils/date';
 import type { components } from '@/types/openapi';
 
 type DailyGuideCommentItem = components['schemas']['DailyGuideCommentResponse'];

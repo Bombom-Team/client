@@ -76,22 +76,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/login/sso/verify/success/apple': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['handleAppleFormPost'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/api/v1/members/me/warning/near-capacity': {
     parameters: {
       query?: never;
@@ -1695,6 +1679,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/auth/csrf': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['csrf'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/articles': {
     parameters: {
       query?: never;
@@ -1905,11 +1905,21 @@ export interface components {
       categoryId?: number;
       /** @enum {string} */
       status?: 'UNCONFIRMED' | 'IN_PROGRESS' | 'DONE' | 'ON_HOLD';
+      assigneeNickname?: string;
       hasUnreadMessage?: boolean;
       /** Format: date-time */
       createdAt?: string;
       /** Format: date-time */
       closedAt?: string;
+      lastMessage?: components['schemas']['LastMessageResponse'];
+    };
+    LastMessageResponse: {
+      content?: string;
+      /** @enum {string} */
+      senderType?: 'USER' | 'ADMIN';
+      adminNickname?: string;
+      /** Format: date-time */
+      createdAt?: string;
     };
     SendInquiryMessageRequest: {
       content?: string;
@@ -1924,6 +1934,7 @@ export interface components {
       senderType?: 'USER' | 'ADMIN';
       /** Format: int64 */
       adminId?: number;
+      adminNickname?: string;
       content?: string;
       imageUrls?: string[];
       /** Format: date-time */
@@ -2085,32 +2096,32 @@ export interface components {
       createdAt: string;
     };
     PageNoticeResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['NoticeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     PageableObject: {
       /** Format: int64 */
       offset?: number;
       sort?: components['schemas']['SortObject'];
-      /** Format: int32 */
-      pageSize?: number;
       paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
+      /** Format: int32 */
+      pageSize?: number;
       unpaged?: boolean;
     };
     SortObject: {
@@ -2611,21 +2622,21 @@ export interface components {
       grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
     };
     PageCompletedChallengeResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['CompletedChallengeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     CategoryStatsItemResponse: {
@@ -2654,21 +2665,21 @@ export interface components {
       answer: string;
     };
     PageInquiryRoomResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['InquiryRoomResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     InquiryMessagePageResponse: {
@@ -2699,21 +2710,21 @@ export interface components {
       createdAt?: string;
     };
     PageHighlightResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     /** @description 뉴스레터 별 하이라이트 개수 통계 */
@@ -2748,21 +2759,21 @@ export interface components {
       answer: string;
     };
     PageFaqResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['FaqResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     CouponIssueSummaryResponse: {
@@ -2970,21 +2981,21 @@ export interface components {
       comment: string;
     };
     PageChallengeReviewResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeReviewResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     MyChallengeReviewResponse: {
@@ -3020,21 +3031,21 @@ export interface components {
       createdAt: string;
     };
     PageDailyGuideCommentResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['DailyGuideCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     MyCommentResponse: {
@@ -3079,21 +3090,21 @@ export interface components {
       replyCount: number;
     };
     PageChallengeCommentResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     CommentReplyResponse: {
@@ -3108,21 +3119,21 @@ export interface components {
       isPrivate: boolean;
     };
     PageCommentReplyResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['CommentReplyResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     ChallengeCommentHighlightResponse: {
@@ -3132,21 +3143,21 @@ export interface components {
       memo?: string;
     };
     PageChallengeCommentHighlightResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentHighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     ChallengeCommentCandidateArticleResponse: {
@@ -3179,21 +3190,21 @@ export interface components {
       category: string;
     };
     PageBookmarkResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     BookmarkStatusResponse: {
@@ -3223,21 +3234,21 @@ export interface components {
       publishedAt: string;
     };
     PageBlogPostResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BlogPostResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     BlogPostDetailResponse: {
@@ -3258,6 +3269,16 @@ export interface components {
       /** @enum {string} */
       field: 'NICKNAME' | 'EMAIL';
       userInput: string;
+    };
+    CsrfToken: {
+      parameterName?: string;
+      headerName?: string;
+      token?: string;
+    };
+    CsrfResponse: {
+      enabled?: boolean;
+      headerName?: string;
+      token?: string;
     };
     ArticlesOptionsRequest: {
       /** Format: date */
@@ -3282,21 +3303,21 @@ export interface components {
       newsletter: components['schemas']['NewsletterSummaryResponse'];
     };
     PageArticleResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
+      pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components['schemas']['PageableObject'];
       empty?: boolean;
     };
     ArticleDetailResponse: {
@@ -3640,26 +3661,6 @@ export interface operations {
       };
       /** @description 챌린지 코멘트를 찾을 수 없음 */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  handleAppleFormPost: {
-    parameters: {
-      query?: {
-        user?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
         headers: {
           [name: string]: unknown;
         };
@@ -6914,6 +6915,28 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  csrf: {
+    parameters: {
+      query: {
+        csrfToken: components['schemas']['CsrfToken'];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CsrfResponse'];
+        };
       };
     };
   };

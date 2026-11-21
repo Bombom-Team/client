@@ -1,3 +1,4 @@
+import { theme } from '@bombom/shared';
 import { ApiError } from '@bombom/shared/apis';
 import { ChevronIcon, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
@@ -16,18 +17,21 @@ import InquiryMessageBubble from '@/pages/support/inquiry/components/InquiryMess
 import InquiryMessageDateDivider from '@/pages/support/inquiry/components/InquiryMessageDateDivider';
 import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessageInput';
 import { useInquiryMessageDeleteMutation } from '@/pages/support/inquiry/hooks/useInquiryMessageDeleteMutation';
+import { useInquiryMessageScroll } from '@/pages/support/inquiry/hooks/useInquiryMessageScroll';
 import { useInquiryMessageSendMutation } from '@/pages/support/inquiry/hooks/useInquiryMessageSendMutation';
+import { formatAssigneeLabel } from '@/pages/support/inquiry/utils/assignee';
 import {
   INQUIRY_ROOM_STATUS_BADGE_VARIANTS,
   INQUIRY_ROOM_STATUS_LABELS,
 } from '@/types/inquiry';
 import { compareDates, formatDateToKorean } from '@/utils/date';
 import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
+import ClockIcon from '#/assets/svg/clock.svg';
 
 export const Route = createFileRoute('/_bombom/_main/support/inquiry/$roomId')({
   head: () => ({
     meta: [
-      { title: '봄봄 | 1:1 문의하기' },
+      { title: '봄봄 | 1:1 채팅 문의' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -42,6 +46,16 @@ function InquiryRoomDetailPage() {
   const isMobile = device !== 'pc';
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const messageListRef = useRef<HTMLDivElement>(null);
+  const {
+    getScrollTarget,
+    getScrollHeight,
+    getScrollPosition,
+    getViewportHeight,
+    getDistanceFromBottom,
+    scrollTo,
+    scrollToBottom,
+  } = useInquiryMessageScroll({ messageListRef });
   const hasScrolledToBottomRef = useRef(false);
   const prevScrollHeightRef = useRef<number | null>(null);
   const isSendingRef = useRef(false);
@@ -76,10 +90,6 @@ function InquiryRoomDetailPage() {
   const isRoomFetchError = roomError != null && !isRoomNotFound;
   const isAwaitingMoreMessages =
     room?.status === 'UNCONFIRMED' || room?.status === 'IN_PROGRESS';
-  const { data: categories } = useQuery(queries.inquiryCategories());
-  const categoryName = categories?.find(
-    (category) => category.id === room?.categoryId,
-  )?.name;
 
   const {
     data: messagePages,
@@ -148,40 +158,47 @@ function InquiryRoomDetailPage() {
     if (!messageArrival) return;
 
     if (!hasScrolledToBottomRef.current) {
-      window.scrollTo(0, document.body.scrollHeight);
+      scrollToBottom();
       hasScrolledToBottomRef.current = true;
       return;
     }
 
     if (isSendingRef.current) {
-      window.scrollTo(0, document.body.scrollHeight);
+      scrollToBottom();
       isSendingRef.current = false;
       return;
     }
 
     if (prevScrollHeightRef.current !== null) {
-      const scrollHeightDiff =
-        document.body.scrollHeight - prevScrollHeightRef.current;
-      window.scrollTo(0, window.scrollY + scrollHeightDiff);
+      const scrollHeightDiff = getScrollHeight() - prevScrollHeightRef.current;
+      scrollTo(getScrollPosition() + scrollHeightDiff);
       prevScrollHeightRef.current = null;
       return;
     }
 
     if (messageArrival.hasNewMessage) {
-      const distanceFromBottom =
-        document.body.scrollHeight - (window.scrollY + window.innerHeight);
-      const wasNearBottom = distanceFromBottom <= window.innerHeight * 0.5;
+      const wasNearBottom =
+        getDistanceFromBottom() <= getViewportHeight() * 0.5;
 
       if (wasNearBottom) {
-        window.scrollTo(0, document.body.scrollHeight);
+        scrollToBottom();
       } else {
         setHasNewMessageArrived(true);
       }
     }
-  }, [isMessagesReady, messages]);
+  }, [
+    isMessagesReady,
+    messages,
+    getDistanceFromBottom,
+    getScrollHeight,
+    getScrollPosition,
+    getViewportHeight,
+    scrollTo,
+    scrollToBottom,
+  ]);
 
   const handleScrollToBottom = () => {
-    window.scrollTo(0, document.body.scrollHeight);
+    scrollToBottom();
     setHasNewMessageArrived(false);
   };
 
@@ -189,16 +206,20 @@ function InquiryRoomDetailPage() {
     if (!hasNewMessageArrived) return;
 
     const handleScroll = () => {
-      const distanceFromBottom =
-        document.body.scrollHeight - (window.scrollY + window.innerHeight);
-      if (distanceFromBottom <= window.innerHeight * 0.2) {
+      if (getDistanceFromBottom() <= getViewportHeight() * 0.2) {
         setHasNewMessageArrived(false);
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasNewMessageArrived]);
+    const scrollTarget = getScrollTarget() ?? window;
+    scrollTarget.addEventListener('scroll', handleScroll, { passive: true });
+    return () => scrollTarget.removeEventListener('scroll', handleScroll);
+  }, [
+    hasNewMessageArrived,
+    getDistanceFromBottom,
+    getScrollTarget,
+    getViewportHeight,
+  ]);
 
   const { mutateAsync: mutateSendMessage, isPending: isSending } =
     useInquiryMessageSendMutation({ roomId });
@@ -216,7 +237,7 @@ function InquiryRoomDetailPage() {
   };
 
   const handleLoadMore = () => {
-    prevScrollHeightRef.current = document.body.scrollHeight;
+    prevScrollHeightRef.current = getScrollHeight();
     fetchNextPage();
   };
 
@@ -233,38 +254,46 @@ function InquiryRoomDetailPage() {
   const canSendMessage = isAwaitingMoreMessages;
 
   return (
-    <ChatCard>
+    <ChatCard isMobile={isMobile}>
       <Header isMobile={isMobile}>
-        <BackLink to="/support/inquiry">
-          <ChevronIcon direction="left" width={20} height={20} />
-          목록으로
-        </BackLink>
-
-        {room && (
-          <CreatedAtText>
-            {formatDateToKorean(new Date(room.createdAt ?? ''))}
-          </CreatedAtText>
+        {isMobile && (
+          <BackLink to="/support/inquiry">
+            <ChevronIcon direction="left" width={20} height={20} />
+            목록으로
+          </BackLink>
         )}
 
         <HeaderRow>
-          <HeaderSpacer />
-          {categoryName && <CategoryText>{categoryName}</CategoryText>}
-          <HeaderSpacer>
-            {room?.status && (
-              <Badge
-                text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
-                variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
-              />
-            )}
-          </HeaderSpacer>
+          {room && (
+            <HeaderTitleGroup>
+              <CreatedAtText>
+                {formatDateToKorean(new Date(room.createdAt ?? ''))}
+              </CreatedAtText>
+              <AssigneeText>
+                {formatAssigneeLabel(room.assigneeNickname)}
+              </AssigneeText>
+            </HeaderTitleGroup>
+          )}
+          {room?.status && (
+            <Badge
+              text={INQUIRY_ROOM_STATUS_LABELS[room.status]}
+              variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
+            />
+          )}
         </HeaderRow>
 
         <ResponseTimeNotice>
-          문의 답변에는 평일 기준 평균 2시간이 소요됩니다.
+          {/* clock.svg는 stroke 색이 하드코딩되어 있어 color 대신 stroke로 덮어쓴다 */}
+          <ClockIcon
+            width={16}
+            height={16}
+            stroke={theme.colors.textTertiary}
+          />
+          평일 10:00-18:00 운영, 보통 1영업일 안에 답변드려요
         </ResponseTimeNotice>
       </Header>
 
-      <MessageList>
+      <MessageList ref={messageListRef} isMobile={isMobile}>
         <LoadMoreTrigger ref={loadMoreRef} />
         {messages.map((message, index) => {
           const prevMessage = messages[index - 1];
@@ -292,7 +321,11 @@ function InquiryRoomDetailPage() {
       </MessageList>
 
       {hasNewMessageArrived && (
-        <NewMessageButton type="button" onClick={handleScrollToBottom}>
+        <NewMessageButton
+          type="button"
+          isMobile={isMobile}
+          onClick={handleScrollToBottom}
+        >
           새 메시지가 도착했어요
         </NewMessageButton>
       )}
@@ -317,23 +350,30 @@ function InquiryRoomDetailPage() {
   );
 }
 
-const ChatCard = styled.div`
+const ChatCard = styled.div<{ isMobile: boolean }>`
+
+  /* 모바일에서는 헤더가 페이지를 기준으로 sticky 해야 하므로 overflow를 만들지 않는다 */
+  overflow: ${({ isMobile }) => (isMobile ? 'visible' : 'hidden')};
+  position: relative;
   width: 100%;
-  max-width: 800px;
+  height: ${({ isMobile }) => (isMobile ? 'auto' : '100%')};
+  max-width: ${({ isMobile }) => (isMobile ? '800px' : 'none')};
   margin: 0 auto;
+  padding: ${({ isMobile }) => (isMobile ? '0' : '0 20px')};
 
   display: flex;
   flex-direction: column;
+
+  box-sizing: border-box;
 `;
 
 const Header = styled.div<{ isMobile: boolean }>`
-  position: sticky;
+  position: ${({ isMobile }) => (isMobile ? 'sticky' : 'static')};
   top: ${({ isMobile, theme }) =>
     isMobile
       ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`
       : `calc(${theme.heights.headerPC} + 40px)`};
   z-index: ${({ theme }) => theme.zIndex.panel};
-
   padding: 16px 0 12px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.stroke};
 
@@ -357,44 +397,51 @@ const BackLink = styled(Link)`
   text-decoration: none;
 `;
 
+const HeaderTitleGroup = styled.div`
+  display: flex;
+  gap: 2px;
+  flex-direction: column;
+`;
+
 const CreatedAtText = styled.span`
-  color: ${({ theme }) => theme.colors.textTertiary};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font: ${({ theme }) => theme.fonts.t6Bold};
+`;
+
+const AssigneeText = styled.span`
+  color: ${({ theme }) => theme.colors.textSecondary};
   font: ${({ theme }) => theme.fonts.t3Regular};
-  text-align: center;
 `;
 
 const HeaderRow = styled.div`
   display: flex;
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
-`;
-
-const HeaderSpacer = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-`;
-
-const CategoryText = styled.span`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t5Bold};
-  text-align: center;
 `;
 
 const ResponseTimeNotice = styled.p`
   margin-top: 4px;
 
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t3Regular};
-  text-align: center;
 `;
 
-const MessageList = styled.div`
+const MessageList = styled.div<{ isMobile: boolean }>`
+  min-height: ${({ isMobile }) => (isMobile ? 'auto' : '0')};
   padding: 4px 0;
 
   display: flex;
-  gap: 12px;
+  gap: 16px;
+  flex: ${({ isMobile }) => (isMobile ? 'none' : '1')};
   flex-direction: column;
+
+  overflow-y: ${({ isMobile }) => (isMobile ? 'visible' : 'auto')};
 `;
 
 const LoadMoreTrigger = styled.div`
@@ -410,20 +457,21 @@ const ClosedNotice = styled.p`
   text-align: center;
 `;
 
-const NewMessageButton = styled.button`
-  position: fixed;
+const NewMessageButton = styled.button<{ isMobile: boolean }>`
+  position: ${({ isMobile }) => (isMobile ? 'fixed' : 'absolute')};
   top: 30%;
   left: 50%;
   z-index: ${({ theme }) => theme.zIndex.floating};
   padding: 8px 16px;
   border: none;
   border-radius: 999px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
 
   background-color: ${({ theme }) => theme.colors.primaryBomBom};
   color: ${({ theme }) => theme.colors.white};
   font: ${({ theme }) => theme.fonts.t4Bold};
 
-  transform: translate(-50%, -50%);
-  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
   cursor: pointer;
+
+  transform: translate(-50%, -50%);
 `;

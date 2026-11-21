@@ -1,16 +1,12 @@
 import styled from '@emotion/styled';
 import InquiryRoomListItem from '../InquiryRoomListItem';
-import type { InquiryCategory, InquiryRoom } from '@/types/inquiry';
+import type { InquiryRoom } from '@/types/inquiry';
 
 interface InquiryRoomListContentProps {
-  categories?: InquiryCategory[];
   rooms: InquiryRoom[];
 }
 
-const InquiryRoomListContent = ({
-  categories,
-  rooms,
-}: InquiryRoomListContentProps) => {
+const InquiryRoomListContent = ({ rooms }: InquiryRoomListContentProps) => {
   if (rooms.length === 0) {
     return <EmptyState>아직 문의 내역이 없어요</EmptyState>;
   }
@@ -18,14 +14,7 @@ const InquiryRoomListContent = ({
   return (
     <RoomList>
       {rooms.map((room) => (
-        <InquiryRoomListItem
-          key={room.id}
-          room={room}
-          categoryName={
-            categories?.find((category) => category.id === room.categoryId)
-              ?.name
-          }
-        />
+        <InquiryRoomListItem key={room.id} room={room} />
       ))}
     </RoomList>
   );
@@ -35,7 +24,6 @@ export default InquiryRoomListContent;
 
 const RoomList = styled.div`
   display: flex;
-  gap: 12px;
   flex-direction: column;
 `;
 

@@ -8,10 +8,11 @@ const config = {
   clearMocks: true,
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '\\.(avif|jpg|jpeg|gif|png|webp|woff2?|eot|ttf|otf)$':
+    '\\.(avif|jpg|jpeg|gif|png|svg|webp|woff2?|eot|ttf|otf)$':
       '<rootDir>/src/mocks/fileMock.cjs',
   },
   testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/src/test/setupTests.ts'],
 };
 
 module.exports = config;

@@ -4,13 +4,8 @@ import { useMemo, useRef } from 'react';
 import InquiryRoomListContent from './InquiryRoomListContent';
 import { queries } from '@/apis/queries';
 import { useIntersectionTrigger } from '@/hooks/useIntersectionTrigger';
-import type { InquiryCategory } from '@/types/inquiry';
 
-interface MobileInquiryRoomListProps {
-  categories?: InquiryCategory[];
-}
-
-const MobileInquiryRoomList = ({ categories }: MobileInquiryRoomListProps) => {
+const MobileInquiryRoomList = () => {
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const {
     data: roomPages,
@@ -31,7 +26,7 @@ const MobileInquiryRoomList = ({ categories }: MobileInquiryRoomListProps) => {
 
   return (
     <>
-      <InquiryRoomListContent categories={categories} rooms={rooms} />
+      <InquiryRoomListContent rooms={rooms} />
       <LoadMoreTrigger ref={loadMoreRef} />
       {isFetchingNextPage && <LoadingMessage>로딩 중...</LoadingMessage>}
     </>

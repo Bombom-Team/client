@@ -19,7 +19,8 @@ export interface UpdateInquiryCategoryParams {
 }
 
 export interface InquiryLastMessage {
-  content: string;
+  // 사진만 보낸 메시지는 내용이 비어 있다(inquiry_message.content가 nullable).
+  content: string | null;
   senderType: InquirySenderType;
   // ADMIN 발신이면서 그 관리자가 탈퇴하지 않은 경우에만 값이 있고, 그 외(USER 발신, 관리자 탈퇴)는 null.
   adminNickname: string | null;

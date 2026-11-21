@@ -24,6 +24,11 @@ export const NOTIFICATION_SETTINGS = [
     label: '챌린지 리마인드 알림',
     hint: '오늘의 챌린지 목표 리마인드 알림',
   },
+  {
+    category: CATEGORY.inquiryMessageArrival,
+    label: '1:1 채팅 문의 알림',
+    hint: '문의 답변이 도착하면 알림',
+  },
 ] as const;
 
 interface SettingListProps {
