@@ -17,19 +17,6 @@ export const GUIDE_MAILS: GuideArticle[] = [
     },
   },
   {
-    articleId: 2,
-    title: '[봄봄 가이드] 키우기',
-    contentsSummary:
-      '봄이 캐릭터와 함께하는 읽기 습관 만들기. 출석과 아티클 읽기로 경험치를 모아 레벨 5까지 성장시키는 방법을 안내합니다.',
-    arrivedDateTime: '2025-08-18T11:05:00+09:00',
-    expectedReadTime: 2,
-    isRead: false,
-    newsletter: {
-      category: '가이드',
-      name: '봄봄',
-    },
-  },
-  {
     articleId: 3,
     title: '[봄봄 가이드] 하이라이트 & 메모 사용법',
     contentsSummary:

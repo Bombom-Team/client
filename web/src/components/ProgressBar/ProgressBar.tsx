@@ -42,7 +42,7 @@ const ProgressBar = ({
 
 export default ProgressBar;
 
-export const Container = styled.div<{ hasCaption: boolean }>`
+const Container = styled.div<{ hasCaption: boolean }>`
   width: 100%;
   height: ${({ hasCaption }) => (hasCaption ? 'auto' : '10px')};
 `;
@@ -58,7 +58,7 @@ const ProgressOverlay = styled.div<{
   background-color: ${({ theme }) => theme.colors.primaryLight};
 `;
 
-export const ProgressGauge = styled.div<{
+const ProgressGauge = styled.div<{
   rate: number;
   transitionDuration: false | number;
   variant: 'rounded' | 'rectangular';
@@ -79,7 +79,7 @@ export const ProgressGauge = styled.div<{
     `transition: width ${transitionDuration}s ease-in-out`};
 `;
 
-export const ProgressCaption = styled.p`
+const ProgressCaption = styled.p`
   width: 100%;
 
   color: ${({ theme }) => theme.colors.textSecondary};
