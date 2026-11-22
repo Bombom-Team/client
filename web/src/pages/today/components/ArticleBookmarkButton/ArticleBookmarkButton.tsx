@@ -27,13 +27,14 @@ const ArticleBookmarkButton = ({
   });
   const { mutate: removeBookmark, isPending: isRemoving } =
     useRemoveBookmarkMutation({ articleId });
+  const isPending = isAdding || isRemoving;
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     // 카드 전체가 Link라 버튼 클릭이 상세 이동으로 이어지지 않게 막는다.
     event.preventDefault();
     event.stopPropagation();
 
-    if (isAdding || isRemoving) return;
+    if (isPending) return;
 
     const mutate = isBookmarked ? removeBookmark : addBookmark;
     mutate(undefined, {
@@ -48,6 +49,8 @@ const ArticleBookmarkButton = ({
       type="button"
       aria-label={isBookmarked ? '북마크 해제' : '북마크 추가'}
       aria-pressed={isBookmarked}
+      aria-busy={isPending}
+      isPending={isPending}
       onClick={handleClick}
     >
       {isBookmarked ? (
@@ -65,7 +68,7 @@ const ArticleBookmarkButton = ({
 
 export default ArticleBookmarkButton;
 
-const Container = styled.button`
+const Container = styled.button<{ isPending: boolean }>`
   width: 32px;
   height: 32px;
   margin: -8px -4px;
@@ -74,4 +77,11 @@ const Container = styled.button`
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
+
+  cursor: ${({ isPending }) => (isPending ? 'progress' : 'pointer')};
+
+  svg {
+    opacity: ${({ isPending }) => (isPending ? 0.4 : 1)};
+    transition: opacity 0.2s ease-in-out;
+  }
 `;
