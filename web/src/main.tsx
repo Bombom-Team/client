@@ -13,7 +13,7 @@ import { createRoot } from 'react-dom/client';
 import { ENV } from './apis/env';
 import { queries } from './apis/queries';
 import PageErrorFallback from './components/PageErrorFallback/PageErrorFallback';
-import { PRERENDERED_ATTRIBUTE } from './constants/prerender';
+import { STATIC_HEAD_ATTRIBUTE } from './constants/seo';
 import {
   DEV_GOOGLE_ANALYTICS_ID,
   GOOGLE_ANALYTICS_ID,
@@ -145,7 +145,7 @@ async function enableMocking() {
 // 빌드 때 상세 HTML에 미리 넣은 head 태그입니다(web/scripts/prerender.ts).
 // HeadContent가 같은 태그를 다시 넣어 중복되므로 렌더링 전에 지웁니다.
 document
-  .querySelectorAll(`[${PRERENDERED_ATTRIBUTE}]`)
+  .querySelectorAll(`[${STATIC_HEAD_ATTRIBUTE}]`)
   .forEach((element) => element.remove());
 
 enableMocking().then(() => {

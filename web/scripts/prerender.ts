@@ -1,7 +1,7 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
 import { fetchDetailPageNewsletters, warn } from './newsletters';
-import { PRERENDERED_ATTRIBUTE } from '../src/constants/prerender';
+import { STATIC_HEAD_ATTRIBUTE } from '../src/constants/seo';
 import { createNewsletterHead } from '../src/pages/newsletter-detail/utils/seo';
 import {
   getNewsletterDetailPath,
@@ -42,11 +42,11 @@ const getMetaKey = (meta: NamedMeta): MetaKey =>
 
 const renderMeta = (meta: NewsletterHeadMeta) => {
   if ('title' in meta) {
-    return `<title ${PRERENDERED_ATTRIBUTE}>${escapeHtml(meta.title)}</title>`;
+    return `<title ${STATIC_HEAD_ATTRIBUTE}>${escapeHtml(meta.title)}</title>`;
   }
 
   const [key, value] = getMetaKey(meta);
-  return `<meta ${PRERENDERED_ATTRIBUTE} ${key}="${escapeHtml(value)}" content="${escapeHtml(meta.content)}">`;
+  return `<meta ${STATIC_HEAD_ATTRIBUTE} ${key}="${escapeHtml(value)}" content="${escapeHtml(meta.content)}">`;
 };
 
 const renderHead = ({ meta, links, scripts }: NewsletterHead) =>
@@ -54,12 +54,12 @@ const renderHead = ({ meta, links, scripts }: NewsletterHead) =>
     ...meta.map(renderMeta),
     ...links.map(
       ({ rel, href }) =>
-        `<link ${PRERENDERED_ATTRIBUTE} rel="${escapeHtml(rel)}" href="${escapeHtml(href)}">`,
+        `<link ${STATIC_HEAD_ATTRIBUTE} rel="${escapeHtml(rel)}" href="${escapeHtml(href)}">`,
     ),
     // JSON 안의 `</script>`가 script 태그를 닫지 않도록 `<`를 escape합니다.
     ...scripts.map(
       ({ type, children }) =>
-        `<script ${PRERENDERED_ATTRIBUTE} type="${escapeHtml(type)}">${children.replace(/</g, '\\u003c')}</script>`,
+        `<script ${STATIC_HEAD_ATTRIBUTE} type="${escapeHtml(type)}">${children.replace(/</g, '\\u003c')}</script>`,
     ),
   ].join('');
 
