@@ -3,14 +3,23 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import RecommendStep from './RecommendStep';
 import SourceStep from './SourceStep';
-import { useSignupSourceModal } from '@/hooks/useSignupSourceModal';
+import type { Ref } from 'react';
 
 type Step = 'source' | 'recommend';
 
-const SignupSourceModal = () => {
+interface SignupSourceModalProps {
+  modalRef: Ref<HTMLDivElement | null>;
+  isOpen: boolean;
+  closeModal: () => void;
+}
+
+const SignupSourceModal = ({
+  modalRef,
+  isOpen,
+  closeModal,
+}: SignupSourceModalProps) => {
   const device = useDevice();
   const isMobile = device !== 'pc';
-  const { modalRef, isOpen, closeModal } = useSignupSourceModal();
   const [step, setStep] = useState<Step>('source');
   const stepNumber = step === 'source' ? 1 : 2;
 

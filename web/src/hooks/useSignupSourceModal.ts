@@ -7,7 +7,7 @@ import { trackSignupSourceEvent } from '@/utils/trackSignupSourceEvent';
 
 export const useSignupSourceModal = () => {
   const { isLoggedIn } = useAuth();
-  const { data: status } = useQuery({
+  const { data: status, isPending } = useQuery({
     ...queries.signupSourceStatus(),
     enabled: isLoggedIn,
   });
@@ -26,5 +26,8 @@ export const useSignupSourceModal = () => {
     trackSignupSourceEvent({ action: '가입 경로 모달 노출' });
   }, [status, openModal]);
 
-  return { modalRef, isOpen, closeModal };
+  // 로그인했는데 아직 질문 여부를 모르면, 다른 모달이 먼저 뜨지 않게 기다린다.
+  const isChecking = isLoggedIn && isPending;
+
+  return { modalRef, isOpen, closeModal, isChecking };
 };
