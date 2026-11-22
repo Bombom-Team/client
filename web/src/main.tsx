@@ -142,7 +142,6 @@ async function enableMocking() {
   }
 }
 
-// index.html의 기본 head 태그와 빌드 때 상세 HTML에 미리 넣은 head 태그입니다(web/scripts/prerender.ts).
 // HeadContent가 같은 태그를 다시 넣어 중복되므로 렌더링 전에 지웁니다.
 document
   .querySelectorAll(`[${STATIC_HEAD_ATTRIBUTE}]`)

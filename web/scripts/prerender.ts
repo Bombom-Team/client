@@ -24,8 +24,6 @@ interface PrerenderedPage {
 type MetaKey = ['name' | 'property', string];
 type NamedMeta = Exclude<NewsletterHeadMeta, { title: string }>;
 
-// 템플릿(index.html)의 기본 head 태그는 모두 지우고 상세 태그로 대체합니다.
-// 기본 이미지 크기(1200x630)처럼 상세에 없는 태그도 뉴스레터와 맞지 않으므로 남기지 않습니다.
 const STATIC_HEAD_TAG_PATTERN = new RegExp(
   `<title\\b[^>]*\\b${STATIC_HEAD_ATTRIBUTE}\\b[^>]*>[\\s\\S]*?</title>|<meta\\b[^>]*\\b${STATIC_HEAD_ATTRIBUTE}\\b[^>]*>`,
   'g',

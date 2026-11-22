@@ -58,7 +58,6 @@ const RootComponent = () => {
 };
 
 export const Route = createRootRouteWithContext<BomBomRouterContext>()({
-  // 값을 바꾸면 index.html의 data-static-head 기본값도 함께 바꿉니다.
   head: () => ({
     meta: [
       { title: '봄봄' },
