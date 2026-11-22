@@ -11,12 +11,16 @@ import SlideCardList from '@/pages/recommend/components/SlideCardList/SlideCardL
 import TrendySection from '@/pages/recommend/components/TrendySection/TrendySection';
 import type { Device } from '@bombom/shared/ui-web';
 
+const HOME_TITLE = '봄봄 | 읽고 남기고 쌓는 뉴스레터 리딩 플랫폼';
+
 export const Route = createFileRoute('/_bombom/_main/')({
   head: () => ({
     meta: [
       {
-        title: '봄봄 | 뉴스레터 추천',
+        title: HOME_TITLE,
       },
+      { property: 'og:title', content: HOME_TITLE },
+      { name: 'twitter:title', content: HOME_TITLE },
       { property: 'og:url', content: 'https://www.bombom.news' },
     ],
     links: [{ rel: 'canonical', href: 'https://www.bombom.news' }],
