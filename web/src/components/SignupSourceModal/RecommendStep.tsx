@@ -1,4 +1,4 @@
-import { Button } from '@bombom/shared/ui-web';
+import { Button, ChevronIcon } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useRef, useState } from 'react';
@@ -192,7 +192,7 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
             disabled={pageIndex === 0}
             onClick={() => goToPage(pageIndex - 1)}
           >
-            ‹
+            <ChevronIcon direction="left" width={20} height={20} />
           </ArrowButton>
           <ArrowButton
             type="button"
@@ -200,7 +200,7 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
             disabled={pageIndex >= pageCount - 1}
             onClick={() => goToPage(pageIndex + 1)}
           >
-            ›
+            <ChevronIcon direction="right" width={20} height={20} />
           </ArrowButton>
         </ArrowGroup>
       </ListHeader>
@@ -331,10 +331,10 @@ const ArrowGroup = styled.div`
 `;
 
 const ArrowButton = styled.button`
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   padding: 0;
-  border: 1px solid ${({ theme }) => theme.colors.dividers};
+  border: 1px solid ${({ theme }) => theme.colors.stroke};
   border-radius: 50%;
 
   display: flex;
@@ -343,13 +343,23 @@ const ArrowButton = styled.button`
 
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t7Regular};
 
   cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 
   &:disabled {
+    background-color: ${({ theme }) => theme.colors.disabledBackground};
+    color: ${({ theme }) => theme.colors.disabledText};
+
+    border-color: ${({ theme }) => theme.colors.disabledBackground};
+
     cursor: default;
-    opacity: 0.3;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: ${({ theme }) => theme.colors.backgroundHover};
   }
 `;
 
