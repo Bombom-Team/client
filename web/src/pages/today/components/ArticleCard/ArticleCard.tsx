@@ -46,11 +46,17 @@ const ArticleCard = ({
       isRead={isRead ?? false}
       readVariant={readVariant}
       isMobile={isMobile}
-      to={to ?? `/articles/${articleId}`}
-      {...props}
     >
       <InfoWrapper isMobile={isMobile}>
-        <Title isMobile={isMobile}>{title}</Title>
+        <Title isMobile={isMobile}>
+          <CardLink
+            isMobile={isMobile}
+            to={to ?? `/articles/${articleId}`}
+            {...props}
+          >
+            {title}
+          </CardLink>
+        </Title>
         <Description>{contentsSummary || title}</Description>
         <MetaBottomRow>
           <MetaInfoRow isMobile={isMobile}>
@@ -102,10 +108,7 @@ const ArticleCard = ({
 
 export default ArticleCard;
 
-export const Container = styled(Link, {
-  shouldForwardProp: (prop) =>
-    prop !== 'isRead' && prop !== 'readVariant' && prop !== 'isMobile',
-})<{
+export const Container = styled.div<{
   isRead: boolean;
   readVariant: ReadVariant;
   isMobile: boolean;
@@ -122,11 +125,10 @@ export const Container = styled(Link, {
   color: inherit;
 
   box-sizing: border-box;
+  isolation: isolate;
 
   opacity: ${({ isRead, readVariant }) =>
     isRead && readVariant === 'transparent' ? 0.5 : 1};
-
-  text-decoration: none;
 
   ${({ isMobile, isRead, theme }) =>
     !isMobile &&
@@ -139,6 +141,33 @@ export const Container = styled(Link, {
   &:hover button {
     opacity: 1;
     pointer-events: auto;
+  }
+`;
+
+// 링크는 제목에 두고 ::after로 카드 전체를 덮어, 카드 어디를 눌러도 상세로 이동한다.
+// 북마크·삭제 버튼은 링크 밖 형제 요소라 ::after보다 위에 둔다.
+const CardLink = styled(Link, {
+  shouldForwardProp: (prop) => prop !== 'isMobile',
+})<{ isMobile: boolean }>`
+  color: inherit;
+  text-decoration: none;
+
+  &::after {
+    position: absolute;
+    z-index: ${({ theme }) => theme.zIndex.content};
+    border-radius: ${({ isMobile }) => (isMobile ? '0' : '20px')};
+
+    content: '';
+    inset: 0;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible::after {
+    outline: 2px solid ${({ theme }) => theme.colors.primaryBomBom};
+    outline-offset: 2px;
   }
 `;
 
@@ -231,12 +260,15 @@ const ReadingBadge = styled(Badge)<{ isMobile: boolean }>`
   top: 4px;
   right: 4px;
   padding: ${({ isMobile }) => (isMobile ? '2px 4px' : '4px 8px')};
+
+  pointer-events: none;
 `;
 
 const DeleteButton = styled.button<{ isMobile: boolean }>`
   position: absolute;
   top: ${({ isMobile }) => (isMobile ? '24px' : '36px')};
   right: ${({ isMobile }) => (isMobile ? '72px' : '154px')};
+  z-index: ${({ theme }) => theme.zIndex.elevated};
   width: 28px;
   height: 28px;
 

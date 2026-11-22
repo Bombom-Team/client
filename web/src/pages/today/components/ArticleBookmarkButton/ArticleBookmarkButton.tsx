@@ -3,7 +3,6 @@ import { toast, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { useAddBookmarkMutation } from '@/hooks/useAddBookmarkMutation';
 import { useRemoveBookmarkMutation } from '@/hooks/useRemoveBookmarkMutation';
-import type { MouseEvent } from 'react';
 import BookmarkActiveIcon from '#/assets/svg/bookmark-active.svg';
 import BookmarkInactiveIcon from '#/assets/svg/bookmark-inactive.svg';
 
@@ -29,11 +28,7 @@ const ArticleBookmarkButton = ({
     useRemoveBookmarkMutation({ articleId });
   const isPending = isAdding || isRemoving;
 
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    // 카드 전체가 Link라 버튼 클릭이 상세 이동으로 이어지지 않게 막는다.
-    event.preventDefault();
-    event.stopPropagation();
-
+  const handleClick = () => {
     if (isPending) return;
 
     const mutate = isBookmarked ? removeBookmark : addBookmark;
@@ -69,6 +64,8 @@ const ArticleBookmarkButton = ({
 export default ArticleBookmarkButton;
 
 const Container = styled.button<{ isPending: boolean }>`
+  position: relative;
+  z-index: ${({ theme }) => theme.zIndex.elevated};
   width: 32px;
   height: 32px;
   margin: -8px -4px;
