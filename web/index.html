@@ -18,15 +18,52 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
+    <!--
+      페이지마다 달라지는 태그의 기본값입니다(__root.tsx의 head와 같은 값).
+      JS를 실행하지 않는 크롤러와 링크 미리보기는 이 값을 읽고, 앱이 시작되면 main.tsx가
+      data-static-head 태그를 지운 뒤 HeadContent가 페이지에 맞는 값으로 다시 넣습니다.
+      canonical·og:url은 모든 경로가 이 HTML을 받으므로 넣지 않습니다.
+    -->
+    <title data-static-head>봄봄</title>
+    <meta
+      data-static-head
+      name="description"
+      content="봄봄 - 뉴스레터, 아티클, 트렌드 정보를 한 곳에!"
+    />
+
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta data-static-head property="og:type" content="website" />
+    <meta data-static-head property="og:title" content="봄봄" />
+    <meta
+      data-static-head
+      property="og:description"
+      content="봄봄 - 뉴스레터, 아티클, 트렌드 정보를 한 곳에!"
+    />
+    <meta
+      data-static-head
+      property="og:image"
+      content="https://www.bombom.news/assets/png/og-image.png"
+    />
+    <meta data-static-head property="og:image:alt" content="봄봄 로고" />
+    <meta data-static-head property="og:image:width" content="1200" />
+    <meta data-static-head property="og:image:height" content="630" />
     <meta property="og:site_name" content="봄봄" />
     <meta property="og:locale" content="ko_KR" />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta data-static-head name="twitter:card" content="summary_large_image" />
+    <meta data-static-head name="twitter:title" content="봄봄" />
+    <meta
+      data-static-head
+      name="twitter:description"
+      content="봄봄 - 뉴스레터, 아티클, 트렌드 정보를 한 곳에!"
+    />
+    <meta
+      data-static-head
+      name="twitter:image"
+      content="https://www.bombom.news/assets/png/og-image.png"
+    />
+    <meta data-static-head name="twitter:image:alt" content="봄봄 로고" />
 
     <!-- Naver Site Verification -->
     <meta

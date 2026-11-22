@@ -24,11 +24,12 @@ interface PrerenderedPage {
 type MetaKey = ['name' | 'property', string];
 type NamedMeta = Exclude<NewsletterHeadMeta, { title: string }>;
 
-// 템플릿의 이미지 크기(1200x630)는 사이트 기본 이미지 기준이라 뉴스레터 이미지와 맞지 않습니다.
-const TEMPLATE_IMAGE_SIZE_KEYS: MetaKey[] = [
-  ['property', 'og:image:width'],
-  ['property', 'og:image:height'],
-];
+// 템플릿(index.html)의 기본 head 태그는 모두 지우고 상세 태그로 대체합니다.
+// 기본 이미지 크기(1200x630)처럼 상세에 없는 태그도 뉴스레터와 맞지 않으므로 남기지 않습니다.
+const STATIC_HEAD_TAG_PATTERN = new RegExp(
+  `<title\\b[^>]*\\b${STATIC_HEAD_ATTRIBUTE}\\b[^>]*>[\\s\\S]*?</title>|<meta\\b[^>]*\\b${STATIC_HEAD_ATTRIBUTE}\\b[^>]*>`,
+  'g',
+);
 
 const escapeHtml = (value: string) =>
   value
@@ -63,38 +64,20 @@ const renderHead = ({ meta, links, scripts }: NewsletterHead) =>
     ),
   ].join('');
 
-const escapeRegExp = (value: string) =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-const removeTemplateMeta = (template: string, keys: MetaKey[]) =>
-  keys.reduce((html, [key, value]) => {
-    const pattern = new RegExp(
-      `<meta\\b[^>]*\\b${key}="${escapeRegExp(value)}"[^>]*>`,
-      'g',
-    );
-    return html.replace(pattern, '');
-  }, template);
-
 const createNewsletterPage = (
   template: string,
   newsletter: BuildNewsletter,
 ): PrerenderedPage => {
   const { newsletterId, name } = newsletter;
   const url = getNewsletterDetailUrl(newsletterId, name);
-  const newsletterHead = createNewsletterHead(newsletter, url);
-  const head = renderHead(newsletterHead);
-  // 템플릿에 기본값으로 있는 meta(og:type, twitter:card 등)는 상세 태그와 겹치지 않게 지웁니다.
-  const overriddenKeys = newsletterHead.meta
-    .filter((meta): meta is NamedMeta => !('title' in meta))
-    .map(getMetaKey);
+  const head = renderHead(createNewsletterHead(newsletter, url));
 
   return {
     fileName: `${getNewsletterDetailPath(newsletterId, name).slice(1)}/index.html`,
     // 문자열을 넘기면 뉴스레터 설명의 `$&`, `$'` 등이 치환 패턴으로 해석되므로 함수로 넘깁니다.
-    html: removeTemplateMeta(template, [
-      ...overriddenKeys,
-      ...TEMPLATE_IMAGE_SIZE_KEYS,
-    ]).replace('</head>', () => `${head}</head>`),
+    html: template
+      .replace(STATIC_HEAD_TAG_PATTERN, '')
+      .replace('</head>', () => `${head}</head>`),
   };
 };
 

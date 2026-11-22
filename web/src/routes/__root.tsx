@@ -58,6 +58,7 @@ const RootComponent = () => {
 };
 
 export const Route = createRootRouteWithContext<BomBomRouterContext>()({
+  // 값을 바꾸면 index.html의 data-static-head 기본값도 함께 바꿉니다.
   head: () => ({
     meta: [
       { title: '봄봄' },
@@ -70,14 +71,24 @@ export const Route = createRootRouteWithContext<BomBomRouterContext>()({
         property: 'og:description',
         content: '봄봄 - 뉴스레터, 아티클, 트렌드 정보를 한 곳에!',
       },
-      { property: 'og:image', content: '/assets/png/og-image.png' },
+      { property: 'og:type', content: 'website' },
+      {
+        property: 'og:image',
+        content: 'https://www.bombom.news/assets/png/og-image.png',
+      },
       { property: 'og:image:alt', content: '봄봄 로고' },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
+      { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: '봄봄' },
       {
         name: 'twitter:description',
         content: '봄봄 - 뉴스레터, 아티클, 트렌드 정보를 한 곳에!',
       },
-      { name: 'twitter:image', content: '/assets/png/og-image.png' },
+      {
+        name: 'twitter:image',
+        content: 'https://www.bombom.news/assets/png/og-image.png',
+      },
       { name: 'twitter:image:alt', content: '봄봄 로고' },
       { name: 'robots', content: 'index, follow' },
     ],
