@@ -15,6 +15,13 @@ export interface WebViewLoginFailure {
   reason?: WebViewLoginFailureReason;
 }
 
+// 앱이 WebView 로드 전에 기기 선호 언어 목록을 넣어 두는 전역 변수 이름
+export const DEVICE_LANGUAGES_KEY = '__BOMBOM_DEVICE_LANGUAGES__';
+
+export interface WindowWithDeviceLanguages extends Window {
+  [DEVICE_LANGUAGES_KEY]?: unknown;
+}
+
 export interface WindowWithWebkit extends Window {
   webkit?: {
     messageHandlers?: {
