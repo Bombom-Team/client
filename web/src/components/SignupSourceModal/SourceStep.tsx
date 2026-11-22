@@ -109,7 +109,7 @@ const SourceStep = ({ onSaved }: SourceStepProps) => {
       </QuestionSection>
 
       <NextButton disabled={!canSubmit} onClick={handleSubmit}>
-        다음
+        {isPending ? '저장 중…' : '다음'}
       </NextButton>
     </Container>
   );
@@ -143,7 +143,7 @@ const MailCard = styled.div`
   background: linear-gradient(
     135deg,
     ${({ theme }) => theme.colors.primaryBomBom} 0%,
-    #ff8a3d 100%
+    ${({ theme }) => theme.colors.primaryGradientEnd} 100%
   );
   color: ${({ theme }) => theme.colors.white};
 `;
