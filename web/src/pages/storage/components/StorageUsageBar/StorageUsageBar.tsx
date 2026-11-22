@@ -65,11 +65,10 @@ const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
         <GuideTitle>보관함 사용량이란?</GuideTitle>
         <GuideList>
           <GuideItem>
-            {`북마크하지 않은 아티클이 ${max}개를 넘으면, 매일 새벽\u00A03시에 오래된 아티클부터 자동으로 삭제돼요.`}
+            {`아티클이 ${max}개를 넘으면, 매일 새벽\u00A03시에 오래된 아티클부터 자동으로 삭제돼요.`}
           </GuideItem>
           <GuideItem>
-            북마크한 아티클은 삭제되지 않아요. 남겨 두고 싶은 아티클은 북마크해
-            주세요.
+            {`북마크한 아티클은 ${max}개에 포함되지 않고, 삭제되지도 않아요.`}
           </GuideItem>
           <GuideItem>삭제된 아티클은 다시 볼 수 없어요.</GuideItem>
         </GuideList>
@@ -117,7 +116,7 @@ const GuideTitle = styled.p`
   font: ${({ theme }) => theme.fonts.t3Bold};
 `;
 
-/* 어절 단위로 줄을 바꾼 뒤 오른쪽 여백이 남지 않도록, 가장 긴 줄(약 228px)과 왼쪽 들여쓰기 16px에 맞춘 너비 */
+/* 어절 단위로 줄을 바꾼 뒤 오른쪽 여백이 남지 않도록, 가장 긴 줄(약 224px)에 여유 8px과 왼쪽 들여쓰기 16px을 더한 너비 */
 const GuideList = styled.ul`
   width: 248px;
   padding-left: 16px;
