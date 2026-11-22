@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo, useRef, useState } from 'react';
 import RecommendItem from './RecommendItem';
 import { queries } from '@/apis/queries';
+import Skeleton from '@/components/Skeleton/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { openSubscribeLink } from '@/pages/newsletter-detail/utils';
 import { trackSignupSourceEvent } from '@/utils/trackSignupSourceEvent';
@@ -30,7 +31,9 @@ interface RecommendStepProps {
 
 const RecommendStep = ({ onFinish }: RecommendStepProps) => {
   const { userProfile } = useAuth();
-  const { data } = useQuery(queries.signupRecommendations());
+  const { data, isPending, isError, refetch } = useQuery(
+    queries.signupRecommendations(),
+  );
   const [category, setCategory] = useState(ALL_CATEGORY);
   const [pageIndex, setPageIndex] = useState(0);
   const [expandedIdByPage, setExpandedIdByPage] = useState<
@@ -40,6 +43,7 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef({ startX: 0, startY: 0, dx: 0, isDragging: false });
   const isPointerDownRef = useRef(false);
+  const frameIdRef = useRef<number | null>(null);
 
   const categories = [ALL_CATEGORY, ...(data?.categories ?? [])];
   const pages = useMemo(
@@ -53,6 +57,8 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
     [data, category],
   );
   const pageCount = Math.max(pages.length, 1);
+  const hasNewsletters = pages.length > 0;
+  const isLoadFailed = isError && !data;
   const currentPage = pages[pageIndex] ?? [];
   const firstRank = pageIndex * PAGE_SIZE + 1;
   const lastRank = pageIndex * PAGE_SIZE + currentPage.length;
@@ -111,6 +117,12 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
     onFinish();
   };
 
+  const cancelScheduledFrame = () => {
+    if (frameIdRef.current === null) return;
+    cancelAnimationFrame(frameIdRef.current);
+    frameIdRef.current = null;
+  };
+
   const setTrackOffset = (dx: number) => {
     if (!trackRef.current) return;
     trackRef.current.style.transform =
@@ -144,7 +156,8 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
       (pageIndex === 0 && moveX > 0) ||
       (pageIndex === pageCount - 1 && moveX < 0);
     drag.dx = isAtEdge ? moveX * 0.3 : moveX;
-    requestAnimationFrame(() => setTrackOffset(drag.dx));
+    cancelScheduledFrame();
+    frameIdRef.current = requestAnimationFrame(() => setTrackOffset(drag.dx));
   };
 
   const handlePointerEnd = () => {
@@ -152,6 +165,7 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
     const drag = dragRef.current;
     if (!drag.isDragging) return;
 
+    cancelScheduledFrame();
     trackRef.current?.removeAttribute('data-dragging');
     setTrackOffset(0);
     if (drag.dx < -SWIPE_THRESHOLD) goToPage(pageIndex + 1);
@@ -163,90 +177,123 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
     <Container>
       <Title>첫 뉴스레터를 골라볼까요?</Title>
 
-      <ChipRow role="tablist" aria-label="카테고리">
-        {categories.map((name) => (
-          <CategoryChip
-            key={name}
-            type="button"
-            role="tab"
-            aria-selected={category === name}
-            isSelected={category === name}
-            onClick={() => handleCategoryClick(name)}
-          >
-            {name}
-          </CategoryChip>
-        ))}
-      </ChipRow>
+      {isPending && (
+        <LoadingList aria-busy="true" aria-label="추천 목록 불러오는 중">
+          {[0, 1, 2, 3].map((index) => (
+            <Skeleton
+              key={index}
+              width="100%"
+              height="52px"
+              borderRadius="12px"
+            />
+          ))}
+        </LoadingList>
+      )}
 
-      <ListHeader>
-        <RankLabel>
-          <strong>
-            {firstRank}~{lastRank}위
-          </strong>{' '}
-          · 많이 읽는 순서
-        </RankLabel>
-        <ArrowGroup>
-          <ArrowButton
-            type="button"
-            aria-label="이전 4개"
-            disabled={pageIndex === 0}
-            onClick={() => goToPage(pageIndex - 1)}
-          >
-            <ChevronIcon direction="left" width={20} height={20} />
-          </ArrowButton>
-          <ArrowButton
-            type="button"
-            aria-label="다음 4개"
-            disabled={pageIndex >= pageCount - 1}
-            onClick={() => goToPage(pageIndex + 1)}
-          >
-            <ChevronIcon direction="right" width={20} height={20} />
-          </ArrowButton>
-        </ArrowGroup>
-      </ListHeader>
+      {isLoadFailed && (
+        <StatusBox role="alert">
+          <StatusText>추천 목록을 불러오지 못했어요.</StatusText>
+          <RetryButton variant="outlined" onClick={() => refetch()}>
+            다시 불러오기
+          </RetryButton>
+        </StatusBox>
+      )}
 
-      <Viewport
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerEnd}
-        onPointerCancel={handlePointerEnd}
-      >
-        <Track ref={trackRef} pageIndex={pageIndex}>
-          {pages.map((page, index) => {
-            const isCurrentPage = index === pageIndex;
-            const expandedId = expandedIdByPage[index] ?? page[0]?.newsletterId;
-            return (
-              <Page
-                key={`${category}-${index}`}
-                aria-hidden={!isCurrentPage}
-                isCurrentPage={isCurrentPage}
+      {!isPending && !isLoadFailed && !hasNewsletters && (
+        <StatusBox>
+          <StatusText>지금은 추천할 뉴스레터가 없어요.</StatusText>
+        </StatusBox>
+      )}
+
+      {hasNewsletters && (
+        <>
+          <ChipRow role="tablist" aria-label="카테고리">
+            {categories.map((name) => (
+              <CategoryChip
+                key={name}
+                type="button"
+                role="tab"
+                aria-selected={category === name}
+                isSelected={category === name}
+                onClick={() => handleCategoryClick(name)}
               >
-                {page.map((newsletter, itemIndex) => (
-                  <RecommendItem
-                    key={newsletter.newsletterId}
-                    newsletter={newsletter}
-                    isExpanded={newsletter.newsletterId === expandedId}
-                    isOpened={openedIds.includes(newsletter.newsletterId)}
-                    isFocusable={isCurrentPage}
-                    onExpand={() =>
-                      setExpandedIdByPage((prev) => ({
-                        ...prev,
-                        [index]: newsletter.newsletterId,
-                      }))
-                    }
-                    onSubscribe={() =>
-                      handleSubscribe(
-                        newsletter,
-                        index * PAGE_SIZE + itemIndex + 1,
-                      )
-                    }
-                  />
-                ))}
-              </Page>
-            );
-          })}
-        </Track>
-      </Viewport>
+                {name}
+              </CategoryChip>
+            ))}
+          </ChipRow>
+
+          <ListHeader>
+            <RankLabel>
+              <strong>
+                {firstRank}~{lastRank}위
+              </strong>{' '}
+              · 많이 읽는 순서
+            </RankLabel>
+            <ArrowGroup>
+              <ArrowButton
+                type="button"
+                aria-label="이전 4개"
+                disabled={pageIndex === 0}
+                onClick={() => goToPage(pageIndex - 1)}
+              >
+                <ChevronIcon direction="left" width={20} height={20} />
+              </ArrowButton>
+              <ArrowButton
+                type="button"
+                aria-label="다음 4개"
+                disabled={pageIndex >= pageCount - 1}
+                onClick={() => goToPage(pageIndex + 1)}
+              >
+                <ChevronIcon direction="right" width={20} height={20} />
+              </ArrowButton>
+            </ArrowGroup>
+          </ListHeader>
+
+          <Viewport
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerEnd}
+            onPointerCancel={handlePointerEnd}
+          >
+            <Track ref={trackRef} pageIndex={pageIndex}>
+              {pages.map((page, index) => {
+                const isCurrentPage = index === pageIndex;
+                const expandedId =
+                  expandedIdByPage[index] ?? page[0]?.newsletterId;
+                return (
+                  <Page
+                    key={`${category}-${index}`}
+                    aria-hidden={!isCurrentPage}
+                    isCurrentPage={isCurrentPage}
+                  >
+                    {page.map((newsletter, itemIndex) => (
+                      <RecommendItem
+                        key={newsletter.newsletterId}
+                        newsletter={newsletter}
+                        isExpanded={newsletter.newsletterId === expandedId}
+                        isOpened={openedIds.includes(newsletter.newsletterId)}
+                        isFocusable={isCurrentPage}
+                        onExpand={() =>
+                          setExpandedIdByPage((prev) => ({
+                            ...prev,
+                            [index]: newsletter.newsletterId,
+                          }))
+                        }
+                        onSubscribe={() =>
+                          handleSubscribe(
+                            newsletter,
+                            index * PAGE_SIZE + itemIndex + 1,
+                          )
+                        }
+                      />
+                    ))}
+                  </Page>
+                );
+              })}
+            </Track>
+          </Viewport>
+        </>
+      )}
 
       <ActionGroup>
         <StartButton disabled={openedIds.length === 0} onClick={handleStart}>
@@ -361,6 +408,38 @@ const ArrowButton = styled.button`
   &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.backgroundHover};
   }
+`;
+
+const LoadingList = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+`;
+
+const StatusBox = styled.div`
+  padding: 32px 16px;
+  border-radius: 16px;
+
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: ${({ theme }) => theme.colors.backgroundHover};
+`;
+
+const StatusText = styled.p`
+  margin: 0;
+
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font: ${({ theme }) => theme.fonts.t5Regular};
+`;
+
+const RetryButton = styled(Button)`
+  height: 36px;
+  padding: 0 16px;
+
+  font: ${({ theme }) => theme.fonts.t4Bold};
 `;
 
 const Viewport = styled.div`

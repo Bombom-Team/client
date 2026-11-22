@@ -23,6 +23,8 @@ const RecommendItem = ({
   const tabIndex = isFocusable ? 0 : -1;
 
   const handleHeadKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    // 안쪽 구독 버튼에서 누른 키는 버튼 동작에 맡긴다.
+    if (e.target !== e.currentTarget) return;
     if (e.key !== 'Enter' && e.key !== ' ') return;
     e.preventDefault();
     onExpand();
