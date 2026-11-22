@@ -58,6 +58,8 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
   );
   const pageCount = Math.max(pages.length, 1);
   const hasNewsletters = pages.length > 0;
+  // 카테고리 탭은 고른 카테고리가 비어 있어도 계속 보여야 다른 카테고리로 바꿀 수 있다.
+  const hasAnyRecommendation = (data?.newsletters.length ?? 0) > 0;
   const isLoadFailed = isError && !data;
   const currentPage = pages[pageIndex] ?? [];
   const firstRank = pageIndex * PAGE_SIZE + 1;
@@ -177,6 +179,23 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
     <Container>
       <Title>첫 뉴스레터를 골라볼까요?</Title>
 
+      {hasAnyRecommendation && (
+        <ChipRow role="tablist" aria-label="카테고리">
+          {categories.map((name) => (
+            <CategoryChip
+              key={name}
+              type="button"
+              role="tab"
+              aria-selected={category === name}
+              isSelected={category === name}
+              onClick={() => handleCategoryClick(name)}
+            >
+              {name}
+            </CategoryChip>
+          ))}
+        </ChipRow>
+      )}
+
       {isPending && (
         <LoadingList aria-busy="true" aria-label="추천 목록 불러오는 중">
           {[0, 1, 2, 3].map((index) => (
@@ -201,27 +220,16 @@ const RecommendStep = ({ onFinish }: RecommendStepProps) => {
 
       {!isPending && !isLoadFailed && !hasNewsletters && (
         <StatusBox>
-          <StatusText>지금은 추천할 뉴스레터가 없어요.</StatusText>
+          <StatusText>
+            {hasAnyRecommendation
+              ? '이 카테고리에는 추천할 뉴스레터가 없어요.'
+              : '지금은 추천할 뉴스레터가 없어요.'}
+          </StatusText>
         </StatusBox>
       )}
 
       {hasNewsletters && (
         <>
-          <ChipRow role="tablist" aria-label="카테고리">
-            {categories.map((name) => (
-              <CategoryChip
-                key={name}
-                type="button"
-                role="tab"
-                aria-selected={category === name}
-                isSelected={category === name}
-                onClick={() => handleCategoryClick(name)}
-              >
-                {name}
-              </CategoryChip>
-            ))}
-          </ChipRow>
-
           <ListHeader>
             <RankLabel>
               <strong>
