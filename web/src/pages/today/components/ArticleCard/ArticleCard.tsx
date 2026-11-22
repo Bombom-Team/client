@@ -1,6 +1,7 @@
 import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
+import ArticleBookmarkButton from '../ArticleBookmarkButton/ArticleBookmarkButton';
 import Badge from '@/components/Badge/Badge';
 import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import { formatDate } from '@/utils/date';
@@ -14,12 +15,14 @@ type ReadVariant = 'transparent' | 'badge';
 interface ArticleCardProps extends ComponentProps<typeof Link> {
   data: components['schemas']['ArticleResponse'];
   readVariant?: ReadVariant;
+  canBookmark?: boolean;
   onDelete?: () => void;
 }
 
 const ArticleCard = ({
   data,
   readVariant = 'transparent',
+  canBookmark = true,
   to,
   onDelete,
   ...props
@@ -32,6 +35,7 @@ const ArticleCard = ({
     thumbnailUrl,
     expectedReadTime,
     isRead,
+    isBookmarked,
     newsletter,
   } = data;
   const device = useDevice();
@@ -48,16 +52,24 @@ const ArticleCard = ({
       <InfoWrapper isMobile={isMobile}>
         <Title isMobile={isMobile}>{title}</Title>
         <Description>{contentsSummary || title}</Description>
-        <MetaInfoRow isMobile={isMobile}>
-          <MetaInfoText>from {newsletter?.name ?? ''}</MetaInfoText>
-          <MetaInfoText>
-            {formatDate(new Date(arrivedDateTime ?? ''))}
-          </MetaInfoText>
-          <ReadTimeBox>
-            <ClockIcon width={16} height={16} />
-            <MetaInfoText>{`${expectedReadTime}분`}</MetaInfoText>
-          </ReadTimeBox>
-        </MetaInfoRow>
+        <MetaBottomRow>
+          <MetaInfoRow isMobile={isMobile}>
+            <MetaInfoText>from {newsletter?.name ?? ''}</MetaInfoText>
+            <MetaInfoText>
+              {formatDate(new Date(arrivedDateTime ?? ''))}
+            </MetaInfoText>
+            <ReadTimeBox>
+              <ClockIcon width={16} height={16} />
+              <MetaInfoText>{`${expectedReadTime}분`}</MetaInfoText>
+            </ReadTimeBox>
+          </MetaInfoRow>
+          {canBookmark && (
+            <ArticleBookmarkButton
+              articleId={articleId}
+              isBookmarked={isBookmarked ?? false}
+            />
+          )}
+        </MetaBottomRow>
       </InfoWrapper>
       <ThumbnailWrapper>
         <Thumbnail
@@ -167,7 +179,18 @@ export const Description = styled.p`
   overflow-wrap: anywhere;
 `;
 
+const MetaBottomRow = styled.div`
+  width: 100%;
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 export const MetaInfoRow = styled.div<{ isMobile: boolean }>`
+  min-width: 0;
+
   display: flex;
   gap: ${({ isMobile }) => (isMobile ? '6px' : '8px')};
   flex-wrap: ${({ isMobile }) => (isMobile ? 'wrap' : 'nowrap')};

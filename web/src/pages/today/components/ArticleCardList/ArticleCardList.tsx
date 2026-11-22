@@ -70,6 +70,7 @@ const ArticleCardList = ({
             <li key={article.articleId}>
               <ArticleCard
                 data={article}
+                canBookmark={article.type !== 'guide'}
                 to={
                   article.type === 'guide'
                     ? `/articles/guide/${article.articleId}`
@@ -103,6 +104,7 @@ const ArticleCardList = ({
             <li key={article.articleId}>
               <ArticleCard
                 data={article}
+                canBookmark={article.type !== 'guide'}
                 to={
                   article.type === 'guide'
                     ? `/articles/guide/${article.articleId}`

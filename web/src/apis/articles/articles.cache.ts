@@ -320,17 +320,40 @@ export const syncReadArticleUnreadOnlyStorageCaches = (
 };
 
 /**
+ * 북마크 보관함 목록 쿼리 키 여부 확인
+ * @description 북마크 상태·통계 쿼리는 제외합니다.
+ * @example `['bookmarks', { newsletterId, size }]`, `['bookmarks', undefined]`
+ */
+const isBookmarkListQueryKey = (queryKey: QueryKey): boolean => {
+  return (
+    queryKey[0] === 'bookmarks' &&
+    (queryKey[1] === undefined || isObject(queryKey[1]))
+  );
+};
+
+/**
  * 아티클 북마크 상태 캐시 수동 패치 (`isBookmarked = true / false`)
+ * @description 아티클 목록과 북마크 보관함 목록에 함께 반영합니다.
+ * 북마크 보관함에서 해제한 글은 목록에 남기고 아이콘만 바꿉니다.
  */
 export const updateArticleBookmarkStatus = (
   queryClient: QueryClient,
   articleId: number,
   isBookmarked: boolean,
 ): void => {
-  updateArticlePages(queryClient, (page) => ({
+  const updatePage = (page: GetArticlesResponse): GetArticlesResponse => ({
     ...page,
     content: page.content?.map((article) =>
       article.articleId === articleId ? { ...article, isBookmarked } : article,
     ),
-  }));
+  });
+
+  updateArticlePages(queryClient, updatePage);
+
+  queryClient.setQueriesData<GetArticlesResponse>(
+    {
+      predicate: (query) => isBookmarkListQueryKey(query.queryKey),
+    },
+    (data) => (data ? updatePage(data) : data),
+  );
 };

@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
-import useAddBookmarkMutation from './useAddBookmarkMutation';
-import useRemoveBookmarkMutation from './useRemoveBookmarkMutation';
 import { queries } from '@/apis/queries';
+import { useAddBookmarkMutation } from '@/hooks/useAddBookmarkMutation';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useRemoveBookmarkMutation } from '@/hooks/useRemoveBookmarkMutation';
 
 interface UseArticleBookmarkParams {
   articleId: number;
