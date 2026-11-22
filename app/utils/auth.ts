@@ -15,6 +15,7 @@ export type NativeLoginFailure =
         | 'play_services_unavailable' // Google Play 서비스 미지원/구버전
         | 'provider_unavailable' // Apple 로그인 미지원 기기/환경
         | 'provider_request_failed'; // SDK 요청 실패(알 수 없는 네이티브 예외)
+      errorCode?: string; // SDK가 던진 오류의 code. 원인 구분용이며 메시지 원문은 담지 않는다
     }
   | {
       stage: 'credential_validation'; // 네이티브 인증은 성공했으나 필수 토큰이 비어있는 상태
@@ -50,6 +51,7 @@ const getErrorCode = (error: unknown) => {
 
 const getGoogleLoginFailure = (error: unknown): NativeLoginFailure | null => {
   const code = getErrorCode(error);
+  const errorCode = code ?? undefined;
 
   if (
     code === statusCodes.SIGN_IN_CANCELLED ||
@@ -63,6 +65,7 @@ const getGoogleLoginFailure = (error: unknown): NativeLoginFailure | null => {
     return {
       stage: 'provider_request',
       reason: 'provider_configuration',
+      errorCode,
     };
   }
 
@@ -70,21 +73,25 @@ const getGoogleLoginFailure = (error: unknown): NativeLoginFailure | null => {
     return {
       stage: 'provider_request',
       reason: 'play_services_unavailable',
+      errorCode,
     };
   }
 
   return {
     stage: 'provider_request',
     reason: 'provider_request_failed',
+    errorCode,
   };
 };
 
 const getAppleLoginFailure = (error: unknown): NativeLoginFailure | null => {
-  if (getErrorCode(error) === 'ERR_REQUEST_CANCELED') return null;
+  const code = getErrorCode(error);
+  if (code === 'ERR_REQUEST_CANCELED') return null;
 
   return {
     stage: 'provider_request',
     reason: 'provider_request_failed',
+    errorCode: code ?? undefined,
   };
 };
 
