@@ -72,6 +72,7 @@ function Index() {
   ];
 
   const device = useDevice();
+  const isEmpty = !isArticlesLoading && mergedArticles.length === 0;
 
   return (
     <Container isPC={device === 'pc'}>
@@ -86,14 +87,16 @@ function Index() {
         </>
       )}
 
-      {isArticlesLoading ? (
-        <ArticleCardListSkeleton />
-      ) : (
-        <ArticleCardList
-          articles={mergedArticles}
-          onDeleteArticles={(articleIds) => deleteArticles(articleIds)}
-        />
-      )}
+      <ListSection isEmpty={isEmpty}>
+        {isArticlesLoading ? (
+          <ArticleCardListSkeleton />
+        ) : (
+          <ArticleCardList
+            articles={mergedArticles}
+            onDeleteArticles={(articleIds) => deleteArticles(articleIds)}
+          />
+        )}
+      </ListSection>
     </Container>
   );
 }
@@ -106,10 +109,20 @@ const Container = styled.div<{ isPC: boolean }>`
 
   display: flex;
   gap: 24px;
+  flex: 1;
   flex-direction: column;
   align-items: flex-start;
 
   box-sizing: border-box;
+`;
+
+const ListSection = styled.div<{ isEmpty: boolean }>`
+  width: 100%;
+
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: ${({ isEmpty }) => (isEmpty ? 'center' : 'flex-start')};
 `;
 
 const TitleWrapper = styled.div`

@@ -14,6 +14,7 @@ import { newslettersQueries } from './newsletters/newsletters.query';
 import { noticeQueries } from './notice/notice.query';
 import { notificationQueries } from './notification/notification.query';
 import { previousArticlesQueries } from './previousArticles/previousArticles.query';
+import { signupSourceQueries } from './signupSource/signupSource.query';
 import { subscriptionsQueries } from './subscriptions/subscriptions.query';
 
 export const queries = {
@@ -67,4 +68,7 @@ export const queries = {
 
   // subscriptions
   ...subscriptionsQueries,
+
+  // signup source
+  ...signupSourceQueries,
 };

@@ -11,11 +11,10 @@ export type NativeLoginFailureReport = {
     }
 );
 
-export const captureNativeLoginFailure = ({
-  provider,
-  stage,
-  reason,
-}: NativeLoginFailureReport) => {
+export const captureNativeLoginFailure = (report: NativeLoginFailureReport) => {
+  const { provider, stage, reason } = report;
+  const errorCode = 'errorCode' in report ? report.errorCode : undefined;
+
   Sentry.captureMessage('Native login failed', {
     level: 'warning',
     fingerprint: ['{{ default }}', provider, stage, reason],
@@ -24,6 +23,7 @@ export const captureNativeLoginFailure = ({
       provider,
       stage,
       reason,
+      ...(errorCode && { error_code: errorCode }),
     },
   });
 };
