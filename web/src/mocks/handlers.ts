@@ -13,6 +13,7 @@ import { maeilMailHandlers } from './handlers/maeilMail';
 import { membersHandlers } from './handlers/members';
 import { newsletterDetailHandlers } from './handlers/newsletterDetail';
 import { queueEntryHandlers } from './handlers/queueEntry';
+import { signupSourceHandlers } from './handlers/signupSource';
 import type { Highlight } from '@/pages/detail/types/highlight';
 
 const baseURL = ENV.baseUrl;
@@ -21,6 +22,9 @@ const HIGHLIGHTS: Highlight[] = [];
 let lastHighlightId = 0;
 
 export const handlers = [
+  // 가입 경로 모달 (/newsletters/:id 보다 먼저 매칭되도록 맨 앞에 둔다)
+  ...signupSourceHandlers,
+
   // 뉴스레터 목록
   http.get(`${baseURL}/newsletters`, () => {
     return HttpResponse.json({

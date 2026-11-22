@@ -9,6 +9,7 @@ import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstall
 import ChallengeStartModal from '@/components/ChallengeStartModal/ChallengeStartModal';
 import InquiryFloatingButton from '@/components/InquiryFloatingButton/InquiryFloatingButton';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
+import SignupSourceModal from '@/components/SignupSourceModal/SignupSourceModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 
@@ -40,6 +41,7 @@ function RouteComponent() {
   return (
     <BomBomPageLayout>
       {!isWaitingForAuth && <Outlet />}
+      <SignupSourceModal />
       <ChallengeStartModal />
       <AppInstallPromptModal />
 
