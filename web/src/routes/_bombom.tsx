@@ -9,7 +9,9 @@ import AppInstallPromptModal from '@/components/AppInstallPromptModal/AppInstall
 import ChallengeStartModal from '@/components/ChallengeStartModal/ChallengeStartModal';
 import InquiryFloatingButton from '@/components/InquiryFloatingButton/InquiryFloatingButton';
 import BomBomPageLayout from '@/components/PageLayout/BomBomPageLayout';
+import SignupSourceModal from '@/components/SignupSourceModal/SignupSourceModal';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSignupSourceModal } from '@/hooks/useSignupSourceModal';
 import { useWebViewRegisterToken } from '@/libs/webview/useWebViewRegisterToken';
 
 export const Route = createFileRoute('/_bombom')({
@@ -19,6 +21,10 @@ export const Route = createFileRoute('/_bombom')({
 function RouteComponent() {
   useWebViewRegisterToken();
   const { isLoading, isLoggedIn } = useAuth();
+  const signupSourceModal = useSignupSourceModal();
+  // 가입 경로 모달이 떠 있거나 띄울지 확인하는 동안에는 다른 모달을 띄우지 않는다.
+  const shouldHoldOtherModals =
+    isLoading || signupSourceModal.isChecking || signupSourceModal.isOpen;
   const navigate = useNavigate();
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
@@ -40,8 +46,13 @@ function RouteComponent() {
   return (
     <BomBomPageLayout>
       {!isWaitingForAuth && <Outlet />}
-      <ChallengeStartModal />
-      <AppInstallPromptModal />
+      <SignupSourceModal
+        modalRef={signupSourceModal.modalRef}
+        isOpen={signupSourceModal.isOpen}
+        closeModal={signupSourceModal.closeModal}
+      />
+      {!shouldHoldOtherModals && <ChallengeStartModal />}
+      {!shouldHoldOtherModals && <AppInstallPromptModal />}
 
       <InquiryFloatingButton />
     </BomBomPageLayout>
