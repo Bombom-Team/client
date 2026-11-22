@@ -1,15 +1,6 @@
 import { fetcher } from '@bombom/shared/apis';
 import type { components, operations } from '@/types/openapi';
 
-type GetReadingStatusResponse =
-  components['schemas']['ReadingInformationResponse'];
-
-export const getReadingStatus = async () => {
-  return await fetcher.get<GetReadingStatusResponse>({
-    path: '/members/me/reading',
-  });
-};
-
 type GetUserInfoResponse = components['schemas']['MemberInfoResponse'];
 
 export const getUserInfo = async () => {
@@ -24,25 +15,6 @@ export const getUserProfile = () =>
   fetcher.get<GetUserProfileResponse>({
     path: '/members/me/profile',
   });
-
-type PatchWeeklyReadingGoalParams =
-  operations['updateWeeklyGoalCount']['parameters']['query'];
-type PatchWeeklyReadingGoalResponse =
-  components['schemas']['WeeklyGoalCountResponse'];
-
-export const patchWeeklyReadingGoal = async ({
-  weeklyGoalCount,
-}: PatchWeeklyReadingGoalParams) => {
-  return await fetcher.patch<
-    PatchWeeklyReadingGoalParams,
-    PatchWeeklyReadingGoalResponse
-  >({
-    path: '/members/me/reading/progress/week/goal',
-    query: {
-      weeklyGoalCount,
-    },
-  });
-};
 
 export type GetMonthlyReadingRankResponse =
   components['schemas']['MonthlyReadingRankingResponse'];
