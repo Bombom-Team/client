@@ -28,7 +28,6 @@ vi.mock('../src/apis/members/members.api', () => ({
     id: 99,
     email: 'me@bombom.news',
     nickname: '나',
-    role: 'ADMIN',
   }),
 }));
 

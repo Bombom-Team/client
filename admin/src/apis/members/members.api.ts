@@ -19,7 +19,8 @@ export const getMembers = async (params: GetMembersParams = {}) => {
 };
 
 // TODO(BOM-1311): 백엔드 배포 후 OpenAPI 타입으로 교체
-export type GetMeResponse = Member;
+// /me에 들어왔다는 것 자체가 ADMIN 검증을 통과한 것이라 서버는 role을 내려주지 않는다.
+export type GetMeResponse = Pick<Member, 'id' | 'nickname' | 'email'>;
 
 export const getMe = async () => {
   return fetcher.get<GetMeResponse>({

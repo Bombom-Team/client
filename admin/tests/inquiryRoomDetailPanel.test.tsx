@@ -46,7 +46,6 @@ vi.mock('../src/apis/members/members.api', () => ({
     id: 99,
     email: 'me@bombom.news',
     nickname: '나',
-    role: 'ADMIN',
   }),
 }));
 
@@ -147,7 +146,6 @@ beforeEach(() => {
     id: 99,
     email: 'me@bombom.news',
     nickname: '나',
-    role: 'ADMIN',
   });
 
   vi.mocked(getInquiryCategories).mockResolvedValue([
@@ -444,7 +442,6 @@ describe('문의 상세 패널', () => {
       id: ADMIN_ID,
       email: 'me@bombom.news',
       nickname: '담당자몽',
-      role: 'ADMIN',
     });
     vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
 
