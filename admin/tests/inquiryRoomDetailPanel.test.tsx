@@ -467,6 +467,19 @@ describe('문의 상세 패널', () => {
     expect(screen.queryByRole('button', { name: '내가 담당하기' })).toBeNull();
   });
 
+  it('종료된 방이면 내가 담당하기 버튼을 띄우지 않는다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue({
+      ...unassignedRoom,
+      status: 'DONE',
+    });
+
+    renderPanel(memberListRoom);
+
+    await screen.findByRole('combobox', { name: '담당자' });
+    await waitFor(() => expect(vi.mocked(getMe)).toHaveBeenCalled());
+    expect(screen.queryByRole('button', { name: '내가 담당하기' })).toBeNull();
+  });
+
   it('헤더에서 잘리는 이메일과 담당자는 마우스를 올려 전체를 볼 수 있다', async () => {
     vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
 

@@ -99,6 +99,9 @@ export function InquiryRoomDetailPanel({
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const isClosed = CLOSED_INQUIRY_STATUSES.includes(room.status);
+  // 종료된 방은 답변할 수 없으므로 입력창 위에 "내가 담당하기"를 띄우지 않는다.
+  const isAssignButtonVisible =
+    me !== undefined && room.assigneeId !== me.id && !isClosed;
 
   // 상세 조회 응답에는 문의자 닉네임이 없다. 목록에서 받아온 값이 있으면 그것을 쓰고,
   // 없으면 상세 응답의 식별자만으로 표시한다.
@@ -153,11 +156,13 @@ export function InquiryRoomDetailPanel({
 
   // 최초 진입 시, 그리고 최신 메시지(끝쪽)가 새로 추가됐을 때만 맨 아래로 스크롤한다.
   // 위로 스크롤해서 과거 메시지를 불러온 경우(latestMessageId 불변)에는 스크롤 위치를 건드리지 않는다.
+  // "내가 담당하기" 버튼은 내 정보를 받은 뒤 늦게 뜨면서 아래 여백을 늘리므로, 그때도 다시
+  // 맨 아래로 내려 마지막 메시지가 버튼에 가리지 않게 한다.
   useEffect(() => {
     const timeline = timelineRef.current;
     if (!timeline) return;
     timeline.scrollTop = timeline.scrollHeight;
-  }, [latestMessageId]);
+  }, [latestMessageId, isAssignButtonVisible]);
 
   // 셀렉트의 빈 값은 "담당자 미지정"이다. 지정 API는 assigneeId를 비울 수 없어
   // 해제는 별도 API로 보낸다.
@@ -176,8 +181,6 @@ export function InquiryRoomDetailPanel({
       },
     );
   };
-
-  const canAssignToMe = me !== undefined && room.assigneeId !== me.id;
 
   const handleAssignToMe = () => {
     if (!me) return;
@@ -266,11 +269,6 @@ export function InquiryRoomDetailPanel({
               </option>
             ))}
           </HeaderSelect>
-          {canAssignToMe && (
-            <AssignToMeButton type="button" onClick={handleAssignToMe}>
-              내가 담당하기
-            </AssignToMeButton>
-          )}
           <StatusSelectWrapper>
             <StatusDot $color={INQUIRY_STATUS_COLORS[room.status]} />
             <StatusSelect
@@ -296,7 +294,10 @@ export function InquiryRoomDetailPanel({
         </HeaderControls>
       </DetailHeader>
 
-      <MessageTimeline ref={timelineRef}>
+      <MessageTimeline
+        ref={timelineRef}
+        $hasFloatingButton={isAssignButtonVisible}
+      >
         <div ref={topSentinelRef} />
         {isFetchingNextPage && (
           <LoadingMore>이전 메시지 불러오는 중...</LoadingMore>
@@ -326,7 +327,15 @@ export function InquiryRoomDetailPanel({
         </ClosedNotice>
       )}
 
-      <InquiryMessageInput roomId={roomId} disabled={isClosed} />
+      <ComposerArea>
+        {/* 답변하기 직전에 바로 누를 수 있도록 입력창 위에 띄운다. */}
+        {isAssignButtonVisible && (
+          <AssignToMeButton type="button" onClick={handleAssignToMe}>
+            내가 담당하기
+          </AssignToMeButton>
+        )}
+        <InquiryMessageInput roomId={roomId} disabled={isClosed} />
+      </ComposerArea>
     </DetailContainer>
   );
 }
@@ -458,28 +467,6 @@ const CloseRoomButton = styled.button`
   }
 `;
 
-// 헤더의 주 동작(종료)보다 눈에 덜 띄도록 테두리만 있는 보조 버튼으로 둔다.
-const AssignToMeButton = styled.button`
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
-  border: 1px solid ${({ theme }) => theme.colors.gray200};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-
-  flex-shrink: 0;
-
-  background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.gray700};
-  font-weight: ${({ theme }) => theme.fontWeight.medium};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-
-  cursor: pointer;
-
-  transition: background-color 0.15s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.gray100};
-  }
-`;
-
 // 좌측 색점이 들어갈 자리만큼 패딩을 넓힌 상태 전용 셀렉트.
 const StatusSelect = styled(HeaderSelect)`
   padding-left: 24px;
@@ -507,8 +494,14 @@ const StatusDot = styled('span', {
   pointer-events: none;
 `;
 
-const MessageTimeline = styled.div`
+// 입력창 위에 떠 있는 버튼이 마지막 메시지를 가리지 않도록, 버튼이 있는 동안은
+// 버튼 높이와 위아래 간격만큼 아래 여백을 더 둔다.
+const MessageTimeline = styled('div', {
+  shouldForwardProp: (prop) => prop !== '$hasFloatingButton',
+})<{ $hasFloatingButton: boolean }>`
   padding: ${({ theme }) => theme.spacing.lg};
+  padding-bottom: ${({ $hasFloatingButton, theme }) =>
+    $hasFloatingButton ? '80px' : theme.spacing.lg};
 
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
@@ -543,6 +536,35 @@ const DateDividerLabel = styled.span`
   color: ${({ theme }) => theme.colors.gray600};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
   font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+// 떠 있는 "내가 담당하기" 버튼의 기준 위치. 버튼은 이 영역 위(타임라인 하단)에 겹쳐 뜬다.
+const ComposerArea = styled.div`
+  position: relative;
+`;
+
+// 전송 버튼과 같은 primary 색으로 두고, 메시지 위에 떠 있음을 그림자로 드러낸다.
+const AssignToMeButton = styled.button`
+  position: absolute;
+  right: ${({ theme }) => theme.spacing.lg};
+  bottom: calc(100% + ${({ theme }) => theme.spacing.md});
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  box-shadow: ${({ theme }) => theme.shadows.lg};
+
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primaryHover};
+  }
 `;
 
 const ClosedNotice = styled.div`
