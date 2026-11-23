@@ -6,10 +6,12 @@ import type {
   InquiryStatus,
 } from '@/types/inquiry';
 
+// TODO(BOM-1311): 백엔드 배포 후 OpenAPI 타입으로 교체
 export type GetInquiryRoomsParams = {
   page?: number;
   size?: number;
-  status?: InquiryStatus;
+  // 비어 있으면 상태 조건 없이 전체를 조회한다. 쿼리에는 쉼표로 이어 붙여 보낸다.
+  statuses?: InquiryStatus[];
   assigneeId?: number;
   categoryId?: number;
 };

@@ -65,12 +65,12 @@ export const inquiryRoomsQueries = {
   // 상태 탭에 붙일 건수. 목록 API에 집계 전용 응답이 없어 size=1로 조회하고
   // totalElements만 쓴다.
   statusCount: (
-    status: InquiryStatus,
-    params: Omit<GetInquiryRoomsParams, 'page' | 'size' | 'status'> = {},
+    statuses: InquiryStatus[],
+    params: Omit<GetInquiryRoomsParams, 'page' | 'size' | 'statuses'> = {},
   ) =>
     queryOptions({
-      queryKey: ['inquiryRooms', 'statusCount', status, params] as const,
-      queryFn: () => getInquiryRooms({ ...params, status, size: 1 }),
+      queryKey: ['inquiryRooms', 'statusCount', statuses, params] as const,
+      queryFn: () => getInquiryRooms({ ...params, statuses, size: 1 }),
       select: (page: GetInquiryRoomsResponse) => page.totalElements,
       // 건수는 목록과 달리 틀려도 눈에 띄지 않는다. 필터를 되돌리거나 다시 들어왔을 때
       // 캐시된 옛 숫자를 그대로 보여주지 않도록 매번 다시 확인한다.
