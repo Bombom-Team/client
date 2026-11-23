@@ -29,13 +29,13 @@ const renderBubble = (message: Partial<InquiryMessage>) =>
 
 describe('InquiryMessageBubble', () => {
   it('어드민 메시지는 어드민 닉네임을 표시한다', () => {
-    renderBubble({ senderType: 'ADMIN', adminId: 1, adminNickname: '김봄봄' });
+    renderBubble({ senderType: 'ADMIN', adminNickname: '김봄봄' });
 
     expect(screen.queryByText('김봄봄')).not.toBeNull();
   });
 
   it('어드민 닉네임이 없으면 봄봄 운영자로 표시한다', () => {
-    renderBubble({ senderType: 'ADMIN', adminId: 1 });
+    renderBubble({ senderType: 'ADMIN' });
 
     expect(screen.queryByText('봄봄 운영자')).not.toBeNull();
   });
