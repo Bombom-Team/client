@@ -82,13 +82,14 @@ export const inquiryRoomsQueries = {
 
 /**
  * 방 정보가 바뀌면 목록·상세·상태별 개수가 모두 달라지므로 접두 key로 한 번에 무효화한다.
+ * 다시 조회가 끝날 때까지 mutation이 pending으로 남도록 promise를 돌려준다. 그 전에 끝난
+ * 것으로 보면 화면이 아직 옛 값인 사이에 같은 요청을 다시 보낼 수 있다.
  */
 const useInvalidateInquiryRooms = () => {
   const queryClient = useQueryClient();
 
-  return () => {
+  return () =>
     queryClient.invalidateQueries({ queryKey: inquiryRoomsQueries.all });
-  };
 };
 
 export const useAssignInquiryRoomMutation = () => {

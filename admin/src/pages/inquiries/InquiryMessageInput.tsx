@@ -85,7 +85,11 @@ export function InquiryMessageInput({
 
     e.preventDefault();
     // 전송이 끝나면 첨부 목록을 비우므로, 전송 중에 붙인 이미지는 보내지지 않고 사라진다.
-    if (isUploading || isSending) return;
+    // 조용히 버리면 첨부된 줄 알고 보낼 수 있어 다시 붙여넣도록 알린다.
+    if (isUploading || isSending) {
+      alert('이미지 업로드나 전송이 끝난 뒤 다시 붙여넣어 주세요.');
+      return;
+    }
 
     await uploadImages(imageFiles);
   };

@@ -29,6 +29,7 @@ import { InquiryMessageInput } from '@/pages/inquiries/InquiryMessageInput';
 import {
   CLOSED_INQUIRY_STATUSES,
   INQUIRY_STATUS_COLORS,
+  OPEN_INQUIRY_STATUSES,
   INQUIRY_STATUS_LABELS,
   type InquiryMessage,
   type InquiryRoom,
@@ -43,11 +44,13 @@ interface InquiryRoomDetailPanelProps {
 }
 
 const STATUS_OPTIONS: InquiryStatus[] = [
-  'UNCONFIRMED',
-  'IN_PROGRESS',
-  'DONE',
-  'ON_HOLD',
+  ...OPEN_INQUIRY_STATUSES,
+  ...CLOSED_INQUIRY_STATUSES,
 ];
+
+// 떠 있는 "내가 담당하기" 버튼이 차지하는 높이(버튼 + 위아래 간격). 타임라인은 이만큼
+// 아래 여백을 더 두어 마지막 메시지가 버튼에 가리지 않게 한다.
+const FLOATING_BUTTON_SPACE = 80;
 
 export function InquiryRoomDetailPanel({
   roomId,
@@ -71,7 +74,8 @@ export function InquiryRoomDetailPanel({
     isFetchingNextPage,
   } = useSuspenseInfiniteQuery(inquiryMessagesQueries.infiniteList(roomId));
 
-  const { mutate: assignRoom } = useAssignInquiryRoomMutation();
+  const { mutate: assignRoom, isPending: isAssigning } =
+    useAssignInquiryRoomMutation();
   const { mutate: unassignRoom } = useUnassignInquiryRoomMutation();
   const { mutate: changeStatus } = useUpdateInquiryRoomStatusMutation();
   const { mutate: changeCategory } = useUpdateInquiryRoomCategoryMutation();
@@ -156,13 +160,24 @@ export function InquiryRoomDetailPanel({
 
   // 최초 진입 시, 그리고 최신 메시지(끝쪽)가 새로 추가됐을 때만 맨 아래로 스크롤한다.
   // 위로 스크롤해서 과거 메시지를 불러온 경우(latestMessageId 불변)에는 스크롤 위치를 건드리지 않는다.
-  // "내가 담당하기" 버튼은 내 정보를 받은 뒤 늦게 뜨면서 아래 여백을 늘리므로, 그때도 다시
-  // 맨 아래로 내려 마지막 메시지가 버튼에 가리지 않게 한다.
   useEffect(() => {
     const timeline = timelineRef.current;
     if (!timeline) return;
     timeline.scrollTop = timeline.scrollHeight;
-  }, [latestMessageId, isAssignButtonVisible]);
+  }, [latestMessageId]);
+
+  // "내가 담당하기" 버튼은 내 정보를 받은 뒤 늦게 뜨면서 아래 여백을 늘린다. 맨 아래를 보고
+  // 있었다면 늘어난 여백만큼 다시 내려 마지막 메시지가 버튼에 가리지 않게 하고, 과거 메시지를
+  // 읽던 중이면 위치를 건드리지 않는다.
+  useEffect(() => {
+    const timeline = timelineRef.current;
+    if (!timeline || !isAssignButtonVisible) return;
+    const distanceFromBottom =
+      timeline.scrollHeight - timeline.scrollTop - timeline.clientHeight;
+    if (distanceFromBottom <= FLOATING_BUTTON_SPACE) {
+      timeline.scrollTop = timeline.scrollHeight;
+    }
+  }, [isAssignButtonVisible]);
 
   // 셀렉트의 빈 값은 "담당자 미지정"이다. 지정 API는 assigneeId를 비울 수 없어
   // 해제는 별도 API로 보낸다.
@@ -183,7 +198,7 @@ export function InquiryRoomDetailPanel({
   };
 
   const handleAssignToMe = () => {
-    if (!me) return;
+    if (!me || isAssigning) return;
     handleAssigneeChange(me.id);
   };
 
@@ -330,7 +345,11 @@ export function InquiryRoomDetailPanel({
       <ComposerArea>
         {/* 답변하기 직전에 바로 누를 수 있도록 입력창 위에 띄운다. */}
         {isAssignButtonVisible && (
-          <AssignToMeButton type="button" onClick={handleAssignToMe}>
+          <AssignToMeButton
+            type="button"
+            disabled={isAssigning}
+            onClick={handleAssignToMe}
+          >
             내가 담당하기
           </AssignToMeButton>
         )}
@@ -501,7 +520,7 @@ const MessageTimeline = styled('div', {
 })<{ $hasFloatingButton: boolean }>`
   padding: ${({ theme }) => theme.spacing.lg};
   padding-bottom: ${({ $hasFloatingButton, theme }) =>
-    $hasFloatingButton ? '80px' : theme.spacing.lg};
+    $hasFloatingButton ? `${FLOATING_BUTTON_SPACE}px` : theme.spacing.lg};
 
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
@@ -562,7 +581,12 @@ const AssignToMeButton = styled.button`
 
   transition: background-color 0.15s;
 
-  &:hover {
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.primaryHover};
   }
 `;
