@@ -35,6 +35,18 @@ jest.mock('@/components/InquiryFloatingButton/InquiryFloatingButton', () => ({
   __esModule: true,
   default: () => null,
 }));
+jest.mock('@/components/SignupSourceModal/SignupSourceModal', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+jest.mock('@/hooks/useSignupSourceModal', () => ({
+  useSignupSourceModal: () => ({
+    modalRef: null,
+    isOpen: false,
+    closeModal: jest.fn(),
+    isChecking: false,
+  }),
+}));
 
 const NAVIGATE = jest.fn();
 const ROUTER_STATE = useRouterState as jest.Mock;

@@ -57,6 +57,7 @@ const colors = {
   primaryDark: '#E35400',
   primaryLight: '#FFD6C2',
   primaryInfo: '#ffebe0',
+  primaryGradientEnd: '#FF8A3D',
   primaryMaeilMail: '#17C881',
   textPrimary: '#181818',
   textSecondary: '#5C5C5C',
