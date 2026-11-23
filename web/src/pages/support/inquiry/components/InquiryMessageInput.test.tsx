@@ -24,8 +24,6 @@ jest.mock('@bombom/shared/ui-web', () => ({
   toast: { error: jest.fn() },
 }));
 
-const ROOM_ID = 1;
-
 const renderInput = () => {
   const onMutationError = jest.fn();
   const onSubmit = jest.fn().mockResolvedValue(undefined);
@@ -36,7 +34,7 @@ const renderInput = () => {
   const { container } = render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <InquiryMessageInput roomId={ROOM_ID} onSubmit={onSubmit} />
+        <InquiryMessageInput onSubmit={onSubmit} />
       </ThemeProvider>
     </QueryClientProvider>,
   );
@@ -89,9 +87,7 @@ describe('InquiryMessageInput', () => {
     });
 
     await screen.findByAltText('첨부 미리보기');
-    expect(uploadInquiryImages).toHaveBeenCalledWith(ROOM_ID, [
-      expect.any(File),
-    ]);
+    expect(uploadInquiryImages).toHaveBeenCalledWith([expect.any(File)]);
     fireEvent.click(screen.getByRole('button', { name: '전송' }));
 
     await waitFor(() => {
@@ -102,6 +98,41 @@ describe('InquiryMessageInput', () => {
       expect((textarea as HTMLTextAreaElement).value).toBe('');
     });
     expect(screen.queryByAltText('첨부 미리보기')).toBeNull();
+    queryClient.clear();
+  });
+
+  it('클립보드에 이미지만 있으면 붙여넣은 이미지를 첨부로 업로드한다', async () => {
+    const imageUrl = 'https://example.com/pasted.png';
+    jest
+      .mocked(uploadInquiryImages)
+      .mockResolvedValueOnce({ imageUrls: [imageUrl] });
+    const { queryClient } = renderInput();
+    const textarea = screen.getByPlaceholderText('문의 내용을 입력해주세요');
+    const image = new File(['image'], 'pasted.png', { type: 'image/png' });
+
+    fireEvent.paste(textarea, {
+      clipboardData: { getData: () => '', files: [image] },
+    });
+
+    expect(await screen.findByAltText('첨부 미리보기')).toHaveProperty(
+      'src',
+      imageUrl,
+    );
+    expect(uploadInquiryImages).toHaveBeenCalledWith([image]);
+    queryClient.clear();
+  });
+
+  it('클립보드에 텍스트가 함께 있으면 이미지를 업로드하지 않는다', () => {
+    jest.mocked(uploadInquiryImages).mockClear();
+    const { queryClient } = renderInput();
+    const textarea = screen.getByPlaceholderText('문의 내용을 입력해주세요');
+    const image = new File(['image'], 'preview.png', { type: 'image/png' });
+
+    fireEvent.paste(textarea, {
+      clipboardData: { getData: () => '복사한 텍스트', files: [image] },
+    });
+
+    expect(uploadInquiryImages).not.toHaveBeenCalled();
     queryClient.clear();
   });
 });

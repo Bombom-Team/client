@@ -340,7 +340,6 @@ function InquiryRoomDetailPage() {
         <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
       ) : (
         <InquiryMessageInput
-          roomId={roomId}
           disabled={!isRoomLoaded}
           isSubmitting={isSending}
           onSubmit={handleSendMessage}

@@ -28,10 +28,18 @@ export const getInquiryRooms = (params: GetInquiryRoomsParams = {}) =>
     headers: guestHeaders(),
   });
 
-export const createInquiryRoom = (categoryId: number) =>
-  fetcher.post<components['schemas']['CreateInquiryRoomRequest'], InquiryRoom>({
+// TODO(BOM-1311): 백엔드 배포 후 OpenAPI 타입으로 교체
+// fetcher의 JsonBody(Record<string, unknown>)를 만족하려면 index signature가 필요해 interface 대신 type을 쓴다.
+export type CreateInquiryRoomParams = {
+  categoryId: number;
+  content?: string;
+  imageUrls?: string[];
+};
+
+export const createInquiryRoom = (params: CreateInquiryRoomParams) =>
+  fetcher.post<CreateInquiryRoomParams, InquiryRoom>({
     path: '/inquiries/rooms',
-    body: { categoryId },
+    body: params,
     headers: guestHeaders(),
   });
 
@@ -87,9 +95,8 @@ export const deleteInquiryMessage = (roomId: number, messageId: number) =>
 export type InquiryImageUploadResponse =
   components['schemas']['InquiryImageUploadResponse'];
 
-export const uploadInquiryImages = (roomId: number, images: File[]) => {
+export const uploadInquiryImages = (images: File[]) => {
   const formData = new FormData();
-  formData.append('roomId', String(roomId));
   images.forEach((image) => formData.append('images', image));
 
   return fetcher.post<FormData, InquiryImageUploadResponse>({
