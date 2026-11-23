@@ -28,13 +28,8 @@ export const getInquiryRooms = (params: GetInquiryRoomsParams = {}) =>
     headers: guestHeaders(),
   });
 
-// TODO(BOM-1311): 백엔드 배포 후 OpenAPI 타입으로 교체
-// fetcher의 JsonBody(Record<string, unknown>)를 만족하려면 index signature가 필요해 interface 대신 type을 쓴다.
-export type CreateInquiryRoomParams = {
-  categoryId: number;
-  content?: string;
-  imageUrls?: string[];
-};
+export type CreateInquiryRoomParams =
+  components['schemas']['CreateInquiryRoomRequest'];
 
 export const createInquiryRoom = (params: CreateInquiryRoomParams) =>
   fetcher.post<CreateInquiryRoomParams, InquiryRoom>({

@@ -245,13 +245,13 @@ export interface paths {
     };
     /**
      * 문의 채팅방 목록 조회
-     * @description 생성일 최신순으로 문의 채팅방 목록을 조회합니다. 종료된 채팅방도 포함됩니다.
+     * @description 마지막 메시지가 최신인 순(메시지 id 내림차순)으로 문의 채팅방 목록을 조회합니다. 메시지가 없는 채팅방은 맨 뒤에 방 id 내림차순으로 정렬됩니다. 종료된 채팅방도 포함됩니다.
      */
     get: operations['getRooms'];
     put?: never;
     /**
-     * 문의 채팅방 생성
-     * @description 카테고리를 지정해 새 문의 채팅방을 생성합니다. 비회원은 X-Guest-Id 헤더가 필요합니다.
+     * 첫 메시지와 함께 문의 채팅방 생성
+     * @description 카테고리와 첫 메시지(내용/이미지)를 함께 받아 문의 채팅방을 생성하고 첫 메시지를 작성합니다. 방 생성과 첫 메시지 작성은 하나의 트랜잭션으로 처리되어, 메시지 작성에 실패하면 방도 생성되지 않습니다. 내용(최대 500자)과 이미지(최대 4장) 중 하나 이상은 필수입니다. 응답의 lastMessage에 작성된 첫 메시지가 담깁니다. 비회원은 X-Guest-Id 헤더가 필요합니다.
      */
     post: operations['createRoom'];
     delete?: never;
@@ -295,7 +295,7 @@ export interface paths {
     put?: never;
     /**
      * 문의 이미지 업로드
-     * @description 메시지에 첨부할 이미지를 S3에 업로드합니다. 최대 4장까지 한 번에 업로드할 수 있습니다.
+     * @description 메시지에 첨부할 이미지를 S3에 업로드합니다. 최대 4장까지 한 번에 업로드할 수 있습니다. 문의방이 생기기 전(첫 메시지 작성 시)에도 업로드할 수 있도록 문의방 소유 검증은 하지 않으며, 무분별한 업로드는 회원/비회원 식별 검증과 요청자별 업로드 횟수 제한으로 막습니다.
      */
     post: operations['uploadImages'];
     delete?: never;
@@ -2079,6 +2079,8 @@ export interface components {
     CreateInquiryRoomRequest: {
       /** Format: int64 */
       categoryId: number;
+      content?: string;
+      imageUrls?: string[];
     };
     InquiryRoomResponse: {
       /** Format: int64 */
@@ -2276,18 +2278,18 @@ export interface components {
       createdAt: string;
     };
     PageNoticeResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['NoticeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -2297,11 +2299,11 @@ export interface components {
       /** Format: int64 */
       offset?: number;
       sort?: components['schemas']['SortObject'];
+      paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
       /** Format: int32 */
       pageSize?: number;
-      paged?: boolean;
       unpaged?: boolean;
     };
     SortObject: {
@@ -2862,18 +2864,18 @@ export interface components {
       grade?: 'GOLD' | 'SILVER' | 'BRONZE' | 'FAIL';
     };
     PageCompletedChallengeResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['CompletedChallengeResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -2905,18 +2907,18 @@ export interface components {
       answer: string;
     };
     PageInquiryRoomResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['InquiryRoomResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -2950,18 +2952,18 @@ export interface components {
       createdAt?: string;
     };
     PageHighlightResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['HighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -2999,18 +3001,18 @@ export interface components {
       answer: string;
     };
     PageFaqResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['FaqResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -3221,18 +3223,18 @@ export interface components {
       comment: string;
     };
     PageChallengeReviewResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeReviewResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -3271,18 +3273,18 @@ export interface components {
       createdAt: string;
     };
     PageDailyGuideCommentResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['DailyGuideCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -3330,18 +3332,18 @@ export interface components {
       replyCount: number;
     };
     PageChallengeCommentResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -3359,18 +3361,18 @@ export interface components {
       isPrivate: boolean;
     };
     PageCommentReplyResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['CommentReplyResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -3383,18 +3385,18 @@ export interface components {
       memo?: string;
     };
     PageChallengeCommentHighlightResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ChallengeCommentHighlightResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -3430,18 +3432,18 @@ export interface components {
       category: string;
     };
     PageBookmarkResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BookmarkResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -3474,18 +3476,18 @@ export interface components {
       publishedAt: string;
     };
     PageBlogPostResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['BlogPostResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -3543,18 +3545,18 @@ export interface components {
       newsletter: components['schemas']['NewsletterSummaryResponse'];
     };
     PageArticleResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components['schemas']['ArticleResponse'][];
       /** Format: int32 */
       number?: number;
       sort?: components['schemas']['SortObject'];
-      first?: boolean;
-      last?: boolean;
       pageable?: components['schemas']['PageableObject'];
       /** Format: int32 */
       numberOfElements?: number;
@@ -4364,7 +4366,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description 채팅방 생성 성공 */
+      /** @description 채팅방 및 첫 메시지 생성 성공 */
       200: {
         headers: {
           [name: string]: unknown;
@@ -4373,8 +4375,17 @@ export interface operations {
           '*/*': components['schemas']['InquiryRoomResponse'];
         };
       };
-      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가 등) */
+      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가, 내용·이미지 모두 없음, 길이·개수 초과 등) */
       400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+      /** @description 존재하지 않는 카테고리 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -4487,8 +4498,6 @@ export interface operations {
   uploadImages: {
     parameters: {
       query: {
-        /** @description 문의방 ID */
-        roomId: number;
         images: string[];
       };
       header?: never;
@@ -4515,17 +4524,8 @@ export interface operations {
           '*/*': components['schemas']['InquiryImageUploadResponse'];
         };
       };
-      /** @description 요청자가 소유하지 않은 문의방 */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['InquiryImageUploadResponse'];
-        };
-      };
-      /** @description 존재하지 않는 문의방 */
-      404: {
+      /** @description 이미지 업로드 횟수 제한 초과 */
+      429: {
         headers: {
           [name: string]: unknown;
         };
