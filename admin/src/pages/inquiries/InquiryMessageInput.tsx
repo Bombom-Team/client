@@ -37,11 +37,7 @@ export function InquiryMessageInput({
   const { mutate: sendMessage, isPending: isSending } =
     useSendInquiryMessageMutation();
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    e.target.value = '';
-    if (files.length === 0) return;
-
+  const uploadImages = async (files: File[]) => {
     if (images.length + files.length > MAX_IMAGE_COUNT) {
       alert(`이미지는 최대 ${MAX_IMAGE_COUNT}장까지 첨부할 수 있습니다.`);
       return;
@@ -67,6 +63,30 @@ export function InquiryMessageInput({
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = '';
+    if (files.length === 0) return;
+
+    await uploadImages(files);
+  };
+
+  // 스크린샷처럼 이미지만 담긴 클립보드는 첨부로 올린다. 엑셀·워드에서 복사하면
+  // 텍스트와 함께 미리보기 이미지가 실려 오므로, 텍스트가 있으면 평소처럼 글로 붙인다.
+  const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    if (e.clipboardData.getData('text/plain')) return;
+
+    const imageFiles = Array.from(e.clipboardData.files).filter((file) =>
+      file.type.startsWith('image/'),
+    );
+    if (imageFiles.length === 0) return;
+
+    e.preventDefault();
+    if (isUploading) return;
+
+    await uploadImages(imageFiles);
   };
 
   const handleRemoveImage = (url: string) => {
@@ -147,6 +167,7 @@ export function InquiryMessageInput({
             setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
           }
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           placeholder={disabled ? '종료된 문의입니다' : '메시지를 입력하세요'}
           title="Enter로 전송, Shift+Enter로 줄바꿈"
           disabled={disabled}
