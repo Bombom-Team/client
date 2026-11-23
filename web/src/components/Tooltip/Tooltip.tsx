@@ -1,7 +1,11 @@
 import styled from '@emotion/styled';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import type { CSSProperties, PropsWithChildren } from 'react';
+import type {
+  CSSProperties,
+  PointerEventHandler,
+  PropsWithChildren,
+} from 'react';
 
 type TooltipPosition =
   | 'top'
@@ -18,6 +22,8 @@ interface TooltipProps {
   opened: boolean;
   placement?: TooltipPosition;
   anchorRef: { current: HTMLElement | null };
+  onPointerEnter?: PointerEventHandler<HTMLDivElement>;
+  onPointerLeave?: PointerEventHandler<HTMLDivElement>;
 }
 
 const OFFSET_PX = 8;
@@ -83,6 +89,8 @@ const Tooltip = ({
   opened,
   placement = 'top',
   anchorRef,
+  onPointerEnter,
+  onPointerLeave,
   children,
 }: PropsWithChildren<TooltipProps>) => {
   const [position, setPosition] = useState<CSSProperties | null>(null);
@@ -114,6 +122,8 @@ const Tooltip = ({
       id={id}
       opened={portalOpened}
       style={position ?? {}}
+      onPointerEnter={onPointerEnter}
+      onPointerLeave={onPointerLeave}
     >
       {children}
     </Container>

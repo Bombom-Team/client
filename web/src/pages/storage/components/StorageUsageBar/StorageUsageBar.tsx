@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import ProgressBar from '../../../../components/ProgressBar/ProgressBar';
 import Tooltip from '@/components/Tooltip/Tooltip';
 import { useClickOutsideRef } from '@/hooks/useClickOutsideRef';
@@ -9,6 +9,7 @@ import type { PointerEvent } from 'react';
 import HelpIcon from '#/assets/svg/help.svg';
 
 const TOOLTIP_ID = 'storage-usage-guide';
+const CLOSE_DELAY_MS = 150;
 
 interface StorageUsageBarProps {
   cur: number;
@@ -20,8 +21,31 @@ const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
   const helpButtonRef = useRef<HTMLButtonElement>(null);
   const rate = calculateRate(cur, max);
 
-  const openGuide = () => setIsGuideOpened(true);
-  const closeGuide = useCallback(() => setIsGuideOpened(false), []);
+  const closeTimerRef = useRef<number | null>(null);
+
+  const cancelScheduledClose = useCallback(() => {
+    if (closeTimerRef.current === null) return;
+    window.clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = null;
+  }, []);
+
+  const openGuide = () => {
+    cancelScheduledClose();
+    setIsGuideOpened(true);
+  };
+
+  const closeGuide = useCallback(() => {
+    cancelScheduledClose();
+    setIsGuideOpened(false);
+  }, [cancelScheduledClose]);
+
+  // 아이콘에서 안내로 마우스를 옮기는 동안 닫히지 않도록 닫기를 잠깐 미룬다
+  const scheduleClose = () => {
+    cancelScheduledClose();
+    closeTimerRef.current = window.setTimeout(closeGuide, CLOSE_DELAY_MS);
+  };
+
+  useEffect(() => cancelScheduledClose, [cancelScheduledClose]);
 
   const containerRef = useClickOutsideRef<HTMLDivElement>(
     isGuideOpened ? closeGuide : null,
@@ -32,8 +56,12 @@ const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
     if (event.pointerType === 'mouse') openGuide();
   };
 
-  const handlePointerLeave = (event: PointerEvent<HTMLButtonElement>) => {
-    if (event.pointerType === 'mouse') closeGuide();
+  const handlePointerLeave = (event: PointerEvent<HTMLElement>) => {
+    if (event.pointerType === 'mouse') scheduleClose();
+  };
+
+  const handleGuidePointerEnter = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse') cancelScheduledClose();
   };
 
   return (
@@ -61,6 +89,8 @@ const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
         opened={isGuideOpened}
         placement="bottom-left"
         anchorRef={helpButtonRef}
+        onPointerEnter={handleGuidePointerEnter}
+        onPointerLeave={handlePointerLeave}
       >
         <GuideTitle>보관함 사용량이란?</GuideTitle>
         <GuideList>
