@@ -68,6 +68,9 @@ const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
             {`아티클이 ${max}개를 넘으면, 매일 새벽\u00A03시에 오래된 아티클부터 자동으로 삭제돼요.`}
           </GuideItem>
           <GuideItem>
+            {`${max}개가 넘어도 새 뉴스레터는 빠짐없이 받아요.`}
+          </GuideItem>
+          <GuideItem>
             {`북마크한 아티클은 ${max}개에 포함되지 않고, 삭제되지도 않아요.`}
           </GuideItem>
           <GuideItem>삭제된 아티클은 다시 볼 수 없어요.</GuideItem>
