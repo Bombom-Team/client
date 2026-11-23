@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import {
+  useQuery,
   useSuspenseInfiniteQuery,
   useSuspenseQuery,
 } from '@tanstack/react-query';
@@ -58,6 +59,9 @@ export function InquiryRoomDetailPanel({
   const { data: admins } = useSuspenseQuery(
     membersQueries.list({ role: 'ADMIN', size: 100 }),
   );
+  // 내 정보는 "내가 담당하기" 버튼에만 쓴다. 조회가 늦거나 실패해도 상세 화면은
+  // 그대로 보이고 버튼만 숨도록 Suspense로 기다리지 않는다.
+  const { data: me } = useQuery(membersQueries.me());
 
   const {
     data: messagePages,
@@ -172,6 +176,13 @@ export function InquiryRoomDetailPanel({
     );
   };
 
+  const canAssignToMe = me !== undefined && room.assigneeId !== me.id;
+
+  const handleAssignToMe = () => {
+    if (!me) return;
+    handleAssigneeChange(me.id);
+  };
+
   const handleStatusChange = (status: InquiryStatus) => {
     changeStatus(
       { roomId, status },
@@ -254,6 +265,11 @@ export function InquiryRoomDetailPanel({
               </option>
             ))}
           </HeaderSelect>
+          {canAssignToMe && (
+            <AssignToMeButton type="button" onClick={handleAssignToMe}>
+              내가 담당하기
+            </AssignToMeButton>
+          )}
           <StatusSelectWrapper>
             <StatusDot $color={INQUIRY_STATUS_COLORS[room.status]} />
             <StatusSelect
@@ -438,6 +454,28 @@ const CloseRoomButton = styled.button`
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray900};
+  }
+`;
+
+// 헤더의 주 동작(종료)보다 눈에 덜 띄도록 테두리만 있는 보조 버튼으로 둔다.
+const AssignToMeButton = styled.button`
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
+  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+
+  flex-shrink: 0;
+
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.gray100};
   }
 `;
 

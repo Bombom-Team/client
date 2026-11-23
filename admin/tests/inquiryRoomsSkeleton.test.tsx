@@ -26,6 +26,12 @@ vi.mock('../src/apis/inquiries/inquiryCategories.api', () => ({
 }));
 vi.mock('../src/apis/members/members.api', () => ({
   getMembers: vi.fn(),
+  getMe: vi.fn().mockResolvedValue({
+    id: 99,
+    email: 'me@bombom.news',
+    nickname: '나',
+    role: 'ADMIN',
+  }),
 }));
 
 const clients: QueryClient[] = [];

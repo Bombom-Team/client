@@ -17,7 +17,7 @@ import {
   unassignInquiryRoom,
   updateInquiryRoomStatus,
 } from '../src/apis/inquiries/inquiryRooms.api';
-import { getMembers } from '../src/apis/members/members.api';
+import { getMe, getMembers } from '../src/apis/members/members.api';
 import { InquiryRoomDetailPanel } from '../src/pages/inquiries/InquiryRoomDetailPanel';
 import { theme } from '../src/styles/theme';
 import type { InquiryRoom, InquiryRoomDetail } from '../src/types/inquiry';
@@ -42,6 +42,12 @@ vi.mock('../src/apis/inquiries/inquiryCategories.api', () => ({
 }));
 vi.mock('../src/apis/members/members.api', () => ({
   getMembers: vi.fn(),
+  getMe: vi.fn().mockResolvedValue({
+    id: 99,
+    email: 'me@bombom.news',
+    nickname: '나',
+    role: 'ADMIN',
+  }),
 }));
 
 const ROOM_ID = 7;
@@ -136,6 +142,13 @@ beforeEach(() => {
   );
   vi.mocked(getInquiryCategories).mockReset();
   vi.mocked(getMembers).mockReset();
+  vi.mocked(getMe).mockReset();
+  vi.mocked(getMe).mockResolvedValue({
+    id: 99,
+    email: 'me@bombom.news',
+    nickname: '나',
+    role: 'ADMIN',
+  });
 
   vi.mocked(getInquiryCategories).mockResolvedValue([
     { id: 1, name: '일반 문의' },
@@ -406,6 +419,52 @@ describe('문의 상세 패널', () => {
       ),
     );
     expect(vi.mocked(unassignInquiryRoom)).not.toHaveBeenCalled();
+  });
+
+  it('내가 담당하기를 누르면 로그인한 운영자를 담당자로 지정한다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
+    vi.mocked(assignInquiryRoom).mockResolvedValue(undefined);
+
+    renderPanel(memberListRoom);
+
+    fireEvent.click(
+      await screen.findByRole('button', { name: '내가 담당하기' }),
+    );
+
+    await waitFor(() =>
+      expect(vi.mocked(assignInquiryRoom)).toHaveBeenCalledWith(
+        { roomId: ROOM_ID, assigneeId: 99 },
+        expect.anything(),
+      ),
+    );
+  });
+
+  it('이미 내가 담당자면 내가 담당하기 버튼을 숨긴다', async () => {
+    vi.mocked(getMe).mockResolvedValue({
+      id: ADMIN_ID,
+      email: 'me@bombom.news',
+      nickname: '담당자몽',
+      role: 'ADMIN',
+    });
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+
+    renderPanel(memberListRoom);
+
+    await screen.findByRole('combobox', { name: '담당자' });
+    expect(screen.queryByRole('button', { name: '내가 담당하기' })).toBeNull();
+  });
+
+  it('내 정보 조회가 실패하면 상세는 그대로 보이고 내가 담당하기 버튼만 숨긴다', async () => {
+    vi.mocked(getMe).mockRejectedValue(new Error('Not Found'));
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
+
+    renderPanel(memberListRoom);
+
+    expect(
+      await screen.findByRole('combobox', { name: '담당자' }),
+    ).toBeTruthy();
+    await waitFor(() => expect(vi.mocked(getMe)).toHaveBeenCalled());
+    expect(screen.queryByRole('button', { name: '내가 담당하기' })).toBeNull();
   });
 
   it('헤더에서 잘리는 이메일과 담당자는 마우스를 올려 전체를 볼 수 있다', async () => {

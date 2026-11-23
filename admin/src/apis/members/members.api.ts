@@ -18,6 +18,15 @@ export const getMembers = async (params: GetMembersParams = {}) => {
   });
 };
 
+// TODO(BOM-1311): 백엔드 배포 후 OpenAPI 타입으로 교체
+export type GetMeResponse = Member;
+
+export const getMe = async () => {
+  return fetcher.get<GetMeResponse>({
+    path: '/members/me',
+  });
+};
+
 export type UpdateMemberRoleParams = {
   memberId: number;
   authority: 'ADMIN' | 'USER';
