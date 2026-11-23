@@ -84,7 +84,8 @@ export function InquiryMessageInput({
     if (imageFiles.length === 0) return;
 
     e.preventDefault();
-    if (isUploading) return;
+    // 전송이 끝나면 첨부 목록을 비우므로, 전송 중에 붙인 이미지는 보내지지 않고 사라진다.
+    if (isUploading || isSending) return;
 
     await uploadImages(imageFiles);
   };
@@ -94,7 +95,9 @@ export function InquiryMessageInput({
   };
 
   const handleSend = () => {
-    if (isSending) return;
+    // 업로드가 끝나기 전에 보내면 그 이미지는 빠진 채 전송되고, 전송 완료 시 첨부 목록을
+    // 비우면서 사라진다. 전송 버튼과 같은 조건으로 Enter 전송도 막는다.
+    if (isSending || isUploading) return;
 
     const trimmed = content.trim();
     if (!trimmed) {
@@ -148,7 +151,12 @@ export function InquiryMessageInput({
         <AttachButton
           type="button"
           aria-label="이미지 첨부"
-          disabled={disabled || isUploading || images.length >= MAX_IMAGE_COUNT}
+          disabled={
+            disabled ||
+            isUploading ||
+            isSending ||
+            images.length >= MAX_IMAGE_COUNT
+          }
           onClick={() => fileInputRef.current?.click()}
         >
           <FiPaperclip size={18} />
