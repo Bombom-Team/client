@@ -73,6 +73,15 @@ export interface InquiryMessagePage {
   hasNext: boolean;
 }
 
+// 서버가 닫힌 방으로 보는 상태(InquiryRoom.isClosed). 목록의 종료 탭과 상세의 입력 잠금이
+// 같은 기준을 쓰도록 한 곳에 둔다.
+export const CLOSED_INQUIRY_STATUSES: InquiryStatus[] = ['DONE', 'ON_HOLD'];
+
+export const OPEN_INQUIRY_STATUSES: InquiryStatus[] = [
+  'UNCONFIRMED',
+  'IN_PROGRESS',
+];
+
 export const INQUIRY_STATUS_LABELS: Record<InquiryStatus, string> = {
   UNCONFIRMED: '미확인',
   IN_PROGRESS: '진행중',

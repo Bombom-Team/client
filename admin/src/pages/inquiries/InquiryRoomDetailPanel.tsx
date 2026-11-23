@@ -27,6 +27,7 @@ import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
 import { InquiryMessageBubble } from '@/pages/inquiries/InquiryMessageBubble';
 import { InquiryMessageInput } from '@/pages/inquiries/InquiryMessageInput';
 import {
+  CLOSED_INQUIRY_STATUSES,
   INQUIRY_STATUS_COLORS,
   INQUIRY_STATUS_LABELS,
   type InquiryMessage,
@@ -97,7 +98,7 @@ export function InquiryRoomDetailPanel({
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const isClosed = room.status === 'DONE' || room.status === 'ON_HOLD';
+  const isClosed = CLOSED_INQUIRY_STATUSES.includes(room.status);
 
   // 상세 조회 응답에는 문의자 닉네임이 없다. 목록에서 받아온 값이 있으면 그것을 쓰고,
   // 없으면 상세 응답의 식별자만으로 표시한다.

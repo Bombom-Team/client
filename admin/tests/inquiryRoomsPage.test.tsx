@@ -164,9 +164,7 @@ describe('문의 채팅방 화면', () => {
     );
 
     // 그 방이 없는 탭으로 바꾼다.
-    fireEvent.click(
-      screen.getByRole('button', { name: /^종료/, pressed: false }),
-    );
+    fireEvent.click(screen.getByRole('tab', { name: /^종료/ }));
     await screen.findByText('해당 조건의 문의가 없습니다');
 
     // 상세는 열린 채로 닉네임을 유지해야 한다. 내부 ID 표기로 바뀌면 안 된다.

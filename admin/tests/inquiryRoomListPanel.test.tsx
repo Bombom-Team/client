@@ -283,9 +283,11 @@ describe('문의 목록', () => {
 
     renderPanel();
 
-    fireEvent.click(
-      await screen.findByRole('button', { name: /^종료/, pressed: false }),
-    );
+    fireEvent.click(await screen.findByRole('tab', { name: /^종료/ }));
+
+    expect(
+      await screen.findByRole('tab', { name: /^종료/, selected: true }),
+    ).toBeTruthy();
 
     await waitFor(() =>
       expect(vi.mocked(getInquiryRooms)).toHaveBeenCalledWith(
@@ -299,9 +301,7 @@ describe('문의 목록', () => {
 
     renderPanel();
 
-    fireEvent.click(
-      await screen.findByRole('button', { name: /^전체/, pressed: false }),
-    );
+    fireEvent.click(await screen.findByRole('tab', { name: /^전체/ }));
 
     await waitFor(() =>
       expect(vi.mocked(getInquiryRooms)).toHaveBeenCalledWith(
@@ -310,7 +310,7 @@ describe('문의 목록', () => {
     );
   });
 
-  it('목록의 각 문의에 진행 상태를 표시한다', async () => {
+  it('문의 목록을 불러오면 각 문의에 진행 상태를 표시한다', async () => {
     mockRooms([
       room({ id: 1, status: 'UNCONFIRMED' }),
       room({ id: 2, status: 'IN_PROGRESS', inquirerNickname: '두번째' }),

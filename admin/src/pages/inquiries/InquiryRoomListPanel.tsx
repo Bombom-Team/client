@@ -17,8 +17,10 @@ import {
 import { CopyableText } from '@/pages/inquiries/CopyableText';
 import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
 import {
+  CLOSED_INQUIRY_STATUSES,
   INQUIRY_STATUS_COLORS,
   INQUIRY_STATUS_LABELS,
+  OPEN_INQUIRY_STATUSES,
   type InquiryRoom,
   type InquiryStatus,
 } from '@/types/inquiry';
@@ -35,8 +37,8 @@ interface StatusTabOption {
 // 운영자가 처리해야 할 문의가 먼저 보이도록 진행중 탭을 맨 앞에 두고 기본으로 고른다.
 // 종료 묶음은 서버가 닫힌 방으로 보는 기준(완료·보류)과 맞춘다.
 const STATUS_TABS: StatusTabOption[] = [
-  { key: 'OPEN', label: '진행중', statuses: ['UNCONFIRMED', 'IN_PROGRESS'] },
-  { key: 'CLOSED', label: '종료', statuses: ['DONE', 'ON_HOLD'] },
+  { key: 'OPEN', label: '진행중', statuses: OPEN_INQUIRY_STATUSES },
+  { key: 'CLOSED', label: '종료', statuses: CLOSED_INQUIRY_STATUSES },
   { key: 'ALL', label: '전체' },
 ];
 
@@ -129,22 +131,19 @@ export function InquiryRoomListPanel({
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const handleStatusTabChange = (nextTabKey: StatusTabKey) => {
-    setStatusTabKey(nextTabKey);
-  };
-
   return (
     <Panel>
-      <StatusTabs>
+      <StatusTabs role="tablist" aria-label="문의 상태">
         {STATUS_TABS.map((tab) => {
           const count = countByTabKey.get(tab.key);
           return (
             <StatusTab
               key={tab.key}
               type="button"
-              aria-pressed={statusTabKey === tab.key}
+              role="tab"
+              aria-selected={statusTabKey === tab.key}
               $active={statusTabKey === tab.key}
-              onClick={() => handleStatusTabChange(tab.key)}
+              onClick={() => setStatusTabKey(tab.key)}
             >
               {tab.label}
               {count !== undefined && <TabCount>{count}</TabCount>}
