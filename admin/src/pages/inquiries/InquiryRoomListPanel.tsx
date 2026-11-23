@@ -17,6 +17,7 @@ import {
 import { CopyableText } from '@/pages/inquiries/CopyableText';
 import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
 import {
+  INQUIRY_STATUS_COLORS,
   INQUIRY_STATUS_LABELS,
   type InquiryRoom,
   type InquiryStatus,
@@ -210,6 +211,13 @@ export function InquiryRoomListPanel({
                   {lastMessagePreview}
                 </RoomLastMessagePreview>
                 <RoomItemBottom>
+                  <RoomStatus>
+                    <RoomStatusDot
+                      $color={INQUIRY_STATUS_COLORS[room.status]}
+                      aria-hidden="true"
+                    />
+                    {INQUIRY_STATUS_LABELS[room.status]}
+                  </RoomStatus>
                   <RoomCategoryName title={category?.name ?? '카테고리 없음'}>
                     {category?.name ?? '카테고리 없음'}
                   </RoomCategoryName>
@@ -406,8 +414,32 @@ const RoomItemBottom = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
+// 전체 탭에서도 방마다 진행 상태가 보이도록 색점과 라벨을 붙인다.
+const RoomStatus = styled.span`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-shrink: 0;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+const RoomStatusDot = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$color',
+})<{ $color: string }>`
+  width: 8px;
+  height: 8px;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+
+  background-color: ${({ $color }) => $color};
+`;
+
 const RoomCategoryName = styled.div`
   overflow: hidden;
+
+  flex-grow: 1;
 
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};
