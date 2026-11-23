@@ -4,12 +4,17 @@
  * Do not edit by hand — run `pnpm web:gen:api`.
  */
 import { queryOptions } from '@tanstack/react-query';
-import { getMemberJoinDays } from './mypage.api';
+import { getMemberJoinDays, getRankSummary } from './mypage.api';
 
 export const myPageQueries = {
   getMemberJoinDays: () =>
     queryOptions({
       queryKey: ['mypage', 'getMemberJoinDays'],
       queryFn: () => getMemberJoinDays(),
+    }),
+  getRankSummary: (params: Parameters<typeof getRankSummary>[0]) =>
+    queryOptions({
+      queryKey: ['mypage', 'getRankSummary', params],
+      queryFn: () => getRankSummary(params),
     }),
 };
