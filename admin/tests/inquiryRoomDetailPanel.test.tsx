@@ -11,8 +11,10 @@ import {
   updateInquiryMessage,
 } from '../src/apis/inquiries/inquiryMessages.api';
 import {
+  assignInquiryRoom,
   getInquiryRoomDetail,
   getInquiryRooms,
+  unassignInquiryRoom,
   updateInquiryRoomStatus,
 } from '../src/apis/inquiries/inquiryRooms.api';
 import { getMembers } from '../src/apis/members/members.api';
@@ -24,6 +26,7 @@ vi.mock('../src/apis/inquiries/inquiryRooms.api', () => ({
   getInquiryRoomDetail: vi.fn(),
   getInquiryRooms: vi.fn(),
   assignInquiryRoom: vi.fn(),
+  unassignInquiryRoom: vi.fn(),
   updateInquiryRoomStatus: vi.fn(),
   updateInquiryRoomCategory: vi.fn(),
 }));
@@ -120,6 +123,8 @@ beforeEach(() => {
   vi.mocked(getInquiryRoomDetail).mockReset();
   vi.mocked(getInquiryRooms).mockReset();
   vi.mocked(updateInquiryRoomStatus).mockReset();
+  vi.mocked(assignInquiryRoom).mockReset();
+  vi.mocked(unassignInquiryRoom).mockReset();
   vi.mocked(updateInquiryRoomStatus).mockResolvedValue(
     undefined as Awaited<ReturnType<typeof updateInquiryRoomStatus>>,
   );
@@ -361,6 +366,46 @@ describe('문의 상세 패널', () => {
         detailCallsBefore,
       ),
     );
+  });
+
+  it('담당자를 미지정으로 바꾸면 담당자 해제 API를 호출한다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+    vi.mocked(unassignInquiryRoom).mockResolvedValue(undefined);
+
+    renderPanel(memberListRoom);
+
+    const assigneeSelect = await screen.findByRole('combobox', {
+      name: '담당자',
+    });
+    fireEvent.change(assigneeSelect, { target: { value: '' } });
+
+    await waitFor(() =>
+      expect(vi.mocked(unassignInquiryRoom)).toHaveBeenCalledWith(
+        ROOM_ID,
+        expect.anything(),
+      ),
+    );
+    expect(vi.mocked(assignInquiryRoom)).not.toHaveBeenCalled();
+  });
+
+  it('담당자를 고르면 담당자 지정 API를 호출한다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
+    vi.mocked(assignInquiryRoom).mockResolvedValue(undefined);
+
+    renderPanel(memberListRoom);
+
+    const assigneeSelect = await screen.findByRole('combobox', {
+      name: '담당자',
+    });
+    fireEvent.change(assigneeSelect, { target: { value: String(ADMIN_ID) } });
+
+    await waitFor(() =>
+      expect(vi.mocked(assignInquiryRoom)).toHaveBeenCalledWith(
+        { roomId: ROOM_ID, assigneeId: ADMIN_ID },
+        expect.anything(),
+      ),
+    );
+    expect(vi.mocked(unassignInquiryRoom)).not.toHaveBeenCalled();
   });
 
   it('헤더에서 잘리는 이메일과 담당자는 마우스를 올려 전체를 볼 수 있다', async () => {

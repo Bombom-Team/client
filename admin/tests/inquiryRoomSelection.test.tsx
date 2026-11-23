@@ -35,6 +35,7 @@ vi.mock('../src/apis/inquiries/inquiryRooms.api', () => ({
   getInquiryRooms: vi.fn(),
   getInquiryRoomDetail: vi.fn(),
   assignInquiryRoom: vi.fn(),
+  unassignInquiryRoom: vi.fn(),
   updateInquiryRoomStatus: vi.fn(),
   updateInquiryRoomCategory: vi.fn(),
 }));

@@ -44,6 +44,13 @@ export const assignInquiryRoom = async ({
   });
 };
 
+// 담당자 지정 PATCH는 assigneeId가 필수라, 미지정으로 되돌릴 때는 별도 DELETE를 쓴다.
+export const unassignInquiryRoom = async (roomId: number) => {
+  return fetcher.delete({
+    path: `/inquiries/rooms/${roomId}/assignee`,
+  });
+};
+
 export const updateInquiryRoomStatus = async ({
   roomId,
   status,

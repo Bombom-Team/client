@@ -14,6 +14,7 @@ import {
 import {
   inquiryRoomsQueries,
   useAssignInquiryRoomMutation,
+  useUnassignInquiryRoomMutation,
   useUpdateInquiryRoomCategoryMutation,
   useUpdateInquiryRoomStatusMutation,
 } from '@/apis/inquiries/inquiryRooms.query';
@@ -66,6 +67,7 @@ export function InquiryRoomDetailPanel({
   } = useSuspenseInfiniteQuery(inquiryMessagesQueries.infiniteList(roomId));
 
   const { mutate: assignRoom } = useAssignInquiryRoomMutation();
+  const { mutate: unassignRoom } = useUnassignInquiryRoomMutation();
   const { mutate: changeStatus } = useUpdateInquiryRoomStatusMutation();
   const { mutate: changeCategory } = useUpdateInquiryRoomCategoryMutation();
   const { mutate: updateMessage } = useUpdateInquiryMessageMutation();
@@ -152,7 +154,16 @@ export function InquiryRoomDetailPanel({
     timeline.scrollTop = timeline.scrollHeight;
   }, [latestMessageId]);
 
-  const handleAssigneeChange = (assigneeId: number) => {
+  // 셀렉트의 빈 값은 "담당자 미지정"이다. 지정 API는 assigneeId를 비울 수 없어
+  // 해제는 별도 API로 보낸다.
+  const handleAssigneeChange = (assigneeId: number | null) => {
+    if (assigneeId === null) {
+      unassignRoom(roomId, {
+        onError: (error) => alert(`담당자 해제 실패: ${error.message}`),
+      });
+      return;
+    }
+
     assignRoom(
       { roomId, assigneeId },
       {
@@ -231,7 +242,9 @@ export function InquiryRoomDetailPanel({
             title={assigneeName}
             value={room.assigneeId ?? ''}
             onChange={(e) =>
-              e.target.value && handleAssigneeChange(Number(e.target.value))
+              handleAssigneeChange(
+                e.target.value ? Number(e.target.value) : null,
+              )
             }
           >
             <option value="">담당자 미지정</option>

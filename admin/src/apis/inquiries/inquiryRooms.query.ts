@@ -9,6 +9,7 @@ import {
   assignInquiryRoom,
   getInquiryRoomDetail,
   getInquiryRooms,
+  unassignInquiryRoom,
   updateInquiryRoomCategory,
   updateInquiryRoomStatus,
 } from './inquiryRooms.api';
@@ -95,6 +96,15 @@ export const useAssignInquiryRoomMutation = () => {
 
   return useMutation({
     mutationFn: assignInquiryRoom,
+    onSuccess: invalidateInquiryRooms,
+  });
+};
+
+export const useUnassignInquiryRoomMutation = () => {
+  const invalidateInquiryRooms = useInvalidateInquiryRooms();
+
+  return useMutation({
+    mutationFn: unassignInquiryRoom,
     onSuccess: invalidateInquiryRooms,
   });
 };
