@@ -160,6 +160,32 @@ describe('articles cache', () => {
     });
   });
 
+  it('북마크를 해제하면 북마크 보관함 목록에 글을 남기고 상태만 바꾼다', () => {
+    const BOOKMARK_STATUS_QUERY_KEY = ['bookmarks', 'status', 'articles', 1];
+    queryClient.setQueryData(BOOKMARKS_QUERY_KEY, {
+      ...createPage([1, 2]),
+      content: createPage([1, 2]).content?.map((article) => ({
+        ...article,
+        isBookmarked: true,
+      })),
+    });
+    queryClient.setQueryData(BOOKMARK_STATUS_QUERY_KEY, {
+      bookmarkStatus: true,
+    });
+
+    updateArticleBookmarkStatus(queryClient, 1, false);
+
+    const bookmarks =
+      queryClient.getQueryData<GetArticlesResponse>(BOOKMARKS_QUERY_KEY);
+
+    expect(bookmarks?.content).toHaveLength(2);
+    expect(bookmarks?.content?.[0]?.isBookmarked).toBe(false);
+    expect(bookmarks?.content?.[1]?.isBookmarked).toBe(true);
+    expect(queryClient.getQueryData(BOOKMARK_STATUS_QUERY_KEY)).toEqual({
+      bookmarkStatus: true,
+    });
+  });
+
   it('읽음 처리한 기사를 안 읽은 글 전용 보관함 캐시에서 제거한다', () => {
     setArticles(queryClient, UNREAD_ONLY_STORAGE_QUERY_KEY);
     setInfiniteArticles(queryClient, UNREAD_ONLY_INFINITE_ARTICLES_QUERY_KEY);
