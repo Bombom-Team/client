@@ -103,9 +103,11 @@ export function InquiryRoomDetailPanel({
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const isClosed = CLOSED_INQUIRY_STATUSES.includes(room.status);
-  // 종료된 방은 답변할 수 없으므로 입력창 위에 "내가 담당하기"를 띄우지 않는다.
+  // "내가 담당하기"는 아직 아무도 맡지 않은 방에서만 띄운다. 다른 운영자가 맡은 방을
+  // 한 번에 가져오지 않도록, 담당자 변경은 헤더의 담당자 셀렉트로만 한다. 종료된 방은
+  // 답변할 수 없으므로 띄우지 않는다.
   const isAssignButtonVisible =
-    me !== undefined && room.assigneeId !== me.id && !isClosed;
+    me !== undefined && room.assigneeId === null && !isClosed;
 
   // 상세 조회 응답에는 문의자 닉네임이 없다. 목록에서 받아온 값이 있으면 그것을 쓰고,
   // 없으면 상세 응답의 식별자만으로 표시한다.

@@ -464,6 +464,17 @@ describe('문의 상세 패널', () => {
     expect(screen.queryByRole('button', { name: '내가 담당하기' })).toBeNull();
   });
 
+  it('다른 운영자가 담당 중이면 내가 담당하기 버튼을 띄우지 않는다', async () => {
+    // 기본 내 정보(id 99)와 다른 운영자(ADMIN_ID)가 맡은 방.
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+
+    renderPanel(memberListRoom);
+
+    await screen.findByRole('combobox', { name: '담당자' });
+    await waitFor(() => expect(vi.mocked(getMe)).toHaveBeenCalled());
+    expect(screen.queryByRole('button', { name: '내가 담당하기' })).toBeNull();
+  });
+
   it('종료된 방이면 내가 담당하기 버튼을 띄우지 않는다', async () => {
     vi.mocked(getInquiryRoomDetail).mockResolvedValue({
       ...unassignedRoom,
