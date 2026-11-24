@@ -274,6 +274,23 @@ function InquiryRoomDetailPage() {
           )}
         </>
       }
+      footer={
+        isRoomNotFound ? (
+          <ClosedNotice>문의를 찾을 수 없습니다.</ClosedNotice>
+        ) : isRoomFetchError ? (
+          <ClosedNotice>
+            문의를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+          </ClosedNotice>
+        ) : isRoomLoaded && !canSendMessage ? (
+          <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
+        ) : (
+          <InquiryMessageInput
+            disabled={!isRoomLoaded}
+            isSubmitting={isSending}
+            onSubmit={handleSendMessage}
+          />
+        )
+      }
     >
       <MessageList ref={messageListRef} isMobile={isMobile}>
         <LoadMoreTrigger ref={loadMoreRef} />
@@ -310,22 +327,6 @@ function InquiryRoomDetailPage() {
         >
           새 메시지가 도착했어요
         </NewMessageButton>
-      )}
-
-      {isRoomNotFound ? (
-        <ClosedNotice>문의를 찾을 수 없습니다.</ClosedNotice>
-      ) : isRoomFetchError ? (
-        <ClosedNotice>
-          문의를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
-        </ClosedNotice>
-      ) : isRoomLoaded && !canSendMessage ? (
-        <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
-      ) : (
-        <InquiryMessageInput
-          disabled={!isRoomLoaded}
-          isSubmitting={isSending}
-          onSubmit={handleSendMessage}
-        />
       )}
     </InquiryChatLayout>
   );

@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
 import { queries } from '@/apis/queries';
-import { MOBILE_HORIZONTAL_PADDING } from '@/components/PageLayout/PageLayout.constants';
 import InquiryChatLayout from '@/pages/support/inquiry/components/InquiryChatLayout';
 import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessageInput';
 import { useInquiryRoomCreateMutation } from '@/pages/support/inquiry/hooks/useInquiryRoomCreateMutation';
@@ -30,8 +29,6 @@ function InquiryNewPage() {
   const navigate = useNavigate();
   const device = useDevice();
   const isMobile = device !== 'pc';
-  // tablet은 footer가 함께 렌더되어 고정 입력창이 footer를 가리므로 휴대폰에서만 고정한다.
-  const isInputFixed = device === 'mobile';
   const isMountedRef = useRef(false);
   const { data: categories, isPending: isCategoriesPending } = useQuery(
     queries.inquiryCategories(),
@@ -77,34 +74,29 @@ function InquiryNewPage() {
   };
 
   return (
-    <InquiryChatLayout>
-      <EmptyMessageArea isMobile={isMobile} isInputFixed={isInputFixed}>
+    <InquiryChatLayout
+      footer={
+        <InquiryMessageInput
+          disabled={isCategoriesPending}
+          isSubmitting={isCreating}
+          onSubmit={handleSubmit}
+        />
+      }
+    >
+      <EmptyMessageArea isMobile={isMobile}>
         <EmptyMessageText>
           궁금한 점이나 불편한 점을 남겨주세요.
           <br />
           메시지를 보내면 문의가 시작돼요.
         </EmptyMessageText>
       </EmptyMessageArea>
-
-      <InputDock isInputFixed={isInputFixed}>
-        <InquiryMessageInput
-          disabled={isCategoriesPending}
-          isSubmitting={isCreating}
-          onSubmit={handleSubmit}
-        />
-      </InputDock>
     </InquiryChatLayout>
   );
 }
 
-const EmptyMessageArea = styled.div<{
-  isMobile: boolean;
-  isInputFixed: boolean;
-}>`
+const EmptyMessageArea = styled.div<{ isMobile: boolean }>`
   min-height: ${({ isMobile }) => (isMobile ? '240px' : '0')};
-
-  /* 화면 아래에 고정한 입력창에 안내 문구가 가려지지 않도록 입력창 높이보다 여유 있게 비워둔다 */
-  padding: ${({ isInputFixed }) => (isInputFixed ? '16px 16px 136px' : '16px')};
+  padding: 16px;
 
   display: flex;
   flex: ${({ isMobile }) => (isMobile ? 'none' : '1')};
@@ -116,26 +108,4 @@ const EmptyMessageText = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
-`;
-
-/**
- * 모바일은 페이지 전체가 스크롤되어 채팅 화면의 높이가 정해져 있지 않다.
- * 메시지가 없는 새 문의 화면에서도 입력창이 화면 아래에 있도록 하단 내비게이션 위에 고정한다.
- * 좌우 폭은 페이지 레이아웃 여백과 채팅 화면 최대 폭에 맞춰, 방이 생성된 뒤 채팅방 입력창과 폭이 같게 한다.
- */
-const InputDock = styled.div<{ isInputFixed: boolean }>`
-  ${({ isInputFixed, theme }) =>
-    isInputFixed &&
-    `
-      position: fixed;
-      right: 0;
-      bottom: calc(${theme.heights.bottomNav} + ${theme.safeArea.bottom});
-      left: 0;
-      z-index: ${theme.zIndex.panel};
-      max-width: calc(800px + ${MOBILE_HORIZONTAL_PADDING * 2}px);
-      margin: 0 auto;
-      padding: 0 ${MOBILE_HORIZONTAL_PADDING}px;
-
-      background-color: ${theme.colors.white};
-    `}
 `;

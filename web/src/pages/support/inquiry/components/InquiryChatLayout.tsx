@@ -2,22 +2,36 @@ import { theme } from '@bombom/shared';
 import { ChevronIcon, useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
+import { useRef } from 'react';
+import { useElementHeight } from '../hooks/useElementHeight';
+import { MOBILE_HORIZONTAL_PADDING } from '@/components/PageLayout/PageLayout.constants';
 import type { PropsWithChildren, ReactNode } from 'react';
 import ClockIcon from '#/assets/svg/clock.svg';
 
 interface InquiryChatLayoutProps {
   header?: ReactNode;
+  footer: ReactNode;
 }
 
 /**
  * 채팅방과 아직 생성되기 전의 새 문의 화면이 함께 쓰는 채팅 화면 틀이다.
+ * footer에는 입력창처럼 화면 아래에 두는 요소를 넘긴다.
  */
 const InquiryChatLayout = ({
   header,
+  footer,
   children,
 }: PropsWithChildren<InquiryChatLayoutProps>) => {
   const device = useDevice();
   const isMobile = device !== 'pc';
+  // 휴대폰은 페이지 전체가 스크롤되어 메시지가 적으면 입력창이 화면 중간에 뜨므로 하단에 고정한다.
+  // tablet은 사이트 푸터(BomBomFooter)가 함께 렌더되어 고정 입력창이 사이트 푸터를 가리므로 고정하지 않는다.
+  const isFooterFixed = device === 'mobile';
+  const footerRef = useRef<HTMLDivElement>(null);
+  const footerHeight = useElementHeight({
+    elementRef: footerRef,
+    enabled: isFooterFixed,
+  });
 
   return (
     <Container isMobile={isMobile}>
@@ -43,6 +57,12 @@ const InquiryChatLayout = ({
       </Header>
 
       {children}
+
+      {/* 고정한 입력창에 마지막 메시지가 가려지지 않도록 입력창 높이만큼 자리를 둔다 */}
+      {isFooterFixed && <FooterSpacer height={footerHeight} />}
+      <FooterDock ref={footerRef} isFixed={isFooterFixed}>
+        {footer}
+      </FooterDock>
     </Container>
   );
 };
@@ -113,4 +133,29 @@ const ResponseTimeNotice = styled.p`
 
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t3Regular};
+`;
+
+const FooterSpacer = styled.div<{ height: number }>`
+  height: ${({ height }) => `${height}px`};
+  flex-shrink: 0;
+`;
+
+/**
+ * 좌우 폭은 페이지 레이아웃 여백과 채팅 화면 최대 폭에 맞춰, 고정하지 않을 때와 입력창 폭이 같게 한다.
+ */
+const FooterDock = styled.div<{ isFixed: boolean }>`
+  ${({ isFixed, theme }) =>
+    isFixed &&
+    `
+      position: fixed;
+      right: 0;
+      bottom: calc(${theme.heights.bottomNav} + ${theme.safeArea.bottom});
+      left: 0;
+      z-index: ${theme.zIndex.panel};
+      max-width: calc(800px + ${MOBILE_HORIZONTAL_PADDING * 2}px);
+      margin: 0 auto;
+      padding: 0 ${MOBILE_HORIZONTAL_PADDING}px;
+
+      background-color: ${theme.colors.white};
+    `}
 `;
