@@ -168,4 +168,22 @@ describe('InquiryMessageInput', () => {
     );
     queryClient.clear();
   });
+
+  it('입력한 내용이 길어지면 입력칸 높이를 내용 높이에 맞춘다', () => {
+    const scrollHeightSpy = jest
+      .spyOn(HTMLTextAreaElement.prototype, 'scrollHeight', 'get')
+      .mockReturnValue(88);
+    const { queryClient } = renderInput();
+    const textarea = screen.getByPlaceholderText(
+      '문의 내용을 입력해주세요',
+    ) as HTMLTextAreaElement;
+
+    fireEvent.change(textarea, {
+      target: { value: '첫 줄\n둘째 줄\n셋째 줄' },
+    });
+
+    expect(textarea.style.height).toBe('88px');
+    scrollHeightSpy.mockRestore();
+    queryClient.clear();
+  });
 });

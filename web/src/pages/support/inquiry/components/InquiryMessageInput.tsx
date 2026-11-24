@@ -1,7 +1,7 @@
 import { theme } from '@bombom/shared';
 import { Button, toast, isWebView } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useInquiryImagesUploadMutation } from '@/pages/support/inquiry/hooks/useInquiryImagesUploadMutation';
 import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
 import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react';
@@ -47,6 +47,16 @@ const InquiryMessageInput = ({
   const { mutate: mutateUploadImages, isPending: isUploading } =
     useInquiryImagesUploadMutation();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // 입력한 줄 수에 맞춰 입력칸 높이를 늘리고 줄인다. 최대 높이는 Textarea의 max-height로 제한한다.
+  useLayoutEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }, [content]);
 
   const uploadImages = (files: File[]) => {
     if (imageUrls.length + files.length > MAX_IMAGE_COUNT) {
@@ -154,6 +164,8 @@ const InquiryMessageInput = ({
       />
 
       <Textarea
+        ref={textareaRef}
+        rows={1}
         value={content}
         onChange={(e) =>
           setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
