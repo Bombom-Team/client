@@ -74,31 +74,31 @@ function InquiryNewPage() {
   };
 
   return (
-    <InquiryChatLayout header={<Title>새 문의</Title>}>
+    <InquiryChatLayout>
       <EmptyMessageArea isMobile={isMobile}>
         <EmptyMessageText>
           궁금한 점이나 불편한 점을 남겨주세요.
-          <br />첫 메시지를 보내면 문의가 시작돼요.
+          <br />
+          메시지를 보내면 문의가 시작돼요.
         </EmptyMessageText>
       </EmptyMessageArea>
 
-      <InquiryMessageInput
-        disabled={isCategoriesPending}
-        isSubmitting={isCreating}
-        onSubmit={handleSubmit}
-      />
+      <InputDock isMobile={isMobile}>
+        <InquiryMessageInput
+          disabled={isCategoriesPending}
+          isSubmitting={isCreating}
+          onSubmit={handleSubmit}
+        />
+      </InputDock>
     </InquiryChatLayout>
   );
 }
 
-const Title = styled.h2`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font: ${({ theme }) => theme.fonts.t6Bold};
-`;
-
 const EmptyMessageArea = styled.div<{ isMobile: boolean }>`
   min-height: ${({ isMobile }) => (isMobile ? '240px' : '0')};
-  padding: 16px;
+
+  /* 모바일에서는 화면 아래에 고정한 입력창에 안내 문구가 가려지지 않도록 입력창 높이만큼 비워둔다 */
+  padding: ${({ isMobile }) => (isMobile ? '16px 16px 136px' : '16px')};
 
   display: flex;
   flex: ${({ isMobile }) => (isMobile ? 'none' : '1')};
@@ -110,4 +110,24 @@ const EmptyMessageText = styled.p`
   color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t5Regular};
   text-align: center;
+`;
+
+/**
+ * 모바일은 페이지 전체가 스크롤되어 채팅 화면의 높이가 정해져 있지 않다.
+ * 메시지가 없는 새 문의 화면에서도 입력창이 화면 아래에 있도록 하단 내비게이션 위에 고정한다.
+ */
+const InputDock = styled.div<{ isMobile: boolean }>`
+  position: ${({ isMobile }) => (isMobile ? 'fixed' : 'static')};
+  right: 0;
+  bottom: ${({ isMobile, theme }) =>
+    isMobile
+      ? `calc(${theme.heights.bottomNav} + ${theme.safeArea.bottom})`
+      : 'auto'};
+  left: 0;
+  z-index: ${({ theme }) => theme.zIndex.panel};
+  max-width: 800px;
+  margin: 0 auto;
+  padding: ${({ isMobile }) => (isMobile ? '0 16px' : '0')};
+
+  background-color: ${({ theme }) => theme.colors.white};
 `;

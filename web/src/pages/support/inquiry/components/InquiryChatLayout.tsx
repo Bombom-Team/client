@@ -6,7 +6,7 @@ import type { PropsWithChildren, ReactNode } from 'react';
 import ClockIcon from '#/assets/svg/clock.svg';
 
 interface InquiryChatLayoutProps {
-  header: ReactNode;
+  header?: ReactNode;
 }
 
 /**
@@ -29,7 +29,7 @@ const InquiryChatLayout = ({
           </BackLink>
         )}
 
-        <HeaderRow>{header}</HeaderRow>
+        {header && <HeaderRow>{header}</HeaderRow>}
 
         <ResponseTimeNotice>
           {/* clock.svg는 stroke 색이 하드코딩되어 있어 color 대신 stroke로 덮어쓴다 */}
