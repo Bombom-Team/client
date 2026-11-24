@@ -30,7 +30,6 @@ const PhotoIcon = ({ color }: { color: string }) => (
 
 interface InquiryMessageInputProps {
   disabled?: boolean;
-  isExpanded?: boolean;
   isSubmitting?: boolean;
   onSubmit: (body: SendInquiryMessageBody) => Promise<unknown>;
 }
@@ -40,7 +39,6 @@ const MAX_IMAGE_COUNT = 4;
 
 const InquiryMessageInput = ({
   disabled = false,
-  isExpanded = false,
   isSubmitting = false,
   onSubmit,
 }: InquiryMessageInputProps) => {
@@ -85,7 +83,10 @@ const InquiryMessageInput = ({
     if (imageFiles.length === 0) return;
 
     e.preventDefault();
-    if (isUploading) return;
+    if (isUploading) {
+      toast.error('이미지를 올리는 중이에요. 잠시 후 다시 붙여넣어 주세요.');
+      return;
+    }
 
     uploadImages(imageFiles);
   };
@@ -153,7 +154,6 @@ const InquiryMessageInput = ({
       />
 
       <Textarea
-        isExpanded={isExpanded}
         value={content}
         onChange={(e) =>
           setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
@@ -212,10 +212,10 @@ const HiddenFileInput = styled.input`
   display: none;
 `;
 
-const Textarea = styled.textarea<{ isExpanded: boolean }>`
+const Textarea = styled.textarea`
   width: 100%;
-  min-height: ${({ isExpanded }) => (isExpanded ? '200px' : '44px')};
-  max-height: ${({ isExpanded }) => (isExpanded ? '200px' : '120px')};
+  min-height: 44px;
+  max-height: 120px;
   padding: 12px 16px;
   border: none;
   border-radius: 16px;

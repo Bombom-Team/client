@@ -135,4 +135,37 @@ describe('InquiryMessageInput', () => {
     expect(uploadInquiryImages).not.toHaveBeenCalled();
     queryClient.clear();
   });
+
+  it('업로드 중에 이미지를 다시 붙여넣으면 업로드하지 않고 안내한다', async () => {
+    jest.mocked(uploadInquiryImages).mockClear();
+    jest.mocked(toast.error).mockClear();
+    jest.mocked(uploadInquiryImages).mockReturnValueOnce(new Promise(() => {}));
+    const { queryClient } = renderInput();
+    const textarea = screen.getByPlaceholderText('문의 내용을 입력해주세요');
+    const pasteImage = (name: string) =>
+      fireEvent.paste(textarea, {
+        clipboardData: {
+          getData: () => '',
+          files: [new File(['image'], name, { type: 'image/png' })],
+        },
+      });
+
+    pasteImage('first.png');
+    await waitFor(() => {
+      expect(
+        (
+          screen.getByRole('button', {
+            name: '이미지 첨부',
+          }) as HTMLButtonElement
+        ).disabled,
+      ).toBe(true);
+    });
+    pasteImage('second.png');
+
+    expect(uploadInquiryImages).toHaveBeenCalledTimes(1);
+    expect(toast.error).toHaveBeenCalledWith(
+      '이미지를 올리는 중이에요. 잠시 후 다시 붙여넣어 주세요.',
+    );
+    queryClient.clear();
+  });
 });
