@@ -4,9 +4,14 @@ import styled from '@emotion/styled';
 import { Link } from '@tanstack/react-router';
 import { useRef } from 'react';
 import { useElementHeight } from '../hooks/useElementHeight';
+import { useKeyboardInset } from '../hooks/useKeyboardInset';
 import { MOBILE_HORIZONTAL_PADDING } from '@/components/PageLayout/PageLayout.constants';
-import type { PropsWithChildren, ReactNode } from 'react';
+import type { CSSProperties, PropsWithChildren, ReactNode } from 'react';
 import ClockIcon from '#/assets/svg/clock.svg';
+
+interface KeyboardInsetStyle extends CSSProperties {
+  '--keyboard-inset'?: string;
+}
 
 interface InquiryChatLayoutProps {
   header?: ReactNode;
@@ -32,9 +37,17 @@ const InquiryChatLayout = ({
     elementRef: footerRef,
     enabled: isFooterFixed,
   });
+  const keyboardInset = useKeyboardInset({ enabled: isFooterFixed });
+  // 키보드가 열릴 때마다 값이 바뀌므로 styled prop 대신 CSS 변수로 넘겨 class가 계속 새로 생기지 않게 한다.
+  const keyboardInsetStyle: KeyboardInsetStyle = {
+    '--keyboard-inset': `${keyboardInset}px`,
+  };
 
   return (
-    <Container isMobile={isMobile}>
+    <Container
+      isMobile={isMobile}
+      style={isFooterFixed ? keyboardInsetStyle : undefined}
+    >
       <Header isMobile={isMobile}>
         {isMobile && (
           <BackLink to="/support/inquiry">
@@ -58,7 +71,8 @@ const InquiryChatLayout = ({
 
       {children}
 
-      {/* 고정한 입력창에 마지막 메시지가 가려지지 않도록 입력창 높이만큼 자리를 둔다 */}
+      {/* 고정한 입력창에 마지막 메시지가 가려지지 않도록 입력창 높이만큼 자리를 둔다.
+          키보드가 열려 입력창이 하단 내비보다 위로 올라가면 올라간 만큼 자리를 더 둔다. */}
       {isFooterFixed && <FooterSpacer height={footerHeight} />}
       <FooterDock ref={footerRef} isFixed={isFooterFixed}>
         {footer}
@@ -136,7 +150,8 @@ const ResponseTimeNotice = styled.p`
 `;
 
 const FooterSpacer = styled.div<{ height: number }>`
-  height: ${({ height }) => `${height}px`};
+  height: ${({ height, theme }) =>
+    `calc(${height}px + max(0px, var(--keyboard-inset, 0px) - (${theme.heights.bottomNav} + ${theme.safeArea.bottom})))`};
   flex-shrink: 0;
 `;
 
@@ -149,7 +164,11 @@ const FooterDock = styled.div<{ isFixed: boolean }>`
     `
       position: fixed;
       right: 0;
-      bottom: calc(${theme.heights.bottomNav} + ${theme.safeArea.bottom});
+      /* 키보드가 열리면 하단 내비는 키보드 뒤로 가려지므로 키보드 바로 위에 둔다 */
+      bottom: max(
+        var(--keyboard-inset, 0px),
+        calc(${theme.heights.bottomNav} + ${theme.safeArea.bottom})
+      );
       left: 0;
       z-index: ${theme.zIndex.panel};
       max-width: calc(800px + ${MOBILE_HORIZONTAL_PADDING * 2}px);
