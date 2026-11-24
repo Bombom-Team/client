@@ -77,7 +77,7 @@ function InquiryNewPage() {
     <InquiryChatLayout
       footer={
         <InquiryMessageInput
-          disabled={isCategoriesPending}
+          disabled={isCategoriesPending || isCreating}
           isSubmitting={isCreating}
           onSubmit={handleSubmit}
         />
