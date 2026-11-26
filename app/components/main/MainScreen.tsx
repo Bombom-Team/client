@@ -30,6 +30,7 @@ import { useDeviceInfo } from '@/hooks/useDeviceInfo';
 import { useForceUpdate } from '@/hooks/useForceUpdate';
 import ForceUpdateScreen from './ForceUpdateScreen';
 import { useNotificationPermission } from '@/hooks/useNotificationPermission';
+import { useOsNotificationPermissionSync } from '@/hooks/useOsNotificationPermissionSync';
 
 const IOS_SUPPRESSED_MENU_ITEMS: SuppressMenuItem[] = [
   'cut',
@@ -98,10 +99,15 @@ export const MainScreen = () => {
     handleWebReady,
     handleWebLoadError,
   } = useNotification(reloadWebView);
+  const { syncOsNotificationPermission } = useOsNotificationPermissionSync();
+  const registerFCMTokenAndSyncPermission = useCallback(async () => {
+    await registerFCMToken();
+    await syncOsNotificationPermission();
+  }, [registerFCMToken, syncOsNotificationPermission]);
   const { isVersionCheckCompleted, isForceUpdateRequired, openStore } =
     useForceUpdate();
   const { sendPermissionToWeb } = useNotificationPermission({
-    onPermissionGranted: registerFCMToken,
+    onPermissionGranted: registerFCMTokenAndSyncPermission,
   });
 
   const handleWebViewLoadEnd = () => {
@@ -159,7 +165,7 @@ export const MainScreen = () => {
         case 'REGISTER_FCM_TOKEN':
           if (message.payload.memberId) {
             updateMemberId(message.payload.memberId);
-            registerFCMToken();
+            registerFCMTokenAndSyncPermission();
           }
           break;
 
