@@ -84,6 +84,8 @@ export type RNToWebMessage =
         category?: string;
         notificationId?: number;
         scheduleId?: number;
+        memberId?: number;
+        deviceUuid?: string;
         platform?: 'IOS' | 'ANDROID';
         appVersion?: string;
       };

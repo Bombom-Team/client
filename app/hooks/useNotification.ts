@@ -155,7 +155,7 @@ const useNotification = (reloadWebView: () => void) => {
       const message = await messaging().getInitialNotification();
       if (!message) return;
 
-      const payload = getNotificationRoutingPayload(message.data ?? {});
+      const payload = await getNotificationRoutingPayload(message.data ?? {});
       if (payload) {
         routeToNotificationUrl(payload);
       }
@@ -207,8 +207,10 @@ const useNotification = (reloadWebView: () => void) => {
 
     // 백그라운드에서 알림을 탭한 경우
     const unsubscribeNotificationOpened = messaging().onNotificationOpenedApp(
-      (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-        const payload = getNotificationRoutingPayload(remoteMessage.data ?? {});
+      async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+        const payload = await getNotificationRoutingPayload(
+          remoteMessage.data ?? {},
+        );
         if (payload) {
           routeToNotificationUrl(payload);
         }
@@ -217,13 +219,13 @@ const useNotification = (reloadWebView: () => void) => {
 
     // 포그라운드에서 띄운 로컬 알림을 탭한 경우
     const responseListener =
-      Notifications.addNotificationResponseReceivedListener((response) => {
+      Notifications.addNotificationResponseReceivedListener(async (response) => {
         const { content, trigger } = response.notification.request;
 
         // 원격 푸시 탭은 Firebase 리스너가 처리한다. iOS는 같은 탭을 여기로도 보내지만 data가 비어 있다.
         if (trigger && 'type' in trigger && trigger.type === 'push') return;
 
-        const payload = getNotificationRoutingPayload(content.data ?? {});
+        const payload = await getNotificationRoutingPayload(content.data ?? {});
         if (payload) {
           routeToNotificationUrl(payload);
         }

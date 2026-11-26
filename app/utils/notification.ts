@@ -6,6 +6,7 @@ import * as Notifications from 'expo-notifications';
 import { Linking, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ASYNC_STORAGE_KEY } from '@/constants/asyncStorage';
+import { getDeviceUUID } from '@/utils/device';
 import { startActivityAsync, ActivityAction } from 'expo-intent-launcher';
 import { applicationId, nativeApplicationVersion } from 'expo-application';
 import type { RNToWebMessage } from '@bombom/shared';
@@ -146,19 +147,23 @@ const toOptionalNumber = (value: unknown) => {
 };
 
 // 웹이 알림 열림을 발송 건과 연결해 기록할 수 있도록 알림 data의 식별자를 함께 보낸다.
-export const getNotificationRoutingPayload = (
+export const getNotificationRoutingPayload = async (
   data: Record<string, unknown>,
-): NotificationRoutingPayload | null => {
+): Promise<NotificationRoutingPayload | null> => {
   const url = getNotificationUrl(data);
   if (!url) return null;
 
   const category = data.category ?? data.notificationType;
+  const memberId = await getMemberId();
+  const deviceUuid = await getDeviceUUID();
 
   return {
     url,
     category: typeof category === 'string' ? category : undefined,
     notificationId: toOptionalNumber(data.notificationId),
     scheduleId: toOptionalNumber(data.scheduleId),
+    memberId: memberId || undefined,
+    deviceUuid,
     platform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID',
     appVersion: nativeApplicationVersion ?? undefined,
   };
