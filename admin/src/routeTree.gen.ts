@@ -13,6 +13,7 @@ import { Route as AdminRouteImport } from './routes/_admin';
 import { Route as R403RouteImport } from './routes/403';
 import { Route as AdminIndexRouteImport } from './routes/_admin/index';
 import { Route as AdminResourcesRouteImport } from './routes/_admin/resources';
+import { Route as AdminNotificationsRouteImport } from './routes/_admin/notifications';
 import { Route as AdminNoticesRouteImport } from './routes/_admin/notices';
 import { Route as AdminMembersRouteImport } from './routes/_admin/members';
 import { Route as AdminInquiriesRouteImport } from './routes/_admin/inquiries';
@@ -80,6 +81,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const AdminResourcesRoute = AdminResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
+  getParentRoute: () => AdminRoute,
+} as any);
+const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => AdminRoute,
 } as any);
 const AdminNoticesRoute = AdminNoticesRouteImport.update({
@@ -359,6 +365,7 @@ export interface FileRoutesByFullPath {
   '/inquiries': typeof AdminInquiriesRouteWithChildren;
   '/members': typeof AdminMembersRoute;
   '/notices': typeof AdminNoticesRouteWithChildren;
+  '/notifications': typeof AdminNotificationsRoute;
   '/resources': typeof AdminResourcesRouteWithChildren;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
@@ -407,6 +414,7 @@ export interface FileRoutesByTo {
   '/erd': typeof AdminErdRoute;
   '/flyway': typeof AdminFlywayRoute;
   '/members': typeof AdminMembersRoute;
+  '/notifications': typeof AdminNotificationsRoute;
   '/': typeof AdminIndexRoute;
   '/blog/$postId': typeof AdminBlogPostIdRoute;
   '/challenges/daily-guides': typeof AdminChallengesDailyGuidesRoute;
@@ -456,6 +464,7 @@ export interface FileRoutesById {
   '/_admin/inquiries': typeof AdminInquiriesRouteWithChildren;
   '/_admin/members': typeof AdminMembersRoute;
   '/_admin/notices': typeof AdminNoticesRouteWithChildren;
+  '/_admin/notifications': typeof AdminNotificationsRoute;
   '/_admin/resources': typeof AdminResourcesRouteWithChildren;
   '/_admin/': typeof AdminIndexRoute;
   '/_admin/blog/$postId': typeof AdminBlogPostIdRoute;
@@ -512,6 +521,7 @@ export interface FileRouteTypes {
     | '/inquiries'
     | '/members'
     | '/notices'
+    | '/notifications'
     | '/resources'
     | '/'
     | '/blog/$postId'
@@ -560,6 +570,7 @@ export interface FileRouteTypes {
     | '/erd'
     | '/flyway'
     | '/members'
+    | '/notifications'
     | '/'
     | '/blog/$postId'
     | '/challenges/daily-guides'
@@ -608,6 +619,7 @@ export interface FileRouteTypes {
     | '/_admin/inquiries'
     | '/_admin/members'
     | '/_admin/notices'
+    | '/_admin/notifications'
     | '/_admin/resources'
     | '/_admin/'
     | '/_admin/blog/$postId'
@@ -685,6 +697,13 @@ declare module '@tanstack/react-router' {
       path: '/resources';
       fullPath: '/resources';
       preLoaderRoute: typeof AdminResourcesRouteImport;
+      parentRoute: typeof AdminRoute;
+    };
+    '/_admin/notifications': {
+      id: '/_admin/notifications';
+      path: '/notifications';
+      fullPath: '/notifications';
+      preLoaderRoute: typeof AdminNotificationsRouteImport;
       parentRoute: typeof AdminRoute;
     };
     '/_admin/notices': {
@@ -1253,6 +1272,7 @@ interface AdminRouteChildren {
   AdminInquiriesRoute: typeof AdminInquiriesRouteWithChildren;
   AdminMembersRoute: typeof AdminMembersRoute;
   AdminNoticesRoute: typeof AdminNoticesRouteWithChildren;
+  AdminNotificationsRoute: typeof AdminNotificationsRoute;
   AdminResourcesRoute: typeof AdminResourcesRouteWithChildren;
   AdminIndexRoute: typeof AdminIndexRoute;
   AdminNewsletterRequestsRequestIdRoute: typeof AdminNewsletterRequestsRequestIdRoute;
@@ -1275,6 +1295,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminInquiriesRoute: AdminInquiriesRouteWithChildren,
   AdminMembersRoute: AdminMembersRoute,
   AdminNoticesRoute: AdminNoticesRouteWithChildren,
+  AdminNotificationsRoute: AdminNotificationsRoute,
   AdminResourcesRoute: AdminResourcesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
   AdminNewsletterRequestsRequestIdRoute: AdminNewsletterRequestsRequestIdRoute,

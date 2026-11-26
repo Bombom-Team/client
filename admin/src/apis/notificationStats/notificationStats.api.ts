@@ -1,0 +1,64 @@
+import { fetcher } from '@bombom/shared/apis';
+import { ENV } from '@/apis/env';
+
+// fcm-server의 어드민 집계 API는 어드민 OpenAPI spec에 포함되지 않아 응답 타입을 직접 선언한다.
+export type NotificationCategory =
+  | 'ARTICLE'
+  | 'EVENT'
+  | 'CHALLENGE_TODO_REMINDER'
+  | 'CHALLENGE_START'
+  | 'INQUIRY_MESSAGE_ARRIVAL';
+
+export type NotificationStatus =
+  | 'PENDING'
+  | 'SENT'
+  | 'FAILED'
+  | 'DEAD'
+  | 'SKIPPED';
+
+export type NotificationPlatform = 'IOS' | 'ANDROID';
+
+export interface NotificationCategoryStats {
+  category: NotificationCategory;
+  deliveryMode: 'MEMBER' | 'TOPIC';
+  statusCounts: Record<NotificationStatus, number> | null;
+  failureReasons: { reason: string; count: number }[];
+  deviceSends: { success: number; failure: number } | null;
+  opens: { linked: number; uniqueLinked: number; unlinked: number };
+  openRate: number | null;
+  medianSecondsToOpen: number | null;
+  consentingMembers: number | null;
+}
+
+export interface GetNotificationStatsParams {
+  from: string;
+  to: string;
+}
+
+export interface GetNotificationStatsResponse {
+  aggregatedAt: string;
+  from: string;
+  to: string;
+  categories: NotificationCategoryStats[];
+  reach: {
+    membersWithToken: number;
+    devicesWithToken: number;
+    devicesOsPermissionGranted: number;
+    devicesOsPermissionDenied: number;
+    devicesOsPermissionUnknown: number;
+  };
+  opensByPlatform: { platform: NotificationPlatform; count: number }[];
+}
+
+export const getNotificationStats = async ({
+  from,
+  to,
+}: GetNotificationStatsParams) => {
+  return fetcher.get<GetNotificationStatsResponse>({
+    path: '/notifications/admin/stats',
+    baseUrl: ENV.notificationBaseUrl,
+    query: { from, to },
+    headers: { 'X-Admin-Api-Key': ENV.notificationAdminApiKey },
+    credentials: 'omit',
+  });
+};
