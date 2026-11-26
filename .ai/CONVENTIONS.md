@@ -401,6 +401,15 @@ type GetChallengesParams = operations['getChallenges']['parameters']['query'];
 - 화면을 렌더링하는 route는 자신 또는 상위 layout route의 `head`에서
   `title: '봄봄 | {화면명}'`을 지정합니다.
 - 로그인이 필요한 화면은 `head`에 robots `noindex` meta를 둡니다.
+- `web/`의 `index.html`은 JS를 실행하지 않는 크롤러와 링크 미리보기를 위한 head 기본값을 둡니다.
+  `HeadContent`는 `index.html`의 태그를 지우지 않고 추가만 하므로 다음을 지킵니다.
+  - route `head`에서 지정할 수 있는 태그(title, description, `og:*`, `twitter:*` 등)는
+    `data-static-head`를 붙여 둡니다. 앱 시작 시 `main.tsx`가 이 태그를 지웁니다.
+  - `data-static-head` 없이 둔 태그(`og:site_name` 등)는 route `head`에서 지정하지 않습니다.
+    지정해야 하면 `index.html`의 해당 태그에 `data-static-head`를 붙이고 `__root`의 `head`에도 기본값을 둡니다.
+  - 모든 경로가 같은 `index.html`을 받으므로 canonical과 `og:url`은 `index.html`에 두지 않습니다.
+  - `__root`의 `head` 기본값을 바꾸면 `index.html`의 같은 태그도 함께 바꿉니다.
+  - `web/src/constants/seo.test.ts`가 위 규칙 중 앞의 세 가지를 검사합니다.
 
 ---
 

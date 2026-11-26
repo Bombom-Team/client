@@ -61,6 +61,7 @@ function GuidePage() {
               <ArticleCard
                 data={{ ...article, isBookmarked: false }}
                 readVariant="badge"
+                canBookmark={false}
                 to={`/articles/guide/${article.articleId}`}
               />
             </li>

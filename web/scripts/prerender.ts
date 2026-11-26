@@ -1,7 +1,7 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
 import { fetchDetailPageNewsletters, warn } from './newsletters';
-import { PRERENDERED_ATTRIBUTE } from '../src/constants/prerender';
+import { STATIC_HEAD_ATTRIBUTE } from '../src/constants/seo';
 import { createNewsletterHead } from '../src/pages/newsletter-detail/utils/seo';
 import {
   getNewsletterDetailPath,
@@ -24,11 +24,10 @@ interface PrerenderedPage {
 type MetaKey = ['name' | 'property', string];
 type NamedMeta = Exclude<NewsletterHeadMeta, { title: string }>;
 
-// 템플릿의 이미지 크기(1200x630)는 사이트 기본 이미지 기준이라 뉴스레터 이미지와 맞지 않습니다.
-const TEMPLATE_IMAGE_SIZE_KEYS: MetaKey[] = [
-  ['property', 'og:image:width'],
-  ['property', 'og:image:height'],
-];
+const STATIC_HEAD_TAG_PATTERN = new RegExp(
+  `<title\\b[^>]*\\b${STATIC_HEAD_ATTRIBUTE}\\b[^>]*>[\\s\\S]*?</title>|<meta\\b[^>]*\\b${STATIC_HEAD_ATTRIBUTE}\\b[^>]*>`,
+  'g',
+);
 
 const escapeHtml = (value: string) =>
   value
@@ -42,11 +41,11 @@ const getMetaKey = (meta: NamedMeta): MetaKey =>
 
 const renderMeta = (meta: NewsletterHeadMeta) => {
   if ('title' in meta) {
-    return `<title ${PRERENDERED_ATTRIBUTE}>${escapeHtml(meta.title)}</title>`;
+    return `<title ${STATIC_HEAD_ATTRIBUTE}>${escapeHtml(meta.title)}</title>`;
   }
 
   const [key, value] = getMetaKey(meta);
-  return `<meta ${PRERENDERED_ATTRIBUTE} ${key}="${escapeHtml(value)}" content="${escapeHtml(meta.content)}">`;
+  return `<meta ${STATIC_HEAD_ATTRIBUTE} ${key}="${escapeHtml(value)}" content="${escapeHtml(meta.content)}">`;
 };
 
 const renderHead = ({ meta, links, scripts }: NewsletterHead) =>
@@ -54,26 +53,14 @@ const renderHead = ({ meta, links, scripts }: NewsletterHead) =>
     ...meta.map(renderMeta),
     ...links.map(
       ({ rel, href }) =>
-        `<link ${PRERENDERED_ATTRIBUTE} rel="${escapeHtml(rel)}" href="${escapeHtml(href)}">`,
+        `<link ${STATIC_HEAD_ATTRIBUTE} rel="${escapeHtml(rel)}" href="${escapeHtml(href)}">`,
     ),
     // JSON 안의 `</script>`가 script 태그를 닫지 않도록 `<`를 escape합니다.
     ...scripts.map(
       ({ type, children }) =>
-        `<script ${PRERENDERED_ATTRIBUTE} type="${escapeHtml(type)}">${children.replace(/</g, '\\u003c')}</script>`,
+        `<script ${STATIC_HEAD_ATTRIBUTE} type="${escapeHtml(type)}">${children.replace(/</g, '\\u003c')}</script>`,
     ),
   ].join('');
-
-const escapeRegExp = (value: string) =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-const removeTemplateMeta = (template: string, keys: MetaKey[]) =>
-  keys.reduce((html, [key, value]) => {
-    const pattern = new RegExp(
-      `<meta\\b[^>]*\\b${key}="${escapeRegExp(value)}"[^>]*>`,
-      'g',
-    );
-    return html.replace(pattern, '');
-  }, template);
 
 const createNewsletterPage = (
   template: string,
@@ -81,20 +68,14 @@ const createNewsletterPage = (
 ): PrerenderedPage => {
   const { newsletterId, name } = newsletter;
   const url = getNewsletterDetailUrl(newsletterId, name);
-  const newsletterHead = createNewsletterHead(newsletter, url);
-  const head = renderHead(newsletterHead);
-  // 템플릿에 기본값으로 있는 meta(og:type, twitter:card 등)는 상세 태그와 겹치지 않게 지웁니다.
-  const overriddenKeys = newsletterHead.meta
-    .filter((meta): meta is NamedMeta => !('title' in meta))
-    .map(getMetaKey);
+  const head = renderHead(createNewsletterHead(newsletter, url));
 
   return {
     fileName: `${getNewsletterDetailPath(newsletterId, name).slice(1)}/index.html`,
     // 문자열을 넘기면 뉴스레터 설명의 `$&`, `$'` 등이 치환 패턴으로 해석되므로 함수로 넘깁니다.
-    html: removeTemplateMeta(template, [
-      ...overriddenKeys,
-      ...TEMPLATE_IMAGE_SIZE_KEYS,
-    ]).replace('</head>', () => `${head}</head>`),
+    html: template
+      .replace(STATIC_HEAD_TAG_PATTERN, '')
+      .replace('</head>', () => `${head}</head>`),
   };
 };
 

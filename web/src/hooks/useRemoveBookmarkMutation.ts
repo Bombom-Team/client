@@ -1,20 +1,22 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateArticleBookmarkStatus } from '@/apis/articles/articles.cache';
-import { postBookmark } from '@/apis/bookmark/bookmark.api';
+import { deleteBookmark } from '@/apis/bookmark/bookmark.api';
 import { queries } from '@/apis/queries';
 
-const useAddBookmarkMutation = ({ articleId }: { articleId: number }) => {
+export const useRemoveBookmarkMutation = ({
+  articleId,
+}: {
+  articleId: number;
+}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => postBookmark({ articleId }),
+    mutationFn: () => deleteBookmark({ articleId }),
     onSuccess: () => {
-      updateArticleBookmarkStatus(queryClient, articleId, true);
+      updateArticleBookmarkStatus(queryClient, articleId, false);
       queryClient.invalidateQueries({
         queryKey: queries.articleBookmarkStatus({ articleId }).queryKey,
       });
     },
   });
 };
-
-export default useAddBookmarkMutation;
