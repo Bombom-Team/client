@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FiRefreshCw } from 'react-icons/fi';
 import CategoryEventTable from './components/CategoryEventTable';
+import NotificationSummary from './components/NotificationSummary';
+import OpenRateChart from './components/OpenRateChart';
 import ShareBar from './components/ShareBar';
 import { notificationStatsQueries } from '@/apis/notificationStats/notificationStats.query';
 
@@ -115,7 +117,8 @@ const NotificationsPage = () => {
 
       {data && (
         <>
-          <CategoryEventTable categories={data.categories} />
+          <NotificationSummary stats={data} />
+          <OpenRateChart categories={data.categories} />
 
           <section aria-labelledby="reach-heading">
             <SectionTitle id="reach-heading">도달 모수와 기기</SectionTitle>
@@ -141,17 +144,17 @@ const NotificationsPage = () => {
                   {
                     label: '허용',
                     count: data.reach.devicesOsPermissionGranted,
-                    color: 'var(--seed-color-palette-carrot-500)',
+                    color: 'var(--seed-color-palette-carrot-700)',
                   },
                   {
                     label: '거부',
                     count: data.reach.devicesOsPermissionDenied,
-                    color: 'var(--seed-color-palette-gray-700)',
+                    color: 'var(--seed-color-palette-gray-800)',
                   },
                   {
                     label: '미보고(구버전 앱)',
                     count: data.reach.devicesOsPermissionUnknown,
-                    color: 'var(--seed-color-palette-gray-300)',
+                    color: 'var(--seed-color-palette-gray-400)',
                   },
                 ]}
               />
@@ -163,12 +166,14 @@ const NotificationsPage = () => {
                   count,
                   color:
                     platform === 'IOS'
-                      ? 'var(--seed-color-palette-gray-900)'
-                      : 'var(--seed-color-palette-green-500)',
+                      ? 'var(--seed-color-palette-blue-700)'
+                      : 'var(--seed-color-palette-green-700)',
                 }))}
               />
             </ReachWrapper>
           </section>
+
+          <CategoryEventTable categories={data.categories} />
 
           <DefinitionBox>
             <summary>집계 기준과 수집하지 않는 것</summary>

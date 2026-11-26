@@ -1,60 +1,29 @@
 import styled from '@emotion/styled';
-import type {
-  NotificationCategory,
-  NotificationCategoryStats,
-} from '@/apis/notificationStats/notificationStats.api';
-
-const CATEGORY_LABELS: Record<NotificationCategory, string> = {
-  ARTICLE: '아티클 도착',
-  EVENT: '이벤트',
-  CHALLENGE_START: '챌린지 시작',
-  CHALLENGE_TODO_REMINDER: '챌린지 할 일 리마인드',
-  INQUIRY_MESSAGE_ARRIVAL: '문의 답변 도착',
-};
-
-// 수신 거부 시 알림 row를 지우는 카테고리라 스킵이 기록되지 않는다.
-const SKIP_NOT_RECORDED_CATEGORIES: NotificationCategory[] = [
-  'ARTICLE',
-  'INQUIRY_MESSAGE_ARRIVAL',
-];
-
-const formatCount = (value: number | undefined) =>
-  value === undefined ? '집계 없음' : value.toLocaleString('ko-KR');
-
-const formatRate = (rate: number) =>
-  `${(rate * 100).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}%`;
-
-const formatDuration = (seconds: number) => {
-  if (seconds < 60) return `${Math.round(seconds)}초`;
-  if (seconds < 3600) return `${Math.round(seconds / 60)}분`;
-  return `${(seconds / 3600).toLocaleString('ko-KR', {
-    maximumFractionDigits: 1,
-  })}시간`;
-};
+import {
+  CATEGORY_LABELS,
+  OPEN_NOT_RECORDED_CATEGORIES,
+  SKIP_NOT_RECORDED_CATEGORIES,
+} from '../constants/notificationCategory';
+import { formatCount, formatDuration, formatRate } from '../utils/formatStats';
+import type { NotificationCategoryStats } from '@/apis/notificationStats/notificationStats.api';
 
 interface CategoryEventTableProps {
   categories: NotificationCategoryStats[];
 }
 
 const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
-  const maxOpenRate = Math.max(
-    ...categories.map(({ openRate }) => openRate ?? 0),
-    0,
-  );
   const failureCategories = categories.filter(
     ({ failureReasons }) => failureReasons.length > 0,
   );
 
   return (
     <Container aria-labelledby="category-event-heading">
-      <SectionTitle id="category-event-heading">
-        카테고리별 알림 이벤트
-      </SectionTitle>
+      <SectionTitle id="category-event-heading">상세 수치</SectionTitle>
       <TableWrapper>
         <Table>
           <caption>
-            카테고리별 열림률, 열림, 발송 결과. 빗금 막대는 분모가 수신 동의
-            회원 수인 근사치예요.
+            카테고리별 열림과 발송 결과. ≈ 표시는 분모가 수신 동의 회원 수인
+            근사치예요.
           </caption>
           <thead>
             <tr>
@@ -85,6 +54,9 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
             {categories.map((stats) => {
               const isTopic = stats.deliveryMode === 'TOPIC';
               const { statusCounts, deviceSends } = stats;
+              const isOpenNotRecorded = OPEN_NOT_RECORDED_CATEGORIES.includes(
+                stats.category,
+              );
 
               return (
                 <tr key={stats.category}>
@@ -94,40 +66,40 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
                     </CategoryName>
                     {isTopic && <TopicTag>토픽 발송</TopicTag>}
                   </th>
-                  <td>
-                    {stats.openRate === null ? (
-                      <MutedText>계산 불가</MutedText>
-                    ) : (
-                      <RateWrapper>
-                        <strong>
-                          {isTopic && '≈ '}
-                          {formatRate(stats.openRate)}
-                        </strong>
-                        <RateTrack aria-hidden="true">
-                          <RateBar
-                            data-approximate={isTopic}
-                            style={{
-                              width: `${maxOpenRate > 0 ? (stats.openRate / maxOpenRate) * 100 : 0}%`,
-                            }}
-                          />
-                        </RateTrack>
-                      </RateWrapper>
-                    )}
-                  </td>
-                  <td>
-                    {formatCount(stats.opens.uniqueLinked)}
-                    <SubText>전체 {formatCount(stats.opens.linked)}</SubText>
-                  </td>
-                  <td>{formatCount(stats.opens.unlinked)}</td>
-                  <td>
-                    {stats.medianSecondsToOpen === null ? (
-                      <MutedText>
-                        {isTopic ? '해당 없음' : '집계 없음'}
-                      </MutedText>
-                    ) : (
-                      formatDuration(stats.medianSecondsToOpen)
-                    )}
-                  </td>
+                  {isOpenNotRecorded ? (
+                    <td colSpan={4}>
+                      <MutedText>열림 미수집</MutedText>
+                    </td>
+                  ) : (
+                    <>
+                      <td>
+                        {stats.openRate === null ? (
+                          <MutedText>계산 불가</MutedText>
+                        ) : (
+                          <RateText>
+                            {isTopic && '≈ '}
+                            {formatRate(stats.openRate)}
+                          </RateText>
+                        )}
+                      </td>
+                      <td>
+                        {formatCount(stats.opens.uniqueLinked)}
+                        <SubText>
+                          전체 {formatCount(stats.opens.linked)}
+                        </SubText>
+                      </td>
+                      <td>{formatCount(stats.opens.unlinked)}</td>
+                      <td>
+                        {stats.medianSecondsToOpen === null ? (
+                          <MutedText>
+                            {isTopic ? '해당 없음' : '집계 없음'}
+                          </MutedText>
+                        ) : (
+                          formatDuration(stats.medianSecondsToOpen)
+                        )}
+                      </td>
+                    </>
+                  )}
                   <td>
                     {stats.consentingMembers === null ? (
                       <MutedText>집계 없음</MutedText>
@@ -283,41 +255,8 @@ const TopicTag = styled.span`
   font-weight: var(--seed-font-weight-medium);
   font-size: var(--seed-font-size-t2);
 `;
-const RateWrapper = styled.div`
-  min-width: 160px;
-
-  display: grid;
-  gap: var(--seed-dimension-x1);
-
-  strong {
-    font-weight: var(--seed-font-weight-bold);
-    font-size: var(--seed-font-size-t5);
-  }
-`;
-const RateTrack = styled.span`
-  overflow: hidden;
-  height: 8px;
-  border-radius: var(--seed-radius-full);
-
-  display: block;
-
-  background-color: var(--seed-color-bg-neutral-weak);
-`;
-const RateBar = styled.span`
-  height: 100%;
-  border-radius: var(--seed-radius-full);
-
-  display: block;
-
-  background-color: var(--seed-color-bg-brand-solid);
-
-  &[data-approximate='true'] {
-    background: repeating-linear-gradient(
-      -45deg,
-      var(--seed-color-palette-carrot-500) 0 4px,
-      var(--seed-color-palette-carrot-200) 4px 8px
-    );
-  }
+const RateText = styled.strong`
+  font-weight: var(--seed-font-weight-bold);
 `;
 const SubText = styled.span`
   display: block;

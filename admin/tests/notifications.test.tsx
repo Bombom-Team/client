@@ -146,13 +146,63 @@ describe('알림 현황', () => {
     expect(row.getByText('집계 안 됨')).toBeTruthy();
   });
 
-  it('열림률을 계산할 수 없으면 0%로 표시하지 않는다', async () => {
+  it('열림이 기록되지 않는 카테고리는 0%로 표시하지 않는다', async () => {
     vi.mocked(getNotificationStats).mockResolvedValue(stats);
     renderPage();
     await screen.findByRole('table');
     const row = within(getCategoryRow('챌린지 시작'));
-    expect(row.getByText('계산 불가')).toBeTruthy();
+    expect(row.getByText('열림 미수집')).toBeTruthy();
     expect(row.queryByText('0%')).toBeNull();
+  });
+
+  it('요약 열림률은 열림이 기록되지 않는 카테고리의 발송을 분모에서 뺀다', async () => {
+    vi.mocked(getNotificationStats).mockResolvedValue({
+      ...stats,
+      categories: [
+        memberCategory({}),
+        memberCategory({
+          category: 'CHALLENGE_TODO_REMINDER',
+          statusCounts: {
+            PENDING: 0,
+            SENT: 800,
+            FAILED: 0,
+            DEAD: 0,
+            SKIPPED: 0,
+          },
+          opens: { linked: 0, uniqueLinked: 0, unlinked: 0 },
+          openRate: 0,
+        }),
+      ],
+    });
+    renderPage();
+    const summary = await screen.findByLabelText('기간 요약');
+    expect(within(summary).getByText('15%')).toBeTruthy();
+    expect(within(summary).getByText('2,000')).toBeTruthy();
+  });
+
+  it('열림률 차트는 측정된 카테고리를 열림률 순으로 놓고 근사치를 구분한다', async () => {
+    vi.mocked(getNotificationStats).mockResolvedValue({
+      ...stats,
+      categories: [
+        stats.categories[1],
+        memberCategory({}),
+        memberCategory({
+          category: 'INQUIRY_MESSAGE_ARRIVAL',
+          openRate: 0.7,
+        }),
+      ],
+    });
+    renderPage();
+    const chart = await screen.findByRole('region', {
+      name: '카테고리별 열림률',
+    });
+    const names = within(chart)
+      .getAllByRole('listitem')
+      .map((item) => item.textContent ?? '');
+    expect(names[0]).toContain('문의 답변 도착');
+    expect(names[1]).toContain('아티클 도착');
+    expect(names[2]).toContain('≈ 2%');
+    expect(names[2]).toContain('수신 동의 3,900명');
   });
 
   it('기간을 30일로 바꾸면 서울 날짜 기준 30일 범위로 다시 조회한다', async () => {

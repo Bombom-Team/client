@@ -91,10 +91,11 @@ const TotalText = styled.span`
 
   font-variant-numeric: tabular-nums;
 `;
+// 막대 끝만 4px로 둥글리고, 구간 사이는 2px 표면색 간격으로 나눈다.
 const BarTrack = styled.div`
   overflow: hidden;
-  height: 12px;
-  border-radius: var(--seed-radius-full);
+  height: 16px;
+  border-radius: 4px;
 
   display: flex;
   gap: 2px;
@@ -117,20 +118,18 @@ const LegendItem = styled.li`
   display: flex;
   gap: var(--seed-dimension-x2);
   align-items: center;
-
-  font-size: var(--seed-font-size-t3);
 `;
 const LegendSwatch = styled.span`
-  width: 8px;
-  height: 8px;
-  border-radius: var(--seed-radius-full);
+  width: 12px;
+  height: 12px;
+  border-radius: var(--seed-radius-r1);
 
   flex-shrink: 0;
 `;
 const LegendValue = styled.span`
   margin-left: auto;
 
-  color: var(--seed-color-fg-neutral-muted);
+  font-weight: var(--seed-font-weight-medium);
 
   font-variant-numeric: tabular-nums;
 `;
