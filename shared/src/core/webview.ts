@@ -80,6 +80,12 @@ export type RNToWebMessage =
       type: 'NOTIFICATION_ROUTING';
       payload: {
         url: string;
+        // 알림 열림 기록용 정보. 구버전 앱은 보내지 않는다.
+        category?: string;
+        notificationId?: number;
+        scheduleId?: number;
+        platform?: 'IOS' | 'ANDROID';
+        appVersion?: string;
       };
     }
   | {

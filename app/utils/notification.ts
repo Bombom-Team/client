@@ -7,7 +7,8 @@ import { Linking, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ASYNC_STORAGE_KEY } from '@/constants/asyncStorage';
 import { startActivityAsync, ActivityAction } from 'expo-intent-launcher';
-import { applicationId } from 'expo-application';
+import { applicationId, nativeApplicationVersion } from 'expo-application';
+import type { RNToWebMessage } from '@bombom/shared';
 
 // 안드로이드 알림 채널 생성
 export const createAndroidChannel = async () => {
@@ -131,4 +132,34 @@ export const getNotificationUrl = (data: Record<string, unknown>) => {
     default:
       return null;
   }
+};
+
+export type NotificationRoutingPayload = Extract<
+  RNToWebMessage,
+  { type: 'NOTIFICATION_ROUTING' }
+>['payload'];
+
+const toOptionalNumber = (value: unknown) => {
+  if (value === undefined || value === null || value === '') return undefined;
+  const number = Number(value);
+  return Number.isNaN(number) ? undefined : number;
+};
+
+// 웹이 알림 열림을 발송 건과 연결해 기록할 수 있도록 알림 data의 식별자를 함께 보낸다.
+export const getNotificationRoutingPayload = (
+  data: Record<string, unknown>,
+): NotificationRoutingPayload | null => {
+  const url = getNotificationUrl(data);
+  if (!url) return null;
+
+  const category = data.category ?? data.notificationType;
+
+  return {
+    url,
+    category: typeof category === 'string' ? category : undefined,
+    notificationId: toOptionalNumber(data.notificationId),
+    scheduleId: toOptionalNumber(data.scheduleId),
+    platform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID',
+    appVersion: nativeApplicationVersion ?? undefined,
+  };
 };

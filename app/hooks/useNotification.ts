@@ -9,9 +9,10 @@ import {
   createAndroidChannel,
   getFCMToken,
   getMemberId,
-  getNotificationUrl,
+  getNotificationRoutingPayload,
   requestNotificationPermission,
 } from '@/utils/notification';
+import type { NotificationRoutingPayload } from '@/utils/notification';
 import { useWebView } from '@/contexts/WebViewContext';
 import { getDeviceUUID } from '@/utils/device';
 import { putFCMToken } from '@/apis/notification';
@@ -31,7 +32,9 @@ const useNotification = (reloadWebView: () => void) => {
   const { sendMessageToWeb } = useWebView();
   const isRegisteringRef = useRef(false);
   const isWebReadyRef = useRef(false);
-  const pendingNotificationUrlRef = useRef<string | null>(null);
+  const pendingNotificationRef = useRef<NotificationRoutingPayload | null>(
+    null,
+  );
   const hasHandledInitialNotificationRef = useRef(false);
   const readyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isWaitingForRetryRef = useRef(false);
@@ -42,7 +45,7 @@ const useNotification = (reloadWebView: () => void) => {
   }, []);
 
   const showReadyError = useCallback(() => {
-    if (!pendingNotificationUrlRef.current || isWaitingForRetryRef.current) return;
+    if (!pendingNotificationRef.current || isWaitingForRetryRef.current) return;
     clearReadyTimer();
     isWaitingForRetryRef.current = true;
     Alert.alert(
@@ -53,7 +56,7 @@ const useNotification = (reloadWebView: () => void) => {
           text: '닫기',
           style: 'cancel',
           onPress: () => {
-            pendingNotificationUrlRef.current = null;
+            pendingNotificationRef.current = null;
             isWaitingForRetryRef.current = false;
           },
         },
@@ -75,9 +78,9 @@ const useNotification = (reloadWebView: () => void) => {
 
   // 웹이 준비 신호를 보내기 전에 보낸 메시지는 웹이 받지 못하므로 준비될 때까지 보관한다.
   const routeToNotificationUrl = useCallback(
-    (url: string) => {
+    (payload: NotificationRoutingPayload) => {
       if (!isWebReadyRef.current) {
-        pendingNotificationUrlRef.current = url;
+        pendingNotificationRef.current = payload;
         if (!readyTimerRef.current && !isWaitingForRetryRef.current) {
           readyTimerRef.current = setTimeout(showReadyError, WEB_READY_TIMEOUT_MS);
         }
@@ -86,7 +89,7 @@ const useNotification = (reloadWebView: () => void) => {
 
       sendMessageToWeb({
         type: 'NOTIFICATION_ROUTING',
-        payload: { url },
+        payload,
       });
     },
     [sendMessageToWeb, showReadyError],
@@ -101,11 +104,11 @@ const useNotification = (reloadWebView: () => void) => {
     isWebReadyRef.current = true;
     clearReadyTimer();
 
-    const url = pendingNotificationUrlRef.current;
-    if (!url) return;
+    const payload = pendingNotificationRef.current;
+    if (!payload) return;
 
-    pendingNotificationUrlRef.current = null;
-    routeToNotificationUrl(url);
+    pendingNotificationRef.current = null;
+    routeToNotificationUrl(payload);
   }, [clearReadyTimer, routeToNotificationUrl]);
 
   const registerFCMToken = useCallback(async () => {
@@ -152,9 +155,9 @@ const useNotification = (reloadWebView: () => void) => {
       const message = await messaging().getInitialNotification();
       if (!message) return;
 
-      const url = getNotificationUrl(message.data ?? {});
-      if (url) {
-        routeToNotificationUrl(url);
+      const payload = getNotificationRoutingPayload(message.data ?? {});
+      if (payload) {
+        routeToNotificationUrl(payload);
       }
     } catch (error) {
       console.error('앱 종료 상태의 알림 수신에 문제가 발생했습니다.', error);
@@ -205,9 +208,9 @@ const useNotification = (reloadWebView: () => void) => {
     // 백그라운드에서 알림을 탭한 경우
     const unsubscribeNotificationOpened = messaging().onNotificationOpenedApp(
       (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-        const url = getNotificationUrl(remoteMessage.data ?? {});
-        if (url) {
-          routeToNotificationUrl(url);
+        const payload = getNotificationRoutingPayload(remoteMessage.data ?? {});
+        if (payload) {
+          routeToNotificationUrl(payload);
         }
       },
     );
@@ -220,9 +223,9 @@ const useNotification = (reloadWebView: () => void) => {
         // 원격 푸시 탭은 Firebase 리스너가 처리한다. iOS는 같은 탭을 여기로도 보내지만 data가 비어 있다.
         if (trigger && 'type' in trigger && trigger.type === 'push') return;
 
-        const url = getNotificationUrl(content.data ?? {});
-        if (url) {
-          routeToNotificationUrl(url);
+        const payload = getNotificationRoutingPayload(content.data ?? {});
+        if (payload) {
+          routeToNotificationUrl(payload);
         }
       });
 
