@@ -215,28 +215,34 @@ const Table = styled.table`
     white-space: nowrap;
   }
 
+  /* 머리글 영역이 끝나는 선은 한 높이로 맞추고, 그룹 제목 아래 선은 옅게 둔다. */
   thead th {
     color: var(--seed-color-fg-neutral-muted);
     font-weight: var(--seed-font-weight-medium);
     font-size: var(--seed-font-size-t3);
+    vertical-align: bottom;
+
+    border-bottom-color: var(--seed-color-stroke-neutral-solid);
   }
 
+  thead th[scope='colgroup'] {
+    text-align: center;
+    border-bottom-color: var(--seed-color-stroke-neutral-weak);
+  }
+
+  thead th[rowspan],
   tbody th {
     text-align: left;
+  }
+
+  /* 여러 칸을 합친 안내 문구가 특정 칸의 값처럼 읽히지 않게 가운데에 둔다. */
+  tbody td[colspan] {
+    text-align: center;
   }
 
   tbody tr:last-of-type th,
   tbody tr:last-of-type td {
     border-bottom: none;
-  }
-
-  thead tr:first-of-type th {
-    text-align: center;
-    border-bottom-color: var(--seed-color-stroke-neutral-solid);
-  }
-
-  thead tr:first-of-type th:first-of-type {
-    text-align: left;
   }
 `;
 const CategoryName = styled.span`
