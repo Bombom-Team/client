@@ -456,27 +456,70 @@ describe('문의 상세 패널', () => {
     await waitFor(() => expect(assigneeSelect.value).toBe(String(ADMIN_ID)));
   });
 
-  it('담당자 변경 요청이 끝나기 전에는 담당자를 다시 바꿀 수 없다', async () => {
+  it('담당자 변경 후 다시 조회가 끝날 때까지 담당자를 다시 바꿀 수 없다', async () => {
+    // 요청은 바로 성공하지만, 변경 후 다시 조회한 응답은 직접 풀어줄 때까지 오지 않는다.
+    let resolveRefetch: (room: InquiryRoomDetail) => void = () => {};
+    vi.mocked(getInquiryRoomDetail)
+      .mockResolvedValueOnce(unassignedRoom)
+      .mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolveRefetch = resolve;
+        }),
+      )
+      .mockResolvedValue(assignedRoom);
+    vi.mocked(patchInquiryRoomAssignee).mockResolvedValue(undefined);
+
+    renderPanel(memberListRoom);
+
+    const assignButton = await screen.findByRole<HTMLButtonElement>('button', {
+      name: '내가 담당하기',
+    });
+    fireEvent.click(assignButton);
+
+    const assigneeSelect = screen.getByRole<HTMLSelectElement>('combobox', {
+      name: '담당자',
+    });
+    await waitFor(() =>
+      expect(vi.mocked(getInquiryRoomDetail)).toHaveBeenCalledTimes(2),
+    );
+    expect(assigneeSelect.disabled).toBe(true);
+    expect(assignButton.disabled).toBe(true);
+
+    resolveRefetch(assignedRoom);
+
+    await waitFor(() => expect(assigneeSelect.disabled).toBe(false));
+    expect(assigneeSelect.value).toBe(String(ADMIN_ID));
+    expect(vi.mocked(patchInquiryRoomAssignee)).toHaveBeenCalledTimes(1);
+  });
+
+  it('담당자 변경 응답 전에 패널을 벗어나도 실패하면 알린다', async () => {
     vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
-    // 응답이 오지 않은 상태를 유지한다.
-    vi.mocked(patchInquiryRoomAssignee).mockReturnValue(new Promise(() => {}));
+    let rejectAssign: (error: Error) => void = () => {};
+    vi.mocked(patchInquiryRoomAssignee).mockReturnValue(
+      new Promise((_, reject) => {
+        rejectAssign = reject;
+      }),
+    );
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
     renderPanel(memberListRoom);
 
     fireEvent.click(
       await screen.findByRole('button', { name: '내가 담당하기' }),
     );
+    await waitFor(() =>
+      expect(vi.mocked(patchInquiryRoomAssignee)).toHaveBeenCalled(),
+    );
 
-    const assigneeSelect = screen.getByRole<HTMLSelectElement>('combobox', {
-      name: '담당자',
-    });
-    await waitFor(() => expect(assigneeSelect.disabled).toBe(true));
-    expect(
-      screen.getByRole<HTMLButtonElement>('button', { name: '내가 담당하기' })
-        .disabled,
-    ).toBe(true);
-    fireEvent.click(screen.getByRole('button', { name: '내가 담당하기' }));
-    expect(vi.mocked(patchInquiryRoomAssignee)).toHaveBeenCalledTimes(1);
+    // 다른 방을 열면 패널이 새로 마운트되므로, 기존 패널이 사라진 상황을 만든다.
+    cleanup();
+    rejectAssign(new Error('다른 운영자가 담당자를 먼저 변경했습니다.'));
+
+    await waitFor(() =>
+      expect(alertSpy).toHaveBeenCalledWith(
+        '다른 운영자가 담당자를 먼저 변경했습니다.',
+      ),
+    );
   });
 
   it('내가 담당하기를 누르면 로그인한 운영자를 담당자로 지정한다', async () => {
