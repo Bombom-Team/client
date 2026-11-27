@@ -66,11 +66,13 @@ const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
 
   return (
     <Container ref={containerRef}>
-      <ProgressBar
-        rate={rate}
-        caption={`보관함 사용량 ${cur} / ${max}`}
-        variant="rounded"
-      />
+      <BarWrapper>
+        <ProgressBar
+          rate={rate}
+          caption={`보관함 사용량 ${cur} / ${max}`}
+          variant="rounded"
+        />
+      </BarWrapper>
       <HelpButton
         ref={helpButtonRef}
         type="button"
@@ -118,6 +120,11 @@ const Container = styled.div`
   display: flex;
   gap: 4px;
   align-items: flex-end;
+`;
+
+// 사용량 문구보다 좁아지면 문구가 바 밖으로 넘쳐 아이콘과 겹친다
+const BarWrapper = styled.div`
+  flex-shrink: 0;
 `;
 
 const HelpButton = styled.button`
