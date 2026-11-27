@@ -1,18 +1,18 @@
-import { theme } from '@bombom/shared';
 import { ApiError } from '@bombom/shared/apis';
-import { ChevronIcon, useDevice } from '@bombom/shared/ui-web';
+import { useDevice } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
 import {
   useInfiniteQuery,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { INQUIRY_ROOMS_QUERY_KEY } from '@/apis/inquiry/inquiry.query';
 import { queries } from '@/apis/queries';
 import Badge from '@/components/Badge/Badge';
 import { useIntersectionTrigger } from '@/hooks/useIntersectionTrigger';
+import InquiryChatLayout from '@/pages/support/inquiry/components/InquiryChatLayout';
 import InquiryMessageBubble from '@/pages/support/inquiry/components/InquiryMessageBubble';
 import InquiryMessageDateDivider from '@/pages/support/inquiry/components/InquiryMessageDateDivider';
 import InquiryMessageInput from '@/pages/support/inquiry/components/InquiryMessageInput';
@@ -26,7 +26,6 @@ import {
 } from '@/types/inquiry';
 import { compareDates, formatDateToKorean } from '@/utils/date';
 import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
-import ClockIcon from '#/assets/svg/clock.svg';
 
 export const Route = createFileRoute('/_bombom/_main/support/inquiry/$roomId')({
   head: () => ({
@@ -254,16 +253,9 @@ function InquiryRoomDetailPage() {
   const canSendMessage = isAwaitingMoreMessages;
 
   return (
-    <ChatCard isMobile={isMobile}>
-      <Header isMobile={isMobile}>
-        {isMobile && (
-          <BackLink to="/support/inquiry">
-            <ChevronIcon direction="left" width={20} height={20} />
-            목록으로
-          </BackLink>
-        )}
-
-        <HeaderRow>
+    <InquiryChatLayout
+      header={
+        <>
           {room && (
             <HeaderTitleGroup>
               <CreatedAtText>
@@ -280,19 +272,26 @@ function InquiryRoomDetailPage() {
               variant={INQUIRY_ROOM_STATUS_BADGE_VARIANTS[room.status]}
             />
           )}
-        </HeaderRow>
-
-        <ResponseTimeNotice>
-          {/* clock.svg는 stroke 색이 하드코딩되어 있어 color 대신 stroke로 덮어쓴다 */}
-          <ClockIcon
-            width={16}
-            height={16}
-            stroke={theme.colors.textTertiary}
+        </>
+      }
+      footer={
+        isRoomNotFound ? (
+          <ClosedNotice>문의를 찾을 수 없습니다.</ClosedNotice>
+        ) : isRoomFetchError ? (
+          <ClosedNotice>
+            문의를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+          </ClosedNotice>
+        ) : isRoomLoaded && !canSendMessage ? (
+          <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
+        ) : (
+          <InquiryMessageInput
+            disabled={!isRoomLoaded}
+            isSubmitting={isSending}
+            onSubmit={handleSendMessage}
           />
-          평일 10:00-18:00 운영, 보통 1영업일 안에 답변드려요
-        </ResponseTimeNotice>
-      </Header>
-
+        )
+      }
+    >
       <MessageList ref={messageListRef} isMobile={isMobile}>
         <LoadMoreTrigger ref={loadMoreRef} />
         {messages.map((message, index) => {
@@ -329,73 +328,9 @@ function InquiryRoomDetailPage() {
           새 메시지가 도착했어요
         </NewMessageButton>
       )}
-
-      {isRoomNotFound ? (
-        <ClosedNotice>문의를 찾을 수 없습니다.</ClosedNotice>
-      ) : isRoomFetchError ? (
-        <ClosedNotice>
-          문의를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
-        </ClosedNotice>
-      ) : isRoomLoaded && !canSendMessage ? (
-        <ClosedNotice>문의가 종료되었습니다.</ClosedNotice>
-      ) : (
-        <InquiryMessageInput
-          roomId={roomId}
-          disabled={!isRoomLoaded}
-          isSubmitting={isSending}
-          onSubmit={handleSendMessage}
-        />
-      )}
-    </ChatCard>
+    </InquiryChatLayout>
   );
 }
-
-const ChatCard = styled.div<{ isMobile: boolean }>`
-
-  /* 모바일에서는 헤더가 페이지를 기준으로 sticky 해야 하므로 overflow를 만들지 않는다 */
-  overflow: ${({ isMobile }) => (isMobile ? 'visible' : 'hidden')};
-  position: relative;
-  width: 100%;
-  height: ${({ isMobile }) => (isMobile ? 'auto' : '100%')};
-  max-width: ${({ isMobile }) => (isMobile ? '800px' : 'none')};
-  margin: 0 auto;
-  padding: ${({ isMobile }) => (isMobile ? '0' : '0 20px')};
-
-  display: flex;
-  flex-direction: column;
-
-  box-sizing: border-box;
-`;
-
-const Header = styled.div<{ isMobile: boolean }>`
-  position: ${({ isMobile }) => (isMobile ? 'sticky' : 'static')};
-  top: ${({ isMobile, theme }) =>
-    isMobile
-      ? `calc(${theme.heights.headerMobile} + ${theme.safeArea.top})`
-      : `calc(${theme.heights.headerPC} + 40px)`};
-  z-index: ${({ theme }) => theme.zIndex.panel};
-  padding: 16px 0 12px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.stroke};
-
-  display: flex;
-  gap: 2px;
-  flex-direction: column;
-
-  background-color: ${({ theme }) => theme.colors.white};
-`;
-
-const BackLink = styled(Link)`
-  margin-bottom: 8px;
-
-  display: flex;
-  gap: 2px;
-  align-items: center;
-
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t5Regular};
-
-  text-decoration: none;
-`;
 
 const HeaderTitleGroup = styled.div`
   display: flex;
@@ -410,25 +345,6 @@ const CreatedAtText = styled.span`
 
 const AssigneeText = styled.span`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font: ${({ theme }) => theme.fonts.t3Regular};
-`;
-
-const HeaderRow = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const ResponseTimeNotice = styled.p`
-  margin-top: 4px;
-
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  justify-content: center;
-
-  color: ${({ theme }) => theme.colors.textTertiary};
   font: ${({ theme }) => theme.fonts.t3Regular};
 `;
 

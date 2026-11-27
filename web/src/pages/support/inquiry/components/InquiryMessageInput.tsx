@@ -1,10 +1,10 @@
 import { theme } from '@bombom/shared';
 import { Button, toast, isWebView } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useInquiryImagesUploadMutation } from '@/pages/support/inquiry/hooks/useInquiryImagesUploadMutation';
 import type { SendInquiryMessageBody } from '@/apis/inquiry/inquiry.api';
-import type { ChangeEvent, KeyboardEvent } from 'react';
+import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react';
 
 const PhotoIcon = ({ color }: { color: string }) => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -29,7 +29,6 @@ const PhotoIcon = ({ color }: { color: string }) => (
 );
 
 interface InquiryMessageInputProps {
-  roomId: number;
   disabled?: boolean;
   isSubmitting?: boolean;
   onSubmit: (body: SendInquiryMessageBody) => Promise<unknown>;
@@ -39,7 +38,6 @@ const MAX_CONTENT_LENGTH = 500;
 const MAX_IMAGE_COUNT = 4;
 
 const InquiryMessageInput = ({
-  roomId,
   disabled = false,
   isSubmitting = false,
   onSubmit,
@@ -47,14 +45,20 @@ const InquiryMessageInput = ({
   const [content, setContent] = useState('');
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const { mutate: mutateUploadImages, isPending: isUploading } =
-    useInquiryImagesUploadMutation({ roomId });
+    useInquiryImagesUploadMutation();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    e.target.value = '';
-    if (files.length === 0) return;
+  // 입력한 줄 수에 맞춰 입력칸 높이를 늘리고 줄인다. 최대 높이는 Textarea의 max-height로 제한한다.
+  useLayoutEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
 
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }, [content]);
+
+  const uploadImages = (files: File[]) => {
     if (imageUrls.length + files.length > MAX_IMAGE_COUNT) {
       toast.error(`이미지는 최대 ${MAX_IMAGE_COUNT}장까지 첨부할 수 있어요.`);
       return;
@@ -65,6 +69,36 @@ const InquiryMessageInput = ({
         setImageUrls((prev) => [...prev, ...(uploadedUrls ?? [])]);
       },
     });
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = '';
+    if (files.length === 0) return;
+
+    uploadImages(files);
+  };
+
+  /**
+   * 클립보드에 이미지가 있으면 첨부로 업로드한다.
+   * Word·엑셀처럼 텍스트를 복사할 때 미리보기 이미지를 함께 담는 프로그램이 있어,
+   * 텍스트가 함께 있으면 기본 붙여넣기(텍스트)를 우선한다.
+   */
+  const handlePaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
+    if (e.clipboardData.getData('text/plain')) return;
+
+    const imageFiles = Array.from(e.clipboardData.files).filter((file) =>
+      file.type.startsWith('image/'),
+    );
+    if (imageFiles.length === 0) return;
+
+    e.preventDefault();
+    if (isUploading) {
+      toast.error('이미지를 올리는 중이에요. 잠시 후 다시 붙여넣어 주세요.');
+      return;
+    }
+
+    uploadImages(imageFiles);
   };
 
   const handleRemoveImage = (url: string) => {
@@ -130,11 +164,14 @@ const InquiryMessageInput = ({
       />
 
       <Textarea
+        ref={textareaRef}
+        rows={1}
         value={content}
         onChange={(e) =>
           setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
         }
         onKeyDown={handleKeyDown}
+        onPaste={handlePaste}
         placeholder="문의 내용을 입력해주세요"
         disabled={disabled}
       />

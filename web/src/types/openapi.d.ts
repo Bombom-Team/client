@@ -32,6 +32,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/newsletter-requests/{id}/like': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * 뉴스레터 신청 좋아요
+     * @description 진행 중인 신청에 좋아요를 누릅니다. 이미 눌렀다면 좋아요 수만 반환합니다.
+     */
+    put: operations['addNewsletterRequestLike'];
+    post?: never;
+    /**
+     * 뉴스레터 신청 좋아요 취소
+     * @description 좋아요를 취소합니다. 누르지 않았다면 좋아요 수만 반환합니다.
+     */
+    delete: operations['deleteNewsletterRequestLike'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/challenges/{challengeId}/reviews/{reviewId}': {
     parameters: {
       query?: never;
@@ -76,6 +100,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/newsletter-requests': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 뉴스레터 신청 현황 조회
+     * @description 진행 중이거나 최근 30일 안에 등록된 신청을 공감 수 순서로 조회합니다. 로그인하면 내 좋아요 여부를 함께 반환합니다.
+     */
+    get: operations['getNewsletterRequests'];
+    put?: never;
+    /**
+     * 뉴스레터 신청
+     * @description 뉴스레터를 신청합니다. 신청 정보는 비동기로 자동 수집됩니다.
+     */
+    post: operations['createNewsletterRequest'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/members/me/warning/near-capacity': {
     parameters: {
       query?: never;
@@ -114,6 +162,30 @@ export interface paths {
      * @description 뉴스레터 구독 취소를 요청합니다. 자동 취소가 비동기로 진행되며, 실패 시 구독 목록에서 수동 취소 링크를 확인할 수 있습니다.
      */
     post: operations['unsubscribe'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/members/me/signup-source': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 가입 경로 질문 노출 여부 조회
+     * @description 기능 배포 이후 가입했고 아직 가입 경로를 답하지 않았으면 needsSignupSource가 true입니다.
+     */
+    get: operations['getSignupSourceStatus'];
+    put?: never;
+    /**
+     * 가입 경로 저장
+     * @description 가입 경로를 저장합니다. 이미 저장했으면 아무것도 바꾸지 않습니다. 기타(ETC)는 detail이 필요합니다.
+     */
+    post: operations['saveSignupSource'];
     delete?: never;
     options?: never;
     head?: never;
@@ -173,13 +245,13 @@ export interface paths {
     };
     /**
      * 문의 채팅방 목록 조회
-     * @description 생성일 최신순으로 문의 채팅방 목록을 조회합니다. 종료된 채팅방도 포함됩니다.
+     * @description 마지막 메시지가 최신인 순(메시지 id 내림차순)으로 문의 채팅방 목록을 조회합니다. 메시지가 없는 채팅방은 맨 뒤에 방 id 내림차순으로 정렬됩니다. 종료된 채팅방도 포함됩니다.
      */
     get: operations['getRooms'];
     put?: never;
     /**
-     * 문의 채팅방 생성
-     * @description 카테고리를 지정해 새 문의 채팅방을 생성합니다. 비회원은 X-Guest-Id 헤더가 필요합니다.
+     * 첫 메시지와 함께 문의 채팅방 생성
+     * @description 카테고리와 첫 메시지(내용/이미지)를 함께 받아 문의 채팅방을 생성하고 첫 메시지를 작성합니다. 방 생성과 첫 메시지 작성은 하나의 트랜잭션으로 처리되어, 메시지 작성에 실패하면 방도 생성되지 않습니다. 내용(최대 500자)과 이미지(최대 4장) 중 하나 이상은 필수입니다. 응답의 lastMessage에 작성된 첫 메시지가 담깁니다. 비회원은 X-Guest-Id 헤더가 필요합니다.
      */
     post: operations['createRoom'];
     delete?: never;
@@ -223,7 +295,7 @@ export interface paths {
     put?: never;
     /**
      * 문의 이미지 업로드
-     * @description 메시지에 첨부할 이미지를 S3에 업로드합니다. 최대 4장까지 한 번에 업로드할 수 있습니다.
+     * @description 메시지에 첨부할 이미지를 S3에 업로드합니다. 최대 4장까지 한 번에 업로드할 수 있습니다. 문의방이 생기기 전(첫 메시지 작성 시)에도 업로드할 수 있도록 문의방 소유 검증은 하지 않으며, 무분별한 업로드는 회원/비회원 식별 검증과 요청자별 업로드 횟수 제한으로 막습니다.
      */
     post: operations['uploadImages'];
     delete?: never;
@@ -727,6 +799,86 @@ export interface paths {
      * @description 특정 뉴스레터 상세 조회를 합니다.
      */
     get: operations['getNewsletterWithDetail'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/newsletters/signup-recommendations': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 가입 직후 첫 구독 추천 목록 조회
+     * @description 추천 순서대로 정렬한 뉴스레터와, 추천이 많은 카테고리 순서를 반환합니다.
+     */
+    get: operations['getSignupRecommendations'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/newsletter-requests/suggestions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 뉴스레터 이름 추천
+     * @description 이름 검색어로 진행 중인 신청과 등록된 뉴스레터를 최대 3개씩 조회합니다. 공백을 뺀 검색어가 2자 미만이면 빈 목록을 반환합니다.
+     */
+    get: operations['getNewsletterRequestSuggestions'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/newsletter-requests/me': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 내 뉴스레터 신청 조회
+     * @description 내가 신청했거나 좋아요한 신청을 최신순으로 조회합니다.
+     */
+    get: operations['getMyNewsletterRequests'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/newsletter-requests/check': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 뉴스레터 신청 링크 중복 확인
+     * @description AVAILABLE, REQUESTED, REGISTERED 중 하나를 반환합니다.
+     */
+    get: operations['checkNewsletterRequest'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1878,6 +2030,10 @@ export interface components {
     MaeilMailUpdateSubscriptionRequest: {
       tracks: ('BE' | 'FE')[];
     };
+    NewsletterRequestLikeResponse: {
+      /** Format: int32 */
+      likeCount?: number;
+    };
     UpdateChallengeReviewRequest: {
       comment: string;
       isPrivate?: boolean;
@@ -1886,9 +2042,35 @@ export interface components {
       /** Format: int32 */
       likeCount?: number;
     };
+    CreateNewsletterRequestRequest: {
+      name: string;
+      url: string;
+      reason?: string;
+      isNotificationEnabled?: boolean;
+    };
+    CreateNewsletterRequestResponse: {
+      /** Format: int64 */
+      newsletterRequestId?: number;
+    };
     /** @description 경고 설정 변경 요청 */
     UpdateWarningSettingRequest: {
       isVisible?: boolean;
+    };
+    SaveSignupSourceRequest: {
+      /** @enum {string} */
+      source:
+        | 'INSTAGRAM'
+        | 'THREADS'
+        | 'X'
+        | 'YOUTUBE'
+        | 'SEARCH'
+        | 'FRIEND'
+        | 'BLOG_CAFE'
+        | 'NEWSLETTER'
+        | 'APP_STORE'
+        | 'ETC';
+      /** @description 기타(ETC)를 골랐을 때 직접 입력한 경로 */
+      detail?: string;
     };
     MaeilMailSubmitAnswerRequest: {
       /** @description 사용자가 제출한 매일메일 답변 */
@@ -1897,6 +2079,8 @@ export interface components {
     CreateInquiryRoomRequest: {
       /** Format: int64 */
       categoryId: number;
+      content?: string;
+      imageUrls?: string[];
     };
     InquiryRoomResponse: {
       /** Format: int64 */
@@ -1932,8 +2116,6 @@ export interface components {
       roomId?: number;
       /** @enum {string} */
       senderType?: 'USER' | 'ADMIN';
-      /** Format: int64 */
-      adminId?: number;
       adminNickname?: string;
       content?: string;
       imageUrls?: string[];
@@ -2170,6 +2352,62 @@ export interface components {
       subscribeMethod?: string;
       isSubscribed?: boolean;
     };
+    SignupRecommendationResponse: {
+      /** Format: int64 */
+      newsletterId: number;
+      name: string;
+      imageUrl?: string;
+      description: string;
+      subscribeUrl: string;
+      category: string;
+      /**
+       * Format: int64
+       * @description 지금 구독 중인 회원 수
+       */
+      subscriberCount: number;
+      /** @description 메일이 도착하는 요일 (예: 매주 금요일, 평일) */
+      arrivalDays?: string;
+    };
+    SignupRecommendationsResponse: {
+      /** @description 추천 뉴스레터가 많은 카테고리 순서 */
+      categories: string[];
+      /** @description 추천 순서대로 정렬한 뉴스레터 */
+      newsletters: components['schemas']['SignupRecommendationResponse'][];
+    };
+    NewsletterRequestResponse: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
+      url?: string;
+      /** @enum {string} */
+      status?: 'RECEIVED' | 'REVIEWING' | 'APPROVED' | 'REJECTED';
+      /** Format: int32 */
+      likeCount?: number;
+      liked?: boolean;
+      mine?: boolean;
+      categoryName?: string;
+      imageUrl?: string;
+      /** Format: int64 */
+      newsletterId?: number;
+    };
+    NewsletterRequestSuggestionResponse: {
+      requests?: components['schemas']['NewsletterRequestResponse'][];
+      newsletters?: components['schemas']['NewsletterSuggestionResponse'][];
+    };
+    NewsletterSuggestionResponse: {
+      /** Format: int64 */
+      newsletterId?: number;
+      name?: string;
+      imageUrl?: string;
+    };
+    CheckNewsletterRequestResponse: {
+      /** @enum {string} */
+      result?: 'AVAILABLE' | 'REQUESTED' | 'REGISTERED';
+      /** Format: int64 */
+      newsletterRequestId?: number;
+      /** Format: int64 */
+      newsletterId?: number;
+    };
     WarningSettingResponse: {
       isVisible: boolean;
     };
@@ -2188,6 +2426,10 @@ export interface components {
       newsletterPublicationStatus: 'ACTIVE' | 'SUSPENDED' | 'DISCONTINUED';
       /** @enum {string} */
       newsletterSource: 'EXTERNAL' | 'MAEIL_MAIL';
+    };
+    SignupSourceStatusResponse: {
+      /** @description 가입 경로 질문을 띄워야 하는지 */
+      needsSignupSource: boolean;
     };
     ReadingInformationResponse: {
       /** Format: int32 */
@@ -3272,8 +3514,8 @@ export interface components {
     };
     CsrfToken: {
       parameterName?: string;
-      headerName?: string;
       token?: string;
+      headerName?: string;
     };
     CsrfResponse: {
       enabled?: boolean;
@@ -3516,6 +3758,97 @@ export interface operations {
       };
     };
   };
+  addNewsletterRequestLike: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 뉴스레터 신청 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 좋아요 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestLikeResponse'];
+        };
+      };
+      /** @description 진행 중이 아닌 신청이거나 내가 신청한 신청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestLikeResponse'];
+        };
+      };
+      /** @description 로그인 필요 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestLikeResponse'];
+        };
+      };
+      /** @description 존재하지 않는 신청 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestLikeResponse'];
+        };
+      };
+    };
+  };
+  deleteNewsletterRequestLike: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 뉴스레터 신청 ID */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 취소 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestLikeResponse'];
+        };
+      };
+      /** @description 로그인 필요 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestLikeResponse'];
+        };
+      };
+      /** @description 존재하지 않는 신청 */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestLikeResponse'];
+        };
+      };
+    };
+  };
   updateReview: {
     parameters: {
       query?: never;
@@ -3668,6 +4001,68 @@ export interface operations {
       };
     };
   };
+  getNewsletterRequests: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestResponse'][];
+        };
+      };
+    };
+  };
+  createNewsletterRequest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateNewsletterRequestRequest'];
+      };
+    };
+    responses: {
+      /** @description 신청 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CreateNewsletterRequestResponse'];
+        };
+      };
+      /** @description 입력값 오류 또는 이미 신청되었거나 등록된 링크 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CreateNewsletterRequestResponse'];
+        };
+      };
+      /** @description 로그인 필요 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CreateNewsletterRequestResponse'];
+        };
+      };
+    };
+  };
   getWarningSetting: {
     parameters: {
       query?: never;
@@ -3743,6 +4138,69 @@ export interface operations {
         content?: never;
       };
       /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getSignupSourceStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['SignupSourceStatusResponse'];
+        };
+      };
+      /** @description 로그인하지 않음 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  saveSignupSource: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SaveSignupSourceRequest'];
+      };
+    };
+    responses: {
+      /** @description 저장 성공 */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 잘못된 경로 값 또는 기타 입력 누락 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 로그인하지 않음 */
       401: {
         headers: {
           [name: string]: unknown;
@@ -3908,7 +4366,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description 채팅방 생성 성공 */
+      /** @description 채팅방 및 첫 메시지 생성 성공 */
       200: {
         headers: {
           [name: string]: unknown;
@@ -3917,8 +4375,17 @@ export interface operations {
           '*/*': components['schemas']['InquiryRoomResponse'];
         };
       };
-      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가 등) */
+      /** @description 요청 값이 유효하지 않음 (회원/비회원 식별 불가, 내용·이미지 모두 없음, 길이·개수 초과 등) */
       400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryRoomResponse'];
+        };
+      };
+      /** @description 존재하지 않는 카테고리 */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -4050,6 +4517,15 @@ export interface operations {
       };
       /** @description 이미지 개수가 4장을 초과하거나, 이미지 형식이 아니거나, 요청자를 식별할 수 없음 */
       400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['InquiryImageUploadResponse'];
+        };
+      };
+      /** @description 이미지 업로드 횟수 제한 초과 */
+      429: {
         headers: {
           [name: string]: unknown;
         };
@@ -5324,6 +5800,108 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  getSignupRecommendations: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['SignupRecommendationsResponse'];
+        };
+      };
+    };
+  };
+  getNewsletterRequestSuggestions: {
+    parameters: {
+      query?: {
+        keyword?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestSuggestionResponse'];
+        };
+      };
+    };
+  };
+  getMyNewsletterRequests: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestResponse'][];
+        };
+      };
+      /** @description 로그인 필요 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['NewsletterRequestResponse'][];
+        };
+      };
+    };
+  };
+  checkNewsletterRequest: {
+    parameters: {
+      query: {
+        url: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 확인 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CheckNewsletterRequestResponse'];
+        };
+      };
+      /** @description 링크 형식 오류 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          '*/*': components['schemas']['CheckNewsletterRequestResponse'];
+        };
       };
     };
   };
