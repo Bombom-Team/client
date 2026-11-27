@@ -2,13 +2,15 @@ import {
   infiniteQueryOptions,
   keepPreviousData,
   queryOptions,
+  useIsMutating,
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
 import {
-  assignInquiryRoom,
+  deleteInquiryRoomAssignee,
   getInquiryRoomDetail,
   getInquiryRooms,
+  patchInquiryRoomAssignee,
   updateInquiryRoomCategory,
   updateInquiryRoomStatus,
 } from './inquiryRooms.api';
@@ -65,12 +67,12 @@ export const inquiryRoomsQueries = {
   // 상태 탭에 붙일 건수. 목록 API에 집계 전용 응답이 없어 size=1로 조회하고
   // totalElements만 쓴다.
   statusCount: (
-    status: InquiryStatus,
-    params: Omit<GetInquiryRoomsParams, 'page' | 'size' | 'status'> = {},
+    statuses: InquiryStatus[],
+    params: Omit<GetInquiryRoomsParams, 'page' | 'size' | 'statuses'> = {},
   ) =>
     queryOptions({
-      queryKey: ['inquiryRooms', 'statusCount', status, params] as const,
-      queryFn: () => getInquiryRooms({ ...params, status, size: 1 }),
+      queryKey: ['inquiryRooms', 'statusCount', statuses, params] as const,
+      queryFn: () => getInquiryRooms({ ...params, statuses, size: 1 }),
       select: (page: GetInquiryRoomsResponse) => page.totalElements,
       // 건수는 목록과 달리 틀려도 눈에 띄지 않는다. 필터를 되돌리거나 다시 들어왔을 때
       // 캐시된 옛 숫자를 그대로 보여주지 않도록 매번 다시 확인한다.
@@ -81,23 +83,59 @@ export const inquiryRoomsQueries = {
 
 /**
  * 방 정보가 바뀌면 목록·상세·상태별 개수가 모두 달라지므로 접두 key로 한 번에 무효화한다.
+ * 다시 조회가 끝날 때까지 mutation이 pending으로 남도록 promise를 돌려준다. 그 전에 끝난
+ * 것으로 보면 화면이 아직 옛 값인 사이에 같은 요청을 다시 보낼 수 있다.
  */
 const useInvalidateInquiryRooms = () => {
   const queryClient = useQueryClient();
 
-  return () => {
+  return () =>
     queryClient.invalidateQueries({ queryKey: inquiryRoomsQueries.all });
-  };
 };
 
+const ASSIGNEE_MUTATION_KEY = ['inquiryRooms', 'assignee'] as const;
+const ASSIGNEE_ERROR_FALLBACK_MESSAGE =
+  '담당자를 바꾸지 못했습니다. 잠시 후 다시 시도해 주세요.';
+
+// 실패 안내는 훅에 둔다. 응답 전에 다른 방으로 옮겨 패널이 사라져도 안내가 빠지지 않는다.
+const alertAssigneeError = (error: Error) =>
+  alert(error.message || ASSIGNEE_ERROR_FALLBACK_MESSAGE);
+
+// 다른 운영자가 먼저 담당자를 바꿔 실패한 경우에도 화면이 실제 담당자를 보여주도록
+// 담당자 변경은 성공·실패와 관계없이 다시 조회한다.
 export const useAssignInquiryRoomMutation = () => {
   const invalidateInquiryRooms = useInvalidateInquiryRooms();
 
   return useMutation({
-    mutationFn: assignInquiryRoom,
-    onSuccess: invalidateInquiryRooms,
+    mutationKey: ASSIGNEE_MUTATION_KEY,
+    mutationFn: patchInquiryRoomAssignee,
+    onError: alertAssigneeError,
+    onSettled: invalidateInquiryRooms,
   });
 };
+
+export const useUnassignInquiryRoomMutation = () => {
+  const invalidateInquiryRooms = useInvalidateInquiryRooms();
+
+  return useMutation({
+    mutationKey: ASSIGNEE_MUTATION_KEY,
+    mutationFn: deleteInquiryRoomAssignee,
+    onError: alertAssigneeError,
+    onSettled: invalidateInquiryRooms,
+  });
+};
+
+/**
+ * 이 방의 담당자 변경 요청이 다시 조회까지 끝나지 않았는지 알려준다. 패널 인스턴스가 아니라
+ * 방 기준으로 보므로, 요청 중에 다른 방에 갔다 돌아와도 옛 담당자로 다시 요청하지 못한다.
+ */
+export const useIsInquiryRoomAssigneeChanging = (roomId: number) =>
+  useIsMutating({
+    mutationKey: ASSIGNEE_MUTATION_KEY,
+    predicate: (mutation) =>
+      (mutation.state.variables as { roomId?: number } | undefined)?.roomId ===
+      roomId,
+  }) > 0;
 
 export const useUpdateInquiryRoomStatusMutation = () => {
   const invalidateInquiryRooms = useInvalidateInquiryRooms();

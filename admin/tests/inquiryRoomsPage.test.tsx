@@ -21,7 +21,8 @@ vi.mock('../src/components/Layout', () => ({
 vi.mock('../src/apis/inquiries/inquiryRooms.api', () => ({
   getInquiryRooms: vi.fn(),
   getInquiryRoomDetail: vi.fn(),
-  assignInquiryRoom: vi.fn(),
+  patchInquiryRoomAssignee: vi.fn(),
+  deleteInquiryRoomAssignee: vi.fn(),
   updateInquiryRoomStatus: vi.fn(),
   updateInquiryRoomCategory: vi.fn(),
 }));
@@ -37,6 +38,11 @@ vi.mock('../src/apis/inquiries/inquiryCategories.api', () => ({
 }));
 vi.mock('../src/apis/members/members.api', () => ({
   getMembers: vi.fn(),
+  getMe: vi.fn().mockResolvedValue({
+    id: 99,
+    email: 'me@bombom.news',
+    nickname: '나',
+  }),
 }));
 
 class NoopIntersectionObserver {
@@ -127,9 +133,11 @@ afterEach(() => {
 
 const mockRoomsByStatus = () => {
   vi.mocked(getInquiryRooms).mockImplementation(async (params = {}) => {
-    // 선택한 방은 미확인 상태다. 완료 탭으로 바꾸면 목록에서 빠진다.
+    // 선택한 방은 미확인 상태다. 종료 탭으로 바꾸면 목록에서 빠진다.
     const content =
-      params.status && params.status !== 'UNCONFIRMED' ? [] : [listRoom];
+      params.statuses && !params.statuses.includes('UNCONFIRMED')
+        ? []
+        : [listRoom];
     return {
       content,
       number: 0,
@@ -155,7 +163,7 @@ describe('문의 채팅방 화면', () => {
     );
 
     // 그 방이 없는 탭으로 바꾼다.
-    fireEvent.click(screen.getByRole('button', { name: /완료/ }));
+    fireEvent.click(screen.getByRole('tab', { name: /^종료/ }));
     await screen.findByText('해당 조건의 문의가 없습니다');
 
     // 상세는 열린 채로 닉네임을 유지해야 한다. 내부 ID 표기로 바뀌면 안 된다.

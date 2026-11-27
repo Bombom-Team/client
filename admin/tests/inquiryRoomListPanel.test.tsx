@@ -14,7 +14,8 @@ import type { InquiryRoom } from '../src/types/inquiry';
 vi.mock('../src/apis/inquiries/inquiryRooms.api', () => ({
   getInquiryRooms: vi.fn(),
   getInquiryRoomDetail: vi.fn(),
-  assignInquiryRoom: vi.fn(),
+  patchInquiryRoomAssignee: vi.fn(),
+  deleteInquiryRoomAssignee: vi.fn(),
   updateInquiryRoomStatus: vi.fn(),
   updateInquiryRoomCategory: vi.fn(),
 }));
@@ -23,6 +24,11 @@ vi.mock('../src/apis/inquiries/inquiryCategories.api', () => ({
 }));
 vi.mock('../src/apis/members/members.api', () => ({
   getMembers: vi.fn(),
+  getMe: vi.fn().mockResolvedValue({
+    id: 99,
+    email: 'me@bombom.news',
+    nickname: '나',
+  }),
 }));
 
 class NoopIntersectionObserver {
@@ -255,6 +261,64 @@ describe('문의 목록', () => {
     } finally {
       Reflect.deleteProperty(navigator, 'clipboard');
     }
+  });
+
+  it('처음 들어오면 미확인·진행중 문의만 조회한다', async () => {
+    mockRooms([room()]);
+
+    renderPanel();
+
+    await screen.findByText('봄봄이');
+    expect(vi.mocked(getInquiryRooms)).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statuses: ['UNCONFIRMED', 'IN_PROGRESS'],
+        page: 0,
+      }),
+    );
+  });
+
+  it('종료 탭을 누르면 완료·보류 문의를 조회한다', async () => {
+    mockRooms([room()]);
+
+    renderPanel();
+
+    fireEvent.click(await screen.findByRole('tab', { name: /^종료/ }));
+
+    expect(
+      await screen.findByRole('tab', { name: /^종료/, selected: true }),
+    ).toBeTruthy();
+
+    await waitFor(() =>
+      expect(vi.mocked(getInquiryRooms)).toHaveBeenCalledWith(
+        expect.objectContaining({ statuses: ['DONE', 'ON_HOLD'], page: 0 }),
+      ),
+    );
+  });
+
+  it('전체 탭을 누르면 상태 조건 없이 조회한다', async () => {
+    mockRooms([room()]);
+
+    renderPanel();
+
+    fireEvent.click(await screen.findByRole('tab', { name: /^전체/ }));
+
+    await waitFor(() =>
+      expect(vi.mocked(getInquiryRooms)).toHaveBeenCalledWith(
+        expect.objectContaining({ statuses: undefined, page: 0 }),
+      ),
+    );
+  });
+
+  it('문의 목록을 불러오면 각 문의에 진행 상태를 표시한다', async () => {
+    mockRooms([
+      room({ id: 1, status: 'UNCONFIRMED' }),
+      room({ id: 2, status: 'IN_PROGRESS', inquirerNickname: '두번째' }),
+    ]);
+
+    renderPanel();
+
+    expect(await screen.findByText('미확인')).toBeTruthy();
+    expect(screen.getByText('진행중', { selector: 'span' })).toBeTruthy();
   });
 
   it('조건에 맞는 문의가 없으면 안내 문구를 보여준다', async () => {

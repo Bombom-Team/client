@@ -34,7 +34,8 @@ vi.mock('../src/pages/inquiries/InquiryRoomDetailPanel', () => ({
 vi.mock('../src/apis/inquiries/inquiryRooms.api', () => ({
   getInquiryRooms: vi.fn(),
   getInquiryRoomDetail: vi.fn(),
-  assignInquiryRoom: vi.fn(),
+  patchInquiryRoomAssignee: vi.fn(),
+  deleteInquiryRoomAssignee: vi.fn(),
   updateInquiryRoomStatus: vi.fn(),
   updateInquiryRoomCategory: vi.fn(),
 }));
@@ -43,6 +44,11 @@ vi.mock('../src/apis/inquiries/inquiryCategories.api', () => ({
 }));
 vi.mock('../src/apis/members/members.api', () => ({
   getMembers: vi.fn(),
+  getMe: vi.fn().mockResolvedValue({
+    id: 99,
+    email: 'me@bombom.news',
+    nickname: '나',
+  }),
 }));
 
 class NoopIntersectionObserver {

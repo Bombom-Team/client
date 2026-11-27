@@ -37,11 +37,7 @@ export function InquiryMessageInput({
   const { mutate: sendMessage, isPending: isSending } =
     useSendInquiryMessageMutation();
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    e.target.value = '';
-    if (files.length === 0) return;
-
+  const uploadImages = async (files: File[]) => {
     if (images.length + files.length > MAX_IMAGE_COUNT) {
       alert(`이미지는 최대 ${MAX_IMAGE_COUNT}장까지 첨부할 수 있습니다.`);
       return;
@@ -69,12 +65,43 @@ export function InquiryMessageInput({
     }
   };
 
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = '';
+    if (files.length === 0) return;
+
+    await uploadImages(files);
+  };
+
+  // 스크린샷처럼 이미지만 담긴 클립보드는 첨부로 올린다. 엑셀·워드에서 복사하면
+  // 텍스트와 함께 미리보기 이미지가 실려 오므로, 텍스트가 있으면 평소처럼 글로 붙인다.
+  const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    if (e.clipboardData.getData('text/plain')) return;
+
+    const imageFiles = Array.from(e.clipboardData.files).filter((file) =>
+      file.type.startsWith('image/'),
+    );
+    if (imageFiles.length === 0) return;
+
+    e.preventDefault();
+    // 전송이 끝나면 첨부 목록을 비우므로, 전송 중에 붙인 이미지는 보내지지 않고 사라진다.
+    // 조용히 버리면 첨부된 줄 알고 보낼 수 있어 다시 붙여넣도록 알린다.
+    if (isUploading || isSending) {
+      alert('이미지 업로드나 전송이 끝난 뒤 다시 붙여넣어 주세요.');
+      return;
+    }
+
+    await uploadImages(imageFiles);
+  };
+
   const handleRemoveImage = (url: string) => {
     setImages((prev) => prev.filter((image) => image.url !== url));
   };
 
   const handleSend = () => {
-    if (isSending) return;
+    // 업로드가 끝나기 전에 보내면 그 이미지는 빠진 채 전송되고, 전송 완료 시 첨부 목록을
+    // 비우면서 사라진다. 전송 버튼과 같은 조건으로 Enter 전송도 막는다.
+    if (isSending || isUploading) return;
 
     const trimmed = content.trim();
     if (!trimmed) {
@@ -128,7 +155,12 @@ export function InquiryMessageInput({
         <AttachButton
           type="button"
           aria-label="이미지 첨부"
-          disabled={disabled || isUploading || images.length >= MAX_IMAGE_COUNT}
+          disabled={
+            disabled ||
+            isUploading ||
+            isSending ||
+            images.length >= MAX_IMAGE_COUNT
+          }
           onClick={() => fileInputRef.current?.click()}
         >
           <FiPaperclip size={18} />
@@ -147,6 +179,7 @@ export function InquiryMessageInput({
             setContent(e.target.value.slice(0, MAX_CONTENT_LENGTH))
           }
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           placeholder={disabled ? '종료된 문의입니다' : '메시지를 입력하세요'}
           title="Enter로 전송, Shift+Enter로 줄바꿈"
           disabled={disabled}

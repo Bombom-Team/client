@@ -11,11 +11,13 @@ import {
   updateInquiryMessage,
 } from '../src/apis/inquiries/inquiryMessages.api';
 import {
+  deleteInquiryRoomAssignee,
   getInquiryRoomDetail,
   getInquiryRooms,
+  patchInquiryRoomAssignee,
   updateInquiryRoomStatus,
 } from '../src/apis/inquiries/inquiryRooms.api';
-import { getMembers } from '../src/apis/members/members.api';
+import { getMe, getMembers } from '../src/apis/members/members.api';
 import { InquiryRoomDetailPanel } from '../src/pages/inquiries/InquiryRoomDetailPanel';
 import { theme } from '../src/styles/theme';
 import type { InquiryRoom, InquiryRoomDetail } from '../src/types/inquiry';
@@ -23,7 +25,8 @@ import type { InquiryRoom, InquiryRoomDetail } from '../src/types/inquiry';
 vi.mock('../src/apis/inquiries/inquiryRooms.api', () => ({
   getInquiryRoomDetail: vi.fn(),
   getInquiryRooms: vi.fn(),
-  assignInquiryRoom: vi.fn(),
+  patchInquiryRoomAssignee: vi.fn(),
+  deleteInquiryRoomAssignee: vi.fn(),
   updateInquiryRoomStatus: vi.fn(),
   updateInquiryRoomCategory: vi.fn(),
 }));
@@ -39,6 +42,11 @@ vi.mock('../src/apis/inquiries/inquiryCategories.api', () => ({
 }));
 vi.mock('../src/apis/members/members.api', () => ({
   getMembers: vi.fn(),
+  getMe: vi.fn().mockResolvedValue({
+    id: 99,
+    email: 'me@bombom.news',
+    nickname: '나',
+  }),
 }));
 
 const ROOM_ID = 7;
@@ -120,6 +128,8 @@ beforeEach(() => {
   vi.mocked(getInquiryRoomDetail).mockReset();
   vi.mocked(getInquiryRooms).mockReset();
   vi.mocked(updateInquiryRoomStatus).mockReset();
+  vi.mocked(patchInquiryRoomAssignee).mockReset();
+  vi.mocked(deleteInquiryRoomAssignee).mockReset();
   vi.mocked(updateInquiryRoomStatus).mockResolvedValue(
     undefined as Awaited<ReturnType<typeof updateInquiryRoomStatus>>,
   );
@@ -131,6 +141,12 @@ beforeEach(() => {
   );
   vi.mocked(getInquiryCategories).mockReset();
   vi.mocked(getMembers).mockReset();
+  vi.mocked(getMe).mockReset();
+  vi.mocked(getMe).mockResolvedValue({
+    id: 99,
+    email: 'me@bombom.news',
+    nickname: '나',
+  });
 
   vi.mocked(getInquiryCategories).mockResolvedValue([
     { id: 1, name: '일반 문의' },
@@ -160,6 +176,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.restoreAllMocks();
   cleanup();
   clients.splice(0).forEach((client) => client.clear());
 });
@@ -361,6 +378,217 @@ describe('문의 상세 패널', () => {
         detailCallsBefore,
       ),
     );
+  });
+
+  it('담당자를 미지정으로 바꾸면 화면에서 본 담당자와 함께 해제 요청을 보낸다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+    vi.mocked(deleteInquiryRoomAssignee).mockResolvedValue(undefined);
+
+    renderPanel(memberListRoom);
+
+    const assigneeSelect = await screen.findByRole('combobox', {
+      name: '담당자',
+    });
+    fireEvent.change(assigneeSelect, { target: { value: '' } });
+
+    await waitFor(() =>
+      expect(vi.mocked(deleteInquiryRoomAssignee)).toHaveBeenCalledWith(
+        { roomId: ROOM_ID, currentAssigneeId: ADMIN_ID },
+        expect.anything(),
+      ),
+    );
+    expect(vi.mocked(patchInquiryRoomAssignee)).not.toHaveBeenCalled();
+  });
+
+  it('담당자를 고르면 화면에서 본 담당자와 함께 지정 요청을 보낸다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
+    vi.mocked(patchInquiryRoomAssignee).mockResolvedValue(undefined);
+
+    renderPanel(memberListRoom);
+
+    const assigneeSelect = await screen.findByRole('combobox', {
+      name: '담당자',
+    });
+    fireEvent.change(assigneeSelect, { target: { value: String(ADMIN_ID) } });
+
+    await waitFor(() =>
+      expect(vi.mocked(patchInquiryRoomAssignee)).toHaveBeenCalledWith(
+        { roomId: ROOM_ID, assigneeId: ADMIN_ID, currentAssigneeId: null },
+        expect.anything(),
+      ),
+    );
+    expect(vi.mocked(deleteInquiryRoomAssignee)).not.toHaveBeenCalled();
+  });
+
+  it('그 사이 다른 운영자가 담당자를 바꿔 실패하면 서버 문구를 알리고 실제 담당자로 다시 보여준다', async () => {
+    // 화면에서는 미지정이었지만 서버에서는 이미 다른 운영자가 맡은 상태.
+    vi.mocked(getInquiryRoomDetail)
+      .mockResolvedValueOnce(unassignedRoom)
+      .mockResolvedValue(assignedRoom);
+    vi.mocked(patchInquiryRoomAssignee).mockRejectedValue(
+      new Error(
+        '다른 운영자가 담당자를 먼저 변경했습니다. 새로고침 후 다시 시도해 주세요.',
+      ),
+    );
+    vi.mocked(getMembers).mockResolvedValue({
+      content: [
+        { id: ADMIN_ID, nickname: '담당자몽' },
+        { id: 99, nickname: '나' },
+      ],
+    } as Awaited<ReturnType<typeof getMembers>>);
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    renderPanel(memberListRoom);
+
+    const assigneeSelect = await screen.findByRole<HTMLSelectElement>(
+      'combobox',
+      { name: '담당자' },
+    );
+    await screen.findByRole('option', { name: '나' });
+    expect(assigneeSelect.value).toBe('');
+    fireEvent.change(assigneeSelect, { target: { value: '99' } });
+
+    await waitFor(() =>
+      expect(alertSpy).toHaveBeenCalledWith(
+        '다른 운영자가 담당자를 먼저 변경했습니다. 새로고침 후 다시 시도해 주세요.',
+      ),
+    );
+    await waitFor(() => expect(assigneeSelect.value).toBe(String(ADMIN_ID)));
+  });
+
+  it('담당자 변경 후 다시 조회가 끝날 때까지 담당자를 다시 바꿀 수 없다', async () => {
+    // 요청은 바로 성공하지만, 변경 후 다시 조회한 응답은 직접 풀어줄 때까지 오지 않는다.
+    let resolveRefetch: (room: InquiryRoomDetail) => void = () => {};
+    vi.mocked(getInquiryRoomDetail)
+      .mockResolvedValueOnce(unassignedRoom)
+      .mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolveRefetch = resolve;
+        }),
+      )
+      .mockResolvedValue(assignedRoom);
+    vi.mocked(patchInquiryRoomAssignee).mockResolvedValue(undefined);
+
+    renderPanel(memberListRoom);
+
+    const assignButton = await screen.findByRole<HTMLButtonElement>('button', {
+      name: '내가 담당하기',
+    });
+    fireEvent.click(assignButton);
+
+    const assigneeSelect = screen.getByRole<HTMLSelectElement>('combobox', {
+      name: '담당자',
+    });
+    await waitFor(() =>
+      expect(vi.mocked(getInquiryRoomDetail)).toHaveBeenCalledTimes(2),
+    );
+    expect(assigneeSelect.disabled).toBe(true);
+    expect(assignButton.disabled).toBe(true);
+
+    resolveRefetch(assignedRoom);
+
+    await waitFor(() => expect(assigneeSelect.disabled).toBe(false));
+    expect(assigneeSelect.value).toBe(String(ADMIN_ID));
+    expect(vi.mocked(patchInquiryRoomAssignee)).toHaveBeenCalledTimes(1);
+  });
+
+  it('담당자 변경 응답 전에 패널을 벗어나도 실패하면 알린다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
+    let rejectAssign: (error: Error) => void = () => {};
+    vi.mocked(patchInquiryRoomAssignee).mockReturnValue(
+      new Promise((_, reject) => {
+        rejectAssign = reject;
+      }),
+    );
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    renderPanel(memberListRoom);
+
+    fireEvent.click(
+      await screen.findByRole('button', { name: '내가 담당하기' }),
+    );
+    await waitFor(() =>
+      expect(vi.mocked(patchInquiryRoomAssignee)).toHaveBeenCalled(),
+    );
+
+    // 다른 방을 열면 패널이 새로 마운트되므로, 기존 패널이 사라진 상황을 만든다.
+    cleanup();
+    rejectAssign(new Error('다른 운영자가 담당자를 먼저 변경했습니다.'));
+
+    await waitFor(() =>
+      expect(alertSpy).toHaveBeenCalledWith(
+        '다른 운영자가 담당자를 먼저 변경했습니다.',
+      ),
+    );
+  });
+
+  it('내가 담당하기를 누르면 로그인한 운영자를 담당자로 지정한다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
+    vi.mocked(patchInquiryRoomAssignee).mockResolvedValue(undefined);
+
+    renderPanel(memberListRoom);
+
+    fireEvent.click(
+      await screen.findByRole('button', { name: '내가 담당하기' }),
+    );
+
+    await waitFor(() =>
+      expect(vi.mocked(patchInquiryRoomAssignee)).toHaveBeenCalledWith(
+        { roomId: ROOM_ID, assigneeId: 99, currentAssigneeId: null },
+        expect.anything(),
+      ),
+    );
+  });
+
+  it('이미 내가 담당자면 내가 담당하기 버튼을 숨긴다', async () => {
+    vi.mocked(getMe).mockResolvedValue({
+      id: ADMIN_ID,
+      email: 'me@bombom.news',
+      nickname: '담당자몽',
+    });
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+
+    renderPanel(memberListRoom);
+
+    await screen.findByRole('combobox', { name: '담당자' });
+    expect(screen.queryByRole('button', { name: '내가 담당하기' })).toBeNull();
+  });
+
+  it('내 정보 조회가 실패하면 상세는 그대로 보이고 내가 담당하기 버튼만 숨긴다', async () => {
+    vi.mocked(getMe).mockRejectedValue(new Error('Not Found'));
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
+
+    renderPanel(memberListRoom);
+
+    expect(
+      await screen.findByRole('combobox', { name: '담당자' }),
+    ).toBeTruthy();
+    await waitFor(() => expect(vi.mocked(getMe)).toHaveBeenCalled());
+    expect(screen.queryByRole('button', { name: '내가 담당하기' })).toBeNull();
+  });
+
+  it('다른 운영자가 담당 중이면 내가 담당하기 버튼을 띄우지 않는다', async () => {
+    // 기본 내 정보(id 99)와 다른 운영자(ADMIN_ID)가 맡은 방.
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
+
+    renderPanel(memberListRoom);
+
+    await screen.findByRole('combobox', { name: '담당자' });
+    await waitFor(() => expect(vi.mocked(getMe)).toHaveBeenCalled());
+    expect(screen.queryByRole('button', { name: '내가 담당하기' })).toBeNull();
+  });
+
+  it('종료된 방이면 내가 담당하기 버튼을 띄우지 않는다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue({
+      ...unassignedRoom,
+      status: 'DONE',
+    });
+
+    renderPanel(memberListRoom);
+
+    await screen.findByRole('combobox', { name: '담당자' });
+    await waitFor(() => expect(vi.mocked(getMe)).toHaveBeenCalled());
+    expect(screen.queryByRole('button', { name: '내가 담당하기' })).toBeNull();
   });
 
   it('헤더에서 잘리는 이메일과 담당자는 마우스를 올려 전체를 볼 수 있다', async () => {

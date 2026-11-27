@@ -17,27 +17,35 @@ import {
 import { CopyableText } from '@/pages/inquiries/CopyableText';
 import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
 import {
+  CLOSED_INQUIRY_STATUSES,
+  INQUIRY_STATUS_COLORS,
   INQUIRY_STATUS_LABELS,
+  OPEN_INQUIRY_STATUSES,
   type InquiryRoom,
   type InquiryStatus,
 } from '@/types/inquiry';
 
-const STATUS_OPTIONS: InquiryStatus[] = [
-  'UNCONFIRMED',
-  'IN_PROGRESS',
-  'DONE',
-  'ON_HOLD',
+type StatusTabKey = 'OPEN' | 'CLOSED' | 'ALL';
+
+interface StatusTabOption {
+  key: StatusTabKey;
+  label: string;
+  // undefined면 상태 조건 없이 전체를 조회한다.
+  statuses?: InquiryStatus[];
+}
+
+// 운영자가 처리해야 할 문의가 먼저 보이도록 진행중 탭을 맨 앞에 두고 기본으로 고른다.
+// 종료 묶음은 서버가 닫힌 방으로 보는 기준(완료·보류)과 맞춘다.
+const STATUS_TABS: StatusTabOption[] = [
+  { key: 'OPEN', label: '진행중', statuses: OPEN_INQUIRY_STATUSES },
+  { key: 'CLOSED', label: '종료', statuses: CLOSED_INQUIRY_STATUSES },
+  { key: 'ALL', label: '전체' },
 ];
 
-const STATUS_TABS: (InquiryStatus | undefined)[] = [
-  undefined,
-  ...STATUS_OPTIONS,
-];
-
-const STATUS_TAB_LABELS: Record<'ALL' | InquiryStatus, string> = {
-  ALL: '전체',
-  ...INQUIRY_STATUS_LABELS,
-};
+const COUNTED_STATUS_TABS = STATUS_TABS.filter(
+  (tab): tab is StatusTabOption & { statuses: InquiryStatus[] } =>
+    tab.statuses !== undefined,
+);
 
 interface InquiryRoomListPanelProps {
   selectedRoomId: number | null;
@@ -52,9 +60,13 @@ export function InquiryRoomListPanel({
   onSelectRoom,
   onSelectedRoomChange,
 }: InquiryRoomListPanelProps) {
-  const [status, setStatus] = useState<InquiryStatus | undefined>(undefined);
+  const [statusTabKey, setStatusTabKey] = useState<StatusTabKey>('OPEN');
   const [assigneeId, setAssigneeId] = useState<number | undefined>(undefined);
   const [categoryId, setCategoryId] = useState<number | undefined>(undefined);
+
+  const statuses = STATUS_TABS.find(
+    (tab) => tab.key === statusTabKey,
+  )?.statuses;
 
   const {
     data: roomPages,
@@ -62,7 +74,7 @@ export function InquiryRoomListPanel({
     hasNextPage,
     isFetchingNextPage,
   } = useSuspenseInfiniteQuery(
-    inquiryRoomsQueries.infiniteList({ status, assigneeId, categoryId }),
+    inquiryRoomsQueries.infiniteList({ statuses, assigneeId, categoryId }),
   );
   const { data: categories } = useSuspenseQuery(
     inquiryCategoriesQueries.list(),
@@ -73,13 +85,16 @@ export function InquiryRoomListPanel({
 
   // 탭에 붙일 상태별 건수. 담당자·카테고리 필터는 함께 반영하고 상태만 각각 바꾼다.
   const statusCounts = useQueries({
-    queries: STATUS_OPTIONS.map((tabStatus) =>
-      inquiryRoomsQueries.statusCount(tabStatus, { assigneeId, categoryId }),
+    queries: COUNTED_STATUS_TABS.map((tab) =>
+      inquiryRoomsQueries.statusCount(tab.statuses, {
+        assigneeId,
+        categoryId,
+      }),
     ),
   });
-  const countByStatus = new Map(
-    STATUS_OPTIONS.map((tabStatus, index) => [
-      tabStatus,
+  const countByTabKey = new Map(
+    COUNTED_STATUS_TABS.map((tab, index) => [
+      tab.key,
       statusCounts[index]?.data,
     ]),
   );
@@ -116,26 +131,25 @@ export function InquiryRoomListPanel({
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const handleStatusChange = (nextStatus: InquiryStatus | undefined) => {
-    setStatus(nextStatus);
-  };
-
   return (
     <Panel>
-      <StatusTabs>
-        {STATUS_TABS.map((tab) => (
-          <StatusTab
-            key={tab ?? 'ALL'}
-            type="button"
-            $active={status === tab}
-            onClick={() => handleStatusChange(tab)}
-          >
-            {STATUS_TAB_LABELS[tab ?? 'ALL']}
-            {tab && countByStatus.get(tab) !== undefined && (
-              <TabCount>{countByStatus.get(tab)}</TabCount>
-            )}
-          </StatusTab>
-        ))}
+      <StatusTabs role="tablist" aria-label="문의 상태">
+        {STATUS_TABS.map((tab) => {
+          const count = countByTabKey.get(tab.key);
+          return (
+            <StatusTab
+              key={tab.key}
+              type="button"
+              role="tab"
+              aria-selected={statusTabKey === tab.key}
+              $active={statusTabKey === tab.key}
+              onClick={() => setStatusTabKey(tab.key)}
+            >
+              {tab.label}
+              {count !== undefined && <TabCount>{count}</TabCount>}
+            </StatusTab>
+          );
+        })}
       </StatusTabs>
 
       <FilterRow>
@@ -210,6 +224,13 @@ export function InquiryRoomListPanel({
                   {lastMessagePreview}
                 </RoomLastMessagePreview>
                 <RoomItemBottom>
+                  <RoomStatus>
+                    <RoomStatusDot
+                      $color={INQUIRY_STATUS_COLORS[room.status]}
+                      aria-hidden="true"
+                    />
+                    {INQUIRY_STATUS_LABELS[room.status]}
+                  </RoomStatus>
                   <RoomCategoryName title={category?.name ?? '카테고리 없음'}>
                     {category?.name ?? '카테고리 없음'}
                   </RoomCategoryName>
@@ -406,8 +427,32 @@ const RoomItemBottom = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
+// 전체 탭에서도 방마다 진행 상태가 보이도록 색점과 라벨을 붙인다.
+const RoomStatus = styled.span`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-shrink: 0;
+  align-items: center;
+
+  color: ${({ theme }) => theme.colors.gray700};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+const RoomStatusDot = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$color',
+})<{ $color: string }>`
+  width: 8px;
+  height: 8px;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+
+  background-color: ${({ $color }) => $color};
+`;
+
 const RoomCategoryName = styled.div`
   overflow: hidden;
+
+  flex-grow: 1;
 
   color: ${({ theme }) => theme.colors.gray500};
   font-size: ${({ theme }) => theme.fontSize.xs};

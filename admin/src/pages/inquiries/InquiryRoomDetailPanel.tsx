@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import {
+  useQuery,
   useSuspenseInfiniteQuery,
   useSuspenseQuery,
 } from '@tanstack/react-query';
@@ -14,6 +15,8 @@ import {
 import {
   inquiryRoomsQueries,
   useAssignInquiryRoomMutation,
+  useIsInquiryRoomAssigneeChanging,
+  useUnassignInquiryRoomMutation,
   useUpdateInquiryRoomCategoryMutation,
   useUpdateInquiryRoomStatusMutation,
 } from '@/apis/inquiries/inquiryRooms.query';
@@ -25,7 +28,9 @@ import { InquiryAvatar } from '@/pages/inquiries/InquiryAvatar';
 import { InquiryMessageBubble } from '@/pages/inquiries/InquiryMessageBubble';
 import { InquiryMessageInput } from '@/pages/inquiries/InquiryMessageInput';
 import {
+  CLOSED_INQUIRY_STATUSES,
   INQUIRY_STATUS_COLORS,
+  OPEN_INQUIRY_STATUSES,
   INQUIRY_STATUS_LABELS,
   type InquiryMessage,
   type InquiryRoom,
@@ -40,11 +45,13 @@ interface InquiryRoomDetailPanelProps {
 }
 
 const STATUS_OPTIONS: InquiryStatus[] = [
-  'UNCONFIRMED',
-  'IN_PROGRESS',
-  'DONE',
-  'ON_HOLD',
+  ...OPEN_INQUIRY_STATUSES,
+  ...CLOSED_INQUIRY_STATUSES,
 ];
+
+// 떠 있는 "내가 담당하기" 버튼이 차지하는 높이(버튼 + 위아래 간격). 타임라인은 이만큼
+// 아래 여백을 더 두어 마지막 메시지가 버튼에 가리지 않게 한다.
+const FLOATING_BUTTON_SPACE = 80;
 
 export function InquiryRoomDetailPanel({
   roomId,
@@ -57,6 +64,9 @@ export function InquiryRoomDetailPanel({
   const { data: admins } = useSuspenseQuery(
     membersQueries.list({ role: 'ADMIN', size: 100 }),
   );
+  // 내 정보는 "내가 담당하기" 버튼에만 쓴다. 조회가 늦거나 실패해도 상세 화면은
+  // 그대로 보이고 버튼만 숨도록 Suspense로 기다리지 않는다.
+  const { data: me } = useQuery(membersQueries.me());
 
   const {
     data: messagePages,
@@ -66,6 +76,10 @@ export function InquiryRoomDetailPanel({
   } = useSuspenseInfiniteQuery(inquiryMessagesQueries.infiniteList(roomId));
 
   const { mutate: assignRoom } = useAssignInquiryRoomMutation();
+  const { mutate: unassignRoom } = useUnassignInquiryRoomMutation();
+  // 보낸 요청이 다시 조회까지 끝나기 전에는 화면의 담당자가 옛 값이다. 그 값으로 다시
+  // 요청하면 내 첫 요청과 충돌해 실패하므로, 그동안은 담당자를 바꾸지 못하게 막는다.
+  const isAssigneeChanging = useIsInquiryRoomAssigneeChanging(roomId);
   const { mutate: changeStatus } = useUpdateInquiryRoomStatusMutation();
   const { mutate: changeCategory } = useUpdateInquiryRoomCategoryMutation();
   const { mutate: updateMessage } = useUpdateInquiryMessageMutation();
@@ -91,7 +105,12 @@ export function InquiryRoomDetailPanel({
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const isClosed = room.status === 'DONE' || room.status === 'ON_HOLD';
+  const isClosed = CLOSED_INQUIRY_STATUSES.includes(room.status);
+  // "내가 담당하기"는 아직 아무도 맡지 않은 방에서만 띄운다. 다른 운영자가 맡은 방을
+  // 한 번에 가져오지 않도록, 담당자 변경은 헤더의 담당자 셀렉트로만 한다. 종료된 방은
+  // 답변할 수 없으므로 띄우지 않는다.
+  const isAssignButtonVisible =
+    me !== undefined && room.assigneeId === null && !isClosed;
 
   // 상세 조회 응답에는 문의자 닉네임이 없다. 목록에서 받아온 값이 있으면 그것을 쓰고,
   // 없으면 상세 응답의 식별자만으로 표시한다.
@@ -152,13 +171,37 @@ export function InquiryRoomDetailPanel({
     timeline.scrollTop = timeline.scrollHeight;
   }, [latestMessageId]);
 
-  const handleAssigneeChange = (assigneeId: number) => {
-    assignRoom(
-      { roomId, assigneeId },
-      {
-        onError: (error) => alert(`담당자 지정 실패: ${error.message}`),
-      },
-    );
+  // "내가 담당하기" 버튼은 내 정보를 받은 뒤 늦게 뜨면서 아래 여백을 늘린다. 맨 아래를 보고
+  // 있었다면 늘어난 여백만큼 다시 내려 마지막 메시지가 버튼에 가리지 않게 하고, 과거 메시지를
+  // 읽던 중이면 위치를 건드리지 않는다.
+  useEffect(() => {
+    const timeline = timelineRef.current;
+    if (!timeline || !isAssignButtonVisible) return;
+    const distanceFromBottom =
+      timeline.scrollHeight - timeline.scrollTop - timeline.clientHeight;
+    if (distanceFromBottom <= FLOATING_BUTTON_SPACE) {
+      timeline.scrollTop = timeline.scrollHeight;
+    }
+  }, [isAssignButtonVisible]);
+
+  // 화면에서 본 담당자를 함께 보내, 그 사이 다른 운영자가 바꿨으면 서버가 거절하게 한다.
+  // 실패 안내와 다시 조회는 mutation 훅이 맡는다. 셀렉트의 빈 값(null)은 "담당자 미지정"이다.
+  const handleAssigneeChange = (assigneeId: number | null) => {
+    if (isAssigneeChanging) return;
+    const currentAssigneeId = room.assigneeId;
+
+    if (assigneeId === null) {
+      if (currentAssigneeId === null) return;
+      unassignRoom({ roomId, currentAssigneeId });
+      return;
+    }
+
+    assignRoom({ roomId, assigneeId, currentAssigneeId });
+  };
+
+  const handleAssignToMe = () => {
+    if (!me) return;
+    handleAssigneeChange(me.id);
   };
 
   const handleStatusChange = (status: InquiryStatus) => {
@@ -230,8 +273,11 @@ export function InquiryRoomDetailPanel({
             aria-label="담당자"
             title={assigneeName}
             value={room.assigneeId ?? ''}
+            disabled={isAssigneeChanging}
             onChange={(e) =>
-              e.target.value && handleAssigneeChange(Number(e.target.value))
+              handleAssigneeChange(
+                e.target.value ? Number(e.target.value) : null,
+              )
             }
           >
             <option value="">담당자 미지정</option>
@@ -266,7 +312,10 @@ export function InquiryRoomDetailPanel({
         </HeaderControls>
       </DetailHeader>
 
-      <MessageTimeline ref={timelineRef}>
+      <MessageTimeline
+        ref={timelineRef}
+        $hasFloatingButton={isAssignButtonVisible}
+      >
         <div ref={topSentinelRef} />
         {isFetchingNextPage && (
           <LoadingMore>이전 메시지 불러오는 중...</LoadingMore>
@@ -296,7 +345,19 @@ export function InquiryRoomDetailPanel({
         </ClosedNotice>
       )}
 
-      <InquiryMessageInput roomId={roomId} disabled={isClosed} />
+      <ComposerArea>
+        {/* 답변하기 직전에 바로 누를 수 있도록 입력창 위에 띄운다. */}
+        {isAssignButtonVisible && (
+          <AssignToMeButton
+            type="button"
+            disabled={isAssigneeChanging}
+            onClick={handleAssignToMe}
+          >
+            내가 담당하기
+          </AssignToMeButton>
+        )}
+        <InquiryMessageInput roomId={roomId} disabled={isClosed} />
+      </ComposerArea>
     </DetailContainer>
   );
 }
@@ -455,8 +516,14 @@ const StatusDot = styled('span', {
   pointer-events: none;
 `;
 
-const MessageTimeline = styled.div`
+// 입력창 위에 떠 있는 버튼이 마지막 메시지를 가리지 않도록, 버튼이 있는 동안은
+// 버튼 높이와 위아래 간격만큼 아래 여백을 더 둔다.
+const MessageTimeline = styled('div', {
+  shouldForwardProp: (prop) => prop !== '$hasFloatingButton',
+})<{ $hasFloatingButton: boolean }>`
   padding: ${({ theme }) => theme.spacing.lg};
+  padding-bottom: ${({ $hasFloatingButton, theme }) =>
+    $hasFloatingButton ? `${FLOATING_BUTTON_SPACE}px` : theme.spacing.lg};
 
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
@@ -491,6 +558,40 @@ const DateDividerLabel = styled.span`
   color: ${({ theme }) => theme.colors.gray600};
   font-weight: ${({ theme }) => theme.fontWeight.medium};
   font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+// 떠 있는 "내가 담당하기" 버튼의 기준 위치. 버튼은 이 영역 위(타임라인 하단)에 겹쳐 뜬다.
+const ComposerArea = styled.div`
+  position: relative;
+`;
+
+// 전송 버튼과 같은 primary 색으로 두고, 메시지 위에 떠 있음을 그림자로 드러낸다.
+const AssignToMeButton = styled.button`
+  position: absolute;
+  right: ${({ theme }) => theme.spacing.lg};
+  bottom: calc(100% + ${({ theme }) => theme.spacing.md});
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  box-shadow: ${({ theme }) => theme.shadows.lg};
+
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+
+  cursor: pointer;
+
+  transition: background-color 0.15s;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: ${({ theme }) => theme.colors.primaryHover};
+  }
 `;
 
 const ClosedNotice = styled.div`
