@@ -26,8 +26,9 @@ const getSeoulDateRange = (days: number) => {
 
 const NotificationsPage = () => {
   const [days, setDays] = useState<(typeof PERIOD_DAYS)[number]>(7);
-  const { data, isError, isFetching, isPaused, dataUpdatedAt, refetch } =
-    useQuery(notificationStatsQueries.stats(getSeoulDateRange(days)));
+  const { data, isError, isFetching, isPaused, refetch } = useQuery(
+    notificationStatsQueries.stats(getSeoulDateRange(days)),
+  );
   const handleRefresh = () => {
     void refetch();
   };
@@ -74,14 +75,6 @@ const NotificationsPage = () => {
               {new Date(data.aggregatedAt).toLocaleString('ko-KR', {
                 timeZone: 'Asia/Seoul',
               })}
-            </time>
-          </span>
-        )}
-        {dataUpdatedAt > 0 && (
-          <span>
-            마지막 조회{' '}
-            <time dateTime={new Date(dataUpdatedAt).toISOString()}>
-              {new Date(dataUpdatedAt).toLocaleString('ko-KR')}
             </time>
           </span>
         )}
