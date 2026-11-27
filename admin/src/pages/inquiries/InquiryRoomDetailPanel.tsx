@@ -48,6 +48,9 @@ const STATUS_OPTIONS: InquiryStatus[] = [
   ...CLOSED_INQUIRY_STATUSES,
 ];
 
+const ASSIGNEE_ERROR_FALLBACK_MESSAGE =
+  '담당자를 바꾸지 못했습니다. 잠시 후 다시 시도해 주세요.';
+
 // 떠 있는 "내가 담당하기" 버튼이 차지하는 높이(버튼 + 위아래 간격). 타임라인은 이만큼
 // 아래 여백을 더 두어 마지막 메시지가 버튼에 가리지 않게 한다.
 const FLOATING_BUTTON_SPACE = 80;
@@ -76,7 +79,11 @@ export function InquiryRoomDetailPanel({
 
   const { mutate: assignRoom, isPending: isAssigning } =
     useAssignInquiryRoomMutation();
-  const { mutate: unassignRoom } = useUnassignInquiryRoomMutation();
+  const { mutate: unassignRoom, isPending: isUnassigning } =
+    useUnassignInquiryRoomMutation();
+  // 보낸 요청이 다시 조회까지 끝나기 전에는 화면의 담당자가 옛 값이다. 그 값으로 다시
+  // 요청하면 내 첫 요청과 충돌해 실패하므로, 그동안은 담당자를 바꾸지 못하게 막는다.
+  const isAssigneeChanging = isAssigning || isUnassigning;
   const { mutate: changeStatus } = useUpdateInquiryRoomStatusMutation();
   const { mutate: changeCategory } = useUpdateInquiryRoomCategoryMutation();
   const { mutate: updateMessage } = useUpdateInquiryMessageMutation();
@@ -181,26 +188,33 @@ export function InquiryRoomDetailPanel({
     }
   }, [isAssignButtonVisible]);
 
-  // 셀렉트의 빈 값은 "담당자 미지정"이다. 지정 API는 assigneeId를 비울 수 없어
-  // 해제는 별도 API로 보낸다.
+  // 화면에서 본 담당자를 함께 보내, 그 사이 다른 운영자가 바꿨으면 서버가 거절하게 한다.
+  // 실패하면 서버 문구를 그대로 보여준다. 다시 조회는 mutation이 맡는다.
+  const alertAssigneeError = (error: Error) =>
+    alert(error.message || ASSIGNEE_ERROR_FALLBACK_MESSAGE);
+
+  // 셀렉트의 빈 값(null)은 "담당자 미지정"이다.
   const handleAssigneeChange = (assigneeId: number | null) => {
+    if (isAssigneeChanging) return;
+    const currentAssigneeId = room.assigneeId;
+
     if (assigneeId === null) {
-      unassignRoom(roomId, {
-        onError: (error) => alert(`담당자 해제 실패: ${error.message}`),
-      });
+      if (currentAssigneeId === null) return;
+      unassignRoom(
+        { roomId, currentAssigneeId },
+        { onError: alertAssigneeError },
+      );
       return;
     }
 
     assignRoom(
-      { roomId, assigneeId },
-      {
-        onError: (error) => alert(`담당자 지정 실패: ${error.message}`),
-      },
+      { roomId, assigneeId, currentAssigneeId },
+      { onError: alertAssigneeError },
     );
   };
 
   const handleAssignToMe = () => {
-    if (!me || isAssigning) return;
+    if (!me) return;
     handleAssigneeChange(me.id);
   };
 
@@ -273,6 +287,7 @@ export function InquiryRoomDetailPanel({
             aria-label="담당자"
             title={assigneeName}
             value={room.assigneeId ?? ''}
+            disabled={isAssigneeChanging}
             onChange={(e) =>
               handleAssigneeChange(
                 e.target.value ? Number(e.target.value) : null,
@@ -349,7 +364,7 @@ export function InquiryRoomDetailPanel({
         {isAssignButtonVisible && (
           <AssignToMeButton
             type="button"
-            disabled={isAssigning}
+            disabled={isAssigneeChanging}
             onClick={handleAssignToMe}
           >
             내가 담당하기

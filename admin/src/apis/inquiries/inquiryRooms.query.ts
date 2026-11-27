@@ -6,10 +6,10 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import {
-  assignInquiryRoom,
+  deleteInquiryRoomAssignee,
   getInquiryRoomDetail,
   getInquiryRooms,
-  unassignInquiryRoom,
+  patchInquiryRoomAssignee,
   updateInquiryRoomCategory,
   updateInquiryRoomStatus,
 } from './inquiryRooms.api';
@@ -92,12 +92,14 @@ const useInvalidateInquiryRooms = () => {
     queryClient.invalidateQueries({ queryKey: inquiryRoomsQueries.all });
 };
 
+// 다른 운영자가 먼저 담당자를 바꿔 실패한 경우에도 화면이 실제 담당자를 보여주도록
+// 담당자 변경은 성공·실패와 관계없이 다시 조회한다.
 export const useAssignInquiryRoomMutation = () => {
   const invalidateInquiryRooms = useInvalidateInquiryRooms();
 
   return useMutation({
-    mutationFn: assignInquiryRoom,
-    onSuccess: invalidateInquiryRooms,
+    mutationFn: patchInquiryRoomAssignee,
+    onSettled: invalidateInquiryRooms,
   });
 };
 
@@ -105,8 +107,8 @@ export const useUnassignInquiryRoomMutation = () => {
   const invalidateInquiryRooms = useInvalidateInquiryRooms();
 
   return useMutation({
-    mutationFn: unassignInquiryRoom,
-    onSuccess: invalidateInquiryRooms,
+    mutationFn: deleteInquiryRoomAssignee,
+    onSettled: invalidateInquiryRooms,
   });
 };
 

@@ -11,10 +11,10 @@ import {
   updateInquiryMessage,
 } from '../src/apis/inquiries/inquiryMessages.api';
 import {
-  assignInquiryRoom,
+  deleteInquiryRoomAssignee,
   getInquiryRoomDetail,
   getInquiryRooms,
-  unassignInquiryRoom,
+  patchInquiryRoomAssignee,
   updateInquiryRoomStatus,
 } from '../src/apis/inquiries/inquiryRooms.api';
 import { getMe, getMembers } from '../src/apis/members/members.api';
@@ -25,8 +25,8 @@ import type { InquiryRoom, InquiryRoomDetail } from '../src/types/inquiry';
 vi.mock('../src/apis/inquiries/inquiryRooms.api', () => ({
   getInquiryRoomDetail: vi.fn(),
   getInquiryRooms: vi.fn(),
-  assignInquiryRoom: vi.fn(),
-  unassignInquiryRoom: vi.fn(),
+  patchInquiryRoomAssignee: vi.fn(),
+  deleteInquiryRoomAssignee: vi.fn(),
   updateInquiryRoomStatus: vi.fn(),
   updateInquiryRoomCategory: vi.fn(),
 }));
@@ -128,8 +128,8 @@ beforeEach(() => {
   vi.mocked(getInquiryRoomDetail).mockReset();
   vi.mocked(getInquiryRooms).mockReset();
   vi.mocked(updateInquiryRoomStatus).mockReset();
-  vi.mocked(assignInquiryRoom).mockReset();
-  vi.mocked(unassignInquiryRoom).mockReset();
+  vi.mocked(patchInquiryRoomAssignee).mockReset();
+  vi.mocked(deleteInquiryRoomAssignee).mockReset();
   vi.mocked(updateInquiryRoomStatus).mockResolvedValue(
     undefined as Awaited<ReturnType<typeof updateInquiryRoomStatus>>,
   );
@@ -176,6 +176,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.restoreAllMocks();
   cleanup();
   clients.splice(0).forEach((client) => client.clear());
 });
@@ -379,9 +380,9 @@ describe('문의 상세 패널', () => {
     );
   });
 
-  it('담당자를 미지정으로 바꾸면 담당자 해제 API를 호출한다', async () => {
+  it('담당자를 미지정으로 바꾸면 화면에서 본 담당자와 함께 해제 요청을 보낸다', async () => {
     vi.mocked(getInquiryRoomDetail).mockResolvedValue(assignedRoom);
-    vi.mocked(unassignInquiryRoom).mockResolvedValue(undefined);
+    vi.mocked(deleteInquiryRoomAssignee).mockResolvedValue(undefined);
 
     renderPanel(memberListRoom);
 
@@ -391,17 +392,17 @@ describe('문의 상세 패널', () => {
     fireEvent.change(assigneeSelect, { target: { value: '' } });
 
     await waitFor(() =>
-      expect(vi.mocked(unassignInquiryRoom)).toHaveBeenCalledWith(
-        ROOM_ID,
+      expect(vi.mocked(deleteInquiryRoomAssignee)).toHaveBeenCalledWith(
+        { roomId: ROOM_ID, currentAssigneeId: ADMIN_ID },
         expect.anything(),
       ),
     );
-    expect(vi.mocked(assignInquiryRoom)).not.toHaveBeenCalled();
+    expect(vi.mocked(patchInquiryRoomAssignee)).not.toHaveBeenCalled();
   });
 
-  it('담당자를 고르면 담당자 지정 API를 호출한다', async () => {
+  it('담당자를 고르면 화면에서 본 담당자와 함께 지정 요청을 보낸다', async () => {
     vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
-    vi.mocked(assignInquiryRoom).mockResolvedValue(undefined);
+    vi.mocked(patchInquiryRoomAssignee).mockResolvedValue(undefined);
 
     renderPanel(memberListRoom);
 
@@ -411,17 +412,76 @@ describe('문의 상세 패널', () => {
     fireEvent.change(assigneeSelect, { target: { value: String(ADMIN_ID) } });
 
     await waitFor(() =>
-      expect(vi.mocked(assignInquiryRoom)).toHaveBeenCalledWith(
-        { roomId: ROOM_ID, assigneeId: ADMIN_ID },
+      expect(vi.mocked(patchInquiryRoomAssignee)).toHaveBeenCalledWith(
+        { roomId: ROOM_ID, assigneeId: ADMIN_ID, currentAssigneeId: null },
         expect.anything(),
       ),
     );
-    expect(vi.mocked(unassignInquiryRoom)).not.toHaveBeenCalled();
+    expect(vi.mocked(deleteInquiryRoomAssignee)).not.toHaveBeenCalled();
+  });
+
+  it('그 사이 다른 운영자가 담당자를 바꿔 실패하면 서버 문구를 알리고 실제 담당자로 다시 보여준다', async () => {
+    // 화면에서는 미지정이었지만 서버에서는 이미 다른 운영자가 맡은 상태.
+    vi.mocked(getInquiryRoomDetail)
+      .mockResolvedValueOnce(unassignedRoom)
+      .mockResolvedValue(assignedRoom);
+    vi.mocked(patchInquiryRoomAssignee).mockRejectedValue(
+      new Error(
+        '다른 운영자가 담당자를 먼저 변경했습니다. 새로고침 후 다시 시도해 주세요.',
+      ),
+    );
+    vi.mocked(getMembers).mockResolvedValue({
+      content: [
+        { id: ADMIN_ID, nickname: '담당자몽' },
+        { id: 99, nickname: '나' },
+      ],
+    } as Awaited<ReturnType<typeof getMembers>>);
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    renderPanel(memberListRoom);
+
+    const assigneeSelect = await screen.findByRole<HTMLSelectElement>(
+      'combobox',
+      { name: '담당자' },
+    );
+    await screen.findByRole('option', { name: '나' });
+    expect(assigneeSelect.value).toBe('');
+    fireEvent.change(assigneeSelect, { target: { value: '99' } });
+
+    await waitFor(() =>
+      expect(alertSpy).toHaveBeenCalledWith(
+        '다른 운영자가 담당자를 먼저 변경했습니다. 새로고침 후 다시 시도해 주세요.',
+      ),
+    );
+    await waitFor(() => expect(assigneeSelect.value).toBe(String(ADMIN_ID)));
+  });
+
+  it('담당자 변경 요청이 끝나기 전에는 담당자를 다시 바꿀 수 없다', async () => {
+    vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
+    // 응답이 오지 않은 상태를 유지한다.
+    vi.mocked(patchInquiryRoomAssignee).mockReturnValue(new Promise(() => {}));
+
+    renderPanel(memberListRoom);
+
+    fireEvent.click(
+      await screen.findByRole('button', { name: '내가 담당하기' }),
+    );
+
+    const assigneeSelect = screen.getByRole<HTMLSelectElement>('combobox', {
+      name: '담당자',
+    });
+    await waitFor(() => expect(assigneeSelect.disabled).toBe(true));
+    expect(
+      screen.getByRole<HTMLButtonElement>('button', { name: '내가 담당하기' })
+        .disabled,
+    ).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: '내가 담당하기' }));
+    expect(vi.mocked(patchInquiryRoomAssignee)).toHaveBeenCalledTimes(1);
   });
 
   it('내가 담당하기를 누르면 로그인한 운영자를 담당자로 지정한다', async () => {
     vi.mocked(getInquiryRoomDetail).mockResolvedValue(unassignedRoom);
-    vi.mocked(assignInquiryRoom).mockResolvedValue(undefined);
+    vi.mocked(patchInquiryRoomAssignee).mockResolvedValue(undefined);
 
     renderPanel(memberListRoom);
 
@@ -430,8 +490,8 @@ describe('문의 상세 패널', () => {
     );
 
     await waitFor(() =>
-      expect(vi.mocked(assignInquiryRoom)).toHaveBeenCalledWith(
-        { roomId: ROOM_ID, assigneeId: 99 },
+      expect(vi.mocked(patchInquiryRoomAssignee)).toHaveBeenCalledWith(
+        { roomId: ROOM_ID, assigneeId: 99, currentAssigneeId: null },
         expect.anything(),
       ),
     );
