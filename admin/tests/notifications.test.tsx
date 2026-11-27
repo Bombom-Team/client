@@ -110,7 +110,8 @@ describe('알림 현황', () => {
     expect(row.getByText('15%')).toBeTruthy();
     expect(row.getByText('1,200')).toBeTruthy();
     expect(row.getByText('9분')).toBeTruthy();
-    expect(row.getByText('1,530 / 22')).toBeTruthy();
+    expect(row.getByText('1,530')).toBeTruthy();
+    expect(row.getByText('22')).toBeTruthy();
   });
 
   it('토픽 발송 카테고리는 근사 열림률로 표시하고 회원별 발송 결과를 0으로 채우지 않는다', async () => {
@@ -143,7 +144,7 @@ describe('알림 현황', () => {
     renderPage();
     await screen.findByRole('table');
     const row = within(getCategoryRow('아티클 도착'));
-    expect(row.getByText('집계 안 됨')).toBeTruthy();
+    expect(row.getByText('미집계')).toBeTruthy();
   });
 
   it('열림이 기록되지 않는 카테고리는 0%로 표시하지 않는다', async () => {
