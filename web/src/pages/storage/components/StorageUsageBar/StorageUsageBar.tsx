@@ -127,10 +127,11 @@ const BarWrapper = styled.div`
   flex-shrink: 0;
 `;
 
+// 높이를 사용량 문구의 줄 높이(theme.fonts.t3Regular의 1rem)와 맞춰, 글자 크기가 바뀌어도 아이콘이 문구 줄 가운데에 오게 한다
 const HelpButton = styled.button`
   position: relative;
   width: 16px;
-  height: 16px;
+  height: 1rem;
   padding: 0;
 
   display: flex;
