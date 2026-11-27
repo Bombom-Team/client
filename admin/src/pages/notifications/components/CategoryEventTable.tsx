@@ -7,6 +7,9 @@ import {
 import { formatCount, formatDuration, formatRate } from '../utils/formatStats';
 import type { NotificationCategoryStats } from '@/apis/notificationStats/notificationStats.api';
 
+// 카테고리 열을 뺀 숫자 열 수. 같은 너비로 나눠 숫자 간격을 일정하게 맞춘다.
+const NUMERIC_COLUMN_COUNT = 12;
+
 // 0은 옅게 두어 0이 아닌 실패·소진 같은 값이 먼저 보이게 한다.
 const renderCount = (value: number) => (
   <CountText isZero={value === 0}>{formatCount(value)}</CountText>
@@ -31,6 +34,12 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
             근사치, —는 해당하지 않는 값이에요. 아티클 도착·문의 답변 도착은
             수신 거부 시 기록이 남지 않아 스킵을 집계하지 않아요(미집계).
           </caption>
+          <colgroup>
+            <CategoryColumn />
+            {Array.from({ length: NUMERIC_COLUMN_COUNT }, (_, index) => (
+              <col key={index} />
+            ))}
+          </colgroup>
           <thead>
             <GroupRow>
               <th scope="col" rowSpan={2}>
@@ -226,11 +235,13 @@ const TableWrapper = styled.div`
 `;
 const Table = styled.table`
   width: 100%;
-  min-width: 960px;
+  min-width: 1040px;
 
   border-collapse: collapse;
 
   font-variant-numeric: tabular-nums;
+
+  table-layout: fixed;
 
   caption {
     padding-bottom: var(--seed-dimension-x3);
@@ -288,6 +299,9 @@ const Table = styled.table`
     border-bottom: none;
   }
 `;
+const CategoryColumn = styled.col`
+  width: 184px;
+`;
 const GroupRow = styled.tr`
   th[scope='colgroup'] {
     padding-block: var(--seed-dimension-x2);
@@ -324,7 +338,6 @@ const CountText = styled.span<{ isZero: boolean }>`
 `;
 const MutedText = styled.span`
   color: var(--seed-color-fg-neutral-subtle);
-  font-size: var(--seed-font-size-t3);
 `;
 const FailureBox = styled.details`
   color: var(--seed-color-fg-neutral-muted);
