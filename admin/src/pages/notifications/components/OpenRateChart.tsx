@@ -9,23 +9,23 @@ import type { NotificationCategoryStats } from '@/apis/notificationStats/notific
 // 카테고리 간 비교가 왜곡되지 않도록 최댓값이 아닌 0~100% 고정 축을 쓴다.
 const AXIS_TICKS = [0, 25, 50, 75, 100];
 
-const isRateMeasured = ({ category, openRate }: NotificationCategoryStats) =>
-  openRate !== null && !OPEN_NOT_RECORDED_CATEGORIES.includes(category);
-
-const getDenominatorText = ({
+// 막대 전체(100%)가 무엇인지: 회원별 발송은 발송 수, 토픽 발송은 수신 동의 회원 수
+const getBaseCount = ({
   deliveryMode,
   statusCounts,
   consentingMembers,
-}: NotificationCategoryStats) => {
-  if (deliveryMode === 'TOPIC') {
-    return consentingMembers === null
-      ? '수신 동의 집계 없음'
-      : `수신 동의 ${formatCount(consentingMembers)}명`;
-  }
-  return statusCounts === null
-    ? '발송 집계 없음'
-    : `발송 ${formatCount(statusCounts.SENT)}`;
-};
+}: NotificationCategoryStats) =>
+  deliveryMode === 'TOPIC' ? consentingMembers : (statusCounts?.SENT ?? null);
+
+const getBaseText = (stats: NotificationCategoryStats, baseCount: number) =>
+  stats.deliveryMode === 'TOPIC'
+    ? `수신 동의 ${formatCount(baseCount)}명 기준`
+    : `발송 ${formatCount(baseCount)}건 기준`;
+
+const isRateMeasured = (stats: NotificationCategoryStats) =>
+  stats.openRate !== null &&
+  getBaseCount(stats) !== null &&
+  !OPEN_NOT_RECORDED_CATEGORIES.includes(stats.category);
 
 const getUnmeasuredText = ({ category }: NotificationCategoryStats) =>
   OPEN_NOT_RECORDED_CATEGORIES.includes(category)
@@ -50,15 +50,32 @@ const OpenRateChart = ({ categories }: OpenRateChartProps) => {
       <HeadingWrapper>
         <SectionTitle id="open-rate-heading">카테고리별 열림률</SectionTitle>
         <ChartDescription>
-          같은 알림을 여러 번 열어도 한 번으로 센 고유 열림 ÷ 발송. 옅은 막대는
-          수신 동의 회원 수로 나눈 근사치예요.
+          막대 전체가 보낸 알림이고, 그중 열린 만큼을 칠했어요. 같은 알림을 여러
+          번 열어도 한 번으로 세요.
         </ChartDescription>
+        <LegendList aria-label="범례">
+          <LegendItem>
+            <LegendSwatch swatchColor="var(--seed-color-palette-carrot-700)" />
+            열림
+          </LegendItem>
+          <LegendItem>
+            <LegendSwatch swatchColor="var(--seed-color-palette-carrot-400)" />
+            열림(근사 · 수신 동의 회원 기준)
+          </LegendItem>
+          <LegendItem>
+            <LegendSwatch swatchColor="var(--seed-color-palette-gray-400)" />안
+            열림
+          </LegendItem>
+        </LegendList>
       </HeadingWrapper>
 
-      <RowList>
+      <RowList aria-label="카테고리별 열림과 안 열림">
         {measuredCategories.map((stats) => {
           const isApproximate = stats.deliveryMode === 'TOPIC';
           const openRate = stats.openRate ?? 0;
+          const baseCount = getBaseCount(stats) ?? 0;
+          const opened = stats.opens.uniqueLinked;
+          const unopened = Math.max(baseCount - opened, 0);
 
           return (
             <Row key={stats.category}>
@@ -66,20 +83,28 @@ const OpenRateChart = ({ categories }: OpenRateChartProps) => {
                 <CategoryName>{CATEGORY_LABELS[stats.category]}</CategoryName>
                 {isApproximate && <TopicTag>토픽 발송 · 근사</TopicTag>}
               </CategoryCell>
-              <Track aria-hidden="true">
-                <Bar
-                  isApproximate={isApproximate}
-                  style={{ width: `${Math.min(openRate, 1) * 100}%` }}
-                />
-              </Track>
+              <StackedBar aria-hidden="true">
+                {opened > 0 && (
+                  <OpenedSegment
+                    isApproximate={isApproximate}
+                    style={{ flexGrow: opened }}
+                  />
+                )}
+                {unopened > 0 && (
+                  <UnopenedSegment style={{ flexGrow: unopened }} />
+                )}
+              </StackedBar>
               <RateValue>
                 {isApproximate && '≈ '}
                 {formatRate(openRate)}
               </RateValue>
-              <DetailText>
-                {formatCount(stats.opens.uniqueLinked)} /{' '}
-                {getDenominatorText(stats)}
-              </DetailText>
+              <DetailCell>
+                <span>
+                  열림 {formatCount(opened)} · 안 열림 {isApproximate && '≈ '}
+                  {formatCount(unopened)}
+                </span>
+                <BaseText>{getBaseText(stats, baseCount)}</BaseText>
+              </DetailCell>
             </Row>
           );
         })}
@@ -109,7 +134,7 @@ const OpenRateChart = ({ categories }: OpenRateChartProps) => {
 export default OpenRateChart;
 
 const ROW_COLUMNS =
-  'minmax(120px, 200px) minmax(160px, 1fr) 72px minmax(120px, 180px)';
+  'minmax(120px, 200px) minmax(160px, 1fr) 72px minmax(160px, 220px)';
 
 const Container = styled.section`
   padding: var(--seed-dimension-x6);
@@ -163,33 +188,55 @@ const TopicTag = styled.span`
   color: var(--seed-color-fg-neutral-muted);
   font-size: var(--seed-font-size-t2);
 `;
-// 세로 격자선은 25% 간격의 1px 선, 왼쪽 기준선만 한 단계 진하게 둔다.
-const Track = styled.div`
-  height: 24px;
-  border-right: 1px solid var(--seed-color-palette-gray-300);
-  border-left: 1px solid var(--seed-color-palette-gray-600);
+// 막대 전체가 100%다. 끝만 4px로 둥글리고 열림·안 열림 사이는 2px 표면색 간격으로 나눈다.
+const StackedBar = styled.div`
+  overflow: hidden;
+  height: 16px;
+  border-radius: 4px;
 
   display: flex;
-  align-items: center;
-
-  background-image: linear-gradient(
-    to right,
-    var(--seed-color-palette-gray-300) 1px,
-    transparent 1px
-  );
-  background-size: 25% 100%;
+  gap: 2px;
 `;
-const Bar = styled.span<{ isApproximate: boolean }>`
-  height: 16px;
+const OpenedSegment = styled.span<{ isApproximate: boolean }>`
   min-width: 2px;
-  border-radius: 0 4px 4px 0;
 
-  display: block;
+  flex-basis: 0;
 
   background-color: ${({ isApproximate }) =>
     isApproximate
       ? 'var(--seed-color-palette-carrot-400)'
       : 'var(--seed-color-palette-carrot-700)'};
+`;
+const UnopenedSegment = styled.span`
+  min-width: 2px;
+
+  flex-basis: 0;
+
+  background-color: var(--seed-color-palette-gray-400);
+`;
+const LegendList = styled.ul`
+  margin-top: var(--seed-dimension-x2);
+
+  display: flex;
+  gap: var(--seed-dimension-x4);
+  flex-wrap: wrap;
+
+  color: var(--seed-color-fg-neutral-muted);
+  font-size: var(--seed-font-size-t3);
+
+  list-style: none;
+`;
+const LegendItem = styled.li`
+  display: flex;
+  gap: var(--seed-dimension-x2);
+  align-items: center;
+`;
+const LegendSwatch = styled.span<{ swatchColor: string }>`
+  width: 12px;
+  height: 12px;
+  border-radius: var(--seed-radius-r1);
+
+  background-color: ${({ swatchColor }) => swatchColor};
 `;
 const RateValue = styled.span`
   font-weight: var(--seed-font-weight-bold);
@@ -198,11 +245,16 @@ const RateValue = styled.span`
 
   font-variant-numeric: tabular-nums;
 `;
-const DetailText = styled.span`
-  color: var(--seed-color-fg-neutral-muted);
+const DetailCell = styled.div`
+  display: grid;
+
   font-size: var(--seed-font-size-t3);
 
   font-variant-numeric: tabular-nums;
+`;
+const BaseText = styled.span`
+  color: var(--seed-color-fg-neutral-muted);
+  font-size: var(--seed-font-size-t2);
 `;
 const UnmeasuredText = styled.span`
   color: var(--seed-color-fg-neutral-subtle);
