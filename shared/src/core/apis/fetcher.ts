@@ -43,6 +43,9 @@ type PostFetcherOptions<TRequest extends JsonBody> = FetcherOptions<TRequest> &
 type PatchFetcherOptions<TRequest extends JsonBody> = FetcherOptions<TRequest> &
   Pick<RequestOptions<TRequest>, 'query'>;
 
+type DeleteFetcherOptions<TRequest extends JsonBody> =
+  FetcherOptions<TRequest> & Pick<RequestOptions<TRequest>, 'query'>;
+
 export const fetcher = {
   get: async <TResponse>(options: GetFetcherOptions) =>
     request<never, TResponse>({ ...options, method: 'GET' }),
@@ -56,7 +59,7 @@ export const fetcher = {
     options: FetcherOptions<TRequest>,
   ) => request<TRequest, TResponse>({ ...options, method: 'PUT' }),
   delete: async <TRequest extends JsonBody, TResponse>(
-    options: FetcherOptions<TRequest>,
+    options: DeleteFetcherOptions<TRequest>,
   ) => request<TRequest, TResponse>({ ...options, method: 'DELETE' }),
 };
 
