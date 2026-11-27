@@ -84,7 +84,7 @@ const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
         onFocus={openGuide}
         onBlur={closeGuide}
       >
-        <HelpIcon width={16} height={16} aria-hidden />
+        <HelpIcon aria-hidden />
       </HelpButton>
       <Tooltip
         id={TOOLTIP_ID}
@@ -127,10 +127,11 @@ const BarWrapper = styled.div`
   flex-shrink: 0;
 `;
 
-// 높이를 사용량 문구의 줄 높이(theme.fonts.t3Regular의 1rem)와 맞춰, 글자 크기가 바뀌어도 아이콘이 문구 줄 가운데에 오게 한다
+// 문구 글꼴(theme.fonts.t3Regular: 0.75rem/1rem)에 맞춰 아이콘은 글자 크기, 높이는 줄 높이로 둔다.
+// 글자 크기가 바뀌어도 아이콘이 함께 커지고 문구 줄 가운데에 온다.
 const HelpButton = styled.button`
   position: relative;
-  width: 16px;
+  width: 0.75rem;
   height: 1rem;
   padding: 0;
 
