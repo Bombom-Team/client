@@ -30,6 +30,14 @@ export interface NotificationCategoryStats {
   consentingMembers: number | null;
 }
 
+// 발송일 코호트: opened는 그날 보낸 알림 중 열린 수. 토픽 발송(EVENT)은 sent가 null이다.
+export interface NotificationDailyStats {
+  date: string;
+  category: NotificationCategory;
+  sent: number | null;
+  opened: number;
+}
+
 export interface GetNotificationStatsParams {
   from: string;
   to: string;
@@ -48,6 +56,8 @@ export interface GetNotificationStatsResponse {
     devicesOsPermissionUnknown: number;
   };
   opensByPlatform: { platform: NotificationPlatform; count: number }[];
+  // 일별 집계 이전 버전 서버는 이 필드를 보내지 않는다.
+  daily?: NotificationDailyStats[];
 }
 
 export const getNotificationStats = async ({

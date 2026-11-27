@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FiRefreshCw } from 'react-icons/fi';
 import CategoryEventTable from './components/CategoryEventTable';
+import DailyTrendChart from './components/DailyTrendChart';
 import NotificationSummary from './components/NotificationSummary';
 import OpenRateChart from './components/OpenRateChart';
 import PeriodFilter from './components/PeriodFilter';
@@ -93,6 +94,7 @@ const NotificationsPage = () => {
         <>
           <NotificationSummary stats={data} />
           <OpenRateChart categories={data.categories} />
+          <DailyTrendChart categories={data.categories} daily={data.daily} />
 
           <section aria-labelledby="reach-heading">
             <SectionTitle id="reach-heading">도달 모수와 기기</SectionTitle>

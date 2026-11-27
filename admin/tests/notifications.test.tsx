@@ -196,7 +196,9 @@ describe('알림 현황', () => {
     const chart = await screen.findByRole('region', {
       name: '카테고리별 열림률',
     });
-    const names = within(chart)
+    const names = within(
+      within(chart).getByRole('list', { name: '카테고리별 열림과 안 열림' }),
+    )
       .getAllByRole('listitem')
       .map((item) => item.textContent ?? '');
     expect(names[0]).toContain('문의 답변 도착');
@@ -252,6 +254,87 @@ describe('알림 현황', () => {
     });
     expect(screen.getByText('조회 기간은 최대 90일이에요.')).toBeTruthy();
     expect(getNotificationStats).toHaveBeenCalledTimes(1);
+  });
+
+  it('열림률 막대는 발송 중 열림과 안 열림 건수를 함께 표시한다', async () => {
+    vi.mocked(getNotificationStats).mockResolvedValue(stats);
+    renderPage();
+    const chart = await screen.findByRole('region', {
+      name: '카테고리별 열림률',
+    });
+    const article = within(
+      within(chart).getByRole('list', { name: '카테고리별 열림과 안 열림' }),
+    )
+      .getAllByRole('listitem')
+      .find((item) => item.textContent?.includes('아티클 도착'));
+    expect(article?.textContent).toContain('열림 180 · 안 열림 1,020');
+    expect(article?.textContent).toContain('발송 1,200건 기준');
+  });
+
+  it('일별 추이는 기본으로 열림이 기록되는 회원 발송 카테고리를 합친다', async () => {
+    vi.mocked(getNotificationStats).mockResolvedValue({
+      ...stats,
+      categories: [
+        memberCategory({}),
+        stats.categories[1],
+        memberCategory({ category: 'INQUIRY_MESSAGE_ARRIVAL' }),
+      ],
+      daily: [
+        { date: '2026-11-25', category: 'ARTICLE', sent: 100, opened: 10 },
+        { date: '2026-11-25', category: 'EVENT', sent: null, opened: 7 },
+        {
+          date: '2026-11-25',
+          category: 'INQUIRY_MESSAGE_ARRIVAL',
+          sent: 4,
+          opened: 3,
+        },
+      ],
+    });
+    renderPage();
+    const trend = await screen.findByRole('region', { name: '일별 추이' });
+    const row = within(trend).getByRole('rowheader', {
+      name: '2026-11-25',
+    }).parentElement!;
+    expect(row.textContent).toContain('104');
+    expect(row.textContent).toContain('13');
+    expect(row.textContent).toContain('12.5%');
+  });
+
+  it('일별 추이에서 토픽·챌린지 카테고리를 고르면 열림률을 그리지 않는 이유를 알린다', async () => {
+    vi.mocked(getNotificationStats).mockResolvedValue({
+      ...stats,
+      daily: [
+        { date: '2026-11-25', category: 'ARTICLE', sent: 100, opened: 10 },
+        { date: '2026-11-25', category: 'EVENT', sent: null, opened: 7 },
+        { date: '2026-11-25', category: 'CHALLENGE_START', sent: 9, opened: 0 },
+      ],
+    });
+    renderPage();
+    const trend = await screen.findByRole('region', { name: '일별 추이' });
+    const select = within(trend).getByLabelText('카테고리');
+    fireEvent.change(select, { target: { value: 'EVENT' } });
+    expect(
+      within(trend).getByText(
+        '토픽 발송이라 날짜별 발송 수가 없어 열림률을 계산하지 않아요.',
+      ),
+    ).toBeTruthy();
+    fireEvent.change(select, { target: { value: 'CHALLENGE_START' } });
+    expect(
+      within(trend).getByText(
+        '챌린지 알림은 열림이 기록되지 않아 열림률을 그리지 않아요.',
+      ),
+    ).toBeTruthy();
+  });
+
+  it('일별 데이터가 없는 응답이면 0으로 채우지 않고 안내한다', async () => {
+    vi.mocked(getNotificationStats).mockResolvedValue(stats);
+    renderPage();
+    const trend = await screen.findByRole('region', { name: '일별 추이' });
+    expect(
+      within(trend).getByText(
+        '일별 데이터를 아직 받지 못했어요. 알림 서버를 배포하면 표시돼요.',
+      ),
+    ).toBeTruthy();
   });
 
   it('기기 OS 알림 권한을 미보고 기기까지 나눠 표시한다', async () => {
