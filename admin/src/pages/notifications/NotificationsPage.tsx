@@ -6,28 +6,20 @@ import { FiRefreshCw } from 'react-icons/fi';
 import CategoryEventTable from './components/CategoryEventTable';
 import NotificationSummary from './components/NotificationSummary';
 import OpenRateChart from './components/OpenRateChart';
+import PeriodFilter from './components/PeriodFilter';
 import ShareBar from './components/ShareBar';
+import { getSeoulDateRange } from './utils/dateRange';
 import { notificationStatsQueries } from '@/apis/notificationStats/notificationStats.query';
+import type { DateRange } from './utils/dateRange';
 
-const PERIOD_DAYS = [7, 30] as const;
-const DAY_MS = 86_400_000;
-const SEOUL_DATE_FORMAT = new Intl.DateTimeFormat('en-CA', {
-  timeZone: 'Asia/Seoul',
-});
-
-// 서울 날짜 기준으로 오늘을 포함한 최근 N일 범위를 만든다.
-const getSeoulDateRange = (days: number) => {
-  const now = Date.now();
-  return {
-    from: SEOUL_DATE_FORMAT.format(now - (days - 1) * DAY_MS),
-    to: SEOUL_DATE_FORMAT.format(now),
-  };
-};
+const DEFAULT_PERIOD_DAYS = 7;
 
 const NotificationsPage = () => {
-  const [days, setDays] = useState<(typeof PERIOD_DAYS)[number]>(7);
+  const [range, setRange] = useState<DateRange>(() =>
+    getSeoulDateRange(DEFAULT_PERIOD_DAYS),
+  );
   const { data, isError, isFetching, isPaused, refetch } = useQuery(
-    notificationStatsQueries.stats(getSeoulDateRange(days)),
+    notificationStatsQueries.stats(range),
   );
   const handleRefresh = () => {
     void refetch();
@@ -44,18 +36,7 @@ const NotificationsPage = () => {
           </DescriptionBox>
         </div>
         <ControlWrapper>
-          <PeriodWrapper role="group" aria-label="집계 기간">
-            {PERIOD_DAYS.map((period) => (
-              <PeriodButton
-                key={period}
-                type="button"
-                aria-pressed={days === period}
-                onClick={() => setDays(period)}
-              >
-                {period}일
-              </PeriodButton>
-            ))}
-          </PeriodWrapper>
+          <PeriodFilter value={range} onChange={setRange} />
           <RefreshButton
             type="button"
             onClick={handleRefresh}
@@ -245,27 +226,7 @@ const ControlWrapper = styled.div`
   display: flex;
   gap: var(--seed-dimension-x3);
   flex-wrap: wrap;
-  align-items: center;
-`;
-const PeriodWrapper = styled.div`
-  display: flex;
-  gap: var(--seed-dimension-x1);
-`;
-const PeriodButton = styled.button`
-  min-width: 56px;
-  min-height: 44px;
-  padding: var(--seed-dimension-x2) var(--seed-dimension-x3);
-  border: 1px solid var(--seed-color-stroke-neutral-weak);
-  border-radius: var(--seed-radius-r2);
-
-  background-color: var(--seed-color-bg-layer-default);
-  color: var(--seed-color-fg-neutral-muted);
-
-  &[aria-pressed='true'] {
-    background-color: var(--seed-color-bg-brand-weak);
-    color: var(--seed-color-palette-carrot-800);
-    font-weight: var(--seed-font-weight-bold);
-  }
+  align-items: flex-start;
 `;
 const RefreshButton = styled.button`
   min-height: 44px;

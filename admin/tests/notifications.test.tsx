@@ -225,6 +225,35 @@ describe('알림 현황', () => {
     );
   });
 
+  it('직접 선택한 날짜 범위로 다시 조회한다', async () => {
+    vi.mocked(getNotificationStats).mockResolvedValue(stats);
+    renderPage();
+    await screen.findByRole('table');
+    fireEvent.change(screen.getByLabelText('시작일'), {
+      target: { value: '2026-10-01' },
+    });
+    fireEvent.change(screen.getByLabelText('종료일'), {
+      target: { value: '2026-10-15' },
+    });
+    await vi.waitFor(() =>
+      expect(getNotificationStats).toHaveBeenLastCalledWith({
+        from: '2026-10-01',
+        to: '2026-10-15',
+      }),
+    );
+  });
+
+  it('조회할 수 없는 날짜 범위는 이유를 알리고 요청하지 않는다', async () => {
+    vi.mocked(getNotificationStats).mockResolvedValue(stats);
+    renderPage();
+    await screen.findByRole('table');
+    fireEvent.change(screen.getByLabelText('시작일'), {
+      target: { value: '2025-01-01' },
+    });
+    expect(screen.getByText('조회 기간은 최대 90일이에요.')).toBeTruthy();
+    expect(getNotificationStats).toHaveBeenCalledTimes(1);
+  });
+
   it('기기 OS 알림 권한을 미보고 기기까지 나눠 표시한다', async () => {
     vi.mocked(getNotificationStats).mockResolvedValue(stats);
     renderPage();
