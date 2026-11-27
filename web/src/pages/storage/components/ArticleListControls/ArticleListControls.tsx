@@ -322,6 +322,5 @@ const SummaryBox = styled.div<{ isMobile: boolean }>`
 `;
 
 const StorageUsageBarWrapper = styled.div`
-  max-width: 160px;
   display: flex;
 `;
