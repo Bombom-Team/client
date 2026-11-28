@@ -102,7 +102,7 @@ export const MainScreen = () => {
   const { syncOsNotificationPermission } = useOsNotificationPermissionSync();
   const registerFCMTokenAndSyncPermission = useCallback(async () => {
     await registerFCMToken();
-    await syncOsNotificationPermission();
+    await syncOsNotificationPermission({ isForced: true });
   }, [registerFCMToken, syncOsNotificationPermission]);
   const { isVersionCheckCompleted, isForceUpdateRequired, openStore } =
     useForceUpdate();

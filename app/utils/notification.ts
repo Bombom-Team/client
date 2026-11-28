@@ -139,7 +139,7 @@ export const getNotificationUrl = (data: Record<string, unknown>) => {
     data.category === 'CHALLENGE_TODO_REMINDER'
   ) {
     const challengeId = Number(data.challengeId);
-    if (!data.challengeId || Number.isNaN(challengeId)) return null;
+    if (!Number.isInteger(challengeId) || challengeId <= 0) return null;
     return `/challenge/${challengeId}`;
   }
 
