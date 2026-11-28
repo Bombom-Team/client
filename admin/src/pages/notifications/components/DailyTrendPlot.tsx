@@ -11,7 +11,7 @@ const PLOT_RIGHT = WIDTH - 12;
 const PLOT_WIDTH = PLOT_RIGHT - PLOT_LEFT;
 const COUNT_TOP = 28;
 const COUNT_HEIGHT = 144;
-const RATE_TOP = COUNT_TOP + COUNT_HEIGHT + 44;
+const RATE_TOP = COUNT_TOP + COUNT_HEIGHT + 72;
 const RATE_HEIGHT = 96;
 const AXIS_LABEL_Y = RATE_TOP + RATE_HEIGHT + 20;
 const HEIGHT = AXIS_LABEL_Y + 8;
@@ -247,7 +247,7 @@ const DailyTrendPlot = ({
           );
         })}
 
-        <PlotText x={PLOT_LEFT} y={RATE_TOP - 12} isStrong>
+        <PlotText x={PLOT_LEFT} y={RATE_TOP - 16} isStrong>
           열림률
         </PlotText>
         {rateNotice === null ? (
