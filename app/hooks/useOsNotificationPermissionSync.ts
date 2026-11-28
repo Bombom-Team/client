@@ -5,7 +5,7 @@ import { getDeviceUUID } from '@/utils/device';
 import { checkNotificationPermission, getMemberId } from '@/utils/notification';
 
 interface SyncOsNotificationPermissionParams {
-  // 토큰을 다시 등록하면 서버가 기기 행을 새로 만들어 권한 값이 비므로, 같은 값이어도 다시 보낸다.
+  // 토큰을 다시 등록하면 서버의 기기 행이 새로 만들어지므로, 같은 값이어도 다시 보내 권한 값을 맞춘다.
   isForced?: boolean;
 }
 

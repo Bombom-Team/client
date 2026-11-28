@@ -92,14 +92,17 @@ export const MainScreen = () => {
 
   const { handleNavigationStateChange } = useAndroidNavigationState();
   const reloadWebView = useCallback(() => webViewRef.current?.reload(), [webViewRef]);
+  const { syncOsNotificationPermission } = useOsNotificationPermissionSync();
+  const forceSyncOsNotificationPermission = useCallback(() => {
+    syncOsNotificationPermission({ isForced: true });
+  }, [syncOsNotificationPermission]);
   const {
     onNotification,
     registerFCMToken,
     handleWebLoadStart,
     handleWebReady,
     handleWebLoadError,
-  } = useNotification(reloadWebView);
-  const { syncOsNotificationPermission } = useOsNotificationPermissionSync();
+  } = useNotification(reloadWebView, forceSyncOsNotificationPermission);
   const registerFCMTokenAndSyncPermission = useCallback(async () => {
     await registerFCMToken();
     await syncOsNotificationPermission({ isForced: true });

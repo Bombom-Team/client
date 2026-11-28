@@ -28,7 +28,11 @@ Notifications.setNotificationHandler({
 
 const WEB_READY_TIMEOUT_MS = 10_000;
 
-const useNotification = (reloadWebView: () => void) => {
+// onTokenRefreshed: 앱 실행 중 FCM 토큰이 갱신되어 서버에 다시 등록한 뒤 호출한다.
+const useNotification = (
+  reloadWebView: () => void,
+  onTokenRefreshed?: () => void,
+) => {
   const { sendMessageToWeb } = useWebView();
   const isRegisteringRef = useRef(false);
   const isWebReadyRef = useRef(false);
@@ -172,6 +176,7 @@ const useNotification = (reloadWebView: () => void) => {
       console.log('FCM 토큰이 갱신되었습니다');
       try {
         await registerFCMToken();
+        onTokenRefreshed?.();
       } catch (error) {
         console.error('FCM 토큰 갱신 중 오류 발생:', error);
       }
@@ -238,7 +243,12 @@ const useNotification = (reloadWebView: () => void) => {
       unsubscribeNotificationOpened();
       responseListener.remove();
     };
-  }, [coldStartNotificationOpen, registerFCMToken, routeToNotificationUrl]);
+  }, [
+    coldStartNotificationOpen,
+    onTokenRefreshed,
+    registerFCMToken,
+    routeToNotificationUrl,
+  ]);
 
   useEffect(() => {
     createAndroidChannel();
