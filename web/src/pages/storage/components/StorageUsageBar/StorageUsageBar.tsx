@@ -84,7 +84,7 @@ const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
         onFocus={openGuide}
         onBlur={closeGuide}
       >
-        <HelpIcon aria-hidden />
+        <HelpIconImage aria-hidden />
       </HelpButton>
       <Tooltip
         id={TOOLTIP_ID}
@@ -151,6 +151,14 @@ const HelpButton = styled.button`
     content: '';
     inset: -8px;
   }
+`;
+
+// SVG 파일의 크기가 100%라서, 크기를 직접 정하지 않으면 iOS(WebKit)에서 폭이 0이 되어 보이지 않는다
+const HelpIconImage = styled(HelpIcon)`
+  width: 0.75rem;
+  height: 0.75rem;
+
+  flex-shrink: 0;
 `;
 
 const GuideTitle = styled.p`
