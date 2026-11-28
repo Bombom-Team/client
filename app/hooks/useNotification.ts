@@ -151,10 +151,14 @@ const useNotification = (
   }, []);
 
   // 알림 식별자 조회가 겹치면 먼저 누른 알림이 늦게 끝날 수 있어, 마지막에 누른 알림으로만 이동한다.
-  const routeToTappedNotification = useCallback(
-    async (data: Record<string, unknown>) => {
-      latestTapIdRef.current += 1;
-      const tapId = latestTapIdRef.current;
+  // 탭 순번은 조회를 시작하기 전에 받아야 조회 중에 들어온 탭과 순서를 비교할 수 있다.
+  const createTapId = useCallback(() => {
+    latestTapIdRef.current += 1;
+    return latestTapIdRef.current;
+  }, []);
+
+  const routeToLatestTap = useCallback(
+    async (tapId: number, data: Record<string, unknown>) => {
       const payload = await getNotificationRoutingPayload(data);
       if (payload && tapId === latestTapIdRef.current) {
         routeToNotificationUrl(payload);
@@ -163,24 +167,27 @@ const useNotification = (
     [routeToNotificationUrl],
   );
 
+  const routeToTappedNotification = useCallback(
+    (data: Record<string, unknown>) => routeToLatestTap(createTapId(), data),
+    [createTapId, routeToLatestTap],
+  );
+
   // 앱 종료 상태에서 알림을 탭한 경우
   // WebView를 다시 불러올 때마다 호출되므로, iOS에 남아 있는 이전 탭으로 다시 이동하지 않게 한 번만 처리한다.
   const coldStartNotificationOpen = useCallback(async () => {
     if (hasHandledInitialNotificationRef.current) return;
     hasHandledInitialNotificationRef.current = true;
 
+    const tapId = createTapId();
     try {
       const message = await messaging().getInitialNotification();
       if (!message) return;
 
-      const payload = await getNotificationRoutingPayload(message.data ?? {});
-      if (payload) {
-        routeToNotificationUrl(payload);
-      }
+      await routeToLatestTap(tapId, message.data ?? {});
     } catch (error) {
       console.error('앱 종료 상태의 알림 수신에 문제가 발생했습니다.', error);
     }
-  }, [routeToNotificationUrl]);
+  }, [createTapId, routeToLatestTap]);
 
   const onNotification = useCallback(() => {
     coldStartNotificationOpen();
