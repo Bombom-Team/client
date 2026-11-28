@@ -30,3 +30,33 @@ export const putFCMToken = async ({
 
   return response;
 };
+
+interface PutOsNotificationPermissionParams {
+  memberId: number;
+  deviceUuid: string;
+  granted: boolean;
+}
+
+export const putOsNotificationPermission = async ({
+  memberId,
+  deviceUuid,
+  granted,
+}: PutOsNotificationPermissionParams) => {
+  const response = await fetch(
+    `${ENV.baseUrl}/notifications/tokens/${memberId}/${deviceUuid}/os-permission`,
+    {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ granted }),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`OS 알림 권한 동기화 실패: ${response.status}`);
+  }
+
+  return response;
+};

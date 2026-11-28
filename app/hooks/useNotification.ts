@@ -9,9 +9,10 @@ import {
   createAndroidChannel,
   getFCMToken,
   getMemberId,
-  getNotificationUrl,
+  getNotificationRoutingPayload,
   requestNotificationPermission,
 } from '@/utils/notification';
+import type { NotificationRoutingPayload } from '@/utils/notification';
 import { useWebView } from '@/contexts/WebViewContext';
 import { getDeviceUUID } from '@/utils/device';
 import { putFCMToken } from '@/apis/notification';
@@ -27,14 +28,21 @@ Notifications.setNotificationHandler({
 
 const WEB_READY_TIMEOUT_MS = 10_000;
 
-const useNotification = (reloadWebView: () => void) => {
+// onTokenRefreshed: 앱 실행 중 FCM 토큰이 갱신되어 서버에 다시 등록한 뒤 호출한다.
+const useNotification = (
+  reloadWebView: () => void,
+  onTokenRefreshed?: () => void,
+) => {
   const { sendMessageToWeb } = useWebView();
   const isRegisteringRef = useRef(false);
   const isWebReadyRef = useRef(false);
-  const pendingNotificationUrlRef = useRef<string | null>(null);
+  const pendingNotificationRef = useRef<NotificationRoutingPayload | null>(
+    null,
+  );
   const hasHandledInitialNotificationRef = useRef(false);
   const readyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isWaitingForRetryRef = useRef(false);
+  const latestTapIdRef = useRef(0);
 
   const clearReadyTimer = useCallback(() => {
     if (readyTimerRef.current) clearTimeout(readyTimerRef.current);
@@ -42,7 +50,7 @@ const useNotification = (reloadWebView: () => void) => {
   }, []);
 
   const showReadyError = useCallback(() => {
-    if (!pendingNotificationUrlRef.current || isWaitingForRetryRef.current) return;
+    if (!pendingNotificationRef.current || isWaitingForRetryRef.current) return;
     clearReadyTimer();
     isWaitingForRetryRef.current = true;
     Alert.alert(
@@ -53,7 +61,7 @@ const useNotification = (reloadWebView: () => void) => {
           text: '닫기',
           style: 'cancel',
           onPress: () => {
-            pendingNotificationUrlRef.current = null;
+            pendingNotificationRef.current = null;
             isWaitingForRetryRef.current = false;
           },
         },
@@ -75,9 +83,9 @@ const useNotification = (reloadWebView: () => void) => {
 
   // 웹이 준비 신호를 보내기 전에 보낸 메시지는 웹이 받지 못하므로 준비될 때까지 보관한다.
   const routeToNotificationUrl = useCallback(
-    (url: string) => {
+    (payload: NotificationRoutingPayload) => {
       if (!isWebReadyRef.current) {
-        pendingNotificationUrlRef.current = url;
+        pendingNotificationRef.current = payload;
         if (!readyTimerRef.current && !isWaitingForRetryRef.current) {
           readyTimerRef.current = setTimeout(showReadyError, WEB_READY_TIMEOUT_MS);
         }
@@ -86,7 +94,7 @@ const useNotification = (reloadWebView: () => void) => {
 
       sendMessageToWeb({
         type: 'NOTIFICATION_ROUTING',
-        payload: { url },
+        payload,
       });
     },
     [sendMessageToWeb, showReadyError],
@@ -101,11 +109,11 @@ const useNotification = (reloadWebView: () => void) => {
     isWebReadyRef.current = true;
     clearReadyTimer();
 
-    const url = pendingNotificationUrlRef.current;
-    if (!url) return;
+    const payload = pendingNotificationRef.current;
+    if (!payload) return;
 
-    pendingNotificationUrlRef.current = null;
-    routeToNotificationUrl(url);
+    pendingNotificationRef.current = null;
+    routeToNotificationUrl(payload);
   }, [clearReadyTimer, routeToNotificationUrl]);
 
   const registerFCMToken = useCallback(async () => {
@@ -142,24 +150,44 @@ const useNotification = (reloadWebView: () => void) => {
     }
   }, []);
 
+  // 알림 식별자 조회가 겹치면 먼저 누른 알림이 늦게 끝날 수 있어, 마지막에 누른 알림으로만 이동한다.
+  // 탭 순번은 조회를 시작하기 전에 받아야 조회 중에 들어온 탭과 순서를 비교할 수 있다.
+  const createTapId = useCallback(() => {
+    latestTapIdRef.current += 1;
+    return latestTapIdRef.current;
+  }, []);
+
+  const routeToLatestTap = useCallback(
+    async (tapId: number, data: Record<string, unknown>) => {
+      const payload = await getNotificationRoutingPayload(data);
+      if (payload && tapId === latestTapIdRef.current) {
+        routeToNotificationUrl(payload);
+      }
+    },
+    [routeToNotificationUrl],
+  );
+
+  const routeToTappedNotification = useCallback(
+    (data: Record<string, unknown>) => routeToLatestTap(createTapId(), data),
+    [createTapId, routeToLatestTap],
+  );
+
   // 앱 종료 상태에서 알림을 탭한 경우
   // WebView를 다시 불러올 때마다 호출되므로, iOS에 남아 있는 이전 탭으로 다시 이동하지 않게 한 번만 처리한다.
   const coldStartNotificationOpen = useCallback(async () => {
     if (hasHandledInitialNotificationRef.current) return;
     hasHandledInitialNotificationRef.current = true;
 
+    const tapId = createTapId();
     try {
       const message = await messaging().getInitialNotification();
       if (!message) return;
 
-      const url = getNotificationUrl(message.data ?? {});
-      if (url) {
-        routeToNotificationUrl(url);
-      }
+      await routeToLatestTap(tapId, message.data ?? {});
     } catch (error) {
       console.error('앱 종료 상태의 알림 수신에 문제가 발생했습니다.', error);
     }
-  }, [routeToNotificationUrl]);
+  }, [createTapId, routeToLatestTap]);
 
   const onNotification = useCallback(() => {
     coldStartNotificationOpen();
@@ -169,6 +197,7 @@ const useNotification = (reloadWebView: () => void) => {
       console.log('FCM 토큰이 갱신되었습니다');
       try {
         await registerFCMToken();
+        onTokenRefreshed?.();
       } catch (error) {
         console.error('FCM 토큰 갱신 중 오류 발생:', error);
       }
@@ -205,10 +234,7 @@ const useNotification = (reloadWebView: () => void) => {
     // 백그라운드에서 알림을 탭한 경우
     const unsubscribeNotificationOpened = messaging().onNotificationOpenedApp(
       (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-        const url = getNotificationUrl(remoteMessage.data ?? {});
-        if (url) {
-          routeToNotificationUrl(url);
-        }
+        routeToTappedNotification(remoteMessage.data ?? {});
       },
     );
 
@@ -220,10 +246,7 @@ const useNotification = (reloadWebView: () => void) => {
         // 원격 푸시 탭은 Firebase 리스너가 처리한다. iOS는 같은 탭을 여기로도 보내지만 data가 비어 있다.
         if (trigger && 'type' in trigger && trigger.type === 'push') return;
 
-        const url = getNotificationUrl(content.data ?? {});
-        if (url) {
-          routeToNotificationUrl(url);
-        }
+        routeToTappedNotification(content.data ?? {});
       });
 
     // 클린업
@@ -233,7 +256,12 @@ const useNotification = (reloadWebView: () => void) => {
       unsubscribeNotificationOpened();
       responseListener.remove();
     };
-  }, [coldStartNotificationOpen, registerFCMToken, routeToNotificationUrl]);
+  }, [
+    coldStartNotificationOpen,
+    onTokenRefreshed,
+    registerFCMToken,
+    routeToTappedNotification,
+  ]);
 
   useEffect(() => {
     createAndroidChannel();

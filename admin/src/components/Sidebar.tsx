@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Link, useRouterState } from '@tanstack/react-router';
 import {
+  FiBarChart2,
   FiBell,
   FiCalendar,
   FiCode,
@@ -29,6 +30,13 @@ export const Sidebar = () => {
         <NavItem to="/" $isActive={currentPath === '/'}>
           <FiHome />
           <span>대시보드</span>
+        </NavItem>
+        <NavItem
+          to="/notifications"
+          $isActive={currentPath.startsWith('/notifications')}
+        >
+          <FiBarChart2 />
+          <span>알림 현황</span>
         </NavItem>
         <NavItem to="/members" $isActive={currentPath.startsWith('/members')}>
           <FiUsers />
