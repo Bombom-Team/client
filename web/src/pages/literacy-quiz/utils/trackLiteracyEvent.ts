@@ -11,7 +11,8 @@ export type LiteracyEventName =
   | 'literacy_quiz_challenge_share'
   | 'literacy_quiz_review_open'
   | 'literacy_quiz_newsletter_click'
-  | 'literacy_quiz_browse_click';
+  | 'literacy_quiz_browse_click'
+  | 'literacy_quiz_restart_click';
 
 interface TrackLiteracyEventParams {
   attemptCode?: string;

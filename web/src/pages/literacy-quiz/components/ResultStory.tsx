@@ -27,6 +27,7 @@ interface ResultStoryProps {
   startAtLast: boolean;
   isNicknameRegistered: boolean;
   onReview: () => void;
+  onRestart: () => void;
 }
 
 type SlideTone = 'drum' | 'peach' | 'white';
@@ -57,6 +58,7 @@ const ResultStory = ({
   startAtLast,
   isNicknameRegistered,
   onReview,
+  onRestart,
 }: ResultStoryProps) => {
   const shouldReduceMotion = useReducedMotion() ?? false;
   const { index, previousIndex, isLast, goNext, goPrevious } = useStoryPlayer({
@@ -117,9 +119,14 @@ const ResultStory = ({
           <BrandLogo src={logo} alt="" />
           봄봄 문해력 퀴즈
         </Brand>
-        <CloseMark aria-hidden="true" isDark={isDarkTop}>
+        <CloseButton
+          type="button"
+          aria-label="처음 화면으로"
+          isDark={isDarkTop}
+          onClick={onRestart}
+        >
           ×
-        </CloseMark>
+        </CloseButton>
       </AppBar>
       <Slide key={index} tone={tone} isTop={isLast}>
         {renderSlide()}
@@ -239,11 +246,18 @@ const BrandLogo = styled.img`
   border-radius: 1.6cqw;
 `;
 
-const CloseMark = styled.span<{ isDark: boolean }>`
+const CloseButton = styled.button<{ isDark: boolean }>`
+  margin: -1cqw -2cqw;
+  padding: 1cqw 2cqw;
+  border: none;
+
+  background: none;
   color: ${({ isDark, theme }) =>
     isDark ? theme.colors.white : LITERACY_COLORS.sub};
   font-size: 5cqw;
   line-height: 1;
+
+  cursor: pointer;
 `;
 
 const Slide = styled.div<{ tone: SlideTone; isTop: boolean }>`
