@@ -333,7 +333,7 @@ describe('알림 현황', () => {
     expect(within(chart).queryByText(/안 열림/)).toBeNull();
   });
 
-  it('일별 추이는 기본으로 전체 알림을 합치고 열림률은 계산하지 않는다', async () => {
+  it('일별 추이는 기본으로 이벤트를 뺀 회원별 알림을 합쳐 열림률을 그린다', async () => {
     vi.mocked(getNotificationStats).mockResolvedValue({
       ...stats,
       categories: [
@@ -370,10 +370,11 @@ describe('알림 현황', () => {
     const row = within(trend).getByRole('rowheader', {
       name: '2026-11-25',
     }).parentElement!;
-    // 발송은 회원별 카테고리(100 + 4), 열림은 이벤트까지(10 + 7 + 3)
+    // 이벤트(수신 동의 350, 열림 7)는 빼고 (10 + 3) / (100 + 4)
     expect(row.textContent).toContain('104');
-    expect(row.textContent).toContain('20');
-    expect(row.textContent).not.toContain('%');
+    expect(row.textContent).toContain('13');
+    expect(row.textContent).toContain('12.5%');
+    expect(within(trend).getByText('발송일 기준 · 이벤트 제외')).toBeTruthy();
     expect(within(trend).getByLabelText('카테고리')).toHaveProperty(
       'value',
       'TOTAL',

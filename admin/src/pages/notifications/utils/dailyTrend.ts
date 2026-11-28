@@ -48,31 +48,6 @@ export const buildDailyPoints = ({
     }));
 };
 
-// 전체 합계. 발송은 날짜별 발송 수가 있는 회원별 카테고리만, 열림은 토픽 발송까지 합친다.
-// 두 합의 대상이 달라 열림률은 계산하지 않는다.
-export const buildTotalDailyPoints = (
-  daily: NotificationDailyStats[],
-): DailyPoint[] => {
-  const pointsByDate = new Map<string, { sent: number; opened: number }>();
-
-  daily.forEach(({ date, sent, opened }) => {
-    const current = pointsByDate.get(date) ?? { sent: 0, opened: 0 };
-    pointsByDate.set(date, {
-      sent: current.sent + (sent ?? 0),
-      opened: current.opened + opened,
-    });
-  });
-
-  return [...pointsByDate.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, { sent, opened }]) => ({
-      date,
-      sent,
-      opened,
-      openRate: null,
-    }));
-};
-
 // 축 상한을 1·2·2.5·5·10 단위의 깔끔한 값으로 올린다.
 export const getNiceCeil = (value: number) => {
   if (value <= 0) return 1;

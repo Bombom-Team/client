@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import DailyTrendPlot from './DailyTrendPlot';
 import { CATEGORY_LABELS } from '../constants/notificationCategory';
-import { buildDailyPoints, buildTotalDailyPoints } from '../utils/dailyTrend';
+import { buildDailyPoints } from '../utils/dailyTrend';
 import { getSeoulDateRange } from '../utils/dateRange';
 import { formatCount, formatRate } from '../utils/formatStats';
 import type {
@@ -30,14 +30,14 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
     !isTotal &&
     categories.find(({ category }) => category === selection)?.deliveryMode ===
       'TOPIC';
-  const points = isTotal
-    ? buildTotalDailyPoints(daily ?? [])
-    : buildDailyPoints({ daily: daily ?? [], categories: [selection] });
-  const getRateNotice = () => {
-    if (isTotal) return '카테고리를 고르면 열림률을 볼 수 있어요.';
-    return null;
-  };
-  const rateNotice = getRateNotice();
+  // 전체는 회원별 알림만 합친다. 이벤트의 발송 시점 수신 동의 수는 근사치라 섞으면 열림률이 틀어진다.
+  const totalCategories = categories
+    .filter(({ deliveryMode }) => deliveryMode === 'MEMBER')
+    .map(({ category }) => category);
+  const points = buildDailyPoints({
+    daily: daily ?? [],
+    categories: isTotal ? totalCategories : [selection],
+  });
 
   const handleSelectionChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelection(event.target.value as TrendSelection);
@@ -48,7 +48,9 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
       <HeadingWrapper>
         <div>
           <SectionTitle id="daily-trend-heading">일별 추이</SectionTitle>
-          <ChartDescription>발송일 기준</ChartDescription>
+          <ChartDescription>
+            발송일 기준{isTotal && ' · 이벤트 제외'}
+          </ChartDescription>
         </div>
         <SelectLabel>
           카테고리
@@ -82,17 +84,14 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
               <LegendSwatch swatchColor="var(--seed-color-palette-carrot-700)" />
               열림
             </LegendItem>
-            {rateNotice === null && (
-              <LegendItem>
-                <LineKey />
-                {isTopic ? '열림률(≈)' : '열림률'}
-              </LegendItem>
-            )}
+            <LegendItem>
+              <LineKey />
+              {isTopic ? '열림률(≈)' : '열림률'}
+            </LegendItem>
           </LegendList>
           <DailyTrendPlot
             points={points}
             isApproximate={isTopic}
-            rateNotice={rateNotice}
             collectingFrom={getSeoulDateRange(COLLECTING_DAYS).from}
           />
           <TableDetails>
@@ -100,8 +99,8 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
             <TableWrapper>
               <DailyTable>
                 <caption>
-                  {isTotal ? '전체' : CATEGORY_LABELS[selection]} 일별 발송과
-                  열림
+                  {isTotal ? '전체(이벤트 제외)' : CATEGORY_LABELS[selection]}{' '}
+                  일별 발송과 열림
                 </caption>
                 <thead>
                   <tr>

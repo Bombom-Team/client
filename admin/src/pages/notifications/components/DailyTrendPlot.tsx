@@ -51,14 +51,12 @@ interface DailyTrendPlotProps {
   points: DailyPoint[];
   // 토픽 발송은 발송 수 대신 발송 시점 수신 동의 회원 수를 막대로 그리고, 열림률은 근사치다.
   isApproximate: boolean;
-  rateNotice: string | null;
   collectingFrom: string;
 }
 
 const DailyTrendPlot = ({
   points,
   isApproximate,
-  rateNotice,
   collectingFrom,
 }: DailyTrendPlotProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -172,9 +170,7 @@ const DailyTrendPlot = ({
               fill="var(--seed-color-bg-layer-fill)"
             />
             <PlotText x={PLOT_RIGHT} y={COUNT_TOP - 10} textAnchor="end">
-              {rateNotice === null
-                ? '음영·점선: 열림 집계 중'
-                : '음영: 열림 집계 중'}
+              음영·점선: 열림 집계 중
             </PlotText>
           </g>
         )}
@@ -235,79 +231,67 @@ const DailyTrendPlot = ({
         <PlotText x={PLOT_LEFT} y={RATE_TOP - 16} isStrong>
           {isApproximate ? '열림률 (≈)' : '열림률'}
         </PlotText>
-        {rateNotice === null ? (
-          <g aria-hidden="true">
-            {[0, rateMax / 2, rateMax].map((tick) => (
-              <g key={tick}>
-                <line
-                  x1={PLOT_LEFT}
-                  x2={PLOT_RIGHT}
-                  y1={getRateY(tick)}
-                  y2={getRateY(tick)}
-                  stroke="var(--seed-color-palette-gray-300)"
-                />
-                <PlotText
-                  x={PLOT_LEFT - 8}
-                  y={getRateY(tick) + 4}
-                  textAnchor="end"
-                >
-                  {formatRate(tick)}
-                </PlotText>
-              </g>
-            ))}
+        <g aria-hidden="true">
+          {[0, rateMax / 2, rateMax].map((tick) => (
+            <g key={tick}>
+              <line
+                x1={PLOT_LEFT}
+                x2={PLOT_RIGHT}
+                y1={getRateY(tick)}
+                y2={getRateY(tick)}
+                stroke="var(--seed-color-palette-gray-300)"
+              />
+              <PlotText
+                x={PLOT_LEFT - 8}
+                y={getRateY(tick) + 4}
+                textAnchor="end"
+              >
+                {formatRate(tick)}
+              </PlotText>
+            </g>
+          ))}
+          <path
+            d={getRateLinePath(
+              rateCoordinates.map((point, index) =>
+                collectingIndex >= 0 && index >= collectingIndex ? null : point,
+              ),
+            )}
+            fill="none"
+            stroke="var(--seed-color-palette-carrot-700)"
+            strokeWidth={2}
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          {collectingIndex >= 0 && (
             <path
               d={getRateLinePath(
                 rateCoordinates.map((point, index) =>
-                  collectingIndex >= 0 && index >= collectingIndex
-                    ? null
-                    : point,
+                  index >= collectingIndex - 1 ? point : null,
                 ),
               )}
               fill="none"
               stroke="var(--seed-color-palette-carrot-700)"
               strokeWidth={2}
+              strokeDasharray="6 4"
               strokeLinejoin="round"
               strokeLinecap="round"
             />
-            {collectingIndex >= 0 && (
-              <path
-                d={getRateLinePath(
-                  rateCoordinates.map((point, index) =>
-                    index >= collectingIndex - 1 ? point : null,
-                  ),
-                )}
-                fill="none"
-                stroke="var(--seed-color-palette-carrot-700)"
-                strokeWidth={2}
-                strokeDasharray="6 4"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-              />
-            )}
-            {rateCoordinates.map(
-              (point, index) =>
-                point !== null &&
-                !rateCoordinates[index - 1] &&
-                !rateCoordinates[index + 1] && (
-                  <circle
-                    key={points[index].date}
-                    cx={point.x}
-                    cy={point.y}
-                    r={3}
-                    fill="var(--seed-color-palette-carrot-700)"
-                  />
-                ),
-            )}
-          </g>
-        ) : (
-          <PlotText
-            x={PLOT_LEFT + PLOT_WIDTH / 2}
-            y={RATE_TOP + RATE_HEIGHT / 2}
-            textAnchor="middle"
-          >
-            {rateNotice}
-          </PlotText>
-        )}
+          )}
+          {rateCoordinates.map(
+            (point, index) =>
+              point !== null &&
+              !rateCoordinates[index - 1] &&
+              !rateCoordinates[index + 1] && (
+                <circle
+                  key={points[index].date}
+                  cx={point.x}
+                  cy={point.y}
+                  r={3}
+                  fill="var(--seed-color-palette-carrot-700)"
+                />
+              ),
+          )}
+        </g>
 
         {points.map(
           ({ date }, index) =>
@@ -339,7 +323,7 @@ const DailyTrendPlot = ({
               y2={RATE_TOP + RATE_HEIGHT}
               stroke="var(--seed-color-palette-gray-600)"
             />
-            {rateNotice === null && activePoint.openRate !== null && (
+            {activePoint.openRate !== null && (
               <circle
                 cx={getCenterX(activeIndex)}
                 cy={getRateY(activePoint.openRate)}
@@ -387,16 +371,14 @@ const DailyTrendPlot = ({
               <span>열림</span>
               <span>{formatCount(activePoint.opened)}건</span>
             </TooltipRow>
-            {rateNotice === null && (
-              <TooltipRow>
-                <span>열림률</span>
-                <span>
-                  {activePoint.openRate === null
-                    ? '발송 없음'
-                    : `${isApproximate ? '≈ ' : ''}${formatRate(activePoint.openRate)}`}
-                </span>
-              </TooltipRow>
-            )}
+            <TooltipRow>
+              <span>열림률</span>
+              <span>
+                {activePoint.openRate === null
+                  ? '발송 없음'
+                  : `${isApproximate ? '≈ ' : ''}${formatRate(activePoint.openRate)}`}
+              </span>
+            </TooltipRow>
             {activePoint.date >= collectingFrom && (
               <TooltipNote>열림이 아직 쌓이는 중이에요</TooltipNote>
             )}
