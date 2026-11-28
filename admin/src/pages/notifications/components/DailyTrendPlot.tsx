@@ -98,7 +98,9 @@ const DailyTrendPlot = ({
   const collectingIndex = points.findIndex(
     ({ date }) => date >= collectingFrom,
   );
-  const activePoint = activeIndex === null ? null : points[activeIndex];
+  // 기간이 바뀌어 points가 줄면 이전 activeIndex가 범위를 벗어날 수 있다.
+  const activePoint =
+    activeIndex === null ? null : (points[activeIndex] ?? null);
   const activeRatio =
     activeIndex === null ? 0 : getCenterX(activeIndex) / WIDTH;
   // 가장자리 날짜에서는 툴팁이 차트 밖으로 넘치지 않게 기준점을 옮긴다.
@@ -132,7 +134,7 @@ const DailyTrendPlot = ({
 
   const handleKeyDown = (event: KeyboardEvent<SVGSVGElement>) => {
     const lastIndex = points.length - 1;
-    const current = activeIndex ?? lastIndex;
+    const current = Math.min(activeIndex ?? lastIndex, lastIndex);
     const nextIndexByKey: Record<string, number> = {
       ArrowLeft: Math.max(0, current - 1),
       ArrowRight: Math.min(lastIndex, current + 1),

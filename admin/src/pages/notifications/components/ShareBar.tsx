@@ -34,12 +34,15 @@ const ShareBar = ({ title, unit, segments }: ShareBarProps) => {
             .map(({ label, count }) => `${label} ${formatShare(count)}`)
             .join(', ')}`}
         >
-          {segments.map(({ label, count, color }) => (
-            <BarSegment
-              key={label}
-              style={{ flexGrow: count, backgroundColor: color }}
-            />
-          ))}
+          {/* 0건 항목은 최소 너비 때문에 색이 보이지 않도록 막대에서 빼고 범례에만 남긴다. */}
+          {segments
+            .filter(({ count }) => count > 0)
+            .map(({ label, count, color }) => (
+              <BarSegment
+                key={label}
+                style={{ flexGrow: count, backgroundColor: color }}
+              />
+            ))}
         </BarTrack>
       ) : (
         <EmptyText>아직 집계된 수치가 없어요.</EmptyText>
