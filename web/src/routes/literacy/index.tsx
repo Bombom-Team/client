@@ -139,7 +139,7 @@ function LiteracyPage() {
       savedResult?.result ?? null,
     );
   const [isStoryAtLast, setIsStoryAtLast] = useState(!!savedResult);
-  const [isNicknameRegistered] = useState(
+  const [isNicknameRegistered, setIsNicknameRegistered] = useState(
     savedResult?.isNicknameRegistered ?? false,
   );
   // 이탈 횟수는 PC·휴대폰 시험 화면이 바뀌어도 이어지도록 여기서 센다.
@@ -175,6 +175,7 @@ function LiteracyPage() {
         });
         setPicks(createEmptyPicks());
         setResult(null);
+        setIsNicknameRegistered(false);
         leaveCountRef.current = 0;
         setLeaveCount(0);
         setIsAnswerLocked(false);
@@ -294,6 +295,10 @@ function LiteracyPage() {
 
   // 결과 화면의 ×: 저장된 결과를 지우고 표지로 돌아가 다시 풀 수 있게 한다(다시 푼 기록은 순위 제외).
   const handleRestart = () => {
+    trackLiteracyEvent('literacy_quiz_restart_click', {
+      attemptCode,
+      platform,
+    });
     clearLastResult();
     setIsStoryAtLast(false);
     setPhase('cover');
