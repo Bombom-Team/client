@@ -83,14 +83,13 @@ export default PeriodFilter;
 const Container = styled.div`
   display: grid;
   gap: var(--seed-dimension-x2);
-  justify-items: end;
+  justify-items: start;
 `;
 const ControlRow = styled.div`
   display: flex;
   gap: var(--seed-dimension-x3);
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
 `;
 const PresetWrapper = styled.div`
   display: flex;

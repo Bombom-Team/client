@@ -8,9 +8,9 @@ import { formatCount, formatDuration, formatRate } from '../utils/formatStats';
 import type { NotificationCategoryStats } from '@/apis/notificationStats/notificationStats.api';
 
 // 카테고리 열을 뺀 숫자 열 수. 같은 너비로 나눠 숫자 간격을 일정하게 맞춘다.
-const NUMERIC_COLUMN_COUNT = 12;
+const NUMERIC_COLUMN_COUNT = 11;
 
-// 0은 옅게 두어 0이 아닌 실패·소진 같은 값이 먼저 보이게 한다.
+// 0은 옅게 두어 0이 아닌 실패 같은 값이 먼저 보이게 한다.
 const renderCount = (value: number) => (
   <CountText isZero={value === 0}>{formatCount(value)}</CountText>
 );
@@ -45,7 +45,7 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
               <th scope="col" rowSpan={2}>
                 카테고리
               </th>
-              <th scope="colgroup" colSpan={5} data-group-start>
+              <th scope="colgroup" colSpan={4} data-group-start>
                 발송
               </th>
               <th scope="colgroup" colSpan={2} data-group-start>
@@ -61,7 +61,6 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
               </th>
               <th scope="col">발송</th>
               <th scope="col">실패</th>
-              <th scope="col">소진</th>
               <th scope="col">스킵</th>
               <th scope="col" data-group-start>
                 성공
@@ -103,7 +102,7 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
                     )}
                   </td>
                   {isTopic ? (
-                    <td colSpan={6}>
+                    <td colSpan={5}>
                       <MutedText>
                         토픽 1회 발송이라 회원별 결과가 없어요
                       </MutedText>
@@ -118,15 +117,9 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
                         )}
                       </td>
                       <td>
+                        {/* 재시도 횟수가 0이라 실패하면 바로 DEAD가 되므로 FAILED와 합쳐 보여준다. */}
                         {statusCounts ? (
-                          renderCount(statusCounts.FAILED)
-                        ) : (
-                          <MutedText>—</MutedText>
-                        )}
-                      </td>
-                      <td>
-                        {statusCounts ? (
-                          renderCount(statusCounts.DEAD)
+                          renderCount(statusCounts.FAILED + statusCounts.DEAD)
                         ) : (
                           <MutedText>—</MutedText>
                         )}

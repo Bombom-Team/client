@@ -36,31 +36,17 @@ const NotificationsPage = () => {
             확인하세요.
           </DescriptionBox>
         </div>
-        <ControlWrapper>
-          <PeriodFilter value={range} onChange={setRange} />
-          <RefreshButton
-            type="button"
-            onClick={handleRefresh}
-            disabled={isFetching}
-          >
-            <FiRefreshCw aria-hidden="true" />
-            {isFetching ? '갱신 중' : '새로고침'}
-          </RefreshButton>
-        </ControlWrapper>
+        <RefreshButton
+          type="button"
+          onClick={handleRefresh}
+          disabled={isFetching}
+        >
+          <FiRefreshCw aria-hidden="true" />
+          {isFetching ? '갱신 중' : '새로고침'}
+        </RefreshButton>
       </HeadingWrapper>
 
-      <MetaWrapper>
-        {data && (
-          <span>
-            {data.from} ~ {data.to} · 서버 집계{' '}
-            <time dateTime={data.aggregatedAt}>
-              {new Date(data.aggregatedAt).toLocaleString('ko-KR', {
-                timeZone: 'Asia/Seoul',
-              })}
-            </time>
-          </span>
-        )}
-      </MetaWrapper>
+      <PeriodFilter value={range} onChange={setRange} />
 
       {isPaused && (
         <NoticeBox role="status">네트워크 연결을 기다리고 있어요.</NoticeBox>
@@ -224,12 +210,6 @@ const PageTitle = styled.h1`
 const DescriptionBox = styled.p`
   color: var(--seed-color-fg-neutral-muted);
 `;
-const ControlWrapper = styled.div`
-  display: flex;
-  gap: var(--seed-dimension-x3);
-  flex-wrap: wrap;
-  align-items: flex-start;
-`;
 const RefreshButton = styled.button`
   min-height: 44px;
   padding: var(--seed-dimension-x3) var(--seed-dimension-x4);
@@ -253,16 +233,6 @@ const RefreshButton = styled.button`
   &:hover:not(:disabled) {
     background-color: var(--seed-color-bg-brand-weak);
   }
-`;
-const MetaWrapper = styled.div`
-  display: flex;
-  gap: var(--seed-dimension-x4);
-  flex-wrap: wrap;
-
-  color: var(--seed-color-fg-neutral-muted);
-  font-size: var(--seed-font-size-t3);
-
-  font-variant-numeric: tabular-nums;
 `;
 const SectionTitle = styled.h2`
   margin-bottom: var(--seed-dimension-x4);
