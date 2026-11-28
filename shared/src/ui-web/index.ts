@@ -48,6 +48,7 @@ export { default as useMediaQuery } from './hooks/useMediaQuery';
 export type { MediaCondition } from './hooks/useMediaQuery';
 export { DEVICE_BREAKPOINTS } from './hooks/deviceBreakpoints';
 export { useScrollVisible } from './hooks/useScrollVisible';
+export { default as useFocusTrap } from './hooks/useFocusTrap';
 
 export { default as ServiceSwitcher } from './Header/ServiceSwitcher';
 export type { ServiceSwitcherProps } from './Header/ServiceSwitcher';
