@@ -5,7 +5,7 @@ import {
   CATEGORY_LABELS,
   OPEN_NOT_RECORDED_CATEGORIES,
 } from '../constants/notificationCategory';
-import { buildDailyPoints } from '../utils/dailyTrend';
+import { buildDailyPoints, buildTotalDailyPoints } from '../utils/dailyTrend';
 import { getSeoulDateRange } from '../utils/dateRange';
 import { formatCount, formatRate } from '../utils/formatStats';
 import type {
@@ -28,16 +28,6 @@ interface DailyTrendChartProps {
 
 const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
   const [selection, setSelection] = useState<TrendSelection>(TOTAL_SELECTION);
-  // 합계는 날짜별 발송 수가 있고 열림이 기록되는 카테고리만 묶는다.
-  const totalCategories = categories
-    .filter(
-      ({ category, deliveryMode }) =>
-        deliveryMode === 'MEMBER' &&
-        !OPEN_NOT_RECORDED_CATEGORIES.includes(category),
-    )
-    .map(({ category }) => category);
-  const totalLabel = `${totalCategories.map((category) => CATEGORY_LABELS[category]).join('·')} 합계`;
-
   const isTotal = selection === TOTAL_SELECTION;
   const isOpenRecorded =
     isTotal || !OPEN_NOT_RECORDED_CATEGORIES.includes(selection);
@@ -45,12 +35,26 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
     !isTotal &&
     categories.find(({ category }) => category === selection)?.deliveryMode ===
       'TOPIC';
-  const points = buildDailyPoints({
-    daily: daily ?? [],
-    categories: isTotal ? totalCategories : [selection],
-    isOpenRecorded,
-  });
+  // 전체: 발송은 날짜별 발송 수가 있는 회원별 카테고리, 열림은 열림이 기록되는 카테고리를 합친다.
+  const points = isTotal
+    ? buildTotalDailyPoints({
+        daily: daily ?? [],
+        sentCategories: categories
+          .filter(({ deliveryMode }) => deliveryMode === 'MEMBER')
+          .map(({ category }) => category),
+        openedCategories: categories
+          .filter(
+            ({ category }) => !OPEN_NOT_RECORDED_CATEGORIES.includes(category),
+          )
+          .map(({ category }) => category),
+      })
+    : buildDailyPoints({
+        daily: daily ?? [],
+        categories: [selection],
+        isOpenRecorded,
+      });
   const getRateNotice = () => {
+    if (isTotal) return '카테고리를 고르면 열림률을 볼 수 있어요.';
     if (!isOpenRecorded)
       return '챌린지 알림은 열림이 기록되지 않아 열림률을 그리지 않아요.';
     if (isTopic)
@@ -75,7 +79,7 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
         <SelectLabel>
           카테고리
           <CategorySelect value={selection} onChange={handleSelectionChange}>
-            <option value={TOTAL_SELECTION}>{totalLabel}</option>
+            <option value={TOTAL_SELECTION}>전체</option>
             {categories.map(({ category }) => (
               <option key={category} value={category}>
                 {CATEGORY_LABELS[category]}
@@ -127,8 +131,8 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
             <TableWrapper>
               <DailyTable>
                 <caption>
-                  {isTotal ? totalLabel : CATEGORY_LABELS[selection]} 일별
-                  발송과 열림
+                  {isTotal ? '전체' : CATEGORY_LABELS[selection]} 일별 발송과
+                  열림
                 </caption>
                 <thead>
                   <tr>

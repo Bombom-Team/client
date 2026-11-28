@@ -49,6 +49,40 @@ export const buildDailyPoints = ({
     }));
 };
 
+interface BuildTotalDailyPointsParams {
+  daily: NotificationDailyStats[];
+  sentCategories: NotificationCategory[];
+  openedCategories: NotificationCategory[];
+}
+
+// 전체 합계. 발송과 열림을 합치는 카테고리가 서로 달라 열림률은 계산하지 않는다.
+export const buildTotalDailyPoints = ({
+  daily,
+  sentCategories,
+  openedCategories,
+}: BuildTotalDailyPointsParams): DailyPoint[] => {
+  const pointsByDate = new Map<string, { sent: number; opened: number }>();
+
+  daily.forEach(({ date, category, sent, opened }) => {
+    const current = pointsByDate.get(date) ?? { sent: 0, opened: 0 };
+    pointsByDate.set(date, {
+      sent:
+        current.sent + (sentCategories.includes(category) ? (sent ?? 0) : 0),
+      opened:
+        current.opened + (openedCategories.includes(category) ? opened : 0),
+    });
+  });
+
+  return [...pointsByDate.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, { sent, opened }]) => ({
+      date,
+      sent,
+      opened,
+      openRate: null,
+    }));
+};
+
 // 축 상한을 1·2·2.5·5·10 단위의 깔끔한 값으로 올린다.
 export const getNiceCeil = (value: number) => {
   if (value <= 0) return 1;
