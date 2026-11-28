@@ -130,9 +130,20 @@ export const getNotificationUrl = (data: Record<string, unknown>) => {
       if (Number.isNaN(roomId)) return null;
       return `/support/inquiry/${roomId}`;
     }
-    default:
-      return null;
   }
+
+  // 챌린지 할 일 알림은 notificationType이 DEFAULT라 category로 구분한다.
+  // 챌린지 화면은 진행 중이면 데일리 가이드, 끝났으면 회고로 이동한다.
+  if (
+    data.category === 'CHALLENGE_START' ||
+    data.category === 'CHALLENGE_TODO_REMINDER'
+  ) {
+    const challengeId = Number(data.challengeId);
+    if (!data.challengeId || Number.isNaN(challengeId)) return null;
+    return `/challenge/${challengeId}`;
+  }
+
+  return null;
 };
 
 export type NotificationRoutingPayload = Extract<
