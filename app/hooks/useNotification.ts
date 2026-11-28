@@ -42,6 +42,7 @@ const useNotification = (
   const hasHandledInitialNotificationRef = useRef(false);
   const readyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isWaitingForRetryRef = useRef(false);
+  const latestTapIdRef = useRef(0);
 
   const clearReadyTimer = useCallback(() => {
     if (readyTimerRef.current) clearTimeout(readyTimerRef.current);
@@ -149,6 +150,19 @@ const useNotification = (
     }
   }, []);
 
+  // 알림 식별자 조회가 겹치면 먼저 누른 알림이 늦게 끝날 수 있어, 마지막에 누른 알림으로만 이동한다.
+  const routeToTappedNotification = useCallback(
+    async (data: Record<string, unknown>) => {
+      latestTapIdRef.current += 1;
+      const tapId = latestTapIdRef.current;
+      const payload = await getNotificationRoutingPayload(data);
+      if (payload && tapId === latestTapIdRef.current) {
+        routeToNotificationUrl(payload);
+      }
+    },
+    [routeToNotificationUrl],
+  );
+
   // 앱 종료 상태에서 알림을 탭한 경우
   // WebView를 다시 불러올 때마다 호출되므로, iOS에 남아 있는 이전 탭으로 다시 이동하지 않게 한 번만 처리한다.
   const coldStartNotificationOpen = useCallback(async () => {
@@ -212,28 +226,20 @@ const useNotification = (
 
     // 백그라운드에서 알림을 탭한 경우
     const unsubscribeNotificationOpened = messaging().onNotificationOpenedApp(
-      async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-        const payload = await getNotificationRoutingPayload(
-          remoteMessage.data ?? {},
-        );
-        if (payload) {
-          routeToNotificationUrl(payload);
-        }
+      (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+        routeToTappedNotification(remoteMessage.data ?? {});
       },
     );
 
     // 포그라운드에서 띄운 로컬 알림을 탭한 경우
     const responseListener =
-      Notifications.addNotificationResponseReceivedListener(async (response) => {
+      Notifications.addNotificationResponseReceivedListener((response) => {
         const { content, trigger } = response.notification.request;
 
         // 원격 푸시 탭은 Firebase 리스너가 처리한다. iOS는 같은 탭을 여기로도 보내지만 data가 비어 있다.
         if (trigger && 'type' in trigger && trigger.type === 'push') return;
 
-        const payload = await getNotificationRoutingPayload(content.data ?? {});
-        if (payload) {
-          routeToNotificationUrl(payload);
-        }
+        routeToTappedNotification(content.data ?? {});
       });
 
     // 클린업
@@ -247,7 +253,7 @@ const useNotification = (
     coldStartNotificationOpen,
     onTokenRefreshed,
     registerFCMToken,
-    routeToNotificationUrl,
+    routeToTappedNotification,
   ]);
 
   useEffect(() => {

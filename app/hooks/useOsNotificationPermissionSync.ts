@@ -12,7 +12,7 @@ interface SyncOsNotificationPermissionParams {
 // 서버의 마이페이지 알림 설정과 별개로, 기기 OS 설정의 알림 권한을 서버에 알려 알림 지표의 도달 모수를 보정한다.
 export const useOsNotificationPermissionSync = () => {
   const lastSyncedRef = useRef<string | null>(null);
-  const inFlightRef = useRef<Promise<void> | null>(null);
+  const queueRef = useRef<Promise<void>>(Promise.resolve());
   const appStateRef = useRef(AppState.currentState);
 
   const sendOsNotificationPermission = useCallback(async (isForced: boolean) => {
@@ -36,21 +36,13 @@ export const useOsNotificationPermissionSync = () => {
 
   const syncOsNotificationPermission = useCallback(
     async ({ isForced = false }: SyncOsNotificationPermissionParams = {}) => {
-      // 동시에 들어온 동기화는 진행 중인 요청 하나로 합친다.
-      // 강제 동기화는 진행 중인 요청이 토큰 재등록 전에 보낸 값일 수 있어 끝난 뒤 다시 보낸다.
-      const inFlight = inFlightRef.current;
-      if (inFlight) {
-        await inFlight;
-        if (!isForced) return;
-      }
-
-      const request = sendOsNotificationPermission(isForced);
-      inFlightRef.current = request;
-      try {
-        await request;
-      } finally {
-        if (inFlightRef.current === request) inFlightRef.current = null;
-      }
+      // 요청을 하나씩 차례로 보낸다. 각 요청이 보낼 때의 권한을 다시 읽으므로 대기 중 바뀐 권한도 반영되고,
+      // 이전 값의 요청이 나중에 끝나 서버 값을 덮어쓰는 일이 없다. 같은 값은 lastSyncedRef로 건너뛴다.
+      const request = queueRef.current.then(() =>
+        sendOsNotificationPermission(isForced),
+      );
+      queueRef.current = request;
+      await request;
     },
     [sendOsNotificationPermission],
   );
