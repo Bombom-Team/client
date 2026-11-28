@@ -7,6 +7,7 @@ import { eventQueries } from './event/event.query';
 import { faqQueries } from './faq/faq.query';
 import { highlightQueries } from './highlight/highlight.query';
 import { inquiryQueries } from './inquiry/inquiry.query';
+import { literacyQuizQueries } from './literacyQuiz/literacyQuiz.query';
 import { maeilMailQueries } from './maeilMail/maeilMail.query';
 import { membersQueries } from './members/members.query';
 import { newsletterRequestsQueries } from './newsletterRequests/newsletterRequests.query';
@@ -35,6 +36,9 @@ export const queries = {
 
   // inquiry
   ...inquiryQueries,
+
+  // literacy quiz
+  ...literacyQuizQueries,
 
   // maeil-mail
   ...maeilMailQueries,
