@@ -127,8 +127,10 @@ const DailyTrendPlot = ({
     });
   };
 
-  const handlePointerLeave = () => {
+  // 예약된 포인터 프레임이 닫은 뒤에 실행되어 툴팁을 다시 띄우지 않도록 함께 취소한다.
+  const hideTooltip = () => {
     if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+    frameRef.current = null;
     setActiveIndex(null);
   };
 
@@ -142,7 +144,7 @@ const DailyTrendPlot = ({
       End: lastIndex,
     };
     if (event.key === 'Escape') {
-      setActiveIndex(null);
+      hideTooltip();
       return;
     }
     if (!(event.key in nextIndexByKey)) return;
@@ -159,7 +161,7 @@ const DailyTrendPlot = ({
         aria-label="일별 발송과 열림 추이. 방향키로 날짜를 옮기며 수치를 확인할 수 있어요."
         tabIndex={0}
         onFocus={() => setActiveIndex((index) => index ?? points.length - 1)}
-        onBlur={() => setActiveIndex(null)}
+        onBlur={hideTooltip}
         onKeyDown={handleKeyDown}
       >
         {collectingIndex >= 0 && (
@@ -345,7 +347,7 @@ const DailyTrendPlot = ({
           height={RATE_TOP + RATE_HEIGHT - COUNT_TOP}
           fill="transparent"
           onPointerMove={handlePointerMove}
-          onPointerLeave={handlePointerLeave}
+          onPointerLeave={hideTooltip}
         />
       </PlotSvg>
 
@@ -376,9 +378,11 @@ const DailyTrendPlot = ({
             <TooltipRow>
               <span>열림률</span>
               <span>
-                {activePoint.openRate === null
-                  ? '발송 없음'
-                  : `${isApproximate ? '≈ ' : ''}${formatRate(activePoint.openRate)}`}
+                {activePoint.sent === null
+                  ? '집계 없음'
+                  : activePoint.openRate === null
+                    ? '발송 없음'
+                    : `${isApproximate ? '≈ ' : ''}${formatRate(activePoint.openRate)}`}
               </span>
             </TooltipRow>
             {activePoint.date >= collectingFrom && (
