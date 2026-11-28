@@ -292,6 +292,13 @@ function LiteracyPage() {
     setPhase('review');
   };
 
+  // 결과 화면의 ×: 저장된 결과를 지우고 표지로 돌아가 다시 풀 수 있게 한다(다시 푼 기록은 순위 제외).
+  const handleRestart = () => {
+    clearLastResult();
+    setIsStoryAtLast(false);
+    setPhase('cover');
+  };
+
   const handleReviewBack = () => {
     setIsStoryAtLast(true);
     setPhase('result');
@@ -318,6 +325,7 @@ function LiteracyPage() {
         startAtLast={isStoryAtLast}
         isNicknameRegistered={isNicknameRegistered}
         onReview={handleReviewOpen}
+        onRestart={handleRestart}
       />
     );
   };
