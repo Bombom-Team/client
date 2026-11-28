@@ -24,7 +24,10 @@ export interface NotificationCategoryStats {
   statusCounts: Record<NotificationStatus, number> | null;
   failureReasons: { reason: string; count: number }[];
   deviceSends: { success: number; failure: number } | null;
+  // uniqueLinked: 기간 안에 열린 고유 알림 수(열린 시각 기준)
   opens: { linked: number; uniqueLinked: number; unlinked: number };
+  // 기간에 보낸 알림 중 한 번이라도 열린 수(발송일 기준, 열린 시점 무관). openRate의 분자다.
+  openedOfSent: number;
   openRate: number | null;
   medianSecondsToOpen: number | null;
   consentingMembers: number | null;

@@ -28,7 +28,9 @@ const memberCategory = (
   statusCounts: { PENDING: 0, SENT: 1200, FAILED: 3, DEAD: 9, SKIPPED: 300 },
   failureReasons: [{ reason: 'FCM 토큰 없음', count: 9 }],
   deviceSends: { success: 1530, failure: 22 },
-  opens: { linked: 210, uniqueLinked: 180, unlinked: 14 },
+  // 기간 안에 열린 고유 알림(195)과 기간에 보낸 알림 중 열린 수(180)를 다르게 둬 분자를 구분한다.
+  opens: { linked: 210, uniqueLinked: 195, unlinked: 14 },
+  openedOfSent: 180,
   openRate: 0.15,
   medianSecondsToOpen: 540,
   consentingMembers: 4100,
@@ -49,6 +51,7 @@ const stats: GetNotificationStatsResponse = {
       failureReasons: [],
       deviceSends: null,
       opens: { linked: 95, uniqueLinked: 80, unlinked: 2 },
+      openedOfSent: 80,
       openRate: 0.02,
       medianSecondsToOpen: null,
       consentingMembers: 3900,
@@ -59,6 +62,7 @@ const stats: GetNotificationStatsResponse = {
       statusCounts: { PENDING: 0, SENT: 0, FAILED: 0, DEAD: 0, SKIPPED: 0 },
       failureReasons: [],
       opens: { linked: 0, uniqueLinked: 0, unlinked: 0 },
+      openedOfSent: 0,
       openRate: null,
       medianSecondsToOpen: null,
     }),
@@ -168,7 +172,7 @@ describe('알림 현황', () => {
     expect(detail.getByText('미집계')).toBeTruthy();
   });
 
-  it('챌린지 카테고리도 고유 열림과 열림률을 표시한다', async () => {
+  it('챌린지 카테고리도 열린 알림과 열림률을 표시한다', async () => {
     vi.mocked(getNotificationStats).mockResolvedValue({
       ...stats,
       categories: [
@@ -181,7 +185,8 @@ describe('알림 현황', () => {
             DEAD: 0,
             SKIPPED: 0,
           },
-          opens: { linked: 40, uniqueLinked: 30, unlinked: 0 },
+          opens: { linked: 40, uniqueLinked: 33, unlinked: 0 },
+          openedOfSent: 30,
           openRate: 0.3,
         }),
       ],
@@ -208,6 +213,7 @@ describe('알림 현황', () => {
             SKIPPED: 0,
           },
           opens: { linked: 0, uniqueLinked: 0, unlinked: 0 },
+          openedOfSent: 0,
           openRate: 0,
         }),
       ],
@@ -218,6 +224,21 @@ describe('알림 현황', () => {
     expect(within(summary).getByText('9%')).toBeTruthy();
     expect(within(summary).getByText('2,000')).toBeTruthy();
     expect(within(summary).getByText('180')).toBeTruthy();
+  });
+
+  it('열림률의 분자는 기간 내 고유 열림이 아니라 기간에 보낸 알림 중 열린 수를 쓴다', async () => {
+    vi.mocked(getNotificationStats).mockResolvedValue(stats);
+    renderPage();
+    const summary = await screen.findByLabelText('기간 요약');
+    expect(within(summary).queryByText('195')).toBeNull();
+    const row = within(getCategoryRow('아티클 도착'));
+    expect(row.getByText('180')).toBeTruthy();
+    expect(row.queryByText('195')).toBeNull();
+    fireEvent.click(row.getByRole('button', { name: '아티클 도착 상세 보기' }));
+    const detail = within(
+      document.getElementById('notification-detail-ARTICLE')!,
+    );
+    expect(detail.getByText('195건')).toBeTruthy();
   });
 
   it('열림률 차트는 측정된 카테고리를 열림률 순으로 놓고 근사치를 구분한다', async () => {
@@ -297,7 +318,7 @@ describe('알림 현황', () => {
     expect(getNotificationStats).toHaveBeenCalledTimes(1);
   });
 
-  it('열림률 막대는 고유 열림과 발송을 표시하고 미열림을 추정하지 않는다', async () => {
+  it('열림률 막대는 발송 기준 열린 알림과 발송을 표시하고 미열림을 추정하지 않는다', async () => {
     vi.mocked(getNotificationStats).mockResolvedValue(stats);
     renderPage();
     const chart = await screen.findByRole('region', {

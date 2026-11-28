@@ -17,12 +17,12 @@ const NotificationSummary = ({ stats }: NotificationSummaryProps) => {
   const sent = sum(
     memberCategories.map(({ statusCounts }) => statusCounts?.SENT ?? 0),
   );
-  const opened = sum(memberCategories.map(({ opens }) => opens.uniqueLinked));
+  const opened = sum(memberCategories.map(({ openedOfSent }) => openedOfSent));
   const openRate = sent > 0 ? opened / sent : null;
   const eventOpened = sum(
     stats.categories
       .filter(({ deliveryMode }) => deliveryMode === 'TOPIC')
-      .map(({ opens }) => opens.uniqueLinked),
+      .map(({ openedOfSent }) => openedOfSent),
   );
 
   return (
@@ -46,7 +46,7 @@ const NotificationSummary = ({ stats }: NotificationSummaryProps) => {
           </Value>
         </Tile>
         <Tile>
-          <dt>기간 내 고유 열림</dt>
+          <dt>열린 알림</dt>
           <Value>
             {formatCount(opened)}
             <Unit>건</Unit>
@@ -55,7 +55,7 @@ const NotificationSummary = ({ stats }: NotificationSummaryProps) => {
       </Metrics>
       <OtherMetrics>
         <span>
-          이벤트 고유 열림 <strong>{formatCount(eventOpened)}건</strong>
+          이벤트 열림 <strong>{formatCount(eventOpened)}건</strong>
         </span>
       </OtherMetrics>
     </Container>

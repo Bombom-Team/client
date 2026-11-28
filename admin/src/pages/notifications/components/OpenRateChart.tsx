@@ -30,7 +30,7 @@ const OpenRateChart = ({ categories }: OpenRateChartProps) => {
     <Container aria-labelledby="open-rate-heading">
       <HeadingWrapper>
         <SectionTitle id="open-rate-heading">카테고리별 열림률</SectionTitle>
-        <Caption>고유 열림 / 발송</Caption>
+        <Caption>열린 알림 / 발송</Caption>
       </HeadingWrapper>
       {measuredCategories.length > 0 && (
         <>
@@ -47,7 +47,7 @@ const OpenRateChart = ({ categories }: OpenRateChartProps) => {
                 </BarTrack>
                 <RateValue>{formatRate(stats.openRate ?? 0)}</RateValue>
                 <CountValue>
-                  {formatCount(stats.opens.uniqueLinked)} /{' '}
+                  {formatCount(stats.openedOfSent)} /{' '}
                   {formatCount(stats.statusCounts?.SENT ?? 0)}건
                 </CountValue>
               </Row>
@@ -83,8 +83,7 @@ const OpenRateChart = ({ categories }: OpenRateChartProps) => {
               : `≈ ${formatRate(stats.openRate)}`}
           </TopicValue>
           <Caption>
-            고유 열림 {formatCount(stats.opens.uniqueLinked)}건 / 발송 시점 수신
-            동의{' '}
+            열림 {formatCount(stats.openedOfSent)}건 / 발송 시점 수신 동의{' '}
             {stats.estimatedRecipients === null
               ? '미집계'
               : `${formatCount(stats.estimatedRecipients)}명`}

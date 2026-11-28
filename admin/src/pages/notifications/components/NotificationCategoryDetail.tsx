@@ -65,6 +65,10 @@ const NotificationCategoryDetail = ({
           </>
         )}
         <div>
+          <dt>기간 내 고유 열림</dt>
+          <dd>{formatCount(stats.opens.uniqueLinked)}건</dd>
+        </div>
+        <div>
           <dt>연결된 열림 횟수</dt>
           <dd>{formatCount(stats.opens.linked)}회</dd>
         </div>

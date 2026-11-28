@@ -29,7 +29,7 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
             <tr>
               <th scope="col">카테고리</th>
               <th scope="col">발송</th>
-              <th scope="col">고유 열림</th>
+              <th scope="col">열린 알림</th>
               <th scope="col">열림률</th>
               <th scope="col">발송 실패</th>
               <th scope="col">상세</th>
@@ -60,7 +60,7 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
                         formatCount(stats.statusCounts.SENT)
                       )}
                     </td>
-                    <td>{formatCount(stats.opens.uniqueLinked)}</td>
+                    <td>{formatCount(stats.openedOfSent)}</td>
                     <td>
                       {stats.openRate === null ? (
                         <MutedText>계산 불가</MutedText>
