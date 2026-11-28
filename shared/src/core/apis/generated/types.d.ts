@@ -24,6 +24,28 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/members/me/rank': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 마이페이지 랭킹 요약 조회
+     * @description 로그인한 회원의 마이페이지 랭킹 카드를 조회합니다.
+     *     rankHistory와 currentRank는 현재월을 제외한 이전달까지의 확정 랭킹을 기준으로 합니다.
+     *     reading 카드의 value는 누적 읽은 아티클 수, streak 카드의 value는 현재 연속 읽기 일수입니다.
+     */
+    get: operations['getRankSummary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/members/me/reading/calendar': {
     parameters: {
       query?: never;
@@ -138,6 +160,38 @@ export interface components {
        */
       month: number;
     };
+    /** @description 마이페이지 랭킹 카드 정보 */
+    RankCardResponse: {
+      /** @description 랭킹 타입 (streak: 연속 읽기, reading: 다독왕) */
+      type: string;
+      /**
+       * Format: int64
+       * @description 이전달까지의 최신 확정 순위. 랭킹 이력이 없으면 null입니다.
+       */
+      currentRank: number | null;
+      rankHistory: components['schemas']['RankHistoryResponse'][];
+      /**
+       * Format: int32
+       * @description 카드 표시 값. streak는 현재 연속 읽기 일수, reading은 누적 읽은 아티클 수입니다.
+       */
+      value: number;
+    };
+    /** @description 마이페이지 랭킹 히스토리 정보 */
+    RankHistoryResponse: {
+      /** @description 랭킹 기준 월 (yyyy-MM) */
+      month: string;
+      /** @description 화면 표시용 월 라벨 */
+      label: string;
+      /**
+       * Format: int64
+       * @description 해당 월의 순위
+       */
+      rank: number;
+    };
+    /** @description 마이페이지 랭킹 요약 응답 */
+    RankSummaryResponse: {
+      cards: components['schemas']['RankCardResponse'][];
+    };
     /** @description 읽기 캘린더의 하루 정보 */
     ReadingCalendarDayResponse: {
       /**
@@ -202,6 +256,43 @@ export interface operations {
         content: {
           'application/json': components['schemas']['MemberJoinDaysResponse'];
         };
+      };
+      /** @description 인증 실패 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  getRankSummary: {
+    parameters: {
+      query?: {
+        /** @description 랭킹 타입 (streak 또는 reading). 생략하면 모든 랭킹 카드를 반환합니다. */
+        type?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 마이페이지 랭킹 요약 조회 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['RankSummaryResponse'];
+        };
+      };
+      /** @description 잘못된 랭킹 타입 요청 */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description 인증 실패 */
       401: {

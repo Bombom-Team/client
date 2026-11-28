@@ -10,8 +10,23 @@ export type GetMemberJoinDaysResponse = NonNullable<
   operations['getMemberJoinDays']['responses']['200']['content']['application/json']
 >;
 
+export type GetRankSummaryResponse = NonNullable<
+  operations['getRankSummary']['responses']['200']['content']['application/json']
+>;
+
+export type GetRankSummaryQuery = NonNullable<
+  operations['getRankSummary']['parameters']
+>['query'];
+
 export const getMemberJoinDays = async () => {
   return fetcher.get<GetMemberJoinDaysResponse>({
     path: '/members/me/join-days',
+  });
+};
+
+export const getRankSummary = async ({ ...query }: GetRankSummaryQuery) => {
+  return fetcher.get<GetRankSummaryResponse>({
+    path: '/members/me/rank',
+    query,
   });
 };
