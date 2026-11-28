@@ -22,7 +22,7 @@ export const useSubmitAnswersMutation = ({
     },
     onSuccess,
     onError: () => {
-      toast.error('답안을 제출하지 못했어요. 다시 시도해 주세요.');
+      toast.error('답안을 제출하지 못했어요. ‘다시 제출’을 눌러 주세요.');
     },
   });
 };

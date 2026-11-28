@@ -29,10 +29,10 @@ export const useExamKeyboard = ({
       }
 
       if (event.key === 'Enter') {
-        // 제출 버튼·확인 창에서는 Enter를 원래대로 둔다. 보기 버튼에 포커스가 있어도 다시 누르지 않고 넘어간다.
+        // 링크·제출 버튼·확인 창에서는 Enter를 원래대로 둔다. 보기 버튼에 포커스가 있어도 다시 누르지 않고 넘어간다.
         if (
           event.target instanceof Element &&
-          event.target.closest('[data-keep-enter]')
+          event.target.closest('a, [data-keep-enter]')
         ) {
           return;
         }

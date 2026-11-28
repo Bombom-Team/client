@@ -28,7 +28,7 @@ const GrowthSlide = ({
           key={level}
           level={level}
           size="52cqw"
-          isPopping={level > 0}
+          isPopping={!shouldReduceMotion && level > 0}
         />
         <Level>
           Lv.<LevelNumber>{level}</LevelNumber>

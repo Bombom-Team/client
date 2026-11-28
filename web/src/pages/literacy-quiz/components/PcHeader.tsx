@@ -11,7 +11,9 @@ const PcHeader = () => {
         봄봄
       </Brand>
       <PageTitle>제1회 봄봄 문해력 평가</PageTitle>
-      <HomeLink to="/">봄봄 홈 →</HomeLink>
+      <HomeLink to="/" data-keep-enter>
+        봄봄 홈 →
+      </HomeLink>
     </Container>
   );
 };

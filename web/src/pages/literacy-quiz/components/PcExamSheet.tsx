@@ -16,10 +16,12 @@ import type { LeaveReason, TimerState } from '../types/literacyQuiz';
 interface PcExamSheetProps {
   picks: number[][];
   startedAt: number;
+  leaveCount: number;
   isSubmitting: boolean;
+  isRetry: boolean;
   onPick: (questionIndex: number, choice: number) => void;
-  onSubmit: (leaveCount: number) => void;
-  onLeave: (reason: LeaveReason, leaveCount: number) => void;
+  onSubmit: () => void;
+  onLeave: (reason: LeaveReason) => void;
 }
 
 const TIMER_COLORS: Record<TimerState, string> = {
@@ -32,7 +34,9 @@ const TIMER_COLORS: Record<TimerState, string> = {
 const PcExamSheet = ({
   picks,
   startedAt,
+  leaveCount,
   isSubmitting,
+  isRetry,
   onPick,
   onSubmit,
   onLeave,
@@ -45,8 +49,11 @@ const PcExamSheet = ({
     null,
   );
   const elapsedSeconds = useExamTimer(startedAt);
-  const { leaveCount, shieldReason, noticeMessage, dismissShield } =
-    useExamProtection({ isEnabled: true, containerRef, onLeave });
+  const { shieldReason, noticeMessage, dismissShield } = useExamProtection({
+    isEnabled: true,
+    containerRef,
+    onLeave,
+  });
 
   const answeredCount = picks.filter((picked) => picked.length > 0).length;
   const timerState = getTimerState(elapsedSeconds);
@@ -100,6 +107,11 @@ const PcExamSheet = ({
   };
 
   const handleSubmitClick = () => {
+    // 제출 응답을 못 받았으면 같은 답안으로 다시 제출한다. 서버는 이미 받은 제출이면 저장된 결과를 준다.
+    if (isRetry) {
+      onSubmit();
+      return;
+    }
     const emptyNumbers = picks
       .map((picked, index) => (picked.length > 0 ? null : index + 1))
       .filter((number): number is number => number !== null);
@@ -108,7 +120,7 @@ const PcExamSheet = ({
       setUnansweredNumbers(emptyNumbers);
       return;
     }
-    onSubmit(leaveCount);
+    onSubmit();
   };
 
   const handleSheetBack = () => {
@@ -119,14 +131,15 @@ const PcExamSheet = ({
 
   const handleSheetSubmit = () => {
     setUnansweredNumbers(null);
-    onSubmit(leaveCount);
+    onSubmit();
   };
 
   const isBlurred = shieldReason !== null;
+  const isBackgroundInert = isBlurred || unansweredNumbers !== null;
 
   return (
     <Container ref={containerRef}>
-      <Paper isBlurred={isBlurred}>
+      <Paper isBlurred={isBlurred} inert={isBackgroundInert}>
         <PaperHead>
           <PaperCaption>제1회 봄봄 문해력 평가 문제지</PaperCaption>
           <PaperSubject>읽기 영역</PaperSubject>
@@ -146,7 +159,11 @@ const PcExamSheet = ({
           ))}
         </Columns>
       </Paper>
-      <AnswerSheet isBlurred={isBlurred} aria-label="답안지">
+      <AnswerSheet
+        isBlurred={isBlurred}
+        inert={isBackgroundInert}
+        aria-label="답안지"
+      >
         <TimeBox role="timer" aria-label="남은 시간">
           <TimeLabel>남은 시간</TimeLabel>
           <TimeValue timerState={timerState}>
@@ -186,7 +203,7 @@ const PcExamSheet = ({
           disabled={isSubmitting}
           data-keep-enter
         >
-          답안 제출
+          {isRetry ? '다시 제출' : '답안 제출'}
         </SubmitButton>
         <KeyboardHint>숫자키 1~4 · Enter 다음</KeyboardHint>
       </AnswerSheet>

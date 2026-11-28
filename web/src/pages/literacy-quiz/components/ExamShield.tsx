@@ -1,8 +1,9 @@
+import { useFocusTrap } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useEffect, useRef } from 'react';
 import { LEAVE_MESSAGES } from '../constants/exam';
 import { FADE_IN } from '../constants/keyframes';
 import { LITERACY_COLORS, LITERACY_FONTS } from '../constants/style';
+import { useRestoreFocus } from '../hooks/useRestoreFocus';
 import type { LeaveReason } from '../types/literacyQuiz';
 
 type ShieldSize = 'mobile' | 'pc';
@@ -21,14 +22,13 @@ const ExamShield = ({
   size,
   onContinue,
 }: ExamShieldProps) => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    buttonRef.current?.focus();
-  }, []);
+  // 가림막이 열린 동안 초점을 안에 가둔다. 배경 시험지는 부모가 inert로 막는다.
+  useRestoreFocus();
+  const containerRef = useFocusTrap<HTMLDivElement>({});
 
   return (
     <Container
+      ref={containerRef}
       size={size}
       role="dialog"
       aria-modal="true"
@@ -43,7 +43,6 @@ const ExamShield = ({
       </Message>
       <LeaveCount size={size}>화면 벗어남 {leaveCount}회</LeaveCount>
       <ContinueButton
-        ref={buttonRef}
         type="button"
         size={size}
         onClick={onContinue}

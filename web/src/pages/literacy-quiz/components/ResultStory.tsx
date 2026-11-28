@@ -61,7 +61,6 @@ const ResultStory = ({
   const shouldReduceMotion = useReducedMotion() ?? false;
   const { index, previousIndex, isLast, goNext, goPrevious } = useStoryPlayer({
     startAtLast,
-    shouldReduceMotion,
   });
   const isDarkTop = index === 0;
   const tone = SLIDE_TONES[index] ?? 'white';

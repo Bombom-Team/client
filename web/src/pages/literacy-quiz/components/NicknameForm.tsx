@@ -44,7 +44,10 @@ const NicknameForm = ({
           aria-label="닉네임"
           aria-invalid={!!errorMessage}
           autoComplete="nickname"
-          onChange={(event) => setNickname(event.target.value)}
+          onChange={(event) => {
+            setNickname(event.target.value);
+            setErrorMessage('');
+          }}
         />
         <SubmitButton type="submit" disabled={isPending}>
           랭킹 등록

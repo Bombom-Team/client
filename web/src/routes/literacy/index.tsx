@@ -142,6 +142,11 @@ function LiteracyPage() {
   const [isNicknameRegistered] = useState(
     savedResult?.isNicknameRegistered ?? false,
   );
+  // 이탈 횟수는 PC·휴대폰 시험 화면이 바뀌어도 이어지도록 여기서 센다.
+  const [leaveCount, setLeaveCount] = useState(0);
+  const leaveCountRef = useRef(0);
+  // 한 번 제출을 보낸 뒤에는 답을 고정한다. 응답을 못 받으면 같은 답안으로 '다시 제출'한다.
+  const [isAnswerLocked, setIsAnswerLocked] = useState(false);
   const submitMetaRef = useRef({ unansweredCount: 0, leaveCount: 0 });
   const hasTrackedViewRef = useRef(false);
   const hasClaimedRef = useRef(false);
@@ -170,6 +175,9 @@ function LiteracyPage() {
         });
         setPicks(createEmptyPicks());
         setResult(null);
+        leaveCountRef.current = 0;
+        setLeaveCount(0);
+        setIsAnswerLocked(false);
         setPhase('exam');
         trackLiteracyEvent('literacy_quiz_start', {
           attemptCode: createdAttempt.attemptCode,
@@ -235,40 +243,49 @@ function LiteracyPage() {
     });
   };
 
-  const handlePick = useCallback((questionIndex: number, choice: number) => {
-    const question = LITERACY_QUESTIONS[questionIndex];
-    setPicks((current) =>
-      current.map((picked, index) => {
-        if (index !== questionIndex) return picked;
-        const isPicked = picked.includes(choice);
-        if (question?.isMulti) {
-          return isPicked
-            ? picked.filter((number) => number !== choice)
-            : [...picked, choice].sort((a, b) => a - b);
-        }
-        return isPicked ? [] : [choice];
-      }),
-    );
-  }, []);
+  const handlePick = useCallback(
+    (questionIndex: number, choice: number) => {
+      if (isAnswerLocked) return;
+      const question = LITERACY_QUESTIONS[questionIndex];
+      setPicks((current) =>
+        current.map((picked, index) => {
+          if (index !== questionIndex) return picked;
+          const isPicked = picked.includes(choice);
+          if (question?.isMulti) {
+            return isPicked
+              ? picked.filter((number) => number !== choice)
+              : [...picked, choice].sort((a, b) => a - b);
+          }
+          return isPicked ? [] : [choice];
+        }),
+      );
+    },
+    [isAnswerLocked],
+  );
 
   const handleLeave = useCallback(
-    (reason: LeaveReason, leaveCount: number) => {
+    (reason: LeaveReason) => {
+      leaveCountRef.current += 1;
+      setLeaveCount(leaveCountRef.current);
       trackLiteracyEvent('literacy_quiz_leave_screen', {
         attemptCode,
         platform,
-        params: { leave_count: leaveCount, reason },
+        params: { leave_count: leaveCountRef.current, reason },
       });
     },
     [attemptCode, platform],
   );
 
-  const handleSubmit = (leaveCount: number) => {
+  const handleSubmit = () => {
     submitMetaRef.current = {
       unansweredCount: picks.filter((picked) => picked.length === 0).length,
-      leaveCount,
+      leaveCount: leaveCountRef.current,
     };
+    setIsAnswerLocked(true);
     submitAnswers({ visitorId, answers: picks });
   };
+
+  const isSubmitRetry = isAnswerLocked && !isSubmitting;
 
   const handleReviewOpen = () => {
     trackLiteracyEvent('literacy_quiz_review_open', { attemptCode, platform });
@@ -321,7 +338,9 @@ function LiteracyPage() {
           <PcExamSheet
             picks={picks}
             startedAt={attempt.startedAt}
+            leaveCount={leaveCount}
             isSubmitting={isSubmitting}
+            isRetry={isSubmitRetry}
             onPick={handlePick}
             onSubmit={handleSubmit}
             onLeave={handleLeave}
@@ -349,7 +368,9 @@ function LiteracyPage() {
           <ExamSheet
             picks={picks}
             startedAt={attempt.startedAt}
+            leaveCount={leaveCount}
             isSubmitting={isSubmitting}
+            isRetry={isSubmitRetry}
             onPick={handlePick}
             onSubmit={handleSubmit}
             onLeave={handleLeave}
@@ -369,6 +390,16 @@ const MobilePage = styled.main`
   background: ${LITERACY_COLORS.desk};
 
   overscroll-behavior: none;
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition: none !important;
+    }
+  }
 `;
 
 const PcPage = styled.main`
@@ -380,4 +411,14 @@ const PcPage = styled.main`
   flex-direction: column;
 
   background: ${LITERACY_COLORS.desk};
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition: none !important;
+    }
+  }
 `;

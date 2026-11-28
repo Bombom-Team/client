@@ -32,19 +32,18 @@ const overwriteClipboard = async () => {
 interface UseExamProtectionParams {
   isEnabled: boolean;
   containerRef: RefObject<HTMLElement | null>;
-  onLeave?: (reason: LeaveReason, leaveCount: number) => void;
+  onLeave?: (reason: LeaveReason) => void;
 }
 
 // 풀이 중 시험지 복사·인쇄를 막고, 화면을 벗어나면 시험지를 가린다. 타이머는 계속 흐른다.
+// 이탈 횟수는 화면 폭이 바뀌어 시험 화면이 바뀌어도 유지되도록 부모(route)가 센다.
 export const useExamProtection = ({
   isEnabled,
   containerRef,
   onLeave,
 }: UseExamProtectionParams) => {
-  const [leaveCount, setLeaveCount] = useState(0);
   const [shieldReason, setShieldReason] = useState<LeaveReason | null>(null);
   const [noticeMessage, setNoticeMessage] = useState<string | null>(null);
-  const leaveCountRef = useRef(0);
   const onLeaveRef = useRef(onLeave);
 
   useEffect(() => {
@@ -61,10 +60,8 @@ export const useExamProtection = ({
   }, [noticeMessage]);
 
   const leave = useCallback((reason: LeaveReason) => {
-    leaveCountRef.current += 1;
-    setLeaveCount(leaveCountRef.current);
     setShieldReason(reason);
-    onLeaveRef.current?.(reason, leaveCountRef.current);
+    onLeaveRef.current?.(reason);
   }, []);
 
   useEffect(() => {
@@ -135,7 +132,7 @@ export const useExamProtection = ({
   const dismissShield = useCallback(() => setShieldReason(null), []);
 
   return useMemo(
-    () => ({ leaveCount, shieldReason, noticeMessage, dismissShield }),
-    [leaveCount, shieldReason, noticeMessage, dismissShield],
+    () => ({ shieldReason, noticeMessage, dismissShield }),
+    [shieldReason, noticeMessage, dismissShield],
   );
 };

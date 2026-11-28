@@ -12,6 +12,7 @@ interface ExamLayoutProps {
   onButtonClick: () => void;
   isButtonDisabled?: boolean;
   isBlurred?: boolean;
+  isBackgroundInert?: boolean;
   isProtected?: boolean;
   containerRef?: Ref<HTMLDivElement>;
   overlay?: ReactNode;
@@ -27,6 +28,7 @@ const ExamLayout = ({
   onButtonClick,
   isButtonDisabled = false,
   isBlurred = false,
+  isBackgroundInert = false,
   isProtected = false,
   containerRef,
   overlay,
@@ -34,7 +36,7 @@ const ExamLayout = ({
 }: PropsWithChildren<ExamLayoutProps>) => {
   return (
     <Container ref={containerRef}>
-      <Top>
+      <Top inert={isBackgroundInert}>
         <TopRow>
           <Brand>
             <BrandLogo src={logo} alt="" />
@@ -44,13 +46,17 @@ const ExamLayout = ({
         </TopRow>
         {topExtra}
       </Top>
-      <Scroll isBlurred={isBlurred} isProtected={isProtected}>
+      <Scroll
+        isBlurred={isBlurred}
+        isProtected={isProtected}
+        inert={isBackgroundInert}
+      >
         <Paper>
           {children}
           <PageNumber>- 1 -</PageNumber>
         </Paper>
       </Scroll>
-      <Bottom isBlurred={isBlurred}>
+      <Bottom isBlurred={isBlurred} inert={isBackgroundInert}>
         <BottomLabel>{bottomLabel}</BottomLabel>
         <BottomButton
           type="button"

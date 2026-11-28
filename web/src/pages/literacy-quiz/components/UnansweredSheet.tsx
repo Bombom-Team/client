@@ -1,7 +1,8 @@
+import { useFocusTrap } from '@bombom/shared/ui-web';
 import styled from '@emotion/styled';
-import { useEffect, useRef } from 'react';
 import { SHEET_UP } from '../constants/keyframes';
 import { LITERACY_COLORS, LITERACY_FONTS } from '../constants/style';
+import { useRestoreFocus } from '../hooks/useRestoreFocus';
 
 type SheetSize = 'mobile' | 'pc';
 
@@ -19,11 +20,9 @@ const UnansweredSheet = ({
   onBack,
   onSubmit,
 }: UnansweredSheetProps) => {
-  const backButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    backButtonRef.current?.focus();
-  }, []);
+  // 확인창이 열린 동안 초점을 안에 가둔다(첫 초점은 '마저 풀기'). 배경 시험지는 부모가 inert로 막는다.
+  useRestoreFocus();
+  const sheetRef = useFocusTrap<HTMLDivElement>({});
 
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) onBack();
@@ -37,6 +36,7 @@ const UnansweredSheet = ({
       data-keep-enter
     >
       <Sheet
+        ref={sheetRef}
         size={size}
         role="dialog"
         aria-modal="true"
@@ -50,7 +50,6 @@ const UnansweredSheet = ({
         </Description>
         <Actions size={size}>
           <ActionButton
-            ref={backButtonRef}
             type="button"
             size={size}
             isPrimary={false}

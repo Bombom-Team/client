@@ -19,17 +19,21 @@ import type { LeaveReason, TimerState } from '../types/literacyQuiz';
 interface ExamSheetProps {
   picks: number[][];
   startedAt: number;
+  leaveCount: number;
   isSubmitting: boolean;
+  isRetry: boolean;
   onPick: (questionIndex: number, choice: number) => void;
-  onSubmit: (leaveCount: number) => void;
-  onLeave: (reason: LeaveReason, leaveCount: number) => void;
+  onSubmit: () => void;
+  onLeave: (reason: LeaveReason) => void;
 }
 
 // 휴대폰 풀이 화면(수능 시험지형). 5분이 지나도 '+0:12'처럼 계속 풀 수 있다.
 const ExamSheet = ({
   picks,
   startedAt,
+  leaveCount,
   isSubmitting,
+  isRetry,
   onPick,
   onSubmit,
   onLeave,
@@ -42,8 +46,11 @@ const ExamSheet = ({
     null,
   );
   const elapsedSeconds = useExamTimer(startedAt);
-  const { leaveCount, shieldReason, noticeMessage, dismissShield } =
-    useExamProtection({ isEnabled: true, containerRef, onLeave });
+  const { shieldReason, noticeMessage, dismissShield } = useExamProtection({
+    isEnabled: true,
+    containerRef,
+    onLeave,
+  });
 
   const answeredCount = picks.filter((picked) => picked.length > 0).length;
   const timerState = getTimerState(elapsedSeconds);
@@ -77,6 +84,11 @@ const ExamSheet = ({
   };
 
   const handleSubmitClick = () => {
+    // 제출 응답을 못 받았으면 같은 답안으로 다시 제출한다. 서버는 이미 받은 제출이면 저장된 결과를 준다.
+    if (isRetry) {
+      onSubmit();
+      return;
+    }
     const emptyNumbers = picks
       .map((picked, index) => (picked.length > 0 ? null : index + 1))
       .filter((number): number is number => number !== null);
@@ -85,7 +97,7 @@ const ExamSheet = ({
       setUnansweredNumbers(emptyNumbers);
       return;
     }
-    onSubmit(leaveCount);
+    onSubmit();
   };
 
   const handleSheetBack = () => {
@@ -96,7 +108,7 @@ const ExamSheet = ({
 
   const handleSheetSubmit = () => {
     setUnansweredNumbers(null);
-    onSubmit(leaveCount);
+    onSubmit();
   };
 
   return (
@@ -122,10 +134,11 @@ const ExamSheet = ({
         </Progress>
       }
       bottomLabel={`답안 표기 ${answeredCount}/5`}
-      buttonLabel="답안 제출"
+      buttonLabel={isRetry ? '다시 제출' : '답안 제출'}
       onButtonClick={handleSubmitClick}
       isButtonDisabled={isSubmitting}
       isBlurred={shieldReason !== null}
+      isBackgroundInert={shieldReason !== null || unansweredNumbers !== null}
       isProtected
       overlay={
         <>

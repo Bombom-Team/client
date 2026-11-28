@@ -68,6 +68,7 @@ const Container = styled.div`
   font-family: ${LITERACY_FONTS.head};
 
   grid-template-columns: 1fr 390px 1fr;
+  grid-template-rows: minmax(0, 1fr);
 `;
 
 const Aside = styled.aside`
@@ -79,6 +80,8 @@ const Aside = styled.aside`
   gap: 22px;
   align-content: start;
   justify-self: end;
+
+  overflow-y: auto;
 `;
 
 const Kicker = styled.p`

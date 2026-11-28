@@ -28,6 +28,7 @@ type MockAttempt = {
   correctCount: number | null;
   elapsedSeconds: number | null;
   nickname: string | null;
+  corrects?: boolean[];
 };
 
 // 로컬 데모용 기존 참가자. 'DEMO2026'은 도전장 링크(/literacy/c/DEMO2026) 확인용이다.
@@ -171,6 +172,23 @@ const getNicknameError = (nickname: unknown) => {
   return null;
 };
 
+const createSubmissionResponse = (attempt: MockAttempt) => {
+  const corrects = attempt.corrects ?? [];
+  return {
+    correctCount: attempt.correctCount,
+    elapsedSeconds: attempt.elapsedSeconds,
+    ranked: attempt.ranked,
+    expectedRank: attempt.ranked ? getExpectedRank(attempt) : null,
+    participantCount: getParticipantCount(),
+    questions: corrects.map((correct, index) => ({
+      number: index + 1,
+      correct,
+      answer: ANSWER_KEYS[index],
+      explanation: EXPLANATIONS[index],
+    })),
+  };
+};
+
 export const literacyQuizHandlers = [
   http.get(`${baseURL}/summary`, () => {
     const [topRanker] = getRankedList();
@@ -240,11 +258,9 @@ export const literacyQuizHandlers = [
           { status: 404 },
         );
       }
+      // 응답을 못 받은 같은 방문자가 다시 제출하면 처음 저장한 결과를 그대로 돌려준다(실제 서버와 같은 규칙).
       if (attempt.submittedAt !== null) {
-        return HttpResponse.json(
-          { message: '이미 제출했어요.' },
-          { status: 409 },
-        );
+        return HttpResponse.json(createSubmissionResponse(attempt));
       }
 
       if (!isValidAnswers(answers)) {
@@ -260,6 +276,7 @@ export const literacyQuizHandlers = [
       const submittedAt = Date.now();
       const submitted: MockAttempt = {
         ...attempt,
+        corrects,
         submittedAt,
         correctCount: corrects.filter(Boolean).length,
         elapsedSeconds: Math.min(
@@ -271,19 +288,7 @@ export const literacyQuizHandlers = [
       // 로컬 데모는 바로 제출해 보는 경우가 많아서 목에서는 이 규칙을 적용하지 않는다.
       saveAttempt(submitted);
 
-      return HttpResponse.json({
-        correctCount: submitted.correctCount,
-        elapsedSeconds: submitted.elapsedSeconds,
-        ranked: submitted.ranked,
-        expectedRank: submitted.ranked ? getExpectedRank(submitted) : null,
-        participantCount: getParticipantCount(),
-        questions: corrects.map((correct, index) => ({
-          number: index + 1,
-          correct,
-          answer: ANSWER_KEYS[index],
-          explanation: EXPLANATIONS[index],
-        })),
-      });
+      return HttpResponse.json(createSubmissionResponse(submitted));
     },
   ),
 
