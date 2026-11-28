@@ -13,7 +13,7 @@ const UA_MAP: Array<[RegExp, string]> = [
   [/Blind/i, 'blind_inapp'],
 ];
 
-const classifyByUA = (): string | null =>
+export const classifyByUA = (): string | null =>
   UA_MAP.find(([pattern]) => pattern.test(navigator.userAgent))?.[1] ?? null;
 
 export const useReferrerTracking = () => {
