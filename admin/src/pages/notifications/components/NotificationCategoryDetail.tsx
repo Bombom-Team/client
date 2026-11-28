@@ -17,13 +17,23 @@ const NotificationCategoryDetail = ({
     <Container>
       <Metrics>
         <div>
-          <dt>수신 동의 회원</dt>
+          <dt>현재 수신 동의 회원</dt>
           <dd>
             {stats.consentingMembers === null
               ? '미집계'
               : `${formatCount(stats.consentingMembers)}명`}
           </dd>
         </div>
+        {isTopic && (
+          <div>
+            <dt>발송 시점 수신 동의 (합)</dt>
+            <dd>
+              {stats.estimatedRecipients === null
+                ? '미집계'
+                : `${formatCount(stats.estimatedRecipients)}명`}
+            </dd>
+          </div>
+        )}
         {!isTopic && (
           <>
             <div>

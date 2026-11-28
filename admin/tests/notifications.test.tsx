@@ -32,6 +32,7 @@ const memberCategory = (
   openRate: 0.15,
   medianSecondsToOpen: 540,
   consentingMembers: 4100,
+  estimatedRecipients: null,
   ...overrides,
 });
 
@@ -51,6 +52,7 @@ const stats: GetNotificationStatsResponse = {
       openRate: 0.02,
       medianSecondsToOpen: null,
       consentingMembers: 3900,
+      estimatedRecipients: 4000,
     },
     memberCategory({
       category: 'CHALLENGE_START',
@@ -243,7 +245,7 @@ describe('알림 현황', () => {
     expect(names[1]).toContain('아티클 도착');
     expect(names).toHaveLength(2);
     expect(within(chart).getByText('≈ 2%')).toBeTruthy();
-    expect(within(chart).getByText(/수신 동의 3,900명/)).toBeTruthy();
+    expect(within(chart).getByText(/발송 시점 수신 동의 4,000명/)).toBeTruthy();
   });
 
   it('기간을 30일로 바꾸면 서울 날짜 기준 30일 범위로 다시 조회한다', async () => {
@@ -319,13 +321,26 @@ describe('알림 현황', () => {
         memberCategory({ category: 'INQUIRY_MESSAGE_ARRIVAL' }),
       ],
       daily: [
-        { date: '2026-11-25', category: 'ARTICLE', sent: 100, opened: 10 },
-        { date: '2026-11-25', category: 'EVENT', sent: null, opened: 7 },
+        {
+          date: '2026-11-25',
+          category: 'ARTICLE',
+          sent: 100,
+          opened: 10,
+          estimatedRecipients: null,
+        },
+        {
+          date: '2026-11-25',
+          category: 'EVENT',
+          sent: null,
+          opened: 7,
+          estimatedRecipients: 350,
+        },
         {
           date: '2026-11-25',
           category: 'INQUIRY_MESSAGE_ARRIVAL',
           sent: 4,
           opened: 3,
+          estimatedRecipients: null,
         },
       ],
     });
@@ -344,29 +359,50 @@ describe('알림 현황', () => {
     );
   });
 
-  it('일별 추이에서 토픽 카테고리를 고르면 열림률을 계산하지 않는 이유를 알린다', async () => {
+  it('일별 추이에서 토픽 카테고리를 고르면 발송 시점 수신 동의 수로 근사 열림률을 그린다', async () => {
     vi.mocked(getNotificationStats).mockResolvedValue({
       ...stats,
       daily: [
-        { date: '2026-11-25', category: 'ARTICLE', sent: 100, opened: 10 },
-        { date: '2026-11-25', category: 'EVENT', sent: null, opened: 7 },
-        { date: '2026-11-25', category: 'CHALLENGE_START', sent: 9, opened: 0 },
+        {
+          date: '2026-11-25',
+          category: 'ARTICLE',
+          sent: 100,
+          opened: 10,
+          estimatedRecipients: null,
+        },
+        {
+          date: '2026-11-25',
+          category: 'EVENT',
+          sent: null,
+          opened: 7,
+          estimatedRecipients: 350,
+        },
+        {
+          date: '2026-11-25',
+          category: 'CHALLENGE_START',
+          sent: 9,
+          opened: 0,
+          estimatedRecipients: null,
+        },
       ],
     });
     renderPage();
     const trend = await screen.findByRole('region', { name: '일별 추이' });
     const select = within(trend).getByLabelText('카테고리');
     fireEvent.change(select, { target: { value: 'EVENT' } });
-    expect(
-      within(trend).getByText(
-        '토픽 발송이라 날짜별 발송 수가 없어 열림률을 계산하지 않아요.',
-      ),
-    ).toBeTruthy();
+    const eventRow = within(trend).getByRole('rowheader', {
+      name: '2026-11-25',
+    }).parentElement!;
+    // 열림 7 / 발송 시점 수신 동의 350
+    expect(eventRow.textContent).toContain('350');
+    expect(eventRow.textContent).toContain('≈ 2%');
+    expect(within(trend).getByText('수신 동의(발송 시점)')).toBeTruthy();
     fireEvent.change(select, { target: { value: 'CHALLENGE_START' } });
     const row = within(trend).getByRole('rowheader', {
       name: '2026-11-25',
     }).parentElement!;
     expect(row.textContent).toContain('0%');
+    expect(row.textContent).not.toContain('≈');
   });
 
   it('일별 데이터가 없는 응답이면 0으로 채우지 않고 안내한다', async () => {

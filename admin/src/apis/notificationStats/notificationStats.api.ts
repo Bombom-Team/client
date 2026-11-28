@@ -28,14 +28,18 @@ export interface NotificationCategoryStats {
   openRate: number | null;
   medianSecondsToOpen: number | null;
   consentingMembers: number | null;
+  // 토픽 발송만: 기간에 발송한 스케줄들의 발송 시점 수신 동의 회원 수 합. openRate의 분모다.
+  estimatedRecipients: number | null;
 }
 
-// 발송일 코호트: opened는 그날 보낸 알림 중 열린 수. 토픽 발송(EVENT)은 sent가 null이다.
+// 발송일 코호트: opened는 그날 보낸 알림 중 열린 수.
+// 토픽 발송(EVENT)은 sent가 null이고, 대신 그날 발송 시점 수신 동의 회원 수(estimatedRecipients)가 온다.
 export interface NotificationDailyStats {
   date: string;
   category: NotificationCategory;
   sent: number | null;
   opened: number;
+  estimatedRecipients: number | null;
 }
 
 export interface GetNotificationStatsParams {

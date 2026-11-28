@@ -49,14 +49,15 @@ const getRateLinePath = (coordinates: ({ x: number; y: number } | null)[]) =>
 
 interface DailyTrendPlotProps {
   points: DailyPoint[];
-  showSent: boolean;
+  // 토픽 발송은 발송 수 대신 발송 시점 수신 동의 회원 수를 막대로 그리고, 열림률은 근사치다.
+  isApproximate: boolean;
   rateNotice: string | null;
   collectingFrom: string;
 }
 
 const DailyTrendPlot = ({
   points,
-  showSent,
+  isApproximate,
   rateNotice,
   collectingFrom,
 }: DailyTrendPlotProps) => {
@@ -73,14 +74,12 @@ const DailyTrendPlot = ({
 
   const bandWidth = PLOT_WIDTH / points.length;
   const barGap = Math.min(4, bandWidth * 0.1);
-  const barWidth = Math.min(MAX_BAR_WIDTH, bandWidth * (showSent ? 0.35 : 0.6));
+  const barWidth = Math.min(MAX_BAR_WIDTH, bandWidth * 0.35);
   const getCenterX = (index: number) => PLOT_LEFT + bandWidth * (index + 0.5);
 
   const countMax = getNiceCeil(
     Math.max(
-      ...points.map(({ sent, opened }) =>
-        Math.max(showSent ? (sent ?? 0) : 0, opened),
-      ),
+      ...points.map(({ sent, opened }) => Math.max(sent ?? 0, opened)),
       0,
     ),
   );
@@ -181,7 +180,7 @@ const DailyTrendPlot = ({
         )}
 
         <PlotText x={PLOT_LEFT} y={COUNT_TOP - 10} isStrong>
-          {showSent ? '발송 · 열림 (건)' : '열림 (건)'}
+          {isApproximate ? '수신 동의(명) · 열림(건)' : '발송 · 열림 (건)'}
         </PlotText>
         {countTicks.map((tick) => (
           <g key={tick} aria-hidden="true">
@@ -203,15 +202,11 @@ const DailyTrendPlot = ({
         ))}
         {points.map(({ date, sent, opened }, index) => {
           const centerX = getCenterX(index);
-          const sentX = showSent
-            ? centerX - barGap / 2 - barWidth
-            : centerX - barWidth / 2;
-          const openedX = showSent
-            ? centerX + barGap / 2
-            : centerX - barWidth / 2;
+          const sentX = centerX - barGap / 2 - barWidth;
+          const openedX = centerX + barGap / 2;
           return (
             <g key={date} aria-hidden="true">
-              {showSent && sent !== null && sent > 0 && (
+              {sent !== null && sent > 0 && (
                 <path
                   d={getBarPath(
                     sentX,
@@ -238,7 +233,7 @@ const DailyTrendPlot = ({
         })}
 
         <PlotText x={PLOT_LEFT} y={RATE_TOP - 16} isStrong>
-          열림률
+          {isApproximate ? '열림률 (≈)' : '열림률'}
         </PlotText>
         {rateNotice === null ? (
           <g aria-hidden="true">
@@ -380,16 +375,14 @@ const DailyTrendPlot = ({
         {activePoint && (
           <>
             <strong>{formatLongDate(activePoint.date)}</strong>
-            {showSent && (
-              <TooltipRow>
-                <span>발송</span>
-                <span>
-                  {activePoint.sent === null
-                    ? '집계 없음'
-                    : `${formatCount(activePoint.sent)}건`}
-                </span>
-              </TooltipRow>
-            )}
+            <TooltipRow>
+              <span>{isApproximate ? '수신 동의' : '발송'}</span>
+              <span>
+                {activePoint.sent === null
+                  ? '집계 없음'
+                  : `${formatCount(activePoint.sent)}${isApproximate ? '명' : '건'}`}
+              </span>
+            </TooltipRow>
             <TooltipRow>
               <span>열림</span>
               <span>{formatCount(activePoint.opened)}건</span>
@@ -400,7 +393,7 @@ const DailyTrendPlot = ({
                 <span>
                   {activePoint.openRate === null
                     ? '발송 없음'
-                    : formatRate(activePoint.openRate)}
+                    : `${isApproximate ? '≈ ' : ''}${formatRate(activePoint.openRate)}`}
                 </span>
               </TooltipRow>
             )}

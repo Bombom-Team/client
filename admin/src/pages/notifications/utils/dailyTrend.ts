@@ -16,6 +16,7 @@ interface BuildDailyPointsParams {
 }
 
 // 선택한 카테고리들을 날짜별로 합친다. 응답에 없는 날짜를 0으로 채우지 않는다.
+// 토픽 발송은 발송 수 대신 발송 시점 수신 동의 회원 수를 분모로 쓴다.
 export const buildDailyPoints = ({
   daily,
   categories,
@@ -27,7 +28,8 @@ export const buildDailyPoints = ({
 
   daily
     .filter(({ category }) => categories.includes(category))
-    .forEach(({ date, sent, opened }) => {
+    .forEach(({ date, sent: memberSent, opened, estimatedRecipients }) => {
+      const sent = memberSent ?? estimatedRecipients ?? null;
       const current = pointsByDate.get(date) ?? { sent: 0, opened: 0 };
       pointsByDate.set(date, {
         sent:

@@ -35,12 +35,9 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
     : buildDailyPoints({ daily: daily ?? [], categories: [selection] });
   const getRateNotice = () => {
     if (isTotal) return '카테고리를 고르면 열림률을 볼 수 있어요.';
-    if (isTopic)
-      return '토픽 발송이라 날짜별 발송 수가 없어 열림률을 계산하지 않아요.';
     return null;
   };
   const rateNotice = getRateNotice();
-  const showSent = !isTopic;
 
   const handleSelectionChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelection(event.target.value as TrendSelection);
@@ -77,12 +74,10 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
       {points.length > 0 && (
         <>
           <LegendList aria-label="범례">
-            {showSent && (
-              <LegendItem>
-                <LegendSwatch swatchColor="var(--seed-color-palette-gray-400)" />
-                발송
-              </LegendItem>
-            )}
+            <LegendItem>
+              <LegendSwatch swatchColor="var(--seed-color-palette-gray-400)" />
+              {isTopic ? '수신 동의(발송 시점)' : '발송'}
+            </LegendItem>
             <LegendItem>
               <LegendSwatch swatchColor="var(--seed-color-palette-carrot-700)" />
               열림
@@ -90,13 +85,13 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
             {rateNotice === null && (
               <LegendItem>
                 <LineKey />
-                열림률
+                {isTopic ? '열림률(≈)' : '열림률'}
               </LegendItem>
             )}
           </LegendList>
           <DailyTrendPlot
             points={points}
-            showSent={showSent}
+            isApproximate={isTopic}
             rateNotice={rateNotice}
             collectingFrom={getSeoulDateRange(COLLECTING_DAYS).from}
           />
@@ -111,7 +106,7 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
                 <thead>
                   <tr>
                     <th scope="col">날짜</th>
-                    <th scope="col">발송</th>
+                    <th scope="col">{isTopic ? '수신 동의' : '발송'}</th>
                     <th scope="col">열림</th>
                     <th scope="col">열림률</th>
                   </tr>
@@ -122,7 +117,11 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
                       <th scope="row">{date}</th>
                       <td>{sent === null ? '해당 없음' : formatCount(sent)}</td>
                       <td>{formatCount(opened)}</td>
-                      <td>{openRate === null ? '—' : formatRate(openRate)}</td>
+                      <td>
+                        {openRate === null
+                          ? '—'
+                          : `${isTopic ? '≈ ' : ''}${formatRate(openRate)}`}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

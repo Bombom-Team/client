@@ -83,10 +83,11 @@ const OpenRateChart = ({ categories }: OpenRateChartProps) => {
               : `≈ ${formatRate(stats.openRate)}`}
           </TopicValue>
           <Caption>
-            고유 열림 {formatCount(stats.opens.uniqueLinked)}건 / 수신 동의{' '}
-            {stats.consentingMembers === null
+            고유 열림 {formatCount(stats.opens.uniqueLinked)}건 / 발송 시점 수신
+            동의{' '}
+            {stats.estimatedRecipients === null
               ? '미집계'
-              : `${formatCount(stats.consentingMembers)}명`}
+              : `${formatCount(stats.estimatedRecipients)}명`}
           </Caption>
         </TopicRow>
       ))}
