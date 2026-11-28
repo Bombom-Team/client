@@ -9,6 +9,7 @@ import RankingCarousel from './RankingCarousel';
 import {
   FALLBACK_NEWSLETTER_COUNT,
   FLUENT_ATTRIBUTION,
+  MIN_RANKED_ELAPSED_SECONDS,
 } from '../constants/result';
 import { LITERACY_COLORS, LITERACY_FONTS } from '../constants/style';
 import { usePageToast } from '../hooks/usePageToast';
@@ -24,6 +25,7 @@ import type {
 interface FinalSlideProps {
   result: PostLiteracyQuizSubmissionResponse;
   attemptCode: string;
+  visitorId: string;
   platform: LiteracyQuizPlatform;
   isNicknameRegistered: boolean;
   onReview: () => void;
@@ -33,6 +35,7 @@ interface FinalSlideProps {
 const FinalSlide = ({
   result,
   attemptCode,
+  visitorId,
   platform,
   isNicknameRegistered,
   onReview,
@@ -117,10 +120,17 @@ const FinalSlide = ({
         {result.ranked && !registeredNickname && !hasRegistered && (
           <NicknameForm
             attemptCode={attemptCode}
+            visitorId={visitorId}
             onRegistered={handleRegistered}
           />
         )}
-        {!result.ranked && <Note>다시 푼 기록은 랭킹에 들어가지 않아요</Note>}
+        {!result.ranked && (
+          <Note>
+            {result.elapsedSeconds < MIN_RANKED_ELAPSED_SECONDS
+              ? '너무 빨리 제출한 기록은 랭킹에 들어가지 않아요'
+              : '다시 푼 기록은 랭킹에 들어가지 않아요'}
+          </Note>
+        )}
         <NewsletterRecommendations
           correctCount={result.correctCount}
           logoById={logoById}

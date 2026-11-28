@@ -57,6 +57,7 @@ export const postLiteracyQuizAttempt = async (
 // TODO(BOM-1329): 백엔드 배포 후 OpenAPI 타입으로 교체
 // fetcher의 JsonBody(Record<string, unknown>)를 만족해야 해서 interface 대신 type으로 선언한다.
 export type PostLiteracyQuizSubmissionParams = {
+  visitorId: string;
   answers: number[][];
 };
 
@@ -94,6 +95,7 @@ export const postLiteracyQuizSubmission = async (
 // TODO(BOM-1329): 백엔드 배포 후 OpenAPI 타입으로 교체
 // fetcher의 JsonBody(Record<string, unknown>)를 만족해야 해서 interface 대신 type으로 선언한다.
 export type PutLiteracyQuizNicknameParams = {
+  visitorId: string;
   nickname: string;
 };
 

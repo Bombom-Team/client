@@ -13,6 +13,9 @@ export const STORY_SLIDE_COUNT = 4;
 
 export const RANKING_PAGE_SIZE = 5;
 
+// 서버는 걸린 시간이 이보다 짧은 제출을 순위에서 뺀다(ranked=false). 응답에 이유가 없어 웹에서 문구만 나눈다.
+export const MIN_RANKED_ELAPSED_SECONDS = 30;
+
 export const RANKING_MAX_RANK = 20;
 
 export const RANKING_PAGE_COUNT = RANKING_MAX_RANK / RANKING_PAGE_SIZE;

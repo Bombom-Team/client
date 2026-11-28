@@ -22,6 +22,7 @@ import logo from '#/assets/avif/logo.avif';
 interface ResultStoryProps {
   result: PostLiteracyQuizSubmissionResponse;
   attemptCode: string;
+  visitorId: string;
   platform: LiteracyQuizPlatform;
   startAtLast: boolean;
   isNicknameRegistered: boolean;
@@ -51,6 +52,7 @@ const getBarState = (
 const ResultStory = ({
   result,
   attemptCode,
+  visitorId,
   platform,
   startAtLast,
   isNicknameRegistered,
@@ -87,6 +89,7 @@ const ResultStory = ({
       <FinalSlide
         result={result}
         attemptCode={attemptCode}
+        visitorId={visitorId}
         platform={platform}
         isNicknameRegistered={isNicknameRegistered}
         onReview={onReview}

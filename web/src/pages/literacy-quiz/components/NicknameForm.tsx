@@ -7,10 +7,15 @@ import type { FormEvent } from 'react';
 
 interface NicknameFormProps {
   attemptCode: string;
+  visitorId: string;
   onRegistered: (rank: number) => void;
 }
 
-const NicknameForm = ({ attemptCode, onRegistered }: NicknameFormProps) => {
+const NicknameForm = ({
+  attemptCode,
+  visitorId,
+  onRegistered,
+}: NicknameFormProps) => {
   const [nickname, setNickname] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const { mutate: registerNickname, isPending } = useRegisterNicknameMutation({
@@ -25,7 +30,7 @@ const NicknameForm = ({ attemptCode, onRegistered }: NicknameFormProps) => {
     setErrorMessage(validationMessage);
     if (validationMessage) return;
 
-    registerNickname({ nickname: nickname.trim() });
+    registerNickname({ visitorId, nickname: nickname.trim() });
   };
 
   return (

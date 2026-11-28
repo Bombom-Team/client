@@ -228,8 +228,13 @@ export const literacyQuizHandlers = [
   http.post(
     `${baseURL}/attempts/:attemptCode/submission`,
     async ({ request, params }) => {
+      const { visitorId, answers } = (await request.json()) as {
+        visitorId?: string;
+        answers?: unknown;
+      };
       const attempt = findAttempt(String(params.attemptCode));
-      if (!attempt) {
+      // 실제 서버처럼 시작할 때의 visitorId와 다르면 없는 시도로 본다.
+      if (!attempt || attempt.visitorId !== visitorId) {
         return HttpResponse.json(
           { message: '없는 시도입니다.' },
           { status: 404 },
@@ -242,7 +247,6 @@ export const literacyQuizHandlers = [
         );
       }
 
-      const { answers } = (await request.json()) as { answers?: unknown };
       if (!isValidAnswers(answers)) {
         return HttpResponse.json(
           { message: '답안 형식이 올바르지 않습니다.' },
@@ -263,6 +267,8 @@ export const literacyQuizHandlers = [
           Math.floor((submittedAt - attempt.startedAt) / 1000),
         ),
       };
+      // 실제 서버는 걸린 시간이 30초 미만이면 ranked=false·expectedRank=null로 응답한다.
+      // 로컬 데모는 바로 제출해 보는 경우가 많아서 목에서는 이 규칙을 적용하지 않는다.
       saveAttempt(submitted);
 
       return HttpResponse.json({
@@ -284,8 +290,12 @@ export const literacyQuizHandlers = [
   http.put(
     `${baseURL}/attempts/:attemptCode/nickname`,
     async ({ request, params }) => {
+      const { visitorId, nickname } = (await request.json()) as {
+        visitorId?: string;
+        nickname?: unknown;
+      };
       const attempt = findAttempt(String(params.attemptCode));
-      if (!attempt) {
+      if (!attempt || attempt.visitorId !== visitorId) {
         return HttpResponse.json(
           { message: '없는 시도입니다.' },
           { status: 404 },
@@ -298,7 +308,6 @@ export const literacyQuizHandlers = [
         );
       }
 
-      const { nickname } = (await request.json()) as { nickname?: unknown };
       const errorMessage = getNicknameError(nickname);
       if (errorMessage) {
         return HttpResponse.json({ message: errorMessage }, { status: 400 });

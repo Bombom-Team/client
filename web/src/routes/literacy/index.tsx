@@ -267,7 +267,7 @@ function LiteracyPage() {
       unansweredCount: picks.filter((picked) => picked.length === 0).length,
       leaveCount,
     };
-    submitAnswers({ answers: picks });
+    submitAnswers({ visitorId, answers: picks });
   };
 
   const handleReviewOpen = () => {
@@ -296,6 +296,7 @@ function LiteracyPage() {
       <ResultStory
         result={result}
         attemptCode={attempt.attemptCode}
+        visitorId={visitorId}
         platform={platform}
         startAtLast={isStoryAtLast}
         isNicknameRegistered={isNicknameRegistered}
