@@ -1,4 +1,3 @@
-import { toast } from '@bombom/shared/ui-web';
 import { useMutation } from '@tanstack/react-query';
 import { postLiteracyQuizSubmission } from '@/apis/literacyQuiz/literacyQuiz.api';
 import type {
@@ -20,9 +19,7 @@ export const useSubmitAnswersMutation = ({
       if (!attemptCode) throw new Error('시작한 시험이 없습니다.');
       return postLiteracyQuizSubmission(attemptCode, params);
     },
+    // 실패 안내는 공용 토스트 대신 '다시 제출' 버튼 옆 화면 문구로 보여 준다(토스트가 버튼을 가리기 때문).
     onSuccess,
-    onError: () => {
-      toast.error('답안을 제출하지 못했어요. ‘다시 제출’을 눌러 주세요.');
-    },
   });
 };

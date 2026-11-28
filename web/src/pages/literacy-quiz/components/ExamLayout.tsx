@@ -13,6 +13,7 @@ interface ExamLayoutProps {
   isButtonDisabled?: boolean;
   isBlurred?: boolean;
   isBackgroundInert?: boolean;
+  isBottomAlert?: boolean;
   isProtected?: boolean;
   containerRef?: Ref<HTMLDivElement>;
   overlay?: ReactNode;
@@ -29,6 +30,7 @@ const ExamLayout = ({
   isButtonDisabled = false,
   isBlurred = false,
   isBackgroundInert = false,
+  isBottomAlert = false,
   isProtected = false,
   containerRef,
   overlay,
@@ -57,7 +59,12 @@ const ExamLayout = ({
         </Paper>
       </Scroll>
       <Bottom isBlurred={isBlurred} inert={isBackgroundInert}>
-        <BottomLabel>{bottomLabel}</BottomLabel>
+        <BottomLabel
+          isAlert={isBottomAlert}
+          role={isBottomAlert ? 'alert' : undefined}
+        >
+          {bottomLabel}
+        </BottomLabel>
         <BottomButton
           type="button"
           onClick={onButtonClick}
@@ -183,8 +190,11 @@ const Bottom = styled.div<{ isBlurred: boolean }>`
   }
 `;
 
-const BottomLabel = styled.span`
+const BottomLabel = styled.span<{ isAlert: boolean }>`
+  color: ${({ isAlert }) => (isAlert ? LITERACY_COLORS.stamp : 'inherit')};
   font: 700 3.2cqw ${LITERACY_FONTS.head};
+
+  word-break: keep-all;
 `;
 
 const BottomButton = styled.button`

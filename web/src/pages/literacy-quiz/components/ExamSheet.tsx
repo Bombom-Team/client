@@ -133,7 +133,12 @@ const ExamSheet = ({
           <ProgressCount>{answeredCount}/5</ProgressCount>
         </Progress>
       }
-      bottomLabel={`답안 표기 ${answeredCount}/5`}
+      bottomLabel={
+        isRetry
+          ? '제출하지 못했어요. 다시 눌러 주세요'
+          : `답안 표기 ${answeredCount}/5`
+      }
+      isBottomAlert={isRetry}
       buttonLabel={isRetry ? '다시 제출' : '답안 제출'}
       onButtonClick={handleSubmitClick}
       isButtonDisabled={isSubmitting}

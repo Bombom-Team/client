@@ -196,7 +196,13 @@ const PcExamSheet = ({
             })}
           </AnswerRow>
         ))}
-        <AnswerCount>{answeredCount} / 5 표기</AnswerCount>
+        {isRetry ? (
+          <RetryNotice role="alert">
+            제출하지 못했어요. 다시 눌러 주세요
+          </RetryNotice>
+        ) : (
+          <AnswerCount>{answeredCount} / 5 표기</AnswerCount>
+        )}
         <SubmitButton
           type="button"
           onClick={handleSubmitClick}
@@ -377,6 +383,16 @@ const Bubble = styled.button<{ isOn: boolean }>`
 
   cursor: pointer;
   place-items: center;
+`;
+
+const RetryNotice = styled.p`
+  margin: 0;
+
+  color: ${LITERACY_COLORS.stamp};
+  font: 700 13px ${LITERACY_FONTS.head};
+  text-align: center;
+
+  word-break: keep-all;
 `;
 
 const AnswerCount = styled.p`
