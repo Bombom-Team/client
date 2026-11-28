@@ -1,7 +1,7 @@
 import { fetcher } from '@bombom/shared/apis';
-import { ENV } from '@/apis/env';
 
-// fcm-server의 어드민 집계 API는 어드민 OpenAPI spec에 포함되지 않아 응답 타입을 직접 선언한다.
+// TODO(BOM-1326): 어드민 서버 배포 후 OpenAPI 타입으로 교체
+// 어드민 서버가 관리자 세션을 확인한 뒤 fcm-server 알림 지표 집계를 그대로 전달한다.
 export type NotificationCategory =
   | 'ARTICLE'
   | 'EVENT'
@@ -72,10 +72,7 @@ export const getNotificationStats = async ({
   to,
 }: GetNotificationStatsParams) => {
   return fetcher.get<GetNotificationStatsResponse>({
-    path: '/notifications/admin/stats',
-    baseUrl: ENV.notificationBaseUrl,
+    path: '/notifications/stats',
     query: { from, to },
-    headers: { 'X-Admin-Api-Key': ENV.notificationAdminApiKey },
-    credentials: 'omit',
   });
 };

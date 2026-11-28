@@ -451,13 +451,13 @@ describe('알림 현황', () => {
     expect(within(reach).getByText('1,200대 · 20%')).toBeTruthy();
   });
 
-  it('최초 조회에 실패하면 설정 확인 안내와 다시 시도 버튼을 표시한다', async () => {
+  it('최초 조회에 실패하면 연결 확인 안내와 다시 시도 버튼을 표시한다', async () => {
     vi.mocked(getNotificationStats)
       .mockRejectedValueOnce(new Error('401'))
       .mockResolvedValueOnce(stats);
     renderPage();
     expect((await screen.findByRole('alert')).textContent).toContain(
-      '어드민 키',
+      '연결 상태를 확인한 뒤 다시 시도해 주세요.',
     );
     fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
     expect(await screen.findByRole('table')).toBeTruthy();

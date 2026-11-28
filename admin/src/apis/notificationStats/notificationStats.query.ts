@@ -8,7 +8,7 @@ const NOTIFICATION_STATS_GC_TIME = 1000 * 60 * 5; // 5 minutes
 export const notificationStatsQueries = {
   stats: (params: GetNotificationStatsParams) =>
     queryOptions({
-      queryKey: ['notifications', 'admin', 'stats', params] as const,
+      queryKey: ['notifications', 'stats', params] as const,
       queryFn: () => getNotificationStats(params),
       staleTime: NOTIFICATION_STATS_STALE_TIME,
       gcTime: NOTIFICATION_STATS_GC_TIME,
