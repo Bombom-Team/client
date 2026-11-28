@@ -6,6 +6,7 @@ import {
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { usePostNotificationOpenMutation } from '@/hooks/usePostNotificationOpenMutation';
+import { trackEvent } from '@/libs/googleAnalytics/gaEvents';
 import type { PostNotificationOpenParams } from '@/apis/notification/notification.api';
 import type { RNToWebMessage } from '@bombom/shared';
 
@@ -14,7 +15,7 @@ type NotificationRoutingPayload = Extract<
   { type: 'NOTIFICATION_ROUTING' }
 >['payload'];
 
-// 식별자를 보내지 않는 구버전 앱의 알림은 이동할 url로 카테고리만 추론한다.
+// 식별자를 보내지 않는 구버전 앱의 알림은 이동할 url로 카테고리만 추론한다. GA 알림 열기 이벤트의 label에도 쓴다.
 const NOTIFICATION_CATEGORY_BY_URL_PREFIX = [
   { prefix: '/articles/', category: 'ARTICLE' },
   { prefix: '/event', category: 'EVENT' },
@@ -53,7 +54,13 @@ export const useWebViewRouting = () => {
 
     const cleanup = addWebViewMessageListener((message: RNToWebMessage) => {
       if (message.type === 'NOTIFICATION_ROUTING') {
-        postNotificationOpen(createNotificationOpenParams(message.payload));
+        const openParams = createNotificationOpenParams(message.payload);
+        trackEvent({
+          category: 'Notification',
+          action: '알림 열기',
+          label: openParams.category ?? undefined,
+        });
+        postNotificationOpen(openParams);
         navigate({
           to: message.payload.url,
         });

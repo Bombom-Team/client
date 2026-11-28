@@ -66,11 +66,13 @@ const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
 
   return (
     <Container ref={containerRef}>
-      <ProgressBar
-        rate={rate}
-        caption={`보관함 사용량 ${cur} / ${max}`}
-        variant="rounded"
-      />
+      <BarWrapper>
+        <ProgressBar
+          rate={rate}
+          caption={`보관함 사용량 ${cur} / ${max}`}
+          variant="rounded"
+        />
+      </BarWrapper>
       <HelpButton
         ref={helpButtonRef}
         type="button"
@@ -82,7 +84,7 @@ const StorageUsageBar = ({ cur, max }: StorageUsageBarProps) => {
         onFocus={openGuide}
         onBlur={closeGuide}
       >
-        <HelpIcon width={16} height={16} aria-hidden />
+        <HelpIconImage aria-hidden />
       </HelpButton>
       <Tooltip
         id={TOOLTIP_ID}
@@ -120,10 +122,17 @@ const Container = styled.div`
   align-items: flex-end;
 `;
 
+// 사용량 문구보다 좁아지면 문구가 바 밖으로 넘쳐 아이콘과 겹친다
+const BarWrapper = styled.div`
+  flex-shrink: 0;
+`;
+
+// 문구 글꼴(theme.fonts.t3Regular: 0.75rem/1rem)에 맞춰 아이콘은 글자 크기, 높이는 줄 높이로 둔다.
+// 글자 크기가 바뀌어도 아이콘이 함께 커지고 문구 줄 가운데에 온다.
 const HelpButton = styled.button`
   position: relative;
-  width: 16px;
-  height: 16px;
+  width: 0.75rem;
+  height: 1rem;
   padding: 0;
 
   display: flex;
@@ -142,6 +151,14 @@ const HelpButton = styled.button`
     content: '';
     inset: -8px;
   }
+`;
+
+// SVG 파일의 크기가 100%라서, 크기를 직접 정하지 않으면 iOS(WebKit)에서 폭이 0이 되어 보이지 않는다
+const HelpIconImage = styled(HelpIcon)`
+  width: 0.75rem;
+  height: 0.75rem;
+
+  flex-shrink: 0;
 `;
 
 const GuideTitle = styled.p`
