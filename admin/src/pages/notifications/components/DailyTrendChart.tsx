@@ -70,10 +70,7 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
       <HeadingWrapper>
         <div>
           <SectionTitle id="daily-trend-heading">일별 추이</SectionTitle>
-          <ChartDescription>
-            보낸 날짜 기준이에요. 그날 보낸 알림 중 나중에 열린 것까지 그날에
-            세요.
-          </ChartDescription>
+          <ChartDescription>발송일 기준</ChartDescription>
         </div>
         <SelectLabel>
           카테고리
@@ -190,7 +187,7 @@ const SectionTitle = styled.h2`
 `;
 const ChartDescription = styled.p`
   color: var(--seed-color-fg-neutral-muted);
-  font-size: var(--seed-font-size-t3);
+  font-size: var(--seed-font-size-t4);
 `;
 const SelectLabel = styled.label`
   display: flex;
@@ -208,7 +205,7 @@ const CategorySelect = styled.select`
 
   background-color: var(--seed-color-bg-layer-default);
   color: var(--seed-color-fg-neutral);
-  font-family: inherit;
+  font: inherit;
 `;
 const NoticeText = styled.p`
   padding: var(--seed-dimension-x6);
@@ -224,7 +221,7 @@ const LegendList = styled.ul`
   flex-wrap: wrap;
 
   color: var(--seed-color-fg-neutral-muted);
-  font-size: var(--seed-font-size-t3);
+  font-size: var(--seed-font-size-t4);
 
   list-style: none;
 `;
@@ -265,7 +262,7 @@ const DailyTable = styled.table`
   width: 100%;
 
   color: var(--seed-color-fg-neutral);
-  font-size: var(--seed-font-size-t3);
+  font-size: var(--seed-font-size-t4);
 
   border-collapse: collapse;
 

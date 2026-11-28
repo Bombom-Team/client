@@ -104,6 +104,7 @@ const PresetButton = styled.button`
 
   background-color: var(--seed-color-bg-layer-default);
   color: var(--seed-color-fg-neutral-muted);
+  font: inherit;
 
   &[aria-pressed='true'] {
     background-color: var(--seed-color-bg-brand-weak);

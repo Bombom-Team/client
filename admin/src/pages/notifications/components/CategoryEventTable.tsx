@@ -1,207 +1,125 @@
 import styled from '@emotion/styled';
+import { Fragment, useState } from 'react';
+import NotificationCategoryDetail from './NotificationCategoryDetail';
 import {
   CATEGORY_LABELS,
   OPEN_NOT_RECORDED_CATEGORIES,
-  SKIP_NOT_RECORDED_CATEGORIES,
 } from '../constants/notificationCategory';
-import { formatCount, formatDuration, formatRate } from '../utils/formatStats';
+import { formatCount, formatRate } from '../utils/formatStats';
 import type { NotificationCategoryStats } from '@/apis/notificationStats/notificationStats.api';
-
-// 카테고리 열을 뺀 숫자 열 수. 같은 너비로 나눠 숫자 간격을 일정하게 맞춘다.
-const NUMERIC_COLUMN_COUNT = 11;
-
-// 0은 옅게 두어 0이 아닌 실패 같은 값이 먼저 보이게 한다.
-const renderCount = (value: number) => (
-  <CountText isZero={value === 0}>{formatCount(value)}</CountText>
-);
 
 interface CategoryEventTableProps {
   categories: NotificationCategoryStats[];
 }
 
 const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
-  const failureCategories = categories.filter(
-    ({ failureReasons }) => failureReasons.length > 0,
-  );
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+
+  const handleToggle = (category: string) => {
+    setExpandedCategories((current) =>
+      current.includes(category)
+        ? current.filter((item) => item !== category)
+        : [...current, category],
+    );
+  };
 
   return (
     <Container aria-labelledby="category-event-heading">
       <SectionTitle id="category-event-heading">상세 수치</SectionTitle>
       <TableWrapper>
-        <Table>
-          <caption>
-            발송 → 기기 전송 → 열림 순서예요. ≈는 수신 동의 회원 수로 나눈
-            근사치, —는 해당하지 않는 값이에요. 아티클 도착·문의 답변 도착은
-            수신 거부 시 기록이 남지 않아 스킵을 집계하지 않아요(미집계).
-          </caption>
-          <colgroup>
-            <CategoryColumn />
-            {Array.from({ length: NUMERIC_COLUMN_COUNT }, (_, index) => (
-              <col key={index} />
-            ))}
-          </colgroup>
+        <Table aria-label="카테고리별 상세 수치">
           <thead>
-            <GroupRow>
-              <th scope="col" rowSpan={2}>
-                카테고리
-              </th>
-              <th scope="colgroup" colSpan={4} data-group-start>
-                발송
-              </th>
-              <th scope="colgroup" colSpan={2} data-group-start>
-                기기 전송
-              </th>
-              <th scope="colgroup" colSpan={5} data-group-start>
-                열림
-              </th>
-            </GroupRow>
             <tr>
-              <th scope="col" data-group-start>
-                수신 동의
-              </th>
+              <th scope="col">카테고리</th>
               <th scope="col">발송</th>
-              <th scope="col">실패</th>
-              <th scope="col">스킵</th>
-              <th scope="col" data-group-start>
-                성공
-              </th>
-              <th scope="col">실패</th>
-              <th scope="col" data-group-start>
-                열림률
-              </th>
               <th scope="col">고유 열림</th>
-              <th scope="col">열림 횟수</th>
-              <th scope="col">미연결</th>
-              <th scope="col">열림까지</th>
+              <th scope="col">열림률</th>
+              <th scope="col">발송 실패</th>
+              <th scope="col">상세</th>
             </tr>
           </thead>
           <tbody>
             {categories.map((stats) => {
               const isTopic = stats.deliveryMode === 'TOPIC';
-              const { statusCounts, deviceSends } = stats;
-              const isOpenNotRecorded = OPEN_NOT_RECORDED_CATEGORIES.includes(
+              const isExpanded = expandedCategories.includes(stats.category);
+              const isOpenRecorded = !OPEN_NOT_RECORDED_CATEGORIES.includes(
                 stats.category,
               );
-              const isSkipNotRecorded = SKIP_NOT_RECORDED_CATEGORIES.includes(
-                stats.category,
-              );
+              const failed =
+                stats.statusCounts === null
+                  ? null
+                  : stats.statusCounts.FAILED + stats.statusCounts.DEAD;
+              const detailId = `notification-detail-${stats.category}`;
+              const name = CATEGORY_LABELS[stats.category];
 
               return (
-                <tr key={stats.category}>
-                  <th scope="row">
-                    <CategoryName>
-                      {CATEGORY_LABELS[stats.category]}
-                    </CategoryName>
-                    {isTopic && <TopicTag>토픽 발송</TopicTag>}
-                  </th>
-                  <td data-group-start>
-                    {stats.consentingMembers === null ? (
-                      <MutedText>—</MutedText>
-                    ) : (
-                      renderCount(stats.consentingMembers)
-                    )}
-                  </td>
-                  {isTopic ? (
-                    <td colSpan={5}>
-                      <MutedText>
-                        토픽 1회 발송이라 회원별 결과가 없어요
-                      </MutedText>
+                <Fragment key={stats.category}>
+                  <tr>
+                    <th scope="row">
+                      {name}
+                      {isTopic && <TopicTag>토픽 발송</TopicTag>}
+                    </th>
+                    <td>
+                      {stats.statusCounts === null || isTopic ? (
+                        <MutedText>—</MutedText>
+                      ) : (
+                        formatCount(stats.statusCounts.SENT)
+                      )}
                     </td>
-                  ) : (
-                    <>
-                      <td>
-                        {statusCounts ? (
-                          renderCount(statusCounts.SENT)
-                        ) : (
-                          <MutedText>—</MutedText>
-                        )}
-                      </td>
-                      <td>
-                        {/* 재시도 횟수가 0이라 실패하면 바로 DEAD가 되므로 FAILED와 합쳐 보여준다. */}
-                        {statusCounts ? (
-                          renderCount(statusCounts.FAILED + statusCounts.DEAD)
-                        ) : (
-                          <MutedText>—</MutedText>
-                        )}
-                      </td>
-                      <td>
-                        {statusCounts && !isSkipNotRecorded ? (
-                          renderCount(statusCounts.SKIPPED)
-                        ) : (
-                          <MutedText>
-                            {isSkipNotRecorded ? '미집계' : '—'}
-                          </MutedText>
-                        )}
-                      </td>
-                      <td data-group-start>
-                        {deviceSends ? (
-                          renderCount(deviceSends.success)
-                        ) : (
-                          <MutedText>—</MutedText>
-                        )}
-                      </td>
-                      <td>
-                        {deviceSends ? (
-                          renderCount(deviceSends.failure)
-                        ) : (
-                          <MutedText>—</MutedText>
-                        )}
-                      </td>
-                    </>
-                  )}
-                  {isOpenNotRecorded ? (
-                    <td colSpan={5} data-group-start>
-                      <MutedText>열림 미수집</MutedText>
+                    <td>
+                      {isOpenRecorded ? (
+                        formatCount(stats.opens.uniqueLinked)
+                      ) : (
+                        <MutedText>미수집</MutedText>
+                      )}
                     </td>
-                  ) : (
-                    <>
-                      <td data-group-start>
-                        {stats.openRate === null ? (
-                          <MutedText>계산 불가</MutedText>
-                        ) : (
-                          <RateText>
-                            {isTopic && '≈ '}
-                            {formatRate(stats.openRate)}
-                          </RateText>
-                        )}
-                      </td>
-                      <td>{renderCount(stats.opens.uniqueLinked)}</td>
-                      <td>{renderCount(stats.opens.linked)}</td>
-                      <td>{renderCount(stats.opens.unlinked)}</td>
-                      <td>
-                        {stats.medianSecondsToOpen === null ? (
-                          <MutedText>—</MutedText>
-                        ) : (
-                          formatDuration(stats.medianSecondsToOpen)
-                        )}
-                      </td>
-                    </>
-                  )}
-                </tr>
+                    <td>
+                      {!isOpenRecorded ? (
+                        <MutedText>열림 미수집</MutedText>
+                      ) : stats.openRate === null ? (
+                        <MutedText>계산 불가</MutedText>
+                      ) : (
+                        <strong>
+                          {isTopic && '≈ '}
+                          {formatRate(stats.openRate)}
+                        </strong>
+                      )}
+                    </td>
+                    <td>
+                      {failed === null || isTopic ? (
+                        <MutedText>—</MutedText>
+                      ) : (
+                        <FailureCount hasFailure={failed > 0}>
+                          {formatCount(failed)}
+                        </FailureCount>
+                      )}
+                    </td>
+                    <td>
+                      <DetailButton
+                        type="button"
+                        aria-label={`${name} 상세 ${isExpanded ? '접기' : '보기'}`}
+                        aria-expanded={isExpanded}
+                        aria-controls={detailId}
+                        onClick={() => handleToggle(stats.category)}
+                      >
+                        {isExpanded ? '접기 −' : '상세 +'}
+                      </DetailButton>
+                    </td>
+                  </tr>
+                  <DetailRow id={detailId} hidden={!isExpanded}>
+                    <td colSpan={6}>
+                      {isExpanded && (
+                        <NotificationCategoryDetail stats={stats} />
+                      )}
+                    </td>
+                  </DetailRow>
+                </Fragment>
               );
             })}
           </tbody>
         </Table>
       </TableWrapper>
-      {failureCategories.length > 0 && (
-        <FailureBox>
-          <summary>실패 사유 보기</summary>
-          <FailureList>
-            {failureCategories.map(({ category, failureReasons }) => (
-              <li key={category}>
-                <strong>{CATEGORY_LABELS[category]}</strong>
-                <ul>
-                  {failureReasons.map(({ reason, count }) => (
-                    <li key={reason}>
-                      {reason} · {count.toLocaleString('ko-KR')}건
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </FailureList>
-        </FailureBox>
-      )}
+      <TableNote>≈ 근사치 · — 해당 없음 · 단위: 건</TableNote>
     </Container>
   );
 };
@@ -228,25 +146,15 @@ const TableWrapper = styled.div`
 `;
 const Table = styled.table`
   width: 100%;
-  min-width: 1040px;
+  min-width: 720px;
 
   border-collapse: collapse;
 
   font-variant-numeric: tabular-nums;
 
-  table-layout: fixed;
-
-  caption {
-    padding-bottom: var(--seed-dimension-x3);
-
-    color: var(--seed-color-fg-neutral-muted);
-    font-size: var(--seed-font-size-t3);
-    text-align: left;
-  }
-
   th,
   td {
-    padding: var(--seed-dimension-x3) var(--seed-dimension-x2);
+    padding: var(--seed-dimension-x4) var(--seed-dimension-x3);
     border-bottom: 1px solid var(--seed-color-stroke-neutral-weak);
 
     text-align: right;
@@ -254,101 +162,65 @@ const Table = styled.table`
     white-space: nowrap;
   }
 
-  /* 그룹이 시작하는 열에만 세로선을 둬서 발송·기기 전송·열림 묶음을 나눈다. */
-  [data-group-start] {
-    border-left: 1px solid var(--seed-color-stroke-neutral-weak);
-  }
-
   thead th {
+    background-color: var(--seed-color-bg-layer-fill);
     color: var(--seed-color-fg-neutral-muted);
     font-weight: var(--seed-font-weight-medium);
-    font-size: var(--seed-font-size-t3);
-    vertical-align: bottom;
-
-    border-bottom-color: var(--seed-color-stroke-neutral-solid);
+    font-size: var(--seed-font-size-t4);
   }
 
-  thead th[rowspan],
   tbody th {
-    position: sticky;
-    left: 0;
+    font-weight: var(--seed-font-weight-medium);
+  }
 
-    background-color: var(--seed-color-bg-layer-default);
+  th:first-of-type {
     text-align: left;
   }
 
-  /* 여러 칸을 합친 안내 문구가 특정 칸의 값처럼 읽히지 않게 가운데에 둔다. */
-  tbody td[colspan] {
-    text-align: center;
-  }
-
-  tbody tr:hover,
-  tbody tr:hover th {
+  tbody tr:hover {
     background-color: var(--seed-color-bg-layer-fill);
   }
-
-  tbody tr:last-of-type th,
-  tbody tr:last-of-type td {
-    border-bottom: none;
+`;
+const DetailRow = styled.tr`
+  > td {
+    padding: 0;
   }
-`;
-const CategoryColumn = styled.col`
-  width: 184px;
-`;
-const GroupRow = styled.tr`
-  th[scope='colgroup'] {
-    padding-block: var(--seed-dimension-x2);
-
-    background-color: var(--seed-color-bg-layer-fill);
-    color: var(--seed-color-fg-neutral);
-    font-weight: var(--seed-font-weight-bold);
-    text-align: left;
-
-    border-bottom-color: var(--seed-color-stroke-neutral-weak);
-  }
-`;
-const CategoryName = styled.span`
-  font-weight: var(--seed-font-weight-bold);
 `;
 const TopicTag = styled.span`
-  margin-left: var(--seed-dimension-x2);
-  padding: 0 var(--seed-dimension-x2);
-  border-radius: var(--seed-radius-r1);
+  margin-top: var(--seed-dimension-x1);
 
-  display: inline-block;
+  display: block;
 
-  background-color: var(--seed-color-bg-neutral-weak);
   color: var(--seed-color-fg-neutral-muted);
-  font-weight: var(--seed-font-weight-medium);
-  font-size: var(--seed-font-size-t2);
+  font-weight: var(--seed-font-weight-regular);
+  font-size: var(--seed-font-size-t4);
 `;
-const RateText = styled.strong`
-  font-weight: var(--seed-font-weight-bold);
-`;
-const CountText = styled.span<{ isZero: boolean }>`
-  color: ${({ isZero }) =>
-    isZero ? 'var(--seed-color-fg-neutral-subtle)' : 'inherit'};
+const FailureCount = styled.span<{ hasFailure: boolean }>`
+  color: ${({ hasFailure }) => (hasFailure ? 'var(--seed-color-fg-critical)' : 'var(--seed-color-fg-neutral-muted)')};
+  font-weight: ${({ hasFailure }) => (hasFailure ? 'var(--seed-font-weight-bold)' : 'var(--seed-font-weight-regular)')};
 `;
 const MutedText = styled.span`
-  color: var(--seed-color-fg-neutral-subtle);
-`;
-const FailureBox = styled.details`
   color: var(--seed-color-fg-neutral-muted);
+  font-size: var(--seed-font-size-t4);
+`;
+const DetailButton = styled.button`
+  min-width: 72px;
+  min-height: 44px;
+  padding: var(--seed-dimension-x2) var(--seed-dimension-x3);
+  border: 1px solid var(--seed-color-stroke-neutral-weak);
+  border-radius: var(--seed-radius-r2);
 
-  summary {
-    font-weight: var(--seed-font-weight-medium);
-    cursor: pointer;
+  background-color: var(--seed-color-bg-layer-default);
+  color: var(--seed-color-fg-neutral);
+  font-size: var(--seed-font-size-t4);
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--seed-color-bg-brand-weak);
   }
 `;
-const FailureList = styled.ul`
-  margin-top: var(--seed-dimension-x3);
-  padding-left: var(--seed-dimension-x5);
-
-  display: grid;
-  gap: var(--seed-dimension-x3);
-
-  ul {
-    margin-top: var(--seed-dimension-x1);
-    padding-left: var(--seed-dimension-x5);
-  }
+const TableNote = styled.p`
+  color: var(--seed-color-fg-neutral-muted);
+  font-size: var(--seed-font-size-t4);
 `;

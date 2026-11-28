@@ -87,7 +87,7 @@ const Title = styled.h3`
 `;
 const TotalText = styled.span`
   color: var(--seed-color-fg-neutral-muted);
-  font-size: var(--seed-font-size-t3);
+  font-size: var(--seed-font-size-t4);
 
   font-variant-numeric: tabular-nums;
 `;
@@ -106,7 +106,7 @@ const BarSegment = styled.span`
 `;
 const EmptyText = styled.p`
   color: var(--seed-color-fg-neutral-muted);
-  font-size: var(--seed-font-size-t3);
+  font-size: var(--seed-font-size-t4);
 `;
 const LegendList = styled.ul`
   display: grid;

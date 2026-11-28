@@ -109,9 +109,20 @@ describe('알림 현황', () => {
     const row = within(getCategoryRow('아티클 도착'));
     expect(row.getByText('15%')).toBeTruthy();
     expect(row.getByText('1,200')).toBeTruthy();
-    expect(row.getByText('9분')).toBeTruthy();
-    expect(row.getByText('1,530')).toBeTruthy();
-    expect(row.getByText('22')).toBeTruthy();
+    expect(row.getByText('12')).toBeTruthy();
+    expect(screen.queryByText('기기 전송 성공')).toBeNull();
+    fireEvent.click(row.getByRole('button', { name: '아티클 도착 상세 보기' }));
+    const detail = within(
+      document.getElementById('notification-detail-ARTICLE')!,
+    );
+    expect(detail.getByText('9분')).toBeTruthy();
+    expect(detail.getByText('1,530건')).toBeTruthy();
+    expect(detail.getByText('22건')).toBeTruthy();
+    expect(detail.getByText('FCM 토큰 없음 · 9건')).toBeTruthy();
+    expect(row.getByRole('button').getAttribute('aria-expanded')).toBe('true');
+    fireEvent.click(row.getByRole('button', { name: '아티클 도착 상세 접기' }));
+    expect(screen.queryByText('기기 전송 성공')).toBeNull();
+    expect(row.getByRole('button').getAttribute('aria-expanded')).toBe('false');
   });
 
   it('토픽 발송 카테고리는 근사 열림률로 표시하고 회원별 발송 결과를 0으로 채우지 않는다', async () => {
@@ -121,8 +132,12 @@ describe('알림 현황', () => {
     const row = within(getCategoryRow('이벤트'));
     expect(row.getByText('토픽 발송')).toBeTruthy();
     expect(row.getByText('≈ 2%')).toBeTruthy();
+    expect(row.getAllByText('—')).toHaveLength(2);
+    fireEvent.click(row.getByRole('button', { name: '이벤트 상세 보기' }));
     expect(
-      row.getByText('토픽 1회 발송이라 회원별 결과가 없어요'),
+      screen.getByText(
+        '토픽 발송은 회원별 발송·기기 전송 결과를 집계하지 않아요.',
+      ),
     ).toBeTruthy();
   });
 
@@ -144,7 +159,11 @@ describe('알림 현황', () => {
     renderPage();
     await screen.findByRole('table');
     const row = within(getCategoryRow('아티클 도착'));
-    expect(row.getByText('미집계')).toBeTruthy();
+    fireEvent.click(row.getByRole('button', { name: '아티클 도착 상세 보기' }));
+    const detail = within(
+      document.getElementById('notification-detail-ARTICLE')!,
+    );
+    expect(detail.getByText('미집계')).toBeTruthy();
   });
 
   it('열림이 기록되지 않는 카테고리는 0%로 표시하지 않는다', async () => {
@@ -178,7 +197,9 @@ describe('알림 현황', () => {
     renderPage();
     const summary = await screen.findByLabelText('기간 요약');
     expect(within(summary).getByText('15%')).toBeTruthy();
-    expect(within(summary).getByText('2,000')).toBeTruthy();
+    expect(within(summary).getByText('1,200')).toBeTruthy();
+    expect(within(summary).getByText('180')).toBeTruthy();
+    expect(within(summary).getByText('2,000건')).toBeTruthy();
   });
 
   it('열림률 차트는 측정된 카테고리를 열림률 순으로 놓고 근사치를 구분한다', async () => {
@@ -198,14 +219,15 @@ describe('알림 현황', () => {
       name: '카테고리별 열림률',
     });
     const names = within(
-      within(chart).getByRole('list', { name: '카테고리별 열림과 안 열림' }),
+      within(chart).getByRole('list', { name: '회원별 알림 열림률' }),
     )
       .getAllByRole('listitem')
       .map((item) => item.textContent ?? '');
     expect(names[0]).toContain('문의 답변 도착');
     expect(names[1]).toContain('아티클 도착');
-    expect(names[2]).toContain('≈ 2%');
-    expect(names[2]).toContain('수신 동의 3,900명');
+    expect(names).toHaveLength(2);
+    expect(within(chart).getByText('≈ 2%')).toBeTruthy();
+    expect(within(chart).getByText(/수신 동의 3,900명/)).toBeTruthy();
   });
 
   it('기간을 30일로 바꾸면 서울 날짜 기준 30일 범위로 다시 조회한다', async () => {
@@ -257,19 +279,19 @@ describe('알림 현황', () => {
     expect(getNotificationStats).toHaveBeenCalledTimes(1);
   });
 
-  it('열림률 막대는 발송 중 열림과 안 열림 건수를 함께 표시한다', async () => {
+  it('열림률 막대는 고유 열림과 발송을 표시하고 미열림을 추정하지 않는다', async () => {
     vi.mocked(getNotificationStats).mockResolvedValue(stats);
     renderPage();
     const chart = await screen.findByRole('region', {
       name: '카테고리별 열림률',
     });
     const article = within(
-      within(chart).getByRole('list', { name: '카테고리별 열림과 안 열림' }),
+      within(chart).getByRole('list', { name: '회원별 알림 열림률' }),
     )
       .getAllByRole('listitem')
       .find((item) => item.textContent?.includes('아티클 도착'));
-    expect(article?.textContent).toContain('열림 180 · 안 열림 1,020');
-    expect(article?.textContent).toContain('발송 1,200건 기준');
+    expect(article?.textContent).toContain('180 / 1,200건');
+    expect(within(chart).queryByText(/안 열림/)).toBeNull();
   });
 
   it('일별 추이는 기본으로 열림이 기록되는 회원 발송 카테고리를 합친다', async () => {

@@ -10,7 +10,7 @@ const PLOT_LEFT = 56;
 const PLOT_RIGHT = WIDTH - 12;
 const PLOT_WIDTH = PLOT_RIGHT - PLOT_LEFT;
 const COUNT_TOP = 28;
-const COUNT_HEIGHT = 176;
+const COUNT_HEIGHT = 144;
 const RATE_TOP = COUNT_TOP + COUNT_HEIGHT + 44;
 const RATE_HEIGHT = 96;
 const AXIS_LABEL_Y = RATE_TOP + RATE_HEIGHT + 20;
@@ -74,7 +74,12 @@ const DailyTrendPlot = ({
   );
 
   const bandWidth = PLOT_WIDTH / points.length;
-  const barWidth = Math.min(MAX_BAR_WIDTH, Math.max(2, bandWidth * 0.6));
+  const hasBothBars = showSent && showOpened;
+  const barGap = Math.min(4, bandWidth * 0.1);
+  const barWidth = Math.min(
+    MAX_BAR_WIDTH,
+    bandWidth * (hasBothBars ? 0.35 : 0.6),
+  );
   const getCenterX = (index: number) => PLOT_LEFT + bandWidth * (index + 0.5);
 
   const countMax = getNiceCeil(
@@ -174,13 +179,19 @@ const DailyTrendPlot = ({
               fill="var(--seed-color-bg-layer-fill)"
             />
             <PlotText x={PLOT_RIGHT} y={COUNT_TOP - 10} textAnchor="end">
-              음영: 열림 집계 중
+              {rateNotice === null
+                ? '음영·점선: 열림 집계 중'
+                : '음영: 열림 집계 중'}
             </PlotText>
           </g>
         )}
 
         <PlotText x={PLOT_LEFT} y={COUNT_TOP - 10} isStrong>
-          발송 · 열림 (건)
+          {hasBothBars
+            ? '발송 · 열림 (건)'
+            : showSent
+              ? '발송 (건)'
+              : '열림 (건)'}
         </PlotText>
         {countTicks.map((tick) => (
           <g key={tick} aria-hidden="true">
@@ -201,13 +212,19 @@ const DailyTrendPlot = ({
           </g>
         ))}
         {points.map(({ date, sent, opened }, index) => {
-          const x = getCenterX(index) - barWidth / 2;
+          const centerX = getCenterX(index);
+          const sentX = hasBothBars
+            ? centerX - barGap / 2 - barWidth
+            : centerX - barWidth / 2;
+          const openedX = hasBothBars
+            ? centerX + barGap / 2
+            : centerX - barWidth / 2;
           return (
             <g key={date} aria-hidden="true">
               {showSent && sent !== null && sent > 0 && (
                 <path
                   d={getBarPath(
-                    x,
+                    sentX,
                     getCountY(sent),
                     barWidth,
                     COUNT_TOP + COUNT_HEIGHT - getCountY(sent),
@@ -218,7 +235,7 @@ const DailyTrendPlot = ({
               {showOpened && opened !== null && opened > 0 && (
                 <path
                   d={getBarPath(
-                    x,
+                    openedX,
                     getCountY(opened),
                     barWidth,
                     COUNT_TOP + COUNT_HEIGHT - getCountY(opened),
@@ -254,13 +271,34 @@ const DailyTrendPlot = ({
               </g>
             ))}
             <path
-              d={getRateLinePath(rateCoordinates)}
+              d={getRateLinePath(
+                rateCoordinates.map((point, index) =>
+                  collectingIndex >= 0 && index >= collectingIndex
+                    ? null
+                    : point,
+                ),
+              )}
               fill="none"
               stroke="var(--seed-color-palette-carrot-700)"
               strokeWidth={2}
               strokeLinejoin="round"
               strokeLinecap="round"
             />
+            {collectingIndex >= 0 && (
+              <path
+                d={getRateLinePath(
+                  rateCoordinates.map((point, index) =>
+                    index >= collectingIndex - 1 ? point : null,
+                  ),
+                )}
+                fill="none"
+                stroke="var(--seed-color-palette-carrot-700)"
+                strokeWidth={2}
+                strokeDasharray="6 4"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              />
+            )}
             {rateCoordinates.map(
               (point, index) =>
                 point !== null &&
@@ -293,7 +331,13 @@ const DailyTrendPlot = ({
                 key={date}
                 x={getCenterX(index)}
                 y={AXIS_LABEL_Y}
-                textAnchor="middle"
+                textAnchor={
+                  index === points.length - 1
+                    ? 'end'
+                    : index === 0
+                      ? 'start'
+                      : 'middle'
+                }
                 aria-hidden="true"
               >
                 {formatShortDate(date)}
@@ -404,7 +448,7 @@ const PlotText = styled.text<{ isStrong?: boolean }>`
     isStrong
       ? 'var(--seed-font-weight-bold)'
       : 'var(--seed-font-weight-regular)'};
-  font-size: 12px;
+  font-size: var(--seed-font-size-t4);
 
   fill: ${({ isStrong }) =>
     isStrong
@@ -426,7 +470,7 @@ const Tooltip = styled.div<{ isVisible: boolean }>`
   gap: var(--seed-dimension-x1);
 
   background-color: var(--seed-color-bg-layer-default);
-  font-size: var(--seed-font-size-t3);
+  font-size: var(--seed-font-size-t4);
 
   pointer-events: none;
 `;
@@ -443,6 +487,6 @@ const TooltipRow = styled.div`
 `;
 const TooltipNote = styled.span`
   color: var(--seed-color-fg-neutral-muted);
-  font-size: var(--seed-font-size-t2);
+  font-size: var(--seed-font-size-t4);
   white-space: nowrap;
 `;

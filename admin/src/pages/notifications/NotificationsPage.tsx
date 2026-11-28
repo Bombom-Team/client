@@ -31,10 +31,6 @@ const NotificationsPage = () => {
       <HeadingWrapper>
         <div>
           <PageTitle>알림 현황</PageTitle>
-          <DescriptionBox>
-            어떤 알림이 열리는지, 알림을 받을 수 있는 기기는 얼마나 되는지
-            확인하세요.
-          </DescriptionBox>
         </div>
         <RefreshButton
           type="button"
@@ -138,8 +134,17 @@ const NotificationsPage = () => {
           <CategoryEventTable categories={data.categories} />
 
           <DefinitionBox>
-            <summary>집계 기준과 수집하지 않는 것</summary>
+            <summary>집계 기준</summary>
             <ul>
+              <li>
+                요약의 열림률·발송·고유 열림은 열림을 수집하는 회원별 알림만
+                포함해요. 전체 회원별 발송에는 챌린지도 포함하고, 이벤트는
+                별도로 표시해요.
+              </li>
+              <li>
+                일별 추이는 발송일 기준으로, 그날 보낸 알림의 나중 열림까지
+                포함해요. 최근 이틀은 열림 집계 중으로 표시해요.
+              </li>
               <li>
                 발송은 FCM이 알림을 접수한 시각, 열림은 사용자가 알림을 연
                 시각으로 기간에 넣어요. 기간 이전에 보낸 알림의 열림도 포함될 수
@@ -182,7 +187,7 @@ const Container = styled.div`
 
   color: var(--seed-color-fg-neutral);
   font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  font-size: var(--seed-font-size-t4);
+  font-size: var(--seed-font-size-t5);
   line-height: var(--seed-line-height-t5);
 
   word-break: keep-all;
@@ -207,9 +212,6 @@ const PageTitle = styled.h1`
   font-size: var(--seed-font-size-t12);
   line-height: var(--seed-line-height-t12);
 `;
-const DescriptionBox = styled.p`
-  color: var(--seed-color-fg-neutral-muted);
-`;
 const RefreshButton = styled.button`
   min-height: 44px;
   padding: var(--seed-dimension-x3) var(--seed-dimension-x4);
@@ -223,6 +225,7 @@ const RefreshButton = styled.button`
 
   background-color: var(--seed-color-bg-layer-default);
   color: var(--seed-color-fg-neutral);
+  font: inherit;
   font-weight: var(--seed-font-weight-medium);
 
   &:disabled {
