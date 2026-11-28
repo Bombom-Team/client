@@ -1,8 +1,4 @@
 import styled from '@emotion/styled';
-import {
-  CATEGORY_LABELS,
-  OPEN_NOT_RECORDED_CATEGORIES,
-} from '../constants/notificationCategory';
 import { formatCount, formatRate } from '../utils/formatStats';
 import type { GetNotificationStatsResponse } from '@/apis/notificationStats/notificationStats.api';
 
@@ -18,17 +14,11 @@ const NotificationSummary = ({ stats }: NotificationSummaryProps) => {
     ({ deliveryMode, statusCounts }) =>
       deliveryMode === 'MEMBER' && statusCounts !== null,
   );
-  const rateCategories = memberCategories.filter(
-    ({ category }) => !OPEN_NOT_RECORDED_CATEGORIES.includes(category),
-  );
-  const rateSent = sum(
-    rateCategories.map(({ statusCounts }) => statusCounts?.SENT ?? 0),
-  );
-  const rateOpened = sum(rateCategories.map(({ opens }) => opens.uniqueLinked));
-  const openRate = rateSent > 0 ? rateOpened / rateSent : null;
-  const totalSent = sum(
+  const sent = sum(
     memberCategories.map(({ statusCounts }) => statusCounts?.SENT ?? 0),
   );
+  const opened = sum(memberCategories.map(({ opens }) => opens.uniqueLinked));
+  const openRate = sent > 0 ? opened / sent : null;
   const eventOpened = sum(
     stats.categories
       .filter(({ deliveryMode }) => deliveryMode === 'TOPIC')
@@ -39,13 +29,7 @@ const NotificationSummary = ({ stats }: NotificationSummaryProps) => {
     <Container aria-label="기간 요약">
       <HeadingWrapper>
         <Title>회원별 알림 성과</Title>
-        <ScopeText>
-          {rateCategories.length > 0
-            ? rateCategories
-                .map(({ category }) => CATEGORY_LABELS[category])
-                .join(' · ')
-            : '열림 집계 대상 없음'}
-        </ScopeText>
+        <ScopeText>이벤트 제외</ScopeText>
       </HeadingWrapper>
       <Metrics>
         <HeroTile>
@@ -57,22 +41,19 @@ const NotificationSummary = ({ stats }: NotificationSummaryProps) => {
         <Tile>
           <dt>기간 내 발송</dt>
           <Value>
-            {formatCount(rateSent)}
+            {formatCount(sent)}
             <Unit>건</Unit>
           </Value>
         </Tile>
         <Tile>
           <dt>기간 내 고유 열림</dt>
           <Value>
-            {formatCount(rateOpened)}
+            {formatCount(opened)}
             <Unit>건</Unit>
           </Value>
         </Tile>
       </Metrics>
       <OtherMetrics>
-        <span>
-          전체 회원별 발송 <strong>{formatCount(totalSent)}건</strong>
-        </span>
         <span>
           이벤트 고유 열림 <strong>{formatCount(eventOpened)}건</strong>
         </span>

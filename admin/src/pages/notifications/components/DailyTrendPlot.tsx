@@ -50,7 +50,6 @@ const getRateLinePath = (coordinates: ({ x: number; y: number } | null)[]) =>
 interface DailyTrendPlotProps {
   points: DailyPoint[];
   showSent: boolean;
-  showOpened: boolean;
   rateNotice: string | null;
   collectingFrom: string;
 }
@@ -58,7 +57,6 @@ interface DailyTrendPlotProps {
 const DailyTrendPlot = ({
   points,
   showSent,
-  showOpened,
   rateNotice,
   collectingFrom,
 }: DailyTrendPlotProps) => {
@@ -74,18 +72,14 @@ const DailyTrendPlot = ({
   );
 
   const bandWidth = PLOT_WIDTH / points.length;
-  const hasBothBars = showSent && showOpened;
   const barGap = Math.min(4, bandWidth * 0.1);
-  const barWidth = Math.min(
-    MAX_BAR_WIDTH,
-    bandWidth * (hasBothBars ? 0.35 : 0.6),
-  );
+  const barWidth = Math.min(MAX_BAR_WIDTH, bandWidth * (showSent ? 0.35 : 0.6));
   const getCenterX = (index: number) => PLOT_LEFT + bandWidth * (index + 0.5);
 
   const countMax = getNiceCeil(
     Math.max(
       ...points.map(({ sent, opened }) =>
-        Math.max(showSent ? (sent ?? 0) : 0, showOpened ? (opened ?? 0) : 0),
+        Math.max(showSent ? (sent ?? 0) : 0, opened),
       ),
       0,
     ),
@@ -187,11 +181,7 @@ const DailyTrendPlot = ({
         )}
 
         <PlotText x={PLOT_LEFT} y={COUNT_TOP - 10} isStrong>
-          {hasBothBars
-            ? '발송 · 열림 (건)'
-            : showSent
-              ? '발송 (건)'
-              : '열림 (건)'}
+          {showSent ? '발송 · 열림 (건)' : '열림 (건)'}
         </PlotText>
         {countTicks.map((tick) => (
           <g key={tick} aria-hidden="true">
@@ -213,10 +203,10 @@ const DailyTrendPlot = ({
         ))}
         {points.map(({ date, sent, opened }, index) => {
           const centerX = getCenterX(index);
-          const sentX = hasBothBars
+          const sentX = showSent
             ? centerX - barGap / 2 - barWidth
             : centerX - barWidth / 2;
-          const openedX = hasBothBars
+          const openedX = showSent
             ? centerX + barGap / 2
             : centerX - barWidth / 2;
           return (
@@ -232,7 +222,7 @@ const DailyTrendPlot = ({
                   fill="var(--seed-color-palette-gray-400)"
                 />
               )}
-              {showOpened && opened !== null && opened > 0 && (
+              {opened > 0 && (
                 <path
                   d={getBarPath(
                     openedX,
@@ -400,12 +390,10 @@ const DailyTrendPlot = ({
                 </span>
               </TooltipRow>
             )}
-            {showOpened && (
-              <TooltipRow>
-                <span>열림</span>
-                <span>{formatCount(activePoint.opened ?? 0)}건</span>
-              </TooltipRow>
-            )}
+            <TooltipRow>
+              <span>열림</span>
+              <span>{formatCount(activePoint.opened)}건</span>
+            </TooltipRow>
             {rateNotice === null && (
               <TooltipRow>
                 <span>열림률</span>

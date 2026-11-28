@@ -13,9 +13,3 @@ export const SKIP_NOT_RECORDED_CATEGORIES: NotificationCategory[] = [
   'ARTICLE',
   'INQUIRY_MESSAGE_ARRIVAL',
 ];
-
-// 앱이 이동할 화면이 없어 웹으로 열림 메시지가 가지 않는 카테고리라 열림이 기록되지 않는다.
-export const OPEN_NOT_RECORDED_CATEGORIES: NotificationCategory[] = [
-  'CHALLENGE_START',
-  'CHALLENGE_TODO_REMINDER',
-];

@@ -166,16 +166,32 @@ describe('알림 현황', () => {
     expect(detail.getByText('미집계')).toBeTruthy();
   });
 
-  it('열림이 기록되지 않는 카테고리는 0%로 표시하지 않는다', async () => {
-    vi.mocked(getNotificationStats).mockResolvedValue(stats);
+  it('챌린지 카테고리도 고유 열림과 열림률을 표시한다', async () => {
+    vi.mocked(getNotificationStats).mockResolvedValue({
+      ...stats,
+      categories: [
+        memberCategory({
+          category: 'CHALLENGE_START',
+          statusCounts: {
+            PENDING: 0,
+            SENT: 100,
+            FAILED: 0,
+            DEAD: 0,
+            SKIPPED: 0,
+          },
+          opens: { linked: 40, uniqueLinked: 30, unlinked: 0 },
+          openRate: 0.3,
+        }),
+      ],
+    });
     renderPage();
     await screen.findByRole('table');
     const row = within(getCategoryRow('챌린지 시작'));
-    expect(row.getByText('열림 미수집')).toBeTruthy();
-    expect(row.queryByText('0%')).toBeNull();
+    expect(row.getByText('30')).toBeTruthy();
+    expect(row.getByText('30%')).toBeTruthy();
   });
 
-  it('요약 열림률은 열림이 기록되지 않는 카테고리의 발송을 분모에서 뺀다', async () => {
+  it('요약 열림률은 챌린지를 포함한 회원별 알림을 합친다', async () => {
     vi.mocked(getNotificationStats).mockResolvedValue({
       ...stats,
       categories: [
@@ -196,10 +212,10 @@ describe('알림 현황', () => {
     });
     renderPage();
     const summary = await screen.findByLabelText('기간 요약');
-    expect(within(summary).getByText('15%')).toBeTruthy();
-    expect(within(summary).getByText('1,200')).toBeTruthy();
+    // (180 + 0) / (1,200 + 800)
+    expect(within(summary).getByText('9%')).toBeTruthy();
+    expect(within(summary).getByText('2,000')).toBeTruthy();
     expect(within(summary).getByText('180')).toBeTruthy();
-    expect(within(summary).getByText('2,000건')).toBeTruthy();
   });
 
   it('열림률 차트는 측정된 카테고리를 열림률 순으로 놓고 근사치를 구분한다', async () => {
@@ -328,7 +344,7 @@ describe('알림 현황', () => {
     );
   });
 
-  it('일별 추이에서 토픽·챌린지 카테고리를 고르면 열림률을 그리지 않는 이유를 알린다', async () => {
+  it('일별 추이에서 토픽 카테고리를 고르면 열림률을 계산하지 않는 이유를 알린다', async () => {
     vi.mocked(getNotificationStats).mockResolvedValue({
       ...stats,
       daily: [
@@ -347,11 +363,10 @@ describe('알림 현황', () => {
       ),
     ).toBeTruthy();
     fireEvent.change(select, { target: { value: 'CHALLENGE_START' } });
-    expect(
-      within(trend).getByText(
-        '챌린지 알림은 열림이 기록되지 않아 열림률을 그리지 않아요.',
-      ),
-    ).toBeTruthy();
+    const row = within(trend).getByRole('rowheader', {
+      name: '2026-11-25',
+    }).parentElement!;
+    expect(row.textContent).toContain('0%');
   });
 
   it('일별 데이터가 없는 응답이면 0으로 채우지 않고 안내한다', async () => {

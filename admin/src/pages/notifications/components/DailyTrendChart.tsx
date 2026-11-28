@@ -1,10 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import DailyTrendPlot from './DailyTrendPlot';
-import {
-  CATEGORY_LABELS,
-  OPEN_NOT_RECORDED_CATEGORIES,
-} from '../constants/notificationCategory';
+import { CATEGORY_LABELS } from '../constants/notificationCategory';
 import { buildDailyPoints, buildTotalDailyPoints } from '../utils/dailyTrend';
 import { getSeoulDateRange } from '../utils/dateRange';
 import { formatCount, formatRate } from '../utils/formatStats';
@@ -29,41 +26,21 @@ interface DailyTrendChartProps {
 const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
   const [selection, setSelection] = useState<TrendSelection>(TOTAL_SELECTION);
   const isTotal = selection === TOTAL_SELECTION;
-  const isOpenRecorded =
-    isTotal || !OPEN_NOT_RECORDED_CATEGORIES.includes(selection);
   const isTopic =
     !isTotal &&
     categories.find(({ category }) => category === selection)?.deliveryMode ===
       'TOPIC';
-  // 전체: 발송은 날짜별 발송 수가 있는 회원별 카테고리, 열림은 열림이 기록되는 카테고리를 합친다.
   const points = isTotal
-    ? buildTotalDailyPoints({
-        daily: daily ?? [],
-        sentCategories: categories
-          .filter(({ deliveryMode }) => deliveryMode === 'MEMBER')
-          .map(({ category }) => category),
-        openedCategories: categories
-          .filter(
-            ({ category }) => !OPEN_NOT_RECORDED_CATEGORIES.includes(category),
-          )
-          .map(({ category }) => category),
-      })
-    : buildDailyPoints({
-        daily: daily ?? [],
-        categories: [selection],
-        isOpenRecorded,
-      });
+    ? buildTotalDailyPoints(daily ?? [])
+    : buildDailyPoints({ daily: daily ?? [], categories: [selection] });
   const getRateNotice = () => {
     if (isTotal) return '카테고리를 고르면 열림률을 볼 수 있어요.';
-    if (!isOpenRecorded)
-      return '챌린지 알림은 열림이 기록되지 않아 열림률을 그리지 않아요.';
     if (isTopic)
       return '토픽 발송이라 날짜별 발송 수가 없어 열림률을 계산하지 않아요.';
     return null;
   };
   const rateNotice = getRateNotice();
   const showSent = !isTopic;
-  const showOpened = isOpenRecorded;
 
   const handleSelectionChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelection(event.target.value as TrendSelection);
@@ -106,12 +83,10 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
                 발송
               </LegendItem>
             )}
-            {showOpened && (
-              <LegendItem>
-                <LegendSwatch swatchColor="var(--seed-color-palette-carrot-700)" />
-                열림
-              </LegendItem>
-            )}
+            <LegendItem>
+              <LegendSwatch swatchColor="var(--seed-color-palette-carrot-700)" />
+              열림
+            </LegendItem>
             {rateNotice === null && (
               <LegendItem>
                 <LineKey />
@@ -122,7 +97,6 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
           <DailyTrendPlot
             points={points}
             showSent={showSent}
-            showOpened={showOpened}
             rateNotice={rateNotice}
             collectingFrom={getSeoulDateRange(COLLECTING_DAYS).from}
           />
@@ -147,9 +121,7 @@ const DailyTrendChart = ({ categories, daily }: DailyTrendChartProps) => {
                     <tr key={date}>
                       <th scope="row">{date}</th>
                       <td>{sent === null ? '해당 없음' : formatCount(sent)}</td>
-                      <td>
-                        {opened === null ? '미수집' : formatCount(opened)}
-                      </td>
+                      <td>{formatCount(opened)}</td>
                       <td>{openRate === null ? '—' : formatRate(openRate)}</td>
                     </tr>
                   ))}

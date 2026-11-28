@@ -1,10 +1,7 @@
 import styled from '@emotion/styled';
 import { Fragment, useState } from 'react';
 import NotificationCategoryDetail from './NotificationCategoryDetail';
-import {
-  CATEGORY_LABELS,
-  OPEN_NOT_RECORDED_CATEGORIES,
-} from '../constants/notificationCategory';
+import { CATEGORY_LABELS } from '../constants/notificationCategory';
 import { formatCount, formatRate } from '../utils/formatStats';
 import type { NotificationCategoryStats } from '@/apis/notificationStats/notificationStats.api';
 
@@ -42,9 +39,6 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
             {categories.map((stats) => {
               const isTopic = stats.deliveryMode === 'TOPIC';
               const isExpanded = expandedCategories.includes(stats.category);
-              const isOpenRecorded = !OPEN_NOT_RECORDED_CATEGORIES.includes(
-                stats.category,
-              );
               const failed =
                 stats.statusCounts === null
                   ? null
@@ -66,17 +60,9 @@ const CategoryEventTable = ({ categories }: CategoryEventTableProps) => {
                         formatCount(stats.statusCounts.SENT)
                       )}
                     </td>
+                    <td>{formatCount(stats.opens.uniqueLinked)}</td>
                     <td>
-                      {isOpenRecorded ? (
-                        formatCount(stats.opens.uniqueLinked)
-                      ) : (
-                        <MutedText>미수집</MutedText>
-                      )}
-                    </td>
-                    <td>
-                      {!isOpenRecorded ? (
-                        <MutedText>열림 미수집</MutedText>
-                      ) : stats.openRate === null ? (
+                      {stats.openRate === null ? (
                         <MutedText>계산 불가</MutedText>
                       ) : (
                         <strong>

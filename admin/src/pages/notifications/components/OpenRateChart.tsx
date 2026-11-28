@@ -1,8 +1,5 @@
 import styled from '@emotion/styled';
-import {
-  CATEGORY_LABELS,
-  OPEN_NOT_RECORDED_CATEGORIES,
-} from '../constants/notificationCategory';
+import { CATEGORY_LABELS } from '../constants/notificationCategory';
 import { formatCount, formatRate } from '../utils/formatStats';
 import type { NotificationCategoryStats } from '@/apis/notificationStats/notificationStats.api';
 
@@ -18,10 +15,8 @@ const OpenRateChart = ({ categories }: OpenRateChartProps) => {
   );
   const measuredCategories = memberCategories
     .filter(
-      ({ category, openRate, statusCounts }) =>
-        !OPEN_NOT_RECORDED_CATEGORIES.includes(category) &&
-        openRate !== null &&
-        statusCounts !== null,
+      ({ openRate, statusCounts }) =>
+        openRate !== null && statusCounts !== null,
     )
     .sort((a, b) => (b.openRate ?? 0) - (a.openRate ?? 0));
   const unmeasuredCategories = memberCategories.filter(
@@ -72,12 +67,7 @@ const OpenRateChart = ({ categories }: OpenRateChartProps) => {
       {unmeasuredCategories.length > 0 && (
         <UnmeasuredList aria-label="열림률 집계 제외">
           {unmeasuredCategories.map(({ category }) => (
-            <li key={category}>
-              {CATEGORY_LABELS[category]} ·{' '}
-              {OPEN_NOT_RECORDED_CATEGORIES.includes(category)
-                ? '열림 미수집'
-                : '계산 불가'}
-            </li>
+            <li key={category}>{CATEGORY_LABELS[category]} · 계산 불가</li>
           ))}
         </UnmeasuredList>
       )}

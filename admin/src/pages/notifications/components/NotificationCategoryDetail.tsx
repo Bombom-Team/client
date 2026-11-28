@@ -1,8 +1,5 @@
 import styled from '@emotion/styled';
-import {
-  OPEN_NOT_RECORDED_CATEGORIES,
-  SKIP_NOT_RECORDED_CATEGORIES,
-} from '../constants/notificationCategory';
+import { SKIP_NOT_RECORDED_CATEGORIES } from '../constants/notificationCategory';
 import { formatCount, formatDuration } from '../utils/formatStats';
 import type { NotificationCategoryStats } from '@/apis/notificationStats/notificationStats.api';
 
@@ -14,7 +11,6 @@ const NotificationCategoryDetail = ({
   stats,
 }: NotificationCategoryDetailProps) => {
   const isTopic = stats.deliveryMode === 'TOPIC';
-  const isOpenRecorded = !OPEN_NOT_RECORDED_CATEGORIES.includes(stats.category);
   const isSkipRecorded = !SKIP_NOT_RECORDED_CATEGORIES.includes(stats.category);
 
   return (
@@ -58,35 +54,28 @@ const NotificationCategoryDetail = ({
             </div>
           </>
         )}
-        {isOpenRecorded && (
-          <>
-            <div>
-              <dt>연결된 열림 횟수</dt>
-              <dd>{formatCount(stats.opens.linked)}회</dd>
-            </div>
-            <div>
-              <dt>미연결 열림</dt>
-              <dd>{formatCount(stats.opens.unlinked)}건</dd>
-            </div>
-            <div>
-              <dt>열림까지 (중앙값)</dt>
-              <dd>
-                {stats.medianSecondsToOpen === null
-                  ? '—'
-                  : formatDuration(stats.medianSecondsToOpen)}
-              </dd>
-            </div>
-          </>
-        )}
+        <div>
+          <dt>연결된 열림 횟수</dt>
+          <dd>{formatCount(stats.opens.linked)}회</dd>
+        </div>
+        <div>
+          <dt>미연결 열림</dt>
+          <dd>{formatCount(stats.opens.unlinked)}건</dd>
+        </div>
+        <div>
+          <dt>열림까지 (중앙값)</dt>
+          <dd>
+            {stats.medianSecondsToOpen === null
+              ? '—'
+              : formatDuration(stats.medianSecondsToOpen)}
+          </dd>
+        </div>
       </Metrics>
       {isTopic && (
         <Note>토픽 발송은 회원별 발송·기기 전송 결과를 집계하지 않아요.</Note>
       )}
       {!isTopic && !isSkipRecorded && (
         <Note>수신 거부 기록이 없어 스킵은 집계하지 않아요.</Note>
-      )}
-      {!isOpenRecorded && (
-        <Note>앱이 이동할 화면이 없어 열림을 수집하지 않아요.</Note>
       )}
       {stats.failureReasons.length > 0 && (
         <FailureWrapper>
